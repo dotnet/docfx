@@ -392,7 +392,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetTypeModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.DelegateInvokeMethod.ReturnType),
+                GetMethodTypeSyntax(symbol.DelegateInvokeMethod),
                 SyntaxFactory.Identifier(symbol.Name),
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
@@ -418,7 +418,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.ReturnType),
+                GetMethodTypeSyntax(symbol),
                 eii,
                 SyntaxFactory.Identifier(
                     GetMemberName(symbol, filterVisitor)
@@ -452,7 +452,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetMemberModifiers(symbol)
                     ),
                     operatorToken.Value,
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetMethodTypeSyntax(symbol),
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
@@ -470,7 +470,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetMethodTypeSyntax(symbol),
                     operatorToken.Value,
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
@@ -565,7 +565,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.IndexerDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetPropertyTypeSyntax(symbol),
                     eii,
                     SyntaxFactory.BracketedParameterList(
                         SyntaxFactory.SeparatedList(
@@ -580,7 +580,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.PropertyDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetPropertyTypeSyntax(symbol),
                     eii,
                     SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
                     SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol, filterVisitor))))
@@ -774,14 +774,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor, bool isThisParameter = false)
+        private static ParameterSyntax GetParameter(IParameterSymbol parameter, IFilterVisitor filterVisitor, bool isThisParameter = false)
         {
             return SyntaxFactory.Parameter(
-                GetAttributes(p, filterVisitor, true),
-                SyntaxFactory.TokenList(GetParameterModifiers(p, isThisParameter)),
-                GetTypeSyntax(p.Type),
-                SyntaxFactory.Identifier(p.Name),
-                GetDefaultValueClause(p));
+                GetAttributes(parameter, filterVisitor, true),
+                SyntaxFactory.TokenList(GetParameterModifiers(parameter, isThisParameter)),
+                GetTypeSyntax(parameter.Type),
+                SyntaxFactory.Identifier(parameter.Name),
+                GetDefaultValueClause(parameter));
         }
 
         private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter, bool isThisParameter)
@@ -1543,6 +1543,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static string RemoveBraces(string text)
         {
             return BracesRegex.Replace(text, string.Empty);
+        }
+
+        private static TypeSyntax GetRefType(TypeSyntax typeSyntax, RefKind refKind)
+        {
+            if (refKind == RefKind.Ref)
+            {
+                typeSyntax = SyntaxFactory.RefType(
+                    SyntaxFactory.Token(SyntaxKind.RefKeyword),
+                    typeSyntax
+                );
+            }
+            else if (refKind == RefKind.RefReadOnly)
+            {
+                typeSyntax = SyntaxFactory.RefType(
+                    SyntaxFactory.Token(SyntaxKind.RefKeyword),
+                    SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword),
+                    typeSyntax
+                );
+            }
+
+            return typeSyntax;
+        }
+
+        private static TypeSyntax GetMethodTypeSyntax(IMethodSymbol method)
+        {
+            var typeSyntax = GetTypeSyntax(method.ReturnType);
+            return GetRefType(typeSyntax, method.RefKind);
+        }
+
+        private static TypeSyntax GetPropertyTypeSyntax(IPropertySymbol property)
+        {
+            var typeSyntax = GetTypeSyntax(property.Type);
+            return GetRefType(typeSyntax, property.RefKind);
         }
 
         private static TypeSyntax GetTypeSyntax(ITypeSymbol type)
