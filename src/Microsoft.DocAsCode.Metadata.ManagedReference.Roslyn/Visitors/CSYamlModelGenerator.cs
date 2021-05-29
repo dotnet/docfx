@@ -1270,6 +1270,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
+            if (symbol.TypeKind == TypeKind.Struct)
+            {
+                if (symbol.IsRefLikeType)
+                {
+                    yield return SyntaxFactory.Token(SyntaxKind.RefKeyword);
+                }
+
+                if (symbol.IsReadOnly)
+                {
+                    yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
+                }
+            }
         }
 
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IMethodSymbol symbol)

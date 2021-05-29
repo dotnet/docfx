@@ -3504,5 +3504,59 @@ namespace Test1
                 Assert.Equal(new[] { "public", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
+
+        [Trait("Related", "ReadonlyStruct")]
+        [Fact]
+        public void TestGenerateMetadataWithReadonlyStruct()
+        {
+            string code = @"
+namespace Test1
+{
+    public readonly struct S
+    {
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("S", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S", type.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S", type.Name);
+                Assert.Equal("public readonly struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Null(type.Implements);
+                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
+            }
+        }
+
+        [Trait("Related", "RefStruct")]
+        [Fact]
+        public void TestGenerateMetadataWithRefStruct()
+        {
+            string code = @"
+namespace Test1
+{
+    public ref struct S
+    {
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+            {
+                var type = output.Items[0].Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("S", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("S", type.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.S", type.Name);
+                Assert.Equal("public ref struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Null(type.Implements);
+                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
+            }
+        }
     }
 }
