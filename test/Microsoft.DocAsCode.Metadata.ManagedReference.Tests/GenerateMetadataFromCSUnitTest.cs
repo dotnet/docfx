@@ -738,7 +738,7 @@ namespace Test1
     public class Bar : Foo<string>, IFooBar
     {
         public override void M1(){}
-        protected override sealed Foo<T> M2<TArg>(TArg arg) where TArg : Foo<string> => this;
+        protected sealed override Foo<T> M2<TArg>(TArg arg) where TArg : Foo<string> => this;
         public int M8<TArg>(TArg arg) where TArg : struct, new() => 2;
     }
     public interface IFooBar
@@ -842,7 +842,7 @@ namespace Test1
                 Assert.Equal("Bar.M2<TArg>(TArg)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M2``1(``0)", method.Name);
-                Assert.Equal("protected override sealed Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected sealed override Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.M2``1({TArg})", method.Overridden);
             }
             {
@@ -1718,7 +1718,7 @@ namespace Test1
     public class Bar<T> : Foo<T> where T : EventArgs
     {
         public new event EventHandler A;
-        protected internal override sealed event EventHandler<T> C;
+        protected internal sealed override event EventHandler<T> C;
         public override event EventHandler<T> D;
     }
     public interface IFooBar<T> where T : EventArgs
@@ -1786,9 +1786,9 @@ namespace Test1
                 Assert.Equal("Bar<T>.C", c.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar<T>.C", c.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar`1.C", c.Name);
-                Assert.Equal("protected override sealed event EventHandler<T> C", c.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("protected sealed override event EventHandler<T> C", c.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{{T}}.C", c.Overridden);
-                Assert.Equal(new[] { "protected", "override", "sealed" }, c.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "protected", "sealed", "override" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var d = output.Items[0].Items[1].Items[2];
@@ -1845,7 +1845,7 @@ namespace Test1
     {
         public new virtual int A { get; set; }
         public override int B { get { return 2; } }
-        public override sealed int C { set; }
+        public sealed override int C { set; }
     }
     public interface IFooBar
     {
@@ -1962,9 +1962,9 @@ namespace Test1
                 Assert.Equal("Bar.C", c.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.C", c.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.C", c.Name);
-                Assert.Equal(@"public override sealed int C { set; }", c.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public sealed override int C { set; }", c.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.C", c.Overridden);
-                Assert.Equal(new[] { "public", "override", "sealed", "set" }, c.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "sealed", "override", "set" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var a = output.Items[0].Items[2].Items[0];
@@ -2019,7 +2019,7 @@ namespace Test1
     {
         public new virtual int this[int x] { get { return 0; } set { } }
         public override int this[string x] { get { return 2; } }
-        public override sealed int this[object x] { set; }
+        public sealed override int this[object x] { set; }
     }
     public interface IFooBar
     {
@@ -2123,9 +2123,9 @@ namespace Test1
                 Assert.Equal("Bar.Item[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item(System.Object)", indexer.Name);
-                Assert.Equal(@"public override sealed int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public sealed override int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.Object)", indexer.Overridden);
-                Assert.Equal(new[] { "public", "override", "sealed", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "sealed", "override", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Object)", indexer.Implements[0]);
             }
             // IFooBar

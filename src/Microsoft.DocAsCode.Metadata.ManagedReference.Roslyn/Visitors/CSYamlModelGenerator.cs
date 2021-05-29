@@ -115,26 +115,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("extern");
                 }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
+                }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
                 }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
                 }
-                if (symbol.IsVirtual && symbol.IsSealed)
-                {
-                }
-                else if (symbol.IsVirtual)
-                {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
-                }
-                if (symbol.IsReadOnly)
+                if ((symbol.ContainingType.TypeKind == TypeKind.Struct) && symbol.IsReadOnly)
                 {
                     modifiers.Add("readonly");
                 }
@@ -192,24 +189,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
                 }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
+                }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
-                }
-                if (symbol.IsVirtual && symbol.IsSealed)
-                {
-                }
-                else if (symbol.IsVirtual)
-                {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
                 }
                 if (isPropertyReadonly)
                 {
@@ -267,24 +261,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
                 }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
+                }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
-                }
-                if (symbol.IsVirtual && symbol.IsSealed)
-                {
-                }
-                else if (symbol.IsVirtual)
-                {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -1335,25 +1326,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
-            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
+            if (symbol.IsExtern)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.ExternKeyword);
             }
             if (symbol.IsVirtual)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
             }
-            if (symbol.IsOverride)
+            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
             }
-            if (symbol.IsReadOnly)
+            if (symbol.IsOverride)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+            }
+            if ((symbol.ContainingType.TypeKind == TypeKind.Struct) && symbol.IsReadOnly)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
+            }
+            if (symbol.IsAsync)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.AsyncKeyword);
             }
         }
 
@@ -1381,21 +1380,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
-            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
-            {
-                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
-            }
             if (symbol.IsVirtual)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
             }
-            if (symbol.IsOverride)
+            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+            }
+            if (symbol.IsOverride)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
             }
         }
 
@@ -1448,21 +1447,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
-            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
-            {
-                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
-            }
             if (symbol.IsVirtual)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
             }
-            if (symbol.IsOverride)
+            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+            }
+            if (symbol.IsOverride)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
             }
             if (IsPropertyReadonly(symbol))
             {
