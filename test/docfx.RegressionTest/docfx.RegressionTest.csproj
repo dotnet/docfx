@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="../../src/docfx/bin/$(Configuration)/net5.0/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
   </ItemGroup>
-
 </Project>
