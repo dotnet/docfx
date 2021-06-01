@@ -18,7 +18,7 @@ namespace Microsoft.Docs.Build
             // TODO: remove JINT after Microsoft.CharkraCore NuGet package
             // supports linux and macOS: https://github.com/microsoft/ChakraCore/issues/2578
             return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? (JavaScriptEngine)new ChakraCoreJsEngine(package, global)
+                ? new ChakraCoreJsEngine(package, global)
                 : new JintJsEngine(package, global);
         }
     }

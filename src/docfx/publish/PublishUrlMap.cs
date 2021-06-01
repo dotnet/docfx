@@ -132,16 +132,33 @@ namespace Microsoft.Docs.Build
             }
 
             // redirection file is preferred than source file
-            var redirection = conflicts.FirstOrDefault(x => x.SourcePath.Origin == FileOrigin.Redirection);
-            if (redirection != null)
-            {
-                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(redirection.SourcePath));
-                return redirection;
-            }
+            var redirections = conflicts.Where(x => x.SourcePath.Origin == FileOrigin.Redirection).OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer);
+            var nonRedirections = conflicts.Where(x => x.SourcePath.Origin != FileOrigin.Redirection)
+                .OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer)
+                .Select(x => x.SourcePath.Path.Value);
+            var redirection = redirections.FirstOrDefault();
+            var redirectionCount = redirections.Count();
 
-            // otherwise, prefer the one based on FilePath
-            _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
-            return conflicts.OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
+            if (redirectionCount == 0)
+            {
+                _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+                return conflicts.OrderBy(x => x.SourcePath.Path, PathUtility.PathComparer).Last();
+            }
+            else if (redirectionCount == 1)
+            {
+                _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(nonRedirections));
+                return redirection!;
+            }
+            else
+            {
+                if (conflicts.Count() > redirectionCount)
+                {
+                    _errors.Add(Errors.Redirection.RedirectedFileNotRemoved(nonRedirections));
+                }
+
+                _errors.Add(Errors.UrlPath.OutputPathConflict(conflicts.First().OutputPath, conflicts.Select(x => x.SourcePath)));
+                return redirection!;
+            }
         }
 
         private PublishUrlMapItem ResolvePublishUrlConflicts(IGrouping<PublishUrlMapItem, PublishUrlMapItem> conflicts)

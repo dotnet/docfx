@@ -23,8 +23,8 @@ namespace Microsoft.Docs.Build
             "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr.cs-cz&branch=live-sxs",
             "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
         [InlineData(
-            "https://ops/buildconfig/?name=e2e-ppe-dotnetapidocs&repository_url=https://github.com/OPS-E2E-PPE/dotnet-api-docs/&branch=master",
-            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-core-docs','xrefHostName':'ppe.docs.microsoft.com'}")]
+            "https://ops/buildconfig/?name=E2E_DocFxV3&repository_url=https://github.com/OPS-E2E-PPE/E2E_DocFxV3/&branch=master",
+            "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/E2E_DocFxV3','xrefHostName':'ppe.docs.microsoft.com'}")]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
             var token = Environment.GetEnvironmentVariable("DOCS_OPS_TOKEN");

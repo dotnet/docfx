@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
 
             ZonePivotGroup? GetZonePivotGroup(FilePath file, string pivotGroupId)
             {
-                var group = zonePivotGroupDefinition.Groups.Where(group => group.Id == pivotGroupId).FirstOrDefault();
+                var group = zonePivotGroupDefinition.Groups.FirstOrDefault(group => group.Id == pivotGroupId);
                 if (group is null)
                 {
                     _errors.Add(Errors.ZonePivot.ZonePivotGroupNotFound(new SourceInfo(file), pivotGroupId, definitionFile));

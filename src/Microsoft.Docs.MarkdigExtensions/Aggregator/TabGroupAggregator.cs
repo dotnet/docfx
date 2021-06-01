@@ -4,9 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Markdig.Syntax;
@@ -16,7 +13,7 @@ namespace Microsoft.Docs.MarkdigExtensions
 {
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
-        private static readonly Regex s_hrefRegex = new Regex(
+        private static readonly Regex s_hrefRegex = new(
             @"^#tab\/(?<id>[a-zA-Z0-9\-]+(?:\+[a-zA-Z0-9\-]+)*)(?:\/(?<condition>[a-zA-Z0-9\-]+)?)?$", RegexOptions.Compiled);
 
         protected override bool AggregateCore(HeadingBlock headBlock, BlockAggregateContext context)

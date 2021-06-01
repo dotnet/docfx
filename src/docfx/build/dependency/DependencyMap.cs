@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
 {
     internal class DependencyMap : ReadOnlyDictionary<FilePath, HashSet<DependencyItem>>
     {
-        public static readonly DependencyMap Empty = new DependencyMap(new Dictionary<FilePath, HashSet<DependencyItem>>());
+        public static readonly DependencyMap Empty = new(new Dictionary<FilePath, HashSet<DependencyItem>>());
 
         public DependencyMap(Dictionary<FilePath, HashSet<DependencyItem>> map)
             : base(map)

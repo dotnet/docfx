@@ -17,6 +17,8 @@ namespace Microsoft.Docs.Build
         [JsonIgnore]
         public MonikerList Monikers { get; init; }
 
+        public string? MonikerGroup => Monikers.MonikerGroup;
+
         [JsonIgnore]
         public string? RepositoryUrl { get; set; }
 

@@ -15,5 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
   </ItemGroup>
-
 </Project>

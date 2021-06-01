@@ -12,21 +12,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.3.0" />
+    <PackageReference Include="Azure.Identity" Version="1.4.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
-    <PackageReference Include="docs.validation" Version="1.0.0-beta-00576-ed29590" />
+    <PackageReference Include="docs.validation" Version="1.0.0-beta-00578-7c3d676" />
     <PackageReference Include="DotLiquid" Version="2.1.405" />
     <PackageReference Include="Glob" Version="1.1.8" />
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.6" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.794" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.74" Aliases="maml" />
-    <PackageReference Include="Microsoft.Graph" Version="3.30.0" />
+    <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
+    <PackageReference Include="Microsoft.Graph" Version="3.33.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.30.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2031" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.1" />
@@ -35,14 +35,13 @@
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
     <PackageReference Include="YamlDotNet" Version="11.1.1" />
-    <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
     <!-- This package was transitively referenced by OmniSharp server, stop propagating it to other projects by explicitly marking it as private assets -->
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.9.60" PrivateAssets="all" />
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.194" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.203" PrivateAssets="all" />
     <PackageReference Include="docs.validation.analyzer" Version="1.0.0-beta-00558-82cdaba" PrivateAssets="all" />
   </ItemGroup>
 

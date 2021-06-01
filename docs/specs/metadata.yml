@@ -55,7 +55,7 @@ inputs:
     # Heading
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","ms.author":"xxx", "ms.prod":"abc", "message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/a.md'.","file":"docs/a.md"}
+    {"message_severity":"error","code":"include-not-found","ms.author":"xxx", "ms.prod":"abc", "message":"Invalid include link: ''.","file":"docs/a.md"}
 ---
 # Report error for invalid yaml header value type
 inputs:
@@ -214,7 +214,7 @@ outputs:
   azure/app-service/index.json: |
     { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
   azure/app-service/index.experimental.json: |
-    { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
+    { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/index.experimental" }
 ---
 # No canonical URL for profile page
 inputs:

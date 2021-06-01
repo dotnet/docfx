@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
     internal class ReferenceEqualsComparer : IEqualityComparer, IEqualityComparer<object>
     {
         public static readonly ReferenceEqualsComparer Default
-            = new ReferenceEqualsComparer();
+            = new();
 
         private ReferenceEqualsComparer() { }
 

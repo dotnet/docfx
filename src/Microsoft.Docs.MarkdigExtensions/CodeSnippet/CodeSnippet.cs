@@ -88,19 +88,19 @@ namespace Microsoft.Docs.MarkdigExtensions
         {
             var sb = new StringBuilder();
 
-            if (!string.IsNullOrEmpty(this.Language))
+            if (!string.IsNullOrEmpty(Language))
             {
-                sb.Append($@" class=""lang-{this.Language}""");
+                sb.Append($@" class=""lang-{Language}""");
             }
 
-            if (!string.IsNullOrEmpty(this.Name))
+            if (!string.IsNullOrEmpty(Name))
             {
-                sb.Append($@" name=""{this.Name}""");
+                sb.Append($@" name=""{Name}""");
             }
 
-            if (!string.IsNullOrEmpty(this.Title))
+            if (!string.IsNullOrEmpty(Title))
             {
-                sb.Append($@" title=""{this.Title}""");
+                sb.Append($@" title=""{Title}""");
             }
 
             var highlightRangesString = GetHighlightLinesString();
@@ -115,9 +115,9 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public string GetHighlightLinesString()
         {
-            if (this.HighlightRanges != null && this.HighlightRanges.Any())
+            if (HighlightRanges != null && HighlightRanges.Any())
             {
-                return string.Join(",", this.HighlightRanges.Select(highlight =>
+                return string.Join(",", HighlightRanges.Select(highlight =>
                 {
                     if (highlight.Start == highlight.End)
                     {
