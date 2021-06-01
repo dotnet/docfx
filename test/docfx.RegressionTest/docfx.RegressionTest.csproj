@@ -4,7 +4,6 @@
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
-    <PackAsTool>true</PackAsTool>
   </PropertyGroup>
 
   <ItemGroup>
