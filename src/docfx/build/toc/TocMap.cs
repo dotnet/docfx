@@ -195,7 +195,7 @@ namespace Microsoft.Docs.Build
             var docToTocs = (
                 from item in tocReferences
                 from doc in item.Value.docs
-                where tocToTocs.ContainsKey(item.Key) && !item.Key.IsExperimental()
+                where tocToTocs.ContainsKey(item.Key)
                 group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
             docToTocs.TrimExcess();

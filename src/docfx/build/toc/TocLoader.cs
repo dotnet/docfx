@@ -30,7 +30,6 @@ namespace Microsoft.Docs.Build
         private readonly MemoryCache<FilePath, Watch<(TocNode, List<FilePath>, List<FilePath>, List<FilePath>)>> _cache = new();
 
         private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
-        private static readonly string[] s_experimentalTocFileNames = new[] { "TOC.experimental.md", "TOC.experimental.json", "TOC.experimental.yml" };
 
         private static readonly AsyncLocal<ImmutableStack<FilePath>> s_recursionDetector = new();
 
@@ -76,7 +75,7 @@ namespace Microsoft.Docs.Build
 
             var fileName = Path.GetFileName(path);
 
-            if (s_tocFileNames.Concat(s_experimentalTocFileNames).Any(s => s.Equals(fileName, PathUtility.PathComparison)))
+            if (s_tocFileNames.Any(s => s.Equals(fileName, PathUtility.PathComparison)))
             {
                 return TocHrefType.TocFile;
             }
