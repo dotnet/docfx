@@ -7,9 +7,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Reflection.Metadata;
     using System.Text;
-
     using Microsoft.CodeAnalysis;
+    using NuGet.Protocol.Plugins;
 
     public abstract class NameVisitorCreator
     {
@@ -136,7 +137,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
                 {
                     Append("ValueTuple");
-                    symbol = symbol.TupleUnderlyingType;
+                    symbol = symbol.TupleUnderlyingType ?? symbol;
                 }
                 else
                 {
@@ -156,6 +157,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         }
                     }
                     Append(")");
+                    return;
                 }
             }
             else
@@ -221,6 +223,54 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             symbol.PointedAtType.Accept(this);
             Append("*");
+        }
+
+        public override void VisitFunctionPointerType(IFunctionPointerTypeSymbol symbol)
+        {
+            Append("delegate*");
+
+            var signature = symbol.Signature;
+            
+            if (signature.CallingConvention != SignatureCallingConvention.Default)
+            {
+                Append(" unmanaged");
+
+                if ((signature.CallingConvention != SignatureCallingConvention.Unmanaged) || (signature.UnmanagedCallingConventionTypes.Length != 0))
+                {
+                    Append("[");
+
+                    if (signature.UnmanagedCallingConventionTypes.Length != 0)
+                    {
+                        WriteUnmanagedCallConv(signature.UnmanagedCallingConventionTypes[0]);
+
+                        for (int i = 1; i < signature.UnmanagedCallingConventionTypes.Length; i++)
+                        {
+                            Append(", ");
+                            WriteUnmanagedCallConv(signature.UnmanagedCallingConventionTypes[i]);
+                        }
+                    }
+                    else
+                    {
+                        WriteUnmanagedCallConv(signature.CallingConvention);
+                    }
+
+                    Append("]");
+                }
+            }
+
+            Append("<");
+
+            foreach (var parameter in signature.Parameters)
+            {
+                WriteRefKind(parameter.RefKind, isReturn: false);
+                parameter.Type.Accept(this);
+                Append(", ");
+            }
+            
+            WriteRefKind(signature.RefKind, isReturn: true);
+            signature.ReturnType.Accept(this);
+
+            Append(">");
         }
 
         public override void VisitTypeParameter(ITypeParameterSymbol symbol)
@@ -402,14 +452,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void VisitParameter(IParameterSymbol symbol)
         {
-            if (symbol.RefKind == RefKind.Ref)
-            {
-                Append("ref ");
-            }
-            else if (symbol.RefKind == RefKind.Out)
-            {
-                Append("out ");
-            }
+            WriteRefKind(symbol.RefKind, isReturn: false);
             symbol.Type.Accept(this);
         }
 
@@ -481,6 +524,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case SpecialType.System_String:
                     Append("string");
                     return true;
+                case SpecialType.System_IntPtr:
+                    if (symbol.IsNativeIntegerType)
+                    {
+                        Append("nint");
+                        return true;
+                    }
+                    goto default;
+                case SpecialType.System_UIntPtr:
+                    if (symbol.IsNativeIntegerType)
+                    {
+                        Append("nuint");
+                        return true;
+                    }
+                    goto default;
                 default:
                     if (symbol.IsGenericType && !symbol.IsDefinition && symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
                     {
@@ -514,6 +571,103 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 types[i].Accept(this);
             }
             Append(">");
+        }
+
+        private void WriteRefKind(RefKind kind, bool isReturn)
+        {
+            switch (kind)
+            {
+                case RefKind.None:
+                {
+                    break;
+                }
+
+                case RefKind.Ref:
+                {
+                    Append("ref ");
+                    break;
+                }
+
+                case RefKind.Out:
+                {
+                    Append("out ");
+                    break;
+                }
+
+                case RefKind.In:
+                {
+                    if (isReturn)
+                    {
+                        Append("ref readonly ");
+                    }
+                    else
+                    {
+                        Append("in ");
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void WriteUnmanagedCallConv(SignatureCallingConvention callConv)
+        {
+            switch (callConv)
+            {
+                case SignatureCallingConvention.Default:
+                case SignatureCallingConvention.Unmanaged:
+                {
+                    // nothing to print here
+                    break;
+                }
+
+                case SignatureCallingConvention.CDecl:
+                {
+                    Append("Cdecl");
+                    break;
+                }
+
+                case SignatureCallingConvention.StdCall:
+                {
+                    Append("Stdcall");
+                    break;
+                }
+
+                case SignatureCallingConvention.ThisCall:
+                {
+                    Append("Thiscall");
+                    break;
+                }
+
+                case SignatureCallingConvention.FastCall:
+                {
+                    Append("Fastcall");
+                    break;
+                }
+
+                default:
+                {
+                    var name = callConv.ToString();
+                    Append(name.Substring(0, 1));
+                    Append(name.Substring(1).ToLower());
+                    break;
+                }
+            }
+        }
+
+        private void WriteUnmanagedCallConv(INamedTypeSymbol symbol)
+        {
+            var name = symbol.Name;
+
+            if (name.StartsWith("CallConv"))
+            {
+                Append(name.Substring("CallConv".Length));
+            }
+            else
+            {
+                // We should never encounter this type of call
+                // conv but we'll handle it gracefully regardless
+                symbol.Accept(this);
+            }
         }
     }
 
@@ -566,7 +720,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if ((Options & NameOptions.Qualified) == NameOptions.Qualified)
                 {
                     Append("ValueTuple");
-                    symbol = symbol.TupleUnderlyingType;
+                    symbol = symbol.TupleUnderlyingType ?? symbol;
                 }
                 else
                 {

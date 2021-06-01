@@ -1476,6 +1476,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((ulong)value));
+                case SpecialType.System_IntPtr:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((int)value));
+                case SpecialType.System_UIntPtr:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((uint)value));
                 case SpecialType.System_Decimal:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,

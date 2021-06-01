@@ -60,6 +60,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     modifiers.Add("sealed");
                 }
             }
+            if (symbol.TypeKind == TypeKind.Struct)
+            {
+                if (symbol.IsRefLikeType)
+                {
+                    modifiers.Add("ref");
+                }
+                if (symbol.IsReadOnly)
+                {
+                    modifiers.Add("readonly");
+                }
+            }
             switch (symbol.TypeKind)
             {
                 case TypeKind.Module:
@@ -100,24 +111,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsExtern)
+                {
+                    modifiers.Add("extern");
+                }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
+                }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
                 }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
                 }
-                if (symbol.IsVirtual && symbol.IsSealed)
+                if ((symbol.ContainingType.TypeKind == TypeKind.Struct) && symbol.IsReadOnly)
                 {
+                    modifiers.Add("readonly");
                 }
-                else if (symbol.IsVirtual)
+                if (symbol.IsAsync)
                 {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
+                    modifiers.Add("async");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -158,6 +178,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var modifiers = new List<string>();
             var propertyVisiblity = GetVisiblity(symbol.DeclaredAccessibility);
+            var isPropertyReadonly = IsPropertyReadonly(symbol);
             if (symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
                 if (propertyVisiblity != null)
@@ -168,54 +189,57 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
+                }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
                 }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
                 }
-                if (symbol.IsVirtual && symbol.IsSealed)
+                if (isPropertyReadonly)
                 {
-                }
-                else if (symbol.IsVirtual)
-                {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
+                    modifiers.Add("readonly");
                 }
             }
             if (symbol.GetMethod != null)
             {
                 var getMethodVisiblity = GetVisiblity(symbol.GetMethod.DeclaredAccessibility);
+                var readonlyModifier = symbol.GetMethod.IsReadOnly && !isPropertyReadonly ? "readonly " : "";
                 if (propertyVisiblity != null && getMethodVisiblity == null)
                 {
                 }
                 else if (getMethodVisiblity != propertyVisiblity)
                 {
-                    modifiers.Add($"{getMethodVisiblity} get");
+                    modifiers.Add($"{getMethodVisiblity} {readonlyModifier}get");
                 }
                 else
                 {
-                    modifiers.Add("get");
+                    modifiers.Add($"{readonlyModifier}get");
                 }
             }
             if (symbol.SetMethod != null)
             {
                 var setMethodVisiblity = GetVisiblity(symbol.SetMethod.DeclaredAccessibility);
+                var readonlyModifier = symbol.SetMethod.IsReadOnly && !isPropertyReadonly ? "readonly " : "";
                 if (propertyVisiblity != null && setMethodVisiblity == null)
                 {
                 }
                 else if (setMethodVisiblity != propertyVisiblity)
                 {
-                    modifiers.Add($"{setMethodVisiblity} set");
+                    modifiers.Add($"{setMethodVisiblity} {readonlyModifier}set");
                 }
                 else
                 {
-                    modifiers.Add("set");
+                    modifiers.Add($"{readonlyModifier}set");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -237,24 +261,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     modifiers.Add("static");
                 }
+                if (symbol.IsVirtual && !symbol.IsSealed)
+                {
+                    modifiers.Add("virtual");
+                }
                 if (symbol.IsAbstract)
                 {
                     modifiers.Add("abstract");
                 }
+                if (symbol.IsSealed && !symbol.IsVirtual)
+                {
+                    modifiers.Add("sealed");
+                }
                 if (symbol.IsOverride)
                 {
                     modifiers.Add("override");
-                }
-                if (symbol.IsVirtual && symbol.IsSealed)
-                {
-                }
-                else if (symbol.IsVirtual)
-                {
-                    modifiers.Add("virtual");
-                }
-                else if (symbol.IsSealed)
-                {
-                    modifiers.Add("sealed");
                 }
             }
             item.Modifiers[SyntaxLanguage.CSharp] = modifiers;
@@ -262,33 +283,57 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected override string GetSyntaxContent(MemberType typeKind, ISymbol symbol, SymbolVisitorAdapter adapter)
         {
+            string result;
+
             switch (typeKind)
             {
                 case MemberType.Class:
-                    return GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetClassSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Enum:
-                    return GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetEnumSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Interface:
-                    return GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetInterfaceSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Struct:
-                    return GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetStructSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Delegate:
-                    return GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    result = GetDelegateSyntax((INamedTypeSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Method:
-                    return GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetMethodSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Operator:
-                    return GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetOperatorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Constructor:
-                    return GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    result = GetConstructorSyntax((IMethodSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Field:
-                    return GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
+                    result = GetFieldSyntax((IFieldSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Event:
-                    return GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
+                    result = GetEventSyntax((IEventSymbol)symbol, adapter.FilterVisitor);
+                    break;
                 case MemberType.Property:
-                    return GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
+                    result = GetPropertySyntax((IPropertySymbol)symbol, adapter.FilterVisitor);
+                    break;
                 default:
                     return null;
             }
+
+            if ((result != null) && result.Contains("delegate *"))
+            {
+                // This is the expected formatting, but isn't handled in the whitespace normalizer until C# 10
+                result = Regex.Replace(result, @"delegate\s*\*", "delegate*");
+                result = Regex.Replace(result, @"\*unmanaged", "* unmanaged");
+                result = Regex.Replace(result, @"unmanaged\s+<", "unmanaged<");
+                result = Regex.Replace(result, @"(_|\w)\s*\*(,|>)", "$1*$2");
+                result = Regex.Replace(result, @">(_|\w)", "> $1");
+            }
+            return result;
         }
 
         protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
@@ -368,7 +413,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetTypeModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.DelegateInvokeMethod.ReturnType),
+                GetMethodTypeSyntax(symbol.DelegateInvokeMethod),
                 SyntaxFactory.Identifier(symbol.Name),
                 GetTypeParameters(symbol),
                 SyntaxFactory.ParameterList(
@@ -394,7 +439,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.TokenList(
                     GetMemberModifiers(symbol)
                 ),
-                GetTypeSyntax(symbol.ReturnType),
+                GetMethodTypeSyntax(symbol),
                 eii,
                 SyntaxFactory.Identifier(
                     GetMemberName(symbol, filterVisitor)
@@ -428,7 +473,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetMemberModifiers(symbol)
                     ),
                     operatorToken.Value,
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetMethodTypeSyntax(symbol),
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
                             from p in symbol.Parameters
@@ -446,7 +491,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     SyntaxFactory.TokenList(
                         GetMemberModifiers(symbol)
                     ),
-                    GetTypeSyntax(symbol.ReturnType),
+                    GetMethodTypeSyntax(symbol),
                     operatorToken.Value,
                     SyntaxFactory.ParameterList(
                         SyntaxFactory.SeparatedList(
@@ -541,7 +586,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.IndexerDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetPropertyTypeSyntax(symbol),
                     eii,
                     SyntaxFactory.BracketedParameterList(
                         SyntaxFactory.SeparatedList(
@@ -556,18 +601,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result = SyntaxFactory.PropertyDeclaration(
                     GetAttributes(symbol, filterVisitor),
                     SyntaxFactory.TokenList(GetMemberModifiers(symbol)),
-                    GetTypeSyntax(symbol.Type),
+                    GetPropertyTypeSyntax(symbol),
                     eii,
                     SyntaxFactory.Identifier(GetMemberName(symbol, filterVisitor)),
                     SyntaxFactory.AccessorList(SyntaxFactory.List(GetPropertyAccessors(symbol, filterVisitor))))
                     .NormalizeWhitespace()
                     .ToString();
             }
+
+            if (result.Contains("\r\n"))
+            {
+                result = Regex.Replace(result, @"\s*\{\[", "\r\n{\r\n    [");
+                result = Regex.Replace(result, @";\s*\[", ";\r\n    [");
+                result = Regex.Replace(result, @";\s*}", ";\r\n}");
+            }
+
             result = Regex.Replace(result, @"\s*\{\s*get;\s*set;\s*}\s*$", " { get; set; }");
             result = Regex.Replace(result, @"\s*\{\s*get;\s*}\s*$", " { get; }");
             result = Regex.Replace(result, @"\s*\{\s*set;\s*}\s*$", " { set; }");
             result = Regex.Replace(result, @"\s*\{\s*get;\s*protected set;\s*}\s*$", " { get; protected set; }");
             result = Regex.Replace(result, @"\s*\{\s*protected get;\s*set;\s*}\s*$", " { protected get; set; }");
+
             return result;
         }
 
@@ -741,14 +795,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        private static ParameterSyntax GetParameter(IParameterSymbol p, IFilterVisitor filterVisitor, bool isThisParameter = false)
+        private static ParameterSyntax GetParameter(IParameterSymbol parameter, IFilterVisitor filterVisitor, bool isThisParameter = false)
         {
             return SyntaxFactory.Parameter(
-                GetAttributes(p, filterVisitor, true),
-                SyntaxFactory.TokenList(GetParameterModifiers(p, isThisParameter)),
-                GetTypeSyntax(p.Type),
-                SyntaxFactory.Identifier(p.Name),
-                GetDefaultValueClause(p));
+                GetAttributes(parameter, filterVisitor, true),
+                SyntaxFactory.TokenList(GetParameterModifiers(parameter, isThisParameter)),
+                GetTypeSyntax(parameter.Type),
+                SyntaxFactory.Identifier(parameter.Name),
+                GetDefaultValueClause(parameter));
         }
 
         private static IEnumerable<SyntaxToken> GetParameterModifiers(IParameterSymbol parameter, bool isThisParameter)
@@ -1050,6 +1104,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((ulong)value));
+                case SpecialType.System_IntPtr:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((int)value));
+                case SpecialType.System_UIntPtr:
+                    return SyntaxFactory.LiteralExpression(
+                        SyntaxKind.NumericLiteralExpression,
+                        SyntaxFactory.Literal((uint)value));
                 case SpecialType.System_Decimal:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
@@ -1229,6 +1291,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
+            if (symbol.TypeKind == TypeKind.Struct)
+            {
+                if (symbol.IsRefLikeType)
+                {
+                    yield return SyntaxFactory.Token(SyntaxKind.RefKeyword);
+                }
+
+                if (symbol.IsReadOnly)
+                {
+                    yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
+                }
+            }
         }
 
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IMethodSymbol symbol)
@@ -1252,21 +1326,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
-            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
+            if (symbol.IsExtern)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.ExternKeyword);
             }
             if (symbol.IsVirtual)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
             }
-            if (symbol.IsOverride)
+            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+            }
+            if (symbol.IsOverride)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+            }
+            if ((symbol.ContainingType.TypeKind == TypeKind.Struct) && symbol.IsReadOnly)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
+            }
+            if (symbol.IsAsync)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.AsyncKeyword);
             }
         }
 
@@ -1294,22 +1380,47 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
-            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
-            {
-                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
-            }
             if (symbol.IsVirtual)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
             }
-            if (symbol.IsOverride)
+            if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
             if (symbol.IsSealed)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
             }
+            if (symbol.IsOverride)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
+            }
+        }
+
+        private static bool IsPropertyReadonly(IPropertySymbol property)
+        {
+            if (property.ContainingType.TypeKind != TypeKind.Struct)
+            {
+                return false;
+            }
+
+            if (property.IsReadOnly)
+            {
+                return true;
+            }
+
+            if (property.GetMethod is null)
+            {
+                return property.SetMethod.IsReadOnly;
+            }
+            
+            if (property.SetMethod is null)
+            {
+                return property.GetMethod.IsReadOnly;
+            }
+            
+            return property.GetMethod.IsReadOnly && property.SetMethod.IsReadOnly;
         }
 
         private static IEnumerable<SyntaxToken> GetMemberModifiers(IPropertySymbol symbol)
@@ -1336,21 +1447,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 yield return SyntaxFactory.Token(SyntaxKind.StaticKeyword);
             }
+            if (symbol.IsVirtual)
+            {
+                yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
+            }
             if (symbol.IsAbstract && symbol.ContainingType.TypeKind != TypeKind.Interface)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.AbstractKeyword);
             }
-            if (symbol.IsVirtual)
+            if (symbol.IsSealed)
             {
-                yield return SyntaxFactory.Token(SyntaxKind.VirtualKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
             }
             if (symbol.IsOverride)
             {
                 yield return SyntaxFactory.Token(SyntaxKind.OverrideKeyword);
             }
-            if (symbol.IsSealed)
+            if (IsPropertyReadonly(symbol))
             {
-                yield return SyntaxFactory.Token(SyntaxKind.SealedKeyword);
+                yield return SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword);
             }
         }
 
@@ -1434,12 +1549,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static IEnumerable<AccessorDeclarationSyntax> GetPropertyAccessors(IPropertySymbol propertySymbol, IFilterVisitor filterVisitor)
         {
-            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword, filterVisitor);
+            var isPropertyReadonly = IsPropertyReadonly(propertySymbol);
+
+            var getAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.GetMethod, SyntaxKind.GetAccessorDeclaration, SyntaxKind.GetKeyword, filterVisitor, isPropertyReadonly);
             if (getAccessor != null)
             {
                 yield return getAccessor;
             }
-            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword, filterVisitor);
+
+            var setAccessor = GetPropertyAccessorCore(propertySymbol, propertySymbol.SetMethod, SyntaxKind.SetAccessorDeclaration, SyntaxKind.SetKeyword, filterVisitor, isPropertyReadonly);
             if (setAccessor != null)
             {
                 yield return setAccessor;
@@ -1448,12 +1566,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static AccessorDeclarationSyntax GetPropertyAccessorCore(
             IPropertySymbol propertySymbol, IMethodSymbol methodSymbol,
-            SyntaxKind kind, SyntaxKind keyword, IFilterVisitor filterVisitor)
+            SyntaxKind kind, SyntaxKind keyword, IFilterVisitor filterVisitor, bool isPropertyReadonly)
         {
             if (methodSymbol == null)
             {
                 return null;
             }
+
+            var modifiers = new SyntaxTokenList();
+
+            if (methodSymbol.IsReadOnly && !isPropertyReadonly)
+            {
+                modifiers = modifiers.Add(SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword));
+            }
+
             switch (methodSymbol.DeclaredAccessibility)
             {
                 case Accessibility.Protected:
@@ -1463,7 +1589,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            new SyntaxTokenList(),
+                            modifiers,
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1473,7 +1599,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         return SyntaxFactory.AccessorDeclaration(
                             kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
+                            modifiers.Add(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1481,7 +1607,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case Accessibility.Public:
                     return SyntaxFactory.AccessorDeclaration(kind,
                         GetAttributes(methodSymbol, filterVisitor),
-                        new SyntaxTokenList(),
+                        modifiers,
                         SyntaxFactory.Token(keyword),
                         (BlockSyntax)null,
                         SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1490,7 +1616,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         return SyntaxFactory.AccessorDeclaration(kind,
                             GetAttributes(methodSymbol, filterVisitor),
-                            new SyntaxTokenList(),
+                            modifiers,
                             SyntaxFactory.Token(keyword),
                             (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -1502,6 +1628,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static string RemoveBraces(string text)
         {
             return BracesRegex.Replace(text, string.Empty);
+        }
+
+        private static TypeSyntax GetRefType(TypeSyntax typeSyntax, RefKind refKind)
+        {
+            if (refKind == RefKind.Ref)
+            {
+                typeSyntax = SyntaxFactory.RefType(
+                    SyntaxFactory.Token(SyntaxKind.RefKeyword),
+                    typeSyntax
+                );
+            }
+            else if (refKind == RefKind.RefReadOnly)
+            {
+                typeSyntax = SyntaxFactory.RefType(
+                    SyntaxFactory.Token(SyntaxKind.RefKeyword),
+                    SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword),
+                    typeSyntax
+                );
+            }
+
+            return typeSyntax;
+        }
+
+        private static TypeSyntax GetMethodTypeSyntax(IMethodSymbol method)
+        {
+            var typeSyntax = GetTypeSyntax(method.ReturnType);
+            return GetRefType(typeSyntax, method.RefKind);
+        }
+
+        private static TypeSyntax GetPropertyTypeSyntax(IPropertySymbol property)
+        {
+            var typeSyntax = GetTypeSyntax(property.Type);
+            return GetRefType(typeSyntax, property.RefKind);
         }
 
         private static TypeSyntax GetTypeSyntax(ITypeSymbol type)
