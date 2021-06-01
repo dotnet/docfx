@@ -98,6 +98,7 @@ jobs:
       inputs:
         packageType: sdk
         version: $(dotnetVersion)
+        performMultiLevelLookup: true
 
     - download: current
       displayName: Download RegressionTest binary
