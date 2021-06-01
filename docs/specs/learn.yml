@@ -1575,3 +1575,93 @@ outputs:
         }
       }
     }
+---
+# Validate if jupyter notebook points to insecure link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "SecureLinks",
+            "message": "Link '{0}' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.",
+            "code": "insecure-link",
+            "severity": "WARNING",
+            "contentTypes": ["moduleunit"],
+            "domains": [
+              "microsoft.com",
+              "office.com",
+              "msdn.com",
+              "aka.ms",
+              "visualstudio.com",
+              "azure.com",
+              "technet.com",
+              "githubusercontent.com"
+            ]
+          }
+        ]
+      }
+    }
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"}
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: http://raw.githubusercontent.com/test.ipynb
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"insecure-link","message":"Link 'http://raw.githubusercontent.com/test.ipynb' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":54}
+---
+# Validate if jupyter notebook key missing paired attribute sandbox, or notebook and tasks coexist
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependencies": {
+        "notebook": {
+          "required": ["sandbox"],
+          "precludes": [["notebook", "tasks"]]
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    tasks: task_a
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"missing-attribute","message":"Missing required attribute: 'sandbox'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"error","code":"precluded-attributes","message": "Only one of the following attributes can exist: 'notebook', 'tasks'.","file":"a.yml","line":2,"end_line":2,"column":1,"end_column":1}
+---
+# Validate if sandbox value set to true when jupyter notebook is present
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependencies": {
+        "notebook": {
+          "properties": { "sandbox": { "enum": [true] } },
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    sandbox: false
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"invalid-value","message":"Invalid value for 'sandbox': 'False'.","file":"a.yml","line":3,"end_line":3,"column":10,"end_column":15}

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
 {
@@ -21,6 +22,7 @@ namespace Microsoft.Docs.Build
         private readonly TemplateEngine _templateEngine;
         private readonly FileLinkMapBuilder _fileLinkMapBuilder;
         private readonly MetadataProvider _metadataProvider;
+        private readonly ContentValidator _contentValidator;
 
         private readonly Scoped<ConcurrentHashSet<FilePath>> _additionalResources = new();
 
@@ -35,7 +37,8 @@ namespace Microsoft.Docs.Build
             XrefResolver xrefResolver,
             TemplateEngine templateEngine,
             FileLinkMapBuilder fileLinkMapBuilder,
-            MetadataProvider metadataProvider)
+            MetadataProvider metadataProvider,
+            ContentValidator contentValidator)
         {
             _config = config;
             _buildOptions = buildOptions;
@@ -48,6 +51,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _metadataProvider = metadataProvider;
+            _contentValidator = contentValidator;
         }
 
         public (Error? error, FilePath? file) ResolveContent(
@@ -74,7 +78,7 @@ namespace Microsoft.Docs.Build
         }
 
         public (Error? error, string link, FilePath? file) ResolveLink(
-            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
+            SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null)
         {
             if (href.Value.StartsWith("xref:"))
             {
@@ -86,7 +90,11 @@ namespace Microsoft.Docs.Build
                 return (xrefError, resolvedHref ?? "", declaringFile);
             }
 
-            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(href, referencingFile, inclusionRoot);
+            var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(
+                href,
+                referencingFile,
+                inclusionRoot,
+                linkNode);
 
             inclusionRoot ??= referencingFile;
             if (!isCrossReference)
@@ -116,7 +124,7 @@ namespace Microsoft.Docs.Build
         public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
 
         private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
-            SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot)
+            SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot, LinkNode? linkNode)
         {
             var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
             var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
@@ -126,6 +134,7 @@ namespace Microsoft.Docs.Build
                 return (error, "", fragment, linkType, null, false);
             }
 
+            ValidateLink(inclusionRoot, linkNode);
             if (linkType == LinkType.External)
             {
                 var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
@@ -314,6 +323,16 @@ namespace Microsoft.Docs.Build
             }
 
             return default;
+        }
+
+        private void ValidateLink(FilePath file, LinkNode? node)
+        {
+            if (node is null)
+            {
+                return;
+            }
+
+            _contentValidator.ValidateLink(file, node);
         }
     }
 }
