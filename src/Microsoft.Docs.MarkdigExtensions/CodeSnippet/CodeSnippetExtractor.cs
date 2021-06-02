@@ -13,7 +13,7 @@ namespace Microsoft.Docs.MarkdigExtensions
     {
         public const string TagNamePlaceHolder = "{tagname}";
 
-        private static readonly Regex s_tagnameFormat = new Regex(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex s_tagnameFormat = new(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly string _startLineTemplate;
         private readonly string _endLineTemplate;
@@ -21,9 +21,9 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
         {
-            this._startLineTemplate = startLineTemplate;
-            this._endLineTemplate = endLineTemplate;
-            this._isEndLineContainsTagName = isEndLineContainsTagName;
+            _startLineTemplate = startLineTemplate;
+            _endLineTemplate = endLineTemplate;
+            _isEndLineContainsTagName = isEndLineContainsTagName;
         }
 
         public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)

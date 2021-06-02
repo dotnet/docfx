@@ -411,8 +411,8 @@ namespace Microsoft.Docs.Build
             suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                href == null ? null : new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                uid == null ? null : new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
