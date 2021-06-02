@@ -205,7 +205,6 @@ namespace Microsoft.Docs.Build
             ValidateRequired(schema, propertyPath, map, errors);
             ValidateStrictRequired(schema, propertyPath, map, errors);
             ValidateDependentSchemas(schema, propertyPath, map, errors, schemaMap);
-            ValidateDependencies(schema, propertyPath, map, errors, schemaMap);
             ValidateEither(schema, propertyPath, map, errors);
             ValidatePrecludes(schema, propertyPath, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, propertyPath, "", "", null, null, map, errors);
@@ -441,34 +440,7 @@ namespace Microsoft.Docs.Build
 
         private void ValidateDependentSchemas(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            foreach (var (key, (propertyNames, subschema)) in schema.DependentSchemas)
-            {
-                if (IsStrictContain(map, key))
-                {
-                    if (propertyNames != null)
-                    {
-                        foreach (var otherKey in propertyNames)
-                        {
-                            if (!IsStrictContain(map, otherKey))
-                            {
-                                errors.Add(Errors.JsonSchema.MissingPairedAttribute(
-                                    JsonUtility.GetSourceInfo(map),
-                                    JsonUtility.AddToPropertyPath(propertyPath, key),
-                                    JsonUtility.AddToPropertyPath(propertyPath, otherKey)));
-                            }
-                        }
-                    }
-                    else if (subschema != null)
-                    {
-                        Validate(subschema, propertyPath, map, errors, schemaMap);
-                    }
-                }
-            }
-        }
-
-        private void ValidateDependencies(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
-        {
-            foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
+            foreach (var (key, (propertyNames, subschema)) in schema.DependentSchemas.Concat(schema.Dependencies))
             {
                 if (IsStrictContain(map, key))
                 {
