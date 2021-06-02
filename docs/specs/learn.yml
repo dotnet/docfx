@@ -198,7 +198,7 @@ outputs:
     {
       "aggregated_file_map_items": {
         "module1.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "module1.yml",
               "to_file_path": "achievement.yml",
@@ -217,7 +217,7 @@ outputs:
           ]
         },
         "module2.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "module2.yml",
               "to_file_path": "achievement.yml",
@@ -231,7 +231,7 @@ outputs:
           ]
         },
         "path.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "path.yml",
               "to_file_path": "achievement.yml",
@@ -346,7 +346,7 @@ outputs:
     {
       "aggregated_file_map_items": {
         "module1.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "module1.yml",
               "to_file_path": "unit1.yml",
@@ -355,7 +355,7 @@ outputs:
           ]
         },
         "module2.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "module2.yml",
               "to_file_path": "module1.yml",
@@ -369,7 +369,7 @@ outputs:
           ]
         },
         "path.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "path.yml",
               "to_file_path": "module1.yml",
@@ -378,7 +378,7 @@ outputs:
           ]
         },
         "patha.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "patha.yml",
               "to_file_path": "module1.yml",
@@ -1556,7 +1556,7 @@ outputs:
     {
       "aggregated_file_map_items": {
         "path.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "path.yml",
               "to_file_path": "b-module.yml",
@@ -1565,7 +1565,7 @@ outputs:
           ]
         },
         "c-module.yml": {
-          "dependencies": [
+          "dependentSchemas": [
             {
               "from_file_path": "c-module.yml",
               "to_file_path": "b-unit.yml",
