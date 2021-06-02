@@ -1627,7 +1627,7 @@ inputs:
         "notebook" : {"type": "string", "contentType": "Href"},
         "sandbox": {"type": "boolean"}
       },
-      "dependencies": {
+      "dependentSchemas": {
         "notebook": {
           "required": ["sandbox"],
           "precludes": [["notebook", "tasks"]]
@@ -1652,7 +1652,7 @@ inputs:
         "notebook" : {"type": "string", "contentType": "Href"},
         "sandbox": {"type": "boolean"}
       },
-      "dependencies": {
+      "dependentSchemas": {
         "notebook": {
           "properties": { "sandbox": { "enum": [true] } },
         }

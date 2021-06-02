@@ -204,6 +204,7 @@ namespace Microsoft.Docs.Build
         {
             ValidateRequired(schema, propertyPath, map, errors);
             ValidateStrictRequired(schema, propertyPath, map, errors);
+            ValidateDependentSchemas(schema, propertyPath, map, errors, schemaMap);
             ValidateDependencies(schema, propertyPath, map, errors, schemaMap);
             ValidateEither(schema, propertyPath, map, errors);
             ValidatePrecludes(schema, propertyPath, map, errors);
@@ -434,6 +435,33 @@ namespace Microsoft.Docs.Build
                 else if (!schema.Enum.Contains(token, JsonUtility.DeepEqualsComparer))
                 {
                     errors.Add(Errors.JsonSchema.InvalidValue(JsonUtility.GetSourceInfo(token), propertyPath, token));
+                }
+            }
+        }
+
+        private void ValidateDependentSchemas(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
+        {
+            foreach (var (key, (propertyNames, subschema)) in schema.DependentSchemas)
+            {
+                if (IsStrictContain(map, key))
+                {
+                    if (propertyNames != null)
+                    {
+                        foreach (var otherKey in propertyNames)
+                        {
+                            if (!IsStrictContain(map, otherKey))
+                            {
+                                errors.Add(Errors.JsonSchema.MissingPairedAttribute(
+                                    JsonUtility.GetSourceInfo(map),
+                                    JsonUtility.AddToPropertyPath(propertyPath, key),
+                                    JsonUtility.AddToPropertyPath(propertyPath, otherKey)));
+                            }
+                        }
+                    }
+                    else if (subschema != null)
+                    {
+                        Validate(subschema, propertyPath, map, errors, schemaMap);
+                    }
                 }
             }
         }
