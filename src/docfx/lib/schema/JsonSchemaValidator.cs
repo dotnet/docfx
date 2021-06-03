@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
         {
             ValidateRequired(schema, propertyPath, map, errors);
             ValidateStrictRequired(schema, propertyPath, map, errors);
-            ValidateDependencies(schema, propertyPath, map, errors, schemaMap);
+            ValidateDependentSchemas(schema, propertyPath, map, errors, schemaMap);
             ValidateEither(schema, propertyPath, map, errors);
             ValidatePrecludes(schema, propertyPath, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, propertyPath, "", "", null, null, map, errors);
@@ -438,9 +438,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDependencies(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
+        private void ValidateDependentSchemas(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
+            foreach (var (key, (propertyNames, subschema)) in schema.DependentSchemas.Concat(schema.Dependencies))
             {
                 if (IsStrictContain(map, key))
                 {
