@@ -236,6 +236,16 @@ namespace Microsoft.Docs.Build
         [InlineData("false", "[]",
             "{'message_severity':'warning','code':'boolean-schema-failed','message':'Boolean schema validation failed for ''.','line':1,'column':1}")]
 
+        // dependencies validation
+        [InlineData("{'dependencies': {}}", "{}", "")]
+        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+
+        // dependencies as schema
+        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
+        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','line':1,'column':1}")]
+
         // dependentSchemas validation
         [InlineData("{'dependentSchemas': {}}", "{}", "")]
         [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
