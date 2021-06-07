@@ -43,9 +43,10 @@ steps:
     TOKEN: $(ServiceAccountGithubToken)
 
 - task: UseDotNet@2
-  displayName: 'Use .NET Core for ESRP task'
+  displayName: 'Install .NET Core sdk required for ESRPCodeSigning'
   inputs:
-    version: 2.1.0
+    packageType: sdk
+    version: '2.1.811'
 
 - task: EsrpCodeSigning@1
   displayName: Sign docfx executables and dlls
