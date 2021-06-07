@@ -45,7 +45,6 @@ steps:
 - task: UseDotNet@2
   displayName: 'Use .NET Core for ESRP task'
   inputs:
-    packageType: runtime
     version: 2.1.0
 
 - task: EsrpCodeSigning@1
