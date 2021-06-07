@@ -17,7 +17,6 @@ $GulpCommand="${DefaultTemplate}node_modules/gulp/bin/gulp"
 
 Set-Location "$DefaultTemplate"
 npm install $logLevelParam
-node ./node_modules/bower/bin/bower install $logLevelParam
 node "$GulpCommand"
 
 Set-Location "$TemplateHome"
