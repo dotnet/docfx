@@ -11,6 +11,18 @@ variables:
 
 steps:
 
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK required for ESRPCodeSigning'
+  inputs:
+    packageType: sdk
+    version: '2.1.811'
+
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK required for docfx'
+  inputs:
+    packageType: sdk
+    version: '5.0.100'
+
 - task: NodeTool@0
   displayName: 'Use Node 8.x'
   inputs:
