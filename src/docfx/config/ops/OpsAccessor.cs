@@ -77,14 +77,14 @@ namespace Microsoft.Docs.Build
             return JsonConvert.DeserializeAnonymousType(response, new { links = new[] { "" } })?.links ?? Array.Empty<string>();
         }
 
-        public Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple)
+        public Task<string> GetMarkdownValidationRules((string repositoryUrl, string branch) tuple, bool fetchFullRules)
         {
-            return FetchValidationRules($"/route/validationmgt/rulesets/contentrules", tuple.repositoryUrl, tuple.branch);
+            return FetchValidationRules($"/rulesets/contentrules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
         }
 
-        public Task<string> GetBuildValidationRules((string repositoryUrl, string branch) tuple)
+        public Task<string> GetBuildValidationRules((string repositoryUrl, string branch) tuple, bool fetchFullRules)
         {
-            return FetchValidationRules($"/route/validationmgt/rulesets/buildrules", tuple.repositoryUrl, tuple.branch);
+            return FetchValidationRules($"/rulesets/buildrules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
         }
 
         public Task<string> GetAllowlists(DocsEnvironment environment = DocsEnvironment.Prod)
@@ -98,9 +98,9 @@ namespace Microsoft.Docs.Build
             return Fetch("https://docs.microsoft.com/api/resources/sandbox/verify");
         }
 
-        public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple)
+        public async Task<string> GetMetadataSchema((string repositoryUrl, string branch) tuple, bool fetchFullRules)
         {
-            var metadataRules = FetchValidationRules($"/route/validationmgt/rulesets/metadatarules", tuple.repositoryUrl, tuple.branch);
+            var metadataRules = FetchValidationRules($"/rulesets/metadatarules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
             var allowlists = GetAllowlists();
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
@@ -108,12 +108,12 @@ namespace Microsoft.Docs.Build
 
         public Task<string> GetRegressionAllContentRules()
         {
-            return FetchValidationRules("/route/validationmgt/rulesets/contentrules?name=_regression_all_", environment: DocsEnvironment.PPE);
+            return FetchValidationRules("/rulesets/contentrules?name=_regression_all_", fetchFullRules: true, environment: DocsEnvironment.PPE);
         }
 
         public async Task<string> GetRegressionAllMetadataSchema()
         {
-            var metadataRules = FetchValidationRules("/route/validationmgt/rulesets/metadatarules?name=_regression_all_", environment: DocsEnvironment.PPE);
+            var metadataRules = FetchValidationRules("/rulesets/metadatarules?name=_regression_all_", fetchFullRules: true, environment: DocsEnvironment.PPE);
             var allowlists = GetAllowlists(DocsEnvironment.PPE);
 
             return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
@@ -121,7 +121,7 @@ namespace Microsoft.Docs.Build
 
         public Task<string> GetRegressionAllBuildRules()
         {
-            return FetchValidationRules("/route/validationmgt/rulesets/buildrules?name=_regression_all_", environment: DocsEnvironment.PPE);
+            return FetchValidationRules("/rulesets/buildrules?name=_regression_all_", fetchFullRules: true, environment: DocsEnvironment.PPE);
         }
 
         public async Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type)
@@ -148,25 +148,18 @@ namespace Microsoft.Docs.Build
                 middleware: BuildMiddleware());
         }
 
-        private async Task<string> FetchValidationRules(string urlPath, string repositoryUrl = "", string branch = "", DocsEnvironment? environment = null)
+        private async Task<string> FetchValidationRules(
+            string urlPath,
+            bool fetchFullRules,
+            string repositoryUrl = "",
+            string branch = "",
+            DocsEnvironment? environment = null)
         {
             try
             {
-                return await FetchBuild(urlPath, environment: environment, middleware: async (request, next) =>
-                {
-                    request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
-                    request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
-
-                    var response = await next(request);
-
-                    if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
-                        Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
-                    {
-                        _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
-                    }
-
-                    return response;
-                });
+                return fetchFullRules
+                        ? await FetchBuild("/route/validationmgt" + urlPath, environment: environment, middleware: ValidationMiddleware)
+                        : await Fetch(PublicValidationApi(environment) + urlPath, middleware: ValidationMiddleware);
             }
             catch (Exception ex)
             {
@@ -175,6 +168,22 @@ namespace Microsoft.Docs.Build
                 Log.Write(ex);
                 _errors.Add(Errors.System.ValidationIncomplete());
                 return "{}";
+            }
+
+            async Task<HttpResponseMessage> ValidationMiddleware(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
+            {
+                request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryUrl", repositoryUrl);
+                request.Headers.TryAddWithoutValidation("X-Metadata-RepositoryBranch", branch);
+
+                var response = await next(request);
+
+                if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
+                    Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
+                {
+                    _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion)));
+                }
+
+                return response;
             }
         }
 
@@ -260,6 +269,17 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
                 DocsEnvironment.PPE => "https://buildapi.ppe.docs.microsoft.com",
                 DocsEnvironment.Perf => "https://op-build-test.azurewebsites.net",
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
+        private static string PublicValidationApi(DocsEnvironment? environment = null)
+        {
+            return (environment ?? DocsEnvironment) switch
+            {
+                DocsEnvironment.Prod => "https://docsvalidation-public.azurefd.net",
+                DocsEnvironment.PPE => "https://docsvalidation-pubdev.azurefd.net",
+                DocsEnvironment.Perf => "https://docsvalidation-pubdev.azurefd.net",
                 _ => throw new InvalidOperationException(),
             };
         }
