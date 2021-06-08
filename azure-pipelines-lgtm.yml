@@ -1,0 +1,65 @@
+# This YAML is used for the docfx v2 LGTM CI
+
+pool:
+  name: 1ES-Pool
+  demands: ImageOverride -equals Win2019VS2019
+
+variables:
+- group: docfx-v2-pipeline-kv
+- name: NUGETEXE
+  value: nuget
+
+steps:
+
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK required for docfx'
+  inputs:
+    packageType: sdk
+    version: '5.0.100'
+
+- task: CredScan@2
+  displayName: Security - CredScan
+  inputs:
+    toolMajorVersion: 'V2'
+
+- task: Semmle@0
+  displayName: Security - LGTM
+  inputs:
+    toolVersion: 'LatestPreRelease'
+    sourceCodeDirectory: '$(Build.SourcesDirectory)'
+    language: 'csharp'
+    cleanupBuildCommands: 'dotnet clean'
+    buildCommands: 'dotnet build docfx.sln'
+    querySuite: 'Required'
+    timeout: '7200'
+    ram: '16384'
+    addProjectDirToScanningExclusionList: true
+
+- task: SdtReport@1
+  displayName: Security - SdtReport
+  inputs:
+    CredScan: true
+    ToolLogsNotFoundAction: 'Standard'
+
+- task: PublishSecurityAnalysisLogs@2
+  displayName: Security - Publish Scan Results
+  inputs:
+    ArtifactName: 'CodeAnalysisLogs'
+    ArtifactType: 'Container'
+    AllTools: true
+    ToolLogsNotFoundAction: 'Standard'
+
+- task: PostAnalysis@1
+  displayName: Security - PostAnalysis
+  inputs:
+    CredScan: true
+    ToolLogsNotFoundAction: 'Standard'
+
+- task: TSAUpload@1
+  inputs:
+    tsaVersion: 'TsaV2'
+    codebase: 'Existing'
+    tsaEnvironment: 'PROD'
+    codeBaseName: 'Docs_default'
+    uploadCredScan: true
+    uploadAsync: true
