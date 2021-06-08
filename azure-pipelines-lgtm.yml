@@ -1,10 +1,12 @@
 # This YAML is used for the docfx v2 LGTM CI (https://dev.azure.com/ceapex/Engineering/_build?definitionId=3920)
 
 trigger:
+  batch: true
   branches:
     include:
     - dev
     - main
+pr: none
 
 pool:
   name: 1ES-Pool
