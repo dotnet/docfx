@@ -459,7 +459,14 @@ namespace Microsoft.Docs.Build
                     }
                     else if (subschema != null)
                     {
-                        Validate(subschema, propertyPath, map, errors, schemaMap);
+                        var subschemaErrors = new List<Error>();
+                        Validate(subschema, propertyPath, map, subschemaErrors, schemaMap);
+                        if (subschemaErrors.Count <= 0)
+                        {
+                            return;
+                        }
+
+                        errors.Add(Errors.JsonSchema.DependentSchemasFailed(JsonUtility.GetSourceInfo(map), JsonUtility.AddToPropertyPath(propertyPath, key)));
                     }
                 }
             }

@@ -618,6 +618,13 @@ namespace Microsoft.Docs.Build
                 => new(ErrorLevel.Warning, "not-failed", $"Invalid value for '{propName}': '{value}'.", source, propName);
 
             /// <summary>
+            /// DependentSchemas validation error
+            /// </summary>
+            /// Behavior: ✔️ Message: ❌
+            public static Error DependentSchemasFailed(SourceInfo? source, string propName)
+                => new(ErrorLevel.Warning, "dependentSchemas-failed", $"DependentSchemas validation failed for attribute: '{propName}'.", source, propName);
+
+            /// <summary>
             /// A required attribute is missing.
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
