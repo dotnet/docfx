@@ -463,7 +463,7 @@ namespace Microsoft.Docs.Build
                         Validate(subschema, propertyPath, map, subschemaErrors, schemaMap);
                         if (subschemaErrors.Count <= 0)
                         {
-                            return;
+                            continue;
                         }
 
                         errors.Add(Errors.JsonSchema.DependentSchemasFailed(JsonUtility.GetSourceInfo(map), JsonUtility.AddToPropertyPath(propertyPath, key)));
