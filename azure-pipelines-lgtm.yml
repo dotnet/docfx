@@ -9,21 +9,9 @@ trigger:
 pr: none
 
 pool:
-  name: 1ES-Pool
-  demands: ImageOverride -equals Win2019VS2019
-
-variables:
-- group: docfx-v2-pipeline-kv
-- name: NUGETEXE
-  value: nuget
+  vmImage: 'windows-latest'
 
 steps:
-
-- task: UseDotNet@2
-  displayName: 'Install .NET Core SDK required for docfx'
-  inputs:
-    packageType: sdk
-    version: '5.0.100'
 
 - task: CredScan@2
   displayName: Security - CredScan
