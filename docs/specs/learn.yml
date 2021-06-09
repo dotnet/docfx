@@ -1653,7 +1653,7 @@ inputs:
       },
       "dependentSchemas": {
         "notebook": {
-          "properties": { "sandbox": { "enum": [true] } },
+          "properties": { "sandbox": { "const": true } },
         }
       }
     }
