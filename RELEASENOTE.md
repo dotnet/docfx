@@ -1,8 +1,10 @@
 Version Notes (Current Version: v2.58)
 =======================================
 
-v2.58(Pre-release)
+v2.58
 -----------
+1. Basic C# 9 support. Thanks @tannergooding! (#6805)
+2. Support VS Visual Studio 16.10 by using latest Microsoft.Build.Locator 1.4.1. Thanks @jamiehankins! (#4880, #7406)
 
 v2.57.2
 -----------
