@@ -42,7 +42,7 @@
     <!-- This package was transitively referenced by OmniSharp server, stop propagating it to other projects by explicitly marking it as private assets -->
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.10.56" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.203" PrivateAssets="all" />
-    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-beta-00558-82cdaba" PrivateAssets="all" />
+    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-beta-00050-58e7f2f" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
