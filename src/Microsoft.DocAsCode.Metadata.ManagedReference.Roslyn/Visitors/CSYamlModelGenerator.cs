@@ -924,15 +924,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static ExpressionSyntax GetLiteralExpression(object value, ITypeSymbol type)
         {
+            bool isNullable = type.GetDocumentationCommentId()?.StartsWith("T:System.Nullable{") == true;
             if (value == null)
             {
-                if (type.IsValueType)
+                if (type.IsValueType && !isNullable)
                 {
                     return SyntaxFactory.DefaultExpression(GetTypeSyntax(type));
                 }
                 return SyntaxFactory.LiteralExpression(
                     SyntaxKind.NullLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NullKeyword));
+            }
+            if (isNullable)
+            {
+                var namedType = (INamedTypeSymbol)type;
+                type = namedType.TypeArguments[0];
             }
             var result = GetLiteralExpressionCore(value, type);
             if (result != null)
