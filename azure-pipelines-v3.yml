@@ -50,7 +50,8 @@ jobs:
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
-      DOCS_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
+      DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+      DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
 
   - task: reportgenerator@4
@@ -126,7 +127,6 @@ jobs:
         AZURE_DEVOPS_TOKEN: $(vsoTestToken)
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
-        DOCS_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
         MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
 
 - job: WarmUp
