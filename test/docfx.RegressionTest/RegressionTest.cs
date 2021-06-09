@@ -123,6 +123,7 @@ namespace Microsoft.Docs.Build
                     maxFileInfos = 10000,
                     updateTimeAsCommitBuildTime = true,
                     githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
+                    microsoftGraphClientId = "b799e059-9dd8-4839-a39c-96f7531e55e2",
                     secrets = new
                     {
                         http,
