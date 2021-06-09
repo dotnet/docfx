@@ -622,7 +622,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error DependentSchemasFailed(SourceInfo? source, string propName)
-                => new(ErrorLevel.Warning, "dependentSchemas-failed", $"DependentSchemas validation failed for attribute: '{propName}'.", source, propName);
+                => new(ErrorLevel.Warning, "dependent-schemas-failed", $"DependentSchemas validation failed for attribute: '{propName}'.", source, propName);
 
             /// <summary>
             /// A required attribute is missing.

@@ -244,7 +244,7 @@ namespace Microsoft.Docs.Build
         // dependencies as schema
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
-            "{'message_severity':'warning','code':'dependentSchemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
+            "{'message_severity':'warning','code':'dependent-schemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
 
         // dependentSchemas validation
         [InlineData("{'dependentSchemas': {}}", "{}", "")]
@@ -264,7 +264,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{}", "")]
         [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
-            "{'message_severity':'warning','code':'dependentSchemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
+            "{'message_severity':'warning','code':'dependent-schemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
 
         // either validation
         [InlineData("{'either': []}", "{}", "")]
