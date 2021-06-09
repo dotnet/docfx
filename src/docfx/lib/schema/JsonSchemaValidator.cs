@@ -466,7 +466,9 @@ namespace Microsoft.Docs.Build
                             continue;
                         }
 
-                        errors.Add(Errors.JsonSchema.DependentSchemasFailed(JsonUtility.GetSourceInfo(map[key] ?? map), JsonUtility.AddToPropertyPath(propertyPath, key)));
+                        errors.Add(Errors.JsonSchema.DependentSchemasFailed(
+                            JsonUtility.GetSourceInfo(map[key] ?? map),
+                            JsonUtility.AddToPropertyPath(propertyPath, key)));
                     }
                 }
             }
