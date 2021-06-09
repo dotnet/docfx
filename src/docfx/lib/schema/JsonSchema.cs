@@ -189,7 +189,14 @@ namespace Microsoft.Docs.Build
         public string[] Required { get; init; } = Array.Empty<string>();
 
         /// <summary>
-        /// Properties that are used to indicate the dependencies between fields
+        /// Split from the dependencies in draft 2019-09
+        /// </summary>
+        [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
+        public Dictionary<string, (string[] propertyNames, JsonSchema schema)> DependentSchemas { get; }
+         = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
+
+        /// <summary>
+        /// [Obsolete] Properties that are used to indicate the dependencies between fields
         /// </summary>
         [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
         public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }

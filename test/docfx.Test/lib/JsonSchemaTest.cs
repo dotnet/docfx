@@ -238,22 +238,32 @@ namespace Microsoft.Docs.Build
 
         // dependencies validation
         [InlineData("{'dependencies': {}}", "{}", "")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': null}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': ''}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
-        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','line':1,'column':11}")]
 
         // dependencies as schema
-        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
+            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','line':1,'column':1}")]
+
+        // dependentSchemas validation
+        [InlineData("{'dependentSchemas': {}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : 1}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : '1', 'key2': null}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : '1', 'key2': ''}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'properties': {'keys': {'dependentSchemas': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
+        [InlineData("{'properties': {'keys': {'dependentSchemas': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','line':1,'column':11}")]
+
+        // dependentSchemas as schema
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
             "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','line':1,'column':1}")]
 
         // either validation
@@ -375,7 +385,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'suggestion','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','line':1,'column':10}")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'keys.key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'.','line':1,'column':11}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
             "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]

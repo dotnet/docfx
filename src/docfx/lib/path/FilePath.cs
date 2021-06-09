@@ -98,14 +98,6 @@ namespace Microsoft.Docs.Build
             return new FilePath(FileOrigin.Generated, path, default, default, default);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether it's an experimental content
-        /// </summary>
-        public bool IsExperimental()
-        {
-            return System.IO.Path.GetFileNameWithoutExtension(Path).EndsWith(".experimental", PathUtility.PathComparison);
-        }
-
         public override string ToString()
         {
             var tags = "";

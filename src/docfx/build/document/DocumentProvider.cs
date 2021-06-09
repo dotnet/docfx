@@ -176,7 +176,7 @@ namespace Microsoft.Docs.Build
             var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);
+            var canonicalUrl = GetCanonicalUrl(siteUrl);
             var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
             return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
@@ -247,13 +247,8 @@ namespace Microsoft.Docs.Build
         /// In docs, canonical URL is later overwritten by template JINT code.
         /// TODO: need to handle the logic difference when template code is removed.
         /// </summary>
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, RenderType renderType)
+        private string GetCanonicalUrl(string siteUrl)
         {
-            if (isExperimental)
-            {
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, renderType);
-            }
-
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
         }
 

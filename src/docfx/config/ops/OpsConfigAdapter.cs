@@ -19,9 +19,12 @@ namespace Microsoft.Docs.Build
 
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
-        private const string MetadataSchemaApi = "https://ops/metadataschema/";
-        private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-        private const string BuildValidationRulesApi = "https://ops/buildvalidationrules/";
+        private const string PublicMetadataSchemaApi = "https://ops/publicmetadataschema/";
+        private const string PublicMarkdownValidationRulesApi = "https://ops/publicmarkdownvalidationrules/";
+        private const string PublicBuildValidationRulesApi = "https://ops/publicbuildvalidationrules/";
+        private const string FullMetadataSchemaApi = "https://ops/fullmetadataschema/";
+        private const string FullMarkdownValidationRulesApi = "https://ops/fullmarkdownvalidationrules/";
+        private const string FullBuildValidationRulesApi = "https://ops/fullbuildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
         private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
@@ -42,9 +45,12 @@ namespace Microsoft.Docs.Build
                 (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, _ => _opsAccessor.GetMonikerDefinition()),
                 (OpsMetadataApi, _ => GetOpsMetadata()),
-                (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
-                (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
-                (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
+                (PublicMetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (PublicMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (PublicBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (FullMetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url), fetchFullRules: true)),
+                (FullMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
+                (FullBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
@@ -121,12 +127,12 @@ namespace Microsoft.Docs.Build
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 documentUrls,
-                markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
-                buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
+                markdownValidationRules = $"{PublicMarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                buildValidationRules = $"{PublicBuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
                     OpsMetadataApi,
-                    $"{MetadataSchemaApi}{metadataServiceQueryParams}",
+                    $"{PublicMetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
