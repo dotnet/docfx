@@ -22,6 +22,8 @@ namespace Microsoft.Docs.Build
             Environment.SetEnvironmentVariable("DOCFX_HOST_NAME", "docs.com");
             Environment.SetEnvironmentVariable("DOCFX_OUTPUT_TYPE", "Json");
             Environment.SetEnvironmentVariable("DOCFX_URL_TYPE", "Docs");
+            Environment.SetEnvironmentVariable("DOCFX_MICROSOFT_GRAPH_TENANT_ID", "72f988bf-86f1-41af-91ab-2d7cd011db47");
+            Environment.SetEnvironmentVariable("DOCFX_MICROSOFT_GRAPH_CLIENT_ID", "b799e059-9dd8-4839-a39c-96f7531e55e2");
             Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PPE");
 
             TestQuirks.Verbose = true;
