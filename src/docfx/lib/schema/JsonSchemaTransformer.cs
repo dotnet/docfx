@@ -289,7 +289,35 @@ namespace Microsoft.Docs.Build
         private string GetXrefHref(FilePath file, string uid, int uidCount, bool isRootLevel)
         {
             var siteUrl = _documentProvider.GetSiteUrl(file);
-            return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : siteUrl;
+            return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{GetStandardizedBookmark(uid)}") : siteUrl;
+        }
+
+        private static string GetStandardizedBookmark(string uid)
+        {
+#pragma warning disable CA1304 // Specify CultureInfo
+            uid = uid.ToLower();
+#pragma warning restore CA1304 // Specify CultureInfo
+
+            // Remove  ", %, \, ^ and '
+            uid = Regex.Replace(uid, @"[""'%^\\]", "");
+
+            // Character mapping
+            uid =
+                uid.
+                Replace("<", "(").
+                Replace(">", ")").
+                Replace("{", "((").
+                Replace("}", "))");
+
+            // Keep a-z, A-Z, 0-9, "(" and ")", and replace anything else with hyphen "-".
+            uid = Regex.Replace(uid, @"[^a-zA-Z0-9()]", "-");
+
+            // Remove leading, trailing and adjacent hyphens.
+            uid = Regex.Replace(uid, @"^-+", "");
+            uid = Regex.Replace(uid, @"-+$", "");
+            var bookmark = Regex.Replace(uid, @"-+", "-");
+
+            return bookmark.Length <= 100 ? bookmark : $"{bookmark.Substring(0, 100)}-{bookmark.Length}";
         }
 
         private JToken LoadXrefProperty(
@@ -415,12 +443,12 @@ namespace Microsoft.Docs.Build
             {
                 case JsonSchemaContentType.Href:
                     var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
-                        {
-                            HyperLinkType = HyperLinkType.Default,
-                            IsVisible = true,  // trun around to skip 'link-text-missing' validation
-                            UrlLink = stringValue,
-                            SourceInfo = sourceInfo,
-                        });
+                    {
+                        HyperLinkType = HyperLinkType.Default,
+                        IsVisible = true,  // trun around to skip 'link-text-missing' validation
+                        UrlLink = stringValue,
+                        SourceInfo = sourceInfo,
+                    });
 
                     errors.AddIfNotNull(error);
                     return link;

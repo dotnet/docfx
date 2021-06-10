@@ -497,7 +497,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
+    {"conceptual": "<p>Link to <a href=\"a.json#a-b\">a.b</a></p>\n"}
   .xrefmap.json: |
     {
       "references": [{
@@ -1135,13 +1135,13 @@ outputs:
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child.c cccccc</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b aaaaa</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c cccccc</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b aaaaa</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children-c\" data-linktype=\"relative-path\">children.c cccccc</a>
         </p>"
     }
   .xrefmap.json: |
@@ -1160,16 +1160,16 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a"
+                "href": "https://docs.com/docs/a.json#children-a"
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
+                "href": "https://docs.com/docs/a.json#children-b",
                 "a": "children.b aaaaa"
             },
             {
                 "uid": "children.c",
-                "href": "https://docs.com/docs/a.json#children_c",
+                "href": "https://docs.com/docs/a.json#children-c",
                 "child.c": "children.c cccccc"
             }
         ]
@@ -1269,14 +1269,14 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a",
+                "href": "https://docs.com/docs/a.json#children-a",
                 "list": [
                     "1.0"
                 ]
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
+                "href": "https://docs.com/docs/a.json#children-b",
                 "list": [
                     "2.0",
                     "3.0"
@@ -2026,4 +2026,62 @@ outputs:
         {"uid":"a","summary":"<p><a href=\"/docs/c/c\">Title from yaml header c</a> Hello docfx!</p>"},
         {"uid": "c", "href": "https://docs.com/docs/c/c", "name": "Title from yaml header c"}
       ]
+    }
+---
+# standardize bookmarks
+inputs:
+  docfx.yml: |
+  docs/a.yml: |
+    #YamlMime:TestData
+    uid: a
+    array:
+      - uid: A.b
+      - uid: "a b"
+      - uid: 'a"b'
+      - uid: "a%b"
+      - uid: "a^b"
+      - uid: "Dictionary<string, List<int>>*"
+      - uid: a\\b
+      - uid: "a'b'c"
+      - uid: "{a|b_c}"
+      - uid: "***List<string> test(int a`,  string b****c)*****"
+      - uid: "Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})"
+  docs/index.md: |
+    Link to @A.b
+    Link to @"a b"
+    Link to @'a"b'
+    Link to @"a%b"
+    Link to @"a^b"
+    Link to @"Dictionary<string, List<int>>*"
+    Link to @a\\b
+    Link to @"a'b'c"
+    Link to @"{a|b_c}"
+    Link to @"***List<string> test(int a`,  string b****c)*****"
+    Link to @"Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})"
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "renderType": "component",
+      "properties": {
+        "uid": { "contentType": "uid" },
+        "array": {
+          "items": { "$ref": "#" }
+        }
+      }
+    }
+outputs:
+  docs/a.json:
+  docs/index.json: |
+    {
+      "conceptual": "<p>\n
+                    Link to <a href=\"a.json#a-b\" data-linktype=\"relative-path\">A.b</a>\n
+                    Link to <a href=\"a.json#a-b\" data-linktype=\"relative-path\">a b</a>\n
+                    Link to <a href=\"a.json#ab\" data-linktype=\"relative-path\">a&quot;b</a>
+                    Link to <a href=\"a.json#ab\" data-linktype=\"relative-path\">a%b</a>\n
+                    Link to <a href=\"a.json#ab\" data-linktype=\"relative-path\">a^b</a>\n
+                    Link to <a href=\"a.json#dictionary(string-list(int))\" data-linktype=\"relative-path\">Dictionary&lt;string, List&lt;int&gt;&gt;*</a>\n
+                    Link to <a href=\"a.json#ab\" data-linktype=\"relative-path\">a\\\\b</a>\n
+                    Link to <a href=\"a.json#abc\" data-linktype=\"relative-path\">a'b'c</a>\n
+                    Link to <a href=\"a.json#((a-b-c))\" data-linktype=\"relative-path\">{a|b_c}</a>\n
+                    Link to <a href=\"a.json#list(string)-test(int-a-string-b-c)\" data-linktype=\"relative-path\">***List&lt;string&gt; test(int a`,  string b****c)*****</a>\n
+                    Link to <a href=\"a.json#microsoft-streamprocessing-streamable-aggregatebykey-4(microsoft-streamprocessing-istreamable((micro-414\" data-linktype=\"relative-path\">Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})</a></p>"
     }
