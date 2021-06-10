@@ -348,6 +348,31 @@ namespace Microsoft.Docs.Build
                 : $"/{path}";
         }
 
+        public static string StandardizeBookmark(string uid)
+        {
+            uid = uid.ToLowerInvariant();
+
+            uid =
+                uid.
+                Replace("\"", "").
+                Replace("'", "").
+                Replace("%", "").
+                Replace("^", "").
+                Replace("\\", "").
+                Replace("<", "(").
+                Replace(">", ")").
+                Replace("{", "((").
+                Replace("}", "))");
+
+            uid = Regex.Replace(uid, @"[^a-zA-Z0-9()]", "-");
+
+            uid = Regex.Replace(uid, @"^-+", "");
+            uid = Regex.Replace(uid, @"-+$", "");
+            var bookmark = Regex.Replace(uid, @"-+", "-");
+
+            return bookmark.Length <= 100 ? bookmark : $"{bookmark.Substring(0, 100)}";
+        }
+
         private static string ToQueryString(this NameValueCollection collection)
         {
             var result = new StringBuilder("?");

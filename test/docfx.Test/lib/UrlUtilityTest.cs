@@ -197,5 +197,25 @@ namespace Microsoft.Docs.Build
             var result = UrlUtility.RemoveLeadingHostName(url, hostName, removeLocale);
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData("A.b", "a-b")]
+        [InlineData("a b", "a-b")]
+        [InlineData("a\"b", "ab")]
+        [InlineData("a%b", "ab")]
+        [InlineData("a^b", "ab")]
+        [InlineData("a\\b", "ab")]
+        [InlineData("Dictionary<string, List<int>>*", "dictionary(string-list(int))")]
+        [InlineData("a'b'c", "abc")]
+        [InlineData("{a|b_c}", "((a-b-c))")]
+        [InlineData("***List<string> test(int a`,  string b****c)*****", "list(string)-test(int-a-string-b-c)")]
+        [InlineData(
+            "Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})",
+            "microsoft-streamprocessing-streamable-aggregatebykey-4(microsoft-streamprocessing-istreamable((micro")]
+        public static void StandardizeBookmarks(string uid, string expectedBookmark)
+        {
+            var bookmark = UrlUtility.StandardizeBookmark(uid);
+            Assert.Equal(expectedBookmark, bookmark);
+        }
     }
 }
