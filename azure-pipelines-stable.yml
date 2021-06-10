@@ -2,7 +2,7 @@
 
 pool:
   name: 1ES-Pool
-  demands: ImageOverride -equals Win2019VS2019
+  demands: ImageOverride -equals MMS2019
 
 variables:
 - group: docfx-v2-pipeline-kv
