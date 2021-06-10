@@ -31,6 +31,12 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
 
+# Install chocolatey: https://docs.chocolatey.org/en-us/choco/setup#non-administrative-install
+- powershell: |
+    Set-ExecutionPolicy Bypass -Scope Process -Force;
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+  displayName: 'Install Chocolatey for main:release task - publish:chocolatey'
+
 - task: CmdLine@1
   displayName: 'npm install'
   inputs:
