@@ -348,7 +348,7 @@ namespace Microsoft.Docs.Build
                 : $"/{path}";
         }
 
-        public static string StandardizeBookmark(string uid)
+        public static string GetBookmark(string uid)
         {
             uid =
                 uid

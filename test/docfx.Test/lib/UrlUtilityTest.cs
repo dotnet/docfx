@@ -214,7 +214,7 @@ namespace Microsoft.Docs.Build
             "microsoft-streamprocessing-streamable-aggregatebykey-4(microsoft-streamprocessing-istreamable((micro")]
         public static void StandardizeBookmarks(string uid, string expectedBookmark)
         {
-            var bookmark = UrlUtility.StandardizeBookmark(uid);
+            var bookmark = UrlUtility.GetBookmark(uid);
             Assert.Equal(expectedBookmark, bookmark);
         }
     }
