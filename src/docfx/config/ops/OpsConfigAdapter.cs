@@ -141,7 +141,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        private static Task<string> GetOpsMetadata()
+        internal static Task<string> GetOpsMetadata()
         {
             return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"));
         }

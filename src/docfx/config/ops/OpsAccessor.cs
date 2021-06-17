@@ -13,6 +13,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
 
@@ -103,7 +104,16 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules($"/rulesets/metadatarules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
             var allowlists = GetAllowlists();
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            var schema = OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            if (fetchFullRules)
+            {
+                var schemaObj = JObject.Parse(schema);
+                var opsMetadataSchemaObj = JObject.Parse(await OpsConfigAdapter.GetOpsMetadata());
+
+                schemaObj.Merge(opsMetadataSchemaObj, new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Union });
+                schema = schemaObj.ToString();
+            }
+            return schema;
         }
 
         public Task<string> GetRegressionAllContentRules()
