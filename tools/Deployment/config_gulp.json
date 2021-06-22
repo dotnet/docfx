@@ -17,8 +17,6 @@
     "docfxJson": "../../Documentation/docfx.json"
   },
   "azdevops": {
-    "perfUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-perf/nuget/v3/index.json",
-    "internalUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-internal/nuget/v3/index.json",
     "ppeUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json",
     "prodUrl": "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
   },
