@@ -96,24 +96,6 @@ gulp.task("e2eTest:buildDocfxSite", () => {
 
 gulp.task("e2eTest", gulp.series("e2eTest:restoreSeed", "e2eTest:buildSeed", "e2eTest:buildDocfxSite"));
 
-gulp.task("publish:azdevops-perf-login", () => {
-    return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-perf", "-source", config.azdevops["perfUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
-})
-
-gulp.task("publish:azdevops-perf", () => {
-    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["perfUrl"]);
-});
-
-gulp.task("publish:azdevops-internal-login", () => {
-    return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-internal", "-source", config.azdevops["internalUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
-})
-
-gulp.task("publish:azdevops-internal", () => {
-    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Nuget.publishAsync(artifactsFolder, process.env.NUGETEXE, "anything", config.azdevops["internalUrl"]);
-});
-
 gulp.task("publish:azdevops-ppe-login", () => {
     return Common.execAsync(process.env.NUGETEXE, ["sources", "add", "-name", "docs-build-v2-ppe", "-source", config.azdevops["ppeUrl"], "-username", "anything", "-password", process.env.AZDEVOPSPAT]);
 })
@@ -225,7 +207,7 @@ gulp.task("syncBranchCore", () => {
 });
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("dev:build", gulp.series("clean", "build", "e2eTest"));
-gulp.task("dev:release", gulp.series("pack", "publish:azdevops-perf-login", "publish:azdevops-perf", "publish:azdevops-internal-login", "publish:azdevops-internal", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
+gulp.task("dev:release", gulp.series("pack", "publish:azdevops-ppe-login", "publish:azdevops-ppe"));
 
 gulp.task("main:build", gulp.series("clean", "build:release", "e2eTest", "updateGhPage"));
 gulp.task("main:pack", gulp.series("pack"));
