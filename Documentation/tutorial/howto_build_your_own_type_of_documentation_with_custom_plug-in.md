@@ -15,10 +15,10 @@ Goal and limitation
 
 Preparation
 -----------
-1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.7.2.
+1.  Create a new C# class library project in `Visual Studio`, targets .NET Framework 4.7.2 or later.
 
 2.  Add nuget packages:  
-    * `System.Collections.Immutable` with version 1.3.1
+    * `System.Collections.Immutable` with version 1.3.1 or later (if not already included in your .NET Framework target version)
     * `Microsoft.Composition` with version 1.0.31
 
 3.  Add `Microsoft.DocAsCode.Plugins` and `Microsoft.DocAsCode.Common`
@@ -31,7 +31,7 @@ Preparation
 5.  Add a project for converting rtf to html:  
     Clone project [MarkupConverter](https://github.com/mmanela/MarkupConverter), and reference it.
 
-6.  Copy the code file `C#,C++,F#,VB\ParallelExtensionsExtras\TaskSchedulers\StaTaskScheduler.cs` from [ParExtSamples](https://code.msdn.microsoft.com/ParExtSamples)
+6.  Copy the code file `CSharp/parallel/ParallelExtensionsExtras/TaskSchedulers/StaTaskScheduler.cs` from [DotNet Samples](https://github.com/dotnet/samples)
 
 Create a document processor
 ---------------------------
