@@ -10,7 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "del": "^2.0.2",
-    "gulp": "^4.0.0",
+    "gulp": "4.0.2",
     "gulp-concat": "^2.6.0",
     "gulp-copy": "0.0.2",
     "gulp-minify": "^3.1.0",

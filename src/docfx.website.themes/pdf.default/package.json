@@ -11,7 +11,7 @@
   "devDependencies": {
     "bower": "^1.8.0",
     "del": "^2.0.2",
-    "gulp": "^3.9.0",
+    "gulp": "4.0.2",
     "gulp-concat": "^2.6.0",
     "gulp-copy": "0.0.2",
     "gulp-minify-css": "^1.2.1",
