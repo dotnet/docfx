@@ -426,24 +426,15 @@ namespace Microsoft.Docs.Build
                     return link;
 
                 case JsonSchemaContentType.Markdown:
+
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(
-                        errors,
-                        content,
-                        sourceInfo,
-                        MarkdownPipelineType.Markdown,
-                        null,
-                        file.Origin == FileOrigin.Fallback || rootSchema.ContentFallback);
+                    var html = _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.Markdown, null, rootSchema.ContentFallback);
+                    return html;
 
                 case JsonSchemaContentType.InlineMarkdown:
+
                     // todo: use BuildPage.CreateHtmlContent() when we only validate markdown properties' bookmarks
-                    return _markdownEngine.ToHtml(
-                        errors,
-                        content,
-                        sourceInfo,
-                        MarkdownPipelineType.InlineMarkdown,
-                        null,
-                        file.Origin == FileOrigin.Fallback || rootSchema.ContentFallback);
+                    return _markdownEngine.ToHtml(errors, content, sourceInfo, MarkdownPipelineType.InlineMarkdown, null, rootSchema.ContentFallback);
 
                 // TODO: remove JsonSchemaContentType.Html after LandingData is migrated
                 case JsonSchemaContentType.Html:
