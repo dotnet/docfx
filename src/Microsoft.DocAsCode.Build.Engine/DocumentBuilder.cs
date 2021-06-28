@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string commitToSHA = null,
             bool cleanupCacheHistory = false)
         {
-            Logger.LogVerbose("Loading plug-in...");
+            Logger.LogVerbose("Loading plug-ins and post-processors...");
             using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
