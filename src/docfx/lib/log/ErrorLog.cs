@@ -92,6 +92,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (error.Level == ErrorLevel.Error)
                     {
+                        Log.Write(error.ToString());
                         Add(Errors.Logging.FallbackError(config.DefaultLocale));
                     }
                     return;
