@@ -64,7 +64,7 @@ namespace Microsoft.Docs.Build
             var dirname = Path.GetDirectoryName(scriptPath) ?? "";
             var require = new ClrFunctionInstance(engine, "require", Require);
 
-            var func = engine.Execute(script, parserOptions).GetCompletionValue();
+            var func = engine.Evaluate(script, parserOptions);
             func.Invoke(module, exports, dirname, require, MakeObject());
             return _modules[scriptPath] = module.Get("exports");
 
