@@ -1,0 +1,18 @@
+# url:
+\bhttps:.*?\s
+\bhttp:.*?\s
+# uuid:
+\b[0-9A-FA-F]{8}-(?:[0-9A-FA-F]{4}-){3}[0-9A-FA-F]{12}\b
+# hash:
+\b[0-9a-fA-F]{35,40}\b
+# xunit InlineData
+\[InlineData\(".*\]
+# ms.* metadata name
+\bms\..*?:
+# locale
+\b[a-z]{2}-[a-z]{2}\b
+# unicode
+'\\u[a-fA-F0-9]{4}'
+'\\x[a-fA-F0-9]{4}'
+# version
+\d+.\d+.\d+[-a-zA-Z0-9]*
