@@ -13,6 +13,7 @@ ignore$
 \.mod$
 \.mp[34]$
 \.png$
+\.vsdx$
 \.wav$
 ^\.github/
 AzureResourceTypes\.txt
