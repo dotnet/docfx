@@ -13,14 +13,14 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.4.0" />
-    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
     <PackageReference Include="docs.validation" Version="1.0.0-beta-00050-4eb746f" />
     <PackageReference Include="DotLiquid" Version="2.1.405" />
     <PackageReference Include="Glob" Version="1.1.8" />
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.7" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.801" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.0.75" Aliases="maml" />
