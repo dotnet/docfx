@@ -66,7 +66,8 @@ Create a document processor
 3. Load our rtf file by reading all text:
    [!Code-csharp[Load](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Load)]
 
-   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs) stores the content of markdown files.
+   We use `Dictionary<string, object>` as the data model, similar to how [ConceptualDocumentProcessor](https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs)
+ stores the content of markdown files.
 
 4. Implement `Save` method as follows:
    [!Code-csharp[Save](../codesnippet/Rtf/RtfDocumentProcessor.cs?name=Save)]
@@ -136,8 +137,8 @@ Enable plug-in
 --------------
 1.  Build our project.
 2.  Copy the output dll files to:
-    * Global: the folder with name `Plugins` under DocFX.exe
-    * Non-global: the folder with name `Plugins` under a template folder. Then run `DocFX build` command with parameter `-t {template}`.
+    * Global: a folder you create, named `Plugins` under the folder where DocFX.exe resides.
+    * Non-global: a folder you create with the name `Plugins` under a template folder. Then run `DocFX build` command with parameter `-t {template}`.
 
       *Hint*: DocFX can merge templates so create a template that only contains the `Plugins` folder, then run the command `DocFX build` with parameter `-t {templateForRender},{templateForPlugins}`. 
 
