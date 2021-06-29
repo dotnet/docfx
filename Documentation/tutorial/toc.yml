@@ -19,9 +19,9 @@
     href: intro_overwrite_files.md
   - name: Links and Cross References
     href: links_and_cross_references.md
-- name: Template
+- name: DocFx Template System
   items:
-  - name: Template System
+  - name: Introduction
     href: intro_template.md
   - name: "HowTo: Create Custom Template"
     href: howto_create_custom_template.md
