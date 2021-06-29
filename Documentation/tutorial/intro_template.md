@@ -1,7 +1,7 @@
 Introduction to *DocFX Template System*
 ===============================
 
-*DocFX Template System* provides a flexible way of defining and using templates.
+The *DocFX Template System* provides a flexible way of defining and using templates to control how the final output files are rendered. These files provide the **content** used to publish a DocFx-generated web site. Note that is different than the *HTML templates* discussed in [Walkthrough Advanced: Customize Your Website](./walkthrough/advanced_walkthrough.md), which are used to control the **styling** applied to the web site.
 
 As the following DocFX workflow shows,
 
