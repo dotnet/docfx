@@ -16,6 +16,14 @@ Step2. Init a DocFX project
 2. Start Command Line under `D:\docfx_walkthrough`
 3. Call `docfx init -q`. This command generates a `docfx_project` folder with the default `docfx.json` file under it. `docfx.json` is the configuration file `docfx` uses to generate documentation. `-q` option means generating the project quietly using default values, you can also try `docfx init` and follow the instructions to provide your own settings.
 
+When finished, `docfx init` will create a set of subdirectories, used to hold the source files required for generating a DocFx website:
+
+- **\src** - contains the optional .NET language project files (\*.csproj), which contain the type information used to generate managed API docs.  
+- **\api** - if the \src subdirectory contains project files, DocFx will generate .YML metadata files from them and store them here. The .YML files contain the structured type information, including any `///` comments provided in the source code. A stub landing page (index.md) and TOC (toc.yml) are generated as well. You learn more about this process in [Walkthrough Part II: Adding API Documentation to the Website](walkthrough_create_a_docfx_project_2.md).
+- **\apidoc** - contains Markdown files used to overwrite the auto-generated text from `///` comments.
+- **\articles** - contains Markdown files used to provide ancillary conceptual documentation, for explaining how to use your API documentation, etc.
+- **\images** - contains image files referenced from Markdown files.
+
 Step3. Build our website
 -----------------------
 Run command `docfx docfx_project/docfx.json`. Note that a new subfolder `_site` is generated under that folder. This is where the static website is generated.
