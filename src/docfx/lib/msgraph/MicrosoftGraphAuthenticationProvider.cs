@@ -52,7 +52,7 @@ namespace Microsoft.Docs.Build
             try
             {
                 await _semaphore.WaitAsync();
-                if (_authenticationResult == null || _authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow.AddMinutes(-1))
+                if (_authenticationResult == null || DateTime.UtcNow > _authenticationResult.ExpiresOn.UtcDateTime.AddMinutes(-1))
                 {
                     _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).ExecuteAsync();
                 }
