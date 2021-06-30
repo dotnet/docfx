@@ -271,6 +271,7 @@ ement
 emoji
 ence
 enci
+endcomment
 endfor
 endregion
 enoent
