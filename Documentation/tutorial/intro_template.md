@@ -1,17 +1,17 @@
 Introduction to the DocFX Template System
 ===============================
 
-The DocFX Template System provides a flexible way of defining and using templates to control how the final output files are rendered. These files provide the **content** used to publish a DocFx-generated web site. Note that this is different than the HTML templates discussed in [Walkthrough Advanced: Customize Your Website](./walkthrough/advanced_walkthrough.md), which are used to control the **styling** applied to the web site.
+The DocFX template system provides a flexible way of defining and using templates to control how the final output files are rendered. These files provide the **content** used to publish a DocFx-generated web site. Note that this is different than the HTML templates discussed in [Walkthrough Advanced: Customize Your Website](./walkthrough/advanced_walkthrough.md), which are used to control the **styling** applied to the web site.
 
 As the following DocFX workflow shows,
 
 ![DocFX workflow](../spec/images/docfx_workflow_highlevel.png)
 
-DocFX loads the set of files and transforms them into different data models using different types of *Document Processor*s. Afterwards, the Template System loads these data models, and transforms them into output files based on the *document type* of the data model.
+DocFX loads the set of files and transforms them into different data models using different types of *Document Processor*s. Afterwards, the template system loads these data models, and transforms them into output files based on the *document type* of the data model.
 
 Each file belongs to a *document type*. For example, the document type for Markdown files is `conceptual`, and the document type for `toc.md` files is `Toc`.
 
-For a specific *Template*, each *document type* can have several *Renderer*s. For a specific file, the Template System picks the corresponding *Renderer*s to render the input data model into output files.
+For a specific *Template*, each *document type* can have several *Renderer*s. For a specific file, the template system picks the corresponding *Renderer*s to render the input data model into output files.
 
 *Renderer*
 ------------------
@@ -46,7 +46,7 @@ There are two Markdown files `A.md` and `B.md`, the content for `A.md` is:
 [Link To B](B.md)
 ```
 
-The Template System produces two output files for `A.md`: `A.html` and `A.mta.json`, and also two output files for `B.md`: `B.html` and `B.mta.json`. According to `conceptual.html.primary.tmpl`, `.html` is the **primary** output file, the link from `A.md` to `B.md` is resolved to `B.html` instead of `B.mta.json`, which is to say, the content of `A.md` is transformed to:
+The template system produces two output files for `A.md`: `A.html` and `A.mta.json`, and also two output files for `B.md`: `B.html` and `B.mta.json`. According to `conceptual.html.primary.tmpl`, `.html` is the **primary** output file, the link from `A.md` to `B.md` is resolved to `B.html` instead of `B.mta.json`, which is to say, the content of `A.md` is transformed to:
 
 ```html
 <a href="B.html">Link To B</a>
@@ -64,7 +64,7 @@ The Template System produces two output files for `A.md`: `A.html` and `A.mta.js
 *Renderer*s in [Mustache](http://mustache.github.io) syntax **MUST** end with `.tmpl` extension.
 
 #### Mustache Partials
-[Mustache Partials](http://mustache.github.io/mustache.5.html#Partials) is also supported in the Template System. **Partials** are common sections of *Renderer* that can be shared by multiple *Renderer* files. **Partials** **MUST** end with `.tmpl.partial`.
+[Mustache Partials](http://mustache.github.io/mustache.5.html#Partials) is also supported in the template system. **Partials** are common sections of *Renderer* that can be shared by multiple *Renderer* files. **Partials** **MUST** end with `.tmpl.partial`.
 
 For example, inside a *Template*, there is a **Partial** file `part.tmpl.partial` with content:
 ```mustache
@@ -102,7 +102,7 @@ DocFX introduces the following syntax to define the dependency for the *Renderer
 > So most of the time [*Preprocessor File*](#preprocessor) is used to re-define the data model used by the Mustache *Renderer*.
 
 #### Extended syntax for Master page
-In most cases templates with different document types share the same layout and style, for example, most of the pages can share navbar, header, or footer. 
+In most cases templates with different document types share the same layout and style. For example, most of the pages can share navbar, header, or footer. 
 
 DocFX introduces the following syntax to use a master page:
 
@@ -191,7 +191,7 @@ renders as the same as:
 
 *Preprocessor*
 --------------------
-*Renderer*s take the input data model produced by the document processor and render them into output files. Sometimes the input data model is not exactly what the *Renderer*s want. The Template System introduces the concept of *Preprocessor* to transform the input data model into exactly what the *Renderers* want. We call the data model returned by the *Preprocessor* the *View Model*. The *View Model* is the data model applied to the *Renderers*.
+*Renderer*s take the input data model produced by the document processor and render them into output files. Sometimes the input data model is not exactly what the *Renderer*s want. The template system introduces the concept of *Preprocessor* to transform the input data model into exactly what the *Renderers* want. We call the data model returned by the *Preprocessor* the *View Model*. The *View Model* is the data model applied to the *Renderers*.
 
 ### Naming rule for *Preprocessor*
 The naming of the *Preprocessor* follows the naming of the *Renderer*, with file extension changes to `.js`: `<renderer_file_name_without_extension>.js`.
@@ -199,7 +199,7 @@ The naming of the *Preprocessor* follows the naming of the *Renderer*, with file
 If a *Preprocessor* has no corresponding *Renderer*, it still needs to be executed. For example, to run [`exports.getOptions` function](#function-signature), it should be named as `<document_type>.tmpl.js`.
 
 ### Syntax for *Preprocessor*
-*Preprocessor*s are JavaScript files following [ECMAScript 5.1](http://www.ecma-international.org/ecma-262/5.1/) standard. The Template System uses [Jint](https://github.com/sebastienros/jint) as JavaScript Engine, and provides several additional functions for easy debugging and integration.
+*Preprocessor*s are JavaScript files following [ECMAScript 5.1](http://www.ecma-international.org/ecma-262/5.1/) standard. The template system uses [Jint](https://github.com/sebastienros/jint) as JavaScript Engine, and provides several additional functions for easy debugging and integration.
 
 #### Module 
 *Preprocessor* leverages the concept of *Module* as similar to the [Module in Node.js](https://nodejs.org/dist/latest-v6.x/docs/api/modules.html). The syntax of Module in *Preprocessor* is a *subset* of the one in Node.js. The advantage of the Module concept is that the *Preprocessor* script file can also be run in Node.js.
