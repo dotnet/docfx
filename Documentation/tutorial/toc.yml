@@ -2,7 +2,7 @@
   items:
   - name: Quickstart
     href: docfx_getting_started.md
-  - name: DocFX User Manual
+  - name: User Manual
     href: docfx.exe_user_manual.md
   - name: "HowTo: Filter Out Unwanted APIs"
     href: howto_filter_out_unwanted_apis_attributes.md
@@ -19,7 +19,7 @@
     href: intro_overwrite_files.md
   - name: Links and Cross References
     href: links_and_cross_references.md
-- name: DocFx Template System
+- name: Template System
   items:
   - name: Introduction
     href: intro_template.md
