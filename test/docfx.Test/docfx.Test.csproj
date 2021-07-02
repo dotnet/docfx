@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0096" />
+    <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0100" />
     <PackageReference Include="coverlet.msbuild" Version="3.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.19.1" />

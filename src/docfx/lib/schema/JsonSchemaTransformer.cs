@@ -289,7 +289,7 @@ namespace Microsoft.Docs.Build
         private string GetXrefHref(FilePath file, string uid, int uidCount, bool isRootLevel)
         {
             var siteUrl = _documentProvider.GetSiteUrl(file);
-            return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : siteUrl;
+            return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{UrlUtility.GetBookmark(uid)}") : siteUrl;
         }
 
         private JToken LoadXrefProperty(
@@ -415,12 +415,12 @@ namespace Microsoft.Docs.Build
             {
                 case JsonSchemaContentType.Href:
                     var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
-                        {
-                            HyperLinkType = HyperLinkType.Default,
-                            IsVisible = true,  // trun around to skip 'link-text-missing' validation
-                            UrlLink = stringValue,
-                            SourceInfo = sourceInfo,
-                        });
+                    {
+                        HyperLinkType = HyperLinkType.Default,
+                        IsVisible = true,  // trun around to skip 'link-text-missing' validation
+                        UrlLink = stringValue,
+                        SourceInfo = sourceInfo,
+                    });
 
                     errors.AddIfNotNull(error);
                     return link;

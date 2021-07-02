@@ -16,10 +16,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-    - name: Dotnet Test
-      run: dotnet test -warnAsError -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+    - uses: actions/setup-dotnet@v1
+    - run: dotnet build -warnAsError -c Release
+    - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - uses: codecov/codecov-action@v1
       if: ${{ matrix.os == 'macos-latest' }}

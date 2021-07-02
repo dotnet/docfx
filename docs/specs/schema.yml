@@ -263,7 +263,6 @@ inputs:
   docs/page.yml: |
     #YamlMime:TestPage
   _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
-  _themes/ContentTemplate/TestPage.html.tmpl:
   _themes/ContentTemplate/schemas/TestPage.schema.json: "{\"renderType\": \"content\"}"
 outputs:
   docs/a.json: |
@@ -526,10 +525,38 @@ repos:
               "content": {"type":"string","contentType": "markdown"}
               }
           }
-        _themes/ContentTemplate/TestData.html.primary.tmpl:
 outputs:
   .errors.log: |
     { "message_severity":"error","code":"include-not-found","message":"Invalid include link: 'includes/b.md'.","file":"unit.yml"}
+---
+# Allow markdown property fallback if it's from fallback file
+locale: zh-cn
+repos:
+  https://docs.com/page-fallback#master:
+    - files:
+        includes/b.md: |
+          **Text**
+        unit-not-translated.yml: |
+          ### YamlMime: Unit
+          uid: unit-not-translated
+          content: '[!include[](includes/b.md)]'
+  https://docs.com/page-fallback.zh-cn#master:
+    - files:
+        docfx.yml:
+        unit-translated.yml: |
+          ### YamlMime: Unit
+          uid: unit-translated
+        _themes/ContentTemplate/schemas/Unit.schema.json: |
+          {
+            "contentFallback": false,
+            "properties": { 
+              "uid": {"contentType": "uid"},
+              "content": {"contentType": "markdown"},
+            },
+            "xrefProperties": ["content"]
+          }
+outputs:
+  unit-translated.json:
 ---
 # Disable markdown fallback for loc page, but enable for files except markdown
 locale: zh-cn
@@ -556,7 +583,6 @@ repos:
               "content": {"type":"string","contentType": "markdown"}
               }
           }
-        _themes/ContentTemplate/TestData.html.primary.tmpl:
 outputs:
   unit.json: |
     {
@@ -636,7 +662,6 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
 outputs:
   .errors.log: | 
     {"message_severity":"error","code":"array-max-check-invalid","message":"The array must not have more than 1 matched item(s).","file":"unit.yml","line":15}
