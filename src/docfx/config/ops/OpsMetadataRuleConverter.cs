@@ -30,7 +30,7 @@ namespace Microsoft.Docs.Build
         };
 
 #pragma warning disable MEN003 // Method is too long
-        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
+        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors)
 #pragma warning restore MEN003 // Method is too long
         {
             Log.Write(rulesContent);
@@ -46,6 +46,7 @@ namespace Microsoft.Docs.Build
             catch (Exception ex)
             {
                 Log.Write(ex);
+                errors.Add(Errors.System.ValidationIncomplete());
             }
             if (rules == null || rules.Count == 0)
             {

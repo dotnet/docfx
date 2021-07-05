@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules($"/rulesets/metadatarules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
             var allowlists = GetAllowlists();
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists, _errors);
         }
 
         public Task<string> GetRegressionAllContentRules()
@@ -116,7 +116,7 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules("/rulesets/metadatarules?name=_regression_all_", fetchFullRules: true, environment: DocsEnvironment.PPE);
             var allowlists = GetAllowlists(DocsEnvironment.PPE);
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists, _errors);
         }
 
         public Task<string> GetRegressionAllBuildRules()
