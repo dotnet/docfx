@@ -29,18 +29,28 @@ namespace Microsoft.Docs.Build
             { "Length", new string[] { "string-length-invalid" } },
         };
 
+#pragma warning disable MEN003 // Method is too long
         public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
+#pragma warning restore MEN003 // Method is too long
         {
             Log.Write(rulesContent);
             Log.Write(allowlistsContent);
 
-            var rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
+            Rules? rules = null;
+            Taxonomies taxonomies = new();
+            try
+            {
+                rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
+                taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
             if (rules == null || rules.Count == 0)
             {
                 return "";
             }
-
-            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
 
             var schema = new
             {
