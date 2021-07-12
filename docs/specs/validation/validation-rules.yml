@@ -265,3 +265,70 @@ outputs:
     {"message_severity":"warning","log_item_type":"user","code":"heading-empty","message":"Empty H2. Headings must have content.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
     {"message_severity":"suggestion","log_item_type":"user","code":"heading-no-content","message":"H2 contains no content. Add content or remove the unused heading.","file":"b.md","line":3,"end_line":3,"column":1,"end_column":1,"pull_request_only":true}
 ---
+# support to log content validation error with info severity
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "text": {
+        "rules": [
+          {
+            "type": "SensitiveLanguage",
+            "message": "Term '{0}' is sensitive and should not be used in content or code.",
+            "code": "sensitive-language",
+            "severity": "INFO",
+            "disallowed": ["master", "blacklist", "whitelist"],
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  file1.md: There is master in the content, this will error
+outputs:
+  .errors.log: |
+    {"message_severity":"info","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+  file1.json:
+---
+# support to log metadata error with info severity
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    metadataSchema: schema.json
+  schema.json: |
+    {
+      "docsetUnique": [ "title", "description"],
+      "rules": {
+        "description": {
+          "duplicate-attribute": {
+            "severity": "info",
+            "code": "duplicate-description-within-docset",
+            "additionalMessage": "Description must be unique within a docset.",
+            "pullRequestOnly": false,
+            "contentTypes": [
+              "conceptual",
+              "include",
+              "landingpage",
+              "hubpage"
+            ]
+          }
+        }
+      }
+    }
+  a.md: |
+    ---
+    title: title1
+    description: description1
+    ---
+  b.md: |
+    ---
+    description: description1
+    title: title2
+    ---
+outputs:
+  a.json:
+  b.json:
+  .errors.log: |
+    {"message_severity":"info","code":"duplicate-description-within-docset","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'. Description must be unique within a docset.","file":"a.md","line":3,"end_line":3,"column":14,"end_column":26}
+    {"message_severity":"info","code":"duplicate-description-within-docset","message":"Attribute 'description' with value 'description1' is duplicated in 'a.md(3,14)', 'b.md(2,14)'. Description must be unique within a docset.","file":"b.md","line":2,"end_line":2,"column":14,"end_column":26}
+---
