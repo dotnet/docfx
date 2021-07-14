@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
                     switch (obj)
                     {
                         case HeadingBlock heading when heading.Level == 1 || heading.Level == 2 || heading.Level == 3:
-                            if (conceptual.Title.Value is null && heading.Inline.Any())
+                            if (conceptual.Title.Value is null && heading.Inline != null && heading.Inline.Any())
                             {
                                 conceptual.Title = new SourceInfo<string?>(markdownEngine.ToPlainText(heading), heading.GetSourceInfo());
                             }
