@@ -432,6 +432,7 @@ intelli
 intellisense
 interop
 interoperability
+intrinsics
 iot
 iparser
 iproducer

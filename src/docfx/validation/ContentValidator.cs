@@ -276,6 +276,7 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
+                    ValidationSeverity.INFO => ErrorLevel.Info,
                     _ => ErrorLevel.Off,
                 };
 
