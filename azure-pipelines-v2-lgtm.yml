@@ -56,14 +56,6 @@ steps:
     AllTools: true
     ToolLogsNotFoundAction: 'Standard'
 
-- task: PostAnalysis@1
-  displayName: Security - PostAnalysis
-  inputs:
-    Semmle: true
-    CredScan: true
-    BinSkim: true
-    ToolLogsNotFoundAction: 'Standard'
-
 - task: TSAUpload@1
   inputs:
     tsaVersion: 'TsaV2'
@@ -72,4 +64,13 @@ steps:
     codeBaseName: 'Docs_default'
     uploadCredScan: true
     uploadBinSkim: true
+    uploadSemmle: true
     uploadAsync: true
+
+- task: PostAnalysis@1
+  displayName: Security - PostAnalysis
+  inputs:
+    Semmle: true
+    CredScan: true
+    BinSkim: true
+    ToolLogsNotFoundAction: 'Standard'
