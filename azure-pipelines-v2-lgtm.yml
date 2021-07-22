@@ -18,6 +18,15 @@ steps:
   inputs:
     toolMajorVersion: 'V2'
 
+- task: BinSkim@3
+  displayName: Security - BinSkim
+  inputs:
+    InputType: 'Basic'
+    Function: 'analyze'
+    AnalyzeTarget: >
+      **/*.exe;
+      **/*.dll;
+
 - task: Semmle@0
   displayName: Security - LGTM
   inputs:
@@ -34,7 +43,9 @@ steps:
 - task: SdtReport@1
   displayName: Security - SdtReport
   inputs:
+    Semmle: true
     CredScan: true
+    BinSkim: true
     ToolLogsNotFoundAction: 'Standard'
 
 - task: PublishSecurityAnalysisLogs@2
@@ -48,7 +59,9 @@ steps:
 - task: PostAnalysis@1
   displayName: Security - PostAnalysis
   inputs:
+    Semmle: true
     CredScan: true
+    BinSkim: true
     ToolLogsNotFoundAction: 'Standard'
 
 - task: TSAUpload@1
@@ -58,4 +71,5 @@ steps:
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default'
     uploadCredScan: true
+    uploadBinSkim: true
     uploadAsync: true
