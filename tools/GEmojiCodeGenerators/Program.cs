@@ -66,6 +66,7 @@ namespace Microsoft.DocAsCode.Tools.GEmojiCodeGenerators
         private static JArray LoadEmojiJson()
         {
             using var wc = new WebClient();
+            ServicePointManager.CheckCertificateRevocationList = true;
             var bytes = wc.DownloadData("https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json");
             var json = Encoding.UTF8.GetString(bytes);
             return JsonConvert.DeserializeObject<JArray>(json);
