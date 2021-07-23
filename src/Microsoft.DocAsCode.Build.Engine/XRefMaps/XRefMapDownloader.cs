@@ -136,6 +136,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
             using var wc = new WebClient();
+            ServicePointManager.CheckCertificateRevocationList = true;
             using var stream = await wc.OpenReadTaskAsync(uri);
             using var sr = new StreamReader(stream);
             var map = YamlUtility.Deserialize<XRefMap>(sr);
