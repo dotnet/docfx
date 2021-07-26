@@ -25,6 +25,7 @@ jobs:
     inputs:
       targetType: inline
       script: |
+        $branch = "$(Build.SourceBranch)"
         git init
         git fetch $(Build.Repository.Uri) $branch
         git checkout FETCH_HEAD
