@@ -911,8 +911,6 @@ webdrivers
 webpacker
 website
 websites
-whitelist
-whitelisted
 wildcards
 windowsdefender
 windowsserverdocs
