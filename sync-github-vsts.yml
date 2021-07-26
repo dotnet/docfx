@@ -19,14 +19,14 @@ jobs:
           git checkout FETCH_HEAD
           git checkout -b $branch
           $B64_PAT=[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$(System.AccessToken)"))
-          git -c http.extraHeader="Authorization: Basic $B64_PAT" push $vstsUrl $branch -uf
+          git -c http.extraHeader="Authorization: Basic $B64_PAT" push $(vstsUrl) $branch -uf
         }
 
         $folderPath = "temp"
         mkdir $folderPath
         pushd $folderPath
         git init
-        foreach($branch in $branches) {
+        foreach($branch in $(branches)) {
           Sync($branch)
         }
         popd
