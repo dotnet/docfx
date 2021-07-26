@@ -33,9 +33,6 @@ jobs:
           git -c http.extraHeader="Authorization: Basic $B64_PAT" push $(ADOUrl) $branch -uf
         }
 
-        $folderPath = "temp"
-        mkdir $folderPath
-        pushd $folderPath
         git init
         Sync("$(Build.SourceBranch)")
         popd
