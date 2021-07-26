@@ -1,0 +1,32 @@
+# variables:
+  # branches: defined on azure portal, separated by '|'
+  # vstsUrl: defined on azure portal
+
+jobs:
+- job: 'GitHub_Sync'
+  pool: 
+    vmImage: 'windows-latest'
+  steps:
+  - task: Powershell@2
+    displayName: sync docfx v3 from GitHub
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    inputs:
+      targetType: inline
+      script: |
+        Function Sync([string]$branch) {
+          git fetch $(Build.Repository.Uri) $branch
+          git checkout FETCH_HEAD
+          git checkout -b $branch
+          $B64_PAT=[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$(System.AccessToken)"))
+          git -c http.extraHeader="Authorization: Basic $B64_PAT" push $vstsUrl $branch -uf
+        }
+
+        $folderPath = "temp"
+        mkdir $folderPath
+        pushd $folderPath
+        git init
+        foreach($branch in $branches) {
+          Sync($branch)
+        }
+        popd
