@@ -4,7 +4,7 @@ uid: tools
 title: 'Available tools'
 documentType: dashboard
 contributionLink: ~/templates-and-plugins/contribute-your-template.md
-items: 
+items:
   - name: TocDocFxCreation
     description: Generate a Table of Contents (TOC) in YAML format for DocFX. It has features like the ability to configure the order of files and the names of documents and folders.
     type: External
@@ -49,7 +49,7 @@ items:
     repository:
       type: git
       url: "https://github.com/Ellerbach/docfx-companion-tools/blob/main/PipelineExamples/documentation-validation.yml"
-    license: MIT   
+    license: MIT
   - name: Build papeline example
     description: A sample pipeline to use the TocDocFxCreation for generating the table of contents and DocFx to generate a website. This sample will also publish to an Azure App Service.
     type: External
@@ -58,7 +58,16 @@ items:
     repository:
       type: git
       url: "https://github.com/Ellerbach/docfx-companion-tools/blob/main/PipelineExamples/documentation-build.yml"
-    license: MIT 
+    license: MIT
+  - name: Addin for Cake Build System
+    description: Cake AddIn that generates documentation for .Net API reference and markdown files using DocFx.
+    type: External
+    thumbnail: ~/templates-and-plugins/images/cake-contrib-addin-large.png
+    homepage: https://cakebuild.net/extensions/cake-docfx/
+    repository:
+      type: git
+      url: "https://github.com/cake-contrib/Cake.DocFx.git"
+    license: MIT
 description: |
   # Dashboard for Tools
   The tools listed here are companion tools to help getting the best of DocFX. Add your own tools here for others to view and use!
