@@ -37,5 +37,5 @@ jobs:
         mkdir $folderPath
         pushd $folderPath
         git init
-        Sync($(Build.SourceBranchName))
+        Sync("$(Build.SourceBranchName)")
         popd
