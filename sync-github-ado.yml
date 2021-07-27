@@ -20,8 +20,6 @@ jobs:
   steps:
   - task: Powershell@2
     displayName: Sync from GitHub to Azure DevOps
-    env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     inputs:
       targetType: inline
       script: |
