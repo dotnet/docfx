@@ -956,5 +956,3 @@ yyyy
 zoneinfo
 zonepivotgroups
 zzz
-popd
-pushd

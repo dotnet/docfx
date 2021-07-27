@@ -19,7 +19,7 @@ jobs:
     vmImage: 'windows-latest'
   steps:
   - task: Powershell@2
-    displayName: sync from GitHub to Azure DevOps
+    displayName: Sync from GitHub to Azure DevOps
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     inputs:
