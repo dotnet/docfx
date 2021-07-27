@@ -25,4 +25,4 @@ jobs:
       targetType: inline
       script: |
         $B64_PAT=[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$(System.AccessToken)"))
-        git -c http.extraHeader="Authorization: Basic $B64_PAT" push $(ADOUrl) HEAD:$(Build.SourceBranch) -f
+        git -c http.extraHeader="Authorization: Basic $B64_PAT" push $(ADOUrl) HEAD:$(Build.SourceBranch)
