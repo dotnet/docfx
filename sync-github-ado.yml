@@ -9,6 +9,7 @@ trigger:
     - v3-release
     - dev
     - main
+pr: none
 
 variables:
   NugetSecurityAnalysisWarningLevel: none
