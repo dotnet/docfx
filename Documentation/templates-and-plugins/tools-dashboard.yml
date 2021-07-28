@@ -49,7 +49,7 @@ items:
     repository:
       type: git
       url: "https://github.com/Ellerbach/docfx-companion-tools/blob/main/PipelineExamples/documentation-validation.yml"
-    license: MIT   
+    license: MIT
   - name: Build pipeline example
     description: A sample pipeline to use the TocDocFxCreation for generating the table of contents and DocFx to generate a website. This sample will also publish to an Azure App Service.
     type: External
