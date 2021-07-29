@@ -16,3 +16,5 @@
 '\\x[a-fA-F0-9]{4}'
 # version
 \d+.\d+.\d+[-a-zA-Z0-9]*
+# Interface prefixed with I
+\bI(?=(?:[A-Z][a-z]{2,})+\b)
