@@ -61,7 +61,7 @@ namespace TableSnippets
             tbl.Columns[1].Background = Brushes.AliceBlue;
             tbl.Columns[2].Width = new GridLength(20);
             tbl.Columns[3].Background = Brushes.AliceBlue;
-#endregion 
+#endregion
 
             // Get a count of columns hosted by the table.
             // <Snippet_Table_Columns_Count>
@@ -170,7 +170,7 @@ namespace TableSnippets
             tbl.RowGroups.Add(trg);
 
             // Add rows to a TableRowGroup collection.
-            int rowsToAdd = 4; 
+            int rowsToAdd = 4;
             for (int x = 0; x < rowsToAdd; x++)
                 trg.Rows.Add(new TableRow());
 
@@ -201,7 +201,7 @@ namespace TableSnippets
 
             // Remove all rows...
             trg.Rows.Clear();
-            // </Snippet_TableRowGroup_Rows>        
+            // </Snippet_TableRowGroup_Rows>
         }
 
         void TableCellConst()
@@ -723,14 +723,14 @@ int main()
     AppDomain^ root = AppDomain::CurrentDomain;
 
     AppDomainSetup^ setup = gcnew AppDomainSetup();
-    setup->ApplicationBase = 
+    setup->ApplicationBase =
         root->SetupInformation->ApplicationBase + ""MyAppSubfolder\\"";
 
     AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, setup);
 
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"",
         root->FriendlyName, root->SetupInformation->ApplicationBase);
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"",
         domain->FriendlyName, domain->SetupInformation->ApplicationBase);
 
     AppDomain::Unload(domain);
@@ -961,14 +961,14 @@ int main()
     AppDomain^ root = AppDomain::CurrentDomain;
 
     AppDomainSetup^ setup = gcnew AppDomainSetup();
-    setup->ApplicationBase = 
+    setup->ApplicationBase =
         root->SetupInformation->ApplicationBase + ""MyAppSubfolder\\"";
 
     AppDomain^ domain = AppDomain::CreateDomain(""MyDomain"", nullptr, setup);
 
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"",
         root->FriendlyName, root->SetupInformation->ApplicationBase);
-    Console::WriteLine(""Application base of {0}:\r\n\t{1}"", 
+    Console::WriteLine(""Application base of {0}:\r\n\t{1}"",
         domain->FriendlyName, domain->SetupInformation->ApplicationBase);
 
     AppDomain::Unload(domain);
@@ -1326,14 +1326,14 @@ int main()
     AppDomain^ root = AppDomain::CurrentDomain;
 
     AppDomainSetup^ setup = gcnew AppDomainSetup();
-    setup-&gt;ApplicationBase = 
+    setup-&gt;ApplicationBase =
         root-&gt;SetupInformation-&gt;ApplicationBase + &quot;MyAppSubfolder\\&quot;;
 
     AppDomain^ domain = AppDomain::CreateDomain(&quot;MyDomain&quot;, nullptr, setup);
 
-    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;, 
+    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;,
         root-&gt;FriendlyName, root-&gt;SetupInformation-&gt;ApplicationBase);
-    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;, 
+    Console::WriteLine(&quot;Application base of {0}:\r\n\t{1}&quot;,
         domain-&gt;FriendlyName, domain-&gt;SetupInformation-&gt;ApplicationBase);
 
     AppDomain::Unload(domain);
