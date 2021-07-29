@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
                 await _semaphore.WaitAsync();
                 if (_authenticationResult == null || DateTime.UtcNow > _authenticationResult.ExpiresOn.UtcDateTime.AddMinutes(-1))
                 {
-                    _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).ExecuteAsync();
+                    _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).WithSendX5C(true).ExecuteAsync();
                 }
                 return _authenticationResult.AccessToken;
             }
