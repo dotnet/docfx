@@ -16,4 +16,5 @@ ignore$
 \.vsdx$
 \.wav$
 ^\.github/
+lunr.js
 AzureResourceTypes\.txt
