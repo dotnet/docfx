@@ -1,7 +1,6 @@
 ---
 title: Markdown Fragments
 description: overwrite document in DocFX v3
-author: renzeyu
 ---
 
 # Markdown Fragments

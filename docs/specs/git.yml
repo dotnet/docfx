@@ -620,9 +620,9 @@ repos:
           editRepositoryBranch: contrib-branch
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: test
               includeInBuild: true
@@ -663,7 +663,7 @@ cache:
         ]
       }
 outputs:
-  crrb/b.json: |
+  crr-b/b.json: |
     {
       "_op_gitContributorInformation":
       {
@@ -687,7 +687,7 @@ outputs:
           {
               "source_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
               "source_line": 5,
-              "source_url": "/crrb/b",
+              "source_url": "/crr-b/b",
               "target_url": "http://test.com"
           }
       ]
@@ -718,9 +718,9 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: live-sxs
               includeInBuild: true
@@ -730,9 +730,9 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: live-sxs
               includeInBuild: true
@@ -745,7 +745,7 @@ repos:
         b.md:
 outputs:
   docs/a.json:
-  crrb/b.json:
+  crr-b/b.json:
 ---
 # Respect user-assigned content_git_url & original_content_git_url
 repos:

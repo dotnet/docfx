@@ -575,7 +575,7 @@ inputs:
     }
 outputs:
 ---
-# Support monikers for rediction
+# Support monikers for redirection
 repos:
   https://github.com/redirection/source-monikers:
   - files:

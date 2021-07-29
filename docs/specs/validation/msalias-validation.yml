@@ -177,12 +177,12 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: abc1234cba
+    ms.author: name
     ---
 environments:
   - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'name' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---

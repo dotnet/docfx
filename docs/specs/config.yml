@@ -216,7 +216,7 @@ outputs:
 inputs:
   docfx.yml: |
     routes:
-      ./: outputB
+      ./: output-b
       docs/a.md: output
       docs/b: output
   docs/a.md: |
@@ -232,30 +232,30 @@ outputs:
   output/a.json:
   output/b.json:
   output/d.svg:
-  outputb/docs/c.png:
-  outputb/docs/g/a.json:
-  outputb/docs/g/e.jpg:
+  output-b/docs/c.png:
+  output-b/docs/g/a.json:
+  output-b/docs/g/e.jpg:
 ---
 # latter routes rule takes precedence - 1
 inputs:
   docfx.yml: |
     routes:
       docs/a/: output
-      docs/a/b.md: outputB
-      docs/a/c.gif: outputC
+      docs/a/b.md: output-b
+      docs/a/c.gif: output-c
   docs/a/b.md: |
     [link](c.gif)
   docs/a/c.gif:
 outputs:
-  outputb/b.json:
-  outputc/c.gif:
+  output-b/b.json:
+  output-c/c.gif:
 ---
 # latter routes rule takes precedence - 2
 inputs:
   docfx.yml: |
     routes:
-      docs/a/b.md: outputB
-      docs/a/c.gif: outputC
+      docs/a/b.md: output-b
+      docs/a/c.gif: output-c
       docs/a/: output
   docs/a/b.md: |
     [link](c.gif)

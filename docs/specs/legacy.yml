@@ -226,7 +226,7 @@ inputs:
   docfx.yml:
   redirections.yml: |
     redirections:
-      docs/a.md: /asdf
+      docs/a.md: /another-file
   docs/a.md:
 outputs:
   .errors.log: |

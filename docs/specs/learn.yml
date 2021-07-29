@@ -256,7 +256,7 @@ outputs:
     }
 ---
 # Can produce proper dependency type
-# fallback patha->pathb.achievement;modulea->moduleb.achievement;
+# fallback path-a->path-b.achievement;module-a->module-b.achievement;
 inputs:
   docfx.yml:
   path.yml: |
@@ -266,9 +266,9 @@ inputs:
     achievement: trophy
     trophy:
       uid: trophy
-  patha.yml: |
+  path-a.yml: |
     ### YamlMime:LearningPath
-    uid: patha
+    uid: path-a
     modules: ['module1']
     achievement: trophy
   module1.yml: |
@@ -330,18 +330,18 @@ inputs:
     }
 outputs:
   path.json:
-  patha.json:
+  path-a.json:
   module1.json:
   module2.json:
   unit1.json:
   unit2.json:
   full-dependent-list.txt: |
     {"dependency_type":"achievement","from_file_path":"*module2.yml*","to_file_path":"*module1.yml*"}
-    {"dependency_type":"achievement","from_file_path":"*patha.yml*","to_file_path":"*path.yml*"}
+    {"dependency_type":"achievement","from_file_path":"*path-a.yml*","to_file_path":"*path.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*module1.yml*","to_file_path":"*unit1.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*module2.yml*","to_file_path":"*unit2.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module1.yml*"}
-    {"dependency_type":"hierarchy","from_file_path":"*patha.yml*","to_file_path":"*module1.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*path-a.yml*","to_file_path":"*module1.yml*"}
   op_aggregated_file_map_info.json: |
     {
       "aggregated_file_map_items": {
@@ -377,15 +377,15 @@ outputs:
             }
           ]
         },
-        "patha.yml": {
+        "path-a.yml": {
           "dependencies": [
             {
-              "from_file_path": "patha.yml",
+              "from_file_path": "path-a.yml",
               "to_file_path": "module1.yml",
               "dependency_type": "hierarchy"
             },
             {
-              "from_file_path": "patha.yml",
+              "from_file_path": "path-a.yml",
               "to_file_path": "path.yml",
               "dependency_type": "achievement"
             }
@@ -396,7 +396,7 @@ outputs:
       }
     }
 ---
-# error mapping for Learn Valdiation based on SDP, LearningPath
+# error mapping for Learn validation based on SDP, LearningPath
 inputs:
   docfx.yml: |
     buildValidationRules: build.json
@@ -447,10 +447,10 @@ inputs:
         ]
       }
     }
-  patha.yml: |
+  path-a.yml: |
     #YamlMime:LearningPath
     a: a
-  pathb.yml: |
+  path-b.yml: |
     #YamlMime:LearningPath
     uid: path_b
     modules: ['module_not_found']
@@ -492,12 +492,12 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module_not_found' can't be found.","file":"path-b.yml","line":3}
 ---
-# error mapping for Learn Valdiation based on SDP, Module
+# error mapping for Learn validation based on SDP, Module
 inputs:
   docfx.yml: |
     buildValidationRules: build.json
@@ -540,10 +540,10 @@ inputs:
         ]
       }
     }
-  modulea.yml: |
+  module-a.yml: |
     #YamlMime:Module
     a: a
-  moduleb.yml: |
+  module-b.yml: |
     #YamlMime:Module
     uid: module_b
     units: ['unit_not_found']
@@ -585,12 +585,12 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-child-not-found","message":"Child Uid(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
+    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-child-not-found","message":"Child Uid(s): 'unit_not_found' can't be found.","file":"module-b.yml","line":3}
 ---
-# error mapping for Learn Valdiation based on SDP, ModuleUnit
+# error mapping for Learn validation based on SDP, ModuleUnit
 inputs:
   docfx.yml: |
     buildValidationRules: build.json

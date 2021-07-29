@@ -1,4 +1,4 @@
-# ContentNodes Validation - warning when use tabbed conceptaul
+# ContentNodes Validation - warning when use tabbed conceptual
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json

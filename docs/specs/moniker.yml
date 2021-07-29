@@ -2015,7 +2015,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '<= netcore-2.0' is 'netcore-1.0', 'netcore-2.0', while file monikers is 'netcore-3.0'.","file":"docs/v1/q.md","line":2,"column":19}
 ---
-# Should not take exclue_monikers into consideration while warn on moniker-zone-empty
+# Should not take exclude_monikers into consideration while warn on moniker-zone-empty
 inputs:
   docfx.yml: |
     monikerRange:

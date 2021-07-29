@@ -43,8 +43,8 @@ namespace Microsoft.Docs.Build
                 string.Join("\n", lib.Select(c => $"{c.Sha}|{c.Time:s}{c.Time:zzz}|{c.AuthorName}|{c.AuthorEmail}")));
 
             // another branch
-            exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf -- \"{pathToRepo}\"", repo.Path);
-            lib = gitCommitProvider.GetCommitHistory(pathToRepo, "a050eaf");
+            exe = Exec("git", $"--no-pager log --format=\"%H|%cI|%an|%ae\" a050eaf9 -- \"{pathToRepo}\"", repo.Path);
+            lib = gitCommitProvider.GetCommitHistory(pathToRepo, "a050eaf9");
 
             Assert.Equal(
                 exe.Replace("\r", ""),

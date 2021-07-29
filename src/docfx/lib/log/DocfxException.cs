@@ -34,12 +34,12 @@ namespace Microsoft.Docs.Build
                 case null:
                     break;
 
-                case DocfxException dex:
-                    result.Add(dex);
+                case DocfxException docfxException:
+                    result.Add(docfxException);
                     break;
 
-                case AggregateException aex:
-                    foreach (var innerException in aex.InnerExceptions)
+                case AggregateException aggregateException:
+                    foreach (var innerException in aggregateException.InnerExceptions)
                     {
                         ExtractDocfxException(innerException, result);
                     }

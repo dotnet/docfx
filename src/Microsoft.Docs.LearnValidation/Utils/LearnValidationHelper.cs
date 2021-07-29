@@ -33,7 +33,7 @@ namespace Microsoft.Docs.LearnValidation
                 return false;
             }
 
-            var fallbackBranchs = _branch switch
+            var fallbackBranches = _branch switch
             {
                 "live" => new string[] { "live" },
                 "master" => new string[] { "main", "master" },
@@ -41,7 +41,7 @@ namespace Microsoft.Docs.LearnValidation
                 _ => new string[] { _branch, "main", "master" },
             };
 
-            foreach (var branch in fallbackBranchs)
+            foreach (var branch in fallbackBranches)
             {
                 if (_learnServiceAccessor.CheckLearnPathItemExist(branch, DefaultLocale, uid, type).Result)
                 {
