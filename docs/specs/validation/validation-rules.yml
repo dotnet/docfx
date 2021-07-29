@@ -278,16 +278,16 @@ inputs:
             "message": "Term '{0}' is sensitive and should not be used in content or code.",
             "code": "sensitive-language",
             "severity": "INFO",
-            "disallowed": ["master", "blacklist", "whitelist"],
+            "disallowed": ["block-word-1", "block-word-2", "block-word-3"],
             "contentTypes": ["conceptual"]
           }
         ]
       }
     }
-  file1.md: There is master in the content, this will error
+  file1.md: There is block-word-1 in the content, this will error
 outputs:
   .errors.log: |
-    {"message_severity":"info","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"info","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
 ---
 # support to log metadata error with info severity

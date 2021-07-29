@@ -244,7 +244,7 @@ outputs:
   a.json: |
     { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
 ---
-# Legacy metadata black list
+# Legacy metadata block list
 inputs:
   docfx.yml: |
     fileMetadata:
