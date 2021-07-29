@@ -385,6 +385,11 @@ inlines
 intellisense
 interop
 interoperability
+itemid
+itemprop
+itemref
+itemscope
+itemtype
 ipsom
 ipsum
 ipynb
