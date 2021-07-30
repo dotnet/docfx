@@ -352,9 +352,9 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': null, 'yammer': null}}}", "{'key1': 'yammer'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'value', 'key2': 'tabs'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':14}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':16}")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'value', 'key2': 'tabs'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':14}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':16}")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
             "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'.','line':1,'column':32}")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
@@ -365,7 +365,7 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': {'key1[2]': {'vst': null, 'yiu': null}}, 'vba': null}}}}}", "{'key1': ['yammer','tabs','abc']}",
             "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key1[2]': 'abc' is not valid with 'key1[1]' value 'tabs'.','line':1,'column':31}")]
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['value','tabs']}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1[0]': 'value'.','line':1,'column':15}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1[0]': 'value'.','line':1,'column':17}")]
 
         [InlineData(
             "{'properties': {'key': {'type': 'object','properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}}}",
@@ -374,7 +374,7 @@ namespace Microsoft.Docs.Build
         [InlineData(
             "{'properties': {'key':{'type': 'object','properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}}}",
             "{'key': {'key1': ['value','tabs']}}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key.key1[0]': 'value'.','line':1,'column':23}")]
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key.key1[0]': 'value'.','line':1,'column':25}")]
 
         // custom errors
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
