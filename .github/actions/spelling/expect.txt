@@ -46,6 +46,7 @@ azcopy
 azfuncdf
 azuread
 azurecli
+azuredatastudio
 azuremaps
 azureml
 azurepowershell
