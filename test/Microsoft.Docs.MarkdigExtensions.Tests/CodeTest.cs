@@ -881,12 +881,12 @@ public:
 
         //<Snippet8>
         // To get the values alone, use the Values property.
-        ICollection<String^>^ icoll = openWith->Values;
+        ICollection<String^>^ collection = openWith->Values;
 
         // The elements of the ValueCollection are strongly typed
         // with the type that was specified for dictionary values.
         Console::WriteLine();
-        for each( String^ s in icoll )
+        for each( String^ s in collection )
         {
             Console::WriteLine(""Value = {0}"", s);
         }
@@ -894,12 +894,12 @@ public:
 
         //<Snippet9>
         // To get the keys alone, use the Keys property.
-        icoll = openWith->Keys;
+        collection = openWith->Keys;
 
         // The elements of the ValueCollection are strongly typed
         // with the type that was specified for dictionary values.
         Console::WriteLine();
-        for each( String^ s in icoll )
+        for each( String^ s in collection )
         {
             Console::WriteLine(""Key = {0}"", s);
         }
@@ -1713,23 +1713,23 @@ public:
         }
 
         // To get the values alone, use the Values property.
-        ICollection&lt;String^&gt;^ icoll = openWith-&gt;Values;
+        ICollection&lt;String^&gt;^ collection = openWith-&gt;Values;
 
         // The elements of the ValueCollection are strongly typed
         // with the type that was specified for dictionary values.
         Console::WriteLine();
-        for each( String^ s in icoll )
+        for each( String^ s in collection )
         {
             Console::WriteLine(&quot;Value = {0}&quot;, s);
         }
 
         // To get the keys alone, use the Keys property.
-        icoll = openWith-&gt;Keys;
+        collection = openWith-&gt;Keys;
 
         // The elements of the ValueCollection are strongly typed
         // with the type that was specified for dictionary values.
         Console::WriteLine();
-        for each( String^ s in icoll )
+        for each( String^ s in collection )
         {
             Console::WriteLine(&quot;Key = {0}&quot;, s);
         }

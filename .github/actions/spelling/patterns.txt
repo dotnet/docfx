@@ -1,10 +1,12 @@
 # url:
 \bhttps:.*?\s
 \bhttp:.*?\s
+\[.*?\]\(https:\/\/.*?\)
+\ms-windows-store:\/\/.*?\s
 # uuid:
-\b[0-9A-FA-F]{8}-(?:[0-9A-FA-F]{4}-){3}[0-9A-FA-F]{12}\b
+\b[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}\b
 # hash:
-\b[0-9a-fA-F]{35,40}\b
+\b[0-9a-fA-F]{32,40}\b
 # xunit InlineData
 \[InlineData\(".*\]
 # ms.* metadata name
@@ -16,3 +18,11 @@
 '\\x[a-fA-F0-9]{4}'
 # version
 \d+.\d+.\d+[-a-zA-Z0-9]*
+# Interface prefixed with I
+\bI(?=(?:[A-Z][a-z]{2,})+\b)
+# Generic argument name prefixed with T
+\bT(?=(?:[A-Z][a-z]{2,})+\b)
+# HTML entity
+%[0-9]{1}[a-zA-Z0-9]{1}
+# moniker hash
+\b[0-9a-f]{8}\b

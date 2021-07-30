@@ -227,10 +227,10 @@ Inline ::: should not end moniker zone.</p>
         {
             // arrange
             var source = @":::zone
-:::zone-end asdjklf";
+:::zone-end nonsense";
 
             // assert
-            var expected = "<p>:::zone\n:::zone-end asdjklf</p>\n";
+            var expected = "<p>:::zone\n:::zone-end nonsense</p>\n";
 
             TestUtility.VerifyMarkup(source, expected, new[] { "invalid-zone" });
         }
