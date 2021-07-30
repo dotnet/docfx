@@ -119,7 +119,7 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"c.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
     {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"f.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
 ---
-# Canonial Version title unique check
+# Canonical Version title unique check
 noSingleFile: true
 inputs:
   docfx.yml: |

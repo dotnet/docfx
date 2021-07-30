@@ -90,12 +90,12 @@ namespace Microsoft.Docs.Build
                 string? result = null;
                 if (git_branch_upstream(out var pUpstream, pBranch) == 0)
                 {
-                    git_buf buf;
+                    git_buf buffer;
                     var pUpstreamName = git_reference_name(pUpstream);
-                    if (git_branch_remote_name(&buf, pRepo, pUpstreamName) == 0)
+                    if (git_branch_remote_name(&buffer, pRepo, pUpstreamName) == 0)
                     {
-                        result = Marshal.PtrToStringUTF8(buf.ptr) ?? "origin";
-                        git_buf_free(&buf);
+                        result = Marshal.PtrToStringUTF8(buffer.ptr) ?? "origin";
+                        git_buf_free(&buffer);
                     }
                     git_reference_free(pUpstream);
                 }

@@ -69,18 +69,18 @@ outputs:
 # remove title from html
 inputs:
   docfx.yml:
-  h1ToRemove.md: |
+  h1-To-Remove.md: |
     # h1 title
-  h1ToKeep.md: |
+  h1-To-Keep.md: |
     welcome to docfx
     # h1 title
 outputs:
-  h1toremove.json: |
+  h1-to-remove.json: |
     {
       "conceptual": "",
       "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
-  h1tokeep.json: |
+  h1-to-keep.json: |
     {
       "conceptual":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
       "rawTitle": ""

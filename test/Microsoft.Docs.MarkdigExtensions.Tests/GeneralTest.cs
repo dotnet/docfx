@@ -10,7 +10,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     {
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void MarkdigWithDefaultFAL()
+        public void TestMarkdig_Default()
         {
             var source = "[!INCLUDE [title](~/token1573.md)]";
             var expected = @"<p><strong>token content</strong></p>";

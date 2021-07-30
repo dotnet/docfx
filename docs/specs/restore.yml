@@ -154,8 +154,8 @@ inputs:
       dep: https://github.com/docascode/docfx-test-dependencies#restore/long-path
   docs/test.md:
     "[!INCLUDE[](~/dep/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-\
-    file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-tes\
-    t-for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
+    file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test\
+    -for-l/for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-\
     for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long-path-file-test-for-long\
     -path-file-test-for-long-path-file-test-fo/for-long-path-test.md)]"
 outputs:
@@ -179,7 +179,7 @@ repos:
         docs/child.md:
   https://docs.com/restore/x#child-a:
     - files:
-        docs/childx.md:
+        docs/child-1.md:
 outputs:
   docs/a.json:
 ---
@@ -195,13 +195,13 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/folder/**/*"
+            - "crr-b/folder/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://docs.com/crrcontent/b
               branch: main
               includeInBuild: true
-            crrc: https://docs.com/crrcontent/c
+            crr-c: https://docs.com/crrcontent/c
         docs/a.md:
   https://docs.com/crrcontent/b:
     - files:
@@ -212,8 +212,8 @@ repos:
         c.md:
 outputs:
   docs/a.json:
-  crrb/folder/b.json:
-  crrb/folder/image.png: xxx
+  crr-b/folder/b.json:
+  crr-b/folder/image.png: xxx
 ---
 # apply routes to the files in dependency repository
 # if no route applied, crr files will be built to `{dependencyName}/` folder
@@ -222,16 +222,16 @@ repos:
     - files:
         docfx.yml: |
           files:
-            - "crrb/**/*"
-            - "crrc/**/*"
+            - "crr-b/**/*"
+            - "crr-c/**/*"
           routes:
-            "crrb/": "xyz"
+            "crr-b/": "xyz"
           dependencies:
-            crrb:
+            crr-b:
               url: https://docs.com/crrcontent/2
               branch: main
               includeInBuild: true
-            crrc:
+            crr-c:
               url: https://docs.com/crrcontent/3
               includeInBuild: true
   https://docs.com/crrcontent/2:
@@ -242,7 +242,7 @@ repos:
         c.md:
 outputs:
   xyz/b.json:
-  crrc/c.json:
+  crr-c/c.json:
 ---
 # apply metadata to the files in dependency repository
 repos:
@@ -252,9 +252,9 @@ repos:
           fileMetadata:
             key:
               docs/**/*: value
-              crrb/folder/**/*: another value
+              crr-b/folder/**/*: another value
           dependencies:
-            crrb:
+            crr-b:
               url: https://docs.com/crrmetadata/2
               branch: main
               includeInBuild: true
@@ -265,7 +265,7 @@ repos:
 outputs:
   docs/b.json: |
     {"key": "value"}
-  crrb/folder/b.json: |
+  crr-b/folder/b.json: |
     {"key": "another value"}
 ---
 # build crr file with moniker
@@ -275,9 +275,9 @@ repos:
         docfx.yml: |
           monikerRange:
             'docs/**': '>= netcore-1.0'
-            'crrb/folder/**': '>= netcore-1.1'
+            'crr-b/folder/**': '>= netcore-1.1'
           dependencies:
-            crrb:
+            crr-b:
               url: https://docs.com/crrmoniker/2
               branch: main
               includeInBuild: true
@@ -294,10 +294,10 @@ repos:
     - files:
         folder/b.md:
 outputs:
-  55a4a18f941221e4d8924d8ebc96dd6c/crrb/folder/b.json:
+  55a4a18f941221e4d8924d8ebc96dd6c/crr-b/folder/b.json:
   17b9fe681514513cbf7d5c90e32f107a/docs/b.json:
   .publish.json: |
-    {"files": [{"url": "/docs/b", "monikers":["netcore-1.0","netcore-1.1"]}, {"url": "/crrb/folder/b", "monikers":["netcore-1.1"]}]}
+    {"files": [{"url": "/docs/b", "monikers":["netcore-1.0","netcore-1.1"]}, {"url": "/crr-b/folder/b", "monikers":["netcore-1.1"]}]}
 ---
 # crr files have same name but in different crr
 repos:
@@ -305,15 +305,15 @@ repos:
     - files:
         docfx.yml: |
           files:
-            - "crrb/**/*"
-            - "crrc/**/*"
+            - "crr-b/**/*"
+            - "crr-c/**/*"
             - "docs/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://docs.com/crrsame/b
               branch: main
               includeInBuild: true
-            crrc:
+            crr-c:
               url: https://docs.com/crrsame/c
               branch: test
               includeInBuild: true
@@ -333,22 +333,22 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json:
-  crrb/a.json:
-  crrb/b.json:
-  crrc/a.json:
-  crrc/b.json:
+  crr-b/a.json:
+  crr-b/b.json:
+  crr-c/a.json:
+  crr-c/b.json:
   filemap.json: |
     {
       "file_mapping": {
-        "crrb/a.md": {
+        "crr-b/a.md": {
           "type": "Content",
-          "output_relative_path": "crrb/a.html",
-          "asset_id": "crrb/a"
+          "output_relative_path": "crr-b/a.html",
+          "asset_id": "crr-b/a"
         },
-        "crrc/a.md": {
+        "crr-c/a.md": {
           "type": "Content",
-          "output_relative_path": "crrc/a.html",
-          "asset_id": "crrc/a"
+          "output_relative_path": "crr-c/a.html",
+          "asset_id": "crr-c/a"
         },
         "docs/a.md": {
           "type": "Content",
@@ -360,8 +360,8 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-        "crrb/a.md": [{ "source": "crrb/b.md", "type": "file" }],
-        "crrc/a.md": [{ "source": "crrc/b.md", "type": "file" }],
+        "crr-b/a.md": [{ "source": "crr-b/b.md", "type": "file" }],
+        "crr-c/a.md": [{ "source": "crr-c/b.md", "type": "file" }],
         "docs/a.md": [{ "source": "docs/b.md", "type": "file" }]
       }
     }

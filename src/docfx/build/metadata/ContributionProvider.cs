@@ -117,7 +117,7 @@ namespace Microsoft.Docs.Build
 
             (string?, string?, string?) GetGitUrlsCore(FilePath file)
             {
-                var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+                var isAllowlisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
 
                 var fullPath = _input.TryGetOriginalPhysicalPath(file);
                 if (fullPath is null)
@@ -133,12 +133,12 @@ namespace Microsoft.Docs.Build
 
                 var gitUrlTemplate = GetGitUrlTemplate(repo.Url, pathToRepo);
                 var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Url).Replace("{branch}", repo.Branch);
-                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
+                var contentGitUrl = isAllowlisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
 
                 return (
                     contentGitUrl,
                     originalContentGitUrl,
-                    !isWhitelisted ? originalContentGitUrl : gitUrlTemplate);
+                    !isAllowlisted ? originalContentGitUrl : gitUrlTemplate);
             }
         }
 

@@ -1,7 +1,6 @@
 ---
 title: DocFX v3
 description: The next version of DocFX.
-author: [herohua, yufeih, lianwei]
 ---
 
 # DocFX v3
@@ -24,7 +23,7 @@ Currently, DocFX is already the core of the build and publish pipeline that powe
 5. Technical stacks are different causing additional overhead in development and troubleshooting.
 6. Community users are expressing their desire for a tool that would generate a documentation site similar to Docs, but there is no easy way to approach them with the current design.
 
-We'd like to address these pain points in v3 aiming to make v3 to be a world-class "docs" tool with following visions:
+We would like to address these pain points in v3 aiming to make v3 to be a world-class "docs" tool with following visions:
 
 1. Provide markdown and all reference language documentation support.
 2. Run anywhere and publish to anywhere possible.
@@ -144,7 +143,7 @@ Based on current supported scenarios, we summarize the dependency graph of diffe
 
 We desperately want to replace Mustache/Liquid/Jint with razor.
 
-These are the two design principles we'd like to pursue while designing the new razor template engine:
+These are the two design principles We would like to pursue while designing the new razor template engine:
 
 1. Treat template engine as a simple process that transforms a model to text.
 

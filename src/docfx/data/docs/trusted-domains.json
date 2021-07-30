@@ -2,6 +2,7 @@
   "a": [
     "assetId:*",
     "about:*",
+    "azuredatastudio:*",
     "chrome:*",
     "edge:*",
     "feedback-hub:*",
