@@ -38,7 +38,7 @@ a pivot
 :::    zone-end
 
 :::  zone  pivot="" foo,bar ""    target=""docs""
-a pivot with target 
+a pivot with target
 :::    zone-end
 
 ::: zone target=""docs"" pivot=""csharp7-is-great""
