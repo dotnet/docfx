@@ -124,13 +124,13 @@ inputs:
     |------------|-----------------------------|---------------------------------|  
     |Move|ALT|ALT|
   b.md: |
-    this is an include title
+    this is an included title
   c.md: |
     ||TEXT|C|  
     |------------|-----------------------------|---------------------------------|  
     |[!INCLUDE[include1](b.md)]|ALT|ALT|
   d.md: |
-    **this is an include title**
+    **this is an included title**
   e.md: |
     ||TEXT|C|  
     |------------|-----------------------------|---------------------------------|  

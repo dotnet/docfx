@@ -138,7 +138,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"unexpected-type","message":"Expected type 'String' but got 'Object'.","file":"docs/a.yml","line":3,"column":18}
 ---
-# Schema documents with Href content referencing resource file, the resource file should have output
+# Schema documents with Href content referencing resource file, the resource file should appear in output folder
 inputs:
   docfx.yml:
   docs/a.yml: |
