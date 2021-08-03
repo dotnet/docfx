@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     [Export(nameof(SitemapGenerator), typeof(IPostProcessor))]
     public class SitemapGenerator : IPostProcessor
     {
-        private static readonly XNamespace Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
+        private static readonly XNamespace Namespace = "https://www.sitemaps.org/schemas/sitemap/0.9";
         private const string HtmlExtension = ".html";
         private const string SitemapName = "sitemap.xml";
 
