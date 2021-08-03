@@ -41,7 +41,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.Secrets.GithubToken))
             {
-                _httpClient = new HttpClient(_httpClientHandler);
+                _httpClient = new HttpClient(_httpClientHandler); // lgtm [cs/httpclient-checkcertrevlist-disabled]
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.Secrets.GithubToken);
             }
