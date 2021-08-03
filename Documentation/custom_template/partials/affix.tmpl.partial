@@ -15,9 +15,6 @@
           <a href="{{sourceurl}}" class="contribution-link">{{__global.viewSource}}</a>
         </li>
         {{/sourceurl}}
-        <li>
-          <a href="#disqus_thread" class="contribution-link">0 Comments</a>
-        </li>
       </ul>
     </div>
     {{/_disableContribution}}

@@ -30,7 +30,7 @@ However, due to limited resource on v2, we are going to:
 - address large-impact requests only, e.g. features or bugs blocking adoption of DocFX v2, `metadata` gap to support any new version of .NET and .NET core
 - postpone other features to be reconsidered and planned in v3
 - continuously improve usability, e.g. documentation, error messages
-- still provide active support to all channels (GitHub issue, Disqus forum, etc.), but may have some latency in response
+- still provide active support to all channels (GitHub issue, etc.), but may have some latency in response
 - still provide full support to your contribution by PRs
 
 ## features in backlog (most likely to address in v3)
