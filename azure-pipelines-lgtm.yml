@@ -5,7 +5,8 @@ trigger:
     include:
     - v3
     - v3-release
-pr: none
+pr: 
+  - v3
 
 variables:
 - name: dotnetVersion
