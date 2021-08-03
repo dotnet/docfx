@@ -60,15 +60,15 @@ namespace Microsoft.Docs.Build
 
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_testName}");
 
-                var remoteBranch = EnsureTestData(opts, workingFolder);
+                EnsureTestData(opts, workingFolder);
                 if (opts.WarmUp)
                 {
-                    var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
+                    var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
                     RestoreDependency(repositoryPath, docfxConfig, outputPath);
                 }
                 else
                 {
-                    Test(opts, workingFolder, remoteBranch);
+                    Test(opts, workingFolder);
                 }
             }
             catch (Exception ex)
@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             return 0;
         }
 
-        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder, string remoteBranch)
+        private static (string baseLinePath, string outputPath, string repositoryPath, string docfxConfig) Prepare(Options opts, string workingFolder)
         {
             var repositoryPath = Path.Combine(workingFolder, s_testName);
             var cachePath = Path.Combine(workingFolder, "cache");
@@ -95,7 +95,7 @@ namespace Microsoft.Docs.Build
 
             // Set Env for Build
             Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_URL", opts.Repository);
-            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", remoteBranch);
+            Environment.SetEnvironmentVariable("DOCFX_REPOSITORY_BRANCH", opts.Branch);
             Environment.SetEnvironmentVariable("DOCFX_LOCALE", opts.Locale);
             Environment.SetEnvironmentVariable("DOCFX_STATE_PATH", statePath);
             Environment.SetEnvironmentVariable("DOCFX_CACHE_PATH", cachePath);
@@ -171,10 +171,10 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static bool Test(Options opts, string workingFolder, string remoteBranch)
+        private static bool Test(Options opts, string workingFolder)
         {
             var testResult = new RegressionTestResult();
-            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder, remoteBranch);
+            var (baseLinePath, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
 
             Clean(outputPath);
             Build(testResult, repositoryPath, outputPath, opts, docfxConfig);
@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
             return true;
         }
 
-        private static string EnsureTestData(Options opts, string workingFolder)
+        private static void EnsureTestData(Options opts, string workingFolder)
         {
             if (!Directory.Exists(workingFolder))
             {
@@ -198,10 +198,6 @@ namespace Microsoft.Docs.Build
 
                 Retry(() => Exec("git", $"{s_gitCmdAuth} fetch origin --progress template", cwd: workingFolder, secrets: s_gitCmdAuth));
             }
-
-            var remoteBranch = string.IsNullOrEmpty(opts.Branch)
-                ? GetRemoteDefaultBranch(opts.Repository, workingFolder)
-                : opts.Branch;
 
             try
             {
@@ -219,8 +215,7 @@ namespace Microsoft.Docs.Build
                     // A new repo is added for the first time
                     Exec("git", $"checkout -B {s_testName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
-                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {remoteBranch} {opts.Repository} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
-                    return remoteBranch;
+                    Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {opts.Branch} {opts.Repository} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
                 }
                 throw;
             }
@@ -229,22 +224,10 @@ namespace Microsoft.Docs.Build
             Exec("git", $"clean -xdff", cwd: workingFolder);
 
             var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
-            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {remoteBranch} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+            Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule sync {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
             Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_testName));
-            return remoteBranch;
-        }
-
-        private static string GetRemoteDefaultBranch(string repositoryUrl, string workingDirectory)
-        {
-            var remoteInfo = ProcessUtility.Execute("git", $"{s_gitCmdAuth} remote show {repositoryUrl}", workingDirectory, secret: s_gitCmdAuth);
-            var match = Regex.Match(remoteInfo, "^([\\s\\S]*)\\sHEAD branch: (.*)$");
-            if (match.Success)
-            {
-                return match.Groups[2].Value;
-            }
-            throw new InvalidOperationException("Default remote branch not found!");
         }
 
         private static void Clean(string outputPath)
