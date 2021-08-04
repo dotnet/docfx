@@ -129,7 +129,7 @@ namespace Microsoft.Docs.Build
             result["isLearn"] = IsLearn(docsetConfig);
             result["microsoftGraphTenantId"] = "72f988bf-86f1-41af-91ab-2d7cd011db47";
             result["microsoftGraphClientId"] = OpsAccessor.DocsEnvironment == DocsEnvironment.Prod
-                ? "b6b77d19-e9de-4611-bc6c-4f44640ec6fd"
+                ? "323e04d2-a55f-4ee7-a3fb-a548b728be48"
                 : "b799e059-9dd8-4839-a39c-96f7531e55e2";
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
