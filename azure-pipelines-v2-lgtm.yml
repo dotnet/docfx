@@ -8,6 +8,16 @@ trigger:
     - main
 pr: none
 
+variables:
+  - name: LGTM.SnapshotIdentifiers
+    value: Build=Full
+  - name: LGTM.SnapshotMetadata
+    value: Owner=OPSBuild
+  - name: LGTM.UploadSnapshot
+    value: true
+  - name: Semmle.SkipAnalysis
+    value: true
+
 pool:
   vmImage: 'windows-latest'
 
