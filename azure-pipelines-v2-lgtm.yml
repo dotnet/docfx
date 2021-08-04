@@ -38,6 +38,8 @@ steps:
       **/*.dll;
 
 - task: Semmle@0
+  env: 
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   displayName: Security - LGTM
   inputs:
     toolVersion: 'LatestPreRelease'
