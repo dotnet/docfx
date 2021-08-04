@@ -24,7 +24,6 @@ namespace Microsoft.Docs.Build
         private static readonly Uri s_url = new("https://api.github.com/graphql");
 
         private readonly HttpClient? _httpClient;
-        private readonly HttpClientHandler _httpClientHandler = new() { CheckCertificateRevocationList = true };
         private readonly SemaphoreSlim _syncRoot = new(1, 1);
         private readonly ConcurrentHashSet<(string owner, string name)> _unknownRepos = new();
         private readonly JsonDiskCache<Error, string, GitHubUser> _userCache;
@@ -41,7 +40,7 @@ namespace Microsoft.Docs.Build
 
             if (!string.IsNullOrEmpty(config.Secrets.GithubToken))
             {
-                _httpClient = new HttpClient(_httpClientHandler);
+                _httpClient = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
                 _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.Secrets.GithubToken);
             }
