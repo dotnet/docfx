@@ -72,6 +72,7 @@ steps:
   inputs:
     tsaVersion: 'TsaV2'
     instanceUrlForTsaV2	: 'MSAZURE'
+    projectNameMSAZURE: 'One'
     codebase: 'NewOrUpdate'
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default_v2'
