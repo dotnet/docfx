@@ -71,6 +71,7 @@ steps:
 - task: TSAUpload@1
   inputs:
     tsaVersion: 'TsaV2'
+    instanceUrlForTsaV2	: 'MSAZURE'
     codebase: 'NewOrUpdate'
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default_v2'
