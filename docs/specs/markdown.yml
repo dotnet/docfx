@@ -781,7 +781,7 @@ inputs:
 outputs:
   index.json: 
 ---
-# Autolink www.yyy.zzz should prepend with https
+# Autolink www.start.end should prepend with https
 inputs:
   docfx.yml:
   index.md: |
