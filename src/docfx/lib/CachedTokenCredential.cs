@@ -43,7 +43,9 @@ namespace Microsoft.Docs.Build
 
         public override AccessToken GetToken(TokenRequestContext requestContext, CancellationToken cancellationToken)
         {
+#pragma warning disable CA2012 // Use ValueTasks correctly
             return GetTokenAsync(requestContext, cancellationToken).GetAwaiter().GetResult();
+#pragma warning restore CA2012 // Use ValueTasks correctly
         }
 
         private static string GenerateCacheKey(TokenRequestContext requestContext)
