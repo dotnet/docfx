@@ -8,6 +8,12 @@ trigger:
     - main
 pr: none
 
+variables:
+  LGTM.SnapshotIdentifiers: Build=Full
+  LGTM.SnapshotMetadata: Owner=OPSBuild
+  LGTM.UploadSnapshot: true
+  Semmle.SkipAnalysis: true
+
 pool:
   vmImage: 'windows-latest'
 
@@ -28,6 +34,8 @@ steps:
       **/*.dll;
 
 - task: Semmle@0
+  env: 
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
   displayName: Security - LGTM
   inputs:
     toolVersion: 'LatestPreRelease'
@@ -59,7 +67,6 @@ steps:
 - task: TSAUpload@1
   inputs:
     tsaVersion: 'TsaV2'
-    codebase: 'Existing'
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default_v2'
     uploadCredScan: true
