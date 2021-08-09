@@ -781,6 +781,15 @@ inputs:
 outputs:
   index.json: 
 ---
+# Autolink www.start.end should prepend with https
+inputs:
+  docfx.yml:
+  index.md: |
+    This is www.docs.com
+outputs:
+  index.json: |
+    {"conceptual": "*https://www.docs.com*"}
+---
 # Report correct line number for unknown-language-code in token
 inputs:
   docfx.yml: |
