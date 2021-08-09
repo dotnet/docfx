@@ -44,5 +44,35 @@ namespace Microsoft.Docs.Build
                 JToken.Parse(expectedJson.Replace('\'', '"')),
                 JToken.Parse(actualConfig));
         }
+
+        [Theory]
+        [InlineData(
+    "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=master",
+    "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
+        [InlineData(
+    "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=live",
+    "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
+        [InlineData(
+    "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr.cs-cz&branch=live-sxs",
+    "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}")]
+        [InlineData(
+    "https://ops/buildconfig/?name=E2E_DocFxV3&repository_url=https://github.com/OPS-E2E-PPE/E2E_DocFxV3/&branch=master",
+    "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/E2E_DocFxV3','xrefHostName':'ppe.docs.microsoft.com'}")]
+        public static async Task AdaptOpsServiceConfigWithAAD(string url, string expectedJson)
+        {
+            var credentialHandler = new CredentialHandler((_, _, _) =>
+            {
+                return Task.FromResult<HttpConfig>(new() { Headers = new() });
+            });
+            var accessor = new OpsAccessor(null, credentialHandler);
+            var adapter = new OpsConfigAdapter(accessor);
+            using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
+            var response = await adapter.InterceptHttpRequest(request);
+            var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+
+            new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(
+                JToken.Parse(expectedJson.Replace('\'', '"')),
+                JToken.Parse(actualConfig));
+        }
     }
 }
