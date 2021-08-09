@@ -35,10 +35,6 @@ namespace Microsoft.Docs.Build
                 _cache.AddOrUpdate(cacheKey, authResult, (key, value) => authResult);
                 return authResult;
             }
-            catch (Exception e)
-            {
-                throw;
-            }
             finally
             {
                 _semaphore.Release();

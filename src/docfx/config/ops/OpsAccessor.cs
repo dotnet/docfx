@@ -225,7 +225,7 @@ namespace Microsoft.Docs.Build
                 request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", "True");
                 if (!request.Headers.Contains("X-OP-BuildUserToken"))
                 {
-                    request.Headers.TryAddWithoutValidation("Authorization", $"Bearer{await GetAccessTokenAsync()}");
+                    request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {await GetAccessTokenAsync()}");
                 }
 
                 return await (middleware != null ? middleware(request, next) : next(request));
@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
         private static async Task<string> GetAccessTokenAsync()
         {
             var accessToken = await s_cachedTokenCredential
-                .GetTokenAsync(new TokenRequestContext(new[] { $"{s_opsClientId}./default" }), default)
+                .GetTokenAsync(new TokenRequestContext(new[] { $"{s_opsClientId}/.default" }), default)
                 .ConfigureAwait(false);
             return accessToken.Token;
         }
