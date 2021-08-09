@@ -60,11 +60,7 @@ namespace Microsoft.Docs.Build
     "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/E2E_DocFxV3','xrefHostName':'ppe.docs.microsoft.com'}")]
         public static async Task AdaptOpsServiceConfigWithAAD(string url, string expectedJson)
         {
-            var credentialHandler = new CredentialHandler((_, _, _) =>
-            {
-                return Task.FromResult<HttpConfig>(new() { Headers = new() });
-            });
-            var accessor = new OpsAccessor(null, credentialHandler);
+            var accessor = new OpsAccessor(null, new CredentialHandler());
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);
