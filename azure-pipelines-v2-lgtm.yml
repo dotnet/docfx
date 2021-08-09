@@ -76,6 +76,8 @@ steps:
     codebase: 'NewOrUpdate'
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default_v2'
+    areaPath: 'One\\DeveloperRelations'
+    iterationPath: 'One\\_Default'
     uploadCredScan: true
     uploadBinSkim: true
     uploadSemmle: true
