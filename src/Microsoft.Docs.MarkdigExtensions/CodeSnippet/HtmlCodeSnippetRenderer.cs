@@ -111,7 +111,7 @@ namespace Microsoft.Docs.MarkdigExtensions
             { "swift", Array.Empty<string>() },
             { "typescript", new string[] { "ts" } },
             { "xaml", Array.Empty<string>() },
-            { "xml", new string[] { "xsl", "xslt", "xsd", "wsdl", "csdl", "edmx" } },
+            { "xml", new string[] { "xsl", "xslt", "xsd", "wsdl", "csdl", "edmx", "vsixmanifest" } },
             { "vb", new string[] { "vbnet", "vbscript", "bas", "vbs", "vba" } },
         };
 
