@@ -58,12 +58,13 @@ jobs:
   
   - task: PublishTestResults@2
     inputs:
+      displayName: Publish Test Results
       testResultsFormat: xUnit
-      testResultsFiles: './_temp/testResult/**/*.trx'
+      testResultsFiles: '**/cloudtest_*.trx'
       mergeTestResults: true
 
   - task: reportgenerator@4
-    displayName: Merge Test Results
+    displayName: Merge Coverage Results
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       reports: test/**/coverage.cobertura.xml
