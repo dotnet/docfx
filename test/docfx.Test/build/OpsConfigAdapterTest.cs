@@ -37,7 +37,7 @@ namespace Microsoft.Docs.Build
             },
         };
 
-        [SkippableTheory]
+        [Theory]
         [MemberData(nameof(TestData))]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
