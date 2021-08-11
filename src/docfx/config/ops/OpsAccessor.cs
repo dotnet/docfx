@@ -226,15 +226,22 @@ namespace Microsoft.Docs.Build
                 request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", "True");
                 if (!request.Headers.Contains("X-OP-BuildUserToken"))
                 {
-                    environment ??= DocsEnvironment;
-                    var accessToken = environment switch
+                    try
                     {
-                        DocsEnvironment.Prod => s_accessTokenPublic,
-                        DocsEnvironment.PPE => s_accessTokenPubDev,
-                        DocsEnvironment.Perf => s_accessTokenPerf,
-                        _ => throw new InvalidOperationException(),
-                    };
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", (await accessToken.Value).Token);
+                        environment ??= DocsEnvironment;
+                        var accessToken = environment switch
+                        {
+                            DocsEnvironment.Prod => s_accessTokenPublic,
+                            DocsEnvironment.PPE => s_accessTokenPubDev,
+                            DocsEnvironment.Perf => s_accessTokenPerf,
+                            _ => throw new InvalidOperationException(),
+                        };
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", (await accessToken.Value).Token);
+                    }
+                    catch
+                    {
+                        Log.Write("Fail to get AAD access token");
+                    }
                 }
 
                 return await (middleware != null ? middleware(request, next) : next(request));
