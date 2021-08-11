@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
     [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
     internal class DocsetBuilder
     {

@@ -40,17 +40,18 @@ jobs:
       arguments: -warnAsError -c Release
 
   # dotnet test
-  - task: DotNetCoreCLI@2
+  - task: AzureCLI@2
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
-      command: test
-      arguments: -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-      publishTestResults: true
+      azureSubscription: 'DevRel - Microsoft Docs Deploy (NonProd)'
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
-      DOCS_ENVIRONMENT: 'PPE'
       DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
       DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
