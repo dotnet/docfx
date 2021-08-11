@@ -261,6 +261,9 @@ dotnet_diagnostic.IDE0055.severity = default
 # IDE0061: Use block body for local functions
 dotnet_diagnostic.IDE0061.severity = default
 
+# IDE0130: Namespace does not have to match folder structure
+dotnet_diagnostic.IDE0130.severity = default
+
 # Test specific diagnostic settings
 [test/**.cs]
 
