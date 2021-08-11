@@ -44,7 +44,7 @@ jobs:
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
-      azureSubscription: 'DevRel - Microsoft Docs Deploy (NonProd)'
+      azureSubscription: 'DevRel - Docs Build Worker (PubDev)'
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
