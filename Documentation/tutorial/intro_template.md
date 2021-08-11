@@ -269,6 +269,7 @@ Hello World
 > [!Tip]
 > For each file, the input data model can be exported to a JSON file by calling `docfx build --exportRawModel`.
 > And the returned *View Model* can be exported to a JSON file by calling `docfx build --exportViewModel`.
+> The output files are stored in the DocFx destination subdirectory, which defaults to `<project-name>\_site\`.
 
 The Input Data Model
 --------------------
