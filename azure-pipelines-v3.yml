@@ -59,7 +59,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: xUnit
-      testResultsFiles: '**/TEST-*.xml'
+      testResultsFiles: '**/TEST-*.trx'
       mergeTestResults: true
 
   - task: reportgenerator@4
