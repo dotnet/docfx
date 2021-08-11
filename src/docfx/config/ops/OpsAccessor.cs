@@ -238,9 +238,10 @@ namespace Microsoft.Docs.Build
                         };
                         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", (await accessToken.Value).Token);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         Log.Write("Fail to get AAD access token");
+                        Log.Write(ex);
                     }
                 }
 

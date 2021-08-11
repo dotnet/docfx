@@ -55,6 +55,12 @@ jobs:
       DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
       DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
+  
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: xUnit
+      testResultsFiles: '**/TEST-*.xml'
+      mergeTestResults: true
 
   - task: reportgenerator@4
     displayName: Merge Test Results

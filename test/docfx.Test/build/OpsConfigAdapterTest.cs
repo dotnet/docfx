@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -13,31 +12,27 @@ namespace Microsoft.Docs.Build
 {
     public static class OpsConfigAdapterTest
     {
-        public static IEnumerable<object[]> TestData => new[]
+        public static TheoryData<string, string> TestData => new()
         {
-            new[]
             {
                 "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=master",
-                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}",
+                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}"
             },
-            new[]
             {
                 "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr&branch=live",
-                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}",
+                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}"
             },
-            new[]
             {
                 "https://ops/buildconfig/?name=e2eppe-azure-documents&repository_url=https://github.com/OPS-E2E-PPE/azure-docs-pr.cs-cz&branch=live-sxs",
-                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}",
+                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/e2eppe-azure-documents','xrefHostName':'ppe.docs.microsoft.com'}"
             },
-            new[]
             {
                 "https://ops/buildconfig/?name=E2E_DocFxV3&repository_url=https://github.com/OPS-E2E-PPE/E2E_DocFxV3/&branch=master",
-                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/E2E_DocFxV3','xrefHostName':'ppe.docs.microsoft.com'}",
+                "{'product':'MSDN','siteName':'Docs','hostName':'ppe.docs.microsoft.com','basePath':'/E2E_DocFxV3','xrefHostName':'ppe.docs.microsoft.com'}"
             },
         };
 
-        [Theory]
+        [SkippableTheory]
         [MemberData(nameof(TestData))]
         public static async Task AdaptOpsServiceConfig(string url, string expectedJson)
         {
