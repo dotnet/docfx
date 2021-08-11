@@ -48,7 +48,7 @@ jobs:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp
+        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp/testResult
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
@@ -59,7 +59,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFormat: xUnit
-      testResultsFiles: '**/TEST-*.trx'
+      testResultsFiles: './_temp/testResult/**/*.trx'
       mergeTestResults: true
 
   - task: reportgenerator@4
