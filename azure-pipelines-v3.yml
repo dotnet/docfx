@@ -48,7 +48,7 @@ jobs:
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
-        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
