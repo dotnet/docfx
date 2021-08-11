@@ -266,7 +266,7 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => "https://buildapi.docs.microsoft.com",
+                DocsEnvironment.Prod => "https://op-build-prod.azurewebsites.net",
                 DocsEnvironment.PPE => "https://buildapi.ppe.docs.microsoft.com",
                 DocsEnvironment.Perf => "https://op-build-test.azurewebsites.net",
                 _ => throw new InvalidOperationException(),
