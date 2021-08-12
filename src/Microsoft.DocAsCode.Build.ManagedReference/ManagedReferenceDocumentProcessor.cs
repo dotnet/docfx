@@ -388,7 +388,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     new Newtonsoft.Json.Converters.StringEnumConverter(),
                 },
-                TypeNameHandling = TypeNameHandling.All,
+                TypeNameHandling = TypeNameHandling.All, // lgtm [cs/unsafe-type-name-handling]
             };
         }
 
