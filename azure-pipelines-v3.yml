@@ -60,7 +60,7 @@ jobs:
     inputs:
       displayName: Publish Test Results
       testResultsFormat: VSTest
-      testResultsFiles: '**/cloudtest_*.trx'
+      testResultsFiles: '**/*.trx'
       mergeTestResults: true
 
   - task: reportgenerator@4
