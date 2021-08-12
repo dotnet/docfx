@@ -59,7 +59,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       displayName: Publish Test Results
-      testResultsFormat: xUnit
+      testResultsFormat: VSTest
       testResultsFiles: '**/cloudtest_*.trx'
       mergeTestResults: true
 
