@@ -235,3 +235,7 @@ steps:
     CHOCO_TOKEN: $(ChocoleteyPublishToken)
     AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
     TOKEN: $(ServiceAccountGithubToken)
+
+- task: ComponentGovernanceComponentDetection@0
+  displayName: 'Component Detection'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
