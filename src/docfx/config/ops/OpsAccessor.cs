@@ -231,7 +231,7 @@ namespace Microsoft.Docs.Build
                 if (!response.IsSuccessStatusCode)
                 {
                     var ex = new HttpRequestException(
-                        $"Request not success: {response.StatusCode}: {await response.Content.ReadAsStringAsync()}", default, response.StatusCode);
+                        $"Request failed({response.StatusCode}): {await response.Content.ReadAsStringAsync()}", default, response.StatusCode);
 
                     if (response.Headers.TryGetValues("request-url", out var requestUrl))
                     {

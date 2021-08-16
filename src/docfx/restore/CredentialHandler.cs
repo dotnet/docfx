@@ -32,7 +32,7 @@ namespace Microsoft.Docs.Build
                 requestUrl = url;
                 if (i > 0)
                 {
-                    Log.Write($"[{nameof(CredentialHandler)}] Retry {i} '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
+                    Log.Write($"[{nameof(CredentialHandler)}] Retry '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
                 }
 
                 var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
