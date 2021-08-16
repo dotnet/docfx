@@ -178,7 +178,7 @@ namespace Microsoft.Docs.Build
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
-                .UseAutoLinks()
+                .UseAutoLinks(new() { UseHttpsForWWWLinks = true })
                 .UseIncludeFile(_markdownContext)
                 .UseCodeSnippet(_markdownContext)
                 .UseFencedCodeLangPrefix()

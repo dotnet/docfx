@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build
     {
         public ErrorLevel Level { get; init; }
 
+        public ErrorType Type { get; init; }
+
         public string Code { get; init; }
 
         public string Message { get; init; }
@@ -27,9 +29,11 @@ namespace Microsoft.Docs.Build
 
         public AdditionalErrorInfo? AdditionalErrorInfo { get; init; }
 
-        public Error(ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null)
+        public Error(
+            ErrorLevel level, string code, FormattableString message, SourceInfo? source = null, string? propertyPath = null, ErrorType type = ErrorType.User)
         {
             Level = level;
+            Type = type;
             Code = code;
             Message = message.ToString();
             MessageArguments = message.GetArguments();
@@ -56,7 +60,7 @@ namespace Microsoft.Docs.Build
                 end_line,
                 column,
                 end_column,
-                log_item_type = "user",
+                log_item_type = Type,
                 pull_request_only = PullRequestOnly ? (bool?)true : null,
                 property_path = PropertyPath,
                 ms_author = AdditionalErrorInfo?.MsAuthor,
