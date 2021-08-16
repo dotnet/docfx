@@ -199,3 +199,7 @@ steps:
   inputs:
     pathtoPublish: 'test\docfx-seed\_site'
     artifactName: docfx-seed-site
+
+- task: ComponentGovernanceComponentDetection@0
+  displayName: 'Component Detection'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
