@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -213,7 +214,8 @@ namespace Microsoft.Docs.Build
                 return value404;
             }
 
-            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            await EnsureSuccessStatusCode(response);
+            return await response.Content.ReadAsStringAsync();
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
             {
@@ -221,6 +223,21 @@ namespace Microsoft.Docs.Build
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     return await _http.SendAsync(request);
+                }
+            }
+
+            async Task EnsureSuccessStatusCode(HttpResponseMessage response)
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    var ex = new HttpRequestException(
+                        $"Request not success: {response.StatusCode}: {await response.Content.ReadAsStringAsync()}", default, response.StatusCode);
+
+                    if (response.Headers.TryGetValues("request-url", out var requestUrl))
+                    {
+                        ex.Data.Add("request-url", requestUrl.FirstOrDefault());
+                    }
+                    throw ex;
                 }
             }
         }

@@ -24,14 +24,15 @@ namespace Microsoft.Docs.Build
 
             var needRefresh = false;
             HttpConfig? httpConfigUsed = null;
+            var requestUrl = string.Empty;
             for (var i = 0; i < RetryCount; i++)
             {
                 using var request = requestFactory();
                 var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
-
+                requestUrl = url;
                 if (i > 0)
                 {
-                    Log.Write($"[{nameof(CredentialHandler)}] Retry '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
+                    Log.Write($"[{nameof(CredentialHandler)}] Retry {i} '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
                 }
 
                 var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
@@ -47,7 +48,7 @@ namespace Microsoft.Docs.Build
                 _credentialCache.TryRemove(url, out _);
                 httpConfigUsed = httpConfig;
             }
-
+            response!.Headers.Add("request-url", requestUrl);
             return response!;
         }
 
