@@ -1,8 +1,14 @@
-Version Notes (Current Version: v2.59)
+Version Notes (Current Version: v2.58.1)
 =======================================
 
-v2.59(Pre-release)
+v2.58.1
 -----------
+1. Dozens of document improvements. Thanks @BryanLa!
+1. Bug fix:
+    1. Show cref name instead of missing if not resolved. Thanks @Emdot! (#7245)
+    2. Fix showing wrong syntax for nullable value types. Thanks @mikernet! (#7045, #5964)
+    3. Fix exception when loading `memberpage` plugin. Thanks @jamiehankins! (#7422)
+    4. Get latest Visual Studio version when creating MSBuild instance. Thanks @jamiehankins (#7463)
 
 v2.58
 -----------
