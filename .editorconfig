@@ -252,6 +252,9 @@ dotnet_diagnostic.IDE0017.severity = default
 # IDE0077: Avoid legacy format target in 'SuppressMessageAttribute'
 dotnet_diagnostic.IDE0077.severity = default
 
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = default
+
 # IDE0032: Use auto property
 dotnet_diagnostic.IDE0032.severity = default
 
