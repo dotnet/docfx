@@ -59,7 +59,10 @@ namespace Microsoft.Docs.Build
         [MemberData(nameof(TestData))]
         public static async Task AdaptOpsServiceConfigWithAAD(string url, string expectedJson)
         {
-            Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
+            Skip.If(
+                bool.TryParse(Environment.GetEnvironmentVariable("IS_GITHUB_ACTION"), out var isGithubAction)
+                && isGithubAction
+                && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
             var accessor = new OpsAccessor(null, new CredentialHandler());
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
