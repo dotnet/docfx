@@ -40,22 +40,31 @@ jobs:
       arguments: -warnAsError -c Release
 
   # dotnet test
-  - task: DotNetCoreCLI@2
+  - task: AzureCLI@2
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
-      command: test
-      arguments: -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-      publishTestResults: true
+      azureSubscription: 'DevRel - Docs Build Worker (PubDev)'
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp/testResult
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
       DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
       DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
+  
+  - task: PublishTestResults@2
+    inputs:
+      displayName: Publish Test Results
+      testResultsFormat: VSTest
+      testResultsFiles: '**/*.trx'
+      mergeTestResults: true
 
   - task: reportgenerator@4
-    displayName: Merge Test Results
+    displayName: Merge Coverage Results
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       reports: test/**/coverage.cobertura.xml
@@ -158,6 +167,7 @@ jobs:
       - task: AzureCLI@2
         displayName: ${{repo}}
         inputs:
+          # TODO: switch to  DevRel - DocsBuild Docfx CI Test once created
           azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
           scriptType: ps
           scriptLocation: inlineScript
@@ -220,7 +230,7 @@ parameters:
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
-      params: https://github.com/MicrosoftDocs/test --branch main --timeout 20 --no-dry-sync
+      params: https://github.com/MicrosoftDocs/test --branch master --timeout 20 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
     windows-compatibility:

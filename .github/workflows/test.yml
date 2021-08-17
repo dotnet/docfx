@@ -9,6 +9,8 @@ jobs:
   test:
     name: Test
     runs-on: ${{ matrix.os }}
+    env:
+      IS_GITHUB_ACTION: 'true'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
