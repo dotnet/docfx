@@ -295,7 +295,7 @@ namespace Microsoft.Docs.Build
                 ? new Dictionary<string, string> { [".errors.log"] = errors }
                 : isContinue
                   ? (from kvp in spec.Outputs
-                    where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json") && !kvp.Key.EndsWith("hierarchy.json")
+                     where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json") && !kvp.Key.EndsWith("hierarchy.json")
                      select kvp).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
                   : spec.Outputs;
 
