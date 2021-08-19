@@ -370,7 +370,7 @@ outputs:
   azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
-# Hub/Landing/Architecture page is treated as *.md when calculating document id
+# Hub/Landing/Architecture/FAQ page is treated as *.md when calculating document id
 os: windows, osx
 inputs:
   docfx.yml: |
