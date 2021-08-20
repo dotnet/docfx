@@ -59,7 +59,7 @@ namespace Microsoft.Docs.Build
         public static async Task AdaptOpsServiceConfigWithAAD(string url, string expectedJson)
         {
             Skip.If(
-                bool.TryParse(Environment.GetEnvironmentVariable("IS_GITHUB_ACTION"), out var isGithubAction)
+                bool.TryParse(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), out var isGithubAction)
                 && isGithubAction);
             var accessor = new OpsAccessor(null, new CredentialHandler());
             var adapter = new OpsConfigAdapter(accessor);
