@@ -3,7 +3,6 @@
 
 using System;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -60,9 +59,8 @@ namespace Microsoft.Docs.Build
         public static async Task AdaptOpsServiceConfigWithAAD(string url, string expectedJson)
         {
             Skip.If(
-                bool.TryParse(Environment.GetEnvironmentVariable("IS_GITHUB_ACTION"), out var isGithubAction)
-                && isGithubAction
-                && !RuntimeInformation.IsOSPlatform(OSPlatform.Windows));
+                bool.TryParse(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), out var isGithubAction)
+                && isGithubAction);
             var accessor = new OpsAccessor(null, new CredentialHandler());
             var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
