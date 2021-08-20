@@ -188,5 +188,19 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
   }
 }".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
         }
+
+        [Fact]
+        public void ParseKeyWordSwaggerJsonShouldSucceed()
+        {
+            var swaggerFile = @"TestData\swagger\resolveKeyWordWithRefInside.json";
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
+            var parameters = swagger.Parameters as JObject;
+            var definitions = swagger.Definitions as JObject;
+            var tag = definitions["Tag"] as JObject;
+            var examplesOftag = tag["examples"] as JObject;
+            Assert.Null(examplesOftag["$ref"]);
+            var examplesOfparameters = parameters["examples"] as JObject;
+            Assert.NotNull(examplesOfparameters["$ref"]);
+        }
     }
 }
