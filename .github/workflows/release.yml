@@ -6,8 +6,6 @@ jobs:
   build:
     name: Release
     runs-on: windows-latest
-    env:
-      IS_GITHUB_ACTION: 'true'
     steps:
     - uses: actions/checkout@v2
       with:
