@@ -35,7 +35,7 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPerf = new(() => GetAccessTokenAsync(DocsEnvironment.Perf));
 
         private static readonly bool s_fallbackToPublicData =
-            bool.TryParse(Environment.GetEnvironmentVariable("DOCS_FALLBACK_PUBLIC"), out var fallback) && fallback;
+            bool.TryParse(Environment.GetEnvironmentVariable("DOCS_FALLBACK_TO_PUBLIC_DATA"), out var fallback) && fallback;
 
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
@@ -246,7 +246,7 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        Log.Write("Fail to get AAD access token");
+                        Log.Write($"Failed to get AAD access token<{environment}>");
                         if (s_fallbackToPublicData)
                         {
                             Log.Write(ex);
