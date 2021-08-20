@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         {
             return !string.IsNullOrEmpty(propertyName)
                 && (propertyName == "x-ms-examples"
-                || propertyName == "examples"
+                //|| propertyName == "examples"
                 || propertyName == "example");
         }
 
