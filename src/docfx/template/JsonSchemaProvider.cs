@@ -29,6 +29,7 @@ namespace Microsoft.Docs.Build
             "Hub",
             "Landing",
             "LandingData",
+            "FAQ",
         };
 
         public JsonSchemaProvider(Config config, PackageResolver packageResolver, JsonSchemaLoader jsonSchemaLoader)
