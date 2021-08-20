@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             return LoadCore(token, swaggerPath);
         }
 
-        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath, bool isExample = false)
+        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath, bool isExample = false, bool isDefinitionsChild = false)
         {
             // Fetch from cache first
             var location = JsonLocationHelper.GetLocation(token);
@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || IsExampleProperty(property.Key)));
+                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || (IsExampleProperty(property.Key) && !isDefinitionsChild), isDefinitionsChild || isDefinitionsProperty(property.Key)));
                 }
 
                 _documentObjectCache.Add(jsonLocationInfo, swaggerObject);
@@ -165,7 +165,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 || propertyName == "examples"
                 || propertyName == "example");
         }
-
+        
+        private static bool isDefinitionsProperty(string propertyName)
+        {
+            return !string.IsNullOrEmpty(propertyName)
+                && (propertyName == "definitions");
+        }
+        
         private static JObject LoadExternalReference(string externalSwaggerPath)
         {
             if (!EnvironmentContext.FileAbstractLayer.Exists(externalSwaggerPath))
