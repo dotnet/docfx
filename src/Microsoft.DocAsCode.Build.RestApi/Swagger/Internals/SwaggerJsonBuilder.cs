@@ -187,12 +187,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             return false;
         }
         
-        private static bool isDefinitionsProperty(string propertyName)
-        {
-            return !string.IsNullOrEmpty(propertyName)
-                && (propertyName == "definitions");
-        }
-        
         private static JObject LoadExternalReference(string externalSwaggerPath)
         {
             if (!EnvironmentContext.FileAbstractLayer.Exists(externalSwaggerPath))
