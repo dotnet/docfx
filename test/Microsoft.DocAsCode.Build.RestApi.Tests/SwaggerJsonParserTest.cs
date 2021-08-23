@@ -232,10 +232,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var examplesOfunresolved = unresolvedOftag["example"] as JObject;
             Assert.NotNull(examplesOfunresolved["$ref"]);
 
-            ///test properties/../../example: resolved.
-            var resolvedOftag = propertiesOftag["resolved"] as JObject;
-            var resolvedOfresolved = resolvedOftag["resolved"] as JObject;
-            var examplesOfresolved = resolvedOfresolved["example"] as JObject;
+            ///test properties/example: resolved.
+            var examplesOfresolved = propertiesOftag["example"] as JObject;
             Assert.Null(examplesOfresolved["$ref"]);
         }
     }

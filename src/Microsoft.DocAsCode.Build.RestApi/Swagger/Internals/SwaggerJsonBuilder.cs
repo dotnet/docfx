@@ -160,33 +160,32 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         private static bool IsExampleProperty(string propertyName, string grandfatherPath)
         {
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return false;
-            }
+            return !string.IsNullOrEmpty(propertyName)
+               && (propertyName == "x-ms-examples"
+               || (propertyName == "examples" && ContainSpecificKeyword(grandfatherPath))
+               || (propertyName == "example" && ContainSpecificKeyword(grandfatherPath)));
+        }
 
-            if (propertyName == "x-ms-examples")
-            {
-                return true;
-            }
-
+        private static bool ContainSpecificKeyword(string grandfatherPath)
+        {
             if (string.IsNullOrEmpty(grandfatherPath))
             {
                 return false;
             }
 
-            if (propertyName == "example" && (grandfatherPath.EndsWith("properties") || grandfatherPath.EndsWith("definitions")))
+            if (grandfatherPath.EndsWith(".properties") || grandfatherPath=="properties" || grandfatherPath == "definitions")
             {
                 return true;
             }
-            else if (propertyName == "examples" && grandfatherPath.EndsWith("responses"))
+
+            if (grandfatherPath.EndsWith(".responses"))
             {
                 return true;
             }
 
             return false;
         }
-        
+
         private static JObject LoadExternalReference(string externalSwaggerPath)
         {
             if (!EnvironmentContext.FileAbstractLayer.Exists(externalSwaggerPath))
