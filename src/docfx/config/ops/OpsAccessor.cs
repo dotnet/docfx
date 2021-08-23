@@ -6,12 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
 using Polly;
@@ -25,22 +25,15 @@ namespace Microsoft.Docs.Build
 
         public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-        private static readonly SecretClient s_secretClientPublic = new(new(
-            Environment.GetEnvironmentVariable("DOCS_KV_PROD_ENDPOINT") ?? "https://docfxdevkvpub.vault.azure.net/"), new DefaultAzureCredential());
-
-        private static readonly SecretClient s_secretClientPubDev = new(new("https://docfxdevkvpubdev.vault.azure.net/"), new DefaultAzureCredential());
-
-        private static readonly SecretClient s_secretClientPerf = new(new("https://kv-opbuild-test.vault.azure.net/"), new DefaultAzureCredential());
-
-        private static readonly Lazy<Task<string>> s_opsTokenPublic = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Prod));
-        private static readonly Lazy<Task<string>> s_opsTokenPubDev = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.PPE));
-        private static readonly Lazy<Task<string>> s_opsTokenPerf = new(() => GetSecret("OpsBuildUserToken", DocsEnvironment.Perf));
-
         private static int s_validationRulesetReported;
 
         private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
+
+        private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPublic = new(() => GetAccessTokenAsync(DocsEnvironment.Prod));
+        private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPubDev = new(() => GetAccessTokenAsync(DocsEnvironment.PPE));
+        private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPerf = new(() => GetAccessTokenAsync(DocsEnvironment.Perf));
 
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
@@ -248,35 +241,36 @@ namespace Microsoft.Docs.Build
             {
                 // Default header which allows fallback to public data when credential is not provided.
                 request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", "True");
-
-                // don't access key vault for osx since azure-cli will crash in osx
-                // https://github.com/Azure/azure-cli/issues/7519
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX) &&
-                    !request.Headers.Contains("X-OP-BuildUserToken"))
+                if (!request.Headers.Contains("X-OP-BuildUserToken"))
                 {
-                    // For development usage
                     try
                     {
                         environment ??= DocsEnvironment;
-                        var token = environment switch
+                        var accessToken = environment switch
                         {
-                            DocsEnvironment.Prod => s_opsTokenPublic,
-                            DocsEnvironment.PPE => s_opsTokenPubDev,
-                            DocsEnvironment.Perf => s_opsTokenPerf,
+                            DocsEnvironment.Prod => s_accessTokenPublic,
+                            DocsEnvironment.PPE => s_accessTokenPubDev,
+                            DocsEnvironment.Perf => s_accessTokenPerf,
                             _ => throw new InvalidOperationException(),
                         };
-
-                        request.Headers.Add("X-OP-BuildUserToken", await token.Value);
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", (await accessToken.Value).Token);
                     }
                     catch (Exception ex)
                     {
-                        Log.Write($"Cannot get 'OPBuildUserToken' from azure key vault, please make sure you have been granted the permission to access.");
+                        Log.Write("Fail to get AAD access token");
                         Log.Write(ex);
                     }
                 }
 
                 return await (middleware != null ? middleware(request, next) : next(request));
             };
+        }
+
+        private static ValueTask<AccessToken> GetAccessTokenAsync(DocsEnvironment? environment = null)
+        {
+            var defaultAzureCredential = new DefaultAzureCredential();
+            return defaultAzureCredential.GetTokenAsync(
+                new TokenRequestContext(new[] { $"{DocsBuildApiAADClientId(environment)}/.default" }));
         }
 
         private static string BuildApi(DocsEnvironment? environment = null)
@@ -301,6 +295,17 @@ namespace Microsoft.Docs.Build
             };
         }
 
+        private static string DocsBuildApiAADClientId(DocsEnvironment? environment = null)
+        {
+            return (environment ?? DocsEnvironment) switch
+            {
+                DocsEnvironment.Prod => "6befca88-4c28-430a-957e-f870b267bcfc",
+                DocsEnvironment.PPE => "6ce33073-a071-4cf9-9936-f5a24d21a089",
+                DocsEnvironment.Perf => "ec05099b-1462-406c-8883-0ea74a90e82b",
+                _ => throw new InvalidOperationException(),
+            };
+        }
+
         private static string TaxonomyApi(DocsEnvironment? environment = null)
         {
             return (environment ?? DocsEnvironment) switch
@@ -308,24 +313,6 @@ namespace Microsoft.Docs.Build
                 DocsEnvironment.Prod => "https://taxonomyservice.azurefd.net",
                 _ => "https://taxonomyserviceppe.azurefd.net",
             };
-        }
-
-        private static async Task<string> GetSecret(string secret, DocsEnvironment environment = DocsEnvironment.Prod)
-        {
-            var response = environment switch
-            {
-                DocsEnvironment.Prod => await s_secretClientPublic.GetSecretAsync(secret),
-                DocsEnvironment.PPE => await s_secretClientPubDev.GetSecretAsync(secret),
-                DocsEnvironment.Perf => await s_secretClientPerf.GetSecretAsync(secret),
-                _ => throw new InvalidOperationException(),
-            };
-
-            if (response.Value is null)
-            {
-                throw new HttpRequestException(response.GetRawResponse().ToString());
-            }
-
-            return response.Value.Value;
         }
 
         private static DocsEnvironment GetDocsEnvironment()
