@@ -175,11 +175,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 return false;
             }
 
-            if ((grandfatherPath.EndsWith("properties") || grandfatherPath.EndsWith("definitions")) && propertyName == "example")
+            if (propertyName == "example" && (grandfatherPath.EndsWith("properties") || grandfatherPath.EndsWith("definitions")))
             {
                 return true;
             }
-            else if (grandfatherPath.EndsWith("responses") && propertyName == "examples")
+            else if (propertyName == "examples" && grandfatherPath.EndsWith("responses"))
             {
                 return true;
             }
