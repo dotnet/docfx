@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             return LoadCore(token, swaggerPath);
         }
 
-        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath, bool isExample = false, bool isDefinitionsChild = false)
+        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath, bool isExample = false)
         {
             // Fetch from cache first
             var location = JsonLocationHelper.GetLocation(token);
@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || (IsExampleProperty(property.Key) && !isDefinitionsChild), isDefinitionsChild || isDefinitionsProperty(property.Key)));
+                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || IsExampleProperty(property.Key, jObject?.Parent?.Parent?.Path)));
                 }
 
                 _documentObjectCache.Add(jsonLocationInfo, swaggerObject);
@@ -158,12 +158,33 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             };
         }
 
-        private static bool IsExampleProperty(string propertyName)
+        private static bool IsExampleProperty(string propertyName, string grandfatherPath)
         {
-            return !string.IsNullOrEmpty(propertyName)
-                && (propertyName == "x-ms-examples"
-                || propertyName == "examples"
-                || propertyName == "example");
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return false;
+            }
+
+            if (propertyName == "x-ms-examples")
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(grandfatherPath))
+            {
+                return false;
+            }
+
+            if ((grandfatherPath.EndsWith("properties") || grandfatherPath.EndsWith("definitions")) && propertyName == "example")
+            {
+                return true;
+            }
+            else if (grandfatherPath.EndsWith("responses") && propertyName == "examples")
+            {
+                return true;
+            }
+
+            return false;
         }
         
         private static bool isDefinitionsProperty(string propertyName)

@@ -1,15 +1,39 @@
 ﻿{
-  "parameters": {
-    "in": "body",
-    "name": "body",
-    "description": "Pet object that needs to be added to the store",
-    "required": true,
-    "examples": {
-      "$ref": "#/definitions/ParameterExamplesContract",
-      "description": "Exampled defined for the parameter."
-    }, 
-    "schema": {
-      "$ref": "#/definitions/Tag"
+  "swagger": "2.0",
+  "x-ms-examples": {
+    "$ref": "./examples/CatsCreateOrUpdate.json"
+  },
+  "paths": {
+    "/{resourceUri}/providers/microsoft.insights/metrics": {
+      "get": {
+        "parameters": {
+          "in": "body",
+          "name": "body",
+          "description": "Pet object that needs to be added to the store",
+          "required": true,
+          "examples": {
+            "$ref": "#/definitions/ParameterExamplesContract",
+            "description": "Exampled defined for the parameter."
+          }
+        },
+          "responses": {
+            "default": {
+              "description": "Error response describing why the operation failed.",
+              "schema": {
+                "$ref": "#/definitions/Tag"
+              }
+            },
+            "200": {
+              "description": "Success. Returns details about whether a Media Service resource name is available.",
+              "examples": {
+                "$ref": "#/definitions/Tag"
+              }
+            },
+            "examples": {
+              "$ref": "#/definitions/Tag"
+            }
+          }
+        }
     }
   },
   "definitions": {
@@ -22,12 +46,24 @@
         },
         "name": {
           "type": "string"
+        },
+        "resolved": {
+          "resolved": {
+            "example": {
+              "$ref": "#/definitions/ParameterExampleContract"
+            }
+          }
+        },
+        "unresolved": {
+          "example": {
+            "$ref": "#/definitions/ParameterExampleContract"
+          }
         }
       },
       "xml": {
         "name": "Tag"
       },
-      "examples": {
+      "example": {
         "$ref": "#/definitions/ParameterExamplesContract",
         "description": "Exampled defined for the parameter."
       }
@@ -58,6 +94,9 @@
           "description": "A URL that points to the literal example"
         }
       }
+    },
+    "example": {
+      "$ref": "#/definitions/ParameterExampleContract"
     }
   }
 }
