@@ -175,7 +175,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 return false;
             }
 
-            if (propertyName == "example" && (grandfatherPath.EndsWith(".properties") || grandfatherPath == "properties" || grandfatherPath == "definitions"))
+            if (propertyName == "example" && (grandfatherPath.EndsWith(".properties") || grandfatherPath == "definitions"))
             {
                 return true;
             }
