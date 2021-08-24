@@ -188,5 +188,52 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
   }
 }".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
         }
+        [Fact]
+        public void ParseKeyWordSwaggerJsonShouldSucceed()
+        {
+            var swaggerFile = @"TestData\swagger\resolveKeyWordWithRefInside.json";
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
+
+            ///test x-ms-examples: unresolved.
+            var xmsexamples = swagger.Metadata["x-ms-examples"] as JObject;
+            Assert.NotNull(xmsexamples["$ref"]);
+
+            var get = swagger.Paths["/{resourceUri}/providers/microsoft.insights/metrics"].Metadata["get"] as JObject;
+            var responses = get["responses"] as JObject;
+
+            ///test responses/../examples: unresolved.
+            var response200 = responses["200"] as JObject;
+            var examplesOfresponse200 = response200["examples"] as JObject;
+            Assert.NotNull(examplesOfresponse200["$ref"]);
+
+            ///test responses/examples: resolved.
+            var examplesOfresponse = responses["examples"] as JObject;
+            Assert.Null(examplesOfresponse["$ref"]);
+
+            ///test parameters/examples: resolved.
+            var parameters = get["parameters"] as JObject;
+            var examplesOfparameters = parameters["examples"] as JObject;
+            Assert.Null(examplesOfparameters["$ref"]);
+
+            ///test definitions/../example: unresolved.
+            var definitions = swagger.Definitions as JObject;
+            var tag = definitions["Tag"] as JObject;
+            var examplesOftag = tag["example"] as JObject;
+            Assert.NotNull(examplesOftag["$ref"]);
+
+            ///test definitions/example: resolved.
+            var examplesOfdefinitions = definitions["example"] as JObject;
+            Assert.Null(examplesOfdefinitions["$ref"]);
+
+            ///test properties/../example: unresolved.
+            var propertiesOftag = tag["properties"] as JObject;
+            var unresolvedOftag = propertiesOftag["unresolved"] as JObject;
+            var examplesOfunresolved = unresolvedOftag["example"] as JObject;
+            Assert.NotNull(examplesOfunresolved["$ref"]);
+
+            ///test properties/example: resolved.
+            var examplesOfresolved = propertiesOftag["example"] as JObject;
+            Assert.Null(examplesOfresolved["$ref"]);
+        }
     }
 }

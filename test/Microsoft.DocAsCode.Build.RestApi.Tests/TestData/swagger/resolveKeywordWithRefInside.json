@@ -1,0 +1,59 @@
+﻿{
+  "parameters": {
+    "in": "body",
+    "name": "body",
+    "description": "Pet object that needs to be added to the store",
+    "required": true,
+    "schema": {
+      "$ref": "#/definitions/Tag"
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      },
+      "examples": {
+        "$ref": "#/definitions/ParameterExamplesContract",
+        "description": "Exampled defined for the parameter."
+      }
+    }
+  },
+  "ParameterExamplesContract": {
+    "additionalProperties": {
+      "$ref": "#/definitions/ParameterExampleContract",
+      "description": "Parameter example."
+    },
+    "description": "Parameter examples."
+  },
+  "ParameterExampleContract": {
+    "description": "Parameter example.",
+    "properties": {
+      "summary": {
+        "type": "string",
+        "description": "Short description for the example"
+      },
+      "description": {
+        "type": "string",
+        "description": "Long description for the example"
+      },
+      "value": {
+        "description": "Example value. May be a primitive value, or an object."
+      },
+      "externalValue": {
+        "type": "string",
+        "description": "A URL that points to the literal example"
+      }
+    }
+  }
+}
