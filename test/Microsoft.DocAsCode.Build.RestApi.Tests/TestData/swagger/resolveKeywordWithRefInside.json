@@ -1,11 +1,56 @@
 ﻿{
-  "parameters": {
-    "in": "body",
-    "name": "body",
-    "description": "Pet object that needs to be added to the store",
-    "required": true,
-    "schema": {
+  "swagger": "2.0",
+  "x-ms-examples": {
+    "$ref": "./examples/CatsCreateOrUpdate.json"
+  },
+  "responses": {
+    "default": {
+      "description": "Error response describing why the operation failed.",
+      "schema": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "200": {
+      "description": "Success. Returns details about whether a Media Service resource name is available.",
+      "examples": {
+        "$ref": "#/definitions/Tag"
+      }
+    },
+    "examples": {
       "$ref": "#/definitions/Tag"
+    }
+  },
+  "paths": {
+    "/{resourceUri}/providers/microsoft.insights/metrics": {
+      "get": {
+        "parameters": {
+          "in": "body",
+          "name": "body",
+          "description": "Pet object that needs to be added to the store",
+          "required": true,
+          "examples": {
+            "$ref": "#/definitions/ParameterExamplesContract",
+            "description": "Exampled defined for the parameter."
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/Tag"
+            }
+          },
+          "200": {
+            "description": "Success. Returns details about whether a Media Service resource name is available.",
+            "examples": {
+              "$ref": "#/definitions/Tag"
+            }
+          },
+          "examples": {
+            "$ref": "#/definitions/Tag"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -18,42 +63,53 @@
         },
         "name": {
           "type": "string"
+        },
+        "example": {
+          "$ref": "#/definitions/ParameterExampleContract"
+        },
+        "unresolved": {
+          "example": {
+            "$ref": "#/definitions/ParameterExampleContract"
+          }
         }
       },
       "xml": {
         "name": "Tag"
       },
-      "examples": {
+      "example": {
         "$ref": "#/definitions/ParameterExamplesContract",
         "description": "Exampled defined for the parameter."
       }
-    }
-  },
-  "ParameterExamplesContract": {
-    "additionalProperties": {
-      "$ref": "#/definitions/ParameterExampleContract",
-      "description": "Parameter example."
     },
-    "description": "Parameter examples."
-  },
-  "ParameterExampleContract": {
-    "description": "Parameter example.",
-    "properties": {
-      "summary": {
-        "type": "string",
-        "description": "Short description for the example"
+    "ParameterExamplesContract": {
+      "additionalProperties": {
+        "$ref": "#/definitions/ParameterExampleContract",
+        "description": "Parameter example."
       },
-      "description": {
-        "type": "string",
-        "description": "Long description for the example"
-      },
-      "value": {
-        "description": "Example value. May be a primitive value, or an object."
-      },
-      "externalValue": {
-        "type": "string",
-        "description": "A URL that points to the literal example"
+      "description": "Parameter examples."
+    },
+    "ParameterExampleContract": {
+      "description": "Parameter example.",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Short description for the example"
+        },
+        "description": {
+          "type": "string",
+          "description": "Long description for the example"
+        },
+        "value": {
+          "description": "Example value. May be a primitive value, or an object."
+        },
+        "externalValue": {
+          "type": "string",
+          "description": "A URL that points to the literal example"
+        }
       }
+    },
+    "example": {
+      "$ref": "#/definitions/ParameterExampleContract"
     }
   }
 }
