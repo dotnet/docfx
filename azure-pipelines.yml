@@ -21,6 +21,8 @@ steps:
 
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
+  inputs:
+    versionSpec: 5.10.0
 
 - task: CmdLine@1
   displayName: 'npm install'
