@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || IsExampleProperty(property.Key)));
+                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath, isExample || IsExampleProperty(property.Key, jObject?.Parent?.Parent?.Path)));
                 }
 
                 _documentObjectCache.Add(jsonLocationInfo, swaggerObject);
@@ -158,12 +158,34 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             };
         }
 
-        private static bool IsExampleProperty(string propertyName)
+        private static bool IsExampleProperty(string propertyName, string grandfatherPath)
         {
-            return !string.IsNullOrEmpty(propertyName)
-                && (propertyName == "x-ms-examples"
-                || propertyName == "examples"
-                || propertyName == "example");
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return false;
+            }
+
+            if (propertyName == "x-ms-examples")
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(grandfatherPath))
+            {
+                return false;
+            }
+
+            if (propertyName == "example" && (grandfatherPath.EndsWith(".properties") || grandfatherPath == "definitions"))
+            {
+                return true;
+            }
+
+            if (propertyName == "examples" && grandfatherPath.EndsWith(".responses"))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static JObject LoadExternalReference(string externalSwaggerPath)
