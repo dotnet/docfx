@@ -1,10 +1,16 @@
-Version Notes (Current Version: v2.58.1)
+Version Notes (Current Version: v2.58.2)
 =======================================
+
+v2.58.2
+-----------
+1. Bug fix:
+    1. unexpected NuGet package layout change. (#7557)
+    2. Rest API build failure when definition contains examples. (#7561)
 
 v2.58.1
 -----------
 1. Dozens of document improvements. Thanks @BryanLa!
-1. Bug fix:
+2. Bug fix:
     1. Show cref name instead of missing if not resolved. Thanks @Emdot! (#7245)
     2. Fix showing wrong syntax for nullable value types. Thanks @mikernet! (#7045, #5964)
     3. Fix exception when loading `memberpage` plugin. Thanks @jamiehankins! (#7422)
