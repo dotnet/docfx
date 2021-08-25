@@ -142,7 +142,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
         ### Another Headline
         This is where your content goes.
         [I'm an inline-style link](https://www.google.com)
-    :::column-end::: 
+    :::column-end:::
 :::row-end:::
 ";
             var expected = @"<section class=""row"">
@@ -179,7 +179,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
         ### Another Headline
         This is where your content goes.
         [I'm an inline-style link](https://www.google.com)
-    :::column-end::: 
+    :::column-end:::
 :::row-end:::
 ";
             var expected = @"<section class=""row"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">

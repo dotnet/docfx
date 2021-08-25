@@ -25,7 +25,7 @@ The restored files will be stored at `%DOCFX_APPDATA_PATH%/downloads/{url-short-
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
-        | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
+        | - raw.gith..tent.com+docascode+docfx-..+62b0448+extend1.yml+dc363b0e
             | - content
 
 ```
@@ -35,7 +35,7 @@ And there is another etag file `etag` under `%DOCFX_APPDATA_PATH%/downloads/{url
 ```text
 `%DOCFX_APPDATA_PATH%`
     | - downloads
-        | - raw.gith..tent.com+docascode+docfx-te..ndencies+62b0448+extend1.yml+dc363b0e
+        | - raw.gith..tent.com+docascode+docfx-..+62b0448+extend1.yml+dc363b0e
             | - content
             | - etag
 
@@ -61,7 +61,7 @@ There are some cases that the docfx `build` depends on external repositories, wh
 
 For example, some files are referencing `code example` for better explanations, but some of the code examples stores in another repository, maintained by another team/owners, with the dependency repository, you have the ability to reference external `code example` to be built in your page.
 
-Config(ocs/designs/config.md):
+[Config](config.md):
 
 ``` yml
 dependencies:

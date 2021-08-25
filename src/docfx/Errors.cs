@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error DownloadFailed(string url)
-                => new(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.");
+                => new(ErrorLevel.Error, "download-failed", $"Download failed for file '{url}'. Try closing and reopening the PR. If you get this Error again, file an issue.", type: ErrorType.System);
 
             /// <summary>
             /// Failed to run `git fetch` or `git worktree add`.

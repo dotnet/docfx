@@ -14,7 +14,7 @@ namespace Microsoft.Docs.Build
         public bool WarmUp { get; set; } = false;
 
         [Option("branch")]
-        public string Branch { get; set; } = "";
+        public string Branch { get; set; } = "live";
 
         [Option("locale")]
         public string Locale { get; set; } = "en-us";
