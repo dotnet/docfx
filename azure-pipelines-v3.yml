@@ -123,7 +123,7 @@ jobs:
     - task: AzureCLI@2
       displayName: Run
       inputs:
-        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+        azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
         scriptType: ps
         scriptLocation: inlineScript
         powerShellErrorActionPreference: continue
@@ -166,8 +166,7 @@ jobs:
       - task: AzureCLI@2
         displayName: ${{repo}}
         inputs:
-          # TODO: switch to  DevRel - DocsBuild Docfx CI Test once created
-          azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+          azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
           scriptType: ps
           scriptLocation: inlineScript
           powerShellErrorActionPreference: continue
