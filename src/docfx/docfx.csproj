@@ -48,7 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="../Microsoft.Docs.Template/Microsoft.Docs.Template.csproj" />
     <ProjectReference Include="../Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj" />
-    <ProjectReference Include="../Microsoft.Docs.LearnValidation/Microsoft.Docs.LearnValidation.csproj" />
+    <ProjectReference Include="../Microsoft.Docs.Specialized/Microsoft.Docs.Specialized.csproj" />
   </ItemGroup>
 
 </Project>
