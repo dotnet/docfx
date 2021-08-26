@@ -363,7 +363,7 @@ namespace Microsoft.Docs.Build
 
                 if (!_config.DryRun)
                 {
-                    HtmlUtility.CountWord(ref token, ref wordCount);
+                    HtmlWordCount.CountWord(ref token, ref wordCount);
                 }
 
                 if (token.Type == HtmlTokenType.Text)
