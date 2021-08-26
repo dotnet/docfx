@@ -27,7 +27,7 @@ namespace Microsoft.Docs.Build
         private readonly Input _input;
         private readonly BuildScope _buildScope;
         private readonly JsonSchemaLoader _jsonSchemaLoader;
-        private readonly TaxonomyLoader _taxonomyLoader;
+        private readonly TaxonomyProvider _taxonomyProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
@@ -80,7 +80,7 @@ namespace Microsoft.Docs.Build
             _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
-            _taxonomyLoader = new(_config, _fileResolver);
+            _taxonomyProvider = new(_config, _fileResolver);
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
             _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
@@ -168,7 +168,7 @@ namespace Microsoft.Docs.Build
                 var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
                 var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
                 var learnHierarchyBuilder = new LearnHierarchyBuilder(_contentValidator);
-                var pageBuilder = new PageBuilder(_config, _taxonomyLoader, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _tocMap, _linkResolver, _fileResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _searchIndexBuilder, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
+                var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _taxonomyProvider, _templateEngine, _tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _searchIndexBuilder, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
                 var tocBuilder = new TocBuilder(_config, _tocLoader, _contentValidator, _metadataProvider, _metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
                 var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
