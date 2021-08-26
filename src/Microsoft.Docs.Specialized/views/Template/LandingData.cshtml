@@ -7,7 +7,7 @@
 {
 private void UpdateAbstract()
 {
-    if (Model.Abstract?.Aside?.Title != null && Model.Abstract?.Aside?.Image != null && string.IsNullOrEmpty(Model.Abstract?.Aside?.Image?.Alt))
+    if (Model.Abstract?.Aside?.Title != null && Model.Abstract.Aside.Image != null && string.IsNullOrEmpty(Model.Abstract.Aside.Image.Alt))
     {
         Model.Abstract.Aside.Image.Alt = Model.Abstract.Aside.Title;
     }
@@ -25,14 +25,14 @@ private void UpdateAbstract()
 {
     <div class="abstractHolder">
         <div class="abstract">
-            @Html.Raw(Model.Abstract?.Description)
+            @Html.Raw(Model.Abstract.Description)
         </div>
-        @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title) || (Model.Abstract?.Menu?.Items != null && Model.Abstract.Menu.Items.Any()))
+        @if (Model.Abstract.Menu != null && (!string.IsNullOrEmpty(Model.Abstract.Menu.Title) || Model.Abstract.Menu.Items.Any()))
         {
             <div class="menu">
-                @if (!string.IsNullOrEmpty(Model.Abstract?.Menu?.Title))
+                @if (!string.IsNullOrEmpty(Model.Abstract.Menu.Title))
                 {
-                    <div class="abstract-title">@Model.Abstract?.Menu?.Title</div>
+                    <div class="abstract-title">@Model.Abstract.Menu.Title</div>
                 }
                 <ul>
                     @foreach (var item in Model.Abstract.Menu.Items)
@@ -46,19 +46,19 @@ private void UpdateAbstract()
                 </ul>
             </div>
         }
-        @if (Model.Abstract?.Aside != null)
+        @if (Model.Abstract.Aside != null)
         {
             <div class="aside">
-                @if (Model.Abstract?.Aside?.Image != null)
+                @if (Model.Abstract.Aside.Image != null)
                 {
-                    var link = Model.Abstract?.Aside?.Href ?? "";
+                    var link = Model.Abstract.Aside.Href ?? "";
                     <a href="@link">
-                        <img src="@Model.Abstract?.Aside?.Image?.Src" alt="@Model.Abstract?.Aside?.Image?.Alt" />
+                        <img src="@Model.Abstract.Aside.Image.Src" alt="@Model.Abstract.Aside.Image.Alt" />
                     </a>
                 }
-                @if (!string.IsNullOrEmpty(Model.Abstract?.Aside?.Title))
+                @if (!string.IsNullOrEmpty(Model.Abstract.Aside.Title))
                 {
-                    <a href="@Model.Abstract?.Aside?.Href">@Model.Abstract?.Aside?.Title</a>
+                    <a href="@Model.Abstract.Aside.Href">@Model.Abstract.Aside.Title</a>
                 }
             </div>
         }
@@ -122,7 +122,7 @@ private void UpdateAbstract()
                                     @for (var i = 0; i < columns.Length; i++)
                                     {
                                         var column = columns[i];
-                                        var width = column.Image.Width ?? "48px";
+                                        var width = column.Image?.Width ?? "48px";
                                         var alt = column.Title ?? $"column {i + 2}";
                                         if (column.Image != null)
                                         {

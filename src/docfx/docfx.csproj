@@ -20,7 +20,6 @@
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.18.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.9" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.1.804" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1655.1" Aliases="maml" />
@@ -46,9 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Microsoft.Docs.Template/Microsoft.Docs.Template.csproj" />
     <ProjectReference Include="../Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj" />
-    <ProjectReference Include="../Microsoft.Docs.LearnValidation/Microsoft.Docs.LearnValidation.csproj" />
+    <ProjectReference Include="../Microsoft.Docs.Specialized/Microsoft.Docs.Specialized.csproj" />
   </ItemGroup>
 
 </Project>
