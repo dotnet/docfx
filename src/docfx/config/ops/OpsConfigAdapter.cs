@@ -26,6 +26,7 @@ namespace Microsoft.Docs.Build
         private const string FullMarkdownValidationRulesApi = "https://ops/fullmarkdownvalidationrules/";
         private const string FullBuildValidationRulesApi = "https://ops/fullbuildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
+        private const string TrustedDomainApi = "https://ops/taxonomy-allowedDomain/";
         private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
@@ -52,6 +53,7 @@ namespace Microsoft.Docs.Build
                 (FullMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (FullBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
+                (TrustedDomainApi, _ => _opsAccessor.GetTrustedDomain()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
@@ -117,6 +119,7 @@ namespace Microsoft.Docs.Build
             var documentUrls = JsonConvert.DeserializeAnonymousType(
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
+            var trustedDomains = TaxonomyConverter.GetTrustedDoamins(await _opsAccessor.GetTrustedDomain());
 
             return JsonConvert.SerializeObject(new
             {
@@ -135,6 +138,7 @@ namespace Microsoft.Docs.Build
                     $"{PublicMetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
+                trustedDomains,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
                 isReferenceRepository = docsets.Any(d => d.use_template),
