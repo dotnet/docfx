@@ -90,6 +90,12 @@ namespace Microsoft.Docs.Build
                 "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product&name=allowedDomain&name=allowedHTML");
         }
 
+        public Task<string> GetTrustedDomains(DocsEnvironment environment = DocsEnvironment.Prod)
+        {
+            return Fetch(TaxonomyApi(environment) +
+                "/taxonomies/simplified?name=allowedDomain");
+        }
+
         public Task<string> GetSandboxEnabledModuleList()
         {
             return Fetch("https://docs.microsoft.com/api/resources/sandbox/verify");

@@ -21,6 +21,12 @@ namespace Microsoft.Docs.Build
         {
             foreach (var trustedDomain in trustedDomains)
             {
+                if (trustedDomain.Equals("(empty)", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Skip '(empty)' case from pool party
+                    continue;
+                }
+
                 var split = trustedDomain.Split(s_splitStrings, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 if (split.Length != 2)
                 {

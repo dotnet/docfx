@@ -89,7 +89,7 @@ namespace Microsoft.Docs.Build
             credentialProviders.Add((url, _, _) => Task.FromResult(preloadConfig.Secrets.GetHttpConfig(url)));
             var credentialHandler = new CredentialHandler(credentialProviders.ToArray());
             var opsAccessor = new OpsAccessor(errors, credentialHandler);
-            var configAdapter = new OpsConfigAdapter(opsAccessor);
+            var configAdapter = new OpsConfigAdapter(errors, opsAccessor);
 
             PackageResolver? packageResolver = default;
             var fallbackDocsetPath = new Lazy<string?>(
