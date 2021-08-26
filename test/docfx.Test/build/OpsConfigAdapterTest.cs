@@ -44,7 +44,7 @@ namespace Microsoft.Docs.Build
                 return Task.FromResult<HttpConfig>(new() { Headers = new() { ["X-OP-BuildUserToken"] = token } });
             });
             var accessor = new OpsAccessor(null, credentialHandler);
-            var adapter = new OpsConfigAdapter(null, accessor);
+            var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);
             var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
@@ -62,7 +62,7 @@ namespace Microsoft.Docs.Build
                 bool.TryParse(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), out var isGithubAction)
                 && isGithubAction);
             var accessor = new OpsAccessor(null, new CredentialHandler());
-            var adapter = new OpsConfigAdapter(null, accessor);
+            var adapter = new OpsConfigAdapter(accessor);
             using var request = new HttpRequestMessage { RequestUri = new Uri(url) };
             var response = await adapter.InterceptHttpRequest(request);
             var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();

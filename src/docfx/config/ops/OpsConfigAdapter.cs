@@ -38,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         private static readonly ConcurrentDictionary<string, Lazy<Task<string>>> s_docsetInfoCache = new();
 
-        public OpsConfigAdapter(ErrorBuilder errors, OpsAccessor opsAccessor)
+        public OpsConfigAdapter(OpsAccessor opsAccessor)
         {
             _opsAccessor = opsAccessor;
             _apis = new (string, Func<Uri, Task<string>>)[]
