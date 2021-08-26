@@ -128,7 +128,13 @@ namespace Microsoft.Docs.Build
             var actualCount = 0L;
             HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlWordCount.CountWord(ref token, ref actualCount));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                {
+                    if (token.Type == HtmlTokenType.Text)
+                    {
+                        actualCount += WordCount.CountWord(token.RawText.Span);
+                    }
+                });
 
             Assert.Equal(expectedCount, actualCount);
         }

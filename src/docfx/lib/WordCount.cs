@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using HtmlReaderWriter;
 
 namespace Microsoft.Docs.Build
 {
@@ -11,17 +10,9 @@ namespace Microsoft.Docs.Build
     /// - Docs.Localization.Build
     /// When updating on one side, please remember to sync the changes.
     /// </summary>
-    internal static class HtmlWordCount
+    internal static class WordCount
     {
-        public static void CountWord(ref HtmlToken token, ref long wordCount)
-        {
-            if (token.Type == HtmlTokenType.Text)
-            {
-                wordCount += CountWordInText(token.RawText.Span);
-            }
-        }
-
-        private static int CountWordInText(ReadOnlySpan<char> text)
+        public static int CountWord(ReadOnlySpan<char> text)
         {
             var total = 0;
             var word = false;

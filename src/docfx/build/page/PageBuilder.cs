@@ -361,14 +361,13 @@ namespace Microsoft.Docs.Build
                 HtmlUtility.GetBookmarks(ref token, bookmarks);
                 HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
-                if (!_config.DryRun)
-                {
-                    HtmlWordCount.CountWord(ref token, ref wordCount);
-                }
-
                 if (token.Type == HtmlTokenType.Text)
                 {
                     searchText.Append(token.RawText);
+                    if (!_config.DryRun )
+                    {
+                        wordCount += WordCount.CountWord(token.RawText.Span);
+                    }
                 }
             });
 
