@@ -29,9 +29,7 @@ namespace Microsoft.Docs.Build
             { "Length", new string[] { "string-length-invalid" } },
         };
 
-#pragma warning disable MEN003 // Method is too long
         public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors)
-#pragma warning restore MEN003 // Method is too long
         {
             Log.Write(rulesContent);
             Log.Write(allowlistsContent);
@@ -92,32 +90,26 @@ namespace Microsoft.Docs.Build
                 {
                     schema.rules.Add(attribute, attributeCustomRules);
                 }
-
                 if (rulesInfo.ContainsKey("Uniqueness"))
                 {
                     schema.docsetUnique.Add(attribute);
                 }
-
                 if (rulesInfo.ContainsKey("Required"))
                 {
                     schema.strictRequired.Add(attribute);
                 }
-
                 if (rulesInfo.TryGetValue("Requires", out var requiresRuleInfo) && !string.IsNullOrEmpty(requiresRuleInfo.Name))
                 {
                     schema.dependencies.Add(attribute, new List<string>() { requiresRuleInfo.Name });
                 }
-
                 if (rulesInfo.TryGetValue("Precludes", out var precludesRuleInfo) && !string.IsNullOrEmpty(precludesRuleInfo.Name))
                 {
                     schema.precludes.Add(new List<string>() { attribute, precludesRuleInfo.Name });
                 }
-
                 if (rulesInfo.TryGetValue("Either", out var eitherRuleInfo) && !string.IsNullOrEmpty(eitherRuleInfo.Name))
                 {
                     schema.either.Add(new List<string>() { attribute, eitherRuleInfo.Name });
                 }
-
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
                     TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
