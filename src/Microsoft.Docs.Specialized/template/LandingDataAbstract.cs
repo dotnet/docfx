@@ -5,10 +5,10 @@ namespace Microsoft.Docs.Build
 {
     public sealed class LandingDataAbstract
     {
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public LandingDataAside Aside { get; set; }
+        public LandingDataAside? Aside { get; set; }
 
-        public LandingDataMenu Menu { get; set; }
+        public LandingDataMenu? Menu { get; set; }
     }
 }

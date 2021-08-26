@@ -8,19 +8,19 @@ namespace Microsoft.Docs.Build
 {
     public class LandingData
     {
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public string TitleSuffix { get; set; }
+        public string? TitleSuffix { get; set; }
 
-        public JObject Metadata { get; set; }
+        public JObject? Metadata { get; set; }
 
-        public LandingDataAbstract Abstract { get; set; }
+        public LandingDataAbstract? Abstract { get; set; }
 
-        public LandingDataSection[] Sections { get; set; }
+        public LandingDataSection[]? Sections { get; set; }
 
-        public string DocumentType { get; set; }
+        public string? DocumentType { get; set; }
 
         [JsonExtensionData(WriteData = false)]
-        public JObject ExtensionData { get; set; }
+        public JObject? ExtensionData { get; set; }
     }
 }
