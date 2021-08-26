@@ -364,7 +364,7 @@ namespace Microsoft.Docs.Build
                 if (token.Type == HtmlTokenType.Text)
                 {
                     searchText.Append(token.RawText);
-                    if (!_config.DryRun )
+                    if (!_config.DryRun)
                     {
                         wordCount += WordCount.CountWord(token.RawText.Span);
                     }
