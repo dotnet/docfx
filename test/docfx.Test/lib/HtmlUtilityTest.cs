@@ -55,9 +55,10 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlStripTags(string input, string output)
         {
+            var htmlSanitizer = new HtmlSanitizer();
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => htmlSanitizer.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
