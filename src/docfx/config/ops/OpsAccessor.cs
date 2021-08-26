@@ -86,11 +86,10 @@ namespace Microsoft.Docs.Build
         public Task<string> GetAllowlists(DocsEnvironment environment = DocsEnvironment.Prod)
         {
             return Fetch(TaxonomyApi(environment) +
-                "/taxonomies/simplified?" +
-                "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product&name=allowedDomain&name=allowedHTML");
+                "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product");
         }
 
-        public Task<string> GetAllowedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
+        public Task<string> GetTrustedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
         {
             return Fetch(TaxonomyApi(environment) +
                 "/taxonomies/simplified?name=allowedDomain");
