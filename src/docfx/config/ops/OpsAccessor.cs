@@ -86,7 +86,8 @@ namespace Microsoft.Docs.Build
         public Task<string> GetAllowlists(DocsEnvironment environment = DocsEnvironment.Prod)
         {
             return Fetch(TaxonomyApi(environment) +
-                "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product");
+                "/taxonomies/simplified?" +
+                "name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product&name=allowedDomain&name=allowedHTML");
         }
 
         public Task<string> GetSandboxEnabledModuleList()

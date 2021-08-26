@@ -20,6 +20,7 @@ namespace Microsoft.Docs.Build
         private readonly DocumentProvider _documentProvider;
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
+        private readonly TaxonomyProvider _taxonomyProvider;
         private readonly TemplateEngine _templateEngine;
         private readonly TocMap _tocMap;
         private readonly LinkResolver _linkResolver;
@@ -42,6 +43,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
+            TaxonomyProvider taxonomyProvider,
             TemplateEngine templateEngine,
             TocMap tocMap,
             LinkResolver linkResolver,
@@ -63,6 +65,7 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _metadataProvider = metadataProvider;
             _monikerProvider = monikerProvider;
+            _taxonomyProvider = taxonomyProvider;
             _templateEngine = templateEngine;
             _tocMap = tocMap;
             _linkResolver = linkResolver;
