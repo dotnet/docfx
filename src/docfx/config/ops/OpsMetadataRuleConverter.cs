@@ -29,7 +29,8 @@ namespace Microsoft.Docs.Build
             { "Length", new string[] { "string-length-invalid" } },
         };
 
-        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors) {
+        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors)
+        {
             try
             {
                 return GenerateJsonSchemaCore(rulesContent, allowlistsContent);
