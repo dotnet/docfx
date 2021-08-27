@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-[assembly: ApplicationPart("Microsoft.Docs.Specialized")]
+[assembly: ApplicationPart("Microsoft.Docs.Build.Specialized")]
 
 namespace Microsoft.Docs.Build
 {

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.MarkdigExten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.MarkdigExtensions.Tests", "test\Microsoft.Docs.MarkdigExtensions.Tests\Microsoft.Docs.MarkdigExtensions.Tests.csproj", "{84437525-A54B-425D-9DEE-AF190A591E5D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Specialized", "src\Microsoft.Docs.Specialized\Microsoft.Docs.Specialized.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Specialized", "src\Microsoft.Docs.Build.Specialized\Microsoft.Docs.Build.Specialized.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

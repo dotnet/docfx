@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj" />
-    <ProjectReference Include="../Microsoft.Docs.Specialized/Microsoft.Docs.Specialized.csproj" />
+    <ProjectReference Include="../Microsoft.Docs.Build.Specialized/Microsoft.Docs.Build.Specialized.csproj" />
   </ItemGroup>
 
 </Project>
