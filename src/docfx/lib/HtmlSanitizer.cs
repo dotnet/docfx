@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HtmlReaderWriter;
 using Markdig.Syntax;
 
@@ -10,12 +11,148 @@ namespace Microsoft.Docs.Build
 {
     internal class HtmlSanitizer
     {
-        private readonly Dictionary<string, HashSet<string>?> s_allowedTags;
-
-        private readonly HashSet<string> s_allowedGlobalAttributes;
-
-        public HtmlSanitizer()
+        private readonly Dictionary<string, HashSet<string>?> _allowedTags = new(StringComparer.OrdinalIgnoreCase)
         {
+            { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
+            { "abbr", null },
+            { "address", null },
+            { "article", null },
+            { "b", null },
+            { "button", new(StringComparer.OrdinalIgnoreCase) { "hidden", "type" } },
+            { "bdi", null },
+            { "bdo", null },
+            { "blockquote", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
+            { "br", new(StringComparer.OrdinalIgnoreCase) { "clear" } },
+            { "caption", null },
+            { "center", null },
+            { "cite", null },
+            { "code", new(StringComparer.OrdinalIgnoreCase) { "name", "lang" } },
+            { "col", new(StringComparer.OrdinalIgnoreCase) { "width", "span" } },
+            { "colgroup", new(StringComparer.OrdinalIgnoreCase) { "span" } },
+            { "dd", null },
+            { "del", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+            { "details", null },
+            { "dfn", null },
+            { "div", new(StringComparer.OrdinalIgnoreCase) { "align", "hidden" } },
+            { "dl", null },
+            { "dt", null },
+            { "em", null },
+            { "figcaption", null },
+            { "figure", null },
+            { "font", new(StringComparer.OrdinalIgnoreCase) { "color", "face", "size" } },
+            { "form", new(StringComparer.OrdinalIgnoreCase) { "action" } },
+            { "h1", null },
+            { "h2", null },
+            { "h3", null },
+            { "h4", null },
+            { "head", null },
+            { "hr", new(StringComparer.OrdinalIgnoreCase) { "size", "color", "width" } },
+            { "i", null },
+            {
+                "iframe",
+                new(StringComparer.OrdinalIgnoreCase)
+                {
+                    "allow",
+                    "align",
+                    "border",
+                    "marginwidth",
+                    "frameborder",
+                    "allowtransparency",
+                    "allowfullscreen",
+                    "scrolling",
+                    "height",
+                    "src",
+                    "width",
+                    "loading",
+                }
+            },
+            { "image", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
+            { "img", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align", "hspace", "border", "sizes", "valign" } },
+            { "input", new(StringComparer.OrdinalIgnoreCase) { "type", "value" } },
+            { "ins", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+            { "kbd", null },
+            { "label", new(StringComparer.OrdinalIgnoreCase) { "for" } },
+            { "li", new(StringComparer.OrdinalIgnoreCase) { "value" } },
+            { "mark", null },
+            { "nav", null },
+            { "nobr", null },
+            { "ol", new(StringComparer.OrdinalIgnoreCase) { "reserved", "start", "type" } },
+            { "p", new(StringComparer.OrdinalIgnoreCase) { "align", "dir", "hidden", "lang", "valign" } },
+            { "pre", new(StringComparer.OrdinalIgnoreCase) { "lang" } },
+            { "q", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
+            { "rgn", null },
+            { "s", null },
+            { "samp", null },
+            { "section", null },
+            { "small", null },
+            { "source", new(StringComparer.OrdinalIgnoreCase) { "src", "type" } },
+            { "span", new(StringComparer.OrdinalIgnoreCase) { "dir", "lang" } },
+            { "strike", null },
+            { "strong", null },
+            { "sub", null },
+            { "summary", null },
+            { "sup", null },
+            {
+                "table",
+                new(StringComparer.OrdinalIgnoreCase)
+                {
+                    "align",
+                    "width",
+                    "border",
+                    "valign",
+                    "bgcolor",
+                    "frame",
+                    "cellpadding",
+                    "cellspacing",
+                    "bordercolor",
+                }
+            },
+            { "tbody", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "width" } },
+            { "td", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "valign", "bgcolor", "hidden", "nowrap" } },
+            { "tfoot", null },
+            { "th", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "bgcolor", "scope", "valign" } },
+            { "thead", new(StringComparer.OrdinalIgnoreCase) { "align", "valign" } },
+            { "time", new(StringComparer.OrdinalIgnoreCase) { "datetime" } },
+            { "tr", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "colspan", "height", "bgcolor" } },
+            { "u", null },
+            { "ul", null },
+            { "var", null },
+            { "video", new(StringComparer.OrdinalIgnoreCase) { "src", "width", "height", "preload", "controls", "poster" } },
+            { "wbr", null },
+        };
+
+        private readonly HashSet<string> _allowedGlobalAttributes = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "name",
+            "id",
+            "class",
+            "itemid",
+            "itemprop",
+            "itemref",
+            "itemscope",
+            "itemtype",
+            "part",
+            "slot",
+            "spellcheck",
+            "title",
+            "role",
+        };
+
+        public HtmlSanitizer(Dictionary<string, string[]?> taxonomy)
+        {
+            var taxoAllowedTags = taxonomy
+                .ToDictionary(
+                    i => i.Key,
+                    i => i.Value != null ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
+                    StringComparer.OrdinalIgnoreCase);
+            foreach (var key in taxoAllowedTags.Keys)
+            {
+                _allowedTags[key] = taxoAllowedTags[key]; // create or just override
+            }
+            if (taxonomy.TryGetValue("Global Attributes", out var globalAttributes) && globalAttributes != null)
+            {
+                _allowedGlobalAttributes.AddRange(globalAttributes);
+            }
         }
 
         public void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
@@ -26,7 +163,7 @@ namespace Microsoft.Docs.Build
             }
 
             var tokenName = token.Name.ToString();
-            if (!s_allowedTags.TryGetValue(tokenName, out var allowedAttributes))
+            if (!_allowedTags.TryGetValue(tokenName, out var allowedAttributes))
             {
                 errors.Add(Errors.Content.DisallowedHtmlTag(obj?.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
                 reader.ReadToEndTag(token.Name.Span);
@@ -46,7 +183,7 @@ namespace Microsoft.Docs.Build
 
             bool IsAllowedAttribute(string attributeName)
             {
-                if (s_allowedGlobalAttributes.Contains(attributeName))
+                if (_allowedGlobalAttributes.Contains(attributeName))
                 {
                     return true;
                 }

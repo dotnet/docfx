@@ -222,6 +222,11 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, TrustedDomains> TrustedDomains { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// HTML allowlist for tags and attributes
+        /// </summary>
+        public Dictionary<string, string[]?> AllowedHTML { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
         public SourceInfo<string> MarkdownValidationRules { get; init; } = new("");

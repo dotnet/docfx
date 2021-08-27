@@ -10,6 +10,7 @@ namespace Microsoft.Docs.Build
     internal class TaxonomyConverter
     {
         private const string AllowedDomain = "allowedDomain";
+        private const string AllowedHTML = "allowedHTML";
 
         public static Dictionary<string, string[]> GetTrustedDoamins(string json)
         {
@@ -22,6 +23,15 @@ namespace Microsoft.Docs.Build
             return new();
         }
 
-        // TODO: add static method GetHtmlTags()
+        public static Dictionary<string, string[]> GetAllowedHTML(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
+            {
+                return taxonomy.NestedTaxonomy.dic; // todo remove (empty)
+            }
+
+            return new();
+        }
     }
 }

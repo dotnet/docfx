@@ -31,9 +31,12 @@ outputs:
 ---
 # Sanitize user html
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    allowedHTML: 
+      h2:
+      - foo
   a.md: |
-    <H2 id="head" TITLE="HEAD"></H2>
+    <H2 id="head" TITLE="HEAD" foo="bar"></H2>
     <BUTTON>click</BUTTON>
     <img height="docs"></img>
     <h1 height="docs"></h1>
@@ -41,7 +44,7 @@ inputs:
 outputs:
   a.json: |
     { "conceptual": "
-        <h2 id='head' title='HEAD'></h2>
+        <h2 id='head' title='HEAD' foo='bar'></h2>
         <BUTTON>click</BUTTON>
         <img height='docs'></img>
         <h1></h1>

@@ -27,6 +27,7 @@ namespace Microsoft.Docs.Build
         private const string FullBuildValidationRulesApi = "https://ops/fullbuildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
         private const string TrustedDomainApi = "https://ops/taxonomy-allowedDomain/";
+        private const string AllowedHTMLApi = "https://ops/taxonomy-allowedHTML/";
         private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
@@ -54,6 +55,7 @@ namespace Microsoft.Docs.Build
                 (FullBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
                 (TrustedDomainApi, _ => _opsAccessor.GetTrustedDomain()),
+                (AllowedHTMLApi, _ => _opsAccessor.GetAllowedHTML()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
@@ -120,6 +122,7 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
             var trustedDomains = TaxonomyConverter.GetTrustedDoamins(await _opsAccessor.GetTrustedDomain());
+            var allowedHTML = TaxonomyConverter.GetAllowedHTML(await _opsAccessor.GetAllowedHTML());
 
             return JsonConvert.SerializeObject(new
             {
@@ -139,6 +142,7 @@ namespace Microsoft.Docs.Build
                 },
                 allowlists = AllowlistsApi,
                 trustedDomains,
+                allowedHTML,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
                 isReferenceRepository = docsets.Any(d => d.use_template),

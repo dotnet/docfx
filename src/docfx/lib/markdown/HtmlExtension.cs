@@ -17,7 +17,8 @@ namespace Microsoft.Docs.Build
             this MarkdownPipelineBuilder builder,
             Func<ErrorBuilder> getErrors,
             Func<LinkInfo, string> getLink,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
+            HtmlSanitizer htmlSanitizer)
         {
             return builder.Use(document =>
             {
@@ -52,7 +53,7 @@ namespace Microsoft.Docs.Build
                     HtmlUtility.TransformLink(ref token, block, getLink!);
                     HtmlUtility.TransformXref(ref reader, ref token, block, resolveXref);
                     HtmlUtility.RemoveRerunCodepenIframes(ref token);
-                    HtmlUtility.SanitizeHtml(errors, ref reader, ref token, block);
+                    htmlSanitizer.SanitizeHtml(errors, ref reader, ref token, block);
                 });
             }
         }

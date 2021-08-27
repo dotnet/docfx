@@ -95,6 +95,12 @@ namespace Microsoft.Docs.Build
                 "/taxonomies/simplified?name=allowedDomain");
         }
 
+        public Task<string> GetAllowedHTML(DocsEnvironment environment = DocsEnvironment.Prod)
+        {
+            return Fetch(TaxonomyApi(environment) +
+                "/taxonomies/simplified?name=allowedHTML");
+        }
+
         public Task<string> GetSandboxEnabledModuleList()
         {
             return Fetch("https://docs.microsoft.com/api/resources/sandbox/verify");
