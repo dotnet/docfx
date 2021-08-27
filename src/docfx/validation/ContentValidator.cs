@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -58,7 +57,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(CatchException(node, validationContext, _validator.ValidateLink));
+                Write(_validator.ValidateLink(node, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -66,7 +65,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(CatchException(codeBlockItem, validationContext, _validator.ValidateCodeBlock));
+                Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -74,13 +73,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(CatchException(nodes, validationContext, _validator.ValidateContentNodes));
+                Write(_validator.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
 
         public void ValidateHierarchy(List<HierarchyNode> models)
         {
-            Write(CatchException(models, null, null, noContextValidator: _validator.ValidateHierarchy));
+            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
@@ -101,7 +100,7 @@ namespace Microsoft.Docs.Build
                     Title = GetOgTitle(title.Value, titleSuffix),
                     SourceInfo = title.Source,
                 };
-                Write(CatchException(titleItem, validationContext, _validator.ValidateTitle));
+                Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
 
             static string GetOgTitle(string title, string? titleSuffix)
@@ -131,7 +130,7 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file),
                 };
 
-                Write(CatchException(textItem, validationContext, _validator.ValidateText));
+                Write(_validator.ValidateText(textItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -145,7 +144,7 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file),
                 };
 
-                Write(CatchException(manifestItem, validationContext, _validator.ValidateManifest));
+                Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -158,7 +157,7 @@ namespace Microsoft.Docs.Build
                     FilePath = file.Path.Value,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(CatchException(tocItem, validationContext, _validator.ValidateToc));
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -172,7 +171,7 @@ namespace Microsoft.Docs.Build
                     HasReferencedTocs = hasReferencedTocs,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(CatchException(tocItem, validationContext, _validator.ValidateToc));
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -187,7 +186,7 @@ namespace Microsoft.Docs.Build
                     IsHrefExternal = UrlUtility.GetLinkType(node.Value.Href) == LinkType.External,
                     SourceInfo = node.Source,
                 };
-                Write(CatchException(tocItem, validationContext, _validator.ValidateToc));
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -204,7 +203,7 @@ namespace Microsoft.Docs.Build
                     FilePaths = filePaths,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(CatchException(tocItem, validationContext, _validator.ValidateToc));
+                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -212,7 +211,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                Write(CatchException(definition, validationContext, _validator.ValidateZonePivot));
+                Write(_validator.ValidateZonePivot(definition, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -244,7 +243,7 @@ namespace Microsoft.Docs.Build
                     ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups),
                 };
                 List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
-                Write(CatchException(usages, validationContext, _validator.ValidateZonePivot));
+                Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -252,13 +251,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                Write(CatchException(tableNode, validationContext, _validator.ValidateTable));
+                Write(_validator.ValidateTable(tableNode, validationContext).GetAwaiter().GetResult());
             }
         }
 
         public void PostValidate()
         {
-            Write(CatchException("", null, null, noContextNoTValidator: _validator.PostValidate));
+            Write(_validator.PostValidate().GetAwaiter().GetResult());
         }
 
         public IProducerConsumerCollection<T> CreateCollection<T>()
@@ -331,37 +330,6 @@ namespace Microsoft.Docs.Build
                     return null;
                 }
             }
-        }
-
-        private List<ValidationError> CatchException<T>(
-            T? o,
-            ValidationContext? context,
-            Func<T, ValidationContext, Task<List<ValidationError>>>? defaultValidator,
-            Func<T, Task<List<ValidationError>>>? noContextValidator = null,
-            Func<Task<List<ValidationError>>>? noContextNoTValidator = null)
-        {
-            try
-            {
-                if (defaultValidator != null && o != null && context != null)
-                {
-                    return defaultValidator(o, context).GetAwaiter().GetResult();
-                }
-                else if (noContextValidator != null && o != null && context is null)
-                {
-                    return noContextValidator(o).GetAwaiter().GetResult();
-                }
-                else if (noContextNoTValidator != null && context is null && o is string)
-                {
-                    return noContextNoTValidator().GetAwaiter().GetResult();
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
-                _errors.Add(Errors.System.ValidationIncomplete());
-            }
-
-            return new List<ValidationError>();
         }
     }
 }

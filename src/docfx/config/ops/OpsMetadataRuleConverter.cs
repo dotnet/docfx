@@ -29,27 +29,31 @@ namespace Microsoft.Docs.Build
             { "Length", new string[] { "string-length-invalid" } },
         };
 
-        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors)
-        {
-            Log.Write(rulesContent);
-            Log.Write(allowlistsContent);
-
-            Rules? rules = null;
-            Taxonomies taxonomies = new();
+        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors) {
             try
             {
-                rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
-                taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
+                return GenerateJsonSchemaCore(rulesContent, allowlistsContent);
             }
             catch (Exception ex)
             {
                 Log.Write(ex);
                 errors.Add(Errors.System.ValidationIncomplete());
             }
+            return "";
+        }
+
+        private static string GenerateJsonSchemaCore(string rulesContent, string allowlistsContent)
+        {
+            Log.Write(rulesContent);
+            Log.Write(allowlistsContent);
+
+            var rules = JsonConvert.DeserializeObject<Rules>(rulesContent);
             if (rules == null || rules.Count == 0)
             {
                 return "";
             }
+
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
 
             var schema = new
             {
@@ -90,26 +94,32 @@ namespace Microsoft.Docs.Build
                 {
                     schema.rules.Add(attribute, attributeCustomRules);
                 }
+
                 if (rulesInfo.ContainsKey("Uniqueness"))
                 {
                     schema.docsetUnique.Add(attribute);
                 }
+
                 if (rulesInfo.ContainsKey("Required"))
                 {
                     schema.strictRequired.Add(attribute);
                 }
+
                 if (rulesInfo.TryGetValue("Requires", out var requiresRuleInfo) && !string.IsNullOrEmpty(requiresRuleInfo.Name))
                 {
                     schema.dependencies.Add(attribute, new List<string>() { requiresRuleInfo.Name });
                 }
+
                 if (rulesInfo.TryGetValue("Precludes", out var precludesRuleInfo) && !string.IsNullOrEmpty(precludesRuleInfo.Name))
                 {
                     schema.precludes.Add(new List<string>() { attribute, precludesRuleInfo.Name });
                 }
+
                 if (rulesInfo.TryGetValue("Either", out var eitherRuleInfo) && !string.IsNullOrEmpty(eitherRuleInfo.Name))
                 {
                     schema.either.Add(new List<string>() { attribute, eitherRuleInfo.Name });
                 }
+
                 if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                     listRuleInfo != null &&
                     TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
