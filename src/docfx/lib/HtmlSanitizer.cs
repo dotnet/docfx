@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HtmlReaderWriter;
 using Markdig.Syntax;
 
@@ -11,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class HtmlSanitizer
     {
-        private readonly Dictionary<string, HashSet<string>?> _allowedTags = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, HashSet<string>?> AllowedHTML = new(StringComparer.OrdinalIgnoreCase)
         {
             { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
             { "abbr", null },
@@ -119,51 +118,46 @@ namespace Microsoft.Docs.Build
             { "var", null },
             { "video", new(StringComparer.OrdinalIgnoreCase) { "src", "width", "height", "preload", "controls", "poster" } },
             { "wbr", null },
+            {
+                "Global Attributes",
+                new(StringComparer.OrdinalIgnoreCase)
+                {
+                    "name",
+                    "id",
+                    "class",
+                    "itemid",
+                    "itemprop",
+                    "itemref",
+                    "itemscope",
+                    "itemtype",
+                    "part",
+                    "slot",
+                    "spellcheck",
+                    "title",
+                    "role",
+                }
+            },
         };
 
-        private readonly HashSet<string> _allowedGlobalAttributes = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "name",
-            "id",
-            "class",
-            "itemid",
-            "itemprop",
-            "itemref",
-            "itemscope",
-            "itemtype",
-            "part",
-            "slot",
-            "spellcheck",
-            "title",
-            "role",
-        };
+        private readonly Config _config;
 
-        public HtmlSanitizer(Dictionary<string, string[]?> taxonomy)
+        public HtmlSanitizer(Config config)
         {
-            var taxoAllowedTags = taxonomy
-                .ToDictionary(
-                    i => i.Key,
-                    i => i.Value != null ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
-                    StringComparer.OrdinalIgnoreCase);
-            foreach (var key in taxoAllowedTags.Keys)
-            {
-                _allowedTags[key] = taxoAllowedTags[key]; // create or just override
-            }
-            if (taxonomy.TryGetValue("Global Attributes", out var globalAttributes) && globalAttributes != null)
-            {
-                _allowedGlobalAttributes.AddRange(globalAttributes);
-            }
+            _config = config;
         }
+
+        public Config Config { get; }
 
         public void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
         {
+            var allowedHTML = _config.AllowedHTML;
             if (token.Type != HtmlTokenType.StartTag)
             {
                 return;
             }
 
             var tokenName = token.Name.ToString();
-            if (!_allowedTags.TryGetValue(tokenName, out var allowedAttributes))
+            if (!allowedHTML.TryGetValue(tokenName, out var allowedAttributes))
             {
                 errors.Add(Errors.Content.DisallowedHtmlTag(obj?.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
                 reader.ReadToEndTag(token.Name.Span);
@@ -183,7 +177,9 @@ namespace Microsoft.Docs.Build
 
             bool IsAllowedAttribute(string attributeName)
             {
-                if (_allowedGlobalAttributes.Contains(attributeName))
+                if (allowedHTML.TryGetValue("Global Attributes", out var allowedGlobalAttributes)
+                    && allowedGlobalAttributes != null
+                    && allowedGlobalAttributes.Contains(attributeName))
                 {
                     return true;
                 }

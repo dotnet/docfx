@@ -57,8 +57,12 @@ namespace Microsoft.Docs.Build
         public void HtmlStripTags(string input, string output)
         {
             var allowlists = File.ReadAllText("data/validation/taxonomy-allowlists.json");
-            var taxo = TaxonomyConverter.GetAllowedHTML(allowlists);
-            var htmlSanitizer = new HtmlSanitizer(taxo);
+            var taxo = OpsConfigAdapter.ConvertAllowedHTML(allowlists);
+            var config = new Config
+            {
+                AllowedHTML = taxo,
+            };
+            var htmlSanitizer = new HtmlSanitizer(config);
             var actual = HtmlUtility.TransformHtml(
                 input,
                 (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => htmlSanitizer.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));

@@ -19,6 +19,7 @@ namespace Microsoft.Docs.Build
         public const string BuildConfigApi = "https://ops/buildconfig/";
 
         private const string AllowedDomain = "allowedDomain";
+        private const string AllowedHTML = "allowedHTML";
 
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
@@ -123,6 +124,7 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
             var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
+            var allowedHTML = ConvertAllowedHTML(await _opsAccessor.GetTrustedDomain());
 
             return JsonConvert.SerializeObject(new
             {
@@ -141,6 +143,7 @@ namespace Microsoft.Docs.Build
                     $"{PublicMetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
+                allowedHTML,
                 trustedDomains,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
@@ -164,6 +167,22 @@ namespace Microsoft.Docs.Build
                     cleanTrustedDomain.Add(item.Key, domainCol);
                 }
                 return cleanTrustedDomain;
+            }
+
+            return new();
+        }
+
+        public static Dictionary<string, HashSet<string>?> ConvertAllowedHTML(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
+            {
+                var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
+                    .ToDictionary(
+                        i => i.Key,
+                        i => i.Value != null ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
+                        StringComparer.OrdinalIgnoreCase);
+                return taxoAllowedTags;
             }
 
             return new();
