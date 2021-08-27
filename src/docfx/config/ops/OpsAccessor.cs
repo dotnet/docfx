@@ -91,8 +91,7 @@ namespace Microsoft.Docs.Build
 
         public Task<string> GetTrustedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
         {
-            return Fetch(TaxonomyApi(environment) +
-                "/taxonomies/simplified?name=allowedDomain");
+            return Fetch(TaxonomyApi(environment) + "/taxonomies/simplified?name=allowedDomain");
         }
 
         public Task<string> GetSandboxEnabledModuleList()
