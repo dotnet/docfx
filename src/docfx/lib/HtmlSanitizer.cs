@@ -10,7 +10,7 @@ namespace Microsoft.Docs.Build
 {
     internal class HtmlSanitizer
     {
-        public static readonly Dictionary<string, HashSet<string>?> AllowedHTML = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, HashSet<string>?> DefaultAllowedHTML = new(StringComparer.OrdinalIgnoreCase)
         {
             { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
             { "abbr", null },
@@ -145,8 +145,6 @@ namespace Microsoft.Docs.Build
         {
             _config = config;
         }
-
-        public Config Config { get; }
 
         public void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
         {

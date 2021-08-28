@@ -178,9 +178,10 @@ namespace Microsoft.Docs.Build
             if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
             {
                 var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
+                    .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
                     .ToDictionary(
                         i => i.Key,
-                        i => i.Value != null ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
+                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
                         StringComparer.OrdinalIgnoreCase);
                 return taxoAllowedTags;
             }

@@ -224,7 +224,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// HTML allowlist for tags and attributes
         /// </summary>
-        public Dictionary<string, HashSet<string>?> AllowedHTML { get; init; } = HtmlSanitizer.AllowedHTML;
+        public Dictionary<string, HashSet<string>?> AllowedHTML { get; init; } = HtmlSanitizer.DefaultAllowedHTML;
 
         /// <summary>
         /// Get the file path of content validation rules
