@@ -10,8 +10,27 @@ namespace Microsoft.Docs.Build
 {
     internal class HtmlSanitizer
     {
-        public static readonly Dictionary<string, HashSet<string>?> DefaultAllowedHTML = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, HashSet<string>?> DefaultAllowedHtml = new(StringComparer.OrdinalIgnoreCase)
         {
+            {
+                "*",
+                new(StringComparer.OrdinalIgnoreCase)
+                {
+                    "name",
+                    "id",
+                    "class",
+                    "itemid",
+                    "itemprop",
+                    "itemref",
+                    "itemscope",
+                    "itemtype",
+                    "part",
+                    "slot",
+                    "spellcheck",
+                    "title",
+                    "role",
+                }
+            },
             { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
             { "abbr", null },
             { "address", null },
@@ -118,25 +137,6 @@ namespace Microsoft.Docs.Build
             { "var", null },
             { "video", new(StringComparer.OrdinalIgnoreCase) { "src", "width", "height", "preload", "controls", "poster" } },
             { "wbr", null },
-            {
-                "Global Attributes",
-                new(StringComparer.OrdinalIgnoreCase)
-                {
-                    "name",
-                    "id",
-                    "class",
-                    "itemid",
-                    "itemprop",
-                    "itemref",
-                    "itemscope",
-                    "itemtype",
-                    "part",
-                    "slot",
-                    "spellcheck",
-                    "title",
-                    "role",
-                }
-            },
         };
 
         private readonly Config _config;
@@ -148,7 +148,7 @@ namespace Microsoft.Docs.Build
 
         public void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
         {
-            var allowedHTML = _config.AllowedHTML;
+            var allowedHTML = _config.AllowedHtml;
             if (token.Type != HtmlTokenType.StartTag)
             {
                 return;
@@ -175,7 +175,7 @@ namespace Microsoft.Docs.Build
 
             bool IsAllowedAttribute(string attributeName)
             {
-                if (allowedHTML.TryGetValue("Global Attributes", out var allowedGlobalAttributes)
+                if (allowedHTML.TryGetValue("*", out var allowedGlobalAttributes)
                     && allowedGlobalAttributes != null
                     && allowedGlobalAttributes.Contains(attributeName))
                 {

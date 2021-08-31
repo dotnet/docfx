@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO;
 using HtmlReaderWriter;
 using Xunit;
 using Yunit;
@@ -56,13 +55,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlStripTags(string input, string output)
         {
-            var allowlists = File.ReadAllText("data/validation/taxonomy-allowlists.json");
-            var taxo = OpsConfigAdapter.ConvertAllowedHTML(allowlists);
-            var config = new Config
-            {
-                AllowedHTML = taxo,
-            };
-            var htmlSanitizer = new HtmlSanitizer(config);
+            var htmlSanitizer = new HtmlSanitizer(new Config());
             var actual = HtmlUtility.TransformHtml(
                 input,
                 (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => htmlSanitizer.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));

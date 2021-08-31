@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public const string BuildConfigApi = "https://ops/buildconfig/";
 
         private const string AllowedDomain = "allowedDomain";
-        private const string AllowedHTML = "allowedHTML";
+        private const string AllowedHtml = "allowedHTML";
 
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
@@ -154,7 +154,7 @@ namespace Microsoft.Docs.Build
         public static Dictionary<string, HashSet<string>?> ConvertAllowedHTML(string json)
         {
             var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
-            if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
+            if (taxonomies.TryGetValue(AllowedHtml, out var taxonomy))
             {
                 var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
                     .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
