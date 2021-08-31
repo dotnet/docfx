@@ -94,14 +94,6 @@ namespace Microsoft.Docs.Build
             return result.WrittenSpan.ToString();
         }
 
-        public static void CountWord(ref HtmlToken token, ref long wordCount)
-        {
-            if (token.Type == HtmlTokenType.Text)
-            {
-                wordCount += CountWordInText(token.RawText.Span);
-            }
-        }
-
         public static void GetBookmarks(ref HtmlToken token, HashSet<string> bookmarks)
         {
             foreach (ref readonly var attribute in token.Attributes.Span)
@@ -469,58 +461,5 @@ namespace Microsoft.Docs.Build
         private static bool IsSelfClosingElement(string tagName) => s_selfClosingTags.Contains(tagName.ToLowerInvariant());
 
         private static bool IsSelfClosingElement(this HtmlToken token) => IsSelfClosingElement(token.Name.ToString());
-
-        private static int CountWordInText(ReadOnlySpan<char> text)
-        {
-            var total = 0;
-            var word = false;
-
-            foreach (var ch in text)
-            {
-                if (IsCJKChar(ch))
-                {
-                    total++;
-
-                    if (word)
-                    {
-                        word = false;
-                        total++;
-                    }
-                }
-                else
-                {
-                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
-                    {
-                        if (word)
-                        {
-                            word = false;
-                            total++;
-                        }
-                    }
-                    else if (
-                        ch != '.' && ch != '?' && ch != '!' &&
-                        ch != ';' && ch != ':' && ch != ',' &&
-                        ch != '(' && ch != ')' && ch != '[' &&
-                        ch != ']')
-                    {
-                        word = true;
-                    }
-                }
-            }
-
-            if (word)
-            {
-                total++;
-            }
-
-            return total;
-        }
-
-        private static bool IsCJKChar(char ch)
-        {
-            return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
-                   (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
-                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Half width and Full width Forms (including Chinese punctuation)
-        }
     }
 }

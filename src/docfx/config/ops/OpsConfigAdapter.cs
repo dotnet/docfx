@@ -151,7 +151,24 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static Dictionary<string, string[]> ConvertTrustedDomain(string json)
+        public static Dictionary<string, HashSet<string>?> ConvertAllowedHTML(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
+            {
+                var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
+                    .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
+                    .ToDictionary(
+                        i => i.Key,
+                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
+                        StringComparer.OrdinalIgnoreCase);
+                return taxoAllowedTags;
+            }
+
+            return new();
+        }
+
+        private static Dictionary<string, string[]> ConvertTrustedDomain(string json)
         {
             var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
             if (taxonomies.TryGetValue(AllowedDomain, out var taxonomy))
@@ -167,23 +184,6 @@ namespace Microsoft.Docs.Build
                     cleanTrustedDomain.Add(item.Key, domainCol);
                 }
                 return cleanTrustedDomain;
-            }
-
-            return new();
-        }
-
-        public static Dictionary<string, HashSet<string>?> ConvertAllowedHTML(string json)
-        {
-            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
-            if (taxonomies.TryGetValue(AllowedHTML, out var taxonomy))
-            {
-                var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
-                    .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
-                    .ToDictionary(
-                        i => i.Key,
-                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
-                        StringComparer.OrdinalIgnoreCase);
-                return taxoAllowedTags;
             }
 
             return new();
