@@ -3,12 +3,10 @@
 
 namespace Microsoft.Docs.Build
 {
-    public sealed class LandingDataAbstract
+    public sealed class LandingDataMenuItem
     {
-        public string Description { get; set; }
+        public string? Href { get; set; }
 
-        public LandingDataAside Aside { get; set; }
-
-        public LandingDataMenu Menu { get; set; }
+        public string? Text { get; set; }
     }
 }

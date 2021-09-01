@@ -73,7 +73,6 @@ namespace Microsoft.Docs.Build
             result["fallbackRepository"] = dependencies.FirstOrDefault(
                 dep => dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)).obj;
             result["redirectionFiles"] = JToken.FromObject(opsConfig.RedirectionFiles);
-            result["trustedDomains"] = JToken.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/docs/trusted-domains.json")));
 
             var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
                 config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));
