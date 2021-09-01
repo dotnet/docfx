@@ -473,7 +473,7 @@ outputs:
   docs/toc.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","file":"docs/a.md","line":2,"column":15}
-    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone. NOTE: This Suggestion will become a Error on 06/30/2020.","file":"docfx.yml","line":4,"column":16}
+    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range missing in docfx.yml/docfx.json, user should not define it in file metadata or moniker zone of 'docs/b.md'. NOTE: This Suggestion will become a Error on 06/30/2020.","file":"docfx.yml","line":4,"column":16}
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:

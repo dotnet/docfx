@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -80,7 +81,7 @@ namespace Microsoft.Docs.Build
             // User should not define it in moniker zone
             if (configMonikerRange.Value is null && ValidateMoniker(file))
             {
-                errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString));
+                errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString, Path.GetFileNameWithoutExtension(rangeString) == "docfx" ? file : null));
                 return default;
             }
 
@@ -121,7 +122,8 @@ namespace Microsoft.Docs.Build
                 // user should not define it in file metadata
                 if (validateMoniker && configMonikerRange.Value is null)
                 {
-                    errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
+                    errors.Add(Errors.Versioning.MonikerRangeUndefined(
+                        metadata.MonikerRange.Source, Path.GetFileNameWithoutExtension(metadata.MonikerRange.Source?.ToString()) == "docfx" ? file : null));
                     return (errors, default, default);
                 }
             }
