@@ -196,7 +196,7 @@ else if (Model.Style == "cards")
 
     </ul>
 }
-else if (Model.Style.StartsWith("icon"))
+else if (Model.Style != null && Model.Style.StartsWith("icon"))
 {
     string outerClass = "";
     string innerClass = "";

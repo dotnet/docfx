@@ -35,6 +35,9 @@ namespace Microsoft.Docs.Build
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPubDev = new(() => GetAccessTokenAsync(DocsEnvironment.PPE));
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPerf = new(() => GetAccessTokenAsync(DocsEnvironment.Perf));
 
+        private static readonly bool s_fallbackToPublicData =
+            bool.TryParse(Environment.GetEnvironmentVariable("DOCS_FALLBACK_TO_PUBLIC_DATA"), out var fallback) && fallback;
+
         public OpsAccessor(ErrorBuilder errors, CredentialHandler credentialHandler)
         {
             _errors = errors;
@@ -85,6 +88,11 @@ namespace Microsoft.Docs.Build
         {
             return Fetch(TaxonomyApi(environment) +
                 "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product");
+        }
+
+        public Task<string> GetTrustedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
+        {
+            return Fetch(TaxonomyApi(environment) + "/taxonomies/simplified?name=allowedDomain");
         }
 
         public Task<string> GetSandboxEnabledModuleList()
@@ -239,8 +247,11 @@ namespace Microsoft.Docs.Build
         {
             return async (request, next) =>
             {
-                // Default header which allows fallback to public data when credential is not provided.
-                request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", "True");
+                if (s_fallbackToPublicData)
+                {
+                    request.Headers.TryAddWithoutValidation("X-OP-FallbackToPublicData", "True");
+                }
+
                 if (!request.Headers.Contains("X-OP-BuildUserToken"))
                 {
                     try
@@ -257,8 +268,15 @@ namespace Microsoft.Docs.Build
                     }
                     catch (Exception ex)
                     {
-                        Log.Write("Fail to get AAD access token");
-                        Log.Write(ex);
+                        Log.Write($"Failed to get AAD access token<{environment}>");
+                        if (s_fallbackToPublicData)
+                        {
+                            Log.Write(ex);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
 

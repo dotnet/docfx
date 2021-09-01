@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -16,6 +17,8 @@ namespace Microsoft.Docs.Build
     internal class OpsConfigAdapter
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
+
+        private const string AllowedDomain = "allowedDomain";
 
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
@@ -26,6 +29,7 @@ namespace Microsoft.Docs.Build
         private const string FullMarkdownValidationRulesApi = "https://ops/fullmarkdownvalidationrules/";
         private const string FullBuildValidationRulesApi = "https://ops/fullbuildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
+        private const string TrustedDomainApi = "https://ops/taxonomy-allowedDomain/";
         private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
@@ -52,6 +56,7 @@ namespace Microsoft.Docs.Build
                 (FullMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (FullBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
+                (TrustedDomainApi, _ => _opsAccessor.GetTrustedDomain()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
@@ -117,6 +122,7 @@ namespace Microsoft.Docs.Build
             var documentUrls = JsonConvert.DeserializeAnonymousType(
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
+            var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
 
             return JsonConvert.SerializeObject(new
             {
@@ -135,10 +141,32 @@ namespace Microsoft.Docs.Build
                     $"{PublicMetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
+                trustedDomains,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
                 isReferenceRepository = docsets.Any(d => d.use_template),
             });
+        }
+
+        private static Dictionary<string, string[]> ConvertTrustedDomain(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedDomain, out var taxonomy))
+            {
+                var cleanTrustedDomain = new Dictionary<string, string[]>();
+                foreach (var item in taxonomy.NestedTaxonomy.dic)
+                {
+                    // Remove '(empty)' entity passed from pool party
+                    var domainCol = (from domain in item.Value
+                                  where !domain.Equals("(empty)", StringComparison.OrdinalIgnoreCase)
+                                  select domain).ToArray();
+
+                    cleanTrustedDomain.Add(item.Key, domainCol);
+                }
+                return cleanTrustedDomain;
+            }
+
+            return new();
         }
 
         private static Task<string> GetOpsMetadata()
