@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
             var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
-            var allowedHTML = ConvertAllowedHTML(await _opsAccessor.GetTrustedDomain());
+            var allowedHTML = ConvertAllowedHTML(await _opsAccessor.GetAllowedHTML());
 
             return JsonConvert.SerializeObject(new
             {
