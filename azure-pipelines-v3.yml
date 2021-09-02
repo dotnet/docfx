@@ -60,8 +60,8 @@ jobs:
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
   
   - task: PublishTestResults@2
+    condition: always()
     inputs:
-      condition: always()
       displayName: Publish Test Results
       testResultsFormat: VSTest
       testResultsFiles: '**/*.trx'
