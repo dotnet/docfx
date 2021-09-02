@@ -17,11 +17,11 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-[assembly: ApplicationPart("Microsoft.Docs.Template")]
+[assembly: ApplicationPart("Microsoft.Docs.Build.Specialized")]
 
 namespace Microsoft.Docs.Build
 {
-    internal class RazorTemplate
+    public class RazorTemplate
     {
         private static readonly Lazy<TestServer> s_server = new(StartServer);
 

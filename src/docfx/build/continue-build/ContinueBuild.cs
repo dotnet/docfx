@@ -29,11 +29,8 @@ namespace Microsoft.Docs.Build
             var outputDir = options.Output ?? Path.Combine(AppContext.BaseDirectory, "outputs");
             var package = new LocalPackage(options.Template);
             var locale = options.Locale ?? "en-us";
-            var trustedObj = JToken.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "data/docs/trusted-domains.json")));
-            var trustedDomains = JsonUtility.ToObject<Dictionary<string, TrustedDomains>>(errors, trustedObj);
             var config = new Config
             {
-                TrustedDomains = trustedDomains,
                 DryRun = false,
                 Template = new PackagePath(options.Template),
             };

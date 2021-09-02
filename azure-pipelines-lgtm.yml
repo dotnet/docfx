@@ -65,7 +65,7 @@ jobs:
       AnalyzeTarget: >
         src/docfx/bin/Release/net5.0/docfx.dll;
         src/docfx/bin/Release/net5.0/Microsoft.Docs.MarkdigExtensions.dll;
-        src/docfx/bin/Release/net5.0/Microsoft.Docs.LearnValidation.dll;
+        src/docfx/bin/Release/net5.0/Microsoft.Docs.Build.Specialized.dll;
 
   - task: Semmle@0
     displayName: Security - LGTM
