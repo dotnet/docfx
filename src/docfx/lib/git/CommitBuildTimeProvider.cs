@@ -20,14 +20,29 @@ namespace Microsoft.Docs.Build
         {
             _repo = repo;
             _config = config;
-            _commitBuildTimePath = AppData.GetCommitBuildTimePath(repo.Url, repo.Branch!);
+            var commitBuildTimePathDirectory = Path.Combine(AppData.StateRoot, "history");
+            _commitBuildTimePath = Path.Combine(commitBuildTimePathDirectory, $"build_history.json");
+            var commitBuildTimePath = _commitBuildTimePath;
+
+            // Fallback to load previous path with MD5 Hash in path
+            if (!File.Exists(commitBuildTimePath) && Directory.Exists(commitBuildTimePathDirectory))
+            {
+                var potentialCommitBuildTimePath = Directory.GetFiles(commitBuildTimePathDirectory)
+                    .Where(path => Path.GetFileName(path).StartsWith("build_history"))
+                    .FirstOrDefault(x => Path.HasExtension(x) && string.Equals(Path.GetExtension(x), ".json", StringComparison.OrdinalIgnoreCase));
+
+                if (potentialCommitBuildTimePath != null)
+                {
+                    commitBuildTimePath = potentialCommitBuildTimePath;
+                }
+            }
             _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
-            var exists = File.Exists(_commitBuildTimePath);
-            Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
+            var exists = File.Exists(commitBuildTimePath);
+            Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{commitBuildTimePath}'");
 
             var commitBuildTime = exists
-                ? ProcessUtility.ReadJsonFile<CommitBuildTime>(_commitBuildTimePath)
+                ? ProcessUtility.ReadJsonFile<CommitBuildTime>(commitBuildTimePath)
                 : new CommitBuildTime();
 
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);

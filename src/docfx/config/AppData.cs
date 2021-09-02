@@ -34,12 +34,6 @@ namespace Microsoft.Docs.Build
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(repositoryUrl));
         }
 
-        public static string GetCommitBuildTimePath(string repositoryUrl, string branch)
-        {
-            return Path.Combine(
-                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(repositoryUrl)}_{HashUtility.GetMd5Guid(branch)}.json");
-        }
-
         /// <summary>
         /// Get the application cache root dir, default is under user profile dir.
         /// User can set the DOCFX_APPDATA_PATH environment to change the root
