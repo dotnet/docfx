@@ -72,4 +72,3 @@ outputs:
    a.json:
    .errors.log: |
     {"message_severity":"warning","code":"validation-incomplete","message":"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://aka.ms/SiteHelp."}
-    {"message_severity":"warning","code":"validation-incomplete","message":"Validation Not completed. If you need admin help, file an issue via https://aka.ms/SiteHelp."}
