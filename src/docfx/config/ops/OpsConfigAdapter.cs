@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
             var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
-            var allowedHTML = ConvertAllowedHTML(await _opsAccessor.GetAllowedHTML());
+            var allowedHTML = ConvertAllowedHtml(await _opsAccessor.GetAllowedHTML());
 
             return JsonConvert.SerializeObject(new
             {
@@ -151,18 +151,18 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static Dictionary<string, HashSet<string>?> ConvertAllowedHTML(string json)
+        public static Dictionary<string, HashSet<string>?> ConvertAllowedHtml(string json)
         {
             var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
             if (taxonomies.TryGetValue(AllowedHtml, out var taxonomy))
             {
-                var taxoAllowedTags = taxonomy.NestedTaxonomy.dic
+                var allowedHtml = taxonomy.NestedTaxonomy.dic
                     .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
                     .ToDictionary(
                         i => i.Key,
                         i => i.Value.Length > 0 ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
                         StringComparer.OrdinalIgnoreCase);
-                return taxoAllowedTags;
+                return allowedHtml;
             }
 
             return new();
