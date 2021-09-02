@@ -2,11 +2,11 @@
 os: windows, osx
 inputs:
   docfx.yml:
-  docs/a.md: Link to [bxx](B.md)
+  docs/a.md: Link to [b](B.md)
   docs/b.md:
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\">狗带</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>" }
   docs/b.json:
 ---
 # URL is case insensitive on windows and mac
