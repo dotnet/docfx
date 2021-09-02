@@ -151,7 +151,7 @@ namespace Microsoft.Docs.Build
             });
         }
 
-        public static Dictionary<string, HashSet<string>?> ConvertAllowedHtml(string json)
+        private static Dictionary<string, HashSet<string>?> ConvertAllowedHtml(string json)
         {
             var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
             if (taxonomies.TryGetValue(AllowedHtml, out var taxonomy))

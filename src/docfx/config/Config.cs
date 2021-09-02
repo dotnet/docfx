@@ -224,6 +224,7 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// HTML allowlist for tags and attributes
         /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public Dictionary<string, HashSet<string>?> AllowedHtml { get; init; } = HtmlSanitizer.DefaultAllowedHtml;
 
         /// <summary>
