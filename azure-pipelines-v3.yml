@@ -49,30 +49,16 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp/testResult
-        if ($LASTEXITCODE -eq 0) {
-          write-host "##vso[task.setvariable variable=task.DotNetTest.status;]succeeded"
-        }
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
       DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
       DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
-  
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      displayName: Publish Test Results
-      testResultsFormat: VSTest
-      testResultsFiles: '**/*.trx'
-      mergeTestResults: true
 
   - task: reportgenerator@4
     displayName: Merge Coverage Results
-    condition: |
-      and(
-        eq(variables['task.DotNetTest.status'], 'succeeded'),
-        ne(variables['warm-up'], 'true'))
+    condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       reports: test/**/coverage.cobertura.xml
       targetdir: $(Pipeline.Workspace)/coveragereport
@@ -97,6 +83,16 @@ jobs:
   - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
     displayName: 'Component Detection'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+  # Put this step in the end, for this step always return status:succeeded, and following task won't be skipped
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      displayName: Publish Test Results
+      testResultsFormat: VSTest
+      testResultsFiles: '**/*.trx'
+      mergeTestResults: true
+
 
 # Run RegressionTest
 - job: RunRegressionTest
