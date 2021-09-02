@@ -201,6 +201,7 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(Func<HttpRequestMessage> requestFactory, string? value404 = null, HttpMiddleware? middleware = null)
         {
+            string? requestUrl = null;
             using var response = await HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<OperationCanceledException>()
@@ -223,6 +224,7 @@ namespace Microsoft.Docs.Build
                 using (PerfScope.Start($"[{nameof(OpsAccessor)}] '{request.Method} {UrlUtility.SanitizeUrl(request.RequestUri?.ToString())}'"))
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
+                    requestUrl = request.RequestUri?.ToString();
                     return await _http.SendAsync(request);
                 }
             }
@@ -233,11 +235,7 @@ namespace Microsoft.Docs.Build
                 {
                     var ex = new HttpRequestException(
                         $"Request failed({response.StatusCode}): {await response.Content.ReadAsStringAsync()}", default, response.StatusCode);
-
-                    if (response.Headers.TryGetValues("request-url", out var requestUrl))
-                    {
-                        ex.Data.Add("request-url", requestUrl.FirstOrDefault());
-                    }
+                    ex.Data.Add("request-url", requestUrl);
                     throw ex;
                 }
             }
