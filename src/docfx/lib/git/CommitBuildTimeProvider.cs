@@ -20,14 +20,14 @@ namespace Microsoft.Docs.Build
         {
             _repo = repo;
             _config = config;
-            var commitBuildTimePathDirectory = Path.Combine(AppData.StateRoot, "history");
-            _commitBuildTimePath = Path.Combine(commitBuildTimePathDirectory, $"build_history.json");
-            var commitBuildTimePath = _commitBuildTimePath;
+            _commitBuildTimePath = AppData.BuildHistoryStatePath;
 
             // Fallback to load previous path with MD5 Hash in path
-            if (!File.Exists(commitBuildTimePath) && Directory.Exists(commitBuildTimePathDirectory))
+            var commitBuildTimePath = _commitBuildTimePath;
+            var potentialBuildHistoryDirectory = Path.Combine(AppData.StateRoot, "history");
+            if (!File.Exists(commitBuildTimePath) && Directory.Exists(potentialBuildHistoryDirectory))
             {
-                var potentialCommitBuildTimePath = Directory.GetFiles(commitBuildTimePathDirectory)
+                var potentialCommitBuildTimePath = Directory.GetFiles(potentialBuildHistoryDirectory)
                     .Where(path => Path.GetFileName(path).StartsWith("build_history"))
                     .FirstOrDefault(x => Path.HasExtension(x) && string.Equals(Path.GetExtension(x), ".json", StringComparison.OrdinalIgnoreCase));
 
@@ -36,6 +36,7 @@ namespace Microsoft.Docs.Build
                     commitBuildTimePath = potentialCommitBuildTimePath;
                 }
             }
+
             _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
             var exists = File.Exists(commitBuildTimePath);

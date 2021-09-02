@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
         public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "msgraph-users.json");
 
+        public static string BuildHistoryStatePath => Path.Combine(StateRoot, "build_history.json");
+
         public static string GetFileDownloadPath(string url)
         {
             return Path.Combine(DownloadsRoot, UrlUtility.UrlToShortName(url));
