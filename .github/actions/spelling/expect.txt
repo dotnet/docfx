@@ -328,7 +328,6 @@ keygen
 kvp
 landingpage
 langs
-lastexitcode
 learningpath
 learningpaths
 len
@@ -551,7 +550,6 @@ seo
 serializer
 setex
 setext
-setvariable
 shellprogressbar
 shproj
 sitemap
