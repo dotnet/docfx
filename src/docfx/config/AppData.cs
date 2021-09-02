@@ -24,6 +24,8 @@ namespace Microsoft.Docs.Build
 
         public static string MicrosoftGraphCachePath => Path.Combine(CacheRoot, "msgraph-users.json");
 
+        public static string BuildHistoryStatePath => Path.Combine(StateRoot, "build_history.json");
+
         public static string GetFileDownloadPath(string url)
         {
             return Path.Combine(DownloadsRoot, UrlUtility.UrlToShortName(url));
@@ -32,12 +34,6 @@ namespace Microsoft.Docs.Build
         public static string GetCommitCachePath(string repositoryUrl)
         {
             return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(repositoryUrl));
-        }
-
-        public static string GetCommitBuildTimePath(string repositoryUrl, string branch)
-        {
-            return Path.Combine(
-                StateRoot, "history", $"build_history_{HashUtility.GetMd5Guid(repositoryUrl)}_{HashUtility.GetMd5Guid(branch)}.json");
         }
 
         /// <summary>
