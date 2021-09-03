@@ -94,7 +94,7 @@ namespace Microsoft.Docs.Build
             return Fetch(TaxonomyApi(environment) + "/taxonomies/simplified?name=allowedDomain");
         }
 
-        public Task<string> GetAllowedHTML(DocsEnvironment environment = DocsEnvironment.Prod)
+        public Task<string> GetAllowedHtml(DocsEnvironment environment = DocsEnvironment.Prod)
         {
             return Fetch(TaxonomyApi(environment) +
                 "/taxonomies/simplified?name=allowedHTML");

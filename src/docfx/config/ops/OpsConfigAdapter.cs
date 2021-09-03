@@ -124,7 +124,7 @@ namespace Microsoft.Docs.Build
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
                 ?.ToDictionary(item => item.log_code, item => item.document_url);
             var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
-            var allowedHTML = ConvertAllowedHtml(await _opsAccessor.GetAllowedHTML());
+            var allowedHTML = ConvertAllowedHtml(await _opsAccessor.GetAllowedHtml());
 
             return JsonConvert.SerializeObject(new
             {
@@ -160,8 +160,7 @@ namespace Microsoft.Docs.Build
                     .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
                     .ToDictionary(
                         i => i.Key,
-                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
-                        StringComparer.OrdinalIgnoreCase);
+                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value) : null);
                 return allowedHtml;
             }
 

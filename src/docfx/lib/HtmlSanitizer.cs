@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HtmlReaderWriter;
 using Markdig.Syntax;
 
@@ -10,11 +11,11 @@ namespace Microsoft.Docs.Build
 {
     internal class HtmlSanitizer
     {
-        public static readonly Dictionary<string, HashSet<string>?> DefaultAllowedHtml = new(StringComparer.OrdinalIgnoreCase)
+        public static readonly Dictionary<string, HashSet<string>?> DefaultAllowedHtml = new()
         {
             {
                 "*",
-                new(StringComparer.OrdinalIgnoreCase)
+                new()
                 {
                     "name",
                     "id",
@@ -31,44 +32,44 @@ namespace Microsoft.Docs.Build
                     "role",
                 }
             },
-            { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
+            { "a", new() { "href", "target", "rel", "alt", "download", "tabindex" } },
             { "abbr", null },
             { "address", null },
             { "article", null },
             { "b", null },
-            { "button", new(StringComparer.OrdinalIgnoreCase) { "hidden", "type" } },
+            { "button", new() { "hidden", "type" } },
             { "bdi", null },
             { "bdo", null },
-            { "blockquote", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
-            { "br", new(StringComparer.OrdinalIgnoreCase) { "clear" } },
+            { "blockquote", new() { "cite" } },
+            { "br", new() { "clear" } },
             { "caption", null },
             { "center", null },
             { "cite", null },
-            { "code", new(StringComparer.OrdinalIgnoreCase) { "name", "lang" } },
-            { "col", new(StringComparer.OrdinalIgnoreCase) { "width", "span" } },
-            { "colgroup", new(StringComparer.OrdinalIgnoreCase) { "span" } },
+            { "code", new() { "name", "lang" } },
+            { "col", new() { "width", "span" } },
+            { "colgroup", new() { "span" } },
             { "dd", null },
-            { "del", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+            { "del", new() { "cite", "datetime" } },
             { "details", null },
             { "dfn", null },
-            { "div", new(StringComparer.OrdinalIgnoreCase) { "align", "hidden" } },
+            { "div", new() { "align", "hidden" } },
             { "dl", null },
             { "dt", null },
             { "em", null },
             { "figcaption", null },
             { "figure", null },
-            { "font", new(StringComparer.OrdinalIgnoreCase) { "color", "face", "size" } },
-            { "form", new(StringComparer.OrdinalIgnoreCase) { "action" } },
+            { "font", new() { "color", "face", "size" } },
+            { "form", new() { "action" } },
             { "h1", null },
             { "h2", null },
             { "h3", null },
             { "h4", null },
             { "head", null },
-            { "hr", new(StringComparer.OrdinalIgnoreCase) { "size", "color", "width" } },
+            { "hr", new() { "size", "color", "width" } },
             { "i", null },
             {
                 "iframe",
-                new(StringComparer.OrdinalIgnoreCase)
+                new()
                 {
                     "allow",
                     "align",
@@ -84,27 +85,27 @@ namespace Microsoft.Docs.Build
                     "loading",
                 }
             },
-            { "image", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
-            { "img", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align", "hspace", "border", "sizes", "valign" } },
-            { "input", new(StringComparer.OrdinalIgnoreCase) { "type", "value" } },
-            { "ins", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
+            { "image", new() { "alt", "height", "src", "width" } },
+            { "img", new() { "alt", "height", "src", "width", "align", "hspace", "border", "sizes", "valign" } },
+            { "input", new() { "type", "value" } },
+            { "ins", new() { "cite", "datetime" } },
             { "kbd", null },
-            { "label", new(StringComparer.OrdinalIgnoreCase) { "for" } },
-            { "li", new(StringComparer.OrdinalIgnoreCase) { "value" } },
+            { "label", new() { "for" } },
+            { "li", new() { "value" } },
             { "mark", null },
             { "nav", null },
             { "nobr", null },
-            { "ol", new(StringComparer.OrdinalIgnoreCase) { "reserved", "start", "type" } },
-            { "p", new(StringComparer.OrdinalIgnoreCase) { "align", "dir", "hidden", "lang", "valign" } },
-            { "pre", new(StringComparer.OrdinalIgnoreCase) { "lang" } },
-            { "q", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
+            { "ol", new() { "reserved", "start", "type" } },
+            { "p", new() { "align", "dir", "hidden", "lang", "valign" } },
+            { "pre", new() { "lang" } },
+            { "q", new() { "cite" } },
             { "rgn", null },
             { "s", null },
             { "samp", null },
             { "section", null },
             { "small", null },
-            { "source", new(StringComparer.OrdinalIgnoreCase) { "src", "type" } },
-            { "span", new(StringComparer.OrdinalIgnoreCase) { "dir", "lang" } },
+            { "source", new() { "src", "type" } },
+            { "span", new() { "dir", "lang" } },
             { "strike", null },
             { "strong", null },
             { "sub", null },
@@ -112,7 +113,7 @@ namespace Microsoft.Docs.Build
             { "sup", null },
             {
                 "table",
-                new(StringComparer.OrdinalIgnoreCase)
+                new()
                 {
                     "align",
                     "width",
@@ -125,37 +126,39 @@ namespace Microsoft.Docs.Build
                     "bordercolor",
                 }
             },
-            { "tbody", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "width" } },
-            { "td", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "valign", "bgcolor", "hidden", "nowrap" } },
+            { "tbody", new() { "align", "valign", "width" } },
+            { "td", new() { "rowspan", "colspan", "align", "width", "valign", "bgcolor", "hidden", "nowrap" } },
             { "tfoot", null },
-            { "th", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "bgcolor", "scope", "valign" } },
-            { "thead", new(StringComparer.OrdinalIgnoreCase) { "align", "valign" } },
-            { "time", new(StringComparer.OrdinalIgnoreCase) { "datetime" } },
-            { "tr", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "colspan", "height", "bgcolor" } },
+            { "th", new() { "rowspan", "colspan", "align", "width", "bgcolor", "scope", "valign" } },
+            { "thead", new() { "align", "valign" } },
+            { "time", new() { "datetime" } },
+            { "tr", new() { "align", "valign", "colspan", "height", "bgcolor" } },
             { "u", null },
             { "ul", null },
             { "var", null },
-            { "video", new(StringComparer.OrdinalIgnoreCase) { "src", "width", "height", "preload", "controls", "poster" } },
+            { "video", new() { "src", "width", "height", "preload", "controls", "poster" } },
             { "wbr", null },
         };
 
-        private readonly Config _config;
+        private readonly Dictionary<string, HashSet<string>?> _allowedHtml;
 
         public HtmlSanitizer(Config config)
         {
-            _config = config;
+            _allowedHtml = config.AllowedHtml.ToDictionary(
+                i => i.Key,
+                i => i.Value != null ? new HashSet<string>(i.Value, StringComparer.OrdinalIgnoreCase) : null,
+                StringComparer.OrdinalIgnoreCase);
         }
 
         public void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
         {
-            var allowedHTML = _config.AllowedHtml;
             if (token.Type != HtmlTokenType.StartTag)
             {
                 return;
             }
 
             var tokenName = token.Name.ToString();
-            if (!allowedHTML.TryGetValue(tokenName, out var allowedAttributes))
+            if (!_allowedHtml.TryGetValue(tokenName, out var allowedAttributes))
             {
                 errors.Add(Errors.Content.DisallowedHtmlTag(obj?.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
                 reader.ReadToEndTag(token.Name.Span);
@@ -175,7 +178,7 @@ namespace Microsoft.Docs.Build
 
             bool IsAllowedAttribute(string attributeName)
             {
-                if (allowedHTML.TryGetValue("*", out var allowedGlobalAttributes)
+                if (_allowedHtml.TryGetValue("*", out var allowedGlobalAttributes)
                     && allowedGlobalAttributes != null
                     && allowedGlobalAttributes.Contains(attributeName))
                 {

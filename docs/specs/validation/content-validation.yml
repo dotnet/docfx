@@ -50,7 +50,7 @@ outputs:
     {"message_severity": "info","code": "disallowed-html-attribute","message": "HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file": "a.md","line": 4,"column": 5}
     {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
-# Sanitize user html with allowedHTML
+# Sanitize user html with customized allowedHTML
 inputs:
   docfx.yml: |
     allowedHTML:
@@ -60,13 +60,13 @@ inputs:
       h2:
       - foo
   a.md: |
-    <h2 id="head" title="HEAD" foo="bar" onclick="alert();"></h2>
+    <H2 id="head" TITLE="HEAD" foo="bar" onclick="alert();"></H2>
 outputs:
   a.json: |
     { "conceptual": "
         <h2 id='head' title='HEAD' foo='bar'></h2>" }
   .errors.log: |
-    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'h2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":38}
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":38}
 ---
 # SensitiveLanguage - sensitive-language
 inputs:
