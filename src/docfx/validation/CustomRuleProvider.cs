@@ -17,6 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly PublishUrlMap _publishUrlMap;
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metadataProvider;
+        private readonly ErrorBuilder _errors;
 
         private readonly Dictionary<string, List<CustomRule>> _customRules;
 
@@ -35,8 +36,9 @@ namespace Microsoft.Docs.Build
             _publishUrlMap = publishUrlMap;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
+            _errors = errors;
 
-            _customRules = LoadCustomRules(errors);
+            _customRules = LoadCustomRules();
         }
 
         public bool IsEnable(FilePath filePath, CustomRule customRule, string? moniker = null)
@@ -163,7 +165,7 @@ namespace Microsoft.Docs.Build
             return canonicalVersion == moniker;
         }
 
-        private Dictionary<string, List<CustomRule>> LoadCustomRules(ErrorBuilder errors)
+        private Dictionary<string, List<CustomRule>> LoadCustomRules()
         {
             var contentValidationRules = GetValidationRules(_config.MarkdownValidationRules);
             var buildValidationRules = GetValidationRules(_config.BuildValidationRules);
@@ -177,7 +179,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (customRules.ContainsKey(validationRule.Code))
                     {
-                        errors.Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code));
+                        _errors.Add(Errors.Logging.RuleOverrideInvalid(validationRule.Code));
                         customRules.Remove(validationRule.Code);
                     }
                 }
@@ -254,9 +256,18 @@ namespace Microsoft.Docs.Build
 
         private Dictionary<string, ValidationRules>? GetValidationRules(SourceInfo<string> rules)
         {
-            return !string.IsNullOrEmpty(rules.Value)
-                ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(_fileResolver.ReadString(rules), rules.Source?.File)
-                : null;
+            try
+            {
+                return !string.IsNullOrEmpty(rules.Value)
+                    ? JsonUtility.DeserializeData<Dictionary<string, ValidationRules>>(_fileResolver.ReadString(rules), rules.Source?.File)
+                    : null;
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                _errors.Add(Errors.System.ValidationIncomplete());
+                return null;
+            }
         }
     }
 }
