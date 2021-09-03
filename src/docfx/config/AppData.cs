@@ -33,7 +33,7 @@ namespace Microsoft.Docs.Build
 
         public static string GetCommitCachePath(string repositoryUrl)
         {
-            return Path.Combine(CacheRoot, "commits", HashUtility.GetMd5Hash(repositoryUrl));
+            return Path.Combine(CacheRoot, "commits", HashUtility.GetSha256HashShort(repositoryUrl));
         }
 
         /// <summary>
