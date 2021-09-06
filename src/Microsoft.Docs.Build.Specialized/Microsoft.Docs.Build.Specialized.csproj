@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.9" />
-    <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.21207.3" />
+    <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.21246.1" />
   </ItemGroup>
 
 </Project>
