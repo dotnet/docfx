@@ -184,6 +184,7 @@ namespace Microsoft.Docs.Build
                     () => _bookmarkValidator.Validate(),
                     () => _contentValidator.PostValidate(),
                     () => _errors.AddRange(_metadataValidator.PostValidate()),
+                    () => _documentProvider.Save(),
                     () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),

@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly (PathString src, PathString dest)[] _routes;
 
         private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new();
+        private readonly ConcurrentHashSet<DocumentIdItem> _documentIds = new();
 
         // mime -> page type. TODO get from docs-ui schema
         private static readonly Dictionary<string, string> s_pageTypeMapping = new()
@@ -141,12 +143,39 @@ namespace Microsoft.Docs.Build
 
             // remove file extension from site path
             // site path doesn't contain version info according to the output spec
-            var i = file.SitePath.LastIndexOf('.');
-            var sitePath = i >= 0 ? file.SitePath.Substring(0, i) : file.SitePath;
+            var sitePath = Path.ChangeExtension(file.SitePath, extension: null);
 
-            return (
-                HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
-                HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+            var documentId = HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString();
+            var documentVersionIndependentId = HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString();
+
+            _documentIds.TryAdd(new()
+            {
+                DepotName = depotName,
+                SourcePath = Path.ChangeExtension(sourcePath.ToLowerInvariant(), extension: null),
+                DocumentId = documentId,
+                DocumentVersionIndependentId = documentVersionIndependentId,
+            });
+
+            return (documentId, documentVersionIndependentId);
+        }
+
+        public void Save()
+        {
+            var documentIdsStatePath = AppData.DocumentIdsStatePath;
+
+            // Multi-docsets are build in parallel, each docset set its own DocumentProvider,
+            // so lock and read the most recent data.
+            using (InterProcessMutex.Create(documentIdsStatePath))
+            {
+                var existingDocumentIds = JsonConvert.DeserializeAnonymousType(
+                    File.ReadAllText(documentIdsStatePath), new { document_ids = Array.Empty<DocumentIdItem>() });
+
+                var documentIds = _documentIds.Union(existingDocumentIds?.document_ids ?? Array.Empty<DocumentIdItem>())
+                    .OrderBy(item => item.DepotName)
+                    .OrderBy(item => item.SourcePath);
+
+                File.WriteAllText(documentIdsStatePath, JsonConvert.SerializeObject(new { document_ids = documentIds }));
+            }
         }
 
         private Document GetDocument(FilePath path)
