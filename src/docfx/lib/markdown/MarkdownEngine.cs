@@ -35,6 +35,7 @@ namespace Microsoft.Docs.Build
         private readonly MarkdownPipeline[] _pipelines;
 
         private readonly PublishUrlMap _publishUrlMap;
+        private readonly HtmlSanitizer _htmlSanitizer;
 
         private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
@@ -47,7 +48,8 @@ namespace Microsoft.Docs.Build
             MonikerProvider monikerProvider,
             TemplateEngine templateEngine,
             ContentValidator contentValidator,
-            PublishUrlMap publishUrlMap)
+            PublishUrlMap publishUrlMap,
+            HtmlSanitizer htmlSanitizer)
         {
             _input = input;
             _linkResolver = linkResolver;
@@ -58,6 +60,7 @@ namespace Microsoft.Docs.Build
             _templateEngine = templateEngine;
             _contentValidator = contentValidator;
             _publishUrlMap = publishUrlMap;
+            _htmlSanitizer = htmlSanitizer;
 
             _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
             _pipelines = new[]
@@ -202,7 +205,7 @@ namespace Microsoft.Docs.Build
                 .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
                 .UseResolveLink(_markdownContext)
                 .UseXref(GetXref)
-                .UseHtml(GetErrors, GetLink, GetXref)
+                .UseHtml(GetErrors, GetLink, GetXref, _htmlSanitizer)
                 .UseExtractTitle(this, GetConceptual);
         }
 
