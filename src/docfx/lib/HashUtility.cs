@@ -9,12 +9,6 @@ namespace Microsoft.Docs.Build
 {
     internal static class HashUtility
     {
-        public static string GetMd5Hash(string input)
-        {
-            using var md5 = MD5.Create(); // lgtm [cs/weak-crypto]
-            return ToHexString(md5.ComputeHash(Encoding.UTF8.GetBytes(input)));
-        }
-
         public static Guid GetMd5Guid(string input)
         {
             using var md5 = MD5.Create(); // lgtm [cs/weak-crypto]
