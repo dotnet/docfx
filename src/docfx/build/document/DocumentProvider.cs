@@ -167,13 +167,15 @@ namespace Microsoft.Docs.Build
             // so lock and read the most recent data.
             using (InterProcessMutex.Create(documentIdsStatePath))
             {
-                var existingDocumentIds = JsonConvert.DeserializeAnonymousType(
-                    File.ReadAllText(documentIdsStatePath), new { document_ids = Array.Empty<DocumentIdItem>() });
+                var existingDocumentIds = File.Exists(documentIdsStatePath)
+                    ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(documentIdsStatePath), new { document_ids = Array.Empty<DocumentIdItem>() })
+                    : null;
 
                 var documentIds = _documentIds.Union(existingDocumentIds?.document_ids ?? Array.Empty<DocumentIdItem>())
                     .OrderBy(item => item.DepotName)
                     .OrderBy(item => item.SourcePath);
 
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(documentIdsStatePath)) ?? ".");
                 File.WriteAllText(documentIdsStatePath, JsonConvert.SerializeObject(new { document_ids = documentIds }));
             }
         }
