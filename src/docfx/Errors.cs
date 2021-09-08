@@ -285,7 +285,7 @@ namespace Microsoft.Docs.Build
                 return new Error(
                     ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': '{filesList}'.");
+                    $"Two or more files{message} publish to the same url '{url}': {filesList}.");
             }
 
             /// <summary>
