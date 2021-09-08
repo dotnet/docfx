@@ -79,7 +79,7 @@ namespace Microsoft.Docs.Build
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // User should not define it in moniker zone
-            if (configMonikerRange.Value is null && ValidateMoniker(file))
+            if (configMonikerRange.Value is null && ShouldValidateMoniker(file))
             {
                 errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString, Path.GetFileNameWithoutExtension(rangeString) == "docfx" ? file : null));
                 return default;
@@ -113,7 +113,7 @@ namespace Microsoft.Docs.Build
             var metadata = _metadataProvider.GetMetadata(errors, file);
             var configMonikerRange = GetConfigMonikerRange(file);
             var configMonikers = _rangeParser.Parse(errors, configMonikerRange);
-            var validateMoniker = ValidateMoniker(file);
+            var validateMoniker = ShouldValidateMoniker(file);
 
             if (metadata.MonikerRange != null)
             {
@@ -226,7 +226,7 @@ namespace Microsoft.Docs.Build
             return result;
         }
 
-        private bool ValidateMoniker(FilePath path)
+        private bool ShouldValidateMoniker(FilePath path)
         {
             var contentType = _buildScope.GetContentType(path);
             return contentType == ContentType.Toc || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
