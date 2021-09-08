@@ -54,7 +54,7 @@ namespace Microsoft.Docs.Build
 
         public void Save()
         {
-            if (!_config.UpdateCommitBuildTime || _buildTimeByCommit.ContainsKey(_repo.Commit))
+            if (!_config.UpdateCommitBuildTime)
             {
                 return;
             }
