@@ -55,13 +55,6 @@ jobs:
       DOCFX_MICROSOFT_GRAPH_TENANT_ID: '72f988bf-86f1-41af-91ab-2d7cd011db47'
       DOCFX_MICROSOFT_GRAPH_CLIENT_ID: 'b799e059-9dd8-4839-a39c-96f7531e55e2'
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
-  
-  - task: PublishTestResults@2
-    inputs:
-      displayName: Publish Test Results
-      testResultsFormat: VSTest
-      testResultsFiles: '**/*.trx'
-      mergeTestResults: true
 
   - task: reportgenerator@4
     displayName: Merge Coverage Results
@@ -90,6 +83,16 @@ jobs:
   - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
     displayName: 'Component Detection'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+  # Put this step in the end, for this step always return status:succeeded, and following task won't be skipped
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      displayName: Publish Test Results
+      testResultsFormat: VSTest
+      testResultsFiles: '**/*.trx'
+      mergeTestResults: true
+
 
 # Run RegressionTest
 - job: RunRegressionTest
@@ -205,7 +208,7 @@ parameters:
     windowsserverdocs-pr:
       params: https://github.com/MicrosoftDocs/windowsserverdocs-pr --timeout 45 --regression-rules
     VBA-Docs:
-      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
+      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 80 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
     microsoft-365-docs-pr.zh-CN:
@@ -215,7 +218,7 @@ parameters:
     PowerShell-Docs:
       params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch live
     roslyn-api-docs:
-      params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 105
+      params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 120
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     dynamics365-docs-odata-apis:
@@ -227,7 +230,7 @@ parameters:
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
-      params: https://github.com/MicrosoftDocs/test --branch master --timeout 20 --no-dry-sync
+      params: https://github.com/MicrosoftDocs/test --branch master --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
     windows-compatibility:
@@ -241,7 +244,7 @@ parameters:
     quantum-docs-private:
       params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
     microsoft-graph-docs:
-      params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+      params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 60
     # render HTML
     html.test:
       params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync --output-type html
@@ -251,4 +254,4 @@ parameters:
     dryrun.bot-docs-pr:
       params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --template https://static.docs.com/ui/latest
     dryrun.azure-docs-pr:
-      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
+      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 80 --dry-run --regression-rules

@@ -49,9 +49,15 @@ namespace Microsoft.Docs.Build
             var response = await adapter.InterceptHttpRequest(request);
             var actualConfig = await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
+            var actualConfigToken = JToken.Parse(actualConfig);
             new JsonDiffBuilder().UseAdditionalProperties().Build().Verify(
                 JToken.Parse(expectedJson.Replace('\'', '"')),
-                JToken.Parse(actualConfig));
+                actualConfigToken);
+
+            var allowedHtml = JsonUtility.ToObject<Config>(ErrorBuilder.Null, actualConfigToken).AllowedHtml;
+            Assert.True(allowedHtml.ContainsKey("*"));
+            Assert.True(allowedHtml["*"].Count > 5);
+            Assert.True(allowedHtml.ContainsKey("a"));
         }
 
         [SkippableTheory]

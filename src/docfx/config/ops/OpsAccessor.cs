@@ -95,6 +95,12 @@ namespace Microsoft.Docs.Build
             return Fetch(TaxonomyApi(environment) + "/taxonomies/simplified?name=allowedDomain");
         }
 
+        public Task<string> GetAllowedHtml(DocsEnvironment environment = DocsEnvironment.Prod)
+        {
+            return Fetch(TaxonomyApi(environment) +
+                "/taxonomies/simplified?name=allowedHTML");
+        }
+
         public Task<string> GetSandboxEnabledModuleList()
         {
             return Fetch("https://docs.microsoft.com/api/resources/sandbox/verify");
@@ -105,7 +111,7 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules($"/rulesets/metadatarules", fetchFullRules, tuple.repositoryUrl, tuple.branch);
             var allowlists = GetAllowlists();
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists, _errors);
         }
 
         public Task<string> GetRegressionAllContentRules()
@@ -118,7 +124,7 @@ namespace Microsoft.Docs.Build
             var metadataRules = FetchValidationRules("/rulesets/metadatarules?name=_regression_all_", fetchFullRules: true, environment: DocsEnvironment.PPE);
             var allowlists = GetAllowlists(DocsEnvironment.PPE);
 
-            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists);
+            return OpsMetadataRuleConverter.GenerateJsonSchema(await metadataRules, await allowlists, _errors);
         }
 
         public Task<string> GetRegressionAllBuildRules()
