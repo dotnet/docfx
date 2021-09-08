@@ -281,10 +281,11 @@ namespace Microsoft.Docs.Build
             public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, MonikerList> files, List<string> conflictMonikers)
             {
                 var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+                var filesList = StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"));
                 return new Error(
                     ErrorLevel.Warning,
                     "publish-url-conflict",
-                    $"Two or more files{message} publish to the same url '{url}': {StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"))}.");
+                    $"Two or more files{message} publish to the same url '{url}': '{filesList}'.");
             }
 
             /// <summary>
@@ -671,7 +672,10 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ✔️
             public static Error AttributeDeprecated(SourceInfo? source, string name, string replacedBy)
-                => new(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{(string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead.")}", source, name);
+            {
+                var tip = string.IsNullOrEmpty(replacedBy) ? "." : $", use '{replacedBy}' instead.";
+                return new(ErrorLevel.Warning, "attribute-deprecated", $"Deprecated attribute: '{name}'{tip}", source, name);
+            }
 
             /// <summary>
             /// The value of paired attribute is invalid.
@@ -748,7 +752,10 @@ namespace Microsoft.Docs.Build
             /// </summary>
             /// Behavior: ✔️ Message: ❌
             public static Error BookmarkNotFound(SourceInfo? source, FilePath reference, string bookmark, IEnumerable<string> candidateBookmarks)
-                => new(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{(StringUtility.FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : ".")}", source);
+            {
+                var tip = StringUtility.FindBestMatch(bookmark, candidateBookmarks, out var matchedBookmark) ? $", did you mean '#{matchedBookmark}'?" : ".";
+                return new(ErrorLevel.Warning, "bookmark-not-found", $"Cannot find bookmark '#{bookmark}' in '{reference}'{tip}", source);
+            }
 
             /// <summary>
             /// Custom 404 page is not supported
