@@ -105,7 +105,7 @@ namespace Microsoft.Docs.Build
             if (!s_isRealTimeBuild.Value)
             {
                 var docfxConfigTelemetryValue = JsonUtility.Serialize(docfxConfig);
-                var hashCode = HashUtility.GetMd5Hash(docfxConfigTelemetryValue);
+                var hashCode = HashUtility.GetSha256Hash(docfxConfigTelemetryValue);
                 if (docfxConfigTelemetryValue.Length > MaxEventPropertyLength)
                 {
                     var newValue = JsonUtility.DeepClone(docfxConfig) as JObject;

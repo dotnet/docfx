@@ -51,6 +51,7 @@ namespace Microsoft.Docs.Build
         private readonly TocParser _tocParser;
         private readonly TocLoader _tocLoader;
         private readonly TocMap _tocMap;
+        private readonly HtmlSanitizer _htmlSanitizer;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -96,7 +97,8 @@ namespace Microsoft.Docs.Build
             _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
             _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));
             _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider, _contentValidator);
-            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
+            _htmlSanitizer = new(_config);
+            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
             _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
             _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
             _tocParser = new(_input, _markdownEngine);
@@ -182,6 +184,7 @@ namespace Microsoft.Docs.Build
                     () => _bookmarkValidator.Validate(),
                     () => _contentValidator.PostValidate(),
                     () => _errors.AddRange(_metadataValidator.PostValidate()),
+                    () => _documentProvider.Save(),
                     () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
