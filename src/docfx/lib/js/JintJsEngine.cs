@@ -6,6 +6,7 @@ using System.IO;
 using Esprima;
 using Jint;
 using Jint.Native;
+using Jint.Native.Json;
 using Jint.Native.Object;
 using Jint.Runtime;
 using Jint.Runtime.Interop;
@@ -64,7 +65,7 @@ namespace Microsoft.Docs.Build
             var dirname = Path.GetDirectoryName(scriptPath) ?? "";
             var require = new ClrFunctionInstance(engine, "require", Require);
 
-            var func = engine.Execute(script, parserOptions).GetCompletionValue();
+            var func = engine.Evaluate(script, parserOptions);
             func.Invoke(module, exports, dirname, require, MakeObject());
             return _modules[scriptPath] = module.Get("exports");
 
@@ -76,12 +77,12 @@ namespace Microsoft.Docs.Build
 
         private ObjectInstance MakeObject()
         {
-            return _engine.Object.Construct(Arguments.Empty);
+            return _engine.Realm.Intrinsics.Object.Construct(Arguments.Empty);
         }
 
         private ObjectInstance MakeArray()
         {
-            return _engine.Array.Construct(Arguments.Empty);
+            return _engine.Realm.Intrinsics.Array.Construct(Arguments.Empty);
         }
 
         private JsValue ToJsValue(JToken token)
@@ -91,7 +92,7 @@ namespace Microsoft.Docs.Build
                 var result = MakeArray();
                 foreach (var item in arr)
                 {
-                    _engine.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
+                    _engine.Realm.Intrinsics.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
                 }
                 return result;
             }
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
             {
                 token.AsObject().Delete("__global");
             }
-            return JToken.Parse(_engine.Json.Stringify(null, new[] { token }).AsString());
+            return JToken.Parse(new JsonSerializer(_engine).Serialize(token, JsValue.Null, JsValue.Null).AsString());
         }
     }
 }

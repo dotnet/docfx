@@ -10,13 +10,27 @@ Our current focus is conceptual document parity with https://docs.microsoft.com,
 ## Getting Started
 
 - Install [.NET Core](https://www.microsoft.com/net/download)
-- Install latest `docfx` pre release using:
+- Install latest `docfx` pre release:
 ```powershell
 dotnet tool update -g docfx --version "3.0.0-*" --add-source https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-public-packages/nuget/v3/index.json
 ```
-- Create a directory with a `docfx.yml` config file, markdown files and other contents. See examples in our [specification](https://github.com/dotnet/docfx/tree/v3/docs/specs).
-- Run `docfx restore` to restore the dependencies of your docset.
-- Run `docfx build` to build your docset.
+- Create a directory for your website:
+```powershell
+mkdir my-website
+cd my-website
+```
+- Create a new website:
+```powershell
+docfx new conceptual
+```
+- Build your website.
+```powershell
+docfx build
+```
+- Start a local HTTP static file server in `_site` folder. If you are using [http-server](https://stackoverflow.com/questions/16333790/node-js-quick-file-server-static-files-over-http):
+```powershell
+http-server _site
+```
 
 ## Binary Builds
 

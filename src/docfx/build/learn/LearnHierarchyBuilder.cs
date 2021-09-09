@@ -12,10 +12,10 @@ namespace Microsoft.Docs.Build
     {
         private readonly ContentValidator _contentValidator;
 
-        private readonly ListBuilder<LearningPath> _learningPaths = new ListBuilder<LearningPath>();
-        private readonly ListBuilder<Module> _modules = new ListBuilder<Module>();
-        private readonly ListBuilder<ModuleUnit> _moduleUnits = new ListBuilder<ModuleUnit>();
-        private readonly ListBuilder<Achievement> _achievements = new ListBuilder<Achievement>();
+        private readonly ListBuilder<LearningPath> _learningPaths = new();
+        private readonly ListBuilder<Module> _modules = new();
+        private readonly ListBuilder<ModuleUnit> _moduleUnits = new();
+        private readonly ListBuilder<Achievement> _achievements = new();
 
         public LearnHierarchyBuilder(ContentValidator contentValidator)
         {

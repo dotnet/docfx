@@ -103,7 +103,7 @@ namespace Microsoft.Docs.Build
                 return ContentType.Resource;
             }
 
-            if (name.Equals("TOC", PathUtility.PathComparison) || name.Equals("TOC.experimental", PathUtility.PathComparison))
+            if (name.Equals("TOC", PathUtility.PathComparison))
             {
                 return ContentType.Toc;
             }

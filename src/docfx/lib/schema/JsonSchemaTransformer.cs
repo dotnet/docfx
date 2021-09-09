@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlReaderWriter;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -22,7 +23,7 @@ namespace Microsoft.Docs.Build
         private readonly XrefResolver _xrefResolver;
         private readonly ErrorBuilder _errors;
         private readonly MonikerProvider _monikerProvider;
-        private readonly TemplateEngine _templateEngine;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly Input _input;
 
         private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
@@ -39,7 +40,7 @@ namespace Microsoft.Docs.Build
             XrefResolver xrefResolver,
             ErrorBuilder errors,
             MonikerProvider monikerProvider,
-            TemplateEngine templateEngine,
+            JsonSchemaProvider jsonSchemaProvider,
             Input input)
         {
             _documentProvider = documentProvider;
@@ -48,7 +49,7 @@ namespace Microsoft.Docs.Build
             _xrefResolver = xrefResolver;
             _errors = errors;
             _monikerProvider = monikerProvider;
-            _templateEngine = templateEngine;
+            _jsonSchemaProvider = jsonSchemaProvider;
             _input = input;
         }
 
@@ -118,7 +119,7 @@ namespace Microsoft.Docs.Build
                 _ => throw new NotSupportedException(),
             };
             var mime = _documentProvider.GetMime(file);
-            var schemaValidator = _templateEngine.GetSchemaValidator(mime);
+            var schemaValidator = _jsonSchemaProvider.GetSchemaValidator(mime);
             var schemaMap = new JsonSchemaMap(IsContentTransform);
             var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
             errors.AddRange(schemaErrors);
@@ -401,13 +402,26 @@ namespace Microsoft.Docs.Build
                 return value;
             }
 
+            var stringValue = value.Value<string>();
+            if (stringValue is null)
+            {
+                return value;
+            }
+
             var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
-            var content = new SourceInfo<string>(value.Value<string>(), sourceInfo);
+            var content = new SourceInfo<string>(stringValue, sourceInfo);
 
             switch (schema.ContentType)
             {
                 case JsonSchemaContentType.Href:
-                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file);
+                    var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
+                        {
+                            HyperLinkType = HyperLinkType.Default,
+                            IsVisible = true,  // trun around to skip 'link-text-missing' validation
+                            UrlLink = stringValue,
+                            SourceInfo = sourceInfo,
+                        });
+
                     errors.AddIfNotNull(error);
                     return link;
 
@@ -458,7 +472,7 @@ namespace Microsoft.Docs.Build
                     if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
                     {
                         Watcher.Write(() => _uidReferenceCountList.Value.Add((
-                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            content,
                             propertyPath,
                             rootSchema,
                             schema.MinReferenceCount,
@@ -467,7 +481,7 @@ namespace Microsoft.Docs.Build
                     else if (schema.ContentType == JsonSchemaContentType.Xref)
                     {
                         Watcher.Write(() => _xrefList.Value.Add((
-                            new SourceInfo<string>(value.Value<string>(), value.GetSourceInfo()),
+                            content,
                             (xrefSpec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
                             xrefSpec?.SchemaType)));
                     }

@@ -224,9 +224,9 @@ this is also warning</p>
             @"the following is note type
   > [!NOTE]
   > note text 1-1
-  > note text 1-2  
+  > note text 1-2
   > note text 2-1
-This is also note  
+This is also note
 This is also note with br
 
 Skip the note
@@ -234,9 +234,9 @@ Skip the note
 <div class=""NOTE"">
 <h5>NOTE</h5>
 <p>note text 1-1
-note text 1-2<br />
+note text 1-2
 note text 2-1
-This is also note<br />
+This is also note
 This is also note with br</p>
 </div>
 <p>Skip the note</p>
@@ -245,7 +245,7 @@ This is also note with br</p>
             @"the following is not note type
   > no-note text 1-1
   > [!NOTE]
-  > no-note text 1-2  
+  > no-note text 1-2
   > no-note text 2-1
 ", @"<p>the following is not note type</p>
 <blockquote>
@@ -253,7 +253,7 @@ This is also note with br</p>
 </blockquote>
 <div class=""NOTE"">
 <h5>NOTE</h5>
-<p>no-note text 1-2<br />
+<p>no-note text 1-2
 no-note text 2-1</p>
 </div>
 ")]
@@ -262,7 +262,7 @@ no-note text 2-1</p>
   > no-note text 1-1
   >
   > [!NOTE]
-  > no-note text 2-1  
+  > no-note text 2-1
   > no-note text 2-2
 ", @"<p>the following is not note type</p>
 <blockquote>
@@ -270,7 +270,7 @@ no-note text 2-1</p>
 </blockquote>
 <div class=""NOTE"">
 <h5>NOTE</h5>
-<p>no-note text 2-1<br />
+<p>no-note text 2-1
 no-note text 2-2</p>
 </div>
 ")]
@@ -279,12 +279,12 @@ no-note text 2-2</p>
 
     > code text 1-1
     > [!NOTE]
-    > code text 1-2  
+    > code text 1-2
     > code text 2-1
 ", @"<p>the following is code</p>
 <pre><code>&gt; code text 1-1
 &gt; [!NOTE]
-&gt; code text 1-2  
+&gt; code text 1-2
 &gt; code text 2-1
 </code></pre>
 ")]
@@ -302,16 +302,16 @@ no-note text 2-2</p>
 > This is note text
 > [!WARNING]
 > This is warning text
-> [!div class=""a"" id=""diva""]
-> this is div with class a and id diva
+> [!div class=""a"" id=""div-a""]
+> this is div with class a and id div-a
 > text also in div
-> [!div class=""b"" cause=""divb""]
-> this is div with class b and cause divb
+> [!div class=""b"" cause=""div-b""]
+> this is div with class b and cause div-b
 > [!IMPORTANT]
 > This is important text follow div")]
         public void TestSectionNoteMixture(string source)
         {
-            var expected = "<blockquote>\n<p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>This is note text</p>\n</div>\n<div class=\"WARNING\">\n<h5>WARNING</h5>\n<p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\">\n<p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\">\n<p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\">\n<h5>IMPORTANT</h5>\n<p>This is important text follow div</p>\n</div>\n";
+            var expected = "<blockquote>\n<p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\">\n<h5>NOTE</h5>\n<p>This is note text</p>\n</div>\n<div class=\"WARNING\">\n<h5>WARNING</h5>\n<p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"div-a\">\n<p>this is div with class a and id div-a\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"div-b\">\n<p>this is div with class b and cause div-b</p>\n</div>\n<div class=\"IMPORTANT\">\n<h5>IMPORTANT</h5>\n<p>This is important text follow div</p>\n</div>\n";
 
             TestUtility.VerifyMarkup(source, expected);
         }
@@ -328,7 +328,7 @@ no-note text 2-2</p>
 >                System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
 >            }
 >```
-> 
+>
 >```javascript-i
 >outlookClient.me.events.getEvents().fetch().then(function(result) {
 >        result.currentPage.forEach(function(event) {

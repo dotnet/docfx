@@ -32,7 +32,7 @@ namespace ChakraHost.Hosting
         public JavaScriptScriptException(JavaScriptErrorCode code, JavaScriptValue error, string message) :
             base(code, message)
         {
-            this._error = error;
+            _error = error;
         }
 
         /// <summary>

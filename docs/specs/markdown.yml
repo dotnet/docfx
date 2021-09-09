@@ -69,18 +69,18 @@ outputs:
 # remove title from html
 inputs:
   docfx.yml:
-  h1ToRemove.md: |
+  h1-To-Remove.md: |
     # h1 title
-  h1ToKeep.md: |
+  h1-To-Keep.md: |
     welcome to docfx
     # h1 title
 outputs:
-  h1toremove.json: |
+  h1-to-remove.json: |
     {
       "conceptual": "",
       "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
-  h1tokeep.json: |
+  h1-to-keep.json: |
     {
       "conceptual":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
       "rawTitle": ""
@@ -134,7 +134,7 @@ inputs:
     # Heading
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/a.md' --> 'docs/a.md'.","file":"docs/a.md"}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: ''.","file":"docs/a.md"}
 ---
 # Comments between yaml header and H1
 inputs:
@@ -484,24 +484,6 @@ outputs:
         </div>"
     }
 ---
-# experimental pairs
-inputs:
-  docfx.yml:
-  docs/a.md:
-  docs/a.experimental.md:
-outputs:
-  docs/a.json: |
-    { "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591" }
-  docs/a.experimental.json: |
-    { "document_id": "f481558d-b8fa-5acb-facb-d3bee58fbf3e", "document_version_independent_id": "80168efe-9436-03b9-9e7c-eaf20a91d680" }
-  .publish.json: |
-    {
-      "files":[
-        { "url": "/docs/a.experimental", "path": "docs/a.experimental.json" },
-        { "url": "/docs/a", "path": "docs/a.json" }
-      ]
-    }
----
 # `", '` should be properly escaped when written in html directly
 inputs:
   docfx.yml:
@@ -798,6 +780,15 @@ inputs:
     tel:
 outputs:
   index.json: 
+---
+# Autolink www.start.end should prepend with https
+inputs:
+  docfx.yml:
+  index.md: |
+    This is www.docs.com
+outputs:
+  index.json: |
+    {"conceptual": "*https://www.docs.com*"}
 ---
 # Report correct line number for unknown-language-code in token
 inputs:

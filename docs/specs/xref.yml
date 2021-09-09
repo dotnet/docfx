@@ -959,11 +959,11 @@ inputs:
     str <xref href="d" data-raw-source="@mention"></xref>
     some text
     str <xref href="d" data-raw-html="@higher" data-raw-source="@mention"></xref>
-    multiple xref <xref href="e" data-raw-source="@mentione"></xref> some text <xref href="f" data-raw-source="@mentionf"></xref>
+    multiple xref <xref href="e" data-raw-source="@mention-e"></xref> some text <xref href="f" data-raw-source="@mention-f"></xref>
     <p>
-      <xref href="e" data-raw-source="@mentione" />
+      <xref href="e" data-raw-source="@mention-e" />
       some text
-      <xref href="f" data-raw-source="mentionf" />
+      <xref href="f" data-raw-source="mention-f" />
     </p>
   docs/c.md: |
     ---
@@ -980,11 +980,11 @@ outputs:
         str @mention
         some text
         str @higher
-        multiple xref @mentione some text @mentionf</p>
+        multiple xref @mention-e some text @mention-f</p>
         <p>
-          @mentione
+          @mention-e
           some text
-          mentionf
+          mention-f
         </p>"
     }
   docs/c.json:
@@ -1074,16 +1074,16 @@ repos:
           description: description for a
           child:
             uid: child
-            a: child aaaaa
-            b: child bbbbb
-            child.c: "child.c cccccc"
+            a: child a
+            b: child b
+            child.c: "child.c c"
           children:
             - uid: children.a
-              b: children.a bbbbb
+              b: children.a b
             - uid: children.b
-              a: children.b aaaaa
+              a: children.b a
             - uid: children.c
-              child.c: "children.c cccccc"
+              child.c: "children.c c"
         docs/b.md: |
           Link to @a?displayProperty=description
           Link to @a?displayProperty=fullName
@@ -1131,17 +1131,17 @@ outputs:
         Link to <a href=\"a.json\" data-linktype=\"relative-path\">description for a</a>
         Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
         Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child aaaaa</a>
+        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child a</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child.c cccccc</a>
+        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child.c c</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
         Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
         Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
         Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b aaaaa</a>
+        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b a</a>
         Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
         Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c cccccc</a>
+        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c c</a>
         </p>"
     }
   .xrefmap.json: |
@@ -1155,8 +1155,8 @@ outputs:
             {
                 "uid": "child",
                 "href": "https://docs.com/docs/a.json#child",
-                "a": "child aaaaa",
-                "child.c": "child.c cccccc"
+                "a": "child a",
+                "child.c": "child.c c"
             },
             {
                 "uid": "children.a",
@@ -1165,12 +1165,12 @@ outputs:
             {
                 "uid": "children.b",
                 "href": "https://docs.com/docs/a.json#children_b",
-                "a": "children.b aaaaa"
+                "a": "children.b a"
             },
             {
                 "uid": "children.c",
                 "href": "https://docs.com/docs/a.json#children_c",
-                "child.c": "children.c cccccc"
+                "child.c": "children.c c"
             }
         ]
     }
@@ -1904,41 +1904,44 @@ noSingleFile: true
 locale: zh-cn
 repos:
   https://docs.com/test-valdiate-external-xref.zh-cn:
-    - files:
-        docfx.yml: |
-          name: docset_a
-          xref:
-          - 1.xrefmap.json
-        1.xrefmap.json: |
-          {
-            "repository_url": "b_repository_url",
-            "docset_name": "docset_b",
-            "references":[
-              {"uid": "c", "schemaType": "c-type"},
-              {"uid": "d", "schemaType": "d-type"}
-            ],
-            "external_xrefs":[
-              {"uid": "nofound",
-                "docsetName": "docset_a",
-                "schemaType": "a-type",
-                "count": 1}
-            ]
+  - files:
+      docfx.yml: |
+        name: docset_a
+        xref:
+        - 1.xrefmap.json
+      1.xrefmap.json: |
+        {
+          "repository_url": "b_repository_url",
+          "docset_name": "docset_b",
+          "references":[
+            {"uid": "c", "schemaType": "c-type"},
+            {"uid": "d", "schemaType": "d-type"}
+          ],
+          "external_xrefs":[
+            {"uid": "nofound",
+              "docsetName": "docset_a",
+              "schemaType": "a-type",
+              "count": 1}
+          ]
+        }
+      docs/a.yml: |
+        ### YamlMime:TestData1
+        uid: a
+        ref_other: ["b", "c", "d"]
+      docs/b.yml: |
+        ### YamlMime:TestData1
+        uid: b
+        ref_other: ["c"]
+      _themes/ContentTemplate/schemas/TestData1.schema.json: |
+        {
+          "properties": {
+            "uid": { "contentType": "uid"},
+            "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
           }
-        docs/a.yml: |
-          ### YamlMime:TestData1
-          uid: a
-          ref_other: ["b", "c", "d"]
-        docs/b.yml: |
-          ### YamlMime:TestData1
-          uid: b
-          ref_other: ["c"]
-        _themes/ContentTemplate/schemas/TestData1.schema.json: |
-          {
-            "properties": {
-              "uid": { "contentType": "uid"},
-              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
-            }
-          }
+        }
+  https://docs.com/test-valdiate-external-xref:
+  - files:
+      docfx.yml:
 outputs:
   docs/a.json:
   docs/b.json:
@@ -1988,7 +1991,7 @@ outputs:
 ---
 # Xref markdown property output absolute url for TSType mime
 repos:
-  https://docs.com/test-valdiate-external-xref.zh-cn#live:
+  https://docs.com/test-valdiate-external-xref#live:
     - files:
         docfx.yml: |
         docs/c/c.md: |

@@ -142,19 +142,20 @@ inputs:
     monikerDefinition: https://ops/monikerDefinition/
     monikerRange:
       'a.md': '> netcore-1.0 || < invalid-moniker'
-    http:
-      https://BuildApiPubDev.azurefd.net:
-        headers:
-          X-OP-BuildUserToken: invalid-token
+    secrets:
+      http:
+        https://buildapi.ppe.docs.microsoft.com:
+          headers:
+            X-OP-BuildUserToken: invalid-token
   a.md:
 languageServer:
   - openFiles:
       a.md:
   - expectGetCredentialRequest:
-      url: https://buildapipubdev.azurefd.net/v2/monikertrees/allfamiliesproductsmonikers
+      url: https://buildapi.ppe.docs.microsoft.com/v2/monikertrees/allfamiliesproductsmonikers
     response:
       http:
-        https://BuildApiPubDev.azurefd.net:
+        https://buildapi.ppe.docs.microsoft.com:
           headers:
             X-OP-BuildUserToken: "{DOCS_OPS_TOKEN}"
   - expectDiagnostics:

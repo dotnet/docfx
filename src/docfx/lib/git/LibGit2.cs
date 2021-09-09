@@ -90,7 +90,7 @@ namespace Microsoft.Docs.Build
         public static extern unsafe int git_branch_upstream(out IntPtr reference, IntPtr branch);
 
         [DllImport(LibName)]
-        public static extern unsafe int git_branch_remote_name(git_buf* buf, IntPtr repo, IntPtr refname);
+        public static extern unsafe int git_branch_remote_name(git_buf* buffer, IntPtr repo, IntPtr refname);
 
         [DllImport(LibName)]
         public static extern unsafe IntPtr git_reference_name(IntPtr reference);

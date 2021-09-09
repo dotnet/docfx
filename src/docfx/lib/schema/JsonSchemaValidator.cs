@@ -204,7 +204,7 @@ namespace Microsoft.Docs.Build
         {
             ValidateRequired(schema, propertyPath, map, errors);
             ValidateStrictRequired(schema, propertyPath, map, errors);
-            ValidateDependencies(schema, propertyPath, map, errors, schemaMap);
+            ValidateDependentSchemas(schema, propertyPath, map, errors, schemaMap);
             ValidateEither(schema, propertyPath, map, errors);
             ValidatePrecludes(schema, propertyPath, map, errors);
             ValidateEnumDependencies(schema.EnumDependencies, propertyPath, "", "", null, null, map, errors);
@@ -334,7 +334,7 @@ namespace Microsoft.Docs.Build
 
             if (schema.MaxLength.HasValue || schema.MinLength.HasValue)
             {
-                var unicodeLength = str.Where(c => !char.IsLowSurrogate(c)).Count();
+                var unicodeLength = str.Count(c => !char.IsLowSurrogate(c));
                 if (schema.MaxLength.HasValue && unicodeLength > schema.MaxLength.Value)
                 {
                     errors.Add(Errors.JsonSchema.StringLengthInvalid(
@@ -438,9 +438,9 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private void ValidateDependencies(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
+        private void ValidateDependentSchemas(JsonSchema schema, string propertyPath, JObject map, List<Error> errors, JsonSchemaMap? schemaMap)
         {
-            foreach (var (key, (propertyNames, subschema)) in schema.Dependencies)
+            foreach (var (key, (propertyNames, subschema)) in schema.DependentSchemas.Concat(schema.Dependencies))
             {
                 if (IsStrictContain(map, key))
                 {
@@ -459,7 +459,16 @@ namespace Microsoft.Docs.Build
                     }
                     else if (subschema != null)
                     {
-                        Validate(subschema, propertyPath, map, errors, schemaMap);
+                        var subschemaErrors = new List<Error>();
+                        Validate(subschema, propertyPath, map, subschemaErrors, schemaMap);
+                        if (subschemaErrors.Count <= 0)
+                        {
+                            continue;
+                        }
+
+                        errors.Add(Errors.JsonSchema.DependentSchemasFailed(
+                            JsonUtility.GetSourceInfo(map[key] ?? map),
+                            JsonUtility.AddToPropertyPath(propertyPath, key)));
                     }
                 }
             }
@@ -491,11 +500,11 @@ namespace Microsoft.Docs.Build
         {
             return value switch
             {
-                JObject _ => true,
-                JArray _ => true,
+                JObject => true,
+                JArray => true,
                 JValue v when v.Value is null => false,
                 JValue v when v.Value is string str => !string.IsNullOrWhiteSpace(str),
-                JValue _ => true,
+                JValue => true,
                 _ => false,
             };
         }

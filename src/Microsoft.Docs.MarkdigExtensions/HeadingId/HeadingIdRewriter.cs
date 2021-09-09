@@ -12,8 +12,8 @@ namespace Microsoft.Docs.MarkdigExtensions
 {
     public class HeadingIdRewriter : IMarkdownObjectRewriter
     {
-        private static readonly Regex s_openARegex = new Regex(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
-        private static readonly Regex s_closeARegex = new Regex(@"^\<\/a\>$", RegexOptions.Compiled);
+        private static readonly Regex s_openAnchorRegex = new(@"^\<a +(?:name|id)=\""([\w \-\.]+)\"" *\>$", RegexOptions.Compiled);
+        private static readonly Regex s_closeAnchorRegex = new(@"^\<\/a\>$", RegexOptions.Compiled);
 
         public void PostProcess(IMarkdownObject markdownObject)
         {
@@ -62,17 +62,17 @@ namespace Microsoft.Docs.MarkdigExtensions
         private static string ParseHeading(HeadingBlock headBlock)
         {
             var tokens = headBlock.Inline.ToList();
-            if (tokens[0] is not HtmlInline openATag || tokens[1] is not HtmlInline closeATag)
+            if (tokens[0] is not HtmlInline openAnchorTag || tokens[1] is not HtmlInline closeAnchorTag)
             {
                 return null;
             }
 
-            var m = s_openARegex.Match(openATag.Tag);
+            var m = s_openAnchorRegex.Match(openAnchorTag.Tag);
             if (!m.Success)
             {
                 return null;
             }
-            if (!s_closeARegex.IsMatch(closeATag.Tag))
+            if (!s_closeAnchorRegex.IsMatch(closeAnchorTag.Tag))
             {
                 return null;
             }

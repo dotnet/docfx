@@ -35,6 +35,8 @@ namespace Microsoft.Docs.Build
             MetadataProvider metadataProvider,
             MonikerProvider monikerProvider,
             BuildScope buildScope,
+            RepositoryProvider repositoryProvider,
+            Input input,
             Func<JsonSchemaTransformer> jsonSchemaTransformer)
         {
             _config = config;
@@ -45,7 +47,8 @@ namespace Microsoft.Docs.Build
             _dependencyMapBuilder = dependencyMapBuilder;
             _fileLinkMapBuilder = fileLinkMapBuilder;
             _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
-            _internalXrefMapBuilder = new(config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, jsonSchemaTransformer);
+            _internalXrefMapBuilder = new(
+                config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider, input, jsonSchemaTransformer);
 
             _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
             _internalXrefMap = new(BuildInternalXrefMap);
@@ -155,14 +158,20 @@ namespace Microsoft.Docs.Build
                 .OrderBy(xref => xref.Uid)
                 .ToArray();
 
+            var monikerGroups = new Dictionary<string, MonikerList>(
+                from item in references
+                let monikerGroup = item.MonikerGroup
+                where !string.IsNullOrEmpty(monikerGroup)
+                orderby monikerGroup
+                group item by monikerGroup into g
+                select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
+
             externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
-            var model =
-                new XrefMapModel { References = references, ExternalXrefs = externalXrefs, RepositoryUrl = _repository?.Url, DocsetName = _config.Name.Value };
-
+            XrefProperties? properties = null;
             if (_config.UrlType == UrlType.Docs)
             {
-                var properties = new XrefProperties();
+                properties = new XrefProperties();
                 properties.Tags.Add(basePath);
                 if (repositoryBranch == "live")
                 {
@@ -172,8 +181,18 @@ namespace Microsoft.Docs.Build
                 {
                     properties.Tags.Add("internal");
                 }
-                model.Properties = properties;
             }
+
+            var model =
+                new XrefMapModel
+                {
+                    References = references,
+                    ExternalXrefs = externalXrefs,
+                    RepositoryUrl = _repository?.Url,
+                    DocsetName = _config.Name.Value,
+                    MonikerGroups = monikerGroups,
+                    Properties = properties,
+                };
 
             return model;
         }
@@ -196,7 +215,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(
                         Errors.Xref.DuplicateUidGlobal(xrefSpec.Uid, spec!.RepositoryUrl, xrefSpec.PropertyPath) with
-                        { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                        { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -213,7 +232,7 @@ namespace Microsoft.Docs.Build
                 {
                     _errorLog.Add(Errors.Xref.UidNotFound(
                         xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
-                    { Level = _config.RunLearnValidation ? ErrorLevel.Error : ErrorLevel.Warning });
+                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
@@ -275,7 +294,7 @@ namespace Microsoft.Docs.Build
                 _dependencyMapBuilder.AddDependencyItem(referencingFile, spec.DeclaringFile, dependencyType);
 
                 // Output absolute URL starting from Architecture and TSType
-                var href = TemplateEngine.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
+                var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                     ? spec.Href
                     : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 

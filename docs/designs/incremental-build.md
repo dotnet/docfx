@@ -1,7 +1,6 @@
 ---
 title: Incremental build in DocFX v3
 description: Incremental build in DocFX v3
-author: yufeih
 ---
 
 # Incremental Build
@@ -140,11 +139,11 @@ When the build is modeled as such deterministic function graph, it is confident 
 
 The purpose of incremental build cache is to store the states of previous function evaluations. This include function names, inputs, outputs and call sequences to callback functions.
 
-The incremental build cache is conceptually a persistent **[trie](https://en.wikipedia.org/wiki/Trie)**. It can be implemented on top of any key value pair storage system that provides efficient lookups. We'd like to start with a local only disk cache, this avoids the need to synchronize incremental build state between machines. In the build backend, if a repo happened to be scheduled on a machine that was previously build, newer builds will benefit from the incremental cache, otherwise it is a clean full build. To maximize the leverage of incremental cache, we may need to introduce some sticky mechanisms to build scheduler to prefer building the same repo on the same machine. 
+The incremental build cache is conceptually a persistent **[trie](https://en.wikipedia.org/wiki/Trie)**. It can be implemented on top of any key value pair storage system that provides efficient lookups. We would like to start with a local only disk cache, this avoids the need to synchronize incremental build state between machines. In the build backend, if a repo happened to be scheduled on a machine that was previously build, newer builds will benefit from the incremental cache, otherwise it is a clean full build. To maximize the leverage of incremental cache, we may need to introduce some sticky mechanisms to build scheduler to prefer building the same repo on the same machine. 
 
 > This sticky mechanism not only benefits incremental build, but can also improve repo cloning time.
 
-There are two choices for a local disk cache: `leveldb` vs `sqlite`. We'd like to first go with `sqlite` because it has much better cross-platform support and .NET integration.
+There are two choices for a local disk cache: `leveldb` vs `sqlite`. We would like to first go with `sqlite` because it has much better cross-platform support and .NET integration.
 
 Space wise, incremental cache only stores intermediate build result and function call graph, so it should fit the disk used in build backend. Take `dotnet` as an example, since most of the intermediate build result is *xref map*, the estimated max size of incremental cache for dotnet is 700MB (total size of YAML files on disk).
 

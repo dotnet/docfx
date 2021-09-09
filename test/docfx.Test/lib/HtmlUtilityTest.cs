@@ -20,7 +20,7 @@ namespace Microsoft.Docs.Build
         [InlineData("<a href='/a#x' />", "<a href='/zh-cn/a#x' data-linktype='absolute-path' />")]
         [InlineData("<a href='\\a#x' />", "<a href='/zh-cn\\a#x' data-linktype='absolute-path' />")]
         [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
-        [InlineData("<a href='/xxx-yyy/a' />", "<a href='/zh-cn/xxx-yyy/a' data-linktype='absolute-path' />")]
+        [InlineData("<a href='/x-y/a' />", "<a href='/zh-cn/x-y/a' data-linktype='absolute-path' />")]
         [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
         [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
         [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
@@ -55,9 +55,10 @@ namespace Microsoft.Docs.Build
         [InlineData("<div><script></script></div>", "<div></div>")]
         public void HtmlStripTags(string input, string output)
         {
+            var htmlSanitizer = new HtmlSanitizer(new Config());
             var actual = HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => htmlSanitizer.SanitizeHtml(ErrorBuilder.Null, ref reader, ref token, null));
 
             Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
         }
@@ -128,7 +129,13 @@ namespace Microsoft.Docs.Build
             var actualCount = 0L;
             HtmlUtility.TransformHtml(
                 input,
-                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.CountWord(ref token, ref actualCount));
+                (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                {
+                    if (token.Type == HtmlTokenType.Text)
+                    {
+                        actualCount += WordCount.CountWord(token.RawText.Span);
+                    }
+                });
 
             Assert.Equal(expectedCount, actualCount);
         }

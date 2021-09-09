@@ -18,112 +18,52 @@ namespace Microsoft.Docs.Build
     {
         public delegate void TransformHtmlDelegate(ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token);
 
-        private static readonly HashSet<string> s_allowedGlobalAttributes = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly string[] s_htmlMetaHidden = new[]
         {
-            "name",
-            "id",
-            "class",
-            "itemid",
-            "itemprop",
-            "itemref",
-            "itemscope",
-            "itemtype",
-            "part",
-            "slot",
-            "spellcheck",
+            "titleSuffix",
+            "contributors_to_exclude",
+            "helpviewer_keywords",
+            "dev_langs",
+            "f1_keywords",
+            "api_scan",
+            "layout",
+            "open_to_public_contributors",
             "title",
-            "role",
+            "absolutePath",
+            "original_content_git_url_template",
+            "fileRelativePath",
+            "internal_document_id",
+            "product_family",
+            "product_version",
+            "redirect_url",
+            "redirect_document_id",
+            "toc_asset_id",
+            "content_git_url",
+            "area",
+            "theme",
+            "theme_branch",
+            "theme_url",
+            "is_active",
+            "publish_version",
+            "canonical_url",
+            "is_dynamic_rendering",
+            "need_preview_pull_request",
+            "moniker_type",
+            "is_significant_update",
+            "serviceData",
+            "github_contributors",
+            "is_hidden",
         };
 
-        // ref https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-        private static readonly Dictionary<string, HashSet<string>?> s_allowedTags = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, string> s_htmlMetaNames = new()
         {
-            { "a", new(StringComparer.OrdinalIgnoreCase) { "href", "target", "rel", "alt", "download", "tabindex" } },
-            { "abbr", null },
-            { "address", null },
-            { "article", null },
-            { "b", null },
-            { "button", new(StringComparer.OrdinalIgnoreCase) { "hidden", "type" } },
-            { "bdi", null },
-            { "bdo", null },
-            { "blockquote", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
-            { "br", new(StringComparer.OrdinalIgnoreCase) { "clear" } },
-            { "caption", null },
-            { "center", null },
-            { "cite", null },
-            { "code", new(StringComparer.OrdinalIgnoreCase) { "name", "lang" } },
-            { "col", new(StringComparer.OrdinalIgnoreCase) { "width", "span" } },
-            { "colgroup", new(StringComparer.OrdinalIgnoreCase) { "span" } },
-            { "dd", null },
-            { "del", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
-            { "details", null },
-            { "dfn", null },
-            { "div", new(StringComparer.OrdinalIgnoreCase) { "align", "hidden" } },
-            { "dl", null },
-            { "dt", null },
-            { "em", null },
-            { "figcaption", null },
-            { "figure", null },
-            { "font", new(StringComparer.OrdinalIgnoreCase) { "color", "face", "size" } },
-            { "form", new(StringComparer.OrdinalIgnoreCase) { "action" } },
-            { "h1", null },
-            { "h2", null },
-            { "h3", null },
-            { "h4", null },
-            { "head", null },
-            { "hr", new(StringComparer.OrdinalIgnoreCase) { "size", "color", "width" } },
-            { "i", null },
-            {
-                "iframe", new(StringComparer.OrdinalIgnoreCase)
-                {
-                    "allow", "align", "border", "marginwidth", "frameborder", "allowtransparency",
-                    "allowfullscreen", "scrolling", "height", "src", "width", "loading",
-                }
-            },
-            { "image", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width" } },
-            { "img", new(StringComparer.OrdinalIgnoreCase) { "alt", "height", "src", "width", "align", "hspace", "border", "sizes", "valign" } },
-            { "input", new(StringComparer.OrdinalIgnoreCase) { "type", "value" } },
-            { "ins", new(StringComparer.OrdinalIgnoreCase) { "cite", "datetime" } },
-            { "kbd", null },
-            { "label", new(StringComparer.OrdinalIgnoreCase) { "for" } },
-            { "li", new(StringComparer.OrdinalIgnoreCase) { "value" } },
-            { "mark", null },
-            { "nav", null },
-            { "nobr", null },
-            { "ol", new(StringComparer.OrdinalIgnoreCase) { "reserved", "start", "type" } },
-            { "p", new(StringComparer.OrdinalIgnoreCase) { "align", "dir", "hidden", "lang", "valign" } },
-            { "pre", new(StringComparer.OrdinalIgnoreCase) { "lang" } },
-            { "q", new(StringComparer.OrdinalIgnoreCase) { "cite" } },
-            { "rgn", null },
-            { "s", null },
-            { "samp", null },
-            { "section", null },
-            { "small", null },
-            { "source", new(StringComparer.OrdinalIgnoreCase) { "src", "type" } },
-            { "span", new(StringComparer.OrdinalIgnoreCase) { "dir", "lang" } },
-            { "strike", null },
-            { "strong", null },
-            { "sub", null },
-            { "summary", null },
-            { "sup", null },
-            {
-                "table", new(StringComparer.OrdinalIgnoreCase)
-                {
-                    "align", "width", "border", "valign", "bgcolor", "frame", "cellpadding", "cellspacing", "bordercolor",
-                }
-            },
-            { "tbody", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "width" } },
-            { "td", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "valign", "bgcolor", "hidden", "nowrap" } },
-            { "tfoot", null },
-            { "th", new(StringComparer.OrdinalIgnoreCase) { "rowspan", "colspan", "align", "width", "bgcolor", "scope", "valign" } },
-            { "thead", new(StringComparer.OrdinalIgnoreCase) { "align", "valign" } },
-            { "time", new(StringComparer.OrdinalIgnoreCase) { "datetime" } },
-            { "tr", new(StringComparer.OrdinalIgnoreCase) { "align", "valign", "colspan", "height", "bgcolor" } },
-            { "u", null },
-            { "ul", null },
-            { "var", null },
-            { "video", new(StringComparer.OrdinalIgnoreCase) { "src", "width", "height", "preload", "controls", "poster" } },
-            { "wbr", null },
+            { "product", "Product" },
+            { "topic_type", "TopicType" },
+            { "api_type", "APIType" },
+            { "api_location", "APILocation" },
+            { "api_name", "APIName" },
+            { "api_extra_info", "APIExtraInfo" },
+            { "target_os", "TargetOS" },
         };
 
         private static readonly string[] s_inlineTags = new[]
@@ -152,14 +92,6 @@ namespace Microsoft.Docs.Build
             }
 
             return result.WrittenSpan.ToString();
-        }
-
-        public static void CountWord(ref HtmlToken token, ref long wordCount)
-        {
-            if (token.Type == HtmlTokenType.Text)
-            {
-                wordCount += CountWordInText(token.RawText.Span);
-            }
         }
 
         public static void GetBookmarks(ref HtmlToken token, HashSet<string> bookmarks)
@@ -343,8 +275,8 @@ namespace Microsoft.Docs.Build
             suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
             var (resolvedHref, display) = resolveXref(
-                href == null ? null : (SourceInfo<string>?)new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
-                uid == null ? null : (SourceInfo<string>?)new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                href == null ? null : new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
+                uid == null ? null : new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
                 suppressXrefNotFound);
 
             var resolvedNode = string.IsNullOrEmpty(resolvedHref)
@@ -360,19 +292,19 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        public static string CreateHtmlMetaTags(JObject metadata, ICollection<string> htmlMetaHidden, IReadOnlyDictionary<string, string> htmlMetaNames)
+        public static string CreateHtmlMetaTags(JObject metadata)
         {
             var result = new StringBuilder();
 
             foreach (var (key, value) in metadata)
             {
-                if (value is null || value is JObject || htmlMetaHidden.Contains(key))
+                if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
                 {
                     continue;
                 }
 
                 var content = "";
-                var name = htmlMetaNames.TryGetValue(key, out var displayName) ? displayName : key;
+                var name = s_htmlMetaNames.TryGetValue(key, out var displayName) ? displayName : key;
 
                 if (value is JArray arr)
                 {
@@ -426,54 +358,6 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        internal static void SanitizeHtml(ErrorBuilder errors, ref HtmlReader reader, ref HtmlToken token, MarkdownObject? obj)
-        {
-            if (token.Type != HtmlTokenType.StartTag)
-            {
-                return;
-            }
-
-            var tokenName = token.Name.ToString();
-            if (!s_allowedTags.TryGetValue(tokenName, out var allowedAttributes))
-            {
-                errors.Add(Errors.Content.DisallowedHtmlTag(obj?.GetSourceInfo()?.WithOffset(token.NameRange), tokenName));
-                reader.ReadToEndTag(token.Name.Span);
-                token = default;
-                return;
-            }
-
-            foreach (ref var attribute in token.Attributes.Span)
-            {
-                var attributeName = attribute.Name.ToString();
-                if (!IsAllowedAttribute(attributeName))
-                {
-                    errors.Add(Errors.Content.DisallowedHtmlAttribute(obj?.GetSourceInfo()?.WithOffset(attribute.NameRange), tokenName, attributeName));
-                    attribute = default;
-                }
-            }
-
-            bool IsAllowedAttribute(string attributeName)
-            {
-                if (s_allowedGlobalAttributes.Contains(attributeName))
-                {
-                    return true;
-                }
-
-                if (allowedAttributes != null && allowedAttributes.Contains(attributeName))
-                {
-                    return true;
-                }
-
-                if (attributeName.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) ||
-                    attributeName.StartsWith("data-", StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
         internal static void AddLinkType(
             ErrorBuilder errors, FilePath file, ref HtmlToken token, string locale, Dictionary<string, TrustedDomains> trustedDomains)
         {
@@ -496,14 +380,18 @@ namespace Microsoft.Docs.Build
                             token.SetAttributeValue("data-linktype", "relative-path");
                             break;
                         case LinkType.External:
-                            if (Uri.TryCreate(href, UriKind.Absolute, out var uri))
-                            {
-                                Telemetry.TrackExternalLink(tagName, attributeName, uri.Scheme, uri.DnsSafeHost);
-                            }
 
                             // Opt-in to trusted domain check
-                            if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(errors, file, href))
+                            if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
                             {
+                                if (tagName == "img")
+                                {
+                                    errors.Add(Errors.Content.ExternalImage(new(file), href, tagName, untrustedDomain));
+                                }
+                                else
+                                {
+                                    errors.Add(Errors.Content.DisallowedDomain(new(file), href, tagName, untrustedDomain));
+                                }
                                 token.SetAttributeValue(attributeName, "");
                             }
                             else
@@ -546,10 +434,12 @@ namespace Microsoft.Docs.Build
                 return true;
             }
 
-            if (attribute.NameIs("src"))
+            if (attribute.NameIs("src") || attribute.NameIs("poster"))
             {
-                tagName = token.Name.ToString().Trim().ToLowerInvariant();
-                attributeName = "src";
+                tagName = token.NameIs("image")
+                    ? "img"
+                    : token.Name.ToString().Trim().ToLowerInvariant();
+                attributeName = attribute.Name.ToString().Trim().ToLowerInvariant();
                 return true;
             }
 
@@ -571,58 +461,5 @@ namespace Microsoft.Docs.Build
         private static bool IsSelfClosingElement(string tagName) => s_selfClosingTags.Contains(tagName.ToLowerInvariant());
 
         private static bool IsSelfClosingElement(this HtmlToken token) => IsSelfClosingElement(token.Name.ToString());
-
-        private static int CountWordInText(ReadOnlySpan<char> text)
-        {
-            var total = 0;
-            var word = false;
-
-            foreach (var ch in text)
-            {
-                if (IsCJKChar(ch))
-                {
-                    total++;
-
-                    if (word)
-                    {
-                        word = false;
-                        total++;
-                    }
-                }
-                else
-                {
-                    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')
-                    {
-                        if (word)
-                        {
-                            word = false;
-                            total++;
-                        }
-                    }
-                    else if (
-                        ch != '.' && ch != '?' && ch != '!' &&
-                        ch != ';' && ch != ':' && ch != ',' &&
-                        ch != '(' && ch != ')' && ch != '[' &&
-                        ch != ']')
-                    {
-                        word = true;
-                    }
-                }
-            }
-
-            if (word)
-            {
-                total++;
-            }
-
-            return total;
-        }
-
-        private static bool IsCJKChar(char ch)
-        {
-            return (ch >= '\u2E80' && ch <= '\u9FFF') || // CJK character
-                   (ch >= '\xAC00' && ch <= '\xD7A3') || // Hangul Syllables
-                   (ch >= '\uFF00' && ch <= '\uFFEF');   // Half width and Full width Forms (including Chinese punctuation)
-        }
     }
 }

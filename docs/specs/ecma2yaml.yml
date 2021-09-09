@@ -224,7 +224,7 @@ outputs:
 ---
 # Run ECMA2Yaml multiple times
 # Support ECMA2Yaml.id to configure toc output path
-# warn on duplciated xml files
+# warn on duplicated xml files
 os: windows, osx
 noInputCheck: true
 repos:

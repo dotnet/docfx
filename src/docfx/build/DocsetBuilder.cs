@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Docs.Build
 {
-    [SuppressMessage("Layout", "MEN003:Method is too long", Justification = "Long constructor list")]
     [SuppressMessage("Layout", "MEN002:Line is too long", Justification = "Long constructor parameter list")]
     internal class DocsetBuilder
     {
@@ -31,6 +30,7 @@ namespace Microsoft.Docs.Build
         private readonly MetadataProvider _metadataProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly TemplateEngine _templateEngine;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly DocumentProvider _documentProvider;
         private readonly ContributionProvider _contributionProvider;
         private readonly RedirectionProvider _redirectionProvider;
@@ -51,6 +51,7 @@ namespace Microsoft.Docs.Build
         private readonly TocParser _tocParser;
         private readonly TocLoader _tocLoader;
         private readonly TocMap _tocMap;
+        private readonly HtmlSanitizer _htmlSanitizer;
 
         public BuildOptions BuildOptions => _buildOptions;
 
@@ -79,24 +80,26 @@ namespace Microsoft.Docs.Build
             _githubAccessor = new(_config);
             _microsoftGraphAccessor = new(_config);
             _jsonSchemaLoader = new(_fileResolver);
-            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope, _jsonSchemaLoader);
+            _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
-            _templateEngine = new(_errors, _config, _packageResolver, _buildOptions, _jsonSchemaLoader);
-            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _templateEngine, _monikerProvider, _metadataProvider);
+            _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
+            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
-            _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider);
+            _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
             _bookmarkValidator = new(_errors);
             _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
             _dependencyMapBuilder = new(_sourceMap);
             _searchIndexBuilder = new(_config, _errors, _documentProvider, _metadataProvider);
+            _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator, _searchIndexBuilder);
             _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
-            _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _publishUrlMap);
-            _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, () => Ensure(_jsonSchemaTransformer));
-            _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider);
-            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap);
-            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _templateEngine, _input);
+            _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
+            _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));
+            _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider, _contentValidator);
+            _htmlSanitizer = new(_config);
+            _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
+            _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
             _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
             _tocParser = new(_input, _markdownEngine);
             _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
@@ -181,6 +184,7 @@ namespace Microsoft.Docs.Build
                     () => _bookmarkValidator.Validate(),
                     () => _contentValidator.PostValidate(),
                     () => _errors.AddRange(_metadataValidator.PostValidate()),
+                    () => _documentProvider.Save(),
                     () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),
@@ -204,7 +208,7 @@ namespace Microsoft.Docs.Build
                 MemoryCache.Clear();
 
                 Parallel.Invoke(
-                    () => _templateEngine.CopyAssetsToOutput(output),
+                    () => _templateEngine.CopyAssetsToOutput(output, _config.SelfContained),
                     () => output.WriteJson(".xrefmap.json", xrefMapModel),
                     () => output.WriteJson(".publish.json", publishModel),
                     () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),

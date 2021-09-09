@@ -64,6 +64,11 @@ namespace Microsoft.Docs.Build
             {
                 yield return "SingleFile";
             }
+
+            if (InputContainsText(spec, "outputType: pageJson"))
+            {
+                yield return "ContinueBuild";
+            }
         }
 
         [YamlTest("~/docs/specs/**/*.yml", ExpandTest = nameof(ExpandTest))]
@@ -101,6 +106,21 @@ namespace Microsoft.Docs.Build
                     s_appDataPath.Value = null;
                 }
             }
+        }
+
+        private static bool InputContainsText(DocfxTestSpec spec, string text)
+        {
+            if (Contains(spec.Inputs, text))
+            {
+                return true;
+            }
+
+            return spec.Repos.Values
+                .SelectMany(item => item)
+                .Any(item => Contains(item.Files, text));
+
+            static bool Contains(IDictionary<string, string> dict, string text)
+                => dict.Values.Any(value => value is string str && str.Contains(text, StringComparison.OrdinalIgnoreCase));
         }
 
         private static (string docsetPath, string appDataPath, string outputPath, Dictionary<string, string> repos, Package package)
@@ -171,6 +191,7 @@ namespace Microsoft.Docs.Build
         {
             var singleFile = test.Matrix.Contains("SingleFile");
             var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun") || singleFile;
+            var isContinue = test.Matrix.Contains("ContinueBuild");
 
             if (spec.LanguageServer.Count != 0)
             {
@@ -185,12 +206,12 @@ namespace Microsoft.Docs.Build
 
                 if (locDocsetPath != null)
                 {
-                    RunBuild(locDocsetPath, outputPath, dryRun, singleFile, spec, package.CreateSubPackage(locDocsetPath));
+                    RunBuild(locDocsetPath, outputPath, dryRun, singleFile, isContinue, spec, package.CreateSubPackage(locDocsetPath));
                 }
             }
             else
             {
-                RunBuild(docsetPath, outputPath, dryRun, singleFile, spec, package);
+                RunBuild(docsetPath, outputPath, dryRun, singleFile, isContinue, spec, package);
             }
         }
 
@@ -204,7 +225,7 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, bool singleFile, DocfxTestSpec spec, Package package)
+        private static void RunBuild(string docsetPath, string outputPath, bool dryRun, bool singleFile, bool isContinue, DocfxTestSpec spec, Package package)
         {
             var randomOutputPath = Path.ChangeExtension(outputPath, $".{Guid.NewGuid()}");
 
@@ -215,6 +236,42 @@ namespace Microsoft.Docs.Build
                 if (singleFile)
                 {
                     RunSingleFileBuild(docsetPath, randomOutputPath, spec, package);
+                }
+                else if (isContinue)
+                {
+                    var randomJsonOutputPath = Path.ChangeExtension(outputPath, $".intermediate.{Guid.NewGuid()}");
+                    var jsonCommandLine = new[]
+                        {
+                            "build", docsetPath,
+                            "--output", randomJsonOutputPath,
+                            "--log", Path.Combine(randomJsonOutputPath, ".errors.log"),
+                            "--output-type", "json",
+                            spec.NoRestore ? "--no-restore" : null,
+                            spec.NoCache ? "--no-cache" : null,
+                            spec.NoDrySync ? "--no-dry-sync" : null,
+                        };
+
+                    Docfx.Run(jsonCommandLine.Where(arg => arg != null).ToArray(), package);
+
+                    var continueCommandLine = new[]
+                    {
+                        "build", randomJsonOutputPath,
+                        "--output", randomOutputPath,
+                        "--log", Path.Combine(randomOutputPath, ".errors.log"),
+                        "--continue",
+                        "--template", GetTemplatePath(package, s_repos.Value),
+                        "--output-type", "pageJson",
+                        spec.NoRestore ? "--no-restore" : null,
+                        spec.NoCache ? "--no-cache" : null,
+                        spec.NoDrySync ? "--no-dry-sync" : null,
+                    };
+                    RemoveUnnecessaryFilesForContinue(randomJsonOutputPath);
+                    Docfx.Run(continueCommandLine.Where(arg => arg != null).ToArray(), package);
+
+                    if (Directory.Exists(randomJsonOutputPath))
+                    {
+                        Directory.Delete(randomJsonOutputPath, recursive: true);
+                    }
                 }
                 else
                 {
@@ -236,13 +293,51 @@ namespace Microsoft.Docs.Build
             // Ensure --dry-run doesn't produce artifacts, but produces the same error log as normal build
             var outputs = dryRun && spec.Outputs.TryGetValue(".errors.log", out var errors)
                 ? new Dictionary<string, string> { [".errors.log"] = errors }
-                : spec.Outputs;
+                : isContinue
+                  ? (from kvp in spec.Outputs
+                     where !Path.GetFileName(kvp.Key).StartsWith(".") && IsRequiredOutput(kvp.Key) && kvp.Key.EndsWith(".json") && !kvp.Key.EndsWith("hierarchy.json")
+                     select kvp).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
+                  : spec.Outputs;
 
             VerifyOutput(randomOutputPath, outputs);
 
             if (Directory.Exists(randomOutputPath))
             {
                 Directory.Delete(randomOutputPath, recursive: true);
+            }
+        }
+
+        private static string GetTemplatePath(Package package, IReadOnlyDictionary<string, string> repos)
+        {
+            // The location of Templates has 3 options:
+            // 1. _themes folder under the "docset" folder
+            // 2. A Template repo folder under the "repos" folder of the spec test.
+            // 3. If no template specified, then provide a placeholder or the ApplyTemplates of Docfx will throw an exception.
+            if (Directory.Exists(Path.Combine(package.BasePath, "_themes")))
+            {
+                return Path.Combine(package.BasePath, "_themes");
+            }
+
+            foreach (var (url, path) in repos)
+            {
+                if (url.Contains("theme") && Directory.GetDirectories(path).Contains(Path.Combine(path, "ContentTemplate")))
+                {
+                    return path;
+                }
+            }
+
+            return "_themesPlaceholder";
+        }
+
+        private static void RemoveUnnecessaryFilesForContinue(string path)
+        {
+            // TODO: no need to clean-up if glob more strictly
+            foreach (var filePath in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileName(filePath).StartsWith(".") || !IsRequiredOutput(filePath) || !filePath.EndsWith(".json"))
+                {
+                    File.Delete(filePath);
+                }
             }
         }
 

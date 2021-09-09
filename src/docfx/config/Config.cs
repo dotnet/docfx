@@ -222,6 +222,12 @@ namespace Microsoft.Docs.Build
         public Dictionary<string, TrustedDomains> TrustedDomains { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
+        /// HTML allowlist for tags and attributes
+        /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public Dictionary<string, HashSet<string>?> AllowedHtml { get; init; } = HtmlSanitizer.DefaultAllowedHtml;
+
+        /// <summary>
         /// Get the file path of content validation rules
         /// </summary>
         public SourceInfo<string> MarkdownValidationRules { get; init; } = new("");
@@ -280,11 +286,6 @@ namespace Microsoft.Docs.Build
         public DateTime? BuildTime { get; init; }
 
         /// <summary>
-        /// Token that can be used to access the GitHub API.
-        /// </summary>
-        public string GithubToken { get; init; } = "";
-
-        /// <summary>
         /// Determines how long at most a user remains valid in cache.
         /// </summary>
         public int GithubUserCacheExpirationInHours { get; init; } = 30 * 24;
@@ -303,17 +304,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// Tenant id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphTenantId { get; init; } = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+        public string? MicrosoftGraphTenantId { get; init; }
 
         /// <summary>
         /// Client id that can be used to access the Microsoft Graph API.
         /// </summary>
-        public string MicrosoftGraphClientId { get; init; } = "b6b77d19-e9de-4611-bc6c-4f44640ec6fd";
-
-        /// <summary>
-        /// The base64 encoded client cert that can be used to access the Microsoft Graph API.
-        /// </summary>
-        public string MicrosoftGraphClientCertificate { get; init; } = "";
+        public string? MicrosoftGraphClientId { get; init; }
 
         /// <summary>
         /// A file containing a map of file path to the original file path.
@@ -327,9 +323,9 @@ namespace Microsoft.Docs.Build
         public bool RemoveHostName { get; init; }
 
         /// <summary>
-        /// Determines if run learn-validation as post process
+        /// Determines if it's a learn docset
         /// </summary>
-        public bool RunLearnValidation { get; init; }
+        public bool IsLearn { get; init; }
 
         /// <summary>
         /// Determines if disable dry sync

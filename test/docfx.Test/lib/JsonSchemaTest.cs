@@ -238,23 +238,33 @@ namespace Microsoft.Docs.Build
 
         // dependencies validation
         [InlineData("{'dependencies': {}}", "{}", "")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': null}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}}", "{'key1' : '1', 'key2': ''}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
-        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
-        [InlineData("{'properties': {'keys': {'dependencies': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
-            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','line':1,'column':11}")]
 
         // dependencies as schema
-        [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
         [InlineData("{'dependencies': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
-            "{'message_severity':'warning','code':'missing-attribute','message':'Missing required attribute: 'key2'.','line':1,'column':1}")]
+            "{'message_severity':'warning','code':'dependent-schemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
+
+        // dependentSchemas validation
+        [InlineData("{'dependentSchemas': {}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : 1, 'key2' : 2}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : 1}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : '1', 'key2': null}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}}", "{'key1' : '1', 'key2': ''}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
+        [InlineData("{'properties': {'keys': {'dependentSchemas': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1, 'key2': 2}}", "")]
+        [InlineData("{'properties': {'keys': {'dependentSchemas': {'key1': ['key2']}}}}", "{'keys' : {'key1' : 1}}",
+            "{'message_severity':'warning','code':'missing-paired-attribute','message':'Missing attribute: 'keys.key2'. If you specify 'keys.key1', you must also specify 'keys.key2'.','line':1,'column':11}")]
+
+        // dependentSchemas as schema
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{}", "")]
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a', 'key2': 'b'}", "")]
+        [InlineData("{'dependentSchemas': {'key1': {'required': ['key2']}}}", "{'key1': 'a'}",
+            "{'message_severity':'warning','code':'dependent-schemas-failed','message':'DependentSchemas validation failed for attribute: 'key1'.','line':1,'column':12}")]
 
         // either validation
         [InlineData("{'either': []}", "{}", "")]
@@ -341,10 +351,10 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': ['null', 'string']}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': null}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'tabs'}", "")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': null, 'yammer': null}}}", "{'key1': 'yammer'}", "")]
-        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'yyy'.','line':1,'column':14}")]
-        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yyy', 'key2': 'tabs'}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'yyy'.','line':1,'column':14}")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'value', 'key2': 'tabs'}",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':16}")]
+        [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'value', 'key2': 'tabs'}",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1': 'value'.','line':1,'column':16}")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
             "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key2': 'abc' is not valid with 'key1' value 'yammer'.','line':1,'column':32}")]
         [InlineData("{'properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1[0]': {'.net': {'key2[0]': {'csharp': null, 'devlang': null}}, 'yammer': {'key2[0]': {'tabs': null, 'vba': null}}}}}", "{'key1': 'yammer', 'key2': 'abc'}",
@@ -354,8 +364,8 @@ namespace Microsoft.Docs.Build
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': {'key1[2]': {'vst': null, 'yiu': null}}, 'vba': null}}}}}", "{'key1': ['yammer','tabs','vst']}", "")]
         [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': {'key1[2]': {'vst': null, 'yiu': null}}, 'vba': null}}}}}", "{'key1': ['yammer','tabs','abc']}",
             "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key1[2]': 'abc' is not valid with 'key1[1]' value 'tabs'.','line':1,'column':31}")]
-        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['yyy','tabs']}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1[0]': 'yyy'.','line':1,'column':15}")]
+        [InlineData("{'properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}", "{'key1': ['value','tabs']}",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key1[0]': 'value'.','line':1,'column':17}")]
 
         [InlineData(
             "{'properties': {'key': {'type': 'object','properties': {'key1': {'type': 'string'}, 'key2': {'type': 'string'}}, 'enumDependencies': {'key1': {'.net': {'key2': {'csharp': null, 'devlang': null}}, 'yammer': {'key2': {'tabs': null, 'vba': null}}}}}}}",
@@ -363,8 +373,8 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'warning','code':'invalid-paired-attribute','message':'Invalid value for 'key.key2': 'abc' is not valid with 'key.key1' value 'yammer'.','line':1,'column':40}")]
         [InlineData(
             "{'properties': {'key':{'type': 'object','properties': {'key1': {'type': 'array', 'items': {'type': 'string'}}}, 'enumDependencies': {'key1[0]': {'.net': {'key1[1]': {'csharp': null, 'devlang': null}}, 'yammer': {'key1[1]': {'tabs': null, 'vba': null}}}}}}}",
-            "{'key': {'key1': ['yyy','tabs']}}",
-            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key.key1[0]': 'yyy'.','line':1,'column':23}")]
+            "{'key': {'key1': ['value','tabs']}}",
+            "{'message_severity':'warning','code':'invalid-value','message':'Invalid value for 'key.key1[0]': 'value'.','line':1,'column':25}")]
 
         // custom errors
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.'}}}}", "{'b': 1}",
@@ -375,7 +385,7 @@ namespace Microsoft.Docs.Build
             "{'message_severity':'suggestion','code':'key1-attribute-deprecated','message':'Deprecated attribute: 'key1', use 'key2' instead.','line':1,'column':10}")]
         [InlineData("{'properties': {'keys': {'precludes': [['key1', 'key2']]}}, 'rules': {'keys.key1': {'precluded-attributes': {'severity': 'error'}}}}", "{'keys' : {'key1': 1, 'key2': 2}}",
             "{'message_severity':'error','code':'precluded-attributes','message':'Only one of the following attributes can exist: 'key1', 'key2'.','line':1,'column':11}")]
-        [InlineData("{'dependencies': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
+        [InlineData("{'dependentSchemas': {'key1': ['key2']}, 'rules': {'key1': {'missing-paired-attribute': {'code': 'key2-missing'}}}}", "{'key1' : 1}",
             "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
         [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
             "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]

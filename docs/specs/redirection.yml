@@ -370,7 +370,7 @@ outputs:
   azure/active-directory-b2c/test.json: |
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
 ---
-# Hub/Landing/Architecture page is treated as *.md when calculating document id
+# Hub/Landing/Architecture/FAQ page is treated as *.md when calculating document id
 os: windows, osx
 inputs:
   docfx.yml: |
@@ -387,12 +387,16 @@ inputs:
     ### YamlMime:landing
   articles/active-directory-b2c/architecture.yml : |
     ### YamlMime:Architecture
+  articles/active-directory-b2c/faq.yml : |
+    ### YamlMime:FAQ
   _themes/ContentTemplate/schemas/Hub.schema.json:
   _themes/ContentTemplate/Hub.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Landing.schema.json:
   _themes/ContentTemplate/Landing.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Architecture.schema.json:
   _themes/ContentTemplate/Architecture.html.primary.tmpl:
+  _themes/ContentTemplate/schemas/FAQ.schema.json:
+  _themes/ContentTemplate/FAQ.html.primary.tmpl:
 outputs:
   azure/active-directory-b2c/index.json: |
     {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
@@ -400,6 +404,8 @@ outputs:
     {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
   azure/active-directory-b2c/architecture.json: |
     {"metadata": { "document_id": "a482b6c7-7a1c-c123-0a93-28c4565cc43b", "document_version_independent_id": "0ea6a82f-f89d-1b92-3e01-06fbf8d4bf6a"}}
+  azure/active-directory-b2c/faq.json: |
+    {"metadata": { "document_id": "171a6ebf-070d-1bb4-ed8f-407a9ed8c5db", "document_version_independent_id": "f7493328-f7f6-14d8-3245-2012c69cad64"}}
 ---
 # index.yml's document id also follows the redirection rules
 # trailing 'index' redirect-to will be trimmed
@@ -575,7 +581,7 @@ inputs:
     }
 outputs:
 ---
-# Support monikers for rediction
+# Support monikers for redirection
 repos:
   https://github.com/redirection/source-monikers:
   - files:

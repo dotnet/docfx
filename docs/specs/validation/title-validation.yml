@@ -119,7 +119,7 @@ outputs:
     {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"c.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
     {"message_severity":"suggestion","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'a.md(2,8), b.md(2,8), c.md(2,8), d.md(2,8), e.md(2,8),...'","file":"f.md","line":2,"end_line":2,"column":8,"end_column":15,"log_item_type":"user"}
 ---
-# Canonial Version title unique check
+# Canonical Version title unique check
 noSingleFile: true
 inputs:
   docfx.yml: |
@@ -181,4 +181,42 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/b.md","line":2,"end_line":2,"column":8,"end_column":15}
     {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1 - Product' is duplicated with other articles: 'docs/v2/b.md(2,8), docs/v2/c.md(2,8)'","file":"docs/v2/c.md","line":2,"end_line":2,"column":8,"end_column":15}
+---
+# title unique check - noindex
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "title": {
+        "rules": [
+          {
+            "type": "TitleUnique",
+            "message": "Title '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-titles",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  b.md: |
+    ---
+    title: title 1
+    ---
+  c.md: |
+    ---
+    title: title 1
+    robots: noindex
+    ---
+  d.md: |
+    # title 1
+outputs:
+  b.json:
+  c.json:
+  d.json:
+  .errors.log: |
+   {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'b.md(2,8), d.md'","file":"b.md","line":2,"end_line":2,"column":8,"end_column":15}
+   {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-titles","message":"Title 'title 1' is duplicated with other articles: 'b.md(2,8), d.md'","file":"d.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---

@@ -61,10 +61,10 @@ line1
 This is inline [!include[ref-inline](a.md)] inclusion
 [!include[ref-block](b.md)]";
 
-            var refa = @"[inline](
+            var refA = @"[inline](
 http://spec.commonmark.org/0.27/)";
 
-            var refb = @"[block](
+            var refB = @"[block](
 http://spec.commonmark.org/0.27/)";
 
             var expected = @"<h1 id=""root-content"" sourceFile=""LineNumber/root.md"" sourceStartLineNumber=""2"">Root content</h1>
@@ -78,8 +78,8 @@ http://spec.commonmark.org/0.27/)";
                 filePath: "LineNumber/root.md",
                 files: new Dictionary<string, string>
                 {
-                    { "LineNumber/a.md", refa },
-                    { "LineNumber/b.md", refb },
+                    { "LineNumber/a.md", refA },
+                    { "LineNumber/b.md", refB },
                 });
         }
     }

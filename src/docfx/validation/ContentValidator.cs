@@ -6,8 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build
@@ -22,11 +20,12 @@ namespace Microsoft.Docs.Build
         };
 
         private readonly Config _config;
-        private readonly Validator _validator;
+        private readonly Validator? _validator;
         private readonly ErrorBuilder _errors;
         private readonly DocumentProvider _documentProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly ZonePivotProvider _zonePivotProvider;
+        private readonly MetadataProvider _metadataProvider;
         private readonly PublishUrlMap _publishUrlMap;
 
         public ContentValidator(
@@ -36,6 +35,7 @@ namespace Microsoft.Docs.Build
             DocumentProvider documentProvider,
             MonikerProvider monikerProvider,
             ZonePivotProvider zonePivotProvider,
+            MetadataProvider metadataProvider,
             PublishUrlMap publishUrlMap)
         {
             _config = config;
@@ -43,20 +43,29 @@ namespace Microsoft.Docs.Build
             _documentProvider = documentProvider;
             _monikerProvider = monikerProvider;
             _zonePivotProvider = zonePivotProvider;
+            _metadataProvider = metadataProvider;
             _publishUrlMap = publishUrlMap;
 
-            _validator = new Validator(
-                fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
-                fileResolver.ResolveFilePath(_config.Allowlists),
-                fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                this);
+            try
+            {
+                _validator = new Validator(
+                    fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
+                    fileResolver.ResolveFilePath(_config.Allowlists),
+                    fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
+                    this);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                _errors.Add(Errors.System.ValidationIncomplete());
+            }
         }
 
         public void ValidateLink(FilePath file, LinkNode node)
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateLink(node, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -64,7 +73,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateCodeBlock(codeBlockItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -72,13 +81,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, out var validationContext))
             {
-                Write(_validator.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateContentNodes(nodes, validationContext).GetAwaiter().GetResult());
             }
         }
 
         public void ValidateHierarchy(List<HierarchyNode> models)
         {
-            Write(_validator.ValidateHierarchy(models).GetAwaiter().GetResult());
+            Write(_validator?.ValidateHierarchy(models).GetAwaiter().GetResult());
         }
 
         public void ValidateTitle(FilePath file, SourceInfo<string?> title, string? titleSuffix)
@@ -88,7 +97,7 @@ namespace Microsoft.Docs.Build
                 return;
             }
 
-            if (TryGetValidationDocumentType(file, out var documentType))
+            if (TryCreateValidationContext(file, true, out var validationContext))
             {
                 var monikers = _monikerProvider.GetFileLevelMonikers(_errors, file);
                 var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
@@ -99,13 +108,7 @@ namespace Microsoft.Docs.Build
                     Title = GetOgTitle(title.Value, titleSuffix),
                     SourceInfo = title.Source,
                 };
-                var validationContext = new ValidationContext
-                {
-                    DocumentType = documentType,
-                    FileSourceInfo = new SourceInfo(file),
-                    Monikers = monikers,
-                };
-                Write(_validator.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateTitle(titleItem, validationContext).GetAwaiter().GetResult());
             }
 
             static string GetOgTitle(string title, string? titleSuffix)
@@ -135,7 +138,7 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file),
                 };
 
-                Write(_validator.ValidateText(textItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateText(textItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -149,7 +152,7 @@ namespace Microsoft.Docs.Build
                     SourceInfo = new SourceInfo(file),
                 };
 
-                Write(_validator.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateManifest(manifestItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -162,7 +165,7 @@ namespace Microsoft.Docs.Build
                     FilePath = file.Path.Value,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -176,7 +179,7 @@ namespace Microsoft.Docs.Build
                     HasReferencedTocs = hasReferencedTocs,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -191,7 +194,7 @@ namespace Microsoft.Docs.Build
                     IsHrefExternal = UrlUtility.GetLinkType(node.Value.Href) == LinkType.External,
                     SourceInfo = node.Source,
                 };
-                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -208,7 +211,7 @@ namespace Microsoft.Docs.Build
                     FilePaths = filePaths,
                     SourceInfo = new SourceInfo(file),
                 };
-                Write(_validator.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateToc(tocItem, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -216,7 +219,7 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                Write(_validator.ValidateZonePivot(definition, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateZonePivot(definition, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -248,7 +251,7 @@ namespace Microsoft.Docs.Build
                     ZonePivotContext = (zonePivotGroup.Value.DefinitionFile, zonePivotGroup.Value.PivotGroups),
                 };
                 List<(string, object)> usages = zonePivotUsages.Select(u => (u.Value, (object)u.Source!)).ToList();
-                Write(_validator.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateZonePivot(usages, validationContext).GetAwaiter().GetResult());
             }
         }
 
@@ -256,13 +259,13 @@ namespace Microsoft.Docs.Build
         {
             if (TryCreateValidationContext(file, false, out var validationContext))
             {
-                Write(_validator.ValidateTable(tableNode, validationContext).GetAwaiter().GetResult());
+                Write(_validator?.ValidateTable(tableNode, validationContext).GetAwaiter().GetResult());
             }
         }
 
         public void PostValidate()
         {
-            Write(_validator.PostValidate().GetAwaiter().GetResult());
+            Write(_validator?.PostValidate().GetAwaiter().GetResult());
         }
 
         public IProducerConsumerCollection<T> CreateCollection<T>()
@@ -270,8 +273,13 @@ namespace Microsoft.Docs.Build
             return new ScopedConcurrentBag<T>();
         }
 
-        private void Write(IEnumerable<ValidationError> validationErrors)
+        private void Write(IEnumerable<ValidationError>? validationErrors)
         {
+            if (validationErrors == null)
+            {
+                return;
+            }
+
             _errors.AddRange(validationErrors.Select(ToError));
 
             static Error ToError(ValidationError e)
@@ -281,6 +289,7 @@ namespace Microsoft.Docs.Build
                     ValidationSeverity.SUGGESTION => ErrorLevel.Suggestion,
                     ValidationSeverity.WARNING => ErrorLevel.Warning,
                     ValidationSeverity.ERROR => ErrorLevel.Error,
+                    ValidationSeverity.INFO => ErrorLevel.Info,
                     _ => ErrorLevel.Off,
                 };
 
@@ -313,6 +322,7 @@ namespace Microsoft.Docs.Build
                     DocumentType = documentType,
                     FileSourceInfo = new SourceInfo(file),
                     Monikers = GetMonikers(file, needMonikers),
+                    NoIndex = _metadataProvider.GetMetadata(ErrorBuilder.Null, file).NoIndex(),
                 };
                 return true;
             }

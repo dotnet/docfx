@@ -29,7 +29,21 @@ namespace Microsoft.Docs.Build
             { "Length", new string[] { "string-length-invalid" } },
         };
 
-        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent)
+        public static string GenerateJsonSchema(string rulesContent, string allowlistsContent, ErrorBuilder errors)
+        {
+            try
+            {
+                return GenerateJsonSchemaCore(rulesContent, allowlistsContent);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+                errors.Add(Errors.System.ValidationIncomplete());
+            }
+            return "";
+        }
+
+        private static string GenerateJsonSchemaCore(string rulesContent, string allowlistsContent)
         {
             Log.Write(rulesContent);
             Log.Write(allowlistsContent);
@@ -40,7 +54,7 @@ namespace Microsoft.Docs.Build
                 return "";
             }
 
-            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent);
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(allowlistsContent) ?? new();
 
             var schema = new
             {
@@ -182,6 +196,7 @@ namespace Microsoft.Docs.Build
                                 canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                                 pullRequestOnly = ruleInfo.PullRequestOnly,
                                 contentTypes = ruleInfo.ContentTypes,
+                                tags = ruleInfo.Tags,
                             });
                         }
                     }

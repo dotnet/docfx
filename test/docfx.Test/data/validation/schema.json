@@ -414,7 +414,8 @@
         "contentTypes": [
           "conceptual",
           "include"
-        ]
+        ],
+        "tags": [ "SEO" ]
       },
       "missing-attribute": {
         "severity": "suggestion",
@@ -422,7 +423,8 @@
         "additionalMessage": "Add a title string to show in search engine results.",
         "contentTypes": [
           "conceptual"
-        ]
+        ],
+        "tags": [ "SEO" ]
       },
       "duplicate-attribute": {
         "severity": "suggestion",
@@ -433,7 +435,8 @@
           "include",
           "landingpage",
           "hubpage"
-        ]
+        ],
+        "tags": [ "SEO" ]
       }
     },
     "ms.topic": {

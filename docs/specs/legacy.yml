@@ -27,8 +27,7 @@ repos:
         {
           "properties": {
             "api_name": { "htmlMetaName": "APIName" }
-          },
-          "htmlMetaHidden": ["conceptual", "is_dynamic_rendering", "canonical_url", "github_contributors"]
+          }
         }
   https://docs.com/theme:
   - files:
@@ -66,16 +65,16 @@ outputs:
       "pageMetadata": "
         <meta name=\"APIName\" content=\"API Name\" />
         <meta name=\"author\" content=\"charlie\" />
-        <meta name=\"content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
+        <meta name=\"conceptual\" content=\"<p><a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;>d</a></p>\"/>
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
         <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/3a174518dadf39d8ec448a4090a8105e2bdf6336/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/42eb7605fdef9f5e7674a1cae803f86a39ee628a/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
-        <meta name=\"original_content_git_url_template\" content=\"{repo}/blob/{branch}/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
+        <meta name=\"schema\" content=\"Conceptual\" />
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"updated_at\" content=\"2020-04-01 08:08 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
@@ -221,7 +220,7 @@ inputs:
   docfx.yml:
   redirections.yml: |
     redirections:
-      docs/a.md: /asdf
+      docs/a.md: /another-file
   docs/a.md:
 outputs:
   .errors.log: |
@@ -239,7 +238,7 @@ outputs:
   a.json: |
     { "conceptual": "<p>\n<a data-linktype=\"relative-path\" href=\"redirect\">link</a></p>" }
 ---
-# Legacy metadata black list
+# Legacy metadata block list
 inputs:
   docfx.yml: |
     fileMetadata:
@@ -419,7 +418,7 @@ inputs:
   a.md: '[](https://github.com)'
   b.yml: |
     #YamlMime:TestPage
-    link: https://docs.com
+    link: https://static.docs.com
     markdown: '[](a.md)'
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
@@ -439,7 +438,7 @@ outputs:
   b.raw.page.json: |
     { "content": "
         <a data-linktype='external' href='https://github.com'></a>
-        <img data-linktype='external' src='https://docs.com'></img>
+        <img data-linktype='external' src='https://static.docs.com'></img>
         <p><a data-linktype='relative-path' href='a'></a></p>" }
 ---
 # The site base path is empty.

@@ -87,8 +87,8 @@ inputs:
       }
     }
   a.md: |
-    # Title 1 With Hashe
-    ## Title 2 With Hashes
+    # Title 1 With Hash
+    ## Title 2 With Hash
 
     Title 1
     =======
@@ -957,7 +957,7 @@ outputs:
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"d.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"suggestion","code":"zone-pivot-group-missing","message":"Missing metadata attribute: zone_pivot_groups. To use zone pivots in your file, you must specify the valid zone pivot group that contains the pivot IDs you want to use.","file":"j.md","line":0,"end_line":0,"column":0,"end_column":0}
 ---
-# Canonial Version Only H1 Unique Check
+# Canonical Version Only H1 Unique Check
 noSingleFile: true
 inputs:
   docfx.yml: |
@@ -1013,7 +1013,7 @@ outputs:
   4d70bd679da22f2fcabba1faf02184a4/docs/a.json:
   4d70bd679da22f2fcabba1faf02184a4/docs/b.json:
 ---
-# Canonial Version Only H1 Unique Check with Inclusion
+# Canonical Version Only H1 Unique Check with Inclusion
 noSingleFile: true
 inputs:
   docfx.yml: |
@@ -1079,7 +1079,7 @@ outputs:
   4d70bd679da22f2fcabba1faf02184a4/docs/a.json:
   4d70bd679da22f2fcabba1faf02184a4/docs/b.json:
 ---
-# Canonial Version Only H1 Unique Check with Inclusion
+# Canonical Version Only H1 Unique Check with Inclusion
 # multiple-versioning file cases
 # invalid moniker zone is treated as non-versioning
 inputs:
@@ -1391,4 +1391,43 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":3,"end_line":3}
     {"message_severity":"suggestion","code":"h2-duplicated","message":"Duplicate heading: H2 'H2_duplicate'.","file":"a.md","line":5,"end_line":5}
+---
+# Content validation - H1 unique (ignore noindex)
+noSingleFile: true
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "headings": {
+        "name": "Headings",
+        "description": "Validates H1 and other heading content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "H1Unique",
+            "message": "H1 '{0}' is duplicated with other articles: '{1}'",
+            "code": "duplicate-h1",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # Title 1
+  b.md: |
+    # Title 1
+  c.md: |
+    ---
+    robots: noindex
+    ---
+    # Title 1
+outputs:
+  a.json:
+  b.json:
+  c.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"b.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","log_item_type":"user","code":"duplicate-h1","message":"H1 'Title 1' is duplicated with other articles: 'a.md, b.md'","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---

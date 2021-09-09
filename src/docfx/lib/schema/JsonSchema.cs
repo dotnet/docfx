@@ -14,12 +14,12 @@ namespace Microsoft.Docs.Build
         /// <summary>
         /// `true` is a valid boolean JSON schema. A `true` JSON schema is deserialized into this instance.
         /// </summary>
-        public static readonly JsonSchema TrueSchema = new JsonSchema();
+        public static readonly JsonSchema TrueSchema = new();
 
         /// <summary>
         /// `false` is a valid boolean JSON schema. A `false` JSON schema is deserialized into this instance.
         /// </summary>
-        public static readonly JsonSchema FalseSchema = new JsonSchema();
+        public static readonly JsonSchema FalseSchema = new();
 
         /// <summary>
         /// Gets the JsonSchemaResolver to resolve $ref.
@@ -189,7 +189,14 @@ namespace Microsoft.Docs.Build
         public string[] Required { get; init; } = Array.Empty<string>();
 
         /// <summary>
-        /// Properties that are used to indicate the dependencies between fields
+        /// Split from the dependencies in draft 2019-09
+        /// </summary>
+        [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
+        public Dictionary<string, (string[] propertyNames, JsonSchema schema)> DependentSchemas { get; }
+         = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
+
+        /// <summary>
+        /// [Obsolete] Properties that are used to indicate the dependencies between fields
         /// </summary>
         [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
         public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
@@ -247,16 +254,6 @@ namespace Microsoft.Docs.Build
         /// Property indicate which property will fallback to xrefType when SchemaType is null
         /// </summary>
         public string? SchemaTypeProperty { get; init; }
-
-        /// <summary>
-        /// Alternative name used in output HTML <meta> tag. If not set, the original metadata name is used. Does not have effect in sub schemas.
-        /// </summary>
-        public string? HtmlMetaName { get; init; }
-
-        /// <summary>
-        /// Properties that are hidden in output HTML <meta> tag. Does not have effect in sub schemas.
-        /// </summary>
-        public string[] HtmlMetaHidden { get; init; } = Array.Empty<string>();
 
         /// <summary>
         /// Properties that are reserved by the system.

@@ -1,13 +1,12 @@
 ---
 title: Versioning
 description: Versioning design for DocFX v3
-author: lianwei
 ---
 
 # Versioning v3 Design Spec
 
 ## 1. Background
-Versioning is a common scenario in building documentations, especially API documentations. However, current DocFX does not have **version** concept and users have to use complex `group` settings to achieve *version* related features. In v3, we'd like to natively support versioning and here is the design spec for supporting versioning in DocFX v3.
+Versioning is a common scenario in building documentations, especially API documentations. However, current DocFX does not have **version** concept and users have to use complex `group` settings to achieve *version* related features. In v3, We would like to natively support versioning and here is the design spec for supporting versioning in DocFX v3.
 
 ## 2. Terms
 

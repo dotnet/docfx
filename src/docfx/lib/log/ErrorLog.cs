@@ -42,14 +42,25 @@ namespace Microsoft.Docs.Build
                     if (error.AdditionalErrorInfo == null)
                     {
                         var metadata = MetadataProvider?.GetMetadata(Null, source);
-                        var additionalInfo = new AdditionalErrorInfo(
+                        if (new[]
+                            {
                             metadata?.MsAuthor,
                             metadata?.MsProd,
                             metadata?.MsTechnology,
                             metadata?.MsService,
-                            metadata?.MsSubservice);
-
-                        error = error with { AdditionalErrorInfo = additionalInfo };
+                            metadata?.MsSubservice,
+                            }.Any(value => !string.IsNullOrEmpty(value)))
+                        {
+                            error = error with
+                            {
+                                AdditionalErrorInfo = new AdditionalErrorInfo(
+                                    metadata?.MsAuthor,
+                                    metadata?.MsProd,
+                                    metadata?.MsTechnology,
+                                    metadata?.MsService,
+                                    metadata?.MsSubservice),
+                            };
+                        }
                     }
                 }
                 catch
@@ -81,6 +92,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (error.Level == ErrorLevel.Error)
                     {
+                        Log.Write(error.ToString());
                         Add(Errors.Logging.FallbackError(config.DefaultLocale));
                     }
                     return;

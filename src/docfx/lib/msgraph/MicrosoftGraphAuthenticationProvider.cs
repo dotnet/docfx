@@ -17,15 +17,18 @@ namespace Microsoft.Docs.Build
         private static readonly string[] s_scopes = { "https://graph.microsoft.com/.default" };
 
         private readonly X509Certificate2 _clientCertificate;
-        private readonly IConfidentialClientApplication _cca;
+        private readonly IConfidentialClientApplication _clientApp;
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         private AuthenticationResult? _authenticationResult;
 
         public MicrosoftGraphAuthenticationProvider(string tenantId, string clientId, string clientCertificate)
         {
-            _clientCertificate = new X509Certificate2(Convert.FromBase64String(clientCertificate), password: "");
-            _cca = ConfidentialClientApplicationBuilder.Create(clientId)
+            _clientCertificate = new X509Certificate2(
+                Convert.FromBase64String(clientCertificate),
+                password: "",
+                X509KeyStorageFlags.EphemeralKeySet);
+            _clientApp = ConfidentialClientApplicationBuilder.Create(clientId)
                 .WithCertificate(_clientCertificate)
                 .WithAuthority(new Uri($"https://login.microsoftonline.com/{tenantId}/v2.0"))
                 .WithRedirectUri("https://www.microsoft.com")
@@ -49,9 +52,9 @@ namespace Microsoft.Docs.Build
             try
             {
                 await _semaphore.WaitAsync();
-                if (_authenticationResult == null || _authenticationResult.ExpiresOn.UtcDateTime < DateTime.UtcNow.AddMinutes(-1))
+                if (_authenticationResult == null || DateTime.UtcNow > _authenticationResult.ExpiresOn.UtcDateTime.AddMinutes(-1))
                 {
-                    _authenticationResult = await _cca.AcquireTokenForClient(s_scopes).ExecuteAsync();
+                    _authenticationResult = await _clientApp.AcquireTokenForClient(s_scopes).WithSendX5C(true).ExecuteAsync();
                 }
                 return _authenticationResult.AccessToken;
             }

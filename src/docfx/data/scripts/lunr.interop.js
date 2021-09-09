@@ -4,7 +4,7 @@
 var lunr = require('./lunr.js');
 
 exports.transform = function (documents) {
-    var idx = lunr(function () {
+    var index = lunr(function () {
         this.field('title');
         this.field('body');
 
@@ -13,5 +13,5 @@ exports.transform = function (documents) {
         }, this);
     });
 
-    return JSON.stringify(idx);
+    return JSON.stringify(index);
 }

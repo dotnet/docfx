@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Microsoft.Docs.Build
@@ -15,13 +14,11 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly GitHubAccessor _githubAccessor;
         private readonly BuildOptions _buildOptions;
-        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders =
-                     new ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>>(PathUtility.PathComparer);
+        private readonly ConcurrentDictionary<string, Lazy<CommitBuildTimeProvider>> _commitBuildTimeProviders = new(PathUtility.PathComparer);
 
         private readonly RepositoryProvider _repositoryProvider;
 
-        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls =
-                     new ConcurrentDictionary<FilePath, (string?, string?, string?)>();
+        private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new();
 
         public ContributionProvider(
             Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)
@@ -113,27 +110,6 @@ namespace Microsoft.Docs.Build
             return (contributionInfo, githubContributors.Distinct().ToArray());
         }
 
-        public DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
-        {
-            if (fileCommits.Length > 0)
-            {
-                if (_config.UpdateTimeAsCommitBuildTime && repository != null && repository.Branch != null)
-                {
-                    return _commitBuildTimeProviders
-                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
-                        .GetCommitBuildTime(fileCommits[0].Sha);
-                }
-                else
-                {
-                    return fileCommits[0].Time.UtcDateTime;
-                }
-            }
-
-            return _input.TryGetOriginalPhysicalPath(file) is PathString
-                ? _input.GetLastWriteTimeUtc(file)
-                : default;
-        }
-
         public (string? contentGitUrl, string? originalContentGitUrl, string? originalContentGitUrlTemplate)
             GetGitUrl(FilePath file)
         {
@@ -141,7 +117,7 @@ namespace Microsoft.Docs.Build
 
             (string?, string?, string?) GetGitUrlsCore(FilePath file)
             {
-                var isWhitelisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
+                var isAllowlisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
 
                 var fullPath = _input.TryGetOriginalPhysicalPath(file);
                 if (fullPath is null)
@@ -157,12 +133,12 @@ namespace Microsoft.Docs.Build
 
                 var gitUrlTemplate = GetGitUrlTemplate(repo.Url, pathToRepo);
                 var originalContentGitUrl = gitUrlTemplate?.Replace("{repo}", repo.Url).Replace("{branch}", repo.Branch);
-                var contentGitUrl = isWhitelisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
+                var contentGitUrl = isAllowlisted ? GetContentGitUrl(repo.Url, repo.Branch ?? repo.Commit, pathToRepo) : originalContentGitUrl;
 
                 return (
                     contentGitUrl,
                     originalContentGitUrl,
-                    !isWhitelisted ? originalContentGitUrl : gitUrlTemplate);
+                    !isAllowlisted ? originalContentGitUrl : gitUrlTemplate);
             }
         }
 
@@ -226,6 +202,27 @@ namespace Microsoft.Docs.Build
                 : UrlUtility.TryParseAzureReposUrl(url, out _, out _, out _)
                 ? $"{{repo}}?path=/{pathToRepo}&version=GB{{branch}}&_a=contents"
                 : null;
+        }
+
+        private DateTime GetUpdatedAt(FilePath file, Repository? repository, GitCommit[] fileCommits)
+        {
+            if (fileCommits.Length > 0)
+            {
+                if (_config.UpdateTimeAsCommitBuildTime && repository != null && repository.Branch != null)
+                {
+                    return _commitBuildTimeProviders
+                        .GetOrAdd(repository.Path, new Lazy<CommitBuildTimeProvider>(() => new CommitBuildTimeProvider(_config, repository))).Value
+                        .GetCommitBuildTime(fileCommits[0].Sha);
+                }
+                else
+                {
+                    return fileCommits[0].Time.UtcDateTime;
+                }
+            }
+
+            return _input.TryGetOriginalPhysicalPath(file) is PathString
+                ? _input.GetLastWriteTimeUtc(file)
+                : default;
         }
     }
 }

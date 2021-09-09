@@ -152,7 +152,6 @@ inputs:
         "achievement": {"contentType": "xref"}
       }
     }
-  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
       "properties": {
@@ -161,14 +160,12 @@ inputs:
         "achievement": {"contentType": "xref"}
       }
     }
-  _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
       "properties": {
         "uid" : {"contentType": "uid"}
       }
     }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
       "renderType": "component",
@@ -259,7 +256,7 @@ outputs:
     }
 ---
 # Can produce proper dependency type
-# fallback patha->pathb.achievement;modulea->moduleb.achievement;
+# fallback path-a->path-b.achievement;module-a->module-b.achievement;
 inputs:
   docfx.yml:
   path.yml: |
@@ -269,9 +266,9 @@ inputs:
     achievement: trophy
     trophy:
       uid: trophy
-  patha.yml: |
+  path-a.yml: |
     ### YamlMime:LearningPath
-    uid: patha
+    uid: path-a
     modules: ['module1']
     achievement: trophy
   module1.yml: |
@@ -303,7 +300,6 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/LearningPath.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Module.schema.json: |
     {
       "properties": {
@@ -315,14 +311,12 @@ inputs:
         }
       }
     }
-  _themes/ContentTemplate/Module.html.primary.tmpl:
   _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
     {
       "properties": {
         "uid" : {"contentType": "uid"}
       }
     }
-  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl:
   _themes/ContentTemplate/schemas/Achievement.schema.json: |
     {
       "renderType": "component",
@@ -336,18 +330,18 @@ inputs:
     }
 outputs:
   path.json:
-  patha.json:
+  path-a.json:
   module1.json:
   module2.json:
   unit1.json:
   unit2.json:
   full-dependent-list.txt: |
     {"dependency_type":"achievement","from_file_path":"*module2.yml*","to_file_path":"*module1.yml*"}
-    {"dependency_type":"achievement","from_file_path":"*patha.yml*","to_file_path":"*path.yml*"}
+    {"dependency_type":"achievement","from_file_path":"*path-a.yml*","to_file_path":"*path.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*module1.yml*","to_file_path":"*unit1.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*module2.yml*","to_file_path":"*unit2.yml*"}
     {"dependency_type":"hierarchy","from_file_path":"*path.yml*","to_file_path":"*module1.yml*"}
-    {"dependency_type":"hierarchy","from_file_path":"*patha.yml*","to_file_path":"*module1.yml*"}
+    {"dependency_type":"hierarchy","from_file_path":"*path-a.yml*","to_file_path":"*module1.yml*"}
   op_aggregated_file_map_info.json: |
     {
       "aggregated_file_map_items": {
@@ -383,15 +377,15 @@ outputs:
             }
           ]
         },
-        "patha.yml": {
+        "path-a.yml": {
           "dependencies": [
             {
-              "from_file_path": "patha.yml",
+              "from_file_path": "path-a.yml",
               "to_file_path": "module1.yml",
               "dependency_type": "hierarchy"
             },
             {
-              "from_file_path": "patha.yml",
+              "from_file_path": "path-a.yml",
               "to_file_path": "path.yml",
               "dependency_type": "achievement"
             }
@@ -402,7 +396,7 @@ outputs:
       }
     }
 ---
-# error mapping for Learn Valdiation based on SDP, LearningPath
+# error mapping for Learn validation based on SDP, LearningPath
 inputs:
   docfx.yml: |
     buildValidationRules: build.json
@@ -453,10 +447,10 @@ inputs:
         ]
       }
     }
-  patha.yml: |
+  path-a.yml: |
     #YamlMime:LearningPath
     a: a
-  pathb.yml: |
+  path-b.yml: |
     #YamlMime:LearningPath
     uid: path_b
     modules: ['module_not_found']
@@ -498,12 +492,12 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"patha.yml","line":2}
-    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module_not_found' can't be found.","file":"pathb.yml","line":3}
+    {"message_severity":"error","code":"path-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-modules-missing","message":"Missing attribute: modules. At least one valid module is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-trophy-missing","message":"Missing attribute: trophy. A valid trophy is required for each learning path.","file":"path-a.yml","line":2}
+    {"message_severity":"error","code":"path-child-not-found","message":"Child Uid(s): 'module_not_found' can't be found.","file":"path-b.yml","line":3}
 ---
-# error mapping for Learn Valdiation based on SDP, Module
+# error mapping for Learn validation based on SDP, Module
 inputs:
   docfx.yml: |
     buildValidationRules: build.json
@@ -546,10 +540,10 @@ inputs:
         ]
       }
     }
-  modulea.yml: |
+  module-a.yml: |
     #YamlMime:Module
     a: a
-  moduleb.yml: |
+  module-b.yml: |
     #YamlMime:Module
     uid: module_b
     units: ['unit_not_found']
@@ -591,12 +585,12 @@ inputs:
     }
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"modulea.yml","line":2}
-    {"message_severity":"error","code":"module-child-not-found","message":"Child Uid(s): 'unit_not_found' can't be found.","file":"moduleb.yml","line":3}
+    {"message_severity":"error","code":"module-uid-missing","message":"Missing attribute: Uid. A valid Uid is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-units-missing","message":"Missing attribute: units. At least one valid unit is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-badge-missing","message":"Missing attribute: badge. A valid badge is required for each module.","file":"module-a.yml","line":2}
+    {"message_severity":"error","code":"module-child-not-found","message":"Child Uid(s): 'unit_not_found' can't be found.","file":"module-b.yml","line":3}
 ---
-# error mapping for Learn Valdiation based on SDP, ModuleUnit
+# error mapping for Learn validation based on SDP, ModuleUnit
 inputs:
   docfx.yml: |
     buildValidationRules: build.json
@@ -1484,3 +1478,189 @@ outputs:
         }
       ]
     }
+---
+# Pick uid by commit time latest when conflict for learn docset
+noDryRun: true
+repos:
+  https://github.com/learn/learn-pr:
+  - time: 10/30/2019 12:00:00
+    files:
+      docfx.yml: |
+        isLearn: true
+        outputType: pageJson
+      path.yml: |
+        ### YamlMime:LearningPath
+        uid: path
+        modules: ['module']
+      a-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      a-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+      b-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      b-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+      c-module.yml: |
+        ### YamlMime:Module
+        uid: module-c
+        units: ['unit']
+      _themes/ContentTemplate/LearningPath.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/LearningPath.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"},
+            "modules": {"items": {"contentType": "xref"}},
+          }
+        }
+      _themes/ContentTemplate/Module.html.primary.tmpl:
+      _themes/ContentTemplate/schemas/Module.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"},
+            "units": {"items": {"contentType": "xref" }},
+          }
+        }
+      _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+        {
+          "properties": {
+            "uid" : {"contentType": "uid"}
+          }
+        }
+  - time: 10/30/2018 12:00:00
+    files:
+      a-module.yml: |
+        ### YamlMime:Module
+        uid: module
+        units: ['unit']
+      a-unit.yml: |
+        ### YamlMime:ModuleUnit
+        uid: unit
+outputs:
+  path.mta.json:
+  path.raw.page.json:
+  c-module.mta.json:
+  c-module.raw.page.json:
+  full-dependent-list.txt:
+  .errors.log: |
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'unit' is duplicated in 'a-unit.yml(2,6)', 'b-unit.yml(2,6)'.","file":"a-unit.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'unit' is duplicated in 'a-unit.yml(2,6)', 'b-unit.yml(2,6)'.","file":"b-unit.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'module' is duplicated in 'a-module.yml(2,6)', 'b-module.yml(2,6)'.","file":"a-module.yml"}
+    {"message_severity":"error","code":"duplicate-uid","message":"UID 'module' is duplicated in 'a-module.yml(2,6)', 'b-module.yml(2,6)'.","file":"b-module.yml"}
+  op_aggregated_file_map_info.json: |
+    {
+      "aggregated_file_map_items": {
+        "path.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "path.yml",
+              "to_file_path": "b-module.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        },
+        "c-module.yml": {
+          "dependencies": [
+            {
+              "from_file_path": "c-module.yml",
+              "to_file_path": "b-unit.yml",
+              "dependency_type": "hierarchy"
+            }
+          ]
+        }
+      }
+    }
+---
+# Validate if jupyter notebook points to insecure link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "SecureLinks",
+            "message": "Link '{0}' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.",
+            "code": "insecure-link",
+            "severity": "WARNING",
+            "contentTypes": ["moduleunit"],
+            "domains": [
+              "microsoft.com",
+              "office.com",
+              "msdn.com",
+              "aka.ms",
+              "visualstudio.com",
+              "azure.com",
+              "technet.com",
+              "githubusercontent.com"
+            ]
+          }
+        ]
+      }
+    }
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"}
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: http://raw.githubusercontent.com/test.ipynb
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"warning","code":"insecure-link","message":"Link 'http://raw.githubusercontent.com/test.ipynb' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":54}
+---
+# Validate if jupyter notebook key missing paired attribute sandbox, or notebook and tasks coexist
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependentSchemas": {
+        "notebook": {
+          "required": ["sandbox"],
+          "not": {"required": ["tasks"]}
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    tasks: task_a
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"dependent-schemas-failed","message":"DependentSchemas validation failed for attribute: 'notebook'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":55}
+---
+# Validate if sandbox value set to true when jupyter notebook is present
+inputs:
+  docfx.yml: 
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "properties": {
+        "notebook" : {"type": "string", "contentType": "Href"},
+        "sandbox": {"type": "boolean"}
+      },
+      "dependentSchemas": {
+        "notebook": {
+          "properties": { "sandbox": { "const": true } },
+        }
+      }
+    }
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    notebook: https://raw.githubusercontent.com/test.ipynb
+    sandbox: false
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"dependent-schemas-failed","message":"DependentSchemas validation failed for attribute: 'notebook'.","file":"a.yml","line":2,"end_line":2,"column":11,"end_column":55}

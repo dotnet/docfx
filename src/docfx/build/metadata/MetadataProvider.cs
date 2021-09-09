@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build
@@ -19,26 +18,11 @@ namespace Microsoft.Docs.Build
 
         private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
 
-        public ICollection<string> HtmlMetaHidden { get; }
-
-        public IReadOnlyDictionary<string, string> HtmlMetaNames { get; }
-
-        public MetadataProvider(Config config, Input input, BuildScope buildScope, JsonSchemaLoader jsonSchemaLoader)
+        public MetadataProvider(Config config, Input input, BuildScope buildScope)
         {
             _input = input;
             _globalMetadata = config.GlobalMetadata.ExtensionData;
             _buildScope = buildScope;
-
-            var metadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
-
-            HtmlMetaHidden = metadataSchemas.SelectMany(schema => schema.HtmlMetaHidden).ToHashSet();
-
-            HtmlMetaNames = new Dictionary<string, string>(
-                from schema in metadataSchemas
-                from property in schema.Properties
-                let htmlMetaName = property.Value.HtmlMetaName
-                where !string.IsNullOrEmpty(htmlMetaName)
-                select new KeyValuePair<string, string>(property.Key, htmlMetaName));
 
             foreach (var (key, item) in config.FileMetadata)
             {

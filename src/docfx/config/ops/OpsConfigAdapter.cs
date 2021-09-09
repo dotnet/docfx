@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Docs.Validation;
 using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
@@ -17,12 +18,19 @@ namespace Microsoft.Docs.Build
     {
         public const string BuildConfigApi = "https://ops/buildconfig/";
 
+        private const string AllowedDomain = "allowedDomain";
+        private const string AllowedHtml = "allowedHTML";
+
         private const string MonikerDefinitionApi = "https://ops/monikerDefinition/";
         private const string OpsMetadataApi = "https://ops/opsmetadatas/";
-        private const string MetadataSchemaApi = "https://ops/metadataschema/";
-        private const string MarkdownValidationRulesApi = "https://ops/markdownvalidationrules/";
-        private const string BuildValidationRulesApi = "https://ops/buildvalidationrules/";
+        private const string PublicMetadataSchemaApi = "https://ops/publicmetadataschema/";
+        private const string PublicMarkdownValidationRulesApi = "https://ops/publicmarkdownvalidationrules/";
+        private const string PublicBuildValidationRulesApi = "https://ops/publicbuildvalidationrules/";
+        private const string FullMetadataSchemaApi = "https://ops/fullmetadataschema/";
+        private const string FullMarkdownValidationRulesApi = "https://ops/fullmarkdownvalidationrules/";
+        private const string FullBuildValidationRulesApi = "https://ops/fullbuildvalidationrules/";
         private const string AllowlistsApi = "https://ops/taxonomy-allowlists/";
+        private const string TrustedDomainApi = "https://ops/taxonomy-allowedDomain/";
         private const string SandboxEnabledModuleListApi = "https://ops/sandboxEnabledModuleList/";
         private const string RegressionAllAllowlistsApi = "https://ops/regressionalltaxonomy-allowlists/";
         private const string RegressionAllContentRulesApi = "https://ops/regressionallcontentrules/";
@@ -42,10 +50,14 @@ namespace Microsoft.Docs.Build
                 (BuildConfigApi, GetBuildConfig),
                 (MonikerDefinitionApi, _ => _opsAccessor.GetMonikerDefinition()),
                 (OpsMetadataApi, _ => GetOpsMetadata()),
-                (MetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url))),
-                (MarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url))),
-                (BuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url))),
+                (PublicMetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (PublicMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (PublicBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: false)),
+                (FullMetadataSchemaApi, url => _opsAccessor.GetMetadataSchema(GetValidationServiceParameters(url), fetchFullRules: true)),
+                (FullMarkdownValidationRulesApi, url => _opsAccessor.GetMarkdownValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
+                (FullBuildValidationRulesApi, url => _opsAccessor.GetBuildValidationRules(GetValidationServiceParameters(url), fetchFullRules: true)),
                 (AllowlistsApi, _ => _opsAccessor.GetAllowlists()),
+                (TrustedDomainApi, _ => _opsAccessor.GetTrustedDomain()),
                 (SandboxEnabledModuleListApi, _ => _opsAccessor.GetSandboxEnabledModuleList()),
                 (RegressionAllAllowlistsApi, _ => _opsAccessor.GetAllowlists(DocsEnvironment.PPE)),
                 (RegressionAllContentRulesApi, _ => _opsAccessor.GetRegressionAllContentRules()),
@@ -83,8 +95,8 @@ namespace Microsoft.Docs.Build
                 docsetInfo,
                 new[] { new { name = "", base_path = default(BasePath), site_name = "", product_name = "", use_template = false } });
 
-            var docset = docsets.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
-            if (docset is null)
+            var docset = docsets?.FirstOrDefault(d => string.Equals(d.name, name, StringComparison.OrdinalIgnoreCase));
+            if (docsets is null || docset is null)
             {
                 throw Errors.Config.DocsetNotProvisioned(name).ToException();
             }
@@ -95,7 +107,11 @@ namespace Microsoft.Docs.Build
             if (!string.IsNullOrEmpty(docset.base_path))
             {
                 xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);
+
+                // Handle share base path change during archive
+                xrefQueryTags.Add($"/previous-versions{docset.base_path.ValueWithLeadingSlash}");
             }
+
             var xrefMaps = new List<string>();
             foreach (var tag in xrefQueryTags)
             {
@@ -106,7 +122,9 @@ namespace Microsoft.Docs.Build
             var xrefHostName = GetXrefHostName(docset.site_name, branch);
             var documentUrls = JsonConvert.DeserializeAnonymousType(
                     await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
-                .ToDictionary(item => item.log_code, item => item.document_url);
+                ?.ToDictionary(item => item.log_code, item => item.document_url);
+            var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
+            var allowedHTML = ConvertAllowedHtml(await _opsAccessor.GetAllowedHtml());
 
             return JsonConvert.SerializeObject(new
             {
@@ -117,23 +135,62 @@ namespace Microsoft.Docs.Build
                 xrefHostName,
                 monikerDefinition = MonikerDefinitionApi,
                 documentUrls,
-                markdownValidationRules = $"{MarkdownValidationRulesApi}{metadataServiceQueryParams}",
-                buildValidationRules = $"{BuildValidationRulesApi}{metadataServiceQueryParams}",
+                markdownValidationRules = $"{PublicMarkdownValidationRulesApi}{metadataServiceQueryParams}",
+                buildValidationRules = $"{PublicBuildValidationRulesApi}{metadataServiceQueryParams}",
                 metadataSchema = new[]
                 {
                     OpsMetadataApi,
-                    $"{MetadataSchemaApi}{metadataServiceQueryParams}",
+                    $"{PublicMetadataSchemaApi}{metadataServiceQueryParams}",
                 },
                 allowlists = AllowlistsApi,
+                allowedHTML,
+                trustedDomains,
                 sandboxEnabledModuleList = SandboxEnabledModuleListApi,
                 xref = xrefMaps,
                 isReferenceRepository = docsets.Any(d => d.use_template),
             });
         }
 
+        private static Dictionary<string, HashSet<string>?> ConvertAllowedHtml(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedHtml, out var taxonomy))
+            {
+                var allowedHtml = taxonomy.NestedTaxonomy.dic
+                    .Select(item => (item.Key, Value: item.Value.Where(i => !"(empty)".Equals(i, StringComparison.OrdinalIgnoreCase)).ToArray()))
+                    .ToDictionary(
+                        i => i.Key,
+                        i => i.Value.Length > 0 ? new HashSet<string>(i.Value) : null);
+                return allowedHtml;
+            }
+
+            return new();
+        }
+
+        private static Dictionary<string, string[]> ConvertTrustedDomain(string json)
+        {
+            var taxonomies = JsonConvert.DeserializeObject<Taxonomies>(json) ?? new();
+            if (taxonomies.TryGetValue(AllowedDomain, out var taxonomy))
+            {
+                var cleanTrustedDomain = new Dictionary<string, string[]>();
+                foreach (var item in taxonomy.NestedTaxonomy.dic)
+                {
+                    // Remove '(empty)' entity passed from pool party
+                    var domainCol = (from domain in item.Value
+                                  where !domain.Equals("(empty)", StringComparison.OrdinalIgnoreCase)
+                                  select domain).ToArray();
+
+                    cleanTrustedDomain.Add(item.Key, domainCol);
+                }
+                return cleanTrustedDomain;
+            }
+
+            return new();
+        }
+
         private static Task<string> GetOpsMetadata()
         {
-            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/schemas/OpsMetadata.json"));
+            return File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "data/docs/metadata.json"));
         }
 
         private static (string repository, string branch) GetValidationServiceParameters(Uri url)
@@ -150,7 +207,6 @@ namespace Microsoft.Docs.Build
                 "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
                 {
                     DocsEnvironment.Prod => "docs.azure.cn",
-                    DocsEnvironment.PPE => "ppe.docs.azure.cn",
                     _ => "ppe.docs.azure.cn",
                 },
                 "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch

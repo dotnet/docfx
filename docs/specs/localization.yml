@@ -422,22 +422,22 @@ repos:
         a/docfx.yml:
     - files:
         a/docfx.yml:
-        a/docs/tokena.md: |
-          [!include[include deleted tokenb](tokenb.md)]
+        a/docs/token-a.md: |
+          [!include[include deleted token-b](token-b.md)]
           [!code-csharp[Main](program.cs)]
-        a/docs/tokenb.md: b
+        a/docs/token-b.md: b
         a/docs/program.cs:
   https://github.com/deletedtoken/a.zh-cn:
     - files:
         docsets.yml:
         a/docfx.yml:
         a/docs/a.md: |
-          [!include[include deleted tokena](tokena.md)]
+          [!include[include deleted token-a](token-a.md)]
 outputs:
   a/docs/a.json: |
     {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
   a/.dependencymap.json: |
-    {"dependencies": {"a/docs/tokena.md": undefined}}
+    {"dependencies": {"a/docs/token-a.md": undefined}}
 ---
 # fallback to deleted resource
 locale: zh-cn
@@ -515,20 +515,20 @@ repos:
     - files:
         docfx.yml:
         docs/a.md: |
-          [!include[include deleted tokena](tokena.md)]
+          [!include[include deleted token-a](token-a.md)]
           [link to deleted resource](resource.png)
     - files:
         docfx.yml:
-        docs/tokena.md: |
-          [!include[include deleted tokenb](tokenb.md)]
+        docs/token-a.md: |
+          [!include[include deleted token-b](token-b.md)]
           [!code-csharp[Main](program.cs)]
-        docs/tokenb.md: b
+        docs/token-b.md: b
         docs/program.cs:
         docs/resource.png:
 outputs:
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'resource.png'.","file":"docs/a.md","line":2,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokena.md'.","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-a.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -652,16 +652,16 @@ repos:
     - files:
         docfx.yml:
         docs/1.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
         docs/2.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
         docs/3.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/1.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/2.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/3.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/1.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/2.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/3.md","line":1,"column":1}
 ---
 # fallback to corresponding source branch 1
 locale: zh-cn
@@ -830,6 +830,39 @@ repos:
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
+---
+# Report git-clone-failed when fallback repo fails to clone (fallback remote either explicitly assigned or inferred)
+locale: zh-cn
+repos:
+  https://docs.com/org-loc/page-fallback.zh-cn#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{ "build_source_folder": "." }],
+            "dependent_repositories": [{
+                "path_to_root": "_repo.en-us",
+                "url": "https://docs.com/org-en-us/can-not-find",
+                "branch": "main"
+              }]
+          }
+        docfx.yml:
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"git-clone-failed","message":"*Failure to clone the repository `https://docs.com/org-en-us/can-not-find#main`.*","line":0,"end_line":0}
+---
+# Dont report git-clone-failed when no fallback repo inferred
+locale: zh-cn
+repos:
+  https://docs.com/org-loc/page-fallback.loc#main:
+    - files:
+        .openpublishing.publish.config.json: |
+          {
+            "docsets_to_publish": [{ "build_source_folder": "." }]
+          }
+        docfx.yml:
+        a.md:
+outputs:
+  a.json:
 ---
 # Remove duplicated fallback-error
 locale: zh-cn

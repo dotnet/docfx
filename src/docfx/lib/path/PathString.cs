@@ -31,7 +31,7 @@ namespace Microsoft.Docs.Build
 
         public PathString(string value) => _value = PathUtility.Normalize(value);
 
-        public PathString GetFileName() => new PathString { _value = Path.GetFileName(Value) };
+        public PathString GetFileName() => new() { _value = Path.GetFileName(Value) };
 
         public override string ToString() => Value;
 
@@ -43,7 +43,7 @@ namespace Microsoft.Docs.Build
 
         public int CompareTo(PathString other) => string.CompareOrdinal(Value, other.Value);
 
-        public static PathString DangerousCreate(string value) => new PathString(value);
+        public static PathString DangerousCreate(string value) => new(value);
 
         public static bool operator ==(PathString a, PathString b) => Equals(a, b);
 

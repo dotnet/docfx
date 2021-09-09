@@ -90,12 +90,12 @@ namespace Microsoft.Docs.Build
                 string? result = null;
                 if (git_branch_upstream(out var pUpstream, pBranch) == 0)
                 {
-                    git_buf buf;
+                    git_buf buffer;
                     var pUpstreamName = git_reference_name(pUpstream);
-                    if (git_branch_remote_name(&buf, pRepo, pUpstreamName) == 0)
+                    if (git_branch_remote_name(&buffer, pRepo, pUpstreamName) == 0)
                     {
-                        result = Marshal.PtrToStringUTF8(buf.ptr) ?? "origin";
-                        git_buf_free(&buf);
+                        result = Marshal.PtrToStringUTF8(buffer.ptr) ?? "origin";
+                        git_buf_free(&buffer);
                     }
                     git_reference_free(pUpstream);
                 }
@@ -152,12 +152,12 @@ namespace Microsoft.Docs.Build
             ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
         }
 
-        public static void Fetch(PreloadConfig config, string path, string url, string refspecs, string? options = null)
+        public static void Fetch(SecretConfig secrets, string path, string url, string refspecs, string? options = null)
         {
             // Allow test to proxy remotes to local folder
             url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
 
-            var (http, secret) = GetGitCommandLineConfig(url, config);
+            var (http, secret) = GetGitCommandLineConfig(url, secrets);
 
             ExecuteNonQuery(path, $"{http} -c core.longpaths=true fetch --progress {options} \"{url}\" {refspecs}", secret);
         }
@@ -245,14 +245,14 @@ namespace Microsoft.Docs.Build
             }
         }
 
-        private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, PreloadConfig config)
+        private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, SecretConfig secrets)
         {
-            if (config is null)
+            if (secrets is null)
             {
                 return default;
             }
 
-            var httpConfig = config.GetHttpConfig(url);
+            var httpConfig = secrets.GetHttpConfig(url);
             if (httpConfig is null)
             {
                 return default;

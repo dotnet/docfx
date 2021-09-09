@@ -527,7 +527,7 @@ namespace Microsoft.Docs.Build
 
             [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:Fields should be private", Justification = "Test")]
             [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Test")]
-            public Dictionary<string, Dictionary<string, object>> G = new Dictionary<string, Dictionary<string, object>>();
+            public Dictionary<string, Dictionary<string, object>> G = new();
         }
 
         internal class BasicClass

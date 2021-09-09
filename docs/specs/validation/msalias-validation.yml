@@ -29,7 +29,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -58,7 +59,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -92,7 +94,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -127,7 +130,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -156,7 +160,8 @@ os: windows
 inputs:
   docfx.yml: |
     metadataSchema: schema.json
-    microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
+    secrets:
+      microsoftGraphClientCertificate: {MICROSOFT_GRAPH_CLIENT_CERTIFICATE}
   schema.json: |
     { 
       "properties":
@@ -172,12 +177,12 @@ inputs:
     }
   a.md: |
     ---
-    ms.author: abc1234cba
+    ms.author: this-name-does-not-exist
     ---
 environments:
   - MICROSOFT_GRAPH_CLIENT_CERTIFICATE
 outputs:
   a.json:
   .errors.log: |
-    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'abc1234cba' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
+    {"message_severity":"warning","code":"ms-alias-invalid","message":"Invalid value for 'ms.author', 'this-name-does-not-exist' is not a valid Microsoft alias.","file":"a.md","line":2,"column":12}
 ---

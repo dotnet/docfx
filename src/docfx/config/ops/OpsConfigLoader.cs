@@ -125,7 +125,11 @@ namespace Microsoft.Docs.Build
             }
 
             result["sourceMap"] = sourceMaps;
-            result["runLearnValidation"] = NeedRunLearnValidation(docsetConfig);
+            result["isLearn"] = IsLearn(docsetConfig);
+            result["microsoftGraphTenantId"] = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+            result["microsoftGraphClientId"] = OpsAccessor.DocsEnvironment == DocsEnvironment.Prod
+                ? "323e04d2-a55f-4ee7-a3fb-a548b728be48"
+                : "b799e059-9dd8-4839-a39c-96f7531e55e2";
 
             return (opsConfig.XrefEndpoint, docsetConfig?.XrefQueryTags, result);
         }
@@ -170,7 +174,7 @@ namespace Microsoft.Docs.Build
                 : new JArray(maml2YamlMonikerPath);
         }
 
-        private static bool NeedRunLearnValidation(OpsDocsetConfig? docsetConfig)
+        private static bool IsLearn(OpsDocsetConfig? docsetConfig)
             => docsetConfig?.CustomizedTasks != null
             && docsetConfig.CustomizedTasks.TryGetValue("docset_postbuild", out var plugins)
             && plugins.Any(plugin => plugin.EndsWith("TripleCrownValidation.ps1", StringComparison.OrdinalIgnoreCase));

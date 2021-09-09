@@ -14,15 +14,15 @@ namespace Microsoft.Docs.Build
         public override string? ToString() => Value?.ToString();
 
         public SourceInfo<T> Or(SourceInfo<T> other)
-            => new SourceInfo<T>(Value != null ? Value : other.Value, other.Source ?? Source);
+            => new(Value != null ? Value : other.Value, other.Source ?? Source);
 
         public SourceInfo<T> Or(SourceInfo<T>? other)
-            => new SourceInfo<T>(Value != null ? Value : (other != null ? other.Value : default), other?.Source ?? Source);
+            => new(Value != null ? Value : (other != null ? other.Value : default), other?.Source ?? Source);
 
         public SourceInfo<T> Or(T other)
-            => new SourceInfo<T>(Value != null ? Value : other, Source);
+            => new(Value != null ? Value : other, Source);
 
-        public SourceInfo<T> With(T value) => new SourceInfo<T>(value, Source);
+        public SourceInfo<T> With(T value) => new(value, Source);
 
         public static implicit operator T(SourceInfo<T> value) => value.Value;
 

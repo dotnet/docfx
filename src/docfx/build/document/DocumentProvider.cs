@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -16,7 +17,7 @@ namespace Microsoft.Docs.Build
         private readonly Config _config;
         private readonly BuildScope _buildScope;
         private readonly BuildOptions _buildOptions;
-        private readonly TemplateEngine _templateEngine;
+        private readonly JsonSchemaProvider _jsonSchemaProvider;
         private readonly MonikerProvider _monikerProvider;
         private readonly MetadataProvider _metadataProvider;
 
@@ -25,6 +26,7 @@ namespace Microsoft.Docs.Build
         private readonly (PathString src, PathString dest)[] _routes;
 
         private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new();
+        private readonly ConcurrentHashSet<DocumentIdItem> _documentIds = new();
 
         // mime -> page type. TODO get from docs-ui schema
         private static readonly Dictionary<string, string> s_pageTypeMapping = new()
@@ -47,7 +49,7 @@ namespace Microsoft.Docs.Build
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
-            TemplateEngine templateEngine,
+            JsonSchemaProvider jsonSchemaProvider,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider)
         {
@@ -56,7 +58,7 @@ namespace Microsoft.Docs.Build
             _config = config;
             _buildOptions = buildOptions;
             _buildScope = buildScope;
-            _templateEngine = templateEngine;
+            _jsonSchemaProvider = jsonSchemaProvider;
             _monikerProvider = monikerProvider;
             _metadataProvider = metadataProvider;
 
@@ -134,19 +136,48 @@ namespace Microsoft.Docs.Build
             }
 
             // if source is redirection or migrated from markdown, change it to *.md
-            if (file.ContentType == ContentType.Redirection || TemplateEngine.IsMigratedFromMarkdown(file.Mime))
+            if (file.ContentType == ContentType.Redirection || JsonSchemaProvider.IsMigratedFromMarkdown(file.Mime))
             {
                 sourcePath = Path.ChangeExtension(sourcePath, ".md");
             }
 
             // remove file extension from site path
             // site path doesn't contain version info according to the output spec
-            var i = file.SitePath.LastIndexOf('.');
-            var sitePath = i >= 0 ? file.SitePath.Substring(0, i) : file.SitePath;
+            var sitePath = Path.ChangeExtension(file.SitePath, extension: null);
 
-            return (
-                HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString(),
-                HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString());
+            var documentId = HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString();
+            var documentVersionIndependentId = HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString();
+
+            _documentIds.TryAdd(new()
+            {
+                DepotName = depotName,
+                SourcePath = Path.ChangeExtension(sourcePath.ToLowerInvariant(), extension: null),
+                DocumentId = documentId,
+                DocumentVersionIndependentId = documentVersionIndependentId,
+            });
+
+            return (documentId, documentVersionIndependentId);
+        }
+
+        public void Save()
+        {
+            var documentIdsStatePath = AppData.DocumentIdsStatePath;
+
+            // Multi-docsets are build in parallel, each docset set its own DocumentProvider,
+            // so lock and read the most recent data.
+            using (InterProcessMutex.Create(documentIdsStatePath))
+            {
+                var existingDocumentIds = File.Exists(documentIdsStatePath)
+                    ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(documentIdsStatePath), new { document_ids = Array.Empty<DocumentIdItem>() })
+                    : null;
+
+                var documentIds = _documentIds.Union(existingDocumentIds?.document_ids ?? Array.Empty<DocumentIdItem>())
+                    .OrderBy(item => item.DepotName)
+                    .OrderBy(item => item.SourcePath);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(documentIdsStatePath)) ?? ".");
+                File.WriteAllText(documentIdsStatePath, JsonConvert.SerializeObject(new { document_ids = documentIds }));
+            }
         }
 
         private Document GetDocument(FilePath path)
@@ -173,10 +204,10 @@ namespace Microsoft.Docs.Build
         {
             var contentType = _buildScope.GetContentType(path);
             var mime = _input.GetMime(contentType, path);
-            var renderType = _templateEngine.GetRenderType(contentType, mime);
+            var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
             var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
             var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
-            var canonicalUrl = GetCanonicalUrl(siteUrl, sitePath, path.IsExperimental(), contentType, renderType);
+            var canonicalUrl = GetCanonicalUrl(siteUrl);
             var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
             return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
@@ -247,21 +278,9 @@ namespace Microsoft.Docs.Build
         /// In docs, canonical URL is later overwritten by template JINT code.
         /// TODO: need to handle the logic difference when template code is removed.
         /// </summary>
-        private string GetCanonicalUrl(string siteUrl, string sitePath, bool isExperimental, ContentType contentType, RenderType renderType)
+        private string GetCanonicalUrl(string siteUrl)
         {
-            if (isExperimental)
-            {
-                sitePath = ReplaceLast(sitePath, ".experimental", "");
-                siteUrl = PathToAbsoluteUrl(sitePath, contentType, _config.UrlType, renderType);
-            }
-
             return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
-
-            static string ReplaceLast(string source, string find, string replace)
-            {
-                var i = source.LastIndexOf(find);
-                return i >= 0 ? source.Remove(i, find.Length).Insert(i, replace) : source;
-            }
         }
 
         private PathString ApplyRoutes(PathString path)

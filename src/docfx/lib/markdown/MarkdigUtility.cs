@@ -236,16 +236,16 @@ namespace Microsoft.Docs.Build
                 {
                     HtmlBlock htmlBlock => HtmlUtility.IsVisible(htmlBlock.Lines.ToString()),
                     HtmlInline htmlInline => HtmlUtility.IsVisible(htmlInline.Tag),
-                    LinkReferenceDefinition _ => false,
-                    ThematicBreakBlock _ => false,
-                    YamlFrontMatterBlock _ => false,
+                    LinkReferenceDefinition => false,
+                    ThematicBreakBlock => false,
+                    YamlFrontMatterBlock => false,
                     HeadingBlock headingBlock when headingBlock.Inline is null || !headingBlock.Inline.Any() => false,
                     CodeBlock codeBlock when codeBlock.Lines.Count != 0 => true,
                     LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => false,
                     LinkInline linkInline when linkInline.IsImage => true,
                     TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
                     LiteralInline literal when literal.Content.IsEmptyOrWhitespace() => false,
-                    LeafInline _ => true,
+                    LeafInline => true,
                     _ => false,
                 };
                 return visible = nodeVisible || visible;
