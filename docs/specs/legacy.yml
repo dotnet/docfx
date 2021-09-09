@@ -75,9 +75,6 @@ outputs:
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
         <meta name=\"rawTitle\" content=\"\" />
         <meta name=\"schema\" content=\"Conceptual\" />
-        <meta name=\"search.ms_docsetname\" content=\"\" />
-        <meta name=\"search.ms_product\" content=\"\" />
-        <meta name=\"search.ms_sitename\" content=\"Docs\" />
         <meta name=\"site_name\" content=\"Docs\" />
         <meta name=\"updated_at\" content=\"2020-04-01 08:08 AM\" />
         <meta name=\"wordCount\" content=\"1\" />"
@@ -168,9 +165,6 @@ outputs:
         "gitcommit": "https://github.com/a/rawmetadata/blob/059da4c838d11026288349e031208d1e1c9aeeb5/c.md",
         "site_name": "Docs",
         "depot_name": ".",
-        "search.ms_docsetname": "",
-        "search.ms_product": "",
-        "search.ms_sitename": "Docs",
         "_path": "c.json",
         "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
       },
