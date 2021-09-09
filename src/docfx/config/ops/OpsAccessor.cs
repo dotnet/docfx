@@ -222,7 +222,15 @@ namespace Microsoft.Docs.Build
                 return value404;
             }
 
-            await EnsureSuccessStatusCode(response);
+      try
+      {
+            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+      }
+      catch (Exception ex)
+      {
+          ex.Data["RequestUrl"] = requestUrl;
+          throw;
+      }
             return await response.Content.ReadAsStringAsync();
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
