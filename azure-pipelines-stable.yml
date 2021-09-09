@@ -30,6 +30,8 @@ steps:
 
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
+  inputs:
+    versionSpec: 5.9.1
 
 - task: CmdLine@1
   displayName: 'npm install'
