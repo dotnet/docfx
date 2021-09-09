@@ -222,16 +222,15 @@ namespace Microsoft.Docs.Build
                 return value404;
             }
 
-      try
-      {
-            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
-      }
-      catch (Exception ex)
-      {
-          ex.Data["RequestUrl"] = requestUrl;
-          throw;
-      }
-            return await response.Content.ReadAsStringAsync();
+            try
+            {
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                ex.Data["RequestUrl"] = requestUrl;
+                throw;
+            }
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
             {
@@ -240,17 +239,6 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     requestUrl = request.RequestUri?.ToString();
                     return await _http.SendAsync(request);
-                }
-            }
-
-            async Task EnsureSuccessStatusCode(HttpResponseMessage response)
-            {
-                if (!response.IsSuccessStatusCode)
-                {
-                    var ex = new HttpRequestException(
-                        $"Request failed({response.StatusCode}): {await response.Content.ReadAsStringAsync()}", default, response.StatusCode);
-                    ex.Data.Add("request-url", requestUrl);
-                    throw ex;
                 }
             }
         }
