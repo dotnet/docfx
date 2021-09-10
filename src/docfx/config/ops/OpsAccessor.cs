@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -206,6 +207,7 @@ namespace Microsoft.Docs.Build
 
         private async Task<string> Fetch(Func<HttpRequestMessage> requestFactory, string? value404 = null, HttpMiddleware? middleware = null)
         {
+            string? requestUrl = null;
             using var response = await HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<OperationCanceledException>()
@@ -220,13 +222,22 @@ namespace Microsoft.Docs.Build
                 return value404;
             }
 
-            return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            try
+            {
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                ex.Data["RequestUrl"] = requestUrl;
+                throw;
+            }
 
             async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
             {
                 using (PerfScope.Start($"[{nameof(OpsAccessor)}] '{request.Method} {UrlUtility.SanitizeUrl(request.RequestUri?.ToString())}'"))
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
+                    requestUrl = request.RequestUri?.ToString();
                     return await _http.SendAsync(request);
                 }
             }
