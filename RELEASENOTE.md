@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.59)
+Version Notes (Current Version: v2.58.4)
 =======================================
 
-v2.59(Pre-release)
+v2.58.4
 -----------
+1. Fix unexpected NuGet package layout change by pinning to 5.9.1. (#7570)
 
 v2.58.3
 -----------
