@@ -328,8 +328,8 @@ namespace Microsoft.Docs.Build
         {
             return (environment ?? DocsEnvironment) switch
             {
-                DocsEnvironment.Prod => "https://taxonomyservice.azurefd.net",
-                _ => "https://taxonomyserviceppe.azurefd.net",
+                DocsEnvironment.Prod => "https://taxonomy.docs.microsoft.com",
+                _ => "https://taxonomy.ppe.docs.microsoft.com",
             };
         }
 
