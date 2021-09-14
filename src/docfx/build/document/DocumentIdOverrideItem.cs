@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 namespace Microsoft.Docs.Build
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal record DocumentIdItem
+    internal class DocumentIdOverrideItem
     {
         public string DepotName { get; init; } = "";
 

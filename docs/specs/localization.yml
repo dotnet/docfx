@@ -341,7 +341,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "3862ef10-61c4-6242-7188-36960566ecb6", "document_version_independent_id": "3862ef10-61c4-6242-7188-36960566ecb6",}
 ---
 # bilingual build 1
 locale: zh-cn

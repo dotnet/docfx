@@ -26,8 +26,6 @@ namespace Microsoft.Docs.Build
 
         public static string BuildHistoryStatePath => Path.Combine(StateRoot, "build-history.json");
 
-        public static string DocumentIdsStatePath => Path.Combine(StateRoot, "document-ids.json");
-
         public static string GetFileDownloadPath(string url)
         {
             return Path.Combine(DownloadsRoot, UrlUtility.UrlToShortName(url));

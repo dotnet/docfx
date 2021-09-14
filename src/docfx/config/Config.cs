@@ -179,6 +179,11 @@ namespace Microsoft.Docs.Build
         public Dictionary<PathString, DocumentIdConfig> DocumentId { get; } = new();
 
         /// <summary>
+        /// Gets the file that contains document ids override values.
+        /// </summary>
+        public SourceInfo<string> DocumentIdOverride { get; init; } = new("");
+
+        /// <summary>
         /// Gets allow custom error code, severity and message.
         /// </summary>
         public Dictionary<string, SourceInfo<CustomRule>> Rules { get; } = new();
@@ -362,6 +367,7 @@ namespace Microsoft.Docs.Build
                 yield return sourceMap;
             }
 
+            yield return DocumentIdOverride;
             yield return MonikerDefinition;
             yield return MarkdownValidationRules;
             yield return BuildValidationRules;
