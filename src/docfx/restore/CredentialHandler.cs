@@ -24,6 +24,7 @@ namespace Microsoft.Docs.Build
 
             var needRefresh = false;
             HttpConfig? httpConfigUsed = null;
+
             for (var i = 0; i < RetryCount; i++)
             {
                 using var request = requestFactory();

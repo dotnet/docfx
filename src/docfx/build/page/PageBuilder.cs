@@ -242,6 +242,7 @@ namespace Microsoft.Docs.Build
 
             systemMetadata.EnableLocSxs = _buildOptions.EnableSideBySide;
             systemMetadata.SiteName = _config.SiteName;
+            systemMetadata.DepotName = $"{_config.Product}.{_config.Name}";
 
             (systemMetadata.DocumentId, systemMetadata.DocumentVersionIndependentId)
                 = _documentProvider.GetDocumentId(_redirectionProvider.GetOriginalFile(file));
@@ -255,8 +256,6 @@ namespace Microsoft.Docs.Build
             systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
             systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-            systemMetadata.SearchProduct = _config.Product;
-            systemMetadata.SearchDocsetName = _config.Name;
             systemMetadata.SearchEngine = _config.SearchEngine;
 
             if (!_config.IsReferenceRepository && _config.OutputPdf)

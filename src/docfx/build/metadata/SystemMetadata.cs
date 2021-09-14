@@ -51,16 +51,7 @@ namespace Microsoft.Docs.Build
 
         public string? SiteName { get; set; }
 
-        public string DepotName => $"{SearchProduct}.{SearchDocsetName}";
-
-        [JsonProperty("search.ms_docsetname")]
-        public string? SearchDocsetName { get; set; }
-
-        [JsonProperty("search.ms_product")]
-        public string? SearchProduct { get; set; }
-
-        [JsonProperty("search.ms_sitename")]
-        public string? SearchSiteName => SiteName;
+        public string? DepotName { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public SearchEngineType SearchEngine { get; set; }

@@ -235,7 +235,7 @@ namespace Microsoft.Docs.Build
             }
             catch (Exception ex) when (!DocfxException.IsDocfxException(ex, out _))
             {
-                throw Errors.System.DownloadFailed(UrlUtility.SanitizeUrl(url)).ToException(ex);
+                throw Errors.System.DownloadFailed(UrlUtility.SanitizeUrl(ex.Data["RequestUrl"]?.ToString() ?? url)).ToException(ex);
             }
         }
 
