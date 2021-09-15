@@ -115,6 +115,26 @@ outputs:
   sccm/sccm/mdm/index.json: |
     { "document_id": "ef9b84bd-be67-f99d-6b01-58ea46745404", "document_version_independent_id": "ef9b84bd-be67-f99d-6b01-58ea46745404" }
 ---
+# generate document id from document id override file
+inputs:
+  docfx.yml: |
+    name: azure-documents
+    product: Azure
+    documentIdOverride: document-ids.json
+  document-ids.json: |
+    {
+      "document_ids": [{
+        "depot_name": "Azure.azure-documents",
+        "source_path": "a",
+        "document_id": "00000000-0000-0000-0000-00000000",
+        "document_version_independent_id": "11111111-1111-1111-1111-11111111",
+      }]
+    }
+  a.md:
+outputs:
+  a.json: |
+    { "document_id": "00000000-0000-0000-0000-00000000", "document_version_independent_id": "11111111-1111-1111-1111-11111111" }
+---
 # yaml&json toc metadata
 inputs:
   docfx.yml:
