@@ -37,6 +37,9 @@ namespace Microsoft.Docs.Build
         [JsonProperty("ms.subservice")]
         public SourceInfo<string?> MsSubservice { get; init; }
 
+        [JsonProperty("ms.topic")]
+        public SourceInfo<string?> MsTopic { get; init; }
+
         public SourceInfo<string> BreadcrumbPath { get; init; } = new SourceInfo<string>("");
 
         [JsonProperty("monikerRange")]

@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
                             metadata?.MsTechnology,
                             metadata?.MsService,
                             metadata?.MsSubservice,
+                            metadata?.MsTopic,
                             }.Any(value => !string.IsNullOrEmpty(value)))
                         {
                             error = error with
@@ -58,7 +59,8 @@ namespace Microsoft.Docs.Build
                                     metadata?.MsProd,
                                     metadata?.MsTechnology,
                                     metadata?.MsService,
-                                    metadata?.MsSubservice),
+                                    metadata?.MsSubservice,
+                                    metadata?.MsTopic),
                             };
                         }
                     }
