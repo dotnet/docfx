@@ -50,12 +50,13 @@ inputs:
     ---
     ms.author: xxx
     ms.prod: abc
+    ms.topic: reference
     ---
     [!include[]()]
     # Heading
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"include-not-found","ms.author":"xxx", "ms.prod":"abc", "message":"Invalid include link: ''.","file":"docs/a.md"}
+    {"message_severity":"error","code":"include-not-found","ms.author":"xxx", "ms.prod":"abc", "ms.topic":"reference", "message":"Invalid include link: ''.","file":"docs/a.md"}
 ---
 # Report error for invalid yaml header value type
 inputs:
