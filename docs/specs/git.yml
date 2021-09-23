@@ -647,7 +647,7 @@ repos:
         b.md: |
           Alice creates this.
 state:
-  history/build-history.json: |
+  build-history.json: |
     { "commits":[
           {"sha":"62f395b3259c14e5b081a2b327da21b84bd2464d","built_at":"2020-02-12T00:00:00Z"},
           {"sha":"42364b93484c710e471827b81bb375e1e1dd8eb7","built_at":"2020-02-11T00:00:00Z"},
