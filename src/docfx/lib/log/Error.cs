@@ -68,6 +68,7 @@ namespace Microsoft.Docs.Build
                 ms_technology = AdditionalErrorInfo?.MsTechnology,
                 ms_service = AdditionalErrorInfo?.MsService,
                 ms_subservice = AdditionalErrorInfo?.MsSubservice,
+                ms_topic = AdditionalErrorInfo?.MsTopic,
                 document_url = DocumentUrl,
                 date_time = DateTime.UtcNow, // Leave data_time as the last field to make regression test stable
             }).Replace("\"ms_", "\"ms.");

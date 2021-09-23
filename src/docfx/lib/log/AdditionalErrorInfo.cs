@@ -22,13 +22,17 @@ namespace Microsoft.Docs.Build
         [JsonProperty("ms.subservice")]
         public string? MsSubservice { get; init; }
 
-        public AdditionalErrorInfo(string? msAuthor, string? msProd, string? msTechnology, string? msService, string? msSubservice)
+        [JsonProperty("ms.topic")]
+        public string? MsTopic { get; init; }
+
+        public AdditionalErrorInfo(string? msAuthor, string? msProd, string? msTechnology, string? msService, string? msSubservice, string? msTopic)
         {
             MsAuthor = msAuthor;
             MsProd = msProd;
             MsTechnology = msTechnology;
             MsService = msService;
             MsSubservice = msSubservice;
+            MsTopic = msTopic;
         }
     }
 }
