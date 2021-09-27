@@ -259,6 +259,7 @@ namespace Microsoft.Docs.Build
                         "--output", randomOutputPath,
                         "--log", Path.Combine(randomOutputPath, ".errors.log"),
                         "--continue",
+                        "--locale", "en-us",
                         "--template", GetTemplatePath(package, s_repos.Value),
                         "--output-type", "pageJson",
                         spec.NoRestore ? "--no-restore" : null,
