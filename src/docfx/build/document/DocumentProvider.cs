@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace Microsoft.Docs.Build
 {
@@ -23,10 +23,10 @@ namespace Microsoft.Docs.Build
 
         private readonly string _depotName;
         private readonly (PathString, DocumentIdConfig)[] _documentIdRules;
+        private readonly ReadOnlyDictionary<(string depotName, string sourcePath), (string, string)> _documentIdOverrides;
         private readonly (PathString src, PathString dest)[] _routes;
 
         private readonly ConcurrentDictionary<FilePath, Watch<Document>> _documents = new();
-        private readonly ConcurrentHashSet<DocumentIdItem> _documentIds = new();
 
         // mime -> page type. TODO get from docs-ui schema
         private static readonly Dictionary<string, string> s_pageTypeMapping = new()
@@ -49,6 +49,7 @@ namespace Microsoft.Docs.Build
             Config config,
             BuildOptions buildOptions,
             BuildScope buildScope,
+            FileResolver fileResolver,
             JsonSchemaProvider jsonSchemaProvider,
             MonikerProvider monikerProvider,
             MetadataProvider metadataProvider)
@@ -65,7 +66,26 @@ namespace Microsoft.Docs.Build
             var documentIdConfig = config.GlobalMetadata.DocumentIdDepotMapping ?? config.DocumentId;
             _depotName = string.IsNullOrEmpty(config.Product) ? config.Name : $"{config.Product}.{config.Name}";
             _documentIdRules = documentIdConfig.Select(item => (item.Key, item.Value)).OrderByDescending(item => item.Key).ToArray();
+            _documentIdOverrides = new(LoadDocumentIdOverrides());
             _routes = config.Routes.Reverse().Select(item => (item.Key, item.Value)).ToArray();
+
+            Dictionary<(string, string), (string, string)> LoadDocumentIdOverrides()
+            {
+                var result = new Dictionary<(string, string), (string, string)>();
+                var documentIdOverride = new DocumentIdOverride();
+                if (!string.IsNullOrEmpty(_config.DocumentIdOverride))
+                {
+                    var content = fileResolver.ReadString(_config.DocumentIdOverride);
+                    documentIdOverride = JsonUtility.DeserializeData<DocumentIdOverride>(content, new FilePath(_config.DocumentIdOverride));
+                }
+
+                foreach (var item in documentIdOverride.DocumentIds)
+                {
+                    result.TryAdd((item.DepotName, item.SourcePath.ToLowerInvariant()), (item.DocumentId, item.DocumentVersionIndependentId));
+                }
+
+                return result;
+            }
         }
 
         public SourceInfo<string?> GetMime(FilePath path) => GetDocument(path).Mime;
@@ -135,49 +155,22 @@ namespace Microsoft.Docs.Build
                 }
             }
 
-            // if source is redirection or migrated from markdown, change it to *.md
-            if (file.ContentType == ContentType.Redirection || JsonSchemaProvider.IsMigratedFromMarkdown(file.Mime))
+            // Remove file extension so .md and .yml files produces the same document id
+            sourcePath = Path.ChangeExtension(sourcePath.ToLowerInvariant(), extension: null);
+
+            if (_documentIdOverrides.TryGetValue((depotName, sourcePath), out var result))
             {
-                sourcePath = Path.ChangeExtension(sourcePath, ".md");
+                return result;
             }
 
             // remove file extension from site path
             // site path doesn't contain version info according to the output spec
-            var sitePath = Path.ChangeExtension(file.SitePath, extension: null);
+            var sitePath = Path.ChangeExtension(file.SitePath.ToLowerInvariant(), extension: null);
 
-            var documentId = HashUtility.GetMd5Guid($"{depotName}|{sourcePath.ToLowerInvariant()}").ToString();
-            var documentVersionIndependentId = HashUtility.GetMd5Guid($"{depotName}|{sitePath.ToLowerInvariant()}").ToString();
-
-            _documentIds.TryAdd(new()
-            {
-                DepotName = depotName,
-                SourcePath = Path.ChangeExtension(sourcePath.ToLowerInvariant(), extension: null),
-                DocumentId = documentId,
-                DocumentVersionIndependentId = documentVersionIndependentId,
-            });
+            var documentId = new Guid(HashUtility.GetSha256HashShort($"{depotName}|{sourcePath}")).ToString();
+            var documentVersionIndependentId = new Guid(HashUtility.GetSha256HashShort($"{depotName}|{sitePath}")).ToString();
 
             return (documentId, documentVersionIndependentId);
-        }
-
-        public void Save()
-        {
-            var documentIdsStatePath = AppData.DocumentIdsStatePath;
-
-            // Multi-docsets are build in parallel, each docset set its own DocumentProvider,
-            // so lock and read the most recent data.
-            using (InterProcessMutex.Create(documentIdsStatePath))
-            {
-                var existingDocumentIds = File.Exists(documentIdsStatePath)
-                    ? JsonConvert.DeserializeAnonymousType(File.ReadAllText(documentIdsStatePath), new { document_ids = Array.Empty<DocumentIdItem>() })
-                    : null;
-
-                var documentIds = _documentIds.Union(existingDocumentIds?.document_ids ?? Array.Empty<DocumentIdItem>())
-                    .OrderBy(item => item.DepotName)
-                    .OrderBy(item => item.SourcePath);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(documentIdsStatePath)) ?? ".");
-                File.WriteAllText(documentIdsStatePath, JsonConvert.SerializeObject(new { document_ids = documentIds }));
-            }
         }
 
         private Document GetDocument(FilePath path)
