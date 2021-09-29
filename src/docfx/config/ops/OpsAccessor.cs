@@ -188,7 +188,7 @@ namespace Microsoft.Docs.Build
                 if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
                     Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
                 {
-                    var documentUrl = response.Headers.TryGetValues("X-Metadata-DocumentURL", out var url) ? string.Join(",", url) : "";
+                    var documentUrl = response.Headers.TryGetValues("X-Ruleset-DocumentURL", out var url) ? string.Join(",", url) : "";
                     _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
                 }
 
