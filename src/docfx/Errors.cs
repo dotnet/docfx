@@ -80,8 +80,8 @@ namespace Microsoft.Docs.Build
             public static Error MicrosoftGraphApiFailed(string exMessage)
                 => new(ErrorLevel.Warning, "microsoft-graph-api-failed", $"Call to Microsoft Graph API failed: {exMessage} Try closing and reopening the PR. If you get this Error again, file an issue.");
 
-            public static Error MetadataValidationRuleset(string ruleset)
-                => new(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}.");
+            public static Error MetadataValidationRuleset(string ruleset, string url)
+                => new(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}. Document url: {url}");
         }
 
         public static class Logging
