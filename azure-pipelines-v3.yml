@@ -219,6 +219,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch live
     roslyn-api-docs:
       params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 120
+    EntityFramework.ApiDocs:
+      params: https://github.com/dotnet/EntityFramework.ApiDocs --timeout 120
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     dynamics365-docs-odata-apis:
