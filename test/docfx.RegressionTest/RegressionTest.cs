@@ -59,6 +59,7 @@ namespace Microsoft.Docs.Build
 
                 var workingFolder = Path.Combine(s_testDataRoot, $"regression-test.{s_testName}");
 
+                EnsureTestData(opts, workingFolder);
                 if (opts.WarmUp)
                 {
                     var (_, outputPath, repositoryPath, docfxConfig) = Prepare(opts, workingFolder);
