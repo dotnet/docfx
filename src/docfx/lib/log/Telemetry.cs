@@ -210,9 +210,7 @@ namespace Microsoft.Docs.Build
 
         public static void Flush()
         {
-            // Default timeout of TelemetryClient.Flush is 100 seconds,
-            // but we only want to wait for 2 seconds at most.
-            Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
+            s_telemetryClient.Flush();
         }
 
         private static void TrackEvent(string name, IReadOnlyDictionary<string, string> properties)
