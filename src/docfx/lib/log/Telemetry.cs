@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
-        private static readonly MetricConfiguration s_metricConfiguration = new(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+        private static readonly MetricConfiguration s_metricConfiguration = new(int.MaxValue, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
         private static readonly Metric s_operationStartMetric =
             s_telemetryClient.GetMetric(
