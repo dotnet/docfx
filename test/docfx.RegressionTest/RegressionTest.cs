@@ -215,6 +215,7 @@ namespace Microsoft.Docs.Build
                     Exec("git", $"checkout -B {s_testName} origin/template", cwd: workingFolder);
                     Exec("git", $"clean -xdff", cwd: workingFolder);
                     Exec("git", $"{s_gitCmdAuth} submodule add -f --branch {opts.Branch} {opts.Repository} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+                    return;
                 }
                 throw;
             }
