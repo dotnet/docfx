@@ -128,13 +128,13 @@ namespace Microsoft.Docs.Build
             var stopwatch = Stopwatch.StartNew();
             TrackValueWithEnsurance(
                     s_operationStartMetric.Identifier.MetricId,
-                    () => s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId));
+                    s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId));
             return new DelegatingCompletable(() =>
             {
                 Log.Important($"{name} done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
                 TrackValueWithEnsurance(
                     s_operationEndMetric.Identifier.MetricId,
-                    () => s_operationEndMetric.TrackValue(
+                    s_operationEndMetric.TrackValue(
                     stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId));
             });
         }
@@ -149,7 +149,7 @@ namespace Microsoft.Docs.Build
             {
                 TrackValueWithEnsurance(
                     s_errorCountMetric.Identifier.MetricId,
-                    () => s_errorCountMetric.TrackValue(
+                    s_errorCountMetric.TrackValue(
                     1, code, level.ToString(), CoalesceEmpty(name), additionalErrorInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
@@ -160,7 +160,7 @@ namespace Microsoft.Docs.Build
             {
                 TrackValueWithEnsurance(
                     s_fileLogCountMetric.Identifier.MetricId,
-                    () => s_fileLogCountMetric.TrackValue(
+                    s_fileLogCountMetric.TrackValue(
                     1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
@@ -171,7 +171,7 @@ namespace Microsoft.Docs.Build
             {
                 TrackValueWithEnsurance(
                     s_githubRateLimitMetric.Identifier.MetricId,
-                    () => s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
+                    s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
 
@@ -183,7 +183,7 @@ namespace Microsoft.Docs.Build
 
                 TrackValueWithEnsurance(
                     s_buildFileTypeCountMetric.Identifier.MetricId,
-                    () => s_buildFileTypeCountMetric.TrackValue(
+                    s_buildFileTypeCountMetric.TrackValue(
                         1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
@@ -200,7 +200,7 @@ namespace Microsoft.Docs.Build
                 {
                     TrackValueWithEnsurance(
                         s_markdownElementCountMetric.Identifier.MetricId,
-                        () => s_markdownElementCountMetric.TrackValue(
+                        s_markdownElementCountMetric.TrackValue(
                             value,
                             CoalesceEmpty(elementType),
                             fileExtension,
@@ -226,9 +226,9 @@ namespace Microsoft.Docs.Build
             s_telemetryClient.Flush();
         }
 
-        private static void TrackValueWithEnsurance(string metricsName, Func<bool> trackValueFunc)
+        private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
         {
-            if (!trackValueFunc.Invoke())
+            if (!trackValueResult)
             {
                 Log.Write($"Track value for {metricsName} fails.");
             }
