@@ -150,7 +150,17 @@ namespace Microsoft.Docs.Build
                 TrackValueWithEnsurance(
                     s_errorCountMetric.Identifier.MetricId,
                     s_errorCountMetric.TrackValue(
-                    1, code, level.ToString(), CoalesceEmpty(name), additionalErrorInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
+                        1,
+                        code,
+                        level.ToString(),
+                        CoalesceEmpty(name),
+                        additionalErrorInfoString,
+                        s_os,
+                        s_version,
+                        s_repo,
+                        s_branch,
+                        s_correlationId,
+                        s_sessionId));
             }
         }
 
