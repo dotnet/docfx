@@ -12,9 +12,9 @@ The architectural difference between Microsoft Docs and a community release requ
 
 - **Static Site**: Microsoft Docs is not a pure static website, while most of the core contents are served statically, a substantial portion of site features are either dedicated micro-services or rendered dynamically. Features like site search, versioning needs to be built separately for the community release.
 
-- **API Reference**: Microsoft Docs uses a separate set of tools to ingest API references for a variety of programming languages in addition to C#. While it is different from the `metadata` command in docfx v2, it presents an opportunity for us to support more programming languages in docfx v3 and converge into one API reference pipeline. These ingestion tools today requires deep knowledge and complex configuration to work with. Work is needed to consolidate and simply the pipeline setup for the community release.
+- **API Reference**: Microsoft Docs uses a separate set of tools to ingest API references for a variety of programming languages in addition to C#. While it is different from the `metadata` command in docfx v2, it presents an opportunity for us to support more programming languages in docfx v3 and converge into one API reference pipeline. These ingestion tools today requires deep knowledge and complex configuration to work with. Work is needed to consolidate and simplify the pipeline setup for the community release.
 
-- **PDF**: Microsoft Docs supports PDF files. The tooling for PDF today consumes docfx v3 build output but is not directly wired to docfx. Work is needed to consolidate and simply the pipeline setup for the community release.
+- **PDF**: Microsoft Docs supports PDF files. The tooling for PDF today consumes docfx v3 build output but is not directly wired to docfx. Work is needed to consolidate and simplify the pipeline setup for the community release.
 
 - **Site Template**: Microsoft Docs uses a monolith site template suited for its dynamic rendering architecture, which may or may not be reusable for the community release. There is a basic working [site template for docfx v3](https://github.com/docascode/template) migrated from the docfx v2. Work is needed to improve this template for the community release.
 

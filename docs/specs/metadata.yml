@@ -83,9 +83,8 @@ outputs:
     {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/a.md","line":3,"column":3}
 ---
 # generate normal document id and version id
-# backward compatible to docs.com
-# document id = md5("Win.sccm|mdt/release-notes.md")
-# version independent id = md5("Win.sccm|mdt/release-notes")
+# document id = sha2("Win.sccm|mdt/release-notes")
+# version independent id = sha2("Win.sccm|mdt/release-notes")
 inputs:
   docsets.yml:
   sccm/docfx.yml: |
@@ -96,12 +95,11 @@ inputs:
   sccm/mdt/release-notes.md:
 outputs:
   sccm/sccm/mdt/release-notes.json: |
-    { "document_id": "0b1c8a5d-b639-d555-0850-b98a9010023c", "document_version_independent_id": "b20fdb1c-8d40-c3b2-2265-779a3f2dfe98", "depot_name": "Win.sccm" }
+    { "document_id": "a4ceeac3-3752-5918-388a-59695cd53c62", "document_version_independent_id": "a4ceeac3-3752-5918-388a-59695cd53c62", "depot_name": "Win.sccm" }
 ---
 # generate index document id and version id
-# backward compatible to docs.com
-# document id = md5("Win.sccm|index.md") || md5("Win.sccm|mdm/index.md")
-# version independent id = md5("Win.sccm|index") || md5("Win.sccm|mdm/index")
+# document id = sha2("Win.sccm|index") || sha2("Win.sccm|mdm/index")
+# version independent id = sha2("Win.sccm|index") || sha2("Win.sccm|mdm/index")
 inputs:
   docsets.yml:
   sccm/docfx.yml: |
@@ -114,9 +112,29 @@ inputs:
   sccm/index.md:
 outputs:
   sccm/sccm/index.json: |
-    { "document_id": "29602e3e-439e-865c-f1c9-2eb706f97b31", "document_version_independent_id": "34196fc5-28d6-b496-a21f-8661876802c7" }
+    { "document_id": "f91ad68a-d59c-e1b0-12d1-cc0e93260c8d", "document_version_independent_id": "f91ad68a-d59c-e1b0-12d1-cc0e93260c8d" }
   sccm/sccm/mdm/index.json: |
-    { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "document_id": "ef9b84bd-be67-f99d-6b01-58ea46745404", "document_version_independent_id": "ef9b84bd-be67-f99d-6b01-58ea46745404" }
+---
+# generate document id from document id override file
+inputs:
+  docfx.yml: |
+    name: azure-documents
+    product: Azure
+    documentIdOverride: document-ids.json
+  document-ids.json: |
+    {
+      "document_ids": [{
+        "depot_name": "Azure.azure-documents",
+        "source_path": "a",
+        "document_id": "00000000-0000-0000-0000-00000000",
+        "document_version_independent_id": "11111111-1111-1111-1111-11111111",
+      }]
+    }
+  a.md:
+outputs:
+  a.json: |
+    { "document_id": "00000000-0000-0000-0000-00000000", "document_version_independent_id": "11111111-1111-1111-1111-11111111" }
 ---
 # yaml&json toc metadata
 inputs:
@@ -337,7 +355,7 @@ inputs:
     ---
 outputs:
   docs/a.json: |
-    { "wordCount": 0, "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da" }
+    { "wordCount": 0, "document_id": "3862ef10-61c4-6242-7188-36960566ecb6" }
   .errors.log: |
     {"message_severity":"warning","code":"attribute-reserved","message":"Attribute wordCount is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
     {"message_severity":"warning","code":"attribute-reserved","message":"Attribute document_id is reserved for use by Docs.","file":"docs/a.md","line":3,"column":1}
