@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.59)
+Version Notes (Current Version: v2.58.5)
 =======================================
 
-v2.59(Pre-release)
+v2.58.5
 -----------
+1. Fix Preserve url query string when using tabs (#7617)
 
 v2.58.4
 -----------
