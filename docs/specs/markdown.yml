@@ -830,3 +830,59 @@ outputs:
     }
   block.json:
 ---
+# no-loc global metadata
+inputs:
+  docfx.json: |
+    {
+      "build": { "globalMetadata": { "no-loc": ["method", "Azure"] } }
+    }
+  a.md: |
+    Check :::no-loc text="Find"::: for more details.
+    This method can be ran on Windows, and you can also used it in Azure SDK.
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>Check <span class=\"no-loc\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
+      "no-loc": ["method", "Azure"]
+    }
+---
+# no-loc fileMetadata
+inputs:
+  docfx.json: |
+    {
+      "build": {
+        "globalMetadata": { "no-loc": ["method", "Azure"] },
+        "fileMetadata": {"no-loc": {"**/*.md": ["Windows"]}}
+      }
+    }
+  a.md: |
+    Check :::no-loc text="Find"::: for more details.
+    This method can be ran on Windows, and you can also used it in Azure SDK.
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>Check <span class=\"no-loc\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
+      "no-loc": ["Windows"]
+    }
+---
+# no-loc yaml header
+inputs:
+  docfx.json: |
+    {
+      "build": {
+        "globalMetadata": { "no-loc": ["method", "Azure"] },
+        "fileMetadata": {"no-loc": {"**/*.md": ["Windows"]}}
+      }
+    }
+  a.md: |
+    ---
+    no-loc: ["method", "SDK"]
+    ---
+    Check :::no-loc text="Find"::: for more details.
+    This method can be ran on Windows, and you can also used it in Azure SDK.
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>Check <span class=\"no-loc\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
+      "no-loc": ["method", "SDK"]
+    }

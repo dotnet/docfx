@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Xunit;
@@ -12,17 +12,17 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
         public void NolocTest_General()
         {
             // Normal syntax
-            TestUtility.VerifyMarkup("使用 :::no-loc text=\"Find\"::: 方法.", "<p>使用 Find 方法.</p>");
+            TestUtility.VerifyMarkup("使用 :::no-loc text=\"Find\"::: 方法.", "<p>使用 <span class=\"no-loc\">Find</span> 方法.</p>");
 
             // Escape syntax
             TestUtility.VerifyMarkup(
                 "使用 :::no-loc text=\"Find a \\\"Quotation\\\"\"::: 方法.",
-                "<p>使用 Find a \"Quotation\" 方法.</p>\n");
+                "<p>使用 <span class=\"no-loc\">Find a \"Quotation\"</span> 方法.</p>\n");
 
             // Markdown in noloc
             TestUtility.VerifyMarkup(
                 @":::no-loc text=""*Hello*"":::",
-                @"<p>*Hello*</p>");
+                @"<p><span class=""no-loc"">*Hello*</span></p>");
         }
 
         [Fact]
