@@ -6,7 +6,7 @@ using Markdig.Renderers.Html;
 
 namespace Microsoft.Docs.MarkdigExtensions
 {
-    public class NolocRender : HtmlObjectRenderer<NolocInline>
+    public class NolocRenderer : HtmlObjectRenderer<NolocInline>
     {
         protected override void Write(HtmlRenderer renderer, NolocInline obj)
         {
