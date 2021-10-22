@@ -12,17 +12,19 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
         public void NolocTest_General()
         {
             // Normal syntax
-            TestUtility.VerifyMarkup("使用 :::no-loc text=\"Find\"::: 方法.", "<p>使用 <span class=\"no-loc\">Find</span> 方法.</p>");
+            TestUtility.VerifyMarkup(
+                "使用 :::no-loc text=\"Find\"::: 方法.",
+                "<p>使用 <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">Find</span> 方法.</p>");
 
             // Escape syntax
             TestUtility.VerifyMarkup(
                 "使用 :::no-loc text=\"Find a \\\"Quotation\\\"\"::: 方法.",
-                "<p>使用 <span class=\"no-loc\">Find a \"Quotation\"</span> 方法.</p>\n");
+                "<p>使用 <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">Find a \"Quotation\"</span> 方法.</p>\n");
 
             // Markdown in noloc
             TestUtility.VerifyMarkup(
                 @":::no-loc text=""*Hello*"":::",
-                @"<p><span class=""no-loc"">*Hello*</span></p>");
+                @"<p><span class=""no-loc"" dir=""ltr"" lang=""en-us"">*Hello*</span></p>");
         }
 
         [Fact]

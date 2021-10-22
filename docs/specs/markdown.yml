@@ -848,6 +848,6 @@ inputs:
 outputs:
   a.json: |
     {
-      "conceptual": "<p>Check <span class=\"no-loc\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
+      "conceptual": "<p>Check <span class=\"no-loc\"  dir=\"ltr\" lang=\"en-us\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
       "no-loc": ["method", "SDK"]
     }

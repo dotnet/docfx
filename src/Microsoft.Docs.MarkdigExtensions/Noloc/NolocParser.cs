@@ -38,7 +38,7 @@ namespace Microsoft.Docs.MarkdigExtensions
 
             processor.Inline = new NolocInline
             {
-                Text = $"<span class=\"no-loc\">{text}</span>",
+                Text = $"<span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">{text}</span>",
             };
 
             return true;
