@@ -4,6 +4,10 @@ Version Notes (Current Version: v2.59)
 v2.59(Pre-release)
 -----------
 
+v2.58.5
+-----------
+1. Fix Preserve url query string when using tabs (#7617)
+
 v2.58.4
 -----------
 1. Fix unexpected NuGet package layout change by pinning to 5.9.1. (#7570)
