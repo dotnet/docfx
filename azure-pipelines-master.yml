@@ -23,11 +23,6 @@ steps:
     packageType: sdk
     version: '5.0.100'
 
-- task: NodeTool@0
-  displayName: 'Use Node 8.x'
-  inputs:
-    versionSpec: 8.x
-
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
   inputs:
