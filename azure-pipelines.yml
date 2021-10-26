@@ -24,8 +24,12 @@ steps:
   inputs:
     versionSpec: 5.9.1
 
-- pwsh: '.\tools\Deployment\deploy.ps1'
+- task: PowerShell@2
   displayName: 'dev build'
+  inputs:
+    pwsh: true
+    failOnStderr: true
+    filePath: 'tools\Deployment\deploy.ps1'
 
 - task: PublishBuildArtifacts@1
   condition: always()
