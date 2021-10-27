@@ -20,10 +20,12 @@ $gitCommand,$chocoCommand | Foreach-Object {
 }
 $nugetCommand = GetNuGetCommandWithValidation $(GetOperatingSystemName) $true
 
+Write-Host $($targets -join ",")
 # Run release tasks
 try {
     switch ($targets) {
         "build" {
+            Write-Host "Start build"
             # Remove artifact folder and target folder if exist
             RemovePath $docfx.targetFolder,$docfx.artifactsFolder
             # Run build.ps1
@@ -38,7 +40,7 @@ try {
             & $docfx.exe "$($docfx.docfxSeedHome)\docfx.json"
             & $docfx.exe $docfx.docfxJson
             # Update github pages for main build if there is any change
-            if ($main) {
+            if ($main -and $false) {
                 RemovePath "$($docfx.siteFolder)\.git"
                 & $gitCommand clone $docfx.httpsRepoUrl -b gh-pages docfxsite -q
                 Copy-item "docfxsite\.git" -Destination $docfx.siteFolder -Recurse -Force
@@ -51,7 +53,7 @@ try {
                     & $gitCommand remote set-url origin $repoUrlWithToken
                     & $gitCommand add .
                     & $gitCommand commit -m $git.message
-                    & $gitCommand push origin gh-pages
+                    # & $gitCommand push origin gh-pages
                 } else {
                     Write-Host "Skipped updating gh-pages due to no local change." -ForegroundColor Yellow
                 }
@@ -59,10 +61,12 @@ try {
             }
         }
         "pack" {
+            Write-Host "Start pack"
             $packScriptPath = (Resolve-Path "$homeDir\pack.ps1").Path
             & $packScriptPath
         }
         "release" {
+            Write-Host "Start release"
             if ($main) {
                 if (IsReleaseNoteVersionChanged $gitCommand $docfx.releaseNotePath) 
                 {
@@ -83,4 +87,3 @@ try {
 } catch {   
     ProcessLastExitCode 1 "Process failed: $_"
 }
-ProcessLastExitCode 0 
