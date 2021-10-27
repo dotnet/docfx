@@ -51,7 +51,7 @@ try {
                     & $gitCommand remote set-url origin $repoUrlWithToken
                     & $gitCommand add .
                     & $gitCommand commit -m $git.message
-                    # & $gitCommand push origin gh-pages
+                    & $gitCommand push origin gh-pages
                 } else {
                     Write-Host "Skipped updating gh-pages due to no local change." -ForegroundColor Yellow
                 }
