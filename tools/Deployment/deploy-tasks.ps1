@@ -57,7 +57,7 @@ function PublishToNuget {
     param($nugetCommand, $sourceUrl, $artifactsFolder, $apiKey = "anything")
     Get-ChildItem "$artifactsFolder/*" -Recurse -Exclude "*.symbols.nupkg" | Foreach-Object -Parallel {
         & $using:nugetCommand push $_ $using:apiKey -Source $using:sourceUrl -SkipDuplicate
-    } -ThrottleLimit 45
+    }
 }
 
 function PublishToAzureDevOps {
@@ -68,14 +68,14 @@ function PublishToAzureDevOps {
 
 function UpdateChocoConfig {
     param($chocoScriptPath, $chocoNuspecPath, $version, $hash)
-    $chocoScript = Get-Content $chocoScriptPath
+    $chocoScript = Get-Content $chocoScriptPath -Encoding UTF8 -Raw
     $chocoScript = [Regex]::Replace($chocoScript, 'v[\d\.]+', "v$version")
-    $chocoScript = [Regex]::Replace($chocoScript, '(\$hash\s*=\s*[''"])([\d\w]+)([''"])', "$1$version$2")
-    $chocoScript | Set-Content $chocoScriptPath -Force
+    $chocoScript = [Regex]::Replace($chocoScript, '(\$hash\s*=\s*[''"])([\d\w]+)([''"])', "`$hash       = '$hash'")
+    $chocoScript | Set-Content $chocoScriptPath -Force -Encoding UTF8
     
-    $chocoNuspec = Get-Content $chocoNuspecPath
-    $chocoNuspec = [Regex]::Replace($chocoNuspec, '(<version>)[\d\.]+(<\/version>)', "$1$version$2")
-    $chocoNuspec | Set-Content $chocoNuspecPath -Force
+    $chocoNuspec = Get-Content $chocoNuspecPath -Encoding UTF8 -Raw
+    $chocoNuspec = [Regex]::Replace($chocoNuspec, '(<version>)[\d\.]+(<\/version>)', "<version>$version</version>")
+    $chocoNuspec | Set-Content $chocoNuspecPath -Force -Encoding UTF8
 }
 
 function PublishToChocolatey {
@@ -83,12 +83,12 @@ function PublishToChocolatey {
     $version = GetVersionFromReleaseNote $releaseNotePath
     $nupkgName = "docfx.$version.nupkg"
     $hash = ($assetZipPath | Get-FileHash -Algorithm SHA256).Hash.ToLower()
-    UpdateChocoConfig $chocoScriptPath $chocoNuspecPath $version $hash
+    UpdateChocoConfig $chocoScript $chocoNuspecPath $version $hash
 
     Push-Location $chocoHomeDir
-    &chocoCommand pack
-    &chocoCommand apiKey -k $token -source https://push.chocolatey.org/ $homeDir
-    &chocoCommand push $nupkgName
+    & $chocoCommand pack
+    & $chocoCommand apiKey -k $token -source https://push.chocolatey.org/
+    & $chocoCommand push $nupkgName
     Pop-Location
 }
 
@@ -97,8 +97,8 @@ function GetDescriptionFromReleaseNote {
     if (Test-Path -Path $releaseNotePath) {
         $regex = "\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n([\s\S]+?)(?:\r?\n\s*v[\d\.]+\s*\r?\n-{3,}|$)"
         $regexOptions = [Text.RegularExpressions.RegexOptions]::IgnoreCase
-        $match = [Regex]::Match($(Get-Content $releaseNotePath), $regex, $regexOptions)
-        if ($match.Success -and ($match.Length -eq 2)) {
+        $match = [Regex]::Match($(Get-Content $releaseNotePath -Raw), $regex, $regexOptions)
+        if ($match.Success -and ($match.Groups.Count -eq 2)) {
             return $match.Groups[1].Value.Trim();
         } else {
             throw "Can't parse description from `$releaseNotePath '$releaseNotePath' in current version part."
@@ -126,7 +126,7 @@ function GetUserAndRepoFromGitSshUrl {
     param($url)
     $regex = "^git@(.+):(.+?)(\.git)?$"
     $match = [regex]::Match($url, $regex)
-    if ($match.Success -and ($match.Length -ne 4)) {
+    if ($match.Success -and ($match.Groups.Count -eq 4)) {
         return $match.Groups[2].Value.Trim();
     } else {
         throw "Can't parse user and repo from '$url'"
@@ -149,7 +149,7 @@ function UpdateGithubRelease {
         Method = "PATCH"
         Uri = "$gitApiBaseUrl/repos/$($userAndRepo)/releases/$id"
         Headers = $headers
-        Body = $description
+        Body = $description | ConvertTo-Json
         ContentType = "application/json"
     }
     return Invoke-WebRequest @params
@@ -161,7 +161,7 @@ function CreateGithubRelease {
         Method = "POST"
         Uri = "$gitApiBaseUrl/repos/$($userAndRepo)/releases"
         Headers = $headers
-        Body = $description
+        Body = $description | ConvertTo-Json
         ContentType = "application/json"
     }
     return Invoke-WebRequest @params
@@ -176,9 +176,12 @@ function PublishGithubRelease {
             throw "Get github latest release failed($($_.Exception.Response.StatusCode.value__)): $($_.ErrorDetails.Message)"
         }
     }
-    $latestRelease = $latestReleaseInfo.Content | ConvertFrom-Json
-    if ($latestRelease.tag_name -eq $description.tag_name) {
-        return UpdateGithubRelease $latestRelease.id $description $userAndRepo $headers
+    if ($latestReleaseInfo.Content) {
+        $latestRelease = $latestReleaseInfo.Content | ConvertFrom-Json
+        if ($latestRelease.tag_name -eq $description.tag_name) {
+            return UpdateGithubRelease $latestRelease.id $description $userAndRepo $headers
+        }
+        Write-host $latestRelease.tag_name
     }
     return CreateGithubRelease $description $userAndRepo $headers
 }
@@ -214,18 +217,21 @@ function PublishGithubAssets {
     }
 
     $latestReleaseInfo = GetGithubLatestRelease $userAndRepo $headers
-    $latestRelease = $latestReleaseInfo.Content | ConvertFrom-Json
-    
-    $latestRelease.assets | Foreach-Object {
-        if ($_.name -eq $assetInfo.name) {
-            DeleteAssetByUrl $_.url $headers
+    if ($latestReleaseInfo) {
+        $latestRelease = $latestReleaseInfo.Content | ConvertFrom-Json
+        $latestRelease.assets | Foreach-Object {
+            if ($_.name -eq $assetInfo.name) {
+                DeleteAssetByUrl $_.url $headers
+            }
         }
+        UploadAsset $latestRelease.id $assetInfo $userAndRepo $headers
+    } else {
+        throw "Cannot find any release to upload assets."
     }
-    UploadAsset $latestRelease.id $assetInfo $userAndRepo $headers
 }
 
 function PublishToGithub {
-    param($assetZipPath, $sshRepoUrl, $token)
+    param($assetZipPath, $releaseNotePath, $sshRepoUrl, $token)
 
     $userAndRepo = GetUserAndRepoFromGitSshUrl $sshRepoUrl
     $headers = @{ 
@@ -234,7 +240,6 @@ function PublishToGithub {
     }
 
     $releaseDescription = GetReleaseDescription $releaseNotePath
-
     PublishGithubRelease $releaseDescription $userAndRepo $headers
     PublishGithubAssets $assetZipPath $userAndRepo $headers
 }

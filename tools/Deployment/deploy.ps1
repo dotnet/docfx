@@ -25,7 +25,6 @@ Write-Host $($targets -join ",")
 try {
     switch ($targets) {
         "build" {
-            Write-Host "Start build"
             # Remove artifact folder and target folder if exist
             RemovePath $docfx.targetFolder,$docfx.artifactsFolder
             # Run build.ps1
@@ -53,7 +52,7 @@ try {
                     & $gitCommand remote set-url origin $repoUrlWithToken
                     & $gitCommand add .
                     & $gitCommand commit -m $git.message
-                    # & $gitCommand push origin gh-pages
+                    & $gitCommand push origin gh-pages
                 } else {
                     Write-Host "Skipped updating gh-pages due to no local change." -ForegroundColor Yellow
                 }
@@ -61,22 +60,20 @@ try {
             }
         }
         "pack" {
-            Write-Host "Start pack"
             $packScriptPath = (Resolve-Path "$homeDir\pack.ps1").Path
             & $packScriptPath
         }
         "release" {
-            Write-Host "Start release"
             if ($main) {
                 if (IsReleaseNoteVersionChanged $gitCommand $docfx.releaseNotePath) 
                 {
                     PackAssetZip $docfx.releaseFolder $docfx.assetZipPath
                     PublishToAzureDevOps $nugetCommand $azdevops.prodName $azdevops.prodUrl $docfx.artifactsFolder $env:AZDEVOPSPAT
                     PublishToNuget $nugetCommand $nuget."nuget.org" $docfx.artifactsFolder $env:NUGETAPIKEY
-                    PublishToGithub $gitCommand $docfx.assetZipPath $docfx.sshRepoUrl $env:TOKEN
-                    PublishToChocolatey $chocoCommand $releaseNotePath $assetZipPath $choco.chocoScript $choco.nuspec $choco.homeDir $env:CHOCO_TOKEN
+                    PublishToGithub $docfx.assetZipPath $docfx.releaseNotePath $docfx.sshRepoUrl $env:TOKEN
+                    PublishToChocolatey $chocoCommand $docfx.releaseNotePath $docfx.assetZipPath $choco.chocoScript $choco.nuspec $choco.homeDir $env:CHOCO_TOKEN
                 } else {
-                    Write-Host "`$releaseNotePath $releaseNotePath hasn't been changed. Ignore to publish package." -ForegroundColor Yellow
+                    Write-Host "`$releaseNotePath $($docfx.releaseNotePath) hasn't been changed. Ignore to publish package." -ForegroundColor Yellow
                 }
             } else {
                 # Always do publish for dev release
