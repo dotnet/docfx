@@ -39,7 +39,7 @@ try {
             & $docfx.exe "$($docfx.docfxSeedHome)\docfx.json"
             & $docfx.exe $docfx.docfxJson
             # Update github pages for main build if there is any change
-            if ($main -and $false) {
+            if ($main) {
                 RemovePath "$($docfx.siteFolder)\.git"
                 & $gitCommand clone $docfx.httpsRepoUrl -b gh-pages docfxsite -q
                 Copy-item "docfxsite\.git" -Destination $docfx.siteFolder -Recurse -Force
