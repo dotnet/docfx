@@ -3,7 +3,7 @@ Version Notes (Current Version: v2.58.6)
 
 v2.58.6
 -----------
-1. Deploy docfx with powershell script
+1. Fix vulnerabilities in CI dependent NPM packages by rewriting CI with PowerShell. (#7678)
 
 v2.58.5
 -----------
