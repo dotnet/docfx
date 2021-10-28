@@ -23,36 +23,17 @@ steps:
     packageType: sdk
     version: '5.0.100'
 
-- task: NodeTool@0
-  displayName: 'Use Node 8.x'
-  inputs:
-    versionSpec: 8.x
-
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
   inputs:
     versionSpec: 5.9.1
 
-- task: CmdLine@1
-  displayName: 'npm install'
+- task: PowerShell@2
+  displayName: 'dev build'
   inputs:
-    filename: npm
-    arguments: install
-    workingFolder: tools/Deployment
-
-- task: CmdLine@1
-  displayName: 'tsc compile'
-  inputs:
-    filename: node
-    arguments: '.\node_modules\typescript\bin\tsc'
-    workingFolder: tools/Deployment
-
-- task: CmdLine@1
-  displayName: 'gulp build'
-  inputs:
-    filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js dev:build'
-    workingFolder: tools/Deployment
+    pwsh: true
+    failOnStderr: true
+    filePath: 'tools\Deployment\deploy.ps1'
 
 - task: UseDotNet@2
   displayName: 'Install .NET Core sdk required for ESRPCodeSigning'
@@ -181,12 +162,13 @@ steps:
     MaxConcurrency: '50'
     MaxRetryAttempts: '5'
 
-- task: CmdLine@1
-  displayName: 'gulp pack'
+- task: PowerShell@2
+  displayName: 'dev release'
   inputs:
-    filename: node
-    arguments: '.\node_modules\gulp\bin\gulp.js dev:release'
-    workingFolder: tools/Deployment
+    pwsh: true
+    failOnStderr: true
+    filePath: 'tools\Deployment\deploy.ps1'
+    arguments: '-targets pack,release'
   env:
     AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
 

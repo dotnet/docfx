@@ -29,15 +29,8 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         config-file: ./.github/codeql-config.yml
-
-    - run: npm install
-      working-directory: tools/Deployment
-
-    - run: node .\node_modules\typescript\bin\tsc
-      working-directory: tools/Deployment
       
-    - run: node .\node_modules\gulp\bin\gulp.js dev
-      working-directory: tools/Deployment
+    - run: pwsh .\tools\Deployment\deploy.ps1
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

@@ -17,8 +17,7 @@ else{
 
 $os = GetOperatingSystemName
 Write-Host "Running on OS $os"
-$globalNugetCommand = 'nuget'
-$nugetCommand = GetNuGetCommand ($os)
+$nugetCommand = GetNuGetCommandWithValidation ($os) ($true)
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
@@ -38,21 +37,6 @@ function NugetPack {
 if (-not(ValidateCommand("dotnet"))) {
     ProcessLastExitCode 1 "Dotnet CLI is not successfully configured. Please follow https://www.microsoft.com/net/core to install .NET Core."
 }
-
-# Check if nuget.exe exists
-if (ValidateCommand($globalNugetCommand)) {
-    $nugetCommand = $globalNugetCommand
-} elseIf (-not(ValidateCommand($nugetCommand))) {
-    Write-Host "Downloading NuGet.exe..."
-    mkdir -Path "$env:LOCALAPPDATA/Nuget" -Force
-    $ProgressPreference = 'SilentlyContinue'
-    [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials
-    
-    # Pin Nuget version to v5.9.1 to workaround for Nuget issue: https://github.com/NuGet/Home/issues/11125
-    # Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nugetCommand
-    Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/v5.9.1/nuget.exe' -OutFile $nugetCommand
-}
-Write-Host "Using Nuget Command: $nugetCommand, $(& $nugetCommand help | Select -First 1)"
 
 # dotnet pack first
 foreach ($proj in (Get-ChildItem -Path ("src", "plugins") -Include *.[cf]sproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {

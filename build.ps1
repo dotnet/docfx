@@ -27,7 +27,7 @@ $assemblyVersion = "1.0.0.0"
 
 $os = GetOperatingSystemName
 Write-Host "Running on OS $os"
-$nugetCommand = GetNuGetCommand ($os)
+$nugetCommand = GetNuGetCommandWithValidation ($os)
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 $versionCsFolderPath = $scriptHome + "/TEMP/"
