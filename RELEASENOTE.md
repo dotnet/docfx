@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.59)
+Version Notes (Current Version: v2.58.6)
 =======================================
 
-v2.59(Pre-release)
+v2.58.6
 -----------
+1. Fix vulnerabilities in CI dependent NPM packages by rewriting CI with PowerShell. (#7678)
 
 v2.58.5
 -----------
