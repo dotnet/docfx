@@ -1,8 +1,9 @@
 Version Notes (Current Version: v2.59)
 =======================================
 
-v2.59(Pre-release)
+v2.59
 -----------
+1. Deploy docfx with powershell script
 
 v2.58.5
 -----------
