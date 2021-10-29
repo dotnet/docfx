@@ -41,6 +41,7 @@ try {
             # Update github pages for main build if there is any change
             if ($main) {
                 RemovePath "$($docfx.siteFolder)\.git"
+                & $gitCommand config --global core.autocrlf false
                 & $gitCommand clone $docfx.httpsRepoUrl -b gh-pages docfxsite -q
                 Copy-item "docfxsite\.git" -Destination $docfx.siteFolder -Recurse -Force
                 Push-Location $docfx.siteFolder
@@ -51,8 +52,8 @@ try {
                     $repoUrlWithToken = $docfx.httpsRepoUrlWithToken -f $env:TOKEN
                     & $gitCommand remote set-url origin $repoUrlWithToken
                     & $gitCommand add .
-                    & $gitCommand commit -m $git.message
-                    & $gitCommand push origin gh-pages
+                    & $gitCommand commit -m $git.message -q
+                    & $gitCommand push origin gh-pages -q
                 } else {
                     Write-Host "Skipped updating gh-pages due to no local change." -ForegroundColor Yellow
                 }
