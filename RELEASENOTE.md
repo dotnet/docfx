@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.58.6)
+Version Notes (Current Version: v2.58.7)
 =======================================
+
+v2.58.7
+-----------
+1. Fix git auto crlf error in CI by disabling core.autocrlf. (#7682)
 
 v2.58.6
 -----------
