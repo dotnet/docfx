@@ -55,7 +55,7 @@ function PackAssetZip {
 
 function PublishToNuget {
     param($nugetCommand, $sourceUrl, $artifactsFolder, $apiKey = "anything")
-    Get-ChildItem "$artifactsFolder/*" -Recurse -Exclude "*.symbols.nupkg" | Foreach-Object -Parallel {
+    Get-ChildItem "$artifactsFolder/*.nupkg" -Recurse -Exclude "*.symbols.nupkg" | Foreach-Object -Parallel {
         & $using:nugetCommand push $_ $using:apiKey -Source $using:sourceUrl -SkipDuplicate
     }
 }
