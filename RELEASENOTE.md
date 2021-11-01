@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.58.7)
+Version Notes (Current Version: v2.58.8)
 =======================================
+
+v2.58.8
+-----------
+1. Fix nuget package file filter of PublishToAzureDevOps() in CI. (#7684)
 
 v2.58.7
 -----------
