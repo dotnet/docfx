@@ -213,7 +213,7 @@ function PublishGithubAssets {
     $assetInfo = @{
         contentType = "application/zip"
         name = Split-Path $assetZipPath -leaf
-        data = Get-Content $assetZipPath
+        data = [System.IO.File]::ReadAllBytes($assetZipPath)
     }
 
     $latestReleaseInfo = GetGithubLatestRelease $userAndRepo $headers
