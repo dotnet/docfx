@@ -91,8 +91,11 @@ function PublishToChocolatey {
 
     $chocoLogFile = "$PSScriptRoot\choco-push.log"
     & $chocoCommand push $nupkgName --log-file=$chocoLogFile
-    if (($LastExitCode -ne 0) -and (Test-Path $chocoLogFile)) {
-        Write-Host "choco push failed, get detailed errors from log:`r`n$(Get-Content $chocoLogFile -Raw -Encoding UTF8)"
+    if ($LastExitCode -ne 0) {
+        Write-Host "choco push failed."
+        if (Test-Path $chocoLogFile) {
+            Write-Host "Get detailed errors from choco log:`r`n$(Get-Content $chocoLogFile -Raw -Encoding UTF8)"
+        }
     }
     Pop-Location
 }
