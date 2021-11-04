@@ -1,5 +1,11 @@
-Version Notes (Current Version: v2.58.8)
+Version Notes (Current Version: v2.58.9)
 =======================================
+
+v2.58.9
+-----------
+1. Fix invalid Github release asset. (#7690)
+2. Fix circular dependency issue when install docfx with nuget cli tool. (#7691)
+3. Improve choco error log by printing choco log file content. (#7692)
 
 v2.58.8
 -----------
