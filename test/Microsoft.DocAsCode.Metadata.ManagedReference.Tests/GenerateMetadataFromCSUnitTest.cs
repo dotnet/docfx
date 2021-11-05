@@ -358,6 +358,29 @@ namespace Test1
             Assert.Equal(new[] { "public", "interface" }, ifoobar.Modifiers[SyntaxLanguage.CSharp]);
         }
 
+        [Fact]
+        public void TestGenerateMetadataWithInternalInterfaceAndInherits()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo : IFoo { }
+    internal interface IFoo { }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+
+            var foo = output.Items[0].Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Foo", foo.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
+            Assert.Null(foo.Implements);
+        }
+
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
         [Trait("Related", "Reference")]

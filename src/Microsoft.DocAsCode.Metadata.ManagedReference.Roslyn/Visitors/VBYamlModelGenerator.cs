@@ -956,7 +956,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private SyntaxList<ImplementsStatementSyntax> GetImplementsList(INamedTypeSymbol symbol)
         {
-            if (symbol.AllInterfaces.Any())
+            if (symbol.AllInterfaces.Where(t=>t.DeclaredAccessibility == Accessibility.Public).Any())
             {
                 return SyntaxFactory.SingletonList(SyntaxFactory.ImplementsStatement(
                     (from t in symbol.AllInterfaces

@@ -1197,11 +1197,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             IReadOnlyList<INamedTypeSymbol> baseTypeList;
             if (symbol.TypeKind != TypeKind.Class || symbol.BaseType == null || symbol.BaseType.GetDocumentationCommentId() == "T:System.Object")
             {
-                baseTypeList = symbol.AllInterfaces;
+                baseTypeList = symbol.AllInterfaces.Where(s=>s.DeclaredAccessibility != Accessibility.Internal).ToList();
             }
             else
             {
-                baseTypeList = new[] { symbol.BaseType }.Concat(symbol.AllInterfaces).ToList();
+                baseTypeList = new[] { symbol.BaseType }.Concat(symbol.AllInterfaces.Where(s => s.DeclaredAccessibility != Accessibility.Internal)).ToList();
             }
             if (baseTypeList.Count == 0)
             {
