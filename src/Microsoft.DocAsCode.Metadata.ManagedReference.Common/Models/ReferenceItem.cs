@@ -121,8 +121,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             for (int i = 0; i < sourceParts.Count; i++)
                             {
                                 Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
-                                Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName);
-                                Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames);
+                                Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName || sourceParts[i].DisplayName.Replace("?", "") == targetParts[i].DisplayName.Replace("?", ""));
+                                Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames || sourceParts[i].DisplayQualifiedNames.Replace("?","") == targetParts[i].DisplayQualifiedNames.Replace("?", ""));
                                 targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
                                 targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
                             }

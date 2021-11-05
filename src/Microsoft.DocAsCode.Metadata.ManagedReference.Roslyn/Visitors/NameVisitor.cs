@@ -183,6 +183,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     WriteGeneric(symbol.TypeParameters);
                 }
             }
+            if(symbol.NullableAnnotation == NullableAnnotation.Annotated)
+            {
+                Append("?");
+            }
         }
 
         public override void VisitNamespace(INamespaceSymbol symbol)
@@ -478,6 +482,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 case SpecialType.System_Object:
                     Append("object");
+                    if (symbol.NullableAnnotation == NullableAnnotation.Annotated)
+                        Append("?");
                     return true;
                 case SpecialType.System_Void:
                     Append("void");
@@ -523,6 +529,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return true;
                 case SpecialType.System_String:
                     Append("string");
+                    if (symbol.NullableAnnotation == NullableAnnotation.Annotated)
+                        Append("?");
                     return true;
                 case SpecialType.System_IntPtr:
                     if (symbol.IsNativeIntegerType)
