@@ -26,7 +26,7 @@ namespace Microsoft.Docs.Build
 
         // Set value per dimension limit to int.MaxValue
         // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
-        private static readonly MetricConfiguration s_metricConfiguration = new(1000, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
+        private static readonly MetricConfiguration s_metricConfiguration = new(int.MaxValue, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
         private static readonly Metric s_operationStartMetric =
             s_telemetryClient.GetMetric(
@@ -127,12 +127,16 @@ namespace Microsoft.Docs.Build
         public static DelegatingCompletable StartOperation(string name)
         {
             var stopwatch = Stopwatch.StartNew();
-            s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId);
+            TrackValueWithEnsurance(
+                    s_operationStartMetric.Identifier.MetricId,
+                    s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId));
             return new DelegatingCompletable(() =>
             {
                 Log.Important($"{name} done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
-                s_operationEndMetric.TrackValue(
-                    stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId);
+                TrackValueWithEnsurance(
+                    s_operationEndMetric.Identifier.MetricId,
+                    s_operationEndMetric.TrackValue(
+                    stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId));
             });
         }
 
@@ -144,8 +148,20 @@ namespace Microsoft.Docs.Build
             var additionalErrorInfoString = error.AdditionalErrorInfo == null ? "{}" : JsonUtility.Serialize(error.AdditionalErrorInfo);
             if (!s_isRealTimeBuild.Value)
             {
-                s_errorCountMetric.TrackValue(
-                    1, code, level.ToString(), CoalesceEmpty(name), additionalErrorInfoString, s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                TrackValueWithEnsurance(
+                    s_errorCountMetric.Identifier.MetricId,
+                    s_errorCountMetric.TrackValue(
+                        1,
+                        code,
+                        level.ToString(),
+                        CoalesceEmpty(name),
+                        additionalErrorInfoString,
+                        s_os,
+                        s_version,
+                        s_repo,
+                        s_branch,
+                        s_correlationId,
+                        s_sessionId));
             }
         }
 
@@ -153,8 +169,10 @@ namespace Microsoft.Docs.Build
         {
             if (!s_isRealTimeBuild.Value && filePath != null)
             {
-                s_fileLogCountMetric.TrackValue(
-                    1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                TrackValueWithEnsurance(
+                    s_fileLogCountMetric.Identifier.MetricId,
+                    s_fileLogCountMetric.TrackValue(
+                    1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
 
@@ -162,7 +180,9 @@ namespace Microsoft.Docs.Build
         {
             if (!s_isRealTimeBuild.Value)
             {
-                s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                TrackValueWithEnsurance(
+                    s_githubRateLimitMetric.Identifier.MetricId,
+                    s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
 
@@ -172,8 +192,10 @@ namespace Microsoft.Docs.Build
             {
                 var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
 
-                s_buildFileTypeCountMetric.TrackValue(
-                    1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId);
+                TrackValueWithEnsurance(
+                    s_buildFileTypeCountMetric.Identifier.MetricId,
+                    s_buildFileTypeCountMetric.TrackValue(
+                        1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
             }
         }
 
@@ -187,18 +209,20 @@ namespace Microsoft.Docs.Build
 
                 foreach (var (elementType, value) in elementCount)
                 {
-                    s_markdownElementCountMetric.TrackValue(
-                        value,
-                        CoalesceEmpty(elementType),
-                        fileExtension,
-                        documentType,
-                        mimeType,
-                        s_os,
-                        s_version,
-                        s_repo,
-                        s_branch,
-                        s_correlationId,
-                        s_sessionId);
+                    TrackValueWithEnsurance(
+                        s_markdownElementCountMetric.Identifier.MetricId,
+                        s_markdownElementCountMetric.TrackValue(
+                            value,
+                            CoalesceEmpty(elementType),
+                            fileExtension,
+                            documentType,
+                            mimeType,
+                            s_os,
+                            s_version,
+                            s_repo,
+                            s_branch,
+                            s_correlationId,
+                            s_sessionId));
                 }
             }
         }
@@ -210,9 +234,16 @@ namespace Microsoft.Docs.Build
 
         public static void Flush()
         {
-            // Default timeout of TelemetryClient.Flush is 100 seconds,
-            // but we only want to wait for 2 seconds at most.
-            Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(2000));
+            // TelemetryClient.Flush may meet deadlocks: https://github.com/microsoft/ApplicationInsights-dotnet/issues/1186
+            Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
+        }
+
+        private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
+        {
+            if (!trackValueResult)
+            {
+                Log.Write($"Track value for {metricsName} fails.");
+            }
         }
 
         private static void TrackEvent(string name, IReadOnlyDictionary<string, string> properties)

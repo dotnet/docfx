@@ -21,29 +21,13 @@ namespace Microsoft.Docs.Build
             _repo = repo;
             _config = config;
             _commitBuildTimePath = AppData.BuildHistoryStatePath;
-
-            // Fallback to load previous path with MD5 Hash in path
-            var commitBuildTimePath = _commitBuildTimePath;
-            var potentialBuildHistoryDirectory = Path.Combine(AppData.StateRoot, "history");
-            if (!File.Exists(commitBuildTimePath) && Directory.Exists(potentialBuildHistoryDirectory))
-            {
-                var potentialCommitBuildTimePath = Directory.GetFiles(potentialBuildHistoryDirectory)
-                    .Where(path => Path.GetFileName(path).StartsWith("build_history"))
-                    .FirstOrDefault(x => Path.HasExtension(x) && string.Equals(Path.GetExtension(x), ".json", StringComparison.OrdinalIgnoreCase));
-
-                if (potentialCommitBuildTimePath != null)
-                {
-                    commitBuildTimePath = potentialCommitBuildTimePath;
-                }
-            }
-
             _buildTime = config.BuildTime ?? DateTime.UtcNow;
 
-            var exists = File.Exists(commitBuildTimePath);
-            Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{commitBuildTimePath}'");
+            var exists = File.Exists(_commitBuildTimePath);
+            Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
 
             var commitBuildTime = exists
-                ? ProcessUtility.ReadJsonFile<CommitBuildTime>(commitBuildTimePath)
+                ? ProcessUtility.ReadJsonFile<CommitBuildTime>(_commitBuildTimePath)
                 : new CommitBuildTime();
 
             _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
@@ -54,7 +38,7 @@ namespace Microsoft.Docs.Build
 
         public void Save()
         {
-            if (!_config.UpdateCommitBuildTime)
+            if (!_config.UpdateCommitBuildTime || _buildTimeByCommit.ContainsKey(_repo.Commit))
             {
                 return;
             }

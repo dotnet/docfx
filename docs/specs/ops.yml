@@ -164,7 +164,7 @@ repos:
       ce/basics/teams-integration.md:
 outputs:
   ce/basics/teams-integration.json: |
-    { "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48" }
+    { "document_id": "b1c6c9d3-40a8-a21d-98e8-a3cbf54eaeb4" }
 ---
 # redirect_document_id is false
 # document_id should be different
@@ -192,20 +192,20 @@ outputs:
         {
             "url": "/admin/integrate-with-microsoft-teams",
             "redirect_url": "basics/teams-integration",
-            "document_id": "ea36c3f1-f5ab-0dd9-b5cb-38ae65565e48",
-            "document_version_independent_id": "b0ccab65-c087-a7f8-5067-92fe325727bb",
+            "document_id": "b1c6c9d3-40a8-a21d-98e8-a3cbf54eaeb4",
+            "document_version_independent_id": "b1c6c9d3-40a8-a21d-98e8-a3cbf54eaeb4",
             "canonical_url": "https://docs.com/en-us/admin/integrate-with-microsoft-teams"
         },
         {
             "url": "/basics/teams-integration",
             "canonical_url": "https://docs.com/en-us/basics/teams-integration",
-            "document_id": "a68002c2-0287-708f-80f0-04292dc0a0b3",
-            "document_version_independent_id": "b017c64d-16c2-701d-3118-e5a54dfddbc5",
+            "document_id": "86d28ab4-cd6a-a5a2-df73-92b1a0f52914",
+            "document_version_independent_id": "86d28ab4-cd6a-a5a2-df73-92b1a0f52914",
         }
       ]
     }
   basics/teams-integration.json: |
-    { "document_id": "a68002c2-0287-708f-80f0-04292dc0a0b3" }
+    { "document_id": "86d28ab4-cd6a-a5a2-df73-92b1a0f52914" }
 ---
 # Supports fusion TOC ops config
 repos:

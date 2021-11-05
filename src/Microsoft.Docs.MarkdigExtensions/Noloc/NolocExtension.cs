@@ -16,7 +16,7 @@ namespace Microsoft.Docs.MarkdigExtensions
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
         {
             var htmlRenderer = renderer as HtmlRenderer;
-            htmlRenderer.ObjectRenderers.AddIfNotAlready<NolocRender>();
+            htmlRenderer.ObjectRenderers.AddIfNotAlready<NolocRenderer>();
         }
     }
 }

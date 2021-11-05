@@ -83,7 +83,7 @@ namespace Microsoft.Docs.Build
             _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
             _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
             _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
-            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
+            _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _fileResolver, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
             _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
             _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
             _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
@@ -184,7 +184,6 @@ namespace Microsoft.Docs.Build
                     () => _bookmarkValidator.Validate(),
                     () => _contentValidator.PostValidate(),
                     () => _errors.AddRange(_metadataValidator.PostValidate()),
-                    () => _documentProvider.Save(),
                     () => _contributionProvider.Save(),
                     () => _repositoryProvider.Save(),
                     () => _errors.AddRange(_githubAccessor.Save()),

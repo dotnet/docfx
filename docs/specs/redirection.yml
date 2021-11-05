@@ -77,7 +77,7 @@ inputs:
       a.md: https://docs.microsoft.com/b
 outputs:
   b.json: |
-   {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
+   {"document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
 ---
 # redirect to can start with https and hostname with locale
 # output document_id and canonical_url for redirection file as well
@@ -91,11 +91,11 @@ inputs:
 outputs:
   .publish.json: |
     {"files":[
-      {"url":"/a", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80", "canonical_url": "https://docs.com/en-us/a", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}, 
-      {"url":"/b", "document_id":"780484e9-a367-97ab-ba7d-a19f3b378a80"}
+      {"url":"/a", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "canonical_url": "https://docs.com/en-us/a", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}, 
+      {"url":"/b", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
     ]}
   b.json: |
-   {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5"}
+   {"document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
 ---
 # Redirection files have conflicted ids
 # all redirection files will be built
@@ -119,7 +119,7 @@ outputs:
         ]
     }
   docs/path1.json: |
-    {"document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5",}
+    {"document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895",}
 ---
 # generate same document id and version id with 'redirection with document id'
 # A => B, B's ids should be same with A's
@@ -145,15 +145,15 @@ inputs:
   docs/folder2/index.md:
 outputs:
   docs/docs/x.json: |
-    { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80", "document_version_independent_id": "e9b3f4e2-1a78-4b5d-fbb4-03e0a33e38f5" }
+    { "document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895" }
   docs/docs/y.json: |
-    { "document_id": "746406e9-2aac-1b22-259a-b6712b49c610", "document_version_independent_id": "d93f906b-e1e0-e950-45b4-ce1e777af3e6" }
+    { "document_id": "e8d868e6-7373-19e3-7d3e-0fa0d3399631", "document_version_independent_id": "e8d868e6-7373-19e3-7d3e-0fa0d3399631" }
   docs/docs/z.json: |
-    { "document_id": "3c1b64b6-2acf-2a8d-0b02-687e4c6751b6", "document_version_independent_id": "b7faa2da-5935-b5fb-4609-dd030b0e74ab" }
+    { "document_id": "987192db-0662-64c5-30b8-083880a86f70", "document_version_independent_id": "987192db-0662-64c5-30b8-083880a86f70" }
   docs/docs/folder1/index.json: |
-    { "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902", "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608" }
+    { "document_id": "d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2", "document_version_independent_id": "d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2" }
   docs/docs/folder2/index.json: |
-    { "document_id": "64dd67d2-325f-bc70-d1b3-0106d0cb71e3", "document_version_independent_id": "5f485788-9aee-232c-f1f0-66c205d6e9a9" }
+    { "document_id": "39a9019a-f76b-99af-35b6-d788e72e9fd3", "document_version_independent_id": "39a9019a-f76b-99af-35b6-d788e72e9fd3" }
 ---
 # generate different document id and version id with 'redirection without document id'
 inputs:
@@ -170,7 +170,7 @@ inputs:
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
   sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "7412621b-4920-dc7e-bed6-1f1ea774f7dd", "document_version_independent_id": "de5d1641-2c0e-1158-7611-e52a22d96a5e" }
+    { "document_id": "b1262230-a66f-fae9-2699-da54c87c6939", "document_version_independent_id": "b1262230-a66f-fae9-2699-da54c87c6939" }
 ---
 # redirect with document id resolve relative redirect_url
 # publish item's redirect_url keeps user's input
@@ -187,7 +187,7 @@ inputs:
   develop/agreement-metadata-resources.md:
 outputs:
   develop/partner-center-sdk/agreement-metadata-resources.json: |
-    { "document_id": "ad740933-6e60-291e-14ba-8a4e81133047", "document_version_independent_id": "e8a46a09-153a-2eac-1bd0-0aad104a6616" }
+    { "document_id": "5cbc74e1-881b-b4bf-4d40-f6b2710b55e8", "document_version_independent_id": "5cbc74e1-881b-b4bf-4d40-f6b2710b55e8" }
   develop/.publish.json: |
     {
       "files": [
@@ -223,7 +223,7 @@ inputs:
   sccm/mdm/understand/hybrid-mobile-device-management.md:
 outputs:
   sccm/sccm/mdm/understand/hybrid-mobile-device-management.json: |
-    { "document_id": "1c42a151-6248-df0c-15e6-3b1158d7bee3", "document_version_independent_id": "beb14a44-b076-14b8-b9c5-b42f9e36b973" }
+    { "document_id": "ef9b84bd-be67-f99d-6b01-58ea46745404", "document_version_independent_id": "ef9b84bd-be67-f99d-6b01-58ea46745404" }
   .errors.log: |
     {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/sccm/mdm/understand/hybrid-mobile-device-management' with redirect_document_id set to true: 'mdm/index.md', 'mdm/index2.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): 'redirections.yml'.","line":2,"column":17}
 ---
@@ -293,9 +293,9 @@ inputs:
   articles/billing/billing-add-change-azure-subscription-administrator.md:
 outputs:
   azure/iot-central/concepts-architecture.json: |
-    {"document_id":"7e13132e-7847-dc4f-90d5-32a233d1c81a","document_version_independent_id":"d9cc5ab8-926a-8a5a-312c-10ca36619bad"}
+    {"document_id":"4f9b7c5f-a3d3-c4c8-c533-685fef3d75cf","document_version_independent_id":"24400b27-bf0c-f16d-7b4c-b21819f60407"}
   azure/billing/billing-add-change-azure-subscription-administrator.json: |
-    {"document_id":"f5624f3e-5fbf-6f0f-93cf-a4d5aa93ccf8","document_version_independent_id":"9ca6d22b-e684-4e65-cab3-c272189a3ddc"}
+    {"document_id":"73a45eb0-5b21-66af-18b2-b707dba52dbc","document_version_independent_id":"8e40db88-d503-1336-b784-1c2d911b759f"}
 ---
 # generate document id with _op_documentIdPathDepotMapping config
 inputs:
@@ -311,7 +311,7 @@ inputs:
   articles/retail/analyze-sales-trends-patterns.md:
 outputs:
   articles/retail/analyze-sales-trends-patterns.json: |
-    { "document_id":"5ce4c7ff-69be-ea10-c8e0-d3288fd3bd93" }
+    { "document_id":"09504273-41ab-d809-83e4-3d4ec98ca7cf" }
 ---
 # document_id of _op_documentIdPathDepotMapping without folder_relative_path_in_docset
 inputs:
@@ -323,7 +323,7 @@ inputs:
   articles/active-directory/active-directory-conditional-access-azure-portal.md:
 outputs:
   articles/active-directory/active-directory-conditional-access-azure-portal.json: |
-    { "document_id":"ffdaa549-8f3b-75e0-9d27-a1a10417d86b" }
+    { "document_id":"a05033b3-b1a3-fdd6-0bd1-82262ffb11c2" }
 ---
 # redirect to redirect
 inputs:
@@ -342,7 +342,7 @@ inputs:
   articles/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.md:
 outputs:
   azure/active-directory/saas-apps/splunkenterpriseandsplunkcloud-tutorial.json: |
-    {"document_id":"b1cdf77e-673b-8b3a-3232-78f3d2b225dd","document_version_independent_id":"bde2976d-40d3-f729-128d-0caa664da662"}
+    {"document_id":"850c3685-7e21-1f26-01ef-75c76237d368","document_version_independent_id":"06f8b36b-dd59-c7e1-2595-263b1c25f39d"}
 ---
 # landing page is treated as *.md when calculating document id
 # id: 
@@ -366,9 +366,9 @@ inputs:
     documentType: LandingData
 outputs:
   azure/active-directory-b2c/index.json: |
-    {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
+    {"metadata": { "document_id": "25e3a02b-c9bc-78d0-0c60-2f9bda486b6d", "document_version_independent_id": "a24127ae-2f3f-faa7-5365-9feb16012387"}}
   azure/active-directory-b2c/test.json: |
-    {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
+    {"metadata": { "document_id": "440e6a2a-1ccd-e1b4-d47b-b67c16b60f11", "document_version_independent_id": "4e937130-f914-6b33-76e3-7d81de81e7b6"}}
 ---
 # Hub/Landing/Architecture/FAQ page is treated as *.md when calculating document id
 os: windows, osx
@@ -399,13 +399,13 @@ inputs:
   _themes/ContentTemplate/FAQ.html.primary.tmpl:
 outputs:
   azure/active-directory-b2c/index.json: |
-    {"metadata": { "document_id": "4b5e7225-dae6-053e-4657-c4731dbd7d64", "document_version_independent_id": "fdf17736-63c4-6c9f-825b-393312bbd63a"}}
+    {"metadata": { "document_id": "25e3a02b-c9bc-78d0-0c60-2f9bda486b6d", "document_version_independent_id": "a24127ae-2f3f-faa7-5365-9feb16012387"}}
   azure/active-directory-b2c/test.json: |
-    {"metadata": { "document_id": "89987066-1e32-4f92-1957-329cfa9de0a0", "document_version_independent_id": "8f254336-d196-b36f-649e-dec30465941b"}}
+    {"metadata": { "document_id": "440e6a2a-1ccd-e1b4-d47b-b67c16b60f11", "document_version_independent_id": "4e937130-f914-6b33-76e3-7d81de81e7b6"}}
   azure/active-directory-b2c/architecture.json: |
-    {"metadata": { "document_id": "a482b6c7-7a1c-c123-0a93-28c4565cc43b", "document_version_independent_id": "0ea6a82f-f89d-1b92-3e01-06fbf8d4bf6a"}}
+    {"metadata": { "document_id": "315b16be-b4f4-9ba7-bc6f-9199068cfe5a", "document_version_independent_id": "f34cdd38-f26d-6997-799a-23c991e26acb"}}
   azure/active-directory-b2c/faq.json: |
-    {"metadata": { "document_id": "171a6ebf-070d-1bb4-ed8f-407a9ed8c5db", "document_version_independent_id": "f7493328-f7f6-14d8-3245-2012c69cad64"}}
+    {"metadata": { "document_id": "7e2f5500-4422-6041-7f3a-d1d4cfcb8284", "document_version_independent_id": "79d0efd7-d86c-57f7-55dc-90a2b474bbbd"}}
 ---
 # index.yml's document id also follows the redirection rules
 # trailing 'index' redirect-to will be trimmed
@@ -426,7 +426,7 @@ inputs:
     documentType: LandingData
 outputs:
   azure/app-service/index.json: |
-    {"metadata":{ "document_id": "a0e220f7-d5b9-6cca-580c-3d49fe3b478f", "document_version_independent_id": "41d29d50-009e-41b4-ab51-371ed5bba821"}}
+    {"metadata":{ "document_id": "a48fa51e-c7c7-f631-d8be-57627e541c8a", "document_version_independent_id": "1e2f77f0-b332-39ea-1d22-e06f34333899"}}
 ---
 # redirection defined in markdown yaml metadata is not supported
 noSingleFile: true
@@ -455,7 +455,7 @@ inputs:
   b.md:
 outputs:
   b.json: |
-    { "document_id": "780484e9-a367-97ab-ba7d-a19f3b378a80" }
+    { "document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895" }
 ---
 # Support redirect_url ends with '/' for index files
 repos:
@@ -477,7 +477,7 @@ repos:
       folder/index.md:
 outputs:
   folder/index.json: |
-    { "document_id": "c663555f-8096-38df-325b-181ddc79afd8" }
+    { "document_id": "6172869a-1d42-80e4-5d0c-707167a0d4c1" }
 ---
 # Handle circular redirection with document id
 repos:

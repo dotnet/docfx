@@ -67,8 +67,8 @@ outputs:
         <meta name=\"author\" content=\"charlie\" />
         <meta name=\"conceptual\" content=\"<p><a href=&quot;d.png&quot; data-linktype=&quot;relative-path&quot;>d</a></p>\"/>
         <meta name=\"depot_name\" content=\".\" />
-        <meta name=\"document_id\" content=\"fdb5a0d7-b68e-c465-9c5e-54a5cda94902\" />
-        <meta name=\"document_version_independent_id\" content=\"92a5a770-f05f-b8bb-81c9-a8d786a9e608\" />
+        <meta name=\"document_id\" content=\"d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2\" />
+        <meta name=\"document_version_independent_id\" content=\"d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2\" />
         <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/42eb7605fdef9f5e7674a1cae803f86a39ee628a/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
@@ -156,8 +156,8 @@ outputs:
         "author": "bob",
         "_tocRel": "toc.json",
         "canonical_url": "https://docs.com/en-us/rawmetadata/c",
-        "document_id": "fdb5a0d7-b68e-c465-9c5e-54a5cda94902",
-        "document_version_independent_id": "92a5a770-f05f-b8bb-81c9-a8d786a9e608",
+        "document_id": "d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2",
+        "document_version_independent_id": "d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2",
         "updated_at": "2018-10-30 12:00 AM",
         "content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
@@ -173,7 +173,7 @@ outputs:
       },
       {
         "url": "/rawmetadata/",
-        "document_id": "b3c1f04b-5bdb-1c10-5237-024cf382b4cc",
+        "document_id": "c115ee68-f136-8518-0a52-d614ddd68b18",
         "_path": "index.json",
           "contributors": undefined
       },

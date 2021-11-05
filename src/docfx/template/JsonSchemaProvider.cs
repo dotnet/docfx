@@ -23,15 +23,6 @@ namespace Microsoft.Docs.Build
             "TSEnum",
         };
 
-        private static readonly HashSet<string> s_yamlMimesMigratedFromMarkdown = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "Architecture",
-            "Hub",
-            "Landing",
-            "LandingData",
-            "FAQ",
-        };
-
         public JsonSchemaProvider(Config config, PackageResolver packageResolver, JsonSchemaLoader jsonSchemaLoader)
         {
             var template = config.Template;
@@ -59,11 +50,6 @@ namespace Microsoft.Docs.Build
         public static bool IsConceptual(string? mime) => "Conceptual".Equals(mime, StringComparison.OrdinalIgnoreCase);
 
         public static bool IsLandingData(string? mime) => "LandingData".Equals(mime, StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsMigratedFromMarkdown(string? mime)
-        {
-            return mime != null && s_yamlMimesMigratedFromMarkdown.Contains(mime);
-        }
 
         public RenderType GetRenderType(ContentType contentType, SourceInfo<string?> mime)
         {
