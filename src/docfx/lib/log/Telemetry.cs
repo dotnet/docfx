@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -233,7 +234,8 @@ namespace Microsoft.Docs.Build
 
         public static void Flush()
         {
-            s_telemetryClient.Flush();
+            // TelemetryClient.Flush may meet deadlocks: https://github.com/microsoft/ApplicationInsights-dotnet/issues/1186
+            Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
         }
 
         private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
