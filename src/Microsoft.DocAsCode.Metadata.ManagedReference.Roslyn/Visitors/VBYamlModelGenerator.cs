@@ -960,6 +960,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return SyntaxFactory.SingletonList(SyntaxFactory.ImplementsStatement(
                     (from t in symbol.AllInterfaces
+                     where t.DeclaredAccessibility == Accessibility.Public
                      select GetTypeSyntax(t)).ToArray()));
             }
             return new SyntaxList<ImplementsStatementSyntax>();
