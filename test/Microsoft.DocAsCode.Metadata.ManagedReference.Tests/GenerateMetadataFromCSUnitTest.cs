@@ -381,6 +381,32 @@ namespace Test1
             Assert.Null(foo.Implements);
         }
 
+        [Fact]
+        public void TestGenerateMetadataWithProtectedInterfaceAndInherits()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo {
+       protected interface IFoo { }
+       public class SubFoo : IFoo { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+
+            var subFoo = output.Items[0].Items[2];
+            Assert.NotNull(subFoo);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo.SubFoo", subFoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("public class SubFoo : Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[] { "public", "class" }, subFoo.Modifiers[SyntaxLanguage.CSharp]);
+            Assert.NotNull(subFoo.Implements);
+            Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
+        }
+
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
         [Trait("Related", "Reference")]

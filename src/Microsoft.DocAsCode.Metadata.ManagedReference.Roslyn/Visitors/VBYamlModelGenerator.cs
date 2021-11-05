@@ -956,11 +956,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private SyntaxList<ImplementsStatementSyntax> GetImplementsList(INamedTypeSymbol symbol)
         {
-            if (symbol.AllInterfaces.Where(t=>t.DeclaredAccessibility == Accessibility.Public).Any())
+            if (symbol.AllInterfaces.Where(t=>t.DeclaredAccessibility == Accessibility.Public || t.DeclaredAccessibility == Accessibility.Protected || t.DeclaredAccessibility == Accessibility.ProtectedOrInternal).Any())
             {
                 return SyntaxFactory.SingletonList(SyntaxFactory.ImplementsStatement(
                     (from t in symbol.AllInterfaces
-                     where t.DeclaredAccessibility == Accessibility.Public
+                     where t.DeclaredAccessibility == Accessibility.Public || t.DeclaredAccessibility == Accessibility.Protected || t.DeclaredAccessibility == Accessibility.ProtectedOrInternal
                      select GetTypeSyntax(t)).ToArray()));
             }
             return new SyntaxList<ImplementsStatementSyntax>();

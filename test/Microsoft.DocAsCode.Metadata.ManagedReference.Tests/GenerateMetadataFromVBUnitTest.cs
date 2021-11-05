@@ -248,6 +248,34 @@ Namespace Test1
             Assert.Null(foo.Implements);
         }
 
+        [Fact]
+        public void TestGenerateMetadataWithProtectedInterfaceAndInherits()
+        {
+            string code = @"
+Namespace Test1
+    Public Class Foo
+       Protected Interface IFoo
+       End Interface
+       Public Class SubFoo 
+          Implements IFoo 
+       End Class
+    End Class
+
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+
+            var subFoo = output.Items[0].Items[2];
+            Assert.NotNull(subFoo);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNames[SyntaxLanguage.VB]);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNamesWithType[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo.SubFoo", subFoo.DisplayQualifiedNames[SyntaxLanguage.VB]);
+            Assert.Equal("Public Class SubFoo\r\n    Implements Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal(new[] { "Public", "Class" }, subFoo.Modifiers[SyntaxLanguage.VB]);
+            Assert.NotNull(subFoo.Implements);
+            Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
+        }
+
         [Trait("Related", "Generic")]
         [Fact]
         public void TestGenereateMetadataWithDelegate()
