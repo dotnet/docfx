@@ -276,6 +276,32 @@ Namespace Test1
             Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
         }
 
+        [Fact]
+        public void TestGenerateMetadataWithPublicInterfaceNestedInternal()
+        {
+            string code = @"
+Namespace Test1
+    Internal Class FooInternal
+        Public Interface IFoo
+        End Interface
+    End Class
+    Public Class Foo
+       Implements FooInternal.IFoo 
+    End Class
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            Assert.Single(output.Items);
+
+            var foo = output.Items[0].Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Foo", foo.DisplayNames[SyntaxLanguage.VB]);
+            Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.VB]);
+            Assert.Equal("Public Class Foo", foo.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal(new[] { "Public", "Class" }, foo.Modifiers[SyntaxLanguage.VB]);
+            Assert.Null(foo.Implements);
+        }
+
         [Trait("Related", "Generic")]
         [Fact]
         public void TestGenereateMetadataWithDelegate()
