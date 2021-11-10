@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,6 +29,7 @@ namespace Microsoft.Docs.Build
         private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
+        private readonly HttpClient _longHttp = new(new HttpClientHandler { CheckCertificateRevocationList = true });
 
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPublic = new(() => GetAccessTokenAsync(DocsEnvironment.Prod));
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPubDev = new(() => GetAccessTokenAsync(DocsEnvironment.PPE));
@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
         {
             _errors = errors;
             _credentialHandler = credentialHandler;
+            _longHttp.Timeout = TimeSpan.FromSeconds(300);
         }
 
         public Task<string> GetDocsetInfo(string repositoryUrl)
@@ -146,7 +147,7 @@ namespace Microsoft.Docs.Build
 
         public Task<string> HierarchyDrySync(string body)
         {
-            return Fetch(
+            return LongFetch(
                 () => new HttpRequestMessage
                 {
                     RequestUri = new Uri($"{BuildApi()}/route/mslearnhierarchy/api/OnDemandHierarchyDrySync"),
@@ -240,6 +241,46 @@ namespace Microsoft.Docs.Build
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     requestUrl = request.RequestUri?.ToString();
                     return await _http.SendAsync(request);
+                }
+            }
+        }
+
+        // timeout is 300s and no retry on timeout
+        private async Task<string> LongFetch(Func<HttpRequestMessage> requestFactory, string? value404 = null, HttpMiddleware? middleware = null)
+        {
+            string? requestUrl = null;
+            using var response = await Policy<HttpResponseMessage>.Handle<HttpRequestException>()
+               .Or<HttpRequestException>()
+               .OrResult(r => (int)r.StatusCode >= 500)
+               .Or<OperationCanceledException>()
+               .Or<IOException>()
+               .RetryAsync(3)
+               .ExecuteAsync(() => _credentialHandler.SendRequest(
+                   requestFactory,
+                   request => middleware != null ? middleware(request, SendRequest) : SendRequest(request)));
+
+            if (value404 != null && response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return value404;
+            }
+
+            try
+            {
+                return await response.EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                ex.Data["RequestUrl"] = requestUrl;
+                throw;
+            }
+
+            async Task<HttpResponseMessage> SendRequest(HttpRequestMessage request)
+            {
+                using (PerfScope.Start($"[{nameof(OpsAccessor)}] '{request.Method} {UrlUtility.SanitizeUrl(request.RequestUri?.ToString())}'"))
+                {
+                    request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
+                    requestUrl = request.RequestUri?.ToString();
+                    return await _longHttp.SendAsync(request);
                 }
             }
         }
