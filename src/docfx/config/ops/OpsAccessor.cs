@@ -3,7 +3,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -30,6 +29,7 @@ namespace Microsoft.Docs.Build
         private readonly CredentialHandler _credentialHandler;
         private readonly ErrorBuilder _errors;
         private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
+        private readonly HttpClient _longHttp = new(new HttpClientHandler { CheckCertificateRevocationList = true });
 
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPublic = new(() => GetAccessTokenAsync(DocsEnvironment.Prod));
         private static readonly Lazy<ValueTask<AccessToken>> s_accessTokenPubDev = new(() => GetAccessTokenAsync(DocsEnvironment.PPE));
@@ -42,6 +42,7 @@ namespace Microsoft.Docs.Build
         {
             _errors = errors;
             _credentialHandler = credentialHandler;
+            _longHttp.Timeout = TimeSpan.FromSeconds(300);
         }
 
         public Task<string> GetDocsetInfo(string repositoryUrl)
@@ -153,7 +154,9 @@ namespace Microsoft.Docs.Build
                     Method = HttpMethod.Post,
                     Content = new StringContent(body, Encoding.UTF8, "application/json"),
                 },
-                middleware: BuildMiddleware());
+                middleware: BuildMiddleware(),
+                httpClient: _longHttp,
+                retry: 0);
         }
 
         private async Task<string> FetchValidationRules(
@@ -206,14 +209,19 @@ namespace Microsoft.Docs.Build
             return Fetch(() => new HttpRequestMessage(HttpMethod.Get, url), value404, middleware);
         }
 
-        private async Task<string> Fetch(Func<HttpRequestMessage> requestFactory, string? value404 = null, HttpMiddleware? middleware = null)
+        private async Task<string> Fetch(
+            Func<HttpRequestMessage> requestFactory,
+            string? value404 = null,
+            HttpMiddleware? middleware = null,
+            HttpClient? httpClient = null,
+            int retry = 3)
         {
             string? requestUrl = null;
             using var response = await HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<OperationCanceledException>()
                .Or<IOException>()
-               .RetryAsync(3)
+               .RetryAsync(retry)
                .ExecuteAsync(() => _credentialHandler.SendRequest(
                    requestFactory,
                    request => middleware != null ? middleware(request, SendRequest) : SendRequest(request)));
@@ -239,7 +247,7 @@ namespace Microsoft.Docs.Build
                 {
                     request.Headers.TryAddWithoutValidation("User-Agent", "docfx");
                     requestUrl = request.RequestUri?.ToString();
-                    return await _http.SendAsync(request);
+                    return await (httpClient ?? _http).SendAsync(request);
                 }
             }
         }
