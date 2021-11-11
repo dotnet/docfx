@@ -408,7 +408,7 @@ namespace Microsoft.Docs.Build
         {
             // should not add locale for api, _themes links
             if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase) ||
-                href.StartsWith("/_themes/", StringComparison.OrdinalIgnoreCase))
+                href.StartsWith("/_/", StringComparison.OrdinalIgnoreCase))
             {
                 return href;
             }
