@@ -1197,11 +1197,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             IReadOnlyList<INamedTypeSymbol> baseTypeList;
             if (symbol.TypeKind != TypeKind.Class || symbol.BaseType == null || symbol.BaseType.GetDocumentationCommentId() == "T:System.Object")
             {
-                baseTypeList = symbol.AllInterfaces;
+                baseTypeList = symbol.AllInterfaces.Where(s=>IsSymbolAccessible(s)).ToList();
             }
             else
             {
-                baseTypeList = new[] { symbol.BaseType }.Concat(symbol.AllInterfaces).ToList();
+                baseTypeList = new[] { symbol.BaseType }.Concat(symbol.AllInterfaces.Where(s => IsSymbolAccessible(s))).ToList();
             }
             if (baseTypeList.Count == 0)
             {
@@ -1211,6 +1211,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 SyntaxFactory.SeparatedList<BaseTypeSyntax>(
                     from t in baseTypeList
                     select SyntaxFactory.SimpleBaseType(GetTypeSyntax(t))));
+        }
+
+        private static bool IsSymbolAccessible(ISymbol symbol)
+        {
+            if (symbol.DeclaredAccessibility != Accessibility.Public && symbol.DeclaredAccessibility != Accessibility.Protected && symbol.DeclaredAccessibility != Accessibility.ProtectedOrInternal)
+                return false;
+            if (symbol.ContainingSymbol != null && symbol.Kind == SymbolKind.NamedType)
+                return IsSymbolAccessible(symbol.ContainingSymbol);
+            return true;
         }
 
         private BaseListSyntax GetEnumBaseTypeList(INamedTypeSymbol symbol)
