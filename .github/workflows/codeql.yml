@@ -13,6 +13,9 @@ jobs:
     name: CodeQL
     runs-on: windows-latest
 
+    permissions:
+      security-events: write
+
     strategy:
       fail-fast: false
       matrix:
