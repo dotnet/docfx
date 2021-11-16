@@ -328,7 +328,7 @@ namespace Microsoft.Docs.Build
                         }
                         case JTokenType.Date:
                         {
-                            content = JsonUtility.Serialize(value)?.Trim('"');
+                            content = JsonUtility.Serialize(value).Trim('"');
                             break;
                         }
                         default:
