@@ -406,8 +406,9 @@ namespace Microsoft.Docs.Build
 
         private static string AddLocaleIfMissingForAbsolutePath(string href, string locale)
         {
-            // should not add locale for api links
-            if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            // should not add locale for api, _* links
+            if (href.StartsWith("/api/", StringComparison.OrdinalIgnoreCase) ||
+                href.StartsWith("/_", StringComparison.OrdinalIgnoreCase))
             {
                 return href;
             }
