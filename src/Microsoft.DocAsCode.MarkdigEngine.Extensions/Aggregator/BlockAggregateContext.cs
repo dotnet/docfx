@@ -30,7 +30,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public void AggregateTo(Block block, int blockCount)
         {
-            _blocks[_currentBlockIndex] = block;
+            if (block != _blocks[_currentBlockIndex])
+            {
+                _blocks[_currentBlockIndex] = block;
+            }
             RemoveRange(_currentBlockIndex + 1, blockCount - 1);
             _currentBlockIndex = -1;
         }
