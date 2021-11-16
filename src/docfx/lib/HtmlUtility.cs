@@ -319,7 +319,24 @@ namespace Microsoft.Docs.Build
                 }
                 else
                 {
-                    content = value.Type == JTokenType.Boolean ? (bool)value ? "true" : "false" : value.ToString();
+                    switch (value.Type)
+                    {
+                        case JTokenType.Boolean:
+                        {
+                            content = (bool)value ? "true" : "false";
+                            break;
+                        }
+                        case JTokenType.Date:
+                        {
+                            content = JsonUtility.Serialize(value)?.Trim('"');
+                            break;
+                        }
+                        default:
+                        {
+                            content = value.ToString();
+                            break;
+                        }
+                    }
                 }
 
                 result.AppendLine($"<meta name=\"{Encode(name)}\" content=\"{Encode(content)}\" />");
