@@ -116,7 +116,7 @@ translation.priority.mt:
 translationtype: Human Translation
 ms.sourcegitcommit: 5c6fbfc8699d7d66c40b0458972d8b6ef0dcc705
 ms.openlocfilehash: 2ea129ac94cb1ddc7486ba69280dc0390896e088</yamlheader>";
-            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html.Replace("\r\n", "\n"));
         }
     }
 }

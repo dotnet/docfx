@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
             Assert.Equal(2, model.Count);
             Assert.Equal("System.String", model[0].Uid);
             Assert.NotNull(model[0].UidSource);
-            Assert.Equal("author: rpetrusha\nms.author: ronpet\nmanager: wpickett", model[0].YamlCodeBlock);
+            Assert.Equal("author: rpetrusha\nms.author: ronpet\nmanager: wpickett", model[0].YamlCodeBlock.Replace("\r", ""));
             Assert.NotNull(model[0].YamlCodeBlockSource);
             Assert.Equal(4, model[0].Contents.Count);
             Assert.Equal("summary", model[0].Contents[0].PropertyName);
