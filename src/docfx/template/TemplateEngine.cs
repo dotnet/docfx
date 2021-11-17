@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
             {
                 try
                 {
-                    return JToken.Parse(content);
+                    return JsonUtility.Parse(new ErrorList(), content, new FilePath("file"));
                 }
                 catch
                 {
