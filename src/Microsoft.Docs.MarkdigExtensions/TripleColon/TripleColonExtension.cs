@@ -18,7 +18,7 @@ namespace Microsoft.Docs.MarkdigExtensions
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsBlock;
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsInline;
 
-        public TripleColonExtension(MarkdownContext context)
+        public TripleColonExtension(MarkdownContext context, TripleColonExtensionType enabledExtensionTypes)
         {
             _context = context;
             _extensionsBlock = (new ITripleColonExtensionInfo[]
@@ -30,13 +30,13 @@ namespace Microsoft.Docs.MarkdigExtensions
                 new VideoExtension(),
 
                 // todo: moniker range, row, etc...
-            }).ToDictionary(x => x.Name);
+            }).Where(x => enabledExtensionTypes.HasFlag(x.Type)).ToDictionary(x => x.Name);
 
             _extensionsInline = (new ITripleColonExtensionInfo[]
             {
                 new ImageExtension(context),
                 new VideoExtension(),
-            }).ToDictionary(x => x.Name);
+            }).Where(x => enabledExtensionTypes.HasFlag(x.Type)).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
@@ -68,6 +68,8 @@ namespace Microsoft.Docs.MarkdigExtensions
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
+
+        TripleColonExtensionType Type { get; }
 
         bool SelfClosing { get; }
 

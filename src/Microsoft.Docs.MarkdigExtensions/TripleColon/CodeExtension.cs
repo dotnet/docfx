@@ -13,6 +13,8 @@ namespace Microsoft.Docs.MarkdigExtensions
     {
         public string Name => "code";
 
+        public TripleColonExtensionType Type => TripleColonExtensionType.Code;
+
         public bool SelfClosing => true;
 
         public static bool EndingTripleColons => false;
