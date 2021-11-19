@@ -16,8 +16,6 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public string Name => "zone";
 
-        public TripleColonExtensionType Type => TripleColonExtensionType.Zone;
-
         public bool SelfClosing => false;
 
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)

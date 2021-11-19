@@ -13,8 +13,6 @@ namespace Microsoft.Docs.MarkdigExtensions
     {
         public string Name => "video";
 
-        public TripleColonExtensionType Type => TripleColonExtensionType.Video;
-
         public bool SelfClosing => true;
 
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)

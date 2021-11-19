@@ -15,8 +15,6 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public string Name => "image";
 
-        public TripleColonExtensionType Type => TripleColonExtensionType.Image;
-
         public bool SelfClosing => true;
 
         public ImageExtension(MarkdownContext context)

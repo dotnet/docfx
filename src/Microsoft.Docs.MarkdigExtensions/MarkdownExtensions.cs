@@ -139,9 +139,9 @@ namespace Microsoft.Docs.MarkdigExtensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context, TripleColonExtensionType enabledExtensionTypes = (TripleColonExtensionType)~0)
+        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
-            pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context, enabledExtensionTypes));
+            pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context));
             return pipeline;
         }
 
