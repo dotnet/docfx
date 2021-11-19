@@ -39,21 +39,12 @@ namespace Microsoft.Docs.MarkdigExtensions
             }).ToDictionary(x => x.Name);
         }
 
-        public TripleColonExtension(MarkdownContext context, ITripleColonExtensionInfo extension)
+        public TripleColonExtension(MarkdownContext context, List<ITripleColonExtensionInfo> extension)
         {
             _context = context;
-            _extensionsBlock = new Dictionary<string, ITripleColonExtensionInfo>();
-            _extensionsInline = new Dictionary<string, ITripleColonExtensionInfo>();
-
-            if (extension.IsBlock)
-            {
-                _extensionsBlock[extension.Name] = extension;
-            }
-
-            if (extension.IsInline)
-            {
-                _extensionsInline[extension.Name] = extension;
-            }
+            extension ??= new List<ITripleColonExtensionInfo>();
+            _extensionsBlock = extension.Where(x => x.IsBlock).ToDictionary(x => x.Name);
+            _extensionsInline = extension.Where(x => x.IsInline).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
