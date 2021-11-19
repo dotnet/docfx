@@ -146,7 +146,7 @@ namespace Microsoft.Docs.MarkdigExtensions
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context, List<ITripleColonExtensionInfo> extensions)
+        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context, params ITripleColonExtensionInfo[] extensions)
         {
             pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context, extensions));
             return pipeline;

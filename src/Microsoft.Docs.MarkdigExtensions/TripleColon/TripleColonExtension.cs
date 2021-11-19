@@ -19,32 +19,21 @@ namespace Microsoft.Docs.MarkdigExtensions
         private readonly IDictionary<string, ITripleColonExtensionInfo> _extensionsInline;
 
         public TripleColonExtension(MarkdownContext context)
+            : this(
+                  context,
+                  new ZoneExtension(),
+                  new ChromelessFormExtension(),
+                  new ImageExtension(context),
+                  new CodeExtension(context),
+                  new VideoExtension())
         {
-            _context = context;
-            _extensionsBlock = (new ITripleColonExtensionInfo[]
-            {
-                new ZoneExtension(),
-                new ChromelessFormExtension(),
-                new ImageExtension(context),
-                new CodeExtension(context),
-                new VideoExtension(),
-
-                // todo: moniker range, row, etc...
-            }).ToDictionary(x => x.Name);
-
-            _extensionsInline = (new ITripleColonExtensionInfo[]
-            {
-                new ImageExtension(context),
-                new VideoExtension(),
-            }).ToDictionary(x => x.Name);
         }
 
-        public TripleColonExtension(MarkdownContext context, List<ITripleColonExtensionInfo> extension)
+        public TripleColonExtension(MarkdownContext context, params ITripleColonExtensionInfo[] extensions)
         {
             _context = context;
-            extension ??= new List<ITripleColonExtensionInfo>();
-            _extensionsBlock = extension.Where(x => x.IsBlock).ToDictionary(x => x.Name);
-            _extensionsInline = extension.Where(x => x.IsInline).ToDictionary(x => x.Name);
+            _extensionsBlock = extensions.Where(x => x.IsBlock).ToDictionary(x => x.Name);
+            _extensionsInline = extensions.Where(x => x.IsInline).ToDictionary(x => x.Name);
         }
 
         public void Setup(MarkdownPipelineBuilder pipeline)
