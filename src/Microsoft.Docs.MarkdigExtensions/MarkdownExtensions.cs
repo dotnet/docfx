@@ -145,6 +145,12 @@ namespace Microsoft.Docs.MarkdigExtensions
             return pipeline;
         }
 
+        public static MarkdownPipelineBuilder UseTripleColon<T>(this MarkdownPipelineBuilder pipeline, MarkdownContext context, T extension) where T : ITripleColonExtensionInfo
+        {
+            pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context, extension));
+            return pipeline;
+        }
+
         public static MarkdownPipelineBuilder UseNoloc(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.AddIfNotAlready(new NolocExtension());

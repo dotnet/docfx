@@ -18,6 +18,10 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public bool SelfClosing => false;
 
+        public bool IsInline => false;
+
+        public bool IsBlock => true;
+
         public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
         {
             return false;

@@ -17,6 +17,10 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public static bool EndingTripleColons => false;
 
+        public bool IsInline => false;
+
+        public bool IsBlock => true;
+
         private readonly MarkdownContext _context;
         private readonly HtmlCodeSnippetRenderer _codeSnippetRenderer;
 

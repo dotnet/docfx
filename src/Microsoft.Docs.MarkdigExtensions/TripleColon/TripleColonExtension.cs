@@ -39,6 +39,23 @@ namespace Microsoft.Docs.MarkdigExtensions
             }).ToDictionary(x => x.Name);
         }
 
+        public TripleColonExtension(MarkdownContext context, ITripleColonExtensionInfo extension)
+        {
+            _context = context;
+            _extensionsBlock = new Dictionary<string, ITripleColonExtensionInfo>();
+            _extensionsInline = new Dictionary<string, ITripleColonExtensionInfo>();
+
+            if (extension.IsBlock)
+            {
+                _extensionsBlock[extension.Name] = extension;
+            }
+
+            if (extension.IsInline)
+            {
+                _extensionsInline[extension.Name] = extension;
+            }
+        }
+
         public void Setup(MarkdownPipelineBuilder pipeline)
         {
             var parser = new TripleColonBlockParser(_context, _extensionsBlock);
@@ -68,6 +85,10 @@ namespace Microsoft.Docs.MarkdigExtensions
     public interface ITripleColonExtensionInfo
     {
         string Name { get; }
+
+        bool IsInline { get; }
+
+        bool IsBlock { get; }
 
         bool SelfClosing { get; }
 
