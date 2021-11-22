@@ -416,8 +416,16 @@ inputs:
 outputs:
   docs/a.raw.page.json: |
     {
-      "rawMetadata": { "loc_version": "2021-09-16T12:07:50.2667174Z", "other_date_string": "9/16/2012 12:07:50 PM", "conceptual": "<p>(2021-09-16T12:07:50.2667174Z)Date string should not be parsed by Json.Net.</p>\r\n" },
-      "pageMetadata": "<meta content=\"<p>(2021-09-16T12:07:50.2667174Z)Date string should not be parsed by Json.Net.</p>\r\n\" name=\"conceptual\" />\r\n<meta content=\".\" name=\"depot_name\" />\r\n<meta content=\"3862ef10-61c4-6242-7188-36960566ecb6\" name=\"document_id\" />\r\n<meta content=\"3862ef10-61c4-6242-7188-36960566ecb6\" name=\"document_version_independent_id\" />\r\n<meta content=\"2021-09-16T12:07:50.2667174Z\" name=\"loc_version\" />\r\n<meta content=\"en-us\" name=\"locale\" />\r\n<meta content=\"9/16/2012 12:07:50 PM\" name=\"other_date_string\" />\r\n<meta content=\"\" name=\"rawTitle\" />\r\n<meta content=\"Conceptual\" name=\"schema\" />\r\n<meta content=\"Docs\" name=\"site_name\" />\r\n<meta content=\"8\" name=\"wordCount\" />"
+      "pageMetadata": "
+        <meta content=\"<p>(2021-09-16T12:07:50.2667174Z)Date string should not be parsed by Json.Net.</p>\r\n\" name=\"conceptual\" />
+        <meta content=\".\" name=\"depot_name\" />\r\n<meta content=\"3862ef10-61c4-6242-7188-36960566ecb6\" name=\"document_id\" />
+        <meta content=\"3862ef10-61c4-6242-7188-36960566ecb6\" name=\"document_version_independent_id\" />
+        <meta content=\"2021-09-16T12:07:50.2667174Z\" name=\"loc_version\" />
+        <meta content=\"en-us\" name=\"locale\" />
+        <meta content=\"9/16/2012 12:07:50 PM\" name=\"other_date_string\" />
+        <meta content=\"\" name=\"rawTitle\" />
+        <meta content=\"Conceptual\" name=\"schema\" />
+        <meta content=\"Docs\" name=\"site_name\" />
+        <meta content=\"8\" name=\"wordCount\" />"
     }
-  docs/a.mta.json: |
-    { "loc_version": "2021-09-16T12:07:50.2667174Z", "other_date_string": "9/16/2012 12:07:50 PM", "conceptual": "<p>(2021-09-16T12:07:50.2667174Z)Date string should not be parsed by Json.Net.</p>\r\n" }
+  docs/a.mta.json:
