@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Polly;
 using Polly.Extensions.Http;
@@ -149,7 +150,9 @@ namespace Microsoft.Docs.Build
 
         private string DownloadFromUrl(SourceInfo<string> url)
         {
-            return s_urls.GetOrAdd((AppData.DownloadsRoot, url), _ => new Lazy<string>(() => DownloadFromUrlCore(url))).Value;
+            return s_urls.GetOrAdd(
+                (AppData.DownloadsRoot, url),
+                _ => new Lazy<string>(() => DownloadFromUrlCore(url), LazyThreadSafetyMode.ExecutionAndPublication)).Value;
         }
 
         private string DownloadFromUrlCore(string url)
