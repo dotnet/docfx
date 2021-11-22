@@ -15,6 +15,10 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public bool SelfClosing => true;
 
+        public bool IsInline => true;
+
+        public bool IsBlock => true;
+
         public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
         {
             htmlAttributes = null;
