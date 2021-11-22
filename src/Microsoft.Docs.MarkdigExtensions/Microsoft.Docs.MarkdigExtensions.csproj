@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>2.56.1</Version>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <nullable>disable</nullable>
   </PropertyGroup>
@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.22.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.244" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

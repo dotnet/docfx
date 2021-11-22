@@ -13,6 +13,7 @@ jobs:
     - uses: actions/setup-dotnet@v1
     - run: dotnet test -warnAsError -c Release
     - run: dotnet pack -warnAsError -c Release -o drop src/docfx/docfx.csproj
+    - run: dotnet pack -warnAsError -c Release -o drop src/Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj
     - name: Publish binary packages
       shell: pwsh
       run: |
