@@ -17,6 +17,10 @@ namespace Microsoft.Docs.MarkdigExtensions
 
         public bool SelfClosing => true;
 
+        public bool IsInline => true;
+
+        public bool IsBlock => true;
+
         public ImageExtension(MarkdownContext context)
         {
             _context = context;

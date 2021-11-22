@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Markdig.Extensions.CustomContainers;
@@ -142,6 +143,12 @@ namespace Microsoft.Docs.MarkdigExtensions
         public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
         {
             pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context));
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseTripleColon(this MarkdownPipelineBuilder pipeline, MarkdownContext context, params ITripleColonExtensionInfo[] extensions)
+        {
+            pipeline.Extensions.AddIfNotAlready(new TripleColonExtension(context, extensions));
             return pipeline;
         }
 
