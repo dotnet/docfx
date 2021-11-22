@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    branches: [ v3-release ]
+    branches: [ mingwli/test ]
 jobs:
   build:
     name: Release
@@ -41,9 +41,6 @@ jobs:
         automatic_release_tag: ${{ env.GitAssemblyInformationalVersion }}
         title: Version ${{ env.GitAssemblyInformationalVersion }}
         prerelease: true
+        draft: true
         files: |
           drop/docfx-bin/staging/**/*
-    - run: |
-        dotnet nuget update source docs-public-packages --username docascode --password ${{ secrets.AZURE_DEVOPS_FEED_TOKEN }}
-        dotnet nuget push --source docs-public-packages --api-key az drop/**/*.nupkg --skip-duplicate
-
