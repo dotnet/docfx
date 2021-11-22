@@ -6,6 +6,8 @@ jobs:
   build:
     name: Release
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v2
       with:
