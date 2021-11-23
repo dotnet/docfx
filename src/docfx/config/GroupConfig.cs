@@ -4,11 +4,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+internal class GroupConfig
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class GroupConfig
-    {
-        public SourceInfo<string?> MonikerRange { get; init; }
-    }
+    public SourceInfo<string?> MonikerRange { get; init; }
 }

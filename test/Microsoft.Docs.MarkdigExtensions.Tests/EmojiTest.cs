@@ -3,17 +3,16 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
-{
-    public class EmojiTest
-    {
-        [Fact]
-        public void EmojiTestGeneral()
-        {
-            var content = @"**content :** :smile:";
-            var expected = @"<p><strong>content :</strong> 😄</p>";
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
 
-            TestUtility.VerifyMarkup(content, expected);
-        }
+public class EmojiTest
+{
+    [Fact]
+    public void EmojiTestGeneral()
+    {
+        var content = @"**content :** :smile:";
+        var expected = @"<p><strong>content :</strong> 😄</p>";
+
+        TestUtility.VerifyMarkup(content, expected);
     }
 }

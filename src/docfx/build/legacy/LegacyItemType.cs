@@ -3,17 +3,16 @@
 
 using System.Runtime.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal enum LegacyItemType
 {
-    internal enum LegacyItemType
-    {
-        [EnumMember(Value = "Toc")]
-        Toc,
+    [EnumMember(Value = "Toc")]
+    Toc,
 
-        [EnumMember(Value = "Content")]
-        Content,
+    [EnumMember(Value = "Content")]
+    Content,
 
-        [EnumMember(Value = "Resource")]
-        Resource,
-    }
+    [EnumMember(Value = "Resource")]
+    Resource,
 }

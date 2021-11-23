@@ -3,24 +3,23 @@
 
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class TocModel
 {
-    internal class TocModel
+    public TocMetadata Metadata { get; }
+
+    public TocNode[] Items { get; }
+
+    [JsonProperty("_path")]
+    public string Path { get; }
+
+    public string Schema { get; } = "toc";
+
+    public TocModel(TocNode[] items, TocMetadata metadata, string path)
     {
-        public TocMetadata Metadata { get; }
-
-        public TocNode[] Items { get; }
-
-        [JsonProperty("_path")]
-        public string Path { get; }
-
-        public string Schema { get; } = "toc";
-
-        public TocModel(TocNode[] items, TocMetadata metadata, string path)
-        {
-            Items = items;
-            Metadata = metadata;
-            Path = path;
-        }
+        Items = items;
+        Metadata = metadata;
+        Path = path;
     }
 }

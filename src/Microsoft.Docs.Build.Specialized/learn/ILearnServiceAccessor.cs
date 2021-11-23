@@ -1,14 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Threading.Tasks;
+namespace Microsoft.Docs.LearnValidation;
 
-namespace Microsoft.Docs.LearnValidation
+public interface ILearnServiceAccessor
 {
-    public interface ILearnServiceAccessor
-    {
-        Task<string> HierarchyDrySync(string body);
+    Task<string> HierarchyDrySync(string body);
 
-        Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type);
-    }
+    Task<bool> CheckLearnPathItemExist(string branch, string locale, string uid, CheckItemType type);
 }

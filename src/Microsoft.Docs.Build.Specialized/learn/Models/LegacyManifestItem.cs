@@ -4,17 +4,16 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.LearnValidation
+namespace Microsoft.Docs.LearnValidation;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+public class LegacyManifestItem
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class LegacyManifestItem
-    {
-        public string AssetId { get; set; } = "";
+    public string AssetId { get; set; } = "";
 
-        public string SourceRelativePath { get; set; } = "";
+    public string SourceRelativePath { get; set; } = "";
 
-        public string OriginalType { get; set; } = "";
+    public string OriginalType { get; set; } = "";
 
-        public LegacyManifestOutput? Output { get; set; }
-    }
+    public LegacyManifestOutput? Output { get; set; }
 }

@@ -18,6 +18,7 @@
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>NU1701;AD0001</NoWarn>
+    <ImplicitUsings>enable</ImplicitUsings>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

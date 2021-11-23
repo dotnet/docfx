@@ -4,14 +4,13 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.LearnValidation
-{
-    public class LegacyManifestOutput
-    {
-        [JsonProperty(".mta.json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem? MetadataOutput { get; set; }
+namespace Microsoft.Docs.LearnValidation;
 
-        [JsonProperty(".json", NullValueHandling = NullValueHandling.Ignore)]
-        public LegacyManifestOutputItem? TocOutput { get; set; }
-    }
+public class LegacyManifestOutput
+{
+    [JsonProperty(".mta.json", NullValueHandling = NullValueHandling.Ignore)]
+    public LegacyManifestOutputItem? MetadataOutput { get; set; }
+
+    [JsonProperty(".json", NullValueHandling = NullValueHandling.Ignore)]
+    public LegacyManifestOutputItem? TocOutput { get; set; }
 }

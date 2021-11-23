@@ -1,51 +1,47 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.LearnValidation
+namespace Microsoft.Docs.LearnValidation;
+
+public class AchievementValidator : ValidatorBase
 {
-    public class AchievementValidator : ValidatorBase
+    public AchievementValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
+        : base(manifestItems, basePath, logger)
     {
-        public AchievementValidator(List<LegacyManifestItem> manifestItems, string basePath, LearnValidationLogger logger)
-            : base(manifestItems, basePath, logger)
+    }
+
+    public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
+    {
+        foreach (var item in Items)
         {
+            item.IsValid = true;
         }
 
-        public override bool Validate(Dictionary<string, IValidateModel> fullItemsDict)
+        return true;
+    }
+
+    protected override void ExtractItems()
+    {
+        if (ManifestItems == null)
         {
-            foreach (var item in Items)
+            return;
+        }
+
+        Items = ManifestItems.SelectMany(m =>
+        {
+            var path = Path.Combine(BathPath, m?.Output?.TocOutput?.RelativePath ?? "");
+            if (!File.Exists(path))
             {
-                item.IsValid = true;
+                path = m?.Output?.MetadataOutput?.LinkToPath ?? "";
             }
 
-            return true;
-        }
+            var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path)) ?? new();
 
-        protected override void ExtractItems()
-        {
-            if (ManifestItems == null)
-            {
-                return;
-            }
+            achievements.ForEach(achievement => achievement.SourceRelativePath = m?.SourceRelativePath!);
 
-            Items = ManifestItems.SelectMany(m =>
-            {
-                var path = Path.Combine(BathPath, m?.Output?.TocOutput?.RelativePath ?? "");
-                if (!File.Exists(path))
-                {
-                    path = m?.Output?.MetadataOutput?.LinkToPath ?? "";
-                }
-
-                var achievements = JsonConvert.DeserializeObject<List<AchievementValidateModel>>(File.ReadAllText(path)) ?? new();
-
-                achievements.ForEach(achievement => achievement.SourceRelativePath = m?.SourceRelativePath!);
-
-                return achievements;
-            }).Cast<IValidateModel>().ToList();
-        }
+            return achievements;
+        }).Cast<IValidateModel>().ToList();
     }
 }

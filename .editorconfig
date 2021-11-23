@@ -422,6 +422,9 @@ csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
+# File scoped namespace
+csharp_style_namespace_declarations = file_scoped:warning
+
 # Space preferences
 csharp_space_after_cast = false
 csharp_space_after_colon_in_inheritance_clause = true

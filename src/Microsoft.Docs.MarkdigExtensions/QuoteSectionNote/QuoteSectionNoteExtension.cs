@@ -6,35 +6,34 @@ using Markdig.Parsers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class QuoteSectionNoteExtension : IMarkdownExtension
 {
-    public class QuoteSectionNoteExtension : IMarkdownExtension
+    private readonly MarkdownContext _context;
+
+    public QuoteSectionNoteExtension(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public QuoteSectionNoteExtension(MarkdownContext context)
+    public void Setup(MarkdownPipelineBuilder pipeline)
+    {
+        if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
         {
-            _context = context;
+            pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
         }
+    }
 
-        public void Setup(MarkdownPipelineBuilder pipeline)
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
+        if (renderer is HtmlRenderer)
         {
-            if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
-            {
-                pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
-            }
-        }
+            var quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
 
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-        {
-            if (renderer is HtmlRenderer)
+            if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
             {
-                var quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
-
-                if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
-                {
-                    renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
-                }
+                renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
             }
         }
     }

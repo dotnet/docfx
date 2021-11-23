@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+public enum TocHrefType
 {
-    public enum TocHrefType
-    {
-        None,
-        AbsolutePath,
-        RelativeFile,
-        RelativeFolder,
-        TocFile,
-    }
+    None,
+    AbsolutePath,
+    RelativeFile,
+    RelativeFolder,
+    TocFile,
 }

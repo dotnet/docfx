@@ -11,20 +11,20 @@ using Markdig.Syntax.Inlines;
 using Microsoft.Docs.MarkdigExtensions;
 using Xunit;
 
-namespace Microsoft.Docs.Build
-{
-    public static class MarkdownElementTelemetryExtensionTest
-    {
-        [Theory]
-        [MemberData(nameof(ElementTypeTestData))]
-        public static void GetElementTypeTest(MarkdownObject node, string expectedElementType)
-        {
-            Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetElementType(node));
-        }
+namespace Microsoft.Docs.Build;
 
-        public static IEnumerable<object[]> ElementTypeTestData =>
-            new List<object[]>
-            {
+public static class MarkdownElementTelemetryExtensionTest
+{
+    [Theory]
+    [MemberData(nameof(ElementTypeTestData))]
+    public static void GetElementTypeTest(MarkdownObject node, string expectedElementType)
+    {
+        Assert.Equal(expectedElementType, MarkdownTelemetryExtension.GetElementType(node));
+    }
+
+    public static IEnumerable<object[]> ElementTypeTestData =>
+        new List<object[]>
+        {
                 new object[] { new ThematicBreakBlock(null), "ThematicBreak" },
                 new object[] { new HeadingBlock(null) { HeaderChar = '#' }, "ATXHeading" },
                 new object[] { new HeadingBlock(null) { HeaderChar = '\0' }, "SetextHeading" },
@@ -68,6 +68,5 @@ namespace Microsoft.Docs.Build
                 new object[] { new XrefInline(), "Xref" },
                 new object[] { new EmojiInline(), "Emoji" },
                 new object[] { new NolocInline(), "Noloc" },
-            };
-    }
+        };
 }

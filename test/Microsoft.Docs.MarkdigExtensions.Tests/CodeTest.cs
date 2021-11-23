@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class CodeTest
 {
-    public class CodeTest
-    {
-        private const string ContentCSharp = @"using System;
+    private const string ContentCSharp = @"using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -218,7 +217,7 @@ namespace TableSnippets
     }
 }";
 
-        private const string ContentCSharp2 = @"using System;
+    private const string ContentCSharp2 = @"using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -379,7 +378,7 @@ namespace ChangeFeedSample
     }
 }";
 
-        private const string ContentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
+    private const string ContentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -450,7 +449,7 @@ namespace TagHelpersBuiltIn
     }
 }";
 
-        private const string ContentASPNet = @"@{
+    private const string ContentASPNet = @"@{
     ViewData[""Title""] = ""Anchor Tag Helper"";
 }
 
@@ -655,7 +654,7 @@ namespace TagHelpersBuiltIn
     </tfoot>
 </table>";
 
-        private const string ContentVB = @"'<Snippet1>
+    private const string ContentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -715,7 +714,7 @@ End Class
 '</snippet3>
 ";
 
-        private const string ContentCPP = @"//<Snippet1>
+    private const string ContentCPP = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -777,7 +776,7 @@ int main()
 }
 // </snippet2>";
 
-        private const string ContentCPP2 = @"//<Snippet1>
+    private const string ContentCPP2 = @"//<Snippet1>
 using namespace System;
 using namespace System::Collections::Generic;
 
@@ -953,7 +952,7 @@ Key ""doc"" is not found.
  */
 //</ Snippet1  >";
 
-        private const string ContentCrazy = @"//<Snippet1>
+    private const string ContentCrazy = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -1015,7 +1014,7 @@ int main()
 }
 // </snippet2>";
 
-        private const string ContentSQL = @"-- <everything>
+    private const string ContentSQL = @"-- <everything>
 --<students>
 SELECT * FROM Students
 WHERE Grade = 12
@@ -1029,7 +1028,7 @@ AND Class = 'Math'
 --</teachers>
 --</everything>";
 
-        private const string ContentPython = @"#<everything>
+    private const string ContentPython = @"#<everything>
 #<first>
 from flask import Flask
 app = Flask(__name__)
@@ -1043,7 +1042,7 @@ def hello():
 #</everything>
 ";
 
-        private const string ContentBatch = @"REM <snippet>
+    private const string ContentBatch = @"REM <snippet>
 :Label1
 	:Label2
 :: Comment line 3
@@ -1051,7 +1050,7 @@ REM </snippet>
 	:: Comment line 4
 IF EXIST C:\AUTOEXEC.BAT REM AUTOEXEC.BAT exists";
 
-        private const string ContentErlang = @"-module(hello_world).
+    private const string ContentErlang = @"-module(hello_world).
 -compile(export_all).
 
 % <snippet>
@@ -1059,7 +1058,7 @@ hello() ->
     io:format(""hello world~n"").
 % </snippet>";
 
-        private const string ContentLisp = @";<everything>
+    private const string ContentLisp = @";<everything>
 USER(64): (member 'b '(perhaps today is a good day to die)) ; test fails
 NIL
 ;<inner>
@@ -1068,7 +1067,7 @@ USER(65): (member 'a '(perhaps today is a good day to die)) ; returns non-NIL
 ; </inner>
 ;</everything>";
 
-        private const string ContentRuby = @"source 'https://rubygems.org'
+    private const string ContentRuby = @"source 'https://rubygems.org'
 git_source(:github) { |repo| ""https://github.com/#{repo}.git"" }
 
 ruby '2.6.5'
@@ -1131,7 +1130,7 @@ gem 'activerecord-session_store', '~> 1.1'
 # </GemFileSnippet>
 ";
 
-        private const string ContentCSS = @"body {
+    private const string ContentCSS = @"body {
   padding-top: 70px;
 }
 
@@ -1142,12 +1141,12 @@ div {
 /*</Snippet1>*/
 ";
 
-        [Theory]
-        [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
+    [Theory]
+    [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
 <code class=""lang-csharp"">namespace TableSnippets
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.cs"" range=""11 - 33, 40-44"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">/// &lt;summary&gt;
 /// Interaction logic for Window1.xaml
 /// &lt;/summary&gt;
@@ -1178,17 +1177,17 @@ public partial class Window1 : Window
         // &lt;Snippet_Table_Columns_Insert&gt;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.cs"" range=""1-2"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">using System;
 using System.Windows;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" range=""1-2"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.cs"" range=""1-2"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-csharp"" data-interactive=""csharp"" data-interactive-mode=""try-dotnet"">using System;
 using System.Windows;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.cs"" range=""1-2,205-"" highlight=""6-7"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"" highlight-lines=""6-7"">using System;
 using System.Windows;
             TableCell cellx = new TableCell(para);
@@ -1198,14 +1197,14 @@ using System.Windows;
 }
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.cs"" id=""Snippet_Table_RowGroups_Add"" language=""azurecli"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-azurecli"" data-interactive=""azurecli"" data-interactive-mode=""try-dotnet"">Table tbl = new Table();
 int rowGroupsToAdd = 4;
 for (int x = 0; x &lt; rowGroupsToAdd; x++)
     tbl.RowGroups.Add(new TableRowGroup());
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.vb"" id=""snippet2"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.vb"" id=""snippet2"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">Imports System.Reflection
 
 Class AppDomain1
@@ -1219,7 +1218,7 @@ Class AppDomain1
 End Class
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.vb"" id=""snippet1"" interactive=""try-dotnet"":::", @"<pre>
+    [InlineData(@":::code source=""source.vb"" id=""snippet1"" interactive=""try-dotnet"":::", @"<pre>
 <code class=""lang-vb"" data-interactive=""vb"" data-interactive-mode=""try-dotnet"">Class ADSetupInformation
 
     Shared Sub Main()
@@ -1249,7 +1248,7 @@ End Class
 &#39;        C:\Program Files\MyApp\MyAppSubfolder\
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::", @"<pre>
+    [InlineData(@":::code source=""source.cpp"" id=""snippet2"":::", @"<pre>
 <code class=""lang-cpp"">using namespace System;
 using namespace System::Reflection;
 
@@ -1281,8 +1280,8 @@ int main()
 }
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.cpp"" id=""snippet2"":::
+    [InlineData(
+        @":::code source=""source.cpp"" id=""snippet2"":::
 
 hi
 :::code source=""source.cpp"" id=""snippet1"":::
@@ -1347,8 +1346,8 @@ Application base of MyDomain:
  */
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source2.cs"" id=""snippet_UseMvc"":::
+    [InlineData(
+        @":::code source=""source2.cs"" id=""snippet_UseMvc"":::
 ", @"<pre>
 <code class=""lang-csharp"">app.UseMvc(routes =&gt;
 {
@@ -1362,15 +1361,15 @@ Application base of MyDomain:
         template: &quot;{controller=Home}/{action=Index}/{id?}&quot;);
 });
 </code></pre>")]
-        [InlineData(
-            @":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
+    [InlineData(
+        @":::code source=""source2.cs"" id=""snippet_AllowAreas"":::
 ", @"<pre>
 <code class=""lang-csharp"">services.AddMvc()
         .AddRazorPagesOptions(options =&gt; options.AllowAreas = true);
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.vb"" id=""snippet3"":::
+    [InlineData(
+        @":::code source=""source.vb"" id=""snippet3"":::
 ", @"<pre>
 <code class=""lang-vb"">Imports System.Reflection
 
@@ -1384,8 +1383,8 @@ Class AppDomain2
 End Class
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
+    [InlineData(
+        @":::code source=""asp.cshtml"" id=""snippet_BigSnippet"":::
 ", @"<pre>
 <code class=""lang-cshtml"">&lt;tbody&gt;
     &lt;tr&gt;
@@ -1546,16 +1545,16 @@ End Class
 &lt;/tbody&gt;
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.sql"" id=""teachers"":::
+    [InlineData(
+        @":::code source=""source.sql"" id=""teachers"":::
 ", @"<pre>
 <code class=""lang-sql"">SELECT * FROM Teachers
 WHERE Grade = 12
 AND Class = &#39;Math&#39;
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.sql"" id=""everything"":::
+    [InlineData(
+        @":::code source=""source.sql"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-sql"">SELECT * FROM Students
 WHERE Grade = 12
@@ -1566,8 +1565,8 @@ WHERE Grade = 12
 AND Class = &#39;Math&#39;
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.py"" id=""everything"":::
+    [InlineData(
+        @":::code source=""source.py"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-python"">from flask import Flask
 app = Flask(__name__)
@@ -1577,22 +1576,22 @@ def hello():
     return &quot;Hello World!&quot;
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.bat"" id=""snippet"":::
+    [InlineData(
+        @":::code source=""source.bat"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-batchfile"">:Label1
     :Label2
 :: Comment line 3
 </code></pre>")]
-        [InlineData(
-            @":::code source=""source.erl"" id=""snippet"":::
+    [InlineData(
+        @":::code source=""source.erl"" id=""snippet"":::
 ", @"<pre>
 <code class=""lang-erlang"">hello() -&gt;
     io:format(&quot;hello world~n&quot;).
 </code></pre>
 ")]
-        [InlineData(
-            @":::code source=""source.lsp"" id=""everything"":::
+    [InlineData(
+        @":::code source=""source.lsp"" id=""everything"":::
 ", @"<pre>
 <code class=""lang-lisp"">USER(64): (member &#39;b &#39;(perhaps today is a good day to die)) ; test fails
 NIL
@@ -1600,8 +1599,8 @@ USER(65): (member &#39;a &#39;(perhaps today is a good day to die)) ; returns no
 &#39;(a good day to die)
 </code></pre>
 ")]
-        [InlineData(
-            @"An example of a delegate would be:
+    [InlineData(
+        @"An example of a delegate would be:
 
 :::code language=""csharp"" source=""source3.cs"" id=""Delegate"":::", @"<p>An example of a delegate would be:</p>
 <pre>
@@ -1622,7 +1621,7 @@ static async Task HandleChangesAsync(IReadOnlyCollection&lt;ToDoItem&gt; changes
 }
 </code></pre>
 ")]
-        [InlineData(@":::code source=""source2.cpp"" id=""Snippet1"":::", @"<pre>
+    [InlineData(@":::code source=""source2.cpp"" id=""Snippet1"":::", @"<pre>
 <code class=""lang-cpp"">using namespace System;
 using namespace System::Collections::Generic;
 
@@ -1780,7 +1779,7 @@ Key &quot;doc&quot; is not found.
  */
 </code></pre>
 ")]
-        [InlineData(@":::code source=""GemFile"" id=""GemFileSnippet"" language=""ruby"":::", @"<pre>
+    [InlineData(@":::code source=""GemFile"" id=""GemFileSnippet"" language=""ruby"":::", @"<pre>
 <code class=""lang-ruby""># OAuth
 gem &#39;omniauth-oauth2&#39;, &#39;~&gt; 1.6&#39;
 # OmniAuth CSRF protection
@@ -1791,141 +1790,140 @@ gem &#39;httparty&#39;, &#39;~&gt; 0.17.1&#39;
 gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
 </code></pre>
 ")]
-        [InlineData(@":::code source=""styles.css"" id=""Snippet1"" language=""css"":::", @"<pre>
+    [InlineData(@":::code source=""styles.css"" id=""Snippet1"" language=""css"":::", @"<pre>
 <code class=""lang-css"">div {
   padding-top: 70px;
 }
 </code></pre>
 ")]
-        public void CodeTestBlockGeneral(string source, string expected)
+    public void CodeTestBlockGeneral(string source, string expected)
+    {
+        var filename = "";
+        var content = "";
+
+        // arrange
+        if (source.Contains("source.cs"))
         {
-            var filename = "";
-            var content = "";
+            filename = "source.cs";
+            content = ContentCSharp;
+        }
+        else if (source.Contains("source2.cs"))
+        {
+            filename = "source2.cs";
+            content = ContentCSharpRegion;
+        }
+        else if (source.Contains("source3.cs"))
+        {
+            filename = "source3.cs";
+            content = ContentCSharp2;
+        }
+        else if (source.Contains("asp.cshtml"))
+        {
+            filename = "asp.cshtml";
+            content = ContentASPNet;
+        }
+        else if (source.Contains("source.vb"))
+        {
+            filename = "source.vb";
+            content = ContentVB;
+        }
+        else if (source.Contains("source.cpp"))
+        {
+            filename = "source.cpp";
+            content = ContentCPP;
+        }
+        else if (source.Contains("source2.cpp"))
+        {
+            filename = "source2.cpp";
+            content = ContentCPP2;
+        }
+        else if (source.Contains("source.sql"))
+        {
+            filename = "source.sql";
+            content = ContentSQL;
+        }
+        else if (source.Contains("source.py"))
+        {
+            filename = "source.py";
+            content = ContentPython;
+        }
+        else if (source.Contains("source.bat"))
+        {
+            filename = "source.bat";
+            content = ContentBatch;
+        }
+        else if (source.Contains("source.erl"))
+        {
+            filename = "source.erl";
+            content = ContentErlang;
+        }
+        else if (source.Contains("source.lsp"))
+        {
+            filename = "source.lsp";
+            content = ContentLisp;
+        }
+        else if (source.Contains("GemFile"))
+        {
+            filename = "GemFile";
+            content = ContentRuby;
+        }
+        else if (source.Contains("styles.css"))
+        {
+            filename = "styles.css";
+            content = ContentCSS;
+        }
 
-            // arrange
-            if (source.Contains("source.cs"))
-            {
-                filename = "source.cs";
-                content = ContentCSharp;
-            }
-            else if (source.Contains("source2.cs"))
-            {
-                filename = "source2.cs";
-                content = ContentCSharpRegion;
-            }
-            else if (source.Contains("source3.cs"))
-            {
-                filename = "source3.cs";
-                content = ContentCSharp2;
-            }
-            else if (source.Contains("asp.cshtml"))
-            {
-                filename = "asp.cshtml";
-                content = ContentASPNet;
-            }
-            else if (source.Contains("source.vb"))
-            {
-                filename = "source.vb";
-                content = ContentVB;
-            }
-            else if (source.Contains("source.cpp"))
-            {
-                filename = "source.cpp";
-                content = ContentCPP;
-            }
-            else if (source.Contains("source2.cpp"))
-            {
-                filename = "source2.cpp";
-                content = ContentCPP2;
-            }
-            else if (source.Contains("source.sql"))
-            {
-                filename = "source.sql";
-                content = ContentSQL;
-            }
-            else if (source.Contains("source.py"))
-            {
-                filename = "source.py";
-                content = ContentPython;
-            }
-            else if (source.Contains("source.bat"))
-            {
-                filename = "source.bat";
-                content = ContentBatch;
-            }
-            else if (source.Contains("source.erl"))
-            {
-                filename = "source.erl";
-                content = ContentErlang;
-            }
-            else if (source.Contains("source.lsp"))
-            {
-                filename = "source.lsp";
-                content = ContentLisp;
-            }
-            else if (source.Contains("GemFile"))
-            {
-                filename = "GemFile";
-                content = ContentRuby;
-            }
-            else if (source.Contains("styles.css"))
-            {
-                filename = "styles.css";
-                content = ContentCSS;
-            }
+        // act
 
-            // act
-
-            // assert
-            TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
+        // assert
+        TestUtility.VerifyMarkup(source, expected, files: new Dictionary<string, string>
             {
                 { filename, content },
             });
+    }
+
+    [Theory]
+    [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
+    [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
+    [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
+    [InlineData(@":::code source=""source.missing"" range=""1-3"" interactive=""try-dotnet"" language=""azurecli"":::")]
+    public void CodeTestBlockGeneralCSharp_Error(string source)
+    {
+        // arrange
+        string filename;
+        string content;
+        if (source.Contains("source.cs"))
+        {
+            filename = "source.cs";
+            content = ContentCSharp;
+        }
+        else if (source.Contains("source.vb"))
+        {
+            filename = "source.vb";
+            content = ContentVB;
+        }
+        else if (source.Contains("source.cpp"))
+        {
+            filename = "source.cpp";
+            content = ContentCPP;
+        }
+        else if (source.Contains("source.crazy"))
+        {
+            filename = "source.crazy";
+            content = ContentCrazy;
+        }
+        else
+        {
+            filename = "source.missing";
+            content = "";
         }
 
-        [Theory]
-        [InlineData(@":::code source=""source.cs"" badattribute=""ham"" range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code range=""1-5"" language=""azurecli"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.crazy"" range=""1-3"" interactive=""try-dotnet"":::")]
-        [InlineData(@":::code source=""source.missing"" range=""1-3"" interactive=""try-dotnet"" language=""azurecli"":::")]
-        public void CodeTestBlockGeneralCSharp_Error(string source)
-        {
-            // arrange
-            string filename;
-            string content;
-            if (source.Contains("source.cs"))
-            {
-                filename = "source.cs";
-                content = ContentCSharp;
-            }
-            else if (source.Contains("source.vb"))
-            {
-                filename = "source.vb";
-                content = ContentVB;
-            }
-            else if (source.Contains("source.cpp"))
-            {
-                filename = "source.cpp";
-                content = ContentCPP;
-            }
-            else if (source.Contains("source.crazy"))
-            {
-                filename = "source.crazy";
-                content = ContentCrazy;
-            }
-            else
-            {
-                filename = "source.missing";
-                content = "";
-            }
+        // act
 
-            // act
-
-            // assert
-            TestUtility.VerifyMarkup(source, null, errors: new string[] { "invalid-code" }, files: new Dictionary<string, string>
+        // assert
+        TestUtility.VerifyMarkup(source, null, errors: new string[] { "invalid-code" }, files: new Dictionary<string, string>
             {
                 { filename, content },
             });
-        }
     }
 }
