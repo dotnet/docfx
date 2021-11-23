@@ -17,6 +17,8 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     - run: dotnet build -warnAsError -c Release
     - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v1
