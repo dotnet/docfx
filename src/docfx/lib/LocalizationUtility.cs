@@ -170,7 +170,7 @@ namespace Microsoft.Docs.Build
             if (match.Success && match.Groups.Count >= 2 && !string.IsNullOrEmpty(match.Groups[1].Value))
             {
                 locale = match.Groups[1].Value[1..].ToLowerInvariant();
-                nameWithoutLocale = name.Substring(0, name.Length - match.Groups[1].Value.Length).ToLowerInvariant();
+                nameWithoutLocale = name[..^match.Groups[1].Value.Length].ToLowerInvariant();
                 return true;
             }
 

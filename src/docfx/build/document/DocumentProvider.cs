@@ -255,13 +255,13 @@ namespace Microsoft.Docs.Build
                     if (Path.GetFileNameWithoutExtension(path).Equals("index", PathUtility.PathComparison))
                     {
                         var i = url.LastIndexOf('/');
-                        return i >= 0 ? url.Substring(0, i + 1) : "./";
+                        return i >= 0 ? url[..(i + 1)] : "./";
                     }
                 }
                 if (urlType == UrlType.Docs && contentType != ContentType.Toc)
                 {
                     var i = url.LastIndexOf('.');
-                    return i >= 0 ? url.Substring(0, i) : url;
+                    return i >= 0 ? url[..i] : url;
                 }
             }
             return url;

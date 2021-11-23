@@ -52,11 +52,11 @@ namespace Microsoft.Docs.Build
                 if (queryIndex >= 0)
                 {
                     query = url[queryIndex..fragmentIndex];
-                    path = url.Substring(0, queryIndex);
+                    path = url[..queryIndex];
                 }
                 else
                 {
-                    path = url.Substring(0, fragmentIndex);
+                    path = url[..fragmentIndex];
                 }
             }
             else
@@ -65,7 +65,7 @@ namespace Microsoft.Docs.Build
                 if (queryIndex >= 0)
                 {
                     query = url[queryIndex..];
-                    path = url.Substring(0, queryIndex);
+                    path = url[..queryIndex];
                 }
                 else
                 {
@@ -342,7 +342,7 @@ namespace Microsoft.Docs.Build
                 return $"/{path}";
             }
 
-            var firstSegment = path.Substring(0, slashIndex);
+            var firstSegment = path[..slashIndex];
             return LocalizationUtility.IsValidLocale(firstSegment)
                 ? $"{path[firstSegment.Length..]}"
                 : $"/{path}";

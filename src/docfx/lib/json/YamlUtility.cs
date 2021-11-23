@@ -19,7 +19,7 @@ namespace Microsoft.Docs.Build
         public static string? ReadMime(TextReader reader)
         {
             var mime = ReadMime(reader.ReadLine() ?? "");
-            if (string.Compare(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Equals(mime, "YamlDocument", StringComparison.OrdinalIgnoreCase))
             {
                 return ReadDocumentType(reader);
             }
@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
                 return null;
             }
             var i = yaml.IndexOf('\n');
-            return yaml.Substring(0, i < 0 ? yaml.Length : i).TrimStart('#').Trim();
+            return yaml[..(i < 0 ? yaml.Length : i)].TrimStart('#').Trim();
         }
 
         /// <summary>

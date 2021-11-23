@@ -49,7 +49,7 @@ namespace Microsoft.Docs.Build
             {
                 if (filePath.EndsWith(ext))
                 {
-                    filePath = $"{filePath.Substring(0, filePath.Length - ext.Length)}{extension}";
+                    filePath = $"{filePath[..^ext.Length]}{extension}";
                     return true;
                 }
                 return false;

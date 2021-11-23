@@ -379,7 +379,7 @@ namespace Microsoft.Docs.Build
                     var regex = new Regex(@"^[|:-]*$");
                     var lineText = totalText.ToString();
                     tableHeaderExist = tableHeaderExist || regex.IsMatch(lineText);
-                    if (lineText.Contains("|"))
+                    if (lineText.Contains('|'))
                     {
                         pipeDelimiterCount.Add(lineText.Count(x => x == '|'));
                         tableDelimiterExistLine++;

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build
     {
         public static void AddIfNotNull<T>(this IList<T> list, T? value) where T : class
         {
-            if (!(value is null))
+            if (value is not null)
             {
                 list.Add(value);
             }

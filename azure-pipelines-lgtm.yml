@@ -9,7 +9,7 @@ pr: none
 
 variables:
 - name: dotnetVersion
-  value: 5.0.x
+  value: 6.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel

@@ -122,7 +122,7 @@ namespace Microsoft.Docs.Build
                 var pipeIndex = title.IndexOf('|');
                 if (pipeIndex > 5)
                 {
-                    return $"{title.Substring(0, pipeIndex)} - {titleSuffix}";
+                    return $"{title[..pipeIndex]} - {titleSuffix}";
                 }
                 return $"{title} - {titleSuffix}";
             }

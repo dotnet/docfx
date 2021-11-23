@@ -21,7 +21,7 @@ namespace Microsoft.Docs.LearnValidation
 
         public HashSet<string> GetFilesToDelete()
         {
-            var uidMapping = _hierarchyItems.Where(h => !(h is AchievementValidateModel)).GroupBy(h => h.Uid).ToDictionary(key => key.Key, value => value.First());
+            var uidMapping = _hierarchyItems.Where(h => h is not AchievementValidateModel).GroupBy(h => h.Uid).ToDictionary(key => key.Key, value => value.First());
             var modules = _hierarchyItems.Where(hi => hi is ModuleValidateModel).Select(hi => hi as ModuleValidateModel);
             var learningpaths = _hierarchyItems.Where(hi => hi is PathValidateModel).Select(hi => hi as PathValidateModel);
 

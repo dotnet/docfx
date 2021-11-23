@@ -60,7 +60,7 @@ namespace Microsoft.Docs.Build
 
         private static bool IsEmptyArray(object value)
         {
-            return !(value is string) && value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext();
+            return value is not string && value is IEnumerable enumerable && !enumerable.GetEnumerator().MoveNext();
         }
 
         private static void HandleSourceInfo(JsonProperty property)
