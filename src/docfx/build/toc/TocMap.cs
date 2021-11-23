@@ -1,297 +1,292 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+/// <summary>
+/// The mappings between toc and document
+/// </summary>
+internal class TocMap
 {
-    /// <summary>
-    /// The mappings between toc and document
-    /// </summary>
-    internal class TocMap
+    private readonly Config _config;
+    private readonly Input _input;
+    private readonly ErrorBuilder _errors;
+    private readonly BuildScope _buildScope;
+    private readonly TocLoader _tocLoader;
+    private readonly TocParser _tocParser;
+    private readonly DocumentProvider _documentProvider;
+    private readonly DependencyMapBuilder _dependencyMapBuilder;
+    private readonly ContentValidator _contentValidator;
+    private readonly PublishUrlMap _publishUrlMap;
+
+    private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
+
+    public TocMap(
+        Config config,
+        ErrorBuilder errors,
+        Input input,
+        BuildScope buildScope,
+        DependencyMapBuilder dependencyMapBuilder,
+        TocParser tocParser,
+        TocLoader tocLoader,
+        DocumentProvider documentProvider,
+        ContentValidator contentValidator,
+        PublishUrlMap publishUrlMap)
     {
-        private readonly Config _config;
-        private readonly Input _input;
-        private readonly ErrorBuilder _errors;
-        private readonly BuildScope _buildScope;
-        private readonly TocLoader _tocLoader;
-        private readonly TocParser _tocParser;
-        private readonly DocumentProvider _documentProvider;
-        private readonly DependencyMapBuilder _dependencyMapBuilder;
-        private readonly ContentValidator _contentValidator;
-        private readonly PublishUrlMap _publishUrlMap;
+        _config = config;
+        _errors = errors;
+        _input = input;
+        _buildScope = buildScope;
+        _tocParser = tocParser;
+        _tocLoader = tocLoader;
+        _documentProvider = documentProvider;
+        _dependencyMapBuilder = dependencyMapBuilder;
+        _contentValidator = contentValidator;
+        _publishUrlMap = publishUrlMap;
+        _tocs = new(BuildTocMap);
+    }
 
-        private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
+    public IEnumerable<FilePath> GetFiles()
+    {
+        return _tocs.Value.tocs.Concat(_tocs.Value.servicePages);
+    }
 
-        public TocMap(
-            Config config,
-            ErrorBuilder errors,
-            Input input,
-            BuildScope buildScope,
-            DependencyMapBuilder dependencyMapBuilder,
-            TocParser tocParser,
-            TocLoader tocLoader,
-            DocumentProvider documentProvider,
-            ContentValidator contentValidator,
-            PublishUrlMap publishUrlMap)
+    /// <summary>
+    /// Find the toc relative path to document
+    /// </summary>
+    /// <param name="file">Document</param>
+    /// <returns>The toc relative path</returns>
+    public string? FindTocRelativePath(FilePath file)
+    {
+        var nearestToc = FindNearestToc(file);
+        if (nearestToc is null)
         {
-            _config = config;
-            _errors = errors;
-            _input = input;
-            _buildScope = buildScope;
-            _tocParser = tocParser;
-            _tocLoader = tocLoader;
-            _documentProvider = documentProvider;
-            _dependencyMapBuilder = dependencyMapBuilder;
-            _contentValidator = contentValidator;
-            _publishUrlMap = publishUrlMap;
-            _tocs = new(BuildTocMap);
+            return null;
         }
 
-        public IEnumerable<FilePath> GetFiles()
-        {
-            return _tocs.Value.tocs.Concat(_tocs.Value.servicePages);
-        }
+        _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
+        return UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(file), _documentProvider.GetSiteUrl(nearestToc));
+    }
 
-        /// <summary>
-        /// Find the toc relative path to document
-        /// </summary>
-        /// <param name="file">Document</param>
-        /// <returns>The toc relative path</returns>
-        public string? FindTocRelativePath(FilePath file)
+    /// <summary>
+    /// Return the nearest toc relative to the current file
+    /// "near" means less subdirectory count
+    /// when subdirectory counts are same, "near" means less parent directory count
+    /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
+    /// when the file is not referenced, return only toc in the same or higher folder level.
+    /// </summary>
+    internal FilePath? FindNearestToc(FilePath file)
+    {
+        var (toc, hasReferencedTocs) = FindNearestToc(
+            file,
+            _tocs.Value.tocs,
+            _tocs.Value.docToTocs,
+            file => file.Path);
+
+        _contentValidator.ValidateTocMissing(file, hasReferencedTocs);
+        return toc;
+    }
+
+    /// <summary>
+    /// Compare two toc candidate relative to target file.
+    /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
+    /// 1. sub nearest(based on file path)
+    /// 2. parent nearest(based on file path)
+    /// 3. sub-name lexicographical nearest
+    /// </summary>
+    internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(
+        T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
+    {
+        var hasReferencedTocs = false;
+        var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
+
+        var tocCandidates = from toc in filteredTocs
+                            let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
+                            where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
+                            select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
+
+        return (tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
         {
-            var nearestToc = FindNearestToc(file);
-            if (nearestToc is null)
+            var result = minCandidate.subCount - nextCandidate.subCount;
+            if (result == 0)
             {
-                return null;
+                result = minCandidate.parentCount - nextCandidate.parentCount;
             }
-
-            _dependencyMapBuilder.AddDependencyItem(file, nearestToc, DependencyType.Metadata);
-            return UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(file), _documentProvider.GetSiteUrl(nearestToc));
-        }
-
-        /// <summary>
-        /// Return the nearest toc relative to the current file
-        /// "near" means less subdirectory count
-        /// when subdirectory counts are same, "near" means less parent directory count
-        /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
-        /// when the file is not referenced, return only toc in the same or higher folder level.
-        /// </summary>
-        internal FilePath? FindNearestToc(FilePath file)
-        {
-            var (toc, hasReferencedTocs) = FindNearestToc(
-                file,
-                _tocs.Value.tocs,
-                _tocs.Value.docToTocs,
-                file => file.Path);
-
-            _contentValidator.ValidateTocMissing(file, hasReferencedTocs);
-            return toc;
-        }
-
-        /// <summary>
-        /// Compare two toc candidate relative to target file.
-        /// Return negative if x is closer than y, positive if x is farer than y, 0 if x equals y.
-        /// 1. sub nearest(based on file path)
-        /// 2. parent nearest(based on file path)
-        /// 3. sub-name lexicographical nearest
-        /// </summary>
-        internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(
-            T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
-        {
-            var hasReferencedTocs = false;
-            var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
-
-            var tocCandidates = from toc in filteredTocs
-                                let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
-                                where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                                select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
-
-            return (tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
+            if (result == 0)
             {
-                var result = minCandidate.subCount - nextCandidate.subCount;
-                if (result == 0)
-                {
-                    result = minCandidate.parentCount - nextCandidate.parentCount;
-                }
-                if (result == 0)
-                {
-                    result = minCandidate.toc.CompareTo(nextCandidate.toc);
-                }
-                return result <= 0 ? minCandidate : nextCandidate;
-            }).toc, hasReferencedTocs);
-        }
-
-        private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
-        {
-            var relativePath = PathUtility.NormalizeFile(Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
-            if (string.IsNullOrEmpty(relativePath))
-            {
-                return default;
+                result = minCandidate.toc.CompareTo(nextCandidate.toc);
             }
+            return result <= 0 ? minCandidate : nextCandidate;
+        }).toc, hasReferencedTocs);
+    }
 
-            // todo: perf optimization, don't split '/' here again.
-            var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
-            var parentDirectoryCount = 0;
-            var subDirectoryCount = 0;
-
-            foreach (var part in relativePathParts)
-            {
-                switch (part)
-                {
-                    case "..":
-                        parentDirectoryCount++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
-            return (subDirectoryCount, parentDirectoryCount);
+    private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
+    {
+        var relativePath = PathUtility.NormalizeFile(Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
+        if (string.IsNullOrEmpty(relativePath))
+        {
+            return default;
         }
 
-        private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
-            BuildTocMap()
+        // todo: perf optimization, don't split '/' here again.
+        var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
+        var parentDirectoryCount = 0;
+        var subDirectoryCount = 0;
+
+        foreach (var part in relativePathParts)
         {
-            using var scope = Progress.Start("Loading TOC");
-            var tocs = new ConcurrentBag<FilePath>();
-            var allServicePages = new ConcurrentBag<FilePath>();
-
-            // Parse and split TOC
-            ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
+            switch (part)
             {
-                SplitToc(file, _tocParser.Parse(file, _errors), tocs);
-            });
-
-            var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
-
-            // Load TOC
-            ParallelUtility.ForEach(scope, _errors, tocs, file =>
-            {
-                var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
-
-                tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
-
-                foreach (var servicePage in servicePages)
-                {
-                    allServicePages.Add(servicePage);
-                }
-            });
-
-            // Create TOC reference map
-            var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
-
-            var tocToTocs = (
-                from item in tocReferences
-                where !includedTocs.Contains(item.Key)
-                select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
-
-            var docToTocs = (
-                from item in tocReferences
-                from doc in item.Value.docs
-                where tocToTocs.ContainsKey(item.Key)
-                group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
-
-            docToTocs.TrimExcess();
-
-            var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
-            docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
-
-            var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
-
-            return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
-
-            bool ShouldBuildFile(FilePath file)
-            {
-                if (file.Origin != FileOrigin.Fallback)
-                {
-                    return true;
-                }
-
-                // if A toc includes B toc and only B toc is localized, then A need to be included and built
-                if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
-                {
-                    return true;
-                }
-
-                return false;
+                case "..":
+                    parentDirectoryCount++;
+                    break;
+                default:
+                    break;
             }
         }
 
-        private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
+        subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
+        return (subDirectoryCount, parentDirectoryCount);
+    }
+
+    private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
+        BuildTocMap()
+    {
+        using var scope = Progress.Start("Loading TOC");
+        var tocs = new ConcurrentBag<FilePath>();
+        var allServicePages = new ConcurrentBag<FilePath>();
+
+        // Parse and split TOC
+        ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
         {
-            if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
+            SplitToc(file, _tocParser.Parse(file, _errors), tocs);
+        });
+
+        var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
+
+        // Load TOC
+        ParallelUtility.ForEach(scope, _errors, tocs, file =>
+        {
+            var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
+
+            tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
+
+            foreach (var servicePage in servicePages)
             {
-                result.Add(file);
-                return;
+                allServicePages.Add(servicePage);
+            }
+        });
+
+        // Create TOC reference map
+        var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
+
+        var tocToTocs = (
+            from item in tocReferences
+            where !includedTocs.Contains(item.Key)
+            select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
+
+        var docToTocs = (
+            from item in tocReferences
+            from doc in item.Value.docs
+            where tocToTocs.ContainsKey(item.Key)
+            group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+
+        docToTocs.TrimExcess();
+
+        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
+        docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
+
+        var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
+
+        return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
+
+        bool ShouldBuildFile(FilePath file)
+        {
+            if (file.Origin != FileOrigin.Fallback)
+            {
+                return true;
             }
 
-            var newToc = new TocNode(toc);
-
-            foreach (var item in toc.Items)
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
             {
-                var child = item.Value;
-                if (child.Items.Count == 0)
-                {
-                    newToc.Items.Add(item);
-                    continue;
-                }
-
-                var newNode = SplitTocNode(child);
-                var newNodeToken = JsonUtility.ToJObject(newNode);
-                var name = newNodeToken.TryGetValue<JValue>("name", out var splitByValue) ? splitByValue.ToString() : null;
-                if (string.IsNullOrEmpty(name))
-                {
-                    newToc.Items.Add(item);
-                    continue;
-                }
-
-                var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
-                var newNodeFile = FilePath.Generated(newNodeFilePath);
-
-                _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
-                result.Add(newNodeFile);
-
-                var newChild = new TocNode(child)
-                {
-                    Href = child.Href.With($"_splitted/{name}/"),
-                };
-
-                newToc.Items.Add(new SourceInfo<TocNode>(newChild, item.Source));
+                return true;
             }
 
-            var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
-            var newTocFile = FilePath.Generated(newTocFilePath);
-            _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
-            result.Add(newTocFile);
+            return false;
+        }
+    }
+
+    private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
+    {
+        if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
+        {
+            result.Add(file);
+            return;
         }
 
-        private TocNode SplitTocNode(TocNode node)
+        var newToc = new TocNode(toc);
+
+        foreach (var item in toc.Items)
         {
-            var newNode = new TocNode(node)
+            var child = item.Value;
+            if (child.Items.Count == 0)
             {
-                TopicHref = node.TopicHref.With(FixHref(node.TopicHref)),
-                TocHref = node.TopicHref.With(FixHref(node.TocHref)),
-                Href = node.TopicHref.With(FixHref(node.Href)),
+                newToc.Items.Add(item);
+                continue;
+            }
+
+            var newNode = SplitTocNode(child);
+            var newNodeToken = JsonUtility.ToJObject(newNode);
+            var name = newNodeToken.TryGetValue<JValue>("name", out var splitByValue) ? splitByValue.ToString() : null;
+            if (string.IsNullOrEmpty(name))
+            {
+                newToc.Items.Add(item);
+                continue;
+            }
+
+            var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
+            var newNodeFile = FilePath.Generated(newNodeFilePath);
+
+            _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
+            result.Add(newNodeFile);
+
+            var newChild = new TocNode(child)
+            {
+                Href = child.Href.With($"_splitted/{name}/"),
             };
 
-            foreach (var item in node.Items)
-            {
-                newNode.Items.Add(item.With(SplitTocNode(item)));
-            }
+            newToc.Items.Add(new SourceInfo<TocNode>(newChild, item.Source));
+        }
 
-            return newNode;
+        var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
+        var newTocFile = FilePath.Generated(newTocFilePath);
+        _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
+        result.Add(newTocFile);
+    }
 
-            static string? FixHref(string? href)
-            {
-                return href != null && UrlUtility.GetLinkType(href) == LinkType.RelativePath ? Path.Combine("../../", href) : href;
-            }
+    private TocNode SplitTocNode(TocNode node)
+    {
+        var newNode = new TocNode(node)
+        {
+            TopicHref = node.TopicHref.With(FixHref(node.TopicHref)),
+            TocHref = node.TopicHref.With(FixHref(node.TocHref)),
+            Href = node.TopicHref.With(FixHref(node.Href)),
+        };
+
+        foreach (var item in node.Items)
+        {
+            newNode.Items.Add(item.With(SplitTocNode(item)));
+        }
+
+        return newNode;
+
+        static string? FixHref(string? href)
+        {
+            return href != null && UrlUtility.GetLinkType(href) == LinkType.RelativePath ? Path.Combine("../../", href) : href;
         }
     }
 }

@@ -3,22 +3,22 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class TabGroupTest
 {
-    public class TabGroupTest
+    [Fact]
+    [Trait("Related", "TabGroup")]
+    public void Test_General()
     {
-        [Fact]
-        [Trait("Related", "TabGroup")]
-        public void Test_General()
-        {
-            TestMarkupInGeneral(
-                @"Tab group test case
+        TestMarkupInGeneral(
+            @"Tab group test case
 # [title-a](#tab/a)
 content-a
 # [title-b](#tab/b/c)
 content-b
 - - -",
-                $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"">Tab group test case</p>
+            $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"">Tab group test case</p>
 <div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -38,14 +38,14 @@ content-b
 </section>
 </div>
 ");
-        }
+    }
 
-        [Fact]
-        [Trait("Related", "TabGroup")]
-        public void Test_TabGroup_Combining()
-        {
-            TestMarkupInGeneral(
-                @"# [title-a or b](#tab/a+b)
+    [Fact]
+    [Trait("Related", "TabGroup")]
+    public void Test_TabGroup_Combining()
+    {
+        TestMarkupInGeneral(
+            @"# [title-a or b](#tab/a+b)
 content-a or b
 # [title-c](#tab/c)
 content-c
@@ -55,7 +55,7 @@ content-a
 # [title-b or c](#tab/b+c)
 content-b or c
 - - -",
-                $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+            $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
 <a href=""#tabpanel_1_a+b"" role=""tab"" aria-controls=""tabpanel_1_a+b"" data-tab=""a+b"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title-a or b</a>
@@ -90,18 +90,18 @@ content-b or c
 </section>
 </div>
 ");
-        }
+    }
 
-        [Fact]
-        public void TestTableInTabGroup()
-        {
-            TestMarkupInGeneral(
-                @"# [title](#tab/id)
+    [Fact]
+    public void TestTableInTabGroup()
+    {
+        TestMarkupInGeneral(
+            @"# [title](#tab/id)
 
 a | b
 - | -
 c | d",
-                $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+            $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
 <a href=""#tabpanel_1_id"" role=""tab"" aria-controls=""tabpanel_1_id"" data-tab=""id"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title</a>
@@ -126,11 +126,10 @@ c | d",
 </section>
 </div>
 ");
-        }
+    }
 
-        private static void TestMarkupInGeneral(string source, string expected)
-        {
-            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
-        }
+    private static void TestMarkupInGeneral(string source, string expected)
+    {
+        TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
     }
 }

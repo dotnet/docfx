@@ -3,15 +3,15 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class MonikerRangeTest
 {
-    public class MonikerRangeTest
+    [Fact]
+    public void MonikerRangeTestGeneral()
     {
-        [Fact]
-        public void MonikerRangeTestGeneral()
-        {
-            // arrange
-            var source = @"# Article 2
+        // arrange
+        var source = @"# Article 2
 
 Shared content.
 
@@ -34,8 +34,8 @@ Inline ::: should not end moniker zone.
 Shared content.
 ";
 
-            // assert
-            var expected = @"<h1 id=""article-2"" sourceFile=""fake.md"" sourceStartLineNumber=""1"">Article 2</h1>
+        // assert
+        var expected = @"<h1 id=""article-2"" sourceFile=""fake.md"" sourceStartLineNumber=""1"">Article 2</h1>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""3"">Shared content.</p>
 <h2 id=""section-1"" sourceFile=""fake.md"" sourceStartLineNumber=""5"">Section 1</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""7"">Shared content.</p>
@@ -48,49 +48,48 @@ Inline ::: should not end moniker zone.</p>
 <h2 id=""section-2"" sourceFile=""fake.md"" sourceStartLineNumber=""19"">Section 2</h2>
 <p sourceFile=""fake.md"" sourceStartLineNumber=""21"">Shared content.</p>
 ";
-            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
-        }
+        TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "fake.md");
+    }
 
-        [Fact]
-        public void MonikerRangeTestInvalid()
-        {
-            // arrange
-            var source = @"::: moniker range=""azure-rest-1.0";
+    [Fact]
+    public void MonikerRangeTestInvalid()
+    {
+        // arrange
+        var source = @"::: moniker range=""azure-rest-1.0";
 
-            // assert
-            var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
+        // assert
+        var expected = @"<p>::: moniker range=&quot;azure-rest-1.0</p>
 ";
-            TestUtility.VerifyMarkup(source, expected, new[] { "invalid-moniker-range" });
-        }
+        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-moniker-range" });
+    }
 
-        [Fact]
-        public void MonikerRangeTestNotClosed()
-        {
-            // arrange
-            var source1 = @"::: moniker range=""start""";
-            var source2 = @"::: moniker range=""start""
+    [Fact]
+    public void MonikerRangeTestNotClosed()
+    {
+        // arrange
+        var source1 = @"::: moniker range=""start""";
+        var source2 = @"::: moniker range=""start""
 ::: moniker-end";
 
-            // assert
-            var expected = @"<div range=""start"">
+        // assert
+        var expected = @"<div range=""start"">
 </div>
 ";
-            TestUtility.VerifyMarkup(source2, expected);
-            TestUtility.VerifyMarkup(source1, expected, new[] { "invalid-moniker-range" });
-        }
+        TestUtility.VerifyMarkup(source2, expected);
+        TestUtility.VerifyMarkup(source1, expected, new[] { "invalid-moniker-range" });
+    }
 
-        [Fact]
-        public void MonikerRangeWithCodeIndent()
-        {
-            var source = @"::: moniker range=""start""
+    [Fact]
+    public void MonikerRangeWithCodeIndent()
+    {
+        var source = @"::: moniker range=""start""
     console.log(""hehe"")
 ::: moniker-end";
-            var expected = @"<div range=""start"">
+        var expected = @"<div range=""start"">
 <pre><code>console.log(&quot;hehe&quot;)
 </code></pre>
 </div>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
     }
 }

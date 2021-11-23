@@ -1,18 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+namespace Microsoft.Docs.Build;
 
-namespace Microsoft.Docs.Build
+internal class LanguageServerNotificationListener : ILanguageServerNotificationListener
 {
-    internal class LanguageServerNotificationListener : ILanguageServerNotificationListener
-    {
-        public void OnNotificationHandled() { }
+    public void OnNotificationHandled() { }
 
-        public void OnNotificationSent() { }
+    public void OnNotificationSent() { }
 
-        public void OnException(Exception ex) { }
+    public void OnException(Exception ex) { }
 
-        public void OnInitialized() { }
-    }
+    public void OnInitialized() { }
 }

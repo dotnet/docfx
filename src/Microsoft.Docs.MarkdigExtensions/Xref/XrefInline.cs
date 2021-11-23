@@ -3,10 +3,9 @@
 
 using Markdig.Syntax.Inlines;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class XrefInline : LeafInline
 {
-    public class XrefInline : LeafInline
-    {
-        public string Href { get; set; }
-    }
+    public string Href { get; set; }
 }

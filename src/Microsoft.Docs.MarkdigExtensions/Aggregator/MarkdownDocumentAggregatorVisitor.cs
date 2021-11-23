@@ -3,48 +3,47 @@
 
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class MarkdownDocumentAggregatorVisitor
 {
-    public class MarkdownDocumentAggregatorVisitor
+    private readonly IBlockAggregator _aggregator;
+
+    public MarkdownDocumentAggregatorVisitor(IBlockAggregator aggregator)
     {
-        private readonly IBlockAggregator _aggregator;
+        _aggregator = aggregator;
+    }
 
-        public MarkdownDocumentAggregatorVisitor(IBlockAggregator aggregator)
+    public void Visit(MarkdownDocument document)
+    {
+        if (_aggregator == null)
         {
-            _aggregator = aggregator;
+            return;
         }
 
-        public void Visit(MarkdownDocument document)
+        VisitContainerBlock(document);
+    }
+
+    private void VisitContainerBlock(ContainerBlock blocks)
+    {
+        for (var i = 0; i < blocks.Count; i++)
         {
-            if (_aggregator == null)
+            var block = blocks[i];
+            if (block is ContainerBlock containerBlock)
             {
-                return;
+                VisitContainerBlock(containerBlock);
             }
 
-            VisitContainerBlock(document);
+            var context = new BlockAggregateContext(blocks);
+            Aggregate(context);
         }
+    }
 
-        private void VisitContainerBlock(ContainerBlock blocks)
+    private void Aggregate(BlockAggregateContext context)
+    {
+        while (context.NextBlock())
         {
-            for (var i = 0; i < blocks.Count; i++)
-            {
-                var block = blocks[i];
-                if (block is ContainerBlock containerBlock)
-                {
-                    VisitContainerBlock(containerBlock);
-                }
-
-                var context = new BlockAggregateContext(blocks);
-                Aggregate(context);
-            }
-        }
-
-        private void Aggregate(BlockAggregateContext context)
-        {
-            while (context.NextBlock())
-            {
-                _aggregator.Aggregate(context);
-            }
+            _aggregator.Aggregate(context);
         }
     }
 }

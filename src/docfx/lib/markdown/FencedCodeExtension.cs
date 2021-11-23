@@ -4,16 +4,15 @@
 using Markdig;
 using Markdig.Parsers;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal static class FencedCodeExtension
 {
-    internal static class FencedCodeExtension
+    public static MarkdownPipelineBuilder UseFencedCodeLangPrefix(this MarkdownPipelineBuilder builder)
     {
-        public static MarkdownPipelineBuilder UseFencedCodeLangPrefix(this MarkdownPipelineBuilder builder)
+        return builder.Use(pipeline =>
         {
-            return builder.Use(pipeline =>
-            {
-                pipeline.BlockParsers.FindExact<FencedCodeBlockParser>().InfoPrefix = "lang-";
-            });
-        }
+            pipeline.BlockParsers.FindExact<FencedCodeBlockParser>().InfoPrefix = "lang-";
+        });
     }
 }

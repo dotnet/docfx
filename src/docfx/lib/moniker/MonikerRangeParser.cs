@@ -1,67 +1,63 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class MonikerRangeParser
 {
-    internal class MonikerRangeParser
+    private readonly ConcurrentDictionary<string, MonikerList> _cache = new(StringComparer.OrdinalIgnoreCase);
+
+    private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
+
+    public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
     {
-        private readonly ConcurrentDictionary<string, MonikerList> _cache = new(StringComparer.OrdinalIgnoreCase);
+        _monikersEvaluator = new(monikerDefinition);
+    }
 
-        private readonly EvaluatorWithMonikersVisitor _monikersEvaluator;
-
-        public MonikerRangeParser(MonikerDefinitionModel monikerDefinition)
+    public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
+    {
+        var result = new List<string>();
+        foreach (var moniker in monikers)
         {
-            _monikersEvaluator = new(monikerDefinition);
-        }
-
-        public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
-        {
-            var result = new List<string>();
-            foreach (var moniker in monikers)
+            var key = moniker.Value;
+            if (key != null)
             {
-                var key = moniker.Value;
-                if (key != null)
+                if (!_monikersEvaluator.MonikerMap.ContainsKey(key))
                 {
-                    if (!_monikersEvaluator.MonikerMap.ContainsKey(key))
-                    {
-                        errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Moniker '{key}' is not defined."));
-                    }
-                    else
-                    {
-                        result.Add(key.ToLowerInvariant());
-                    }
+                    errors.Add(Errors.Versioning.MonikerRangeInvalid(moniker, $"Moniker '{key}' is not defined."));
+                }
+                else
+                {
+                    result.Add(key.ToLowerInvariant());
                 }
             }
-            return new(result);
+        }
+        return new(result);
+    }
+
+    public MonikerList Parse(ErrorBuilder errors, SourceInfo<string?> rangeString)
+    {
+        var key = rangeString.Value;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            return default;
         }
 
-        public MonikerList Parse(ErrorBuilder errors, SourceInfo<string?> rangeString)
+        return _cache.GetOrAdd(key, value =>
         {
-            var key = rangeString.Value;
-            if (string.IsNullOrWhiteSpace(key))
+            var (createErrors, result) = ExpressionCreator.Create(value, rangeString.Source);
+            errors.AddRange(createErrors);
+            if (result is null)
             {
                 return default;
             }
 
-            return _cache.GetOrAdd(key, value =>
-            {
-                var (createErrors, result) = ExpressionCreator.Create(value, rangeString.Source);
-                errors.AddRange(createErrors);
-                if (result is null)
-                {
-                    return default;
-                }
+            var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
+            errors.AddRange(evaluateErrors);
 
-                var (evaluateErrors, monikers) = result.Accept(_monikersEvaluator, rangeString);
-                errors.AddRange(evaluateErrors);
-
-                return new(monikers.Select(x => x.MonikerName));
-            });
-        }
+            return new(monikers.Select(x => x.MonikerName));
+        });
     }
 }

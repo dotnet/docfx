@@ -3,28 +3,27 @@
 
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class TabGroupIdRewriter : IMarkdownObjectRewriter
 {
-    public class TabGroupIdRewriter : IMarkdownObjectRewriter
+    private int _id;
+
+    public void PostProcess(IMarkdownObject markdownObject)
     {
-        private int _id;
+    }
 
-        public void PostProcess(IMarkdownObject markdownObject)
+    public void PreProcess(IMarkdownObject markdownObject)
+    {
+    }
+
+    public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
+    {
+        if (markdownObject is TabGroupBlock block)
         {
+            block.Id = ++_id;
         }
 
-        public void PreProcess(IMarkdownObject markdownObject)
-        {
-        }
-
-        public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
-        {
-            if (markdownObject is TabGroupBlock block)
-            {
-                block.Id = ++_id;
-            }
-
-            return markdownObject;
-        }
+        return markdownObject;
     }
 }

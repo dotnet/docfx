@@ -6,24 +6,23 @@ using Markdig.Extensions.Yaml;
 using Markdig.Parsers;
 using Markdig.Renderers;
 
-namespace Microsoft.Docs.MarkdigExtensions
-{
-    public class InlineOnlyExtension : IMarkdownExtension
-    {
-        public void Setup(MarkdownPipelineBuilder pipeline)
-        {
-            var paragraphBlockParser = pipeline.BlockParsers.FindExact<ParagraphBlockParser>() ?? new ParagraphBlockParser();
-            pipeline.BlockParsers.Clear();
-            pipeline.BlockParsers.Add(paragraphBlockParser);
-            pipeline.BlockParsers.Add(new YamlFrontMatterParser());
-        }
+namespace Microsoft.Docs.MarkdigExtensions;
 
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+public class InlineOnlyExtension : IMarkdownExtension
+{
+    public void Setup(MarkdownPipelineBuilder pipeline)
+    {
+        var paragraphBlockParser = pipeline.BlockParsers.FindExact<ParagraphBlockParser>() ?? new ParagraphBlockParser();
+        pipeline.BlockParsers.Clear();
+        pipeline.BlockParsers.Add(paragraphBlockParser);
+        pipeline.BlockParsers.Add(new YamlFrontMatterParser());
+    }
+
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
+        if (renderer is HtmlRenderer htmlRenderer)
         {
-            if (renderer is HtmlRenderer htmlRenderer)
-            {
-                htmlRenderer.ImplicitParagraph = true;
-            }
+            htmlRenderer.ImplicitParagraph = true;
         }
     }
 }
