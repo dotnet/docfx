@@ -63,7 +63,7 @@ namespace Microsoft.Docs.LearnValidation
             foreach (var item in items)
             {
                 var achievement = isModule ? (item as ModuleValidateModel)?.Achievement : (item as PathValidateModel)?.Achievement;
-                if (achievement != null && !(achievement is string))
+                if (achievement != null && achievement is not string)
                 {
                     var (_, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);
                     if (achievementModel != null)

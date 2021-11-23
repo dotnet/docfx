@@ -108,7 +108,7 @@ namespace Microsoft.Docs.Build
 
                 if (_config.OutputType == OutputType.PageJson && isContentRenderType)
                 {
-                    var metadataPath = outputPath.Substring(0, outputPath.Length - ".raw.page.json".Length) + ".mta.json";
+                    var metadataPath = outputPath[..^".raw.page.json".Length] + ".mta.json";
                     _output.WriteJson(metadataPath, metadata);
                 }
             }

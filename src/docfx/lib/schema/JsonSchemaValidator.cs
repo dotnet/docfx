@@ -897,7 +897,7 @@ namespace Microsoft.Docs.Build
                 {
                     if (int.TryParse(match.Value[1..^1], out var index))
                     {
-                        return (name.Substring(0, name.Length - match.Value.Length), index);
+                        return (name[..^match.Value.Length], index);
                     }
                 }
             }

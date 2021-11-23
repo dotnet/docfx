@@ -11,14 +11,12 @@ namespace Microsoft.Docs.Build
     {
         public static string GetSha256Hash(string input)
         {
-            using var sha256 = SHA256.Create();
-            return ToHexString(sha256.ComputeHash(Encoding.UTF8.GetBytes(input)));
+            return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input))).ToLowerInvariant();
         }
 
         public static string GetSha256HashShort(string input)
         {
-            using var sha256 = SHA256.Create();
-            return ToHexString(sha256.ComputeHash(Encoding.UTF8.GetBytes(input)), 16);
+            return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input)), 0, 16).ToLowerInvariant();
         }
 
         public static uint GetFnv1A32Hash(ReadOnlySpan<byte> input)
@@ -29,21 +27,6 @@ namespace Microsoft.Docs.Build
                 hash = (hash * 16777619) ^ input[i];
             }
             return hash;
-        }
-
-        private static string ToHexString(byte[] bytes, int digits = 0)
-        {
-            var formatted = new StringBuilder(2 * bytes.Length);
-            if (digits == 0)
-            {
-                digits = bytes.Length;
-            }
-
-            for (var i = 0; i < digits; i++)
-            {
-                formatted.AppendFormat("{0:x2}", bytes[i]);
-            }
-            return formatted.ToString();
         }
     }
 }

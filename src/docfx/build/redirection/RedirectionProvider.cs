@@ -366,7 +366,7 @@ namespace Microsoft.Docs.Build
         private static (string path, string query) RemoveTrailingIndex(string redirectionUrl)
         {
             var (path, query, _) = UrlUtility.SplitUrl(redirectionUrl);
-            return (path.EndsWith("/index", PathUtility.PathComparison) ? path.Substring(0, path.Length - "index".Length) : path, query);
+            return (path.EndsWith("/index", PathUtility.PathComparison) ? path[..^"index".Length] : path, query);
         }
     }
 }
