@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Microsoft.Docs.Build;
@@ -17,8 +16,6 @@ internal static class LibGit2
 
     static LibGit2()
     {
-        NativeLibrary.SetDllImportResolver(typeof(LibGit2).Assembly, ResolveDllImport);
-
         if (git_libgit2_init() == 1)
         {
             git_openssl_set_locking();
@@ -248,34 +245,5 @@ internal static class LibGit2
                 return new string(str, 0, 40);
             }
         }
-    }
-
-    private static IntPtr ResolveDllImport(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-    {
-        if (libraryName != LibName)
-        {
-            return default;
-        }
-
-        if (NativeLibrary.TryLoad(libraryName, assembly, searchPath, out var handle))
-        {
-            return handle;
-        }
-
-        var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant();
-        if (OperatingSystem.IsWindows())
-        {
-            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/win-{arch}/native/{LibName}.dll"));
-        }
-        else if (OperatingSystem.IsMacOS())
-        {
-            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/osx-{arch}/native/lib{LibName}.dylib"));
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/linux-{arch}/native/lib{LibName}.so"));
-        }
-
-        return default;
     }
 }
