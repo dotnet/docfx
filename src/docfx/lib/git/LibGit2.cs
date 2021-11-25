@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -16,7 +17,7 @@ internal static class LibGit2
 
     static LibGit2()
     {
-        LoadNativeLibrary();
+        NativeLibrary.SetDllImportResolver(typeof(LibGit2).Assembly, ResolveDllImport);
 
         if (git_libgit2_init() == 1)
         {
@@ -249,20 +250,33 @@ internal static class LibGit2
         }
     }
 
-    private static void LoadNativeLibrary()
+
+    private static IntPtr ResolveDllImport(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
+        if (libraryName != LibName)
+        {
+            return default;
+        }
+
+        if (NativeLibrary.TryLoad(libraryName, assembly, searchPath, out var handle))
+        {
+            return handle;
+        }
+
         var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant();
         if (OperatingSystem.IsWindows())
         {
-            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/win-{arch}/native/{LibName}.dll"), out _);
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/win-{arch}/native/{LibName}.dll"));
         }
         else if (OperatingSystem.IsMacOS())
         {
-            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/osx-{arch}/native/lib{LibName}.dylib"), out _);
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/osx-{arch}/native/lib{LibName}.dylib"));
         }
         else if (OperatingSystem.IsLinux())
         {
-            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/linux-{arch}/native/lib{LibName}.so"), out _);
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, $"runtimes/linux-{arch}/native/lib{LibName}.so"));
         }
+
+        return default;
     }
 }
