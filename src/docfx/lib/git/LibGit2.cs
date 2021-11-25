@@ -16,6 +16,8 @@ internal static class LibGit2
 
     static LibGit2()
     {
+        LoadNativeLibrary();
+
         if (git_libgit2_init() == 1)
         {
             git_openssl_set_locking();
@@ -244,6 +246,23 @@ internal static class LibGit2
                 git_oid_fmt(str, p);
                 return new string(str, 0, 40);
             }
+        }
+    }
+
+    private static void LoadNativeLibrary()
+    {
+        var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLowerInvariant();
+        if (OperatingSystem.IsWindows())
+        {
+            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/win-{arch}/native/{LibName}.dll"), out _);
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/osx-{arch}/native/lib{LibName}.dylib"), out _);
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            NativeLibrary.TryLoad(Path.Combine(AppContext.BaseDirectory, $"runtimes/linux-{arch}/native/lib{LibName}.so"), out _);
         }
     }
 }
