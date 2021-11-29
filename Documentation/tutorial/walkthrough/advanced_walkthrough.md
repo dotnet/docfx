@@ -27,7 +27,7 @@ To change the CSS of the HTML or PDF template:
 
 - Copy `_exported_templates/default/styles/main.css` or `_exported_templates/pdf.default/styles/main.css`.
 - Paste it in `templates/<your custom template folder>/styles`.
-- Edit `templates/<your custom template folder>/partials`.
+- Edit `templates/<your custom template folder>/styles/main.css`.
 
 Example of changing heading styles in `main.css` for an HTML template:
 
