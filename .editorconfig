@@ -135,6 +135,12 @@ dotnet_diagnostic.CA1815.severity = none
 # CA1819: C# Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = none
 
+# CA1848: High performance logging using LoggerMessage
+dotnet_diagnostic.CA1848.severity = none
+
+# CA2000: Dispose objects before losing scope
+dotnet_code_quality.CA2000.excluded_symbol_names = HttpClientHandler
+
 # CA2007DoNotDirectlyAwaitATaskAnalyzer
 dotnet_diagnostic.CA2007.severity = none
 
@@ -249,6 +255,9 @@ dotnet_diagnostic.IDE0017.severity = default
 # IDE0077: Avoid legacy format target in 'SuppressMessageAttribute'
 dotnet_diagnostic.IDE0077.severity = default
 
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = default
+
 # IDE0032: Use auto property
 dotnet_diagnostic.IDE0032.severity = default
 
@@ -257,6 +266,9 @@ dotnet_diagnostic.IDE0055.severity = default
 
 # IDE0061: Use block body for local functions
 dotnet_diagnostic.IDE0061.severity = default
+
+# IDE0130: Namespace does not have to match folder structure
+dotnet_diagnostic.IDE0130.severity = default
 
 # Test specific diagnostic settings
 [test/**.cs]
@@ -409,6 +421,9 @@ csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
 csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
+
+# File scoped namespace
+csharp_style_namespace_declarations = file_scoped:warning
 
 # Space preferences
 csharp_space_after_cast = false

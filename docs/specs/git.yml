@@ -342,7 +342,7 @@ repos:
           updateTimeAsCommitBuildTime: true
         docs/index.md: Alice creates this.
 state:
-  history/build_history_1026df13-852a-b3da-a226-492390c1c82e_17190aeb-6297-d34d-a48f-a681d3061212.json: |
+  build-history.json: |
     {
       "commits": [{ "sha": "7e6344c7275cccec2334ca04b73017bdeb7ecc2a", "built_at": "2019-04-23T00:00:00Z" }]
     }
@@ -620,9 +620,9 @@ repos:
           editRepositoryBranch: contrib-branch
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: test
               includeInBuild: true
@@ -647,7 +647,7 @@ repos:
         b.md: |
           Alice creates this.
 state:
-  history/build_history_95ac9e0f-677b-d6a6-13b5-a7a3118624ab_cd6b8f09-2146-73d3-cade-4e832627b4f6.json: |
+  build-history.json: |
     { "commits":[
           {"sha":"62f395b3259c14e5b081a2b327da21b84bd2464d","built_at":"2020-02-12T00:00:00Z"},
           {"sha":"42364b93484c710e471827b81bb375e1e1dd8eb7","built_at":"2020-02-11T00:00:00Z"},
@@ -663,7 +663,7 @@ cache:
         ]
       }
 outputs:
-  crrb/b.json: |
+  crr-b/b.json: |
     {
       "_op_gitContributorInformation":
       {
@@ -687,7 +687,7 @@ outputs:
           {
               "source_git_url": "https://github.com/testowner/crr-content/blob/test/b.md",
               "source_line": 5,
-              "source_url": "/crrb/b",
+              "source_url": "/crr-b/b",
               "target_url": "http://test.com"
           }
       ]
@@ -718,9 +718,9 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: live-sxs
               includeInBuild: true
@@ -730,9 +730,9 @@ repos:
         docfx.yml: |
           files:
             - "docs/**/*"
-            - "crrb/**/*"
+            - "crr-b/**/*"
           dependencies:
-            crrb:
+            crr-b:
               url: https://github.com/testowner/crr-content
               branch: live-sxs
               includeInBuild: true
@@ -745,7 +745,7 @@ repos:
         b.md:
 outputs:
   docs/a.json:
-  crrb/b.json:
+  crr-b/b.json:
 ---
 # Respect user-assigned content_git_url & original_content_git_url
 repos:

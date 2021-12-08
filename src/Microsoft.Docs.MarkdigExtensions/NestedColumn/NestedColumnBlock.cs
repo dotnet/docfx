@@ -4,17 +4,16 @@
 using Markdig.Parsers;
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class NestedColumnBlock : ContainerBlock
 {
-    public class NestedColumnBlock : ContainerBlock
+    public NestedColumnBlock(BlockParser parser)
+        : base(parser)
     {
-        public NestedColumnBlock(BlockParser parser)
-            : base(parser)
-        {
-        }
-
-        public int ColonCount { get; set; }
-
-        public string ColumnWidth { get; set; }
     }
+
+    public int ColonCount { get; set; }
+
+    public string ColumnWidth { get; set; }
 }

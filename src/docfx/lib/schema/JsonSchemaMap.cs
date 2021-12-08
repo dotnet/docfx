@@ -1,38 +1,35 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class JsonSchemaMap
 {
-    internal class JsonSchemaMap
+    private readonly Func<JsonSchema, bool> _predicate;
+    private readonly Dictionary<JToken, JsonSchema> _map = new(ReferenceEqualsComparer.Default);
+
+    public JsonSchemaMap(Func<JsonSchema, bool> predicate) => _predicate = predicate;
+
+    public JsonSchemaMap(JsonSchemaMap map) => _predicate = map._predicate;
+
+    public bool TryGetSchema(JToken token, [MaybeNullWhen(false)] out JsonSchema schema) => _map.TryGetValue(token, out schema);
+
+    public void Add(JToken token, JsonSchema schema)
     {
-        private readonly Func<JsonSchema, bool> _predicate;
-        private readonly Dictionary<JToken, JsonSchema> _map = new(ReferenceEqualsComparer.Default);
-
-        public JsonSchemaMap(Func<JsonSchema, bool> predicate) => _predicate = predicate;
-
-        public JsonSchemaMap(JsonSchemaMap map) => _predicate = map._predicate;
-
-        public bool TryGetSchema(JToken token, [MaybeNullWhen(false)] out JsonSchema schema) => _map.TryGetValue(token, out schema);
-
-        public void Add(JToken token, JsonSchema schema)
+        if (_predicate(schema))
         {
-            if (_predicate(schema))
-            {
-                _map.TryAdd(token, schema);
-            }
+            _map.TryAdd(token, schema);
         }
+    }
 
-        public void Add(JsonSchemaMap map)
+    public void Add(JsonSchemaMap map)
+    {
+        foreach (var (token, schema) in map._map)
         {
-            foreach (var (token, schema) in map._map)
-            {
-                _map.TryAdd(token, schema);
-            }
+            _map.TryAdd(token, schema);
         }
     }
 }

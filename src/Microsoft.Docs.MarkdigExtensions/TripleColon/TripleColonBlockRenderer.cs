@@ -1,32 +1,30 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class TripleColonBlockRenderer : HtmlObjectRenderer<TripleColonBlock>
 {
-    public class TripleColonBlockRenderer : HtmlObjectRenderer<TripleColonBlock>
+    private readonly MarkdownContext _context;
+
+    public TripleColonBlockRenderer(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public TripleColonBlockRenderer(MarkdownContext context)
+    protected override void Write(HtmlRenderer renderer, TripleColonBlock block)
+    {
+        var logWarning = new Action<string>(message => _context.LogWarning($"invalid-{block.Extension.Name}", message, block));
+
+        if (block.Extension.Render(renderer, block, logWarning))
         {
-            _context = context;
+            return;
         }
 
-        protected override void Write(HtmlRenderer renderer, TripleColonBlock block)
-        {
-            var logWarning = new Action<string>(message => _context.LogWarning($"invalid-{block.Extension.Name}", message, block));
-
-            if (block.Extension.Render(renderer, block, logWarning))
-            {
-                return;
-            }
-
-            renderer.Write("<div").WriteAttributes(block).WriteLine(">");
-            renderer.WriteChildren(block);
-            renderer.WriteLine("</div>");
-        }
+        renderer.Write("<div").WriteAttributes(block).WriteLine(">");
+        renderer.WriteChildren(block);
+        renderer.WriteLine("</div>");
     }
 }

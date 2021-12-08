@@ -3,15 +3,15 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class XrefTest
 {
-    public class XrefTest
+    [Fact]
+    public void XrefTestGeneral()
     {
-        [Fact]
-        public void XrefTestGeneral()
-        {
-            // arrange
-            var content = @"<xref:Microsoft.Build.Tasks>
+        // arrange
+        var content = @"<xref:Microsoft.Build.Tasks>
 \<xref:Microsoft.Build.Tasks>
 \\<xref:Microsoft.Build.Tasks>
 @Microsoft.Build.Tasks
@@ -31,8 +31,8 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/>
 ";
 
-            // assert
-            var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
+        // assert
+        var expected = @"<p><xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
 &lt;xref:Microsoft.Build.Tasks&gt;
 \<xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:Microsoft.Build.Tasks&gt;""></xref>
 <xref href=""Microsoft.Build.Tasks"" data-throw-if-not-resolved=""False"" data-raw-source=""@Microsoft.Build.Tasks""></xref>
@@ -49,7 +49,6 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 <xref href=""Microsoft.Build.Tasks?alt=ImmutableArray"" data-throw-if-not-resolved=""True"" data-raw-source=""&lt;xref:&quot;Microsoft.Build.Tasks?alt=ImmutableArray&quot;&gt;""></xref>
 <a href=""xref:Microsoft.Build.Tasks?displayProperty=fullName""/></p>
 ";
-            TestUtility.VerifyMarkup(content, expected);
-        }
+        TestUtility.VerifyMarkup(content, expected);
     }
 }

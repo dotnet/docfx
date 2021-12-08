@@ -1,16 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+namespace Microsoft.Docs.Build;
 
-namespace Microsoft.Docs.Build
+internal class DelegatingDisposable : IDisposable
 {
-    internal class DelegatingDisposable : IDisposable
-    {
-        private readonly Action _dispose;
+    private readonly Action _dispose;
 
-        public DelegatingDisposable(Action dispose) => _dispose = dispose;
+    public DelegatingDisposable(Action dispose) => _dispose = dispose;
 
-        public void Dispose() => _dispose();
-    }
+    public void Dispose() => _dispose();
 }

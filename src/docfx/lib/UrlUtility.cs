@@ -1,393 +1,388 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal static class UrlUtility
 {
-    internal static class UrlUtility
+    private static readonly Regex s_gitHubUrlRegex = new(
+        @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex s_azureReposUrlRegex = new(
+        @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
+        @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
+        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
+
+    public static string SanitizeUrl(string? url)
     {
-        private static readonly Regex s_gitHubUrlRegex = new(
-            @"^((https|http):\/\/github\.com)\/(?<account>[^\/\s]+)\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        // For azure blob url, url without sas token should identify if the content has changed
+        // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
+        return Regex.Replace(url ?? "", @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
+    }
 
-        private static readonly Regex s_azureReposUrlRegex = new(
-            @"^(https|http):\/\/((?<account>[^\/\s]+)\.visualstudio\.com\/(?<collection>[^\/\s]+\/)?|dev\.azure\.com\/(?<account>[^\/\s]+)\/)+" +
-            @"(?<project>[^\/\s]+)\/_git\/(?<repository>[A-Za-z0-9_.-]+)((\/)?|(#(?<branch>\S+))?)$",
-            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    /// <summary>
+    /// Split href to path, fragment and query
+    /// </summary>
+    /// <param name="url">The href</param>
+    /// <returns>The splitted path, query and fragment</returns>
+    public static (string path, string query, string fragment) SplitUrl(string url)
+    {
+        var path = "";
+        var query = "";
+        var fragment = "";
 
-        private static readonly HashSet<char> s_invalidPathChars = Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Distinct().ToHashSet();
-
-        public static string SanitizeUrl(string? url)
+        var fragmentIndex = url.IndexOf('#');
+        if (fragmentIndex >= 0)
         {
-            // For azure blob url, url without sas token should identify if the content has changed
-            // https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1#how-a-shared-access-signature-works
-            return Regex.Replace(url ?? "", @"^(https:\/\/.+?.blob.core.windows.net\/)(.*)\?(.*)$", match => $"{match.Groups[1]}{match.Groups[2]}");
-        }
-
-        /// <summary>
-        /// Split href to path, fragment and query
-        /// </summary>
-        /// <param name="url">The href</param>
-        /// <returns>The splitted path, query and fragment</returns>
-        public static (string path, string query, string fragment) SplitUrl(string url)
-        {
-            var path = "";
-            var query = "";
-            var fragment = "";
-
-            var fragmentIndex = url.IndexOf('#');
-            if (fragmentIndex >= 0)
+            fragment = url[fragmentIndex..];
+            var queryIndex = url.IndexOf('?', 0, fragmentIndex);
+            if (queryIndex >= 0)
             {
-                fragment = url[fragmentIndex..];
-                var queryIndex = url.IndexOf('?', 0, fragmentIndex);
-                if (queryIndex >= 0)
-                {
-                    query = url[queryIndex..fragmentIndex];
-                    path = url.Substring(0, queryIndex);
-                }
-                else
-                {
-                    path = url.Substring(0, fragmentIndex);
-                }
+                query = url[queryIndex..fragmentIndex];
+                path = url[..queryIndex];
             }
             else
             {
-                var queryIndex = url.IndexOf('?');
-                if (queryIndex >= 0)
-                {
-                    query = url[queryIndex..];
-                    path = url.Substring(0, queryIndex);
-                }
-                else
-                {
-                    path = url;
-                }
+                path = url[..fragmentIndex];
             }
-
-            return (path, query, fragment);
         }
-
-        /// <summary>
-        /// Combines URL segments into a single URL.
-        /// </summary>
-        public static string Combine(params string[] urlSegments)
+        else
         {
-            return Path.Combine(urlSegments).Replace('\\', '/');
-        }
-
-        /// <summary>
-        /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
-        /// </summary>
-        public static string MergeUrl(string targetUrl, string? sourceQuery, string? sourceFragment = null)
-        {
-            var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
-
-            var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
-
-            var sourceQueryParameters = sourceQuery is null ? null : HttpUtility.ParseQueryString(sourceQuery);
-            if (sourceQueryParameters != null)
+            var queryIndex = url.IndexOf('?');
+            if (queryIndex >= 0)
             {
-                foreach (var key in sourceQueryParameters.AllKeys)
-                {
-                    targetQueryParameters[key] = sourceQueryParameters[key];
-                }
-            }
-
-            var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";
-            if (string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(sourceQuery))
-            {
-                query = sourceQuery;
-            }
-
-            var fragment = (sourceFragment == null || sourceFragment.Length == 0)
-                ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
-                : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
-
-            return targetPath + query + fragment;
-        }
-
-        public static string GetRelativeUrl(string relativeToUrl, string url)
-        {
-            if (!relativeToUrl.StartsWith('/'))
-            {
-                throw new ArgumentException("", nameof(relativeToUrl));
-            }
-
-            if (!url.StartsWith('/'))
-            {
-                return url;
-            }
-
-            var (relativeToPath, _, _) = SplitUrl(relativeToUrl);
-            var (path, query, fragment) = SplitUrl(url);
-
-            // Find the last common segment
-            var i = 0;
-            var segmentIndex = 0;
-            while (i < path.Length && i < relativeToPath.Length)
-            {
-                var ch = path[i];
-                if (ch != relativeToPath[i])
-                {
-                    break;
-                }
-
-                i++;
-                if (ch == '/')
-                {
-                    segmentIndex = i;
-                }
-            }
-
-            // Count remaining segments in relativeToUrl
-            var remainingSegmentCount = 0;
-            for (i = segmentIndex; i < relativeToPath.Length; i++)
-            {
-                if (relativeToPath[i] == '/')
-                {
-                    remainingSegmentCount++;
-                }
-            }
-
-            // Build result
-            var result = new StringBuilder(path.Length);
-
-            for (i = 0; i < remainingSegmentCount; i++)
-            {
-                result.Append("../");
-            }
-
-            if (segmentIndex >= path.Length)
-            {
-                if (remainingSegmentCount == 0)
-                {
-                    result.Append("./");
-                }
+                query = url[queryIndex..];
+                path = url[..queryIndex];
             }
             else
             {
-                result.Append(path, segmentIndex, path.Length - segmentIndex);
+                path = url;
             }
-
-            result.Append(query);
-            result.Append(fragment);
-            return result.ToString();
         }
 
-        public static LinkType GetLinkType(string? link)
+        return (path, query, fragment);
+    }
+
+    /// <summary>
+    /// Combines URL segments into a single URL.
+    /// </summary>
+    public static string Combine(params string[] urlSegments)
+    {
+        return Path.Combine(urlSegments).Replace('\\', '/');
+    }
+
+    /// <summary>
+    /// <paramref name="sourceQuery"/> and <paramref name="sourceFragment"/> will overwrite the ones in <paramref name="targetUrl"/>
+    /// </summary>
+    public static string MergeUrl(string targetUrl, string? sourceQuery, string? sourceFragment = null)
+    {
+        var (targetPath, targetQuery, targetFragment) = SplitUrl(targetUrl);
+
+        var targetQueryParameters = HttpUtility.ParseQueryString(targetQuery);
+
+        var sourceQueryParameters = sourceQuery is null ? null : HttpUtility.ParseQueryString(sourceQuery);
+        if (sourceQueryParameters != null)
         {
-            if (string.IsNullOrEmpty(link))
+            foreach (var key in sourceQueryParameters.AllKeys)
             {
-                return LinkType.RelativePath;
+                targetQueryParameters[key] = sourceQueryParameters[key];
+            }
+        }
+
+        var query = targetQueryParameters.Count > 0 ? targetQueryParameters.ToQueryString() : "";
+        if (string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(sourceQuery))
+        {
+            query = sourceQuery;
+        }
+
+        var fragment = (sourceFragment == null || sourceFragment.Length == 0)
+            ? (!string.IsNullOrEmpty(targetFragment) ? targetFragment : "")
+            : (!string.IsNullOrEmpty(sourceFragment) ? sourceFragment : "");
+
+        return targetPath + query + fragment;
+    }
+
+    public static string GetRelativeUrl(string relativeToUrl, string url)
+    {
+        if (!relativeToUrl.StartsWith('/'))
+        {
+            throw new ArgumentException("", nameof(relativeToUrl));
+        }
+
+        if (!url.StartsWith('/'))
+        {
+            return url;
+        }
+
+        var (relativeToPath, _, _) = SplitUrl(relativeToUrl);
+        var (path, query, fragment) = SplitUrl(url);
+
+        // Find the last common segment
+        var i = 0;
+        var segmentIndex = 0;
+        while (i < path.Length && i < relativeToPath.Length)
+        {
+            var ch = path[i];
+            if (ch != relativeToPath[i])
+            {
+                break;
             }
 
-            if (Uri.TryCreate(link, UriKind.Absolute, out var uri))
+            i++;
+            if (ch == '/')
             {
-                if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
+                segmentIndex = i;
+            }
+        }
+
+        // Count remaining segments in relativeToUrl
+        var remainingSegmentCount = 0;
+        for (i = segmentIndex; i < relativeToPath.Length; i++)
+        {
+            if (relativeToPath[i] == '/')
+            {
+                remainingSegmentCount++;
+            }
+        }
+
+        // Build result
+        var result = new StringBuilder(path.Length);
+
+        for (i = 0; i < remainingSegmentCount; i++)
+        {
+            result.Append("../");
+        }
+
+        if (segmentIndex >= path.Length)
+        {
+            if (remainingSegmentCount == 0)
+            {
+                result.Append("./");
+            }
+        }
+        else
+        {
+            result.Append(path, segmentIndex, path.Length - segmentIndex);
+        }
+
+        result.Append(query);
+        result.Append(fragment);
+        return result.ToString();
+    }
+
+    public static LinkType GetLinkType(string? link)
+    {
+        if (string.IsNullOrEmpty(link))
+        {
+            return LinkType.RelativePath;
+        }
+
+        if (Uri.TryCreate(link, UriKind.Absolute, out var uri))
+        {
+            if (string.IsNullOrEmpty(uri.DnsSafeHost) && uri.Scheme == Uri.UriSchemeFile)
+            {
+                return (uri.AbsolutePath.StartsWith('/') || uri.AbsolutePath.StartsWith('\\'))
+                    ? LinkType.AbsolutePath
+                    : LinkType.WindowsAbsolutePath;
+            }
+            return LinkType.External;
+        }
+
+        return link[0] switch
+        {
+            '/' or '\\' => LinkType.AbsolutePath,
+            '#' => LinkType.SelfBookmark,
+            _ => LinkType.RelativePath,
+        };
+    }
+
+    public static bool IsHttp(string str)
+    {
+        return !string.IsNullOrEmpty(str)
+            && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
+            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+    }
+
+    /// <summary>
+    /// Converts an URL to a human readable short name for directory or file
+    /// </summary>
+    public static string UrlToShortName(string url)
+    {
+        url = SanitizeUrl(url);
+
+        var hash = HashUtility.GetSha256HashShort(url);
+
+        // Trim https://
+        var index = url.IndexOf(':');
+        if (index > 0)
+        {
+            url = url[index..];
+        }
+
+        url = url.TrimStart('/', '\\', '.', ':').Trim();
+
+        var result = new StringBuilder();
+
+        // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
+        var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
+        for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
+        {
+            if (segmentIndex == 4 && segments.Length > 8)
+            {
+                segmentIndex += segments.Length - 9;
+                continue;
+            }
+
+            var segment = segments[segmentIndex];
+            for (var charIndex = 0; charIndex < segment.Length; charIndex++)
+            {
+                var ch = segment[charIndex];
+                if (charIndex == 8 && segment.Length > 16)
                 {
-                    return (uri.AbsolutePath.StartsWith('/') || uri.AbsolutePath.StartsWith('\\'))
-                        ? LinkType.AbsolutePath
-                        : LinkType.WindowsAbsolutePath;
-                }
-                return LinkType.External;
-            }
-
-            return link[0] switch
-            {
-                '/' or '\\' => LinkType.AbsolutePath,
-                '#' => LinkType.SelfBookmark,
-                _ => LinkType.RelativePath,
-            };
-        }
-
-        public static bool IsHttp(string str)
-        {
-            return !string.IsNullOrEmpty(str)
-                && Uri.TryCreate(str, UriKind.Absolute, out var uriResult)
-                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-        }
-
-        /// <summary>
-        /// Converts an URL to a human readable short name for directory or file
-        /// </summary>
-        public static string UrlToShortName(string url)
-        {
-            url = SanitizeUrl(url);
-
-            var hash = HashUtility.GetSha256HashShort(url);
-
-            // Trim https://
-            var index = url.IndexOf(':');
-            if (index > 0)
-            {
-                url = url[index..];
-            }
-
-            url = url.TrimStart('/', '\\', '.', ':').Trim();
-
-            var result = new StringBuilder();
-
-            // Take the surrounding 4 segments and the surrounding 8 chars in each segment, then remove invalid path chars.
-            var segments = url.Split(new[] { '/', '\\', ' ', '?', '#' }, StringSplitOptions.RemoveEmptyEntries);
-            for (var segmentIndex = 0; segmentIndex < segments.Length; segmentIndex++)
-            {
-                if (segmentIndex == 4 && segments.Length > 8)
-                {
-                    segmentIndex += segments.Length - 9;
+                    result.Append("..");
+                    charIndex += segment.Length - 17;
                     continue;
                 }
-
-                var segment = segments[segmentIndex];
-                for (var charIndex = 0; charIndex < segment.Length; charIndex++)
+                if (!s_invalidPathChars.Contains(ch))
                 {
-                    var ch = segment[charIndex];
-                    if (charIndex == 8 && segment.Length > 16)
-                    {
-                        result.Append("..");
-                        charIndex += segment.Length - 17;
-                        continue;
-                    }
-                    if (!s_invalidPathChars.Contains(ch))
-                    {
-                        result.Append(ch);
-                    }
-                }
-
-                result.Append('+');
-            }
-
-            result.Append(hash);
-            return result.ToString();
-        }
-
-        public static bool TryParseGitHubUrl(
-            string? remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
-        {
-            owner = name = default;
-            if (string.IsNullOrEmpty(remoteUrl))
-            {
-                return false;
-            }
-
-            var match = s_gitHubUrlRegex.Match(remoteUrl);
-            if (!match.Success)
-            {
-                return false;
-            }
-
-            owner = match.Groups["account"].Value;
-            name = match.Groups["repository"].Value;
-
-            return true;
-        }
-
-        public static bool TryParseAzureReposUrl(
-            string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo, [NotNullWhen(true)] out string? org)
-        {
-            project = repo = org = default;
-
-            if (string.IsNullOrEmpty(remoteUrl))
-            {
-                return false;
-            }
-
-            var match = s_azureReposUrlRegex.Match(remoteUrl);
-            if (!match.Success)
-            {
-                return false;
-            }
-
-            org = match.Groups["account"].Value;
-            project = match.Groups["project"].Value;
-            repo = match.Groups["repository"].Value;
-
-            return true;
-        }
-
-        public static string RemoveLeadingHostName(string url, string hostName, bool removeLocale = false)
-        {
-            if (string.IsNullOrEmpty(hostName))
-            {
-                return url;
-            }
-
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
-            {
-                return url;
-            }
-
-            if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
-            {
-                return url;
-            }
-
-            var path = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
-            if (!removeLocale)
-            {
-                return $"/{path}";
-            }
-
-            var slashIndex = path.IndexOf('/');
-            if (slashIndex < 0)
-            {
-                return $"/{path}";
-            }
-
-            var firstSegment = path.Substring(0, slashIndex);
-            return LocalizationUtility.IsValidLocale(firstSegment)
-                ? $"{path[firstSegment.Length..]}"
-                : $"/{path}";
-        }
-
-        public static string GetBookmark(string uid)
-        {
-            uid =
-                uid
-                .ToLowerInvariant()
-                .Replace("\"", "")
-                .Replace("'", "")
-                .Replace("%", "")
-                .Replace("^", "")
-                .Replace("\\", "")
-                .Replace("<", "(")
-                .Replace(">", ")")
-                .Replace("{", "((")
-                .Replace("}", "))");
-
-            uid = Regex.Replace(uid, @"[^a-zA-Z0-9()]", "-");
-
-            uid = Regex.Replace(uid, @"^-+", "");
-            uid = Regex.Replace(uid, @"-+$", "");
-            var bookmark = Regex.Replace(uid, @"-+", "-");
-
-            return bookmark.Length <= 100 ? bookmark : bookmark.Substring(0, 100);
-        }
-
-        private static string ToQueryString(this NameValueCollection collection)
-        {
-            var result = new StringBuilder("?");
-            foreach (var key in collection.AllKeys)
-            {
-                if (string.IsNullOrEmpty(key))
-                {
-                    result.Append($"{collection[key]}&");
-                }
-                else
-                {
-                    result.Append($"{key}={collection[key]}&");
+                    result.Append(ch);
                 }
             }
-            result.Remove(result.Length - 1, 1);
-            return result.ToString();
+
+            result.Append('+');
         }
+
+        result.Append(hash);
+        return result.ToString();
+    }
+
+    public static bool TryParseGitHubUrl(
+        string? remoteUrl, [NotNullWhen(true)] out string? owner, [NotNullWhen(true)] out string? name)
+    {
+        owner = name = default;
+        if (string.IsNullOrEmpty(remoteUrl))
+        {
+            return false;
+        }
+
+        var match = s_gitHubUrlRegex.Match(remoteUrl);
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        owner = match.Groups["account"].Value;
+        name = match.Groups["repository"].Value;
+
+        return true;
+    }
+
+    public static bool TryParseAzureReposUrl(
+        string remoteUrl, [NotNullWhen(true)] out string? project, [NotNullWhen(true)] out string? repo, [NotNullWhen(true)] out string? org)
+    {
+        project = repo = org = default;
+
+        if (string.IsNullOrEmpty(remoteUrl))
+        {
+            return false;
+        }
+
+        var match = s_azureReposUrlRegex.Match(remoteUrl);
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        org = match.Groups["account"].Value;
+        project = match.Groups["project"].Value;
+        repo = match.Groups["repository"].Value;
+
+        return true;
+    }
+
+    public static string RemoveLeadingHostName(string url, string hostName, bool removeLocale = false)
+    {
+        if (string.IsNullOrEmpty(hostName))
+        {
+            return url;
+        }
+
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            return url;
+        }
+
+        if (!string.Equals(uri.Host, hostName, StringComparison.OrdinalIgnoreCase))
+        {
+            return url;
+        }
+
+        var path = MergeUrl(uri.PathAndQuery, "", uri.Fragment).TrimStart('/');
+        if (!removeLocale)
+        {
+            return $"/{path}";
+        }
+
+        var slashIndex = path.IndexOf('/');
+        if (slashIndex < 0)
+        {
+            return $"/{path}";
+        }
+
+        var firstSegment = path[..slashIndex];
+        return LocalizationUtility.IsValidLocale(firstSegment)
+            ? $"{path[firstSegment.Length..]}"
+            : $"/{path}";
+    }
+
+    public static string GetBookmark(string uid)
+    {
+        uid =
+            uid
+            .ToLowerInvariant()
+            .Replace("\"", "")
+            .Replace("'", "")
+            .Replace("%", "")
+            .Replace("^", "")
+            .Replace("\\", "")
+            .Replace("<", "(")
+            .Replace(">", ")")
+            .Replace("{", "((")
+            .Replace("}", "))");
+
+        uid = Regex.Replace(uid, @"[^a-zA-Z0-9()]", "-");
+
+        uid = Regex.Replace(uid, @"^-+", "");
+        uid = Regex.Replace(uid, @"-+$", "");
+        var bookmark = Regex.Replace(uid, @"-+", "-");
+
+        return bookmark.Length <= 100 ? bookmark : bookmark.Substring(0, 100);
+    }
+
+    private static string ToQueryString(this NameValueCollection collection)
+    {
+        var result = new StringBuilder("?");
+        foreach (var key in collection.AllKeys)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                result.Append($"{collection[key]}&");
+            }
+            else
+            {
+                result.Append($"{key}={collection[key]}&");
+            }
+        }
+        result.Remove(result.Length - 1, 1);
+        return result.ToString();
     }
 }

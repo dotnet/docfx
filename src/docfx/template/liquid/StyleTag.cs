@@ -1,16 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.IO;
 using DotLiquid;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class StyleTag : Tag
 {
-    internal class StyleTag : Tag
+    public override void Render(DotLiquid.Context context, TextWriter result)
     {
-        public override void Render(DotLiquid.Context context, TextWriter result)
-        {
-            result.Write($@"<link rel=""stylesheet"" href=""{LiquidTemplate.GetThemeRelativePath(context, Markup)}"">");
-        }
+        result.Write($@"<link rel=""stylesheet"" href=""{LiquidTemplate.GetThemeRelativePath(context, Markup)}"">");
     }
 }

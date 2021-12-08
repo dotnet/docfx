@@ -69,18 +69,18 @@ outputs:
 # remove title from html
 inputs:
   docfx.yml:
-  h1ToRemove.md: |
+  h1-To-Remove.md: |
     # h1 title
-  h1ToKeep.md: |
+  h1-To-Keep.md: |
     welcome to docfx
     # h1 title
 outputs:
-  h1toremove.json: |
+  h1-to-remove.json: |
     {
       "conceptual": "",
       "rawTitle": "<h1 id=\"h1-title\">h1 title</h1>"
     }
-  h1tokeep.json: |
+  h1-to-keep.json: |
     {
       "conceptual":"<p>welcome to docfx</p>\n<h1 id=\"h1-title\">h1 title</h1>\n",
       "rawTitle": ""
@@ -781,6 +781,15 @@ inputs:
 outputs:
   index.json: 
 ---
+# Autolink www.start.end should prepend with https
+inputs:
+  docfx.yml:
+  index.md: |
+    This is www.docs.com
+outputs:
+  index.json: |
+    {"conceptual": "*https://www.docs.com*"}
+---
 # Report correct line number for unknown-language-code in token
 inputs:
   docfx.yml: |
@@ -821,3 +830,24 @@ outputs:
     }
   block.json:
 ---
+# no-loc yaml header
+inputs:
+  docfx.json: |
+    {
+      "build": {
+        "globalMetadata": { "no-loc": ["method", "Azure"] },
+        "fileMetadata": {"no-loc": {"**/*.md": ["Windows"]}}
+      }
+    }
+  a.md: |
+    ---
+    no-loc: ["method", "SDK"]
+    ---
+    Check :::no-loc text="Find"::: for more details.
+    This method can be ran on Windows, and you can also used it in Azure SDK.
+outputs:
+  a.json: |
+    {
+      "conceptual": "<p>Check <span class=\"no-loc\"  dir=\"ltr\" lang=\"en-us\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
+      "no-loc": ["method", "SDK"]
+    }

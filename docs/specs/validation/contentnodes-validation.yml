@@ -1,4 +1,4 @@
-# ContentNodes Validation - warning when use tabbed conceptaul
+# ContentNodes Validation - warning when use tabbed conceptual
 inputs:
   docfx.yml: |
     markdownValidationRules: rules.json
@@ -44,3 +44,31 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"tabbed-conceptual-not-allowed","message":"The tabbed conceptual syntax is deprecated and should not be added to this repository.","file":"b.md","line":2}
     {"message_severity":"suggestion","code":"tabbed-conceptual-not-allowed","message":"The tabbed conceptual syntax is deprecated and should not be added to this repository.","file":"b.md","line":3}
+---
+# Catch Validation Exception
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "contentnodes": {
+        "name": "ContentNodes",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "UseTabbedConceptual",
+            "message": "The tabbed conceptual syntax is deprecated and should not be added to this repository.",
+            "code": "tabbed-conceptual-not-allowed",
+            "severity": "NOT_EXIST",
+            "contentTypes": ["learningpath"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    # [a](#tab/win)
+    # h1 heading
+outputs:
+   a.json:
+   .errors.log: |
+    {"message_severity":"warning","code":"validation-incomplete","message":"Failed to get the validation ruleset and validation was not completed. This happens when there's an issue with the service and continuing to retry the call could cause build delays. You might have content issues that were not reported. To retry validation, close and re-open your PR, or rebuild your branch via Docs Portal (requires admin permissions). If you need admin help or if you continue to see this message, file an issue via https://aka.ms/SiteHelp."}

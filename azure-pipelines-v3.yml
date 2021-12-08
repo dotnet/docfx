@@ -10,7 +10,7 @@ pr:
 variables:
 - group: devresourcekeyvault
 - name: dotnetVersion
-  value: 5.0.x
+  value: 6.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
@@ -40,13 +40,15 @@ jobs:
       arguments: -warnAsError -c Release
 
   # dotnet test
-  - task: DotNetCoreCLI@2
+  - task: AzureCLI@2
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
-      command: test
-      arguments: -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-      publishTestResults: true
+      azureSubscription: 'DevRel - Docs Build Worker (PubDev)'
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura --logger trx --results-directory ./_temp/testResult
     env:
       DOCS_GITHUB_TOKEN: $(gitHubTestToken)
       DOCS_OPS_TOKEN: $(opBuildUserToken)
@@ -55,7 +57,7 @@ jobs:
       MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
 
   - task: reportgenerator@4
-    displayName: Merge Test Results
+    displayName: Merge Coverage Results
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
       reports: test/**/coverage.cobertura.xml
@@ -81,6 +83,16 @@ jobs:
   - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
     displayName: 'Component Detection'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+  # Put this step in the end, for this step always return status:succeeded, and following task won't be skipped
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      displayName: Publish Test Results
+      testResultsFormat: VSTest
+      testResultsFiles: '**/*.trx'
+      mergeTestResults: true
+
 
 # Run RegressionTest
 - job: RunRegressionTest
@@ -114,7 +126,7 @@ jobs:
     - task: AzureCLI@2
       displayName: Run
       inputs:
-        azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+        azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
         scriptType: ps
         scriptLocation: inlineScript
         powerShellErrorActionPreference: continue
@@ -123,7 +135,6 @@ jobs:
         BUILD_REASON: $(Build.Reason)
         DOCFX_APPDATA_PATH: D:/appdata
         DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-        DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
         AZURE_DEVOPS_TOKEN: $(vsoTestToken)
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
@@ -158,7 +169,7 @@ jobs:
       - task: AzureCLI@2
         displayName: ${{repo}}
         inputs:
-          azureSubscription: 'DevRel - Build Agents - 68db5a04-b547-4cfb-a966-6668a3bb3f7c'
+          azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
           scriptType: ps
           scriptLocation: inlineScript
           powerShellErrorActionPreference: continue
@@ -167,7 +178,6 @@ jobs:
           BUILD_REASON: $(Build.Reason)
           DOCFX_APPDATA_PATH: D:/appdata
           DOCS_GITHUB_TOKEN: $(gitHubTestToken)
-          DOCS_KV_PROD_ENDPOINT: https://docfxcikvpub.vault.azure.net/
           AZURE_DEVOPS_TOKEN: $(vsoTestToken)
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
           PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
@@ -196,9 +206,9 @@ parameters:
     learn-pr:
       params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
     windowsserverdocs-pr:
-      params: https://github.com/MicrosoftDocs/windowsserverdocs-pr  --timeout 45 --regression-rules
+      params: https://github.com/MicrosoftDocs/windowsserverdocs-pr --timeout 45 --regression-rules
     VBA-Docs:
-      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 60 --regression-rules
+      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 80 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
     microsoft-365-docs-pr.zh-CN:
@@ -206,9 +216,11 @@ parameters:
     powerbi-docs-pr.de-DE:
       params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live-sxs --timeout 25
     PowerShell-Docs:
-      params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch staging
+      params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch live
     roslyn-api-docs:
-      params: https://github.com/dotnet/roslyn-api-docs --branch live --profile --timeout 105
+      params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 120
+    EntityFramework.ApiDocs:
+      params: https://github.com/dotnet/EntityFramework.ApiDocs --timeout 120
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     dynamics365-docs-odata-apis:
@@ -220,7 +232,7 @@ parameters:
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
-      params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync
+      params: https://github.com/MicrosoftDocs/test --branch master --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
     windows-compatibility:
@@ -234,7 +246,7 @@ parameters:
     quantum-docs-private:
       params: https://github.com/MicrosoftDocs/quantum-docs-private --timeout 30 --branch main
     microsoft-graph-docs:
-      params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 30
+      params: https://github.com/microsoftgraph/microsoft-graph-docs --timeout 60
     # render HTML
     html.test:
       params: https://github.com/MicrosoftDocs/test --timeout 20 --no-dry-sync --output-type html
@@ -244,4 +256,4 @@ parameters:
     dryrun.bot-docs-pr:
       params: https://github.com/MicrosoftDocs/bot-docs-pr --timeout 40 --no-dry-sync --dry-run --template https://static.docs.com/ui/latest
     dryrun.azure-docs-pr:
-      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 50 --dry-run --regression-rules
+      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 80 --dry-run --regression-rules

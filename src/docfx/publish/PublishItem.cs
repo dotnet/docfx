@@ -5,36 +5,35 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+internal class PublishItem
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class PublishItem
-    {
-        public string? Url { get; init; }
+    public string? Url { get; init; }
 
-        public string? Path { get; init; }
+    public string? Path { get; init; }
 
-        [JsonIgnore]
-        public FilePath? SourceFile { get; init; }
+    [JsonIgnore]
+    public FilePath? SourceFile { get; init; }
 
-        /// <summary>
-        /// File source relative path to docset root will be used for PR comment
-        /// </summary>
-        public string? SourcePath { get; init; }
+    /// <summary>
+    /// File source relative path to docset root will be used for PR comment
+    /// </summary>
+    public string? SourcePath { get; init; }
 
-        public string? Locale { get; init; }
+    public string? Locale { get; init; }
 
-        [JsonIgnore]
-        public MonikerList Monikers { get; init; }
+    [JsonIgnore]
+    public MonikerList Monikers { get; init; }
 
-        public string? ConfigMonikerRange { get; init; }
+    public string? ConfigMonikerRange { get; init; }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool HasError { get; init; }
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public bool HasError { get; init; }
 
-        [JsonExtensionData]
-        public JObject? ExtensionData { get; init; }
+    [JsonExtensionData]
+    public JObject? ExtensionData { get; init; }
 
-        public string? MonikerGroup => Monikers.MonikerGroup;
-    }
+    public string? MonikerGroup => Monikers.MonikerGroup;
 }

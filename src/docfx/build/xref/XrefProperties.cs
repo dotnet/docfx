@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
+namespace Microsoft.Docs.Build;
 
-namespace Microsoft.Docs.Build
+internal class XrefProperties
 {
-    internal class XrefProperties
-    {
-        public List<string> Tags { get; set; } = new List<string>();
-    }
+    public List<string> Tags { get; set; } = new List<string>();
 }

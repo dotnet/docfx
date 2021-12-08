@@ -229,15 +229,15 @@ inputs:
 outputs:
   9b52f68bce2b10c7aa018b696f8ca916/docs/a.json: |
     {
-      "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e"
+      "document_id": "8b2d0d80-e4d6-7752-e2c3-9c895506c14b"
     }
   55a4a18f941221e4d8924d8ebc96dd6c/docs/a.json: |
     {
-      "document_id": "08d48c30-3997-5171-bec6-5f6650078a1f"
+      "document_id": "32c0ca13-33e1-fbf1-9291-56de9cc2a907"
     }
   docs/b.json: |
     {
-      "document_id": "f5f11a54-50e3-b65a-bdfd-1cf00b682420"
+      "document_id": "ca2a7d68-51c2-5ffb-b4d7-126a5029397b"
     }
   .publish.json: |
     {
@@ -284,11 +284,11 @@ inputs:
 outputs:
   9b52f68bce2b10c7aa018b696f8ca916/docs/a.json: |
     {
-      "document_id": "9aad8db9-886c-62db-ad91-a80eb80f89d8"
+      "document_id": "3cb58b36-8f2b-6435-9eaa-507fd5420165"
     }
   ecc061f43156f37be077db42abf8301a/docs/a.json: |
     {
-      "document_id": "9aad8db9-886c-62db-ad91-a80eb80f89d8"
+      "document_id": "3cb58b36-8f2b-6435-9eaa-507fd5420165"
     }
   .publish.json: |
     {
@@ -336,7 +336,7 @@ inputs:
 outputs:
   17b9fe681514513cbf7d5c90e32f107a/docs/a.json: |
     {
-      "document_id": "2f5db941-5d87-5c7e-668b-00a1e364cc0e"
+      "document_id": "8b2d0d80-e4d6-7752-e2c3-9c895506c14b"
     }
   .publish.json: |
     {
@@ -2015,7 +2015,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","log_item_type":"user","code":"moniker-range-out-of-scope","message":"No moniker intersection between docfx.yml/docfx.json and file metadata. Config moniker range '<= netcore-2.0' is 'netcore-1.0', 'netcore-2.0', while file monikers is 'netcore-3.0'.","file":"docs/v1/q.md","line":2,"column":19}
 ---
-# Should not take exclue_monikers into consideration while warn on moniker-zone-empty
+# Should not take exclude_monikers into consideration while warn on moniker-zone-empty
 inputs:
   docfx.yml: |
     monikerRange:

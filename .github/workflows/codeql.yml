@@ -8,10 +8,15 @@ jobs:
   analyze:
     name: CodeQL
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     - uses: github/codeql-action/init@v1
       with:
         languages: 'csharp'

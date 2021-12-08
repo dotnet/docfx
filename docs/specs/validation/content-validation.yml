@@ -50,6 +50,24 @@ outputs:
     {"message_severity": "info","code": "disallowed-html-attribute","message": "HTML attribute 'height' on tag 'h1' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file": "a.md","line": 4,"column": 5}
     {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'div' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":5,"column":6}
 ---
+# Sanitize user html with customized allowedHTML
+inputs:
+  docfx.yml: |
+    allowedHTML:
+      "*":
+      - id
+      - title
+      h2:
+      - foo
+  a.md: |
+    <H2 id="head" TITLE="HEAD" foo="bar" onclick="alert();"></H2>
+outputs:
+  a.json: |
+    { "conceptual": "
+        <h2 id='head' title='HEAD' foo='bar'></h2>" }
+  .errors.log: |
+    {"message_severity":"info","code":"disallowed-html-attribute","message":"HTML attribute 'onclick' on tag 'H2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax.","file":"a.md","line":1,"column":38}
+---
 # SensitiveLanguage - sensitive-language
 inputs:
   docfx.yml: |
@@ -68,29 +86,29 @@ inputs:
             "message": "Term '{0}' is sensitive and should not be used in content or code.",
             "code": "sensitive-language",
             "severity": "SUGGESTION",
-            "disallowed": ["master", "blacklist", "whitelist"],
+            "disallowed": ["block-word-1", "block-word-2", "block-word-3"],
             "contentTypes": ["conceptual"],
-            "exceptions":["tree/master"],
+            "exceptions":["tree/block-word-1"],
             "docfxOverride": true
           }
         ]
       }
     }
   file1.md: |
-    There is master in the content, this will error
-    There is#whitelist-with-special chars in the content, this will error
-    This is no sensitive language in this file, something like masterclass is ok.
-    Blacklist at the start, ends with Master
-    tree/master is valid
-  a/b/c/file.md: skipped bad language check for master due to exclusion
-  n/m/o/file.md: not skipped bad language check for master due to exclusion
+    There is block-word-1 in the content, this will error
+    There is#block-word-3-with-special chars in the content, this will error
+    This is no sensitive language in this file, something like block-word-1class is ok.
+    block-word-2 at the start, ends with block-word-1
+    tree/block-word-1 is valid
+  a/b/c/file.md: skipped bad language check for block-word-1 due to exclusion
+  n/m/o/file.md: not skipped bad language check for block-word-1 due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'whitelist' is sensitive and should not be used in content or code.","file":"file1.md","line":2,"end_line":2,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'blacklist' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-3' is sensitive and should not be used in content or code.","file":"file1.md","line":2,"end_line":2,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-2' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"n/m/o/file.md","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
   a/b/c/file.json:
   n/m/o/file.json:
@@ -112,19 +130,19 @@ inputs:
             "message": "Term '{0}' is sensitive and should not be used in content or code.",
             "code": "sensitive-language",
             "severity": "SUGGESTION",
-            "disallowed": ["master", "blacklist", "whitelist"],
+            "disallowed": ["block-word-1", "block-word-2", "block-word-3"],
             "contentTypes": ["conceptual"],
             "docfxOverride": false
           }
         ]
       }
     }
-  file1.md: There is master in the content, this will error
-  a/b/c/file.md: skipped bad language check for master due to exclusion
+  file1.md: There is block-word-1 in the content, this will error
+  a/b/c/file.md: skipped bad language check for block-word-1 due to exclusion
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"a/b/c/file.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"file1.md","line":0,"end_line":0,"column":0,"end_column":0}
     {"message_severity":"warning","code":"rule-override-invalid","message":"Validation rule 'sensitive-language' is not overridable, so overrides in docfx.yml/docfx.json will be ignored.","line":0,"end_line":0,"column":0,"end_column":0}
   file1.json:
   a/b/c/file.json:
@@ -142,7 +160,7 @@ inputs:
             "message": "Term '{0}' is sensitive and should not be used in content or code.",
             "code": "sensitive-language",
             "severity": "SUGGESTION",
-            "disallowed": ["master", "blacklist", "whitelist"],
+            "disallowed": ["block-word-1", "block-word-2", "block-word-3"],
             "contentTypes": ["post"]
           }
         ]
@@ -156,8 +174,8 @@ inputs:
     display-author: Microsoft Startups
     layout: Post
     ---
-    There is master in the content, this will error
+    There is block-word-1 in the content, this will error
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'master' is sensitive and should not be used in content or code.","file":"file1.md","line":8,"end_line":8,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"sensitive-language","message":"Term 'block-word-1' is sensitive and should not be used in content or code.","file":"file1.md","line":8,"end_line":8,"column":1,"end_column":1}
   file1.json:

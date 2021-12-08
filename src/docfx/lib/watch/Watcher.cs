@@ -1,108 +1,105 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Immutable;
-using System.Threading;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+public static class Watcher
 {
-    public static class Watcher
+    private static readonly object s_defaultScope = new();
+    private static readonly AsyncLocal<ImmutableStack<IFunction>> s_callstack = new();
+    private static readonly AsyncLocal<IDisposable?> s_scope = new();
+
+    public static T Read<T>(Func<T> valueFactory)
     {
-        private static readonly object s_defaultScope = new();
-        private static readonly AsyncLocal<ImmutableStack<IFunction>> s_callstack = new();
-        private static readonly AsyncLocal<IDisposable?> s_scope = new();
+        var function = new ReadFunction<T>(valueFactory);
+        BeginFunctionScope(function);
 
-        public static T Read<T>(Func<T> valueFactory)
+        try
         {
-            var function = new ReadFunction<T>(valueFactory);
-            BeginFunctionScope(function);
+            var result = valueFactory();
 
-            try
-            {
-                var result = valueFactory();
-
-                function.ChangeToken = result;
-                return result;
-            }
-            finally
-            {
-                EndFunctionScope();
-            }
+            function.ChangeToken = result;
+            return result;
         }
-
-        public static T Read<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
+        finally
         {
-            var function = new ReadFunction<TChangeToken>(changeTokenFactory);
-            BeginFunctionScope(function);
-
-            try
-            {
-                var changeToken = changeTokenFactory();
-                var result = valueFactory();
-
-                function.ChangeToken = changeToken;
-                return result;
-            }
-            finally
-            {
-                EndFunctionScope();
-            }
+            EndFunctionScope();
         }
+    }
 
-        public static void Write(Action action)
+    public static T Read<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
+    {
+        var function = new ReadFunction<TChangeToken>(changeTokenFactory);
+        BeginFunctionScope(function);
+
+        try
         {
-            var function = new WriteFunction(action);
-            BeginFunctionScope(function);
+            var changeToken = changeTokenFactory();
+            var result = valueFactory();
 
-            try
-            {
-                action();
-            }
-            finally
-            {
-                EndFunctionScope();
-            }
+            function.ChangeToken = changeToken;
+            return result;
         }
-
-        public static IDisposable BeginScope()
+        finally
         {
-            if (s_scope.Value != null)
-            {
-                throw new InvalidOperationException("Cannot start a nested scope.");
-            }
-            return s_scope.Value = new DelegatingDisposable(() => s_scope.Value = null);
+            EndFunctionScope();
         }
+    }
 
-        internal static object GetCurrentScope() => s_scope.Value ?? s_defaultScope;
+    public static void Write(Action action)
+    {
+        var function = new WriteFunction(action);
+        BeginFunctionScope(function);
 
-        internal static void BeginFunctionScope(IFunction function)
+        try
         {
-            var stack = s_callstack.Value ?? ImmutableStack<IFunction>.Empty;
-
-            s_callstack.Value = stack.Push(function);
+            action();
         }
-
-        internal static void EndFunctionScope(bool attachToParent = true)
+        finally
         {
-            var stack = s_callstack.Value;
-            if (stack != null && !stack.IsEmpty)
-            {
-                s_callstack.Value = stack = stack.Pop(out var child);
-                if (attachToParent && !stack.IsEmpty)
-                {
-                    stack.Peek().AddChild(child);
-                }
-            }
+            EndFunctionScope();
         }
+    }
 
-        internal static void AttachToParent(IFunction child)
+    public static IDisposable BeginScope()
+    {
+        if (s_scope.Value != null)
         {
-            var stack = s_callstack.Value;
-            if (stack != null && !stack.IsEmpty)
+            throw new InvalidOperationException("Cannot start a nested scope.");
+        }
+        return s_scope.Value = new DelegatingDisposable(() => s_scope.Value = null);
+    }
+
+    internal static object GetCurrentScope() => s_scope.Value ?? s_defaultScope;
+
+    internal static void BeginFunctionScope(IFunction function)
+    {
+        var stack = s_callstack.Value ?? ImmutableStack<IFunction>.Empty;
+
+        s_callstack.Value = stack.Push(function);
+    }
+
+    internal static void EndFunctionScope(bool attachToParent = true)
+    {
+        var stack = s_callstack.Value;
+        if (stack != null && !stack.IsEmpty)
+        {
+            s_callstack.Value = stack = stack.Pop(out var child);
+            if (attachToParent && !stack.IsEmpty)
             {
                 stack.Peek().AddChild(child);
             }
+        }
+    }
+
+    internal static void AttachToParent(IFunction child)
+    {
+        var stack = s_callstack.Value;
+        if (stack != null && !stack.IsEmpty)
+        {
+            stack.Peek().AddChild(child);
         }
     }
 }

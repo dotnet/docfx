@@ -4,27 +4,26 @@
 using Markdig;
 using Markdig.Renderers;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class InteractiveCodeExtension : IMarkdownExtension
 {
-    public class InteractiveCodeExtension : IMarkdownExtension
+    public void Setup(MarkdownPipelineBuilder pipeline)
     {
-        public void Setup(MarkdownPipelineBuilder pipeline)
+        var codeSnippetInteractiveRewriter = new CodeSnippetInteractiveRewriter();
+        var fencedCodeInteractiveRewriter = new FencedCodeInteractiveRewriter();
+
+        var codeSnippetVisitor = new MarkdownDocumentVisitor(codeSnippetInteractiveRewriter);
+        var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewriter);
+
+        pipeline.DocumentProcessed += document =>
         {
-            var codeSnippetInteractiveRewriter = new CodeSnippetInteractiveRewriter();
-            var fencedCodeInteractiveRewriter = new FencedCodeInteractiveRewriter();
+            codeSnippetVisitor.Visit(document);
+            fencedCodeVisitor.Visit(document);
+        };
+    }
 
-            var codeSnippetVisitor = new MarkdownDocumentVisitor(codeSnippetInteractiveRewriter);
-            var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewriter);
-
-            pipeline.DocumentProcessed += document =>
-            {
-                codeSnippetVisitor.Visit(document);
-                fencedCodeVisitor.Visit(document);
-            };
-        }
-
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-        {
-        }
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
     }
 }

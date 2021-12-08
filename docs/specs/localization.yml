@@ -341,7 +341,7 @@ repos:
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "fa697b4e-3e52-77f6-2219-39040f6070da", "document_version_independent_id": "7c88e748-ed5e-a29a-c057-6f89857c3591",}
+    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "3862ef10-61c4-6242-7188-36960566ecb6", "document_version_independent_id": "3862ef10-61c4-6242-7188-36960566ecb6",}
 ---
 # bilingual build 1
 locale: zh-cn
@@ -422,22 +422,22 @@ repos:
         a/docfx.yml:
     - files:
         a/docfx.yml:
-        a/docs/tokena.md: |
-          [!include[include deleted tokenb](tokenb.md)]
+        a/docs/token-a.md: |
+          [!include[include deleted token-b](token-b.md)]
           [!code-csharp[Main](program.cs)]
-        a/docs/tokenb.md: b
+        a/docs/token-b.md: b
         a/docs/program.cs:
   https://github.com/deletedtoken/a.zh-cn:
     - files:
         docsets.yml:
         a/docfx.yml:
         a/docs/a.md: |
-          [!include[include deleted tokena](tokena.md)]
+          [!include[include deleted token-a](token-a.md)]
 outputs:
   a/docs/a.json: |
     {"conceptual":"<p>b</p>\n<pre><code class=\"lang-csharp\" name=\"Main\"></code></pre>"}
   a/.dependencymap.json: |
-    {"dependencies": {"a/docs/tokena.md": undefined}}
+    {"dependencies": {"a/docs/token-a.md": undefined}}
 ---
 # fallback to deleted resource
 locale: zh-cn
@@ -515,20 +515,20 @@ repos:
     - files:
         docfx.yml:
         docs/a.md: |
-          [!include[include deleted tokena](tokena.md)]
+          [!include[include deleted token-a](token-a.md)]
           [link to deleted resource](resource.png)
     - files:
         docfx.yml:
-        docs/tokena.md: |
-          [!include[include deleted tokenb](tokenb.md)]
+        docs/token-a.md: |
+          [!include[include deleted token-b](token-b.md)]
           [!code-csharp[Main](program.cs)]
-        docs/tokenb.md: b
+        docs/token-b.md: b
         docs/program.cs:
         docs/resource.png:
 outputs:
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'resource.png'.","file":"docs/a.md","line":2,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokena.md'.","file":"docs/a.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-a.md'.","file":"docs/a.md","line":1,"column":1}
 ---
 # fallback to inclusion parent toc
 locale: zh-cn
@@ -652,16 +652,16 @@ repos:
     - files:
         docfx.yml:
         docs/1.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
         docs/2.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
         docs/3.md: |
-          [!include[include deleted tokena](tokenx.md)]
+          [!include[include deleted token-a](token-x.md)]
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/1.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/2.md","line":1,"column":1}
-    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'tokenx.md'.","file":"docs/3.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/1.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/2.md","line":1,"column":1}
+    {"message_severity":"error","code":"include-not-found","message":"Invalid include link: 'token-x.md'.","file":"docs/3.md","line":1,"column":1}
 ---
 # fallback to corresponding source branch 1
 locale: zh-cn
