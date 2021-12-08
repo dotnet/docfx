@@ -346,8 +346,7 @@ internal static class UrlUtility
 
     public static string GetBookmark(string uid)
     {
-        uid =
-            uid
+        uid = uid
             .ToLowerInvariant()
             .Replace("\"", "")
             .Replace("'", "")
