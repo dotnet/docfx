@@ -364,7 +364,7 @@ internal static class UrlUtility
         uid = Regex.Replace(uid, @"-+$", "");
         var bookmark = Regex.Replace(uid, @"-+", "-");
 
-        return bookmark.Length <= 100 ? bookmark : bookmark.Substring(0, 100);
+        return bookmark.Length <= 100 ? bookmark : bookmark[..100];
     }
 
     private static string ToQueryString(this NameValueCollection collection)
