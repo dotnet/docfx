@@ -756,3 +756,4 @@ yyyy
 zoneinfo
 zonepivotgroups
 zzz
+istreamable
