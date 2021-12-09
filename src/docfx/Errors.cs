@@ -267,6 +267,9 @@ internal static class Errors
         /// Behavior: ✔️ Message: ✔️
         public static Error FileNotFound(SourceInfo<string> source)
             => new(ErrorLevel.Warning, "file-not-found", $"Invalid file link: '{source}'.", source);
+
+        public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
+            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
     }
 
     public static class UrlPath
@@ -420,9 +423,6 @@ internal static class Errors
 
         public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
            => new(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
-
-        public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
-            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
 
         /// <summary>
         /// The same uid of the same version is defined in multiple places

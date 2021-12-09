@@ -224,9 +224,8 @@ internal class XrefResolver
         {
             if (!internalXrefMap.ContainsKey(xrefGroup.Key))
             {
-                _errorLog.Add(Errors.Xref.UidNotFound(
-                    xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
-                { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                _errorLog.Add(Errors.Link.UidNotFound(
+                    xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType));
             }
         }
     }
