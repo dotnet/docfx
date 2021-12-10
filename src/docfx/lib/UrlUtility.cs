@@ -356,7 +356,9 @@ internal static class UrlUtility
             .Replace("<", "(")
             .Replace(">", ")")
             .Replace("{", "((")
-            .Replace("}", "))");
+            .Replace("}", "))")
+            .Replace("[", "(")
+            .Replace("]", ")");
 
         uid = Regex.Replace(uid, @"[^a-zA-Z0-9()]", "-");
 
@@ -364,7 +366,7 @@ internal static class UrlUtility
         uid = Regex.Replace(uid, @"-+$", "");
         var bookmark = Regex.Replace(uid, @"-+", "-");
 
-        return bookmark.Length <= 100 ? bookmark : bookmark[..100];
+        return bookmark;
     }
 
     private static string ToQueryString(this NameValueCollection collection)
