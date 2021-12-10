@@ -9,7 +9,6 @@ namespace System.Collections.Concurrent;
 
 internal static class MemoryCache
 {
-    private const int PollingInterval = 10 * 1000;
     private const int MemoryLimitPercentage = 70;
 
     private static readonly List<WeakReference<IMemoryCache>> s_caches = new();
@@ -19,7 +18,7 @@ internal static class MemoryCache
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            new Thread(MonitorMemory) { IsBackground = true }.Start();
+            MonitorMemory();
         }
     }
 
@@ -39,16 +38,15 @@ internal static class MemoryCache
         }
     }
 
-    private static unsafe void MonitorMemory(object? obj)
+    private static async void MonitorMemory()
     {
-        var lastLogTime = DateTime.MinValue;
-
         try
         {
-            while (true)
-            {
-                Thread.Sleep(PollingInterval);
+            using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            var nextLogTime = DateTime.MinValue;
 
+            while (await timer.WaitForNextTickAsync())
+            {
                 // Ensure GC after last notification
                 var gen2Count = GC.CollectionCount(2);
                 if (gen2Count == s_lastGen2Count)
@@ -57,25 +55,10 @@ internal static class MemoryCache
                 }
                 s_lastGen2Count = gen2Count;
 
-                MEMORYSTATUSEX memoryStatus = default;
-                memoryStatus.dwLength = (uint)sizeof(MEMORYSTATUSEX);
-
-                if (!GlobalMemoryStatusEx(ref memoryStatus))
+                if (!GetMemoryStatus(out var memoryStatus))
                 {
                     Log.Write("GlobalMemoryStatusEx failed");
-                    break;
-                }
-
-                if (DateTime.Now > lastLogTime)
-                {
-                    Log.Write(@$"GlobalMemoryStatusEx:
-dwMemoryLoad: {memoryStatus.dwMemoryLoad}
-ullAvailPhys: {memoryStatus.ullAvailPhys}
-ullTotalPhys: {memoryStatus.ullTotalPhys}
-ullAvailVirtual: {memoryStatus.ullAvailVirtual}
-ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
-
-                    lastLogTime = DateTime.Now + TimeSpan.FromMinutes(1);
+                    continue;
                 }
 
                 if (memoryStatus.dwMemoryLoad < MemoryLimitPercentage)
@@ -85,7 +68,16 @@ ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
 
                 Log.Important($"WARNING: Low memory {memoryStatus.dwMemoryLoad}", ConsoleColor.Red);
 
+                if (DateTime.Now > nextLogTime)
+                {
+                    LogMemoryInfo(memoryStatus);
+
+                    nextLogTime = DateTime.Now + TimeSpan.FromSeconds(10);
+                }
+
                 ForEach(cache => cache.OnMemoryLow());
+
+                GC.Collect();
             }
         }
         catch (Exception ex)
@@ -99,6 +91,39 @@ ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
             {
             }
         }
+    }
+
+    private static void LogMemoryInfo(MEMORYSTATUSEX memoryStatus)
+    {
+        Log.Write(@$"
+GlobalMemoryStatusEx:
+    dwMemoryLoad:    {memoryStatus.dwMemoryLoad}
+    ullAvailPhys:    {memoryStatus.ullAvailPhys}
+    ullTotalPhys:    {memoryStatus.ullTotalPhys}
+    ullAvailVirtual: {memoryStatus.ullAvailVirtual}
+    ullTotalVirtual: {memoryStatus.ullTotalVirtual}");
+
+        var gc = GC.GetGCMemoryInfo();
+        Log.Write($@"
+GCMemoryInfo:
+    PromotedBytes:                {gc.PromotedBytes}
+    HeapSizeBytes:                {gc.HeapSizeBytes}
+    FragmentedBytes:              {gc.FragmentedBytes}
+    MemoryLoadBytes:              {gc.MemoryLoadBytes}
+    TotalCommittedBytes:          {gc.TotalCommittedBytes}
+    TotalAvailableMemoryBytes:    {gc.TotalAvailableMemoryBytes}
+    HighMemoryLoadThresholdBytes: {gc.HighMemoryLoadThresholdBytes}
+    FinalizationPendingCount:     {gc.FinalizationPendingCount}
+    PinnedObjectsCount:           {gc.PinnedObjectsCount}
+    PauseTimePercentage:          {gc.PauseTimePercentage}");
+    }
+
+    private static unsafe bool GetMemoryStatus(out MEMORYSTATUSEX memoryStatus)
+    {
+        memoryStatus = default;
+        memoryStatus.dwLength = (uint)sizeof(MEMORYSTATUSEX);
+
+        return GlobalMemoryStatusEx(ref memoryStatus);
     }
 
     private static void ForEach(Action<IMemoryCache> action)

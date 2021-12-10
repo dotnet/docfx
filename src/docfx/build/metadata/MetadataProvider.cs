@@ -14,7 +14,7 @@ internal class MetadataProvider
     private readonly List<(Func<string, bool> glob, string key, JToken value)> _rules = new();
     private readonly List<(Func<string, bool> glob, string key, JToken value)> _monikerRules = new();
 
-    private readonly ConcurrentDictionary<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
+    private readonly MemoryCache<FilePath, Watch<(ErrorList, UserMetadata)>> _metadataCache = new();
 
     public MetadataProvider(Config config, Input input, BuildScope buildScope)
     {

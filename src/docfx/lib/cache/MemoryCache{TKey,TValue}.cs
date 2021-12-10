@@ -36,7 +36,7 @@ internal class MemoryCache<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, I
 
         if (removedCount > 0)
         {
-            Log.Write($"Memory cache removed {removedCount} items on low memory");
+            Log.Write($"Memory {GetType()} removed {removedCount} items on low memory");
         }
     }
 }
