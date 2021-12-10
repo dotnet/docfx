@@ -757,3 +757,4 @@ zoneinfo
 zonepivotgroups
 zzz
 istreamable
+iaggregate
