@@ -280,7 +280,7 @@ internal class PageBuilder
         _searchIndexBuilder.SetTitle(file, conceptual.Title);
         _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
-        ProcessConceptualHtml(file, html, conceptual);
+        ProcessConceptualHtml(errors, file, html, conceptual);
 
         return _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
     }
@@ -345,13 +345,14 @@ internal class PageBuilder
         return pageModel;
     }
 
-    private void ProcessConceptualHtml(FilePath file, string html, ConceptualModel conceptual)
+    private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
             HtmlUtility.GetBookmarks(ref token, bookmarks);
 
             if (token.Type == HtmlTokenType.Text)

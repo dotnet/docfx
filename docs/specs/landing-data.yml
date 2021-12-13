@@ -20,7 +20,7 @@ inputs:
 outputs:
   docs/index.mta.json:
   docs/index.raw.page.json: |
-    { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }
+    { "content": "<ul class=\"cardsM cols cols1\"><li><a class=\"card\" href=\"/a\" data-linktype=\"absolute-path\"><img class=\"cardImage\" role=\"presentation\" src=\"./a.png\" data-linktype=\"relative-path\"><div class=\"cardText\"><h3></h3><p>Test html</p></div></a></li></ul>" }
 ---
 # Support grid type
 inputs:

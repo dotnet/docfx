@@ -181,7 +181,7 @@ internal class TemplateEngine
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -195,13 +195,13 @@ internal class TemplateEngine
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }
 
-    private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
+    private void ProcessConceptualHtml(string html, ConceptualModel conceptual)
     {
         var wordCount = 0L;
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
-            HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+            HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -225,7 +225,7 @@ internal class TemplateEngine
         else if (JsonSchemaProvider.IsConceptual(mime))
         {
             var conceptual = pageModel.ToObject<ConceptualModel>()!;
-            ProcessConceptualHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "", conceptual);
+            ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "", conceptual);
             pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
             return conceptual.Conceptual ?? "";
         }
