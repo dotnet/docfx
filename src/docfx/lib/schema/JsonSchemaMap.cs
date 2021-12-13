@@ -32,4 +32,9 @@ internal class JsonSchemaMap
             _map.TryAdd(token, schema);
         }
     }
+
+    public void TrimExcess()
+    {
+        _map.TrimExcess();
+    }
 }

@@ -119,6 +119,7 @@ internal class JsonSchemaTransformer
         var schemaMap = new JsonSchemaMap(IsContentTransform);
         var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
         errors.AddRange(schemaErrors);
+        schemaMap.TrimExcess();
 
         var uidCount = GetFileUidCount(schemaMap, token);
         return (token, schemaValidator.Schema, schemaMap, uidCount);
@@ -230,8 +231,7 @@ internal class JsonSchemaTransformer
                 }
 
                 xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(
-                        schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                    () => LoadXrefProperty(file, uid, value, rootSchema, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
@@ -289,12 +289,10 @@ internal class JsonSchemaTransformer
     }
 
     private JToken LoadXrefProperty(
-        JsonSchemaMap schemaMap,
         FilePath file,
         SourceInfo<string> uid,
         JToken value,
         JsonSchema rootSchema,
-        int uidCount,
         string propertyPath)
     {
         var recursionDetector = s_recursionDetector.Value!;
@@ -306,6 +304,7 @@ internal class JsonSchemaTransformer
         try
         {
             recursionDetector.Push(uid);
+            var (token, schema, schemaMap, uidCount) = ValidateContent(ErrorBuilder.Null, file);
             return TransformContentCore(
                 _errors,
                 schemaMap,
