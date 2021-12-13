@@ -255,9 +255,12 @@ outputs:
 ---
 # Output data schema to json, output page schema to html
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    removeHostName: true
+    outputType: pageJson
   docs/a.md: |
     link to [data](data.yml) or [page](page.yml)
+    [external link](https://docs.com/c)
   docs/data.yml: |
     #YamlMime:TestData
   docs/page.yml: |
@@ -358,6 +361,7 @@ noSingleFile: true
 inputs:
   docfx.yml: |
     outputType: pageJson
+    removeHostName: true
   a.yml: |
     #YamlMime:TestPage
     heading: heading-1
@@ -378,6 +382,7 @@ inputs:
       [](a.yml#heading-1)
       [](a.yml#heading-2)
       [](a.yml#heading-3)
+      [external link](https://docs.com/c)
   _themes/ContentTemplate/schemas/TestPage.schema.json: |
     {
       "properties": {

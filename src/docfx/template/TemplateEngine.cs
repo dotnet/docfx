@@ -138,7 +138,7 @@ internal class TemplateEngine
 
     public (TemplateModel model, JObject metadata) CreateTemplateModel(FilePath file, string? mime, JObject pageModel)
     {
-        var content = CreateContent(file, mime, pageModel);
+        var content = CreateContent(file, mime, ref pageModel);
 
         if (_config.DryRun)
         {
@@ -173,7 +173,7 @@ internal class TemplateEngine
         return (model, metadata);
     }
 
-    public string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
+    private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
     {
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
@@ -195,12 +195,39 @@ internal class TemplateEngine
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }
 
-    private string CreateContent(FilePath file, string? mime, JObject pageModel)
+    private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
-        if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
+        var wordCount = 0L;
+
+        var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
-            // Conceptual and Landing Data
-            return pageModel.Value<string>("conceptual") ?? "";
+            HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+
+            if (token.Type == HtmlTokenType.Text)
+            {
+                if (!_config.DryRun)
+                {
+                    wordCount += WordCount.CountWord(token.RawText.Span);
+                }
+            }
+        });
+
+        conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
+        conceptual.WordCount = wordCount;
+    }
+
+    private string CreateContent(FilePath file, string? mime, ref JObject pageModel)
+    {
+        if (JsonSchemaProvider.IsLandingData(mime))
+        {
+            return ProcessHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "");
+        }
+        else if (JsonSchemaProvider.IsConceptual(mime))
+        {
+            var conceptual = pageModel.ToObject<ConceptualModel>()!;
+            ProcessConceptualHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "", conceptual);
+            pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
+            return conceptual.Conceptual ?? "";
         }
 
         // Generate SDP content

@@ -280,7 +280,7 @@ internal class PageBuilder
         _searchIndexBuilder.SetTitle(file, conceptual.Title);
         _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
-        ProcessConceptualHtml(errors, file, html, conceptual);
+        ProcessConceptualHtml(file, html, conceptual);
 
         return _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
     }
@@ -337,7 +337,7 @@ internal class PageBuilder
 
             pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = _templateEngine.ProcessHtml(errors, file, razorHtml),
+                Conceptual = razorHtml,
                 ExtensionData = pageModel,
             });
         }
@@ -345,24 +345,18 @@ internal class PageBuilder
         return pageModel;
     }
 
-    private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
+    private void ProcessConceptualHtml(FilePath file, string html, ConceptualModel conceptual)
     {
-        var wordCount = 0L;
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
             if (token.Type == HtmlTokenType.Text)
             {
                 searchText.Append(token.RawText);
-                if (!_config.DryRun)
-                {
-                    wordCount += WordCount.CountWord(token.RawText.Span);
-                }
             }
         });
 
@@ -380,7 +374,6 @@ internal class PageBuilder
         _searchIndexBuilder.SetBody(file, searchText.ToString());
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
-        conceptual.WordCount = wordCount;
     }
 
     private static bool IsCustomized404Page(FilePath file)
