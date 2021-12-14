@@ -20,23 +20,43 @@ internal class JsonSchemaMap
 
     public IEnumerable<(JToken item, JsonSchema? subschema)> ForEachJArray(JsonSchema? schema, JArray array)
     {
-        foreach (var item in array)
+        for (var i = 0; i < array.Count; i++)
         {
-            var subschema = schema?.Items.schema ?? _map.GetValueOrDefault(item);
-            yield return (item, subschema);
+            var item = array[i];
+
+            JsonSchema? subschema = null;
+
+            if (schema != null)
+            {
+                var (items, eachItem) = schema.Items;
+                if (items != null)
+                {
+                    subschema = items;
+                }
+                else if (eachItem != null)
+                {
+                    if (i < eachItem.Length)
+                    {
+                        subschema = eachItem[i];
+                    }
+                    else if (schema.AdditionalItems != null)
+                    {
+                        subschema = schema.AdditionalItems;
+                    }
+                }
+            }
+
+            yield return (item, schema?.SchemaResolver.ResolveSchema(subschema) ?? _map.GetValueOrDefault(item));
         }
     }
 
-    public IEnumerable<(string key, JToken value, JsonSchema? subschema)> ForEachJObject(JsonSchema? schema, JObject obj)
+    public JsonSchema? GetPropertySchema(JsonSchema? schema, JObject obj, string key)
     {
-        foreach (var (key, value) in obj)
-        {
-            if (value != null)
-            {
-                var subschema = schema != null && schema.Properties.TryGetValue(key, out var result) ? result : _map.GetValueOrDefault(value);
-                yield return (key, value, subschema);
-            }
-        }
+        return schema is null
+            ? null
+            : schema.Properties.TryGetValue(key, out var result)
+                ? schema.SchemaResolver.ResolveSchema(result)
+                : _map.GetValueOrDefault(obj[key]!);
     }
 
     public void Add(JToken token, JsonSchema schema)

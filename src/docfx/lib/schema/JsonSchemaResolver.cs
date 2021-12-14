@@ -36,6 +36,11 @@ internal class JsonSchemaResolver
         ExpandSchemaIdAndRef(_baseUrl, _schema, _schemasById);
     }
 
+    public JsonSchema? ResolveSchema(JsonSchema? schema)
+    {
+        return string.IsNullOrEmpty(schema?.Ref) ? schema : ResolveSchema(schema.Ref) ?? schema;
+    }
+
     public JsonSchema? ResolveSchema(string schemaRef)
     {
         return _references.GetOrAdd(schemaRef, schemaRef => ResolveSchemaCore(schemaRef, new HashSet<string>()));

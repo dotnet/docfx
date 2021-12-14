@@ -68,10 +68,7 @@ internal class JsonSchemaValidator
 
     private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
     {
-        if (!string.IsNullOrEmpty(schema.Ref))
-        {
-            schema = schema.SchemaResolver.ResolveSchema(schema.Ref) ?? schema;
-        }
+        schema = schema.SchemaResolver.ResolveSchema(schema) ?? schema;
 
         if (!ValidateType(schema, propertyPath, token, errors))
         {

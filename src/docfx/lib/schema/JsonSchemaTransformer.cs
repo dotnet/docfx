@@ -4,7 +4,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using HtmlReaderWriter;
 using Microsoft.Docs.Validation;
@@ -150,9 +149,9 @@ internal class JsonSchemaTransformer
                         errors, schemaMap, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                 }
 
-                foreach (var (key, value, subschema) in schemaMap.ForEachJObject(schema, obj))
+                foreach (var (key, value) in obj)
                 {
-                    if (subschema != null)
+                    if (value != null && schemaMap.GetPropertySchema(schema, obj, key) is var subschema && subschema != null)
                     {
                         LoadXrefSpecsCore(
                             errors,
@@ -233,9 +232,10 @@ internal class JsonSchemaTransformer
                 continue;
             }
 
+            var subschema = schemaMap.GetPropertySchema(schema, obj, xrefProperty);
             xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
                 () => LoadXrefProperty(
-                    schemaMap, file, uid, value, rootSchema, schema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                    schemaMap, file, uid, value, rootSchema, subschema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
                 LazyThreadSafetyMode.PublicationOnly);
         }
 
@@ -253,9 +253,9 @@ internal class JsonSchemaTransformer
                     count++;
                 }
 
-                foreach (var (key, value, subschema) in schemaMap.ForEachJObject(schema, obj))
+                foreach (var (key, value) in obj)
                 {
-                    if (subschema != null)
+                    if (value != null && schemaMap.GetPropertySchema(schema, obj, key) is var subschema && subschema != null)
                     {
                         count += GetFileUidCount(schemaMap, value, subschema);
                     }
@@ -280,7 +280,7 @@ internal class JsonSchemaTransformer
         // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
         if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid)
         {
-            uidSchema = schemaMap.ForEachJObject(schema, obj).FirstOrDefault(item => item.key == "uid").subschema;
+            uidSchema = schemaMap.GetPropertySchema(schema, obj, "uid");
             if (uidSchema?.ContentType == JsonSchemaContentType.Uid)
             {
                 uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
@@ -305,7 +305,7 @@ internal class JsonSchemaTransformer
         SourceInfo<string> uid,
         JToken value,
         JsonSchema rootSchema,
-        JsonSchema schema,
+        JsonSchema? schema,
         int uidCount,
         string propertyPath)
     {
@@ -362,18 +362,21 @@ internal class JsonSchemaTransformer
 
             case JObject obj:
                 var newObject = new JObject();
-                foreach (var (key, value, subschema) in schemaMap.ForEachJObject(schema, obj))
+                foreach (var (key, value) in obj)
                 {
-                    newObject[key] = TransformContentCore(
+                    if (value != null)
+                    {
+                        newObject[key] = TransformContentCore(
                         errors,
                         schemaMap,
                         file,
                         rootSchema,
-                        subschema,
+                        schemaMap.GetPropertySchema(schema, obj, key),
                         value,
                         uidCount,
                         JsonUtility.AddToPropertyPath(propertyPath, key),
                         xrefmap);
+                    }
                 }
                 return newObject;
 

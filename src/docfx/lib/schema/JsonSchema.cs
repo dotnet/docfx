@@ -98,7 +98,7 @@ internal class JsonSchema
     /// The JSON schema that applies to the array items if the current value is array.
     /// </summary>
     [JsonConverter(typeof(UnionTypeConverter))]
-    public (JsonSchema? schema, JsonSchema[]? schemas) Items { get; init; }
+    public (JsonSchema? items, JsonSchema[]? eachItem) Items { get; init; }
 
     /// <summary>
     /// The JSON schema that applies to additional items of an array.
