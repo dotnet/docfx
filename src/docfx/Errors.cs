@@ -421,8 +421,8 @@ internal static class Errors
         public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
            => new(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-        public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
-            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
+        public static Error UidNotFound(string uid, string? repository, string? schemaType, string? propertyPath)
+            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository '{repository}' on property '{propertyPath}'.", null, propertyPath);
 
         /// <summary>
         /// The same uid of the same version is defined in multiple places

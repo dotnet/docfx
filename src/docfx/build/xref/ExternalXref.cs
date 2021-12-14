@@ -15,6 +15,8 @@ internal class ExternalXref
 
     public string? SchemaType { get; set; }
 
+    public string? PropertyPath { get; set; }
+
     [JsonIgnore]
     public string? ReferencedRepositoryUrl { get; set; }
 }
