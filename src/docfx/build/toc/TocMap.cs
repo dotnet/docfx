@@ -195,12 +195,11 @@ internal class TocMap
 
         docToTocs.TrimExcess();
 
-        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
-        docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
-
         var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
-        return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
+        RemoveInvalidServicePage();
+
+        return (tocFiles, docToTocs, allServicePages);
 
         bool ShouldBuildFile(FilePath file)
         {
@@ -216,6 +215,21 @@ internal class TocMap
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
             return value.shouldBuildFile;
+        }
+
+        void RemoveInvalidServicePage()
+        {
+            for (var i = 0; i < allServicePages.Count; i++)
+            {
+                var servicePage = allServicePages[i];
+                var url = _documentProvider.GetSiteUrl(servicePage);
+                var files = _publishUrlMap.GetFilesByUrl(url);
+                if (files.Any())
+                {
+                    _errors.Add(Errors.UrlPath.PublishUrlConflict(url, files.Concat(new[] { servicePage }), null, null));
+                    allServicePages.RemoveAt(i--);
+                }
+            }
         }
     }
 
