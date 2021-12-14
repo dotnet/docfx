@@ -157,7 +157,7 @@ internal class TocMap
         using var scope = Progress.Start("Loading TOC");
 
         var allTocFiles = new ConcurrentBag<FilePath>();
-        var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool hasFallbackToc)>();
+        var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
 
@@ -172,11 +172,11 @@ internal class TocMap
         ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
         {
             var (_, docs, tocs, servicePages) = _tocLoader.Load(file);
-            var hasFallbackToc = tocs.Any(toc => toc.Origin == FileOrigin.Fallback);
+            var shouldBuildFile = tocs.Any(toc => toc.Origin != FileOrigin.Fallback);
 
             lock (allTocs)
             {
-                allTocs.Add((file, docs.ToHashSet(), tocs.ToHashSet(), hasFallbackToc));
+                allTocs.Add((file, docs.ToHashSet(), tocs.ToHashSet(), shouldBuildFile));
                 allServicePages.AddRange(servicePages);
                 includedTocs.AddRange(tocs);
             }
@@ -185,7 +185,7 @@ internal class TocMap
         var tocToTocs = (
             from item in allTocs
             where !includedTocs.Contains(item.file)
-            select item).ToDictionary(g => g.file, g => (g.tocs, g.hasFallbackToc));
+            select item).ToDictionary(g => g.file, g => (g.tocs, g.shouldBuildFile));
 
         var docToTocs = (
             from item in allTocs
@@ -195,14 +195,14 @@ internal class TocMap
 
         docToTocs.TrimExcess();
 
-        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys);
+        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
         docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
 
-        var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildTocFile));
+        var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
         return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
 
-        bool ShouldBuildTocFile(FilePath file)
+        bool ShouldBuildFile(FilePath file)
         {
             if (file.Origin != FileOrigin.Fallback)
             {
@@ -215,7 +215,7 @@ internal class TocMap
             }
 
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            return !value.hasFallbackToc;
+            return value.shouldBuildFile;
         }
     }
 
