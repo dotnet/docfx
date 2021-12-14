@@ -74,7 +74,7 @@ internal class JsonSchemaTransformer
 
     public ExternalXref[] GetValidateExternalXrefs()
     {
-        return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => new { item.xref.Value, item.propertyPath }).Select(xrefGroup =>
+        return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => (item.xref.Value, item.propertyPath)).Select(xrefGroup =>
         {
             return new ExternalXref
             {

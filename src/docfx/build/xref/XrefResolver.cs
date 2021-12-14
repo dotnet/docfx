@@ -230,8 +230,7 @@ internal class XrefResolver
                         xrefGroup.Key,
                         repository: item.ReferencedRepositoryUrl,
                         item.SchemaType,
-                        item.PropertyPath) with
-                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                        item.PropertyPath) with { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
