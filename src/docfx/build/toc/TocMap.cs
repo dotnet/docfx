@@ -171,12 +171,14 @@ internal class TocMap
         // Load TOC
         ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
         {
-            var (_, docs, tocs, servicePages) = _tocLoader.Load(file);
+            var (_, docsList, tocsList, servicePages) = _tocLoader.Load(file);
+            var docs = docsList.ToHashSet();
+            var tocs = tocsList.ToHashSet();
             var shouldBuildFile = tocs.Any(toc => toc.Origin != FileOrigin.Fallback);
 
             lock (allTocs)
             {
-                allTocs.Add((file, docs.ToHashSet(), tocs.ToHashSet(), shouldBuildFile));
+                allTocs.Add((file, docs, tocs, shouldBuildFile));
                 allServicePages.AddRange(servicePages);
                 includedTocs.AddRange(tocs);
             }
