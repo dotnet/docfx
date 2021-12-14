@@ -170,35 +170,6 @@ outputs:
     { "conceptual": "<p><a href=\"c\">c</a></p>" }
   docs/dir/c.json:
 ---
-# Add locale for absolute links
-inputs:
-  docfx.yml:
-  a.md: Link to [absolute path](/a)
-outputs:
-  a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
----
-# Should not append locale for absolute path starting with api, _themes
-inputs:
-  docfx.yml: |
-    hostName: docs.microsoft.com
-    removeHostName: true
-  a.md: |
-    Link to [absolute path](/api/search/rss?search=SDK%20release%20notes)
-    Link to [absolute path](/API/search/rss?search=SDK%20release%20notes)
-    Link to [absolute path](/api-management/search/rss?search=SDK%20release%20notes)
-    <iframe src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/global/video-embed.html"></iframe>
-outputs:
-  a.json: |
-    { "conceptual": 
-        "<p>
-            Link to <a href=\"/api/search/rss?search=SDK%20release%20notes\">absolute path</a>
-            Link to <a href=\"/API/search/rss?search=SDK%20release%20notes\">absolute path</a>
-            Link to <a href=\"/en-us/api-management/search/rss?search=SDK%20release%20notes\">absolute path</a>
-         </p>
-         <iframe src=\"/_themes/docs.theme/master/en-us/_themes/global/video-embed.html\"></iframe>"
-    }
----
 # Show warning if the link is missing
 inputs:
   docfx.yml: |

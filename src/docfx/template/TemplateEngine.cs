@@ -152,7 +152,8 @@ internal class TemplateEngine
         }
 
         var jsName = $"{mime}.mta.json.js";
-        var templateMetadata = RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
+        var temp = RunJavaScript(jsName, pageModel);
+        var templateMetadata = temp as JObject ?? new JObject();
 
         if (JsonSchemaProvider.IsLandingData(mime))
         {
@@ -181,7 +182,7 @@ internal class TemplateEngine
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains, _locale, addLocale: true);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -193,6 +194,27 @@ internal class TemplateEngine
         _searchIndexBuilder?.SetBody(file, searchText.ToString());
 
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
+    }
+
+    private string CreateContent(FilePath file, string? mime, ref JObject pageModel)
+    {
+        if (JsonSchemaProvider.IsConceptual(mime))
+        {
+            var conceptual = pageModel.ToObject<ConceptualModel>()!;
+            ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "", conceptual);
+            pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
+            return conceptual.Conceptual ?? "";
+        }
+        else if (JsonSchemaProvider.IsLandingData(mime))
+        {
+            return ProcessHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "");
+        }
+
+        // Generate SDP content
+        var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
+        var content = RunMustache(_errors, $"{mime}.html", model);
+
+        return ProcessHtml(_errors, file, content);
     }
 
     private void ProcessConceptualHtml(string html, ConceptualModel conceptual)
@@ -214,27 +236,6 @@ internal class TemplateEngine
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
         conceptual.WordCount = wordCount;
-    }
-
-    private string CreateContent(FilePath file, string? mime, ref JObject pageModel)
-    {
-        if (JsonSchemaProvider.IsLandingData(mime))
-        {
-            return ProcessHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "");
-        }
-        else if (JsonSchemaProvider.IsConceptual(mime))
-        {
-            var conceptual = pageModel.ToObject<ConceptualModel>()!;
-            ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "", conceptual);
-            pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
-            return conceptual.Conceptual ?? "";
-        }
-
-        // Generate SDP content
-        var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
-        var content = RunMustache(_errors, $"{mime}.html", model);
-
-        return ProcessHtml(_errors, file, content);
     }
 
     private JObject LoadGlobalTokens(ErrorBuilder errors)

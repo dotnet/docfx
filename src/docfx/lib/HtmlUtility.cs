@@ -356,7 +356,12 @@ internal static class HtmlUtility
     }
 
     internal static void AddLinkType(
-        ErrorBuilder errors, FilePath file, ref HtmlToken token, Dictionary<string, TrustedDomains> trustedDomains)
+        ErrorBuilder errors,
+        FilePath file,
+        ref HtmlToken token,
+        Dictionary<string, TrustedDomains> trustedDomains,
+        string locale = "",
+        bool addLocale = false)
     {
         foreach (ref readonly var attribute in token.Attributes.Span)
         {
@@ -371,6 +376,10 @@ internal static class HtmlUtility
                         break;
                     case LinkType.AbsolutePath:
                         token.SetAttributeValue("data-linktype", "absolute-path");
+                        if (addLocale)
+                        {
+                            token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
+                        }
                         break;
                     case LinkType.RelativePath:
                         token.SetAttributeValue("data-linktype", "relative-path");

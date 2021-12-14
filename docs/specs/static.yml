@@ -89,7 +89,7 @@ outputs:
 ---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
-# Resource file should not be prettify
+# Resource file should not be prettified
 inputs:
   docfx.yml: |
     outputType: html
