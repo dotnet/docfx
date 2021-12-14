@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
@@ -52,11 +53,39 @@ internal class JsonSchemaMap
 
     public JsonSchema? GetPropertySchema(JsonSchema? schema, JObject obj, string key)
     {
-        return schema is null
-            ? null
-            : schema.Properties.TryGetValue(key, out var result)
-                ? schema.SchemaResolver.ResolveSchema(result)
-                : _map.GetValueOrDefault(obj[key]!);
+        if (schema is null)
+        {
+            return null;
+        }
+
+        var subschema = GetPropertySchemaCore();
+        if (subschema != null)
+        {
+            return schema.SchemaResolver.ResolveSchema(subschema);
+        }
+
+        return _map.GetValueOrDefault(obj[key]!);
+
+        JsonSchema? GetPropertySchemaCore()
+        {
+            // properties
+            if (schema.Properties.TryGetValue(key, out var result))
+            {
+                return result;
+            }
+
+            // patternProperties
+            foreach (var (pattern, patternPropertySchema) in schema.PatternProperties)
+            {
+                if (Regex.IsMatch(key, pattern))
+                {
+                    return patternPropertySchema;
+                }
+            }
+
+            // additionalProperties
+            return schema.AdditionalProperties;
+        }
     }
 
     public void Add(JToken token, JsonSchema schema)

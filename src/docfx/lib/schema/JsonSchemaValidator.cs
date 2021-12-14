@@ -100,8 +100,6 @@ internal class JsonSchemaValidator
         ValidateOneOf(schema, propertyPath, token, errors, schemaMap);
         ValidateIfThenElse(schema, propertyPath, token, errors, schemaMap);
         ValidateNot(schema, propertyPath, token, errors);
-
-        schemaMap?.Add(token, schema);
     }
 
     private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -709,6 +707,7 @@ internal class JsonSchemaValidator
             if (schema.Then != null)
             {
                 Validate(schema.Then, propertyPath, token, errors, schemaMap);
+                schemaMap?.Add(token, schema.Then);
             }
         }
         else
@@ -716,6 +715,7 @@ internal class JsonSchemaValidator
             if (schema.Else != null)
             {
                 Validate(schema.Else, propertyPath, token, errors, schemaMap);
+                schemaMap?.Add(token, schema.Else);
             }
         }
     }
