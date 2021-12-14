@@ -200,9 +200,9 @@ internal class TemplateEngine
     {
         if (JsonSchemaProvider.IsConceptual(mime))
         {
-            var conceptual = pageModel.ToObject<ConceptualModel>()!;
+            var conceptual = JsonUtility.ToObject<ConceptualModel>(ErrorBuilder.Null, pageModel)!;
             ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "", conceptual);
-            pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
+            pageModel = JsonUtility.SortProperties(_config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual));
             return conceptual.Conceptual ?? "";
         }
         else if (JsonSchemaProvider.IsLandingData(mime))
