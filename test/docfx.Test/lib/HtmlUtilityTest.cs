@@ -163,4 +163,46 @@ public class HtmlUtilityTest
     {
         Assert.Equal(expected, HtmlUtility.Encode(input));
     }
+
+    [Theory]
+    [InlineData("<div style='a'></div>", "{\"div\":{\"style\":1}}")]
+    [InlineData("<div><script></script></div>", "{\"div\": {\"\": 1},\"script\": {\"\": 1}}")]
+    public static void CollectHtmlUsage(string input, string expected)
+    {
+        var expectedCount = JsonUtility.DeserializeData<Dictionary<string, Dictionary<string, int>>>(expected, null);
+        var elementCount = new Dictionary<string, Dictionary<string, int>>();
+        HtmlUtility.CollectHtmlUsage(input, elementCount);
+        Assert.True(CompareDictionaries(expectedCount, elementCount));
+
+        static bool CompareDictionaries(Dictionary<string, Dictionary<string, int>> d1, Dictionary<string, Dictionary<string, int>> d2)
+        {
+            if (d1.Count != d2.Count)
+            {
+                return false;
+            }
+
+            foreach ((var tag, var attributeCount1) in d1)
+            {
+                if (!d2.TryGetValue(tag, out var attributeCount2))
+                {
+                    return false;
+                }
+
+                if (attributeCount1.Count != attributeCount2.Count)
+                {
+                    return false;
+                }
+
+                foreach ((var attribute, var count1) in attributeCount1)
+                {
+                    if (!attributeCount2.TryGetValue(attribute, out var count2) || count1 != count2)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
 }

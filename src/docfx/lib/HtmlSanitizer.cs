@@ -196,4 +196,14 @@ internal class HtmlSanitizer
             return false;
         }
     }
+
+    public bool IsAllowedHtml(string tokenName, string? attributeName)
+    {
+        if (_allowedHtml.TryGetValue(tokenName, out var allowedGlobalAttributes))
+        {
+            return string.IsNullOrEmpty(attributeName) || (allowedGlobalAttributes != null && allowedGlobalAttributes.Contains(attributeName));
+        }
+
+        return false;
+    }
 }

@@ -325,6 +325,44 @@ internal static class HtmlUtility
         return result.ToString();
     }
 
+    public static void CollectHtmlUsage(string html, Dictionary<string, Dictionary<string, int>> elementCount)
+    {
+        var reader = new HtmlReader(html);
+
+        while (reader.Read(out var token))
+        {
+            CollectHtmlUsageCore(ref token, elementCount);
+        }
+
+        static void CollectHtmlUsageCore(ref HtmlToken token, Dictionary<string, Dictionary<string, int>> elementCount)
+        {
+            if (token.Type != HtmlTokenType.StartTag)
+            {
+                return;
+            }
+
+            var tokenName = token.Name.ToString();
+            if (!elementCount.ContainsKey(tokenName))
+            {
+                elementCount.Add(tokenName, new Dictionary<string, int>());
+            }
+
+            var attributeCount = elementCount[tokenName];
+            if (token.Attributes.Span.IsEmpty)
+            {
+                attributeCount[string.Empty] = attributeCount.GetValueOrDefault(string.Empty, 0) + 1;
+            }
+            else
+            {
+                foreach (ref var attribute in token.Attributes.Span)
+                {
+                    var attributeName = attribute.Name.ToString();
+                    attributeCount[attributeName] = attributeCount.GetValueOrDefault(attributeName, 0) + 1;
+                }
+            }
+        }
+    }
+
     public static SourceInfo WithOffset(this SourceInfo sourceInfo, in HtmlTextRange range)
     {
         return sourceInfo.WithOffset(range.Start.Line + 1, range.Start.Column + 1, range.End.Line + 1, range.End.Column + 1);
