@@ -152,71 +152,70 @@ internal class TocMap
         return (subDirectoryCount, parentDirectoryCount);
     }
 
-    private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
-        BuildTocMap()
+    private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages) BuildTocMap()
     {
         using var scope = Progress.Start("Loading TOC");
-        var tocs = new ConcurrentBag<FilePath>();
-        var allServicePages = new ConcurrentBag<FilePath>();
+
+        var allTocFiles = new ConcurrentBag<FilePath>();
+        var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool hasFallbackToc)>();
+        var includedTocs = new HashSet<FilePath>();
+        var allServicePages = new List<FilePath>();
 
         // Parse and split TOC
-        ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
-        {
-            SplitToc(file, _tocParser.Parse(file, _errors), tocs);
-        });
-
-        var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
+        ParallelUtility.ForEach(
+            scope,
+            _errors,
+            _buildScope.GetFiles(ContentType.Toc),
+            file => SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles));
 
         // Load TOC
-        ParallelUtility.ForEach(scope, _errors, tocs, file =>
+        ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
         {
-            var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
+            var (_, docs, tocs, servicePages) = _tocLoader.Load(file);
+            var hasFallbackToc = tocs.Any(toc => toc.Origin == FileOrigin.Fallback);
 
-            tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
-
-            foreach (var servicePage in servicePages)
+            lock (allTocs)
             {
-                allServicePages.Add(servicePage);
+                allTocs.Add((file, docs.ToHashSet(), tocs.ToHashSet(), hasFallbackToc));
+                allServicePages.AddRange(servicePages);
+                includedTocs.AddRange(tocs);
             }
         });
 
-        // Create TOC reference map
-        var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
-
         var tocToTocs = (
-            from item in tocReferences
-            where !includedTocs.Contains(item.Key)
-            select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
+            from item in allTocs
+            where !includedTocs.Contains(item.file)
+            select item).ToDictionary(g => g.file, g => (g.tocs, g.hasFallbackToc));
 
         var docToTocs = (
-            from item in tocReferences
-            from doc in item.Value.docs
-            where tocToTocs.ContainsKey(item.Key)
-            group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+            from item in allTocs
+            where !includedTocs.Contains(item.file)
+            from doc in item.docs
+            group item.file by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
         docToTocs.TrimExcess();
 
-        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
+        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys);
         docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
 
-        var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
+        var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildTocFile));
 
         return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
 
-        bool ShouldBuildFile(FilePath file)
+        bool ShouldBuildTocFile(FilePath file)
         {
             if (file.Origin != FileOrigin.Fallback)
             {
                 return true;
             }
 
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
+            if (!tocToTocs.TryGetValue(file, out var value))
             {
-                return true;
+                return false;
             }
 
-            return false;
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            return !value.hasFallbackToc;
         }
     }
 
