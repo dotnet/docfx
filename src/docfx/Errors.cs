@@ -275,10 +275,13 @@ internal static class Errors
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, MonikerList> files, List<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IEnumerable<FilePath>? files, IReadOnlyDictionary<FilePath, MonikerList>? filesWithMoniker, List<string>? conflictMonikers)
         {
-            var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
-            var filesList = StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"));
+            var message = conflictMonikers != null && conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+            var filesList = files != null
+                ? StringUtility.Join(files)
+                : StringUtility.Join(filesWithMoniker?.Select(file => $"{file.Key}{(conflictMonikers?.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}") ?? Array.Empty<string>());
+
             return new Error(
                 ErrorLevel.Warning,
                 "publish-url-conflict",
