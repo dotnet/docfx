@@ -31,12 +31,12 @@ internal class DocumentProvider
         { "NetNamespace", "dotnet" },
         { "NetMember", "dotnet" },
         { "NetEnum", "dotnet" },
-        { "NetDelegate ", "dotnet" },
+        { "NetDelegate", "dotnet" },
         { "RESTOperation", "rest" },
-        { "RESTOperationGroup ", "rest" },
-        { "RESTService  ", "rest" },
+        { "RESTOperationGroup", "rest" },
+        { "RESTService", "rest" },
         { "PowershellCmdlet", "powershell" },
-        { "PowershellModule ", "powershell" },
+        { "PowershellModule", "powershell" },
     };
 
     public DocumentProvider(
