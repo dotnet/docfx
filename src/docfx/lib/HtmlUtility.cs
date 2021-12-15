@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Web;
 using HtmlReaderWriter;
@@ -350,14 +351,14 @@ internal static class HtmlUtility
             var attributeCount = elementCount[tokenName];
             if (token.Attributes.Span.IsEmpty)
             {
-                attributeCount[string.Empty] = attributeCount.GetValueOrDefault(string.Empty, 0) + 1;
+                CollectionsMarshal.GetValueRefOrAddDefault(attributeCount, string.Empty, out _)++;
             }
             else
             {
                 foreach (ref var attribute in token.Attributes.Span)
                 {
                     var attributeName = attribute.Name.ToString();
-                    attributeCount[attributeName] = attributeCount.GetValueOrDefault(attributeName, 0) + 1;
+                    CollectionsMarshal.GetValueRefOrAddDefault(attributeCount, attributeName, out _)++;
                 }
             }
         }
