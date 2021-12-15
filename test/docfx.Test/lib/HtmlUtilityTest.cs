@@ -167,6 +167,7 @@ public class HtmlUtilityTest
     [Theory]
     [InlineData("<div style='a'></div>", "{\"div\":{\"style\":1}}")]
     [InlineData("<div><script></script></div><div></div>", "{\"div\":{\"\":2},\"script\":{\"\":1}}")]
+    [InlineData("<div style='a' src='b'></div>", "{\"div\":{\"style\":1,\"src\":1}}")]
     public static void CollectHtmlUsage(string input, string expected)
     {
         var elementCount = new Dictionary<string, Dictionary<string, int>>();
