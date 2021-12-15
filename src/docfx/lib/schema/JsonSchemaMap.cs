@@ -24,30 +24,35 @@ internal class JsonSchemaMap
         for (var i = 0; i < array.Count; i++)
         {
             var item = array[i];
+            var subschema = schema?.SchemaResolver.ResolveSchema(GetItemSchemaCore(item, i));
+            yield return (item, subschema);
+        }
 
-            JsonSchema? subschema = null;
-
-            if (schema != null)
+        JsonSchema? GetItemSchemaCore(JToken item, int i)
+        {
+            if (_map.TryGetValue(item, out var subschema))
             {
-                var (items, eachItem) = schema.Items;
-                if (items != null)
+                return subschema;
+            }
+
+            var (items, eachItem) = schema.Items;
+            if (items != null)
+            {
+                return items;
+            }
+            else if (eachItem != null)
+            {
+                if (i < eachItem.Length)
                 {
-                    subschema = items;
+                    return eachItem[i];
                 }
-                else if (eachItem != null)
+                else if (schema.AdditionalItems != null)
                 {
-                    if (i < eachItem.Length)
-                    {
-                        subschema = eachItem[i];
-                    }
-                    else if (schema.AdditionalItems != null)
-                    {
-                        subschema = schema.AdditionalItems;
-                    }
+                    return schema.AdditionalItems;
                 }
             }
 
-            yield return (item, schema?.SchemaResolver.ResolveSchema(subschema) ?? _map.GetValueOrDefault(item));
+            return null;
         }
     }
 
@@ -58,23 +63,21 @@ internal class JsonSchemaMap
             return null;
         }
 
-        var subschema = GetPropertySchemaCore();
-        if (subschema != null)
-        {
-            return schema.SchemaResolver.ResolveSchema(subschema);
-        }
-
-        return _map.GetValueOrDefault(obj[key]!);
+        return schema.SchemaResolver.ResolveSchema(GetPropertySchemaCore());
 
         JsonSchema? GetPropertySchemaCore()
         {
-            // properties
-            if (schema.Properties.TryGetValue(key, out var result))
+            var value = obj[key];
+            if (value != null && _map.TryGetValue(value, out var result))
             {
                 return result;
             }
 
-            // patternProperties
+            if (schema.Properties.TryGetValue(key, out result))
+            {
+                return result;
+            }
+
             foreach (var (pattern, patternPropertySchema) in schema.PatternProperties)
             {
                 if (Regex.IsMatch(key, pattern))
@@ -83,7 +86,6 @@ internal class JsonSchemaMap
                 }
             }
 
-            // additionalProperties
             return schema.AdditionalProperties;
         }
     }

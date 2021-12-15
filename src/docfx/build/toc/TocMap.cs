@@ -156,7 +156,7 @@ internal class TocMap
     {
         using var scope = Progress.Start("Loading TOC");
 
-        var allTocFiles = new ConcurrentBag<FilePath>();
+        var allTocFiles = new ConcurrentHashSet<FilePath>();
         var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
@@ -235,11 +235,11 @@ internal class TocMap
         }
     }
 
-    private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
+    private void SplitToc(FilePath file, TocNode toc, ConcurrentHashSet<FilePath> result)
     {
         if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
         {
-            result.Add(file);
+            result.TryAdd(file);
             return;
         }
 
@@ -267,7 +267,7 @@ internal class TocMap
             var newNodeFile = FilePath.Generated(newNodeFilePath);
 
             _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
-            result.Add(newNodeFile);
+            result.TryAdd(newNodeFile);
 
             var newChild = new TocNode(child)
             {
@@ -280,7 +280,7 @@ internal class TocMap
         var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
         var newTocFile = FilePath.Generated(newTocFilePath);
         _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
-        result.Add(newTocFile);
+        result.TryAdd(newTocFile);
     }
 
     private TocNode SplitTocNode(TocNode node)

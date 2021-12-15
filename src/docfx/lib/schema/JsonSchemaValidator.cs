@@ -616,9 +616,10 @@ internal class JsonSchemaValidator
 
             if (subschemaErrors.Count <= 0)
             {
-                if (subschemaMap != null)
+                if (schemaMap != null && subschemaMap != null)
                 {
-                    schemaMap?.Add(subschemaMap);
+                    schemaMap.Add(token, subschema);
+                    schemaMap.Add(subschemaMap);
                 }
                 return;
             }
@@ -652,6 +653,7 @@ internal class JsonSchemaValidator
         }
 
         var validCount = 0;
+        JsonSchema? bestSchema = null;
         JsonSchemaMap? bestSchemaMap = null;
         List<Error>? bestErrors = null;
 
@@ -663,6 +665,7 @@ internal class JsonSchemaValidator
 
             if (subschemaErrors.Count <= 0)
             {
+                bestSchema = subschema;
                 bestSchemaMap = subschemaMap;
                 validCount++;
                 continue;
@@ -686,9 +689,10 @@ internal class JsonSchemaValidator
                 errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
             }
         }
-        else if (bestSchemaMap != null)
+        else if (schemaMap != null && bestSchemaMap != null && bestSchema != null)
         {
-            schemaMap?.Add(bestSchemaMap);
+            schemaMap.Add(token, bestSchema);
+            schemaMap.Add(bestSchemaMap);
         }
     }
 
