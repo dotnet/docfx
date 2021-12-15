@@ -332,11 +332,6 @@ internal static class HtmlUtility
 
         while (reader.Read(out var token))
         {
-            CollectHtmlUsageCore(ref token, elementCount);
-        }
-
-        static void CollectHtmlUsageCore(ref HtmlToken token, Dictionary<string, Dictionary<string, int>> elementCount)
-        {
             if (token.Type != HtmlTokenType.StartTag)
             {
                 return;
