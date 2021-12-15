@@ -116,17 +116,12 @@ internal class JsonSchemaTransformer
         };
         var mime = _documentProvider.GetMime(file);
         var schemaValidator = _jsonSchemaProvider.GetSchemaValidator(mime);
-        var schemaMap = new JsonSchemaMap(IsContentTransform);
+        var schemaMap = new JsonSchemaMap();
         var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
         errors.AddRange(schemaErrors);
 
         var uidCount = GetFileUidCount(schemaMap, token, schemaValidator.Schema);
         return (token, schemaValidator.Schema, schemaMap, uidCount);
-    }
-
-    private static bool IsContentTransform(JsonSchema schema)
-    {
-        return schema.ContentType != null || schema.XrefProperties.Count > 0 || schema.SchemaTypeProperty != null;
     }
 
     private void LoadXrefSpecsCore(

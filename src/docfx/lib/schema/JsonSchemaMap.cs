@@ -12,12 +12,7 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal class JsonSchemaMap
 {
-    private readonly Func<JsonSchema, bool> _predicate;
     private readonly Dictionary<JToken, JsonSchema> _map = new(ReferenceEqualsComparer.Default);
-
-    public JsonSchemaMap(Func<JsonSchema, bool> predicate) => _predicate = predicate;
-
-    public JsonSchemaMap(JsonSchemaMap map) => _predicate = map._predicate;
 
     public IEnumerable<(JToken item, JsonSchema? subschema)> ForEachJArray(JsonSchema? schema, JArray array)
     {
@@ -92,10 +87,7 @@ internal class JsonSchemaMap
 
     public void Add(JToken token, JsonSchema schema)
     {
-        if (_predicate(schema))
-        {
-            _map.TryAdd(token, schema);
-        }
+        _map.TryAdd(token, schema);
     }
 
     public void Add(JsonSchemaMap map)

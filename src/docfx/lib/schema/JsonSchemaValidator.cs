@@ -611,7 +611,7 @@ internal class JsonSchemaValidator
         foreach (var subschema in schema.AnyOf)
         {
             var subschemaErrors = new List<Error>();
-            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap();
             Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
             if (subschemaErrors.Count <= 0)
@@ -660,7 +660,7 @@ internal class JsonSchemaValidator
         foreach (var subschema in schema.OneOf)
         {
             var subschemaErrors = new List<Error>();
-            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap();
             Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
             if (subschemaErrors.Count <= 0)

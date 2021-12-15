@@ -927,6 +927,7 @@ inputs:
     anyOf:
     - _markdown_
     - inline _markdown_
+    - value: 'mark`down`'
   _themes/ContentTemplate/schemas/TestSchema.schema.json: |
     {
       "properties": {
@@ -936,6 +937,7 @@ inputs:
             "anyOf": [
               { "type": "string", "maxlength": 10, "contentType": "markdown" },
               { "type": "string", "minlength": 11, "contentType": "inlineMarkdown" },
+              { "type": "object", "properties": { "value": { "type": "string", "contentType": "markdown" } } }
             ]
           }
         }
@@ -943,7 +945,13 @@ inputs:
     }
 outputs:
   a.json: |
-    { "anyOf": ["<p><em>markdown</em></p>", "inline <em>markdown</em>"] }
+    {
+      "anyOf": [
+        "<p><em>markdown</em></p>",
+        "inline <em>markdown</em>",
+        { "value": "<p>mark<code>down</code></p>" }
+      ]
+    }
 ---
 # Schema based transform supports if-then-else
 inputs:
