@@ -334,7 +334,7 @@ internal static class HtmlUtility
         {
             if (token.Type != HtmlTokenType.StartTag)
             {
-                return;
+                continue;
             }
 
             var tokenName = token.Name.ToString();
