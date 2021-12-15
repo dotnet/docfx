@@ -197,8 +197,14 @@ internal class HtmlSanitizer
         }
     }
 
-    public bool IsAllowedHtml(string tokenName, string? attributeName)
+    public bool IsAllowedHtml(string tokenName, string attributeName)
     {
+        if (attributeName.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) ||
+            attributeName.StartsWith("data-", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
         if (_allowedHtml.TryGetValue(tokenName, out var allowedGlobalAttributes))
         {
             return string.IsNullOrEmpty(attributeName) || (allowedGlobalAttributes != null && allowedGlobalAttributes.Contains(attributeName));
