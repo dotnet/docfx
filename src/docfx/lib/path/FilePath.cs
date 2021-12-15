@@ -10,6 +10,8 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal record FilePath : IComparable<FilePath>
 {
+    private const int IsGitCommitBitMask = 0b_1000_0000;
+
     private readonly int _hashCode;
 
     /// <summary>
@@ -20,7 +22,7 @@ internal record FilePath : IComparable<FilePath>
     /// <summary>
     /// Gets the file format.
     /// </summary>
-    public FileFormat Format { get; }
+    public FileFormat Format => GetFormat(Path);
 
     /// <summary>
     /// Gets the name of the dependency if it is from dependency repo.
@@ -30,17 +32,19 @@ internal record FilePath : IComparable<FilePath>
     /// <summary>
     /// Gets the value to indicate where is this file from.
     /// </summary>
-    public FileOrigin Origin { get; }
+    public FileOrigin Origin => (FileOrigin)(Flags & ~IsGitCommitBitMask);
 
     /// <summary>
     /// Indicate if the file is from git commit history.
     /// </summary>
-    public bool IsGitCommit { get; }
+    public bool IsGitCommit => (Flags & IsGitCommitBitMask) != 0;
 
     /// <summary>
     /// Monikers for redirection files.
     /// </summary>
     public MonikerList RedirectionMonikers { get; }
+
+    public int Flags { get; init; }
 
     /// <summary>
     /// Creates an unknown file path.
@@ -48,22 +52,19 @@ internal record FilePath : IComparable<FilePath>
     public FilePath(string path)
     {
         Path = new PathString(path);
-        Format = GetFormat(path);
-        Origin = FileOrigin.External;
 
-        _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
+        Flags = (int)FileOrigin.External;
+        _hashCode = HashCode.Combine(Path, DependencyName, Flags, RedirectionMonikers);
     }
 
     private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
     {
         Path = path;
-        Origin = origin;
         DependencyName = dependencyName;
-        IsGitCommit = isGitCommit;
-        Format = GetFormat(path);
         RedirectionMonikers = monikers;
 
-        _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, RedirectionMonikers);
+        Flags = isGitCommit ? (IsGitCommitBitMask | (int)origin) : (int)origin;
+        _hashCode = HashCode.Combine(Path, DependencyName, Flags, RedirectionMonikers);
     }
 
     public static FilePath Content(PathString path)
@@ -167,19 +168,31 @@ internal record FilePath : IComparable<FilePath>
 
     private static FileFormat GetFormat(string path)
     {
-        if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+        switch (path[^1])
         {
-            return FileFormat.Markdown;
-        }
+            case 'd':
+            case 'D':
+                if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Markdown;
+                }
+                break;
 
-        if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-        {
-            return FileFormat.Yaml;
-        }
+            case 'l':
+            case 'L':
+                if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Yaml;
+                }
+                break;
 
-        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-        {
-            return FileFormat.Json;
+            case 'n':
+            case 'N':
+                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Json;
+                }
+                break;
         }
 
         return FileFormat.Unknown;
