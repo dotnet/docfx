@@ -4,15 +4,14 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class RowRender : HtmlObjectRenderer<RowBlock>
 {
-    public class RowRender : HtmlObjectRenderer<RowBlock>
+    protected override void Write(HtmlRenderer renderer, RowBlock obj)
     {
-        protected override void Write(HtmlRenderer renderer, RowBlock obj)
-        {
-            renderer.Write("<section class=\"row\"").WriteAttributes(obj).WriteLine(">");
-            renderer.WriteChildren(obj);
-            renderer.WriteLine("</section>");
-        }
+        renderer.Write("<section class=\"row\"").WriteAttributes(obj).WriteLine(">");
+        renderer.WriteChildren(obj);
+        renderer.WriteLine("</section>");
     }
 }

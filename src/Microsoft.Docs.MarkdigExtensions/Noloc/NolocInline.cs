@@ -3,10 +3,9 @@
 
 using Markdig.Syntax.Inlines;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class NolocInline : LeafInline
 {
-    public class NolocInline : LeafInline
-    {
-        public string Text { get; set; }
-    }
+    public string Text { get; set; }
 }

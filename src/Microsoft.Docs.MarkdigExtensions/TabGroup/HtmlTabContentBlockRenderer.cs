@@ -5,18 +5,17 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+internal class HtmlTabContentBlockRenderer : HtmlObjectRenderer<TabContentBlock>
 {
-    internal class HtmlTabContentBlockRenderer : HtmlObjectRenderer<TabContentBlock>
+    protected override void Write(HtmlRenderer renderer, TabContentBlock block)
     {
-        protected override void Write(HtmlRenderer renderer, TabContentBlock block)
+        foreach (var item in block)
         {
-            foreach (var item in block)
+            if (item is not ThematicBreakBlock)
             {
-                if (!(item is ThematicBreakBlock))
-                {
-                    renderer.Render(item);
-                }
+                renderer.Render(item);
             }
         }
     }

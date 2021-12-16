@@ -3,14 +3,14 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class ImageTest
 {
-    public class ImageTest
+    [Fact]
+    public void ImageTestBlockGeneral()
     {
-        [Fact]
-        public void ImageTestBlockGeneral()
-        {
-            var source = @":::image type=""content"" source=""example.jpg"" alt-text=""example"":::
+        var source = @":::image type=""content"" source=""example.jpg"" alt-text=""example"":::
 
 :::image type=""content"" source=""example.jpg"" alt-text=""example"" border=""false"":::
 
@@ -26,7 +26,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 | Add/remove people, including other admins.  | :::image type=""icon"" source=""green-checkmark.png"":::  |   |   |   |
 | Add members or others with lower permissions.  |  X | X  |  |   |";
 
-            var expected = @"<p><span class=""mx-imgBorder"">
+        var expected = @"<p><span class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"">
 </span>
 </p>
@@ -81,13 +81,13 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </table>
 ";
 
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        public void ComplexImageTestBlockGeneral()
-        {
-            var source = @"
+    [Fact]
+    public void ComplexImageTestBlockGeneral()
+    {
+        var source = @"
 :::image type=""icon"" source=""example.svg"":::
 
 :::image type=""complex"" source=""example.jpg"" alt-text=""example"" loc-scope=""azure"":::
@@ -105,7 +105,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 :::image-end:::
 ";
 
-            var expected = @"<p><img src=""example.svg"" role=""presentation"">
+        var expected = @"<p><img src=""example.svg"" role=""presentation"">
 </p>
 <p class=""mx-imgBorder"">
 <img src=""example.jpg"" alt=""example"" aria-describedby=""3-0"">
@@ -135,19 +135,19 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 </p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        public void ContentImageTestBlock_LinkAttribute()
-        {
-            var source = @"
+    [Fact]
+    public void ContentImageTestBlock_LinkAttribute()
+    {
+        var source = @"
 :::image source=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
 
 :::image source=""example.svg"" lightbox=""example.svg"" alt-text=""Lorum Ipsom"" link=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"":::
 ";
 
-            var expected = @"<p><span class=""mx-imgBorder"">
+        var expected = @"<p><span class=""mx-imgBorder"">
 <a href=""https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1919278"">
 <img src=""example.svg"" alt=""Lorum Ipsom"">
 </a>
@@ -161,45 +161,45 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
 </p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        public void ImageTestBlock_InvalidImage_MissingSource()
-        {
-            var source = @"
+    [Fact]
+    public void ImageTestBlock_InvalidImage_MissingSource()
+    {
+        var source = @"
 :::image type=""icon"":::
 ";
 
-            var expected = @"<p>:::image type=&quot;icon&quot;:::</p>
+        var expected = @"<p>:::image type=&quot;icon&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
-        }
+        TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
+    }
 
-        [Fact]
-        public void ContentImageTestBlock_InvalidImage_MissingAlt()
-        {
-            var source = @"
+    [Fact]
+    public void ContentImageTestBlock_InvalidImage_MissingAlt()
+    {
+        var source = @"
 :::image source=""example.svg"":::
 ";
 
-            var expected = @"<p>:::image source=&quot;example.svg&quot;:::</p>
+        var expected = @"<p>:::image source=&quot;example.svg&quot;:::</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
-        }
+        TestUtility.VerifyMarkup(source, expected, errors: new[] { "invalid-image", "invalid-image" });
+    }
 
-        [Fact]
-        public void ImageWithIconTypeTestBlockGeneral()
-        {
-            var source = @":::image type=""icon"" source=""example.svg"":::
+    [Fact]
+    public void ImageWithIconTypeTestBlockGeneral()
+    {
+        var source = @":::image type=""icon"" source=""example.svg"":::
 
 :::image type=""icon"" source=""example.svg"" border=""true"":::
 
 :::image type=""icon"" source=""example.svg"" border=""true""::: And this with inline text.";
 
-            var expected = @"<p><img src=""example.svg"" role=""presentation"">
+        var expected = @"<p><img src=""example.svg"" role=""presentation"">
 </p>
 <p><span class=""mx-imgBorder"">
 <img src=""example.svg"" role=""presentation"">
@@ -211,36 +211,35 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
  And this with inline text.</p>
 ";
 
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        public void ImageBlockTestBlockClosed()
-        {
-            var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
+    [Fact]
+    public void ImageBlockTestBlockClosed()
+    {
+        var source = @":::image source=""example.jpg"" type=""complex"" alt-text=""example"":::
 Lorem Ipsum
 :::image-end:::";
 
-            TestUtility.VerifyMarkup(source, null);
-        }
+        TestUtility.VerifyMarkup(source, null);
+    }
 
-        [Fact]
-        public void ImageTestNotImageBlock()
-        {
-            var source = @":::row:::
+    [Fact]
+    public void ImageTestNotImageBlock()
+    {
+        var source = @":::row:::
 :::column:::
     This is where your content goes.
 :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column"">
 <p>This is where your content goes.</p>
 </div>
 </section>
 ";
 
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
     }
 }

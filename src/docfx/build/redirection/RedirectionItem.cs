@@ -4,20 +4,19 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+internal class RedirectionItem
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class RedirectionItem
-    {
-        public PathString SourcePath { get; set; }
+    public PathString SourcePath { get; set; }
 
-        public PathString SourcePathFromRoot { get; set; }
+    public PathString SourcePathFromRoot { get; set; }
 
-        [JsonConverter(typeof(OneOrManyConverter))]
-        public SourceInfo<string>[]? Monikers { get; set; }
+    [JsonConverter(typeof(OneOrManyConverter))]
+    public SourceInfo<string>[]? Monikers { get; set; }
 
-        public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
+    public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
 
-        public bool RedirectDocumentId { get; set; }
-    }
+    public bool RedirectDocumentId { get; set; }
 }

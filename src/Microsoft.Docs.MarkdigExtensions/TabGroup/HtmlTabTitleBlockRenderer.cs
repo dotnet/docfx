@@ -4,16 +4,15 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class HtmlTabTitleBlockRenderer : HtmlObjectRenderer<TabTitleBlock>
 {
-    public class HtmlTabTitleBlockRenderer : HtmlObjectRenderer<TabTitleBlock>
+    protected override void Write(HtmlRenderer renderer, TabTitleBlock block)
     {
-        protected override void Write(HtmlRenderer renderer, TabTitleBlock block)
+        foreach (var inline in block.Inline)
         {
-            foreach (var inline in block.Inline)
-            {
-                renderer.Render(inline);
-            }
+            renderer.Render(inline);
         }
     }
 }

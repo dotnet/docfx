@@ -4,54 +4,53 @@
 using Markdig;
 using Markdig.Renderers;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class TabGroupExtension : IMarkdownExtension
 {
-    public class TabGroupExtension : IMarkdownExtension
+    private readonly MarkdownContext _context;
+
+    public TabGroupExtension(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public TabGroupExtension(MarkdownContext context)
+    public void Setup(MarkdownPipelineBuilder pipeline)
+    {
+        pipeline.DocumentProcessed += document =>
         {
-            _context = context;
-        }
+            var tabGroupAggregator = new TabGroupAggregator();
+            var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
 
-        public void Setup(MarkdownPipelineBuilder pipeline)
+            var tagGroupIdRewriter = new TabGroupIdRewriter();
+            var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
+
+            var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(_context);
+            var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
+
+            aggregateVisitor.Visit(document);
+            tagGroupIdVisitor.Visit(document);
+            activeAndVisibleVisitor.Visit(document);
+        };
+    }
+
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
+        if (renderer is HtmlRenderer htmlRenderer)
         {
-            pipeline.DocumentProcessed += document =>
+            if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabGroupBlockRenderer>())
             {
-                var tabGroupAggregator = new TabGroupAggregator();
-                var aggregateVisitor = new MarkdownDocumentAggregatorVisitor(tabGroupAggregator);
+                htmlRenderer.ObjectRenderers.Add(new HtmlTabGroupBlockRenderer());
+            }
 
-                var tagGroupIdRewriter = new TabGroupIdRewriter();
-                var tagGroupIdVisitor = new MarkdownDocumentVisitor(tagGroupIdRewriter);
-
-                var activeAndVisibleRewriter = new ActiveAndVisibleRewriter(_context);
-                var activeAndVisibleVisitor = new MarkdownDocumentVisitor(activeAndVisibleRewriter);
-
-                aggregateVisitor.Visit(document);
-                tagGroupIdVisitor.Visit(document);
-                activeAndVisibleVisitor.Visit(document);
-            };
-        }
-
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-        {
-            if (renderer is HtmlRenderer htmlRenderer)
+            if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabTitleBlockRenderer>())
             {
-                if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabGroupBlockRenderer>())
-                {
-                    htmlRenderer.ObjectRenderers.Add(new HtmlTabGroupBlockRenderer());
-                }
+                htmlRenderer.ObjectRenderers.Add(new HtmlTabTitleBlockRenderer());
+            }
 
-                if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabTitleBlockRenderer>())
-                {
-                    htmlRenderer.ObjectRenderers.Add(new HtmlTabTitleBlockRenderer());
-                }
-
-                if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabContentBlockRenderer>())
-                {
-                    htmlRenderer.ObjectRenderers.Add(new HtmlTabContentBlockRenderer());
-                }
+            if (!htmlRenderer.ObjectRenderers.Contains<HtmlTabContentBlockRenderer>())
+            {
+                htmlRenderer.ObjectRenderers.Add(new HtmlTabContentBlockRenderer());
             }
         }
     }

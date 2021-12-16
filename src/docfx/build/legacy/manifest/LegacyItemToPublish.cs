@@ -4,15 +4,14 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+internal class LegacyItemToPublish
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal class LegacyItemToPublish
-    {
-        public string? RelativePath { get; set; }
+    public string? RelativePath { get; set; }
 
-        public string? Type { get; set; }
+    public string? Type { get; set; }
 
-        public string? Version { get; set; }
-    }
+    public string? Version { get; set; }
 }

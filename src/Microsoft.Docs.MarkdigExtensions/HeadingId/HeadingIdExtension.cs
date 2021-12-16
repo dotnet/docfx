@@ -4,23 +4,22 @@
 using Markdig;
 using Markdig.Renderers;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class HeadingIdExtension : IMarkdownExtension
 {
-    public class HeadingIdExtension : IMarkdownExtension
+    public void Setup(MarkdownPipelineBuilder pipeline)
     {
-        public void Setup(MarkdownPipelineBuilder pipeline)
-        {
-            var tokenRewriter = new HeadingIdRewriter();
-            var visitor = new MarkdownDocumentVisitor(tokenRewriter);
+        var tokenRewriter = new HeadingIdRewriter();
+        var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
-            pipeline.DocumentProcessed += document =>
-            {
-                visitor.Visit(document);
-            };
-        }
-
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+        pipeline.DocumentProcessed += document =>
         {
-        }
+            visitor.Visit(document);
+        };
+    }
+
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
     }
 }

@@ -1,36 +1,34 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class JTokenJsonConverter : JsonConverter
 {
-    internal class JTokenJsonConverter : JsonConverter
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(JToken).IsAssignableFrom(objectType);
-        }
+        return typeof(JToken).IsAssignableFrom(objectType);
+    }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    {
+        if (reader is JTokenReader tokenReader)
         {
-            if (reader is JTokenReader tokenReader)
-            {
-                var result = JsonUtility.DeepClone(tokenReader.CurrentToken);
-                JsonUtility.SkipToken(reader);
-                return result;
-            }
-            return JToken.ReadFrom(reader);
+            var result = JsonUtility.DeepClone(tokenReader.CurrentToken);
+            JsonUtility.SkipToken(reader);
+            return result;
         }
+        return JToken.ReadFrom(reader);
+    }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+    {
+        if (value is JToken token)
         {
-            if (value is JToken token)
-            {
-                token.WriteTo(writer);
-            }
+            token.WriteTo(writer);
         }
     }
 }

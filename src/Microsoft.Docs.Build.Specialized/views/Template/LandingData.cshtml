@@ -7,12 +7,12 @@
 {
 private void UpdateAbstract()
 {
-    if (Model.Abstract?.Aside?.Title != null && Model.Abstract.Aside.Image != null && string.IsNullOrEmpty(Model.Abstract.Aside.Image.Alt))
+    if (Model?.Abstract?.Aside?.Title != null && Model.Abstract.Aside.Image != null && string.IsNullOrEmpty(Model.Abstract.Aside.Image.Alt))
     {
         Model.Abstract.Aside.Image.Alt = Model.Abstract.Aside.Title;
     }
 
-    if (Model.Abstract?.Menu != null)
+    if (Model?.Abstract?.Menu != null)
     {
         Model.Abstract.Aside = null;
     }
@@ -21,7 +21,7 @@ private void UpdateAbstract()
 @{
     UpdateAbstract();
 }
-@if (Model.Abstract != null)
+@if (Model?.Abstract != null)
 {
     <div class="abstractHolder">
         <div class="abstract">
@@ -64,7 +64,7 @@ private void UpdateAbstract()
         }
     </div>
 }
-@if (Model.Sections != null)
+@if (Model?.Sections != null)
 {
     @foreach (var sect in Model.Sections)
     {

@@ -3,19 +3,20 @@
 
 using System.Text.Json.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class ExternalXref
 {
-    internal class ExternalXref
-    {
-        public string Uid { get; set; } = "";
+    public string Uid { get; set; } = "";
 
-        public string? DocsetName { get; set; }
+    public string? DocsetName { get; set; }
 
-        public int Count { get; set; }
+    public int Count { get; set; }
 
-        public string? SchemaType { get; set; }
+    public string? SchemaType { get; set; }
 
-        [JsonIgnore]
-        public string? ReferencedRepositoryUrl { get; set; }
-    }
+    public string? PropertyPath { get; set; }
+
+    [JsonIgnore]
+    public string? ReferencedRepositoryUrl { get; set; }
 }
