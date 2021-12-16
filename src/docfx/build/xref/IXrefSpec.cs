@@ -15,7 +15,7 @@ internal interface IXrefSpec
 
     MonikerList Monikers { get; }
 
-    string? GetXrefPropertyValueAsString(string propertyName);
+    (string? propertyValue, bool localizable) GetXrefPropertyValueAsString(string propertyName);
 
     string? GetName();
 

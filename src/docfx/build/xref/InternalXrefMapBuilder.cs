@@ -93,7 +93,9 @@ internal class InternalXrefMapBuilder
         var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
         var xref = new InternalXrefSpec(metadata.Uid, _documentProvider.GetSiteUrl(file), file, monikers);
 
-        xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
+        JToken token = new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value);
+        var localizable = !string.IsNullOrEmpty(metadata.Title);
+        xref.XrefProperties["name"] = new Lazy<(JToken token, bool localizable)>((token, localizable));
 
         return xref;
     }

@@ -364,11 +364,11 @@ internal class MarkdownEngine
         return result;
     }
 
-    private (string? href, string display) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+    private (string? href, string display, bool localization) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
     {
         var status = s_status.Value!.Peek();
 
-        var (error, link, display, _) = href.HasValue
+        var (error, link, display, _, localizable) = href.HasValue
             ? _xrefResolver.ResolveXrefByHref(href.Value, GetFilePath(href.Value), GetRootFilePath())
             : uid.HasValue
                 ? _xrefResolver.ResolveXrefByUid(uid.Value, GetFilePath(uid.Value), GetRootFilePath())
@@ -378,7 +378,7 @@ internal class MarkdownEngine
         {
             status.Errors.AddIfNotNull(error);
         }
-        return (link, display);
+        return (link, display, localizable);
     }
 
     private static FilePath GetFilePath<T>(SourceInfo<T> sourceInfo)

@@ -224,7 +224,7 @@ internal static class HtmlUtility
         ref HtmlReader reader,
         ref HtmlToken token,
         MarkdownObject? block,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display, bool localizable)> resolveXref)
     {
         if (!token.NameIs("xref"))
         {
@@ -271,7 +271,7 @@ internal static class HtmlUtility
 
         suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
-        var (resolvedHref, display) = resolveXref(
+        var (resolvedHref, display, _) = resolveXref(
             href == null ? null : new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
             uid == null ? null : new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
             suppressXrefNotFound);

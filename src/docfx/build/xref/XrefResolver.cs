@@ -51,7 +51,7 @@ internal class XrefResolver
         _internalXrefMap = new(BuildInternalXrefMap);
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
+    public (Error? error, string? href, string display, FilePath? declaringFile, bool localization) ResolveXrefByHref(
         SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
     {
         var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -79,14 +79,34 @@ internal class XrefResolver
         var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
         if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
         {
-            return (xrefError, null, alt ?? "", null);
+            return (xrefError, null, alt ?? "", null, !string.IsNullOrEmpty(alt));
         }
 
-        var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+        var (displayPropertyValue, localizableOfDisplayProperty) =
+            displayProperty is null ? (null, false) : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
+
+        var (name, localizableOfName) = !string.IsNullOrEmpty(xrefSpec.GetName()) && xrefSpec is InternalXrefSpec internalXrefSpec ?
+            internalXrefSpec.GetXrefPropertyOfName() :
+            (null, false);
 
         // fallback order:
         // text -> xrefSpec.displayProperty -> xrefSpec.name
         var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
+
+        // TODO: if xrefSpec is ExternalXrefSpec without text, then localizable is false.
+        var localizable = false;
+        if (!string.IsNullOrEmpty(text))
+        {
+            localizable = true;
+        }
+        else if (!string.IsNullOrEmpty(displayProperty))
+        {
+            localizable = localizableOfDisplayProperty;
+        }
+        else if (!string.IsNullOrEmpty(name))
+        {
+            localizable = localizableOfName;
+        }
 
         if (!string.IsNullOrEmpty(moniker))
         {
@@ -98,10 +118,10 @@ internal class XrefResolver
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
         resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-        return (null, resolvedHref, display, xrefSpec.DeclaringFile);
+        return (null, resolvedHref, display, xrefSpec.DeclaringFile, localizable);
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
+    public (Error? error, string? href, string display, FilePath? declaringFile, bool localization) ResolveXrefByUid(
         SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
     {
         if (string.IsNullOrEmpty(uid))
@@ -113,10 +133,13 @@ internal class XrefResolver
         var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
         if (error != null || xrefSpec == null || href == null)
         {
-            return (error, null, "", null);
+            return (error, null, "", null, false);
         }
+
+        var (_, localizableOfName) = !string.IsNullOrEmpty(xrefSpec.GetName()) && xrefSpec is InternalXrefSpec internalXrefSpec ?
+            internalXrefSpec.GetXrefPropertyOfName() : (null, false);
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-        return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
+        return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, localizableOfName);
     }
 
     public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
@@ -240,7 +263,7 @@ internal class XrefResolver
     {
         // TODO: this workaround can be removed when all xref related repos migrated to v3
         if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                    && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
+            && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
         {
             return url["https://review.docs.microsoft.com".Length..];
         }
@@ -296,7 +319,6 @@ internal class XrefResolver
             var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
-
             return (spec, href);
         }
         return default;

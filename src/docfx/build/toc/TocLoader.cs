@@ -455,7 +455,7 @@ internal class TocLoader
         // process uid then if href is empty or null
         if (!string.IsNullOrEmpty(uid.Value))
         {
-            var (uidError, uidLink, display, declaringFile) = _xrefResolver.ResolveXrefByUid(
+            var (uidError, uidLink, display, declaringFile, _) = _xrefResolver.ResolveXrefByUid(
                 uid!, filePath, rootPath, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, filePath));
             _errors.AddIfNotNull(uidError);
 

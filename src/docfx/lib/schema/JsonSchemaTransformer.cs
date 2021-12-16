@@ -231,13 +231,14 @@ internal class JsonSchemaTransformer
 
                 if (!obj.TryGetValue(xrefProperty, out var value))
                 {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
+                    xref.XrefProperties[xrefProperty] = new Lazy<(JToken token, bool localizable)>(() => (JValue.CreateNull(), false));
                     continue;
                 }
 
-                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(
-                        schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                xref.XrefProperties[xrefProperty] = new Lazy<(JToken token, bool localizable)>(
+                    () => (
+                        LoadXrefProperty(schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                        false),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }

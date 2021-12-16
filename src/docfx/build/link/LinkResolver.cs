@@ -79,7 +79,7 @@ internal class LinkResolver
     {
         if (href.Value.StartsWith("xref:"))
         {
-            var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
+            var (xrefError, resolvedHref, _, declaringFile, _) = _xrefResolver.ResolveXrefByHref(
                 new SourceInfo<string>(href.Value["xref:".Length..], href),
                 referencingFile,
                 inclusionRoot);
