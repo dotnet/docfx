@@ -126,7 +126,7 @@ internal class CustomRuleProvider
                         pageType == null ||
                         rule.ContentTypes == null ||
                         rule.ContentTypes.Contains(pageType);
-                    if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) && isPageTypeInScope)
+                    if (rule.PropertyPath == error.PropertyPath && isPageTypeInScope)
                     {
                         customRule = rule;
                         return true;
