@@ -366,9 +366,7 @@ internal static class UrlUtility
                 case '}':
                     sb.Append("))");
                     break;
-                case 'a' or 'b' or 'c' or 'd' or 'e' or 'f' or 'g' or 'h' or 'i' or 'j' or 'k' or 'l' or 'm':
-                case 'n' or 'o' or 'p' or 'q' or 'r' or 's' or 't' or 'u' or 'v' or 'w' or 'x' or 'y' or 'z':
-                case '0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9':
+                case char c when (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'):
                 case '(' or ')' or '*' or '@':
                     sb.Append(ch);
                     break;
