@@ -517,7 +517,7 @@ inputs:
             "nestedValue": "",
             "nestedTaxonomy": [
                 "microsoft.com",
-                "youtube.com"
+                "channel9.com"
             ]
         }
     }
@@ -526,12 +526,12 @@ inputs:
     <a href="http://docs.microsoft.com/should-report">inline html link</a>
     <a href="https://docs.microsoft.com/should-not-report">inline html link</a>
     [external link](http://www.google.com/should-not-report)
-    ![image link](http://image.youtube.com/should-report.jpg)
+    ![image link](http://image.channel9.com/should-report.jpg)
 outputs:
   .errors.log: |
     {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
     {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":49}
-    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://image.youtube.com/should-report.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":5,"end_line":5,"column":1,"end_column":1}
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://image.channel9.com/should-report.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":5,"end_line":5,"column":1,"end_column":1}
   file1.json:
 ---
 # Validate html link
