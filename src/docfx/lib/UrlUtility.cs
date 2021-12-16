@@ -346,11 +346,20 @@ internal static class UrlUtility
 
     public static string GetBookmark(string uid)
     {
-        uid = uid.ToLowerInvariant();
-        uid = Regex.Replace(uid, @"[""'%^\\]", "");
-        uid = Regex.Replace(uid, @"[<\[]", "(");
-        uid = Regex.Replace(uid, @"[>\]]", ")");
-        uid = uid.Replace("{", "((").Replace("}", "))");
+        var sb = new StringBuilder(uid.ToLowerInvariant());
+        uid = sb
+            .Replace("\"", "")
+            .Replace("'", "")
+            .Replace("%", "")
+            .Replace("^", "")
+            .Replace("\\", "")
+            .Replace("<", "(")
+            .Replace(">", ")")
+            .Replace("[", "(")
+            .Replace("]", ")")
+            .Replace("{", "((")
+            .Replace("}", "))")
+            .ToString();
         uid = Regex.Replace(uid, @"[^a-zA-Z0-9\(\)\*@]", "-");
         uid = Regex.Replace(uid, @"^-+", "");
         uid = Regex.Replace(uid, @"-+$", "");
