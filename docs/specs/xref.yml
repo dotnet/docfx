@@ -2116,7 +2116,7 @@ inputs:
     uid: a
     title: Title from internal a.yml
     name: name a
-    fullName: fullname a
+    fullName: fullName a
   b.md: |
     ---
     title: Title from internal b.md
