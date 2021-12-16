@@ -10,13 +10,6 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal record FilePath : IComparable<FilePath>
 {
-    private const int IsGitCommitBitMask = 0x000000_10;
-
-    /// <summary>
-    /// A bit flag to encode HashCode, IsGitCommit, Origin.
-    /// </summary>
-    private readonly int _flags;
-
     /// <summary>
     /// Gets the file path relative to the main docset.
     /// </summary>
@@ -35,12 +28,12 @@ internal record FilePath : IComparable<FilePath>
     /// <summary>
     /// Gets the value to indicate where is this file from.
     /// </summary>
-    public FileOrigin Origin => (FileOrigin)(_flags & ~IsGitCommitBitMask);
+    public FileOrigin Origin { get; }
 
     /// <summary>
     /// Indicate if the file is from git commit history.
     /// </summary>
-    public bool IsGitCommit => (_flags & IsGitCommitBitMask) != 0;
+    public bool IsGitCommit { get; }
 
     /// <summary>
     /// Monikers for redirection files.
@@ -53,7 +46,7 @@ internal record FilePath : IComparable<FilePath>
     public FilePath(string path)
     {
         Path = new PathString(path);
-        _flags = GetFlags(FileOrigin.External, isGitCommit: false);
+        Origin = FileOrigin.External;
     }
 
     private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
@@ -61,12 +54,8 @@ internal record FilePath : IComparable<FilePath>
         Path = path;
         DependencyName = dependencyName;
         RedirectionMonikers = monikers;
-        _flags = GetFlags(origin, isGitCommit);
-    }
-
-    private static int GetFlags(FileOrigin origin, bool isGitCommit)
-    {
-        return isGitCommit ? (IsGitCommitBitMask | (int)origin) : (int)origin;
+        Origin = origin;
+        IsGitCommit = isGitCommit;
     }
 
     public static FilePath Content(PathString path)
