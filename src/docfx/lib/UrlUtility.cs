@@ -346,45 +346,39 @@ internal static class UrlUtility
 
     public static string GetBookmark(string uid)
     {
-        uid = uid.ToLowerInvariant();
-        var shouldIgnore = new HashSet<char>() { '\"', '\'', '%', '^', '\\' };
-        var shouldKeep = new HashSet<char>() { '(', ')', '*', '@' };
         var sb = new StringBuilder();
         for (var i = 0; i < uid.Length; i++)
         {
-            if (shouldIgnore.Contains(uid[i]))
+            var ch = char.ToLowerInvariant(uid[i]);
+            switch (ch)
             {
-                continue;
-            }
-            else if (uid[i] == '<' || uid[i] == '[')
-            {
-                sb.Append('(');
-            }
-            else if (uid[i] == '>' || uid[i] == ']')
-            {
-                sb.Append(')');
-            }
-            else if (uid[i] == '{')
-            {
-                sb.Append("((");
-            }
-            else if (uid[i] == '}')
-            {
-                sb.Append("))");
-            }
-            else if ((uid[i] >= 'a' && uid[i] <= 'z')
-                || (uid[i] >= '0' && uid[i] <= '9')
-                || shouldKeep.Contains(uid[i]))
-            {
-                sb.Append(uid[i]);
-            }
-            else
-            {
-                if (sb.Length == 0 || sb[^1] == '-')
-                {
+                case '"'or '\'' or '%' or '^' or '\\':
                     continue;
-                }
-                sb.Append('-');
+                case '<'or '[':
+                    sb.Append('(');
+                    break;
+                case '>' or ']':
+                    sb.Append(')');
+                    break;
+                case '{':
+                    sb.Append("((");
+                    break;
+                case '}':
+                    sb.Append("))");
+                    break;
+                case 'a' or 'b' or 'c' or 'd' or 'e' or 'f' or 'g' or 'h' or 'i' or 'j' or 'k' or 'l' or 'm':
+                case 'n' or 'o' or 'p' or 'q' or 'r' or 's' or 't' or 'u' or 'v' or 'w' or 'x' or 'y' or 'z':
+                case '0' or '1' or '2' or '3' or '4' or '5' or '6' or '7' or '8' or '9':
+                case '(' or ')' or '*' or '@':
+                    sb.Append(ch);
+                    break;
+                default:
+                    if (sb.Length == 0 || sb[^1] == '-')
+                    {
+                        continue;
+                    }
+                    sb.Append('-');
+                    break;
             }
         }
 
