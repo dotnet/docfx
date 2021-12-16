@@ -346,26 +346,64 @@ internal static class UrlUtility
 
     public static string GetBookmark(string uid)
     {
-        var sb = new StringBuilder(uid.ToLowerInvariant());
-        uid = sb
-            .Replace("\"", "")
-            .Replace("'", "")
-            .Replace("%", "")
-            .Replace("^", "")
-            .Replace("\\", "")
-            .Replace("<", "(")
-            .Replace(">", ")")
-            .Replace("[", "(")
-            .Replace("]", ")")
-            .Replace("{", "((")
-            .Replace("}", "))")
-            .ToString();
-        uid = Regex.Replace(uid, @"[^a-zA-Z0-9\(\)\*@]", "-");
-        uid = Regex.Replace(uid, @"^-+", "");
-        uid = Regex.Replace(uid, @"-+$", "");
-        var bookmark = Regex.Replace(uid, @"-+", "-");
+        uid = uid.ToLowerInvariant();
+        var shouldIgnore = new HashSet<char>() { '\"', '\'', '%', '^', '\\' };
+        var shouldKeep = new HashSet<char>() { '(', ')', '*', '@' };
+        var sb = new StringBuilder();
+        for (var i = 0; i < uid.Length; i++)
+        {
+            if (shouldIgnore.Contains(uid[i]))
+            {
+                continue;
+            }
+            else if (uid[i] == '<' || uid[i] == '[')
+            {
+                sb.Append('(');
+            }
+            else if (uid[i] == '>' || uid[i] == ']')
+            {
+                sb.Append(')');
+            }
+            else if (uid[i] == '{')
+            {
+                sb.Append("((");
+            }
+            else if (uid[i] == '}')
+            {
+                sb.Append("))");
+            }
+            else if ((uid[i] >= 'a' && uid[i] <= 'z')
+                || (uid[i] >= '0' && uid[i] <= '9')
+                || shouldKeep.Contains(uid[i]))
+            {
+                sb.Append(uid[i]);
+            }
+            else
+            {
+                if (sb.Length == 0 || sb[^1] == '-')
+                {
+                    continue;
+                }
+                sb.Append('-');
+            }
+        }
 
-        return bookmark;
+        if (sb[^1] == '-')
+        {
+            for (var i = sb.Length - 1; i >= 0; i--)
+            {
+                if (sb[i] == '-')
+                {
+                    sb.Remove(i, 1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        return sb.ToString();
     }
 
     private static string ToQueryString(this NameValueCollection collection)
