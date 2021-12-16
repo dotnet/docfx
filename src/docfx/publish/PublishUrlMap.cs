@@ -172,7 +172,7 @@ internal class PublishUrlMap
             .Select(group => group.Key)
             .ToList();
         var conflictingFiles = conflicts.ToDictionary(x => x.SourcePath, x => x.Monikers);
-        _errors.Add(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, conflictingFiles, conflictMonikers));
+        _errors.Add(Errors.UrlPath.PublishUrlConflict(conflicts.First().Url, null, conflictingFiles, conflictMonikers));
 
         return conflicts.OrderBy(x => x).Last();
     }

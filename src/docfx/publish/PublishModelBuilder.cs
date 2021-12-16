@@ -15,8 +15,7 @@ internal class PublishModelBuilder
     private readonly SourceMap _sourceMap;
     private readonly DocumentProvider _documentProvider;
 
-    private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput =
-                 new();
+    private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new();
 
     public PublishModelBuilder(
         Config config,

@@ -152,56 +152,56 @@ internal class TocMap
         return (subDirectoryCount, parentDirectoryCount);
     }
 
-    private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)
-        BuildTocMap()
+    private (FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages) BuildTocMap()
     {
         using var scope = Progress.Start("Loading TOC");
-        var tocs = new ConcurrentBag<FilePath>();
-        var allServicePages = new ConcurrentBag<FilePath>();
+
+        var allTocFiles = new ConcurrentHashSet<FilePath>();
+        var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
+        var includedTocs = new HashSet<FilePath>();
+        var allServicePages = new List<FilePath>();
 
         // Parse and split TOC
-        ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Toc), file =>
-        {
-            SplitToc(file, _tocParser.Parse(file, _errors), tocs);
-        });
-
-        var tocReferences = new ConcurrentDictionary<FilePath, (List<FilePath> docs, List<FilePath> tocs)>();
+        ParallelUtility.ForEach(
+            scope,
+            _errors,
+            _buildScope.GetFiles(ContentType.Toc),
+            file => SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles));
 
         // Load TOC
-        ParallelUtility.ForEach(scope, _errors, tocs, file =>
+        ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
         {
-            var (_, referencedDocuments, referencedTocs, servicePages) = _tocLoader.Load(file);
+            var (_, docsList, tocsList, servicePages) = _tocLoader.Load(file);
+            var docs = docsList.ToHashSet();
+            var tocs = tocsList.ToHashSet();
+            var shouldBuildFile = tocs.Any(toc => toc.Origin != FileOrigin.Fallback);
 
-            tocReferences.TryAdd(file, (referencedDocuments, referencedTocs));
-
-            foreach (var servicePage in servicePages)
+            lock (allTocs)
             {
-                allServicePages.Add(servicePage);
+                allTocs.Add((file, docs, tocs, shouldBuildFile));
+                allServicePages.AddRange(servicePages);
+                includedTocs.AddRange(tocs);
             }
         });
 
-        // Create TOC reference map
-        var includedTocs = tocReferences.Values.SelectMany(item => item.tocs).ToHashSet();
-
         var tocToTocs = (
-            from item in tocReferences
-            where !includedTocs.Contains(item.Key)
-            select item).ToDictionary(g => g.Key, g => g.Value.tocs.Distinct().ToArray());
+            from item in allTocs
+            where !includedTocs.Contains(item.file)
+            select item).ToDictionary(g => g.file, g => (g.tocs, g.shouldBuildFile));
 
         var docToTocs = (
-            from item in tocReferences
-            from doc in item.Value.docs
-            where tocToTocs.ContainsKey(item.Key)
-            group item.Key by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+            from item in allTocs
+            where !includedTocs.Contains(item.file)
+            from doc in item.docs
+            group item.file by doc).ToDictionary(g => g.Key, g => g.Distinct().ToArray());
 
         docToTocs.TrimExcess();
 
-        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
-        docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
-
         var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
-        return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
+        RemoveInvalidServicePage();
+
+        return (tocFiles, docToTocs, allServicePages);
 
         bool ShouldBuildFile(FilePath file)
         {
@@ -210,21 +210,36 @@ internal class TocMap
                 return true;
             }
 
-            // if A toc includes B toc and only B toc is localized, then A need to be included and built
-            if (tocToTocs.TryGetValue(file, out var tocReferences) && tocReferences.Any(toc => toc.Origin != FileOrigin.Fallback))
+            if (!tocToTocs.TryGetValue(file, out var value))
             {
-                return true;
+                return false;
             }
 
-            return false;
+            // if A toc includes B toc and only B toc is localized, then A need to be included and built
+            return value.shouldBuildFile;
+        }
+
+        void RemoveInvalidServicePage()
+        {
+            for (var i = 0; i < allServicePages.Count; i++)
+            {
+                var servicePage = allServicePages[i];
+                var url = _documentProvider.GetSiteUrl(servicePage);
+                var files = _publishUrlMap.GetFilesByUrl(url);
+                if (files.Any())
+                {
+                    _errors.Add(Errors.UrlPath.PublishUrlConflict(url, files.Concat(new[] { servicePage }), null, null));
+                    allServicePages.RemoveAt(i--);
+                }
+            }
         }
     }
 
-    private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
+    private void SplitToc(FilePath file, TocNode toc, ConcurrentHashSet<FilePath> result)
     {
         if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
         {
-            result.Add(file);
+            result.TryAdd(file);
             return;
         }
 
@@ -252,7 +267,7 @@ internal class TocMap
             var newNodeFile = FilePath.Generated(newNodeFilePath);
 
             _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
-            result.Add(newNodeFile);
+            result.TryAdd(newNodeFile);
 
             var newChild = new TocNode(child)
             {
@@ -265,7 +280,7 @@ internal class TocMap
         var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
         var newTocFile = FilePath.Generated(newTocFilePath);
         _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
-        result.Add(newTocFile);
+        result.TryAdd(newTocFile);
     }
 
     private TocNode SplitTocNode(TocNode node)

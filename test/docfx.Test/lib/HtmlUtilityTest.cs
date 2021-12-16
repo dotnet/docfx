@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using HtmlReaderWriter;
 using Xunit;
 using Yunit;
@@ -163,5 +162,16 @@ public class HtmlUtilityTest
     public static void Encode(string input, string expected)
     {
         Assert.Equal(expected, HtmlUtility.Encode(input));
+    }
+
+    [Theory]
+    [InlineData("<div style='a'></div>", "{\"div\":{\"style\":1}}")]
+    [InlineData("<div><script></script></div><div></div>", "{\"div\":{\"\":2},\"script\":{\"\":1}}")]
+    [InlineData("<div style='a' src='b'></div>", "{\"div\":{\"style\":1,\"src\":1}}")]
+    public static void CollectHtmlUsage(string input, string expected)
+    {
+        var elementCount = new Dictionary<string, Dictionary<string, int>>();
+        HtmlUtility.CollectHtmlUsage(input, elementCount);
+        Assert.Equal(expected, JsonUtility.Serialize(elementCount));
     }
 }
