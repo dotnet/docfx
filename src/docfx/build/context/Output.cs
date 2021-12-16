@@ -32,8 +32,8 @@ internal class Output
 
         _queue.Post(() =>
         {
-            using var writer = new StreamWriter(EnsureDestinationPath(destRelativePath));
-            JsonUtility.Serialize(writer, graph);
+            using var stream = new FileStream(EnsureDestinationPath(destRelativePath), FileMode.Create);
+            JsonUtility.SerializeStable(stream, graph);
         });
     }
 
@@ -47,10 +47,7 @@ internal class Output
 
         if (text != null)
         {
-            _queue.Post(() =>
-            {
-                File.WriteAllText(EnsureDestinationPath(destRelativePath), text);
-            });
+            _queue.Post(() => File.WriteAllText(EnsureDestinationPath(destRelativePath), text));
         }
     }
 

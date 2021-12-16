@@ -146,28 +146,27 @@ internal class PageBuilder
         }
 
         outputModel["schema"] = mime.Value;
-        outputModel = JsonUtility.SortProperties(outputModel);
         if (_config.OutputType == OutputType.Json)
         {
-            return (outputModel, JsonUtility.SortProperties(outputMetadata));
+            return (outputModel, outputMetadata);
         }
 
         var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, outputModel);
 
         if (_config.OutputType == OutputType.PageJson)
         {
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
 
         try
         {
             var html = _templateEngine.RunLiquid(errors, mime, templateModel);
-            return (html, JsonUtility.SortProperties(templateMetadata));
+            return (html, templateMetadata);
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
         {
             errors.AddRange(dex.Select(ex => ex.Error));
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
     }
 

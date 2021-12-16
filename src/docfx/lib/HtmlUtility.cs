@@ -294,7 +294,7 @@ internal static class HtmlUtility
     {
         var result = new StringBuilder();
 
-        foreach (var (key, value) in metadata)
+        foreach (var (key, value) in ((IEnumerable<KeyValuePair<string, JToken>>)metadata).OrderBy(p => p.Key))
         {
             if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
             {
