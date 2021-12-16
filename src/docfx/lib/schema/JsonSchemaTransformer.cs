@@ -292,7 +292,7 @@ internal class JsonSchemaTransformer
     private string GetXrefHref(FilePath file, string uid, int uidCount, bool isRootLevel)
     {
         var siteUrl = _documentProvider.GetSiteUrl(file);
-        return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : siteUrl;
+        return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{UrlUtility.GetBookmark(uid)}") : siteUrl;
     }
 
     private JToken LoadXrefProperty(
