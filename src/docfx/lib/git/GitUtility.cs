@@ -155,7 +155,7 @@ internal static partial class GitUtility
 
         var (http, secret) = GetGitCommandLineConfig(url, secrets);
 
-        ExecuteNonQuery(path, $"{http} -c core.longpaths=true fetch --progress {options} \"{url}\" {refspecs}", secret);
+        ExecuteNonQuery(path, $"{http} -c credential.helper=\"\" -c core.longpaths=true fetch --progress {options} \"{url}\" {refspecs}", secret);
     }
 
     /// <summary>
