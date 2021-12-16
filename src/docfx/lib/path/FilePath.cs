@@ -10,8 +10,6 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal record FilePath : IComparable<FilePath>
 {
-    private readonly int _hashCode;
-
     /// <summary>
     /// Gets the file path relative to the main docset.
     /// </summary>
@@ -20,7 +18,7 @@ internal record FilePath : IComparable<FilePath>
     /// <summary>
     /// Gets the file format.
     /// </summary>
-    public FileFormat Format { get; }
+    public FileFormat Format => GetFormat(Path);
 
     /// <summary>
     /// Gets the name of the dependency if it is from dependency repo.
@@ -48,22 +46,16 @@ internal record FilePath : IComparable<FilePath>
     public FilePath(string path)
     {
         Path = new PathString(path);
-        Format = GetFormat(path);
         Origin = FileOrigin.External;
-
-        _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit);
     }
 
     private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
     {
         Path = path;
-        Origin = origin;
         DependencyName = dependencyName;
-        IsGitCommit = isGitCommit;
-        Format = GetFormat(path);
         RedirectionMonikers = monikers;
-
-        _hashCode = HashCode.Combine(Path, DependencyName, Origin, IsGitCommit, RedirectionMonikers);
+        Origin = origin;
+        IsGitCommit = isGitCommit;
     }
 
     public static FilePath Content(PathString path)
@@ -129,11 +121,6 @@ internal record FilePath : IComparable<FilePath>
         return tags.Length > 0 ? $"{Path} {tags}" : $"{Path}";
     }
 
-    public override int GetHashCode()
-    {
-        return _hashCode;
-    }
-
     public int CompareTo(FilePath? other)
     {
         if (other is null)
@@ -167,19 +154,31 @@ internal record FilePath : IComparable<FilePath>
 
     private static FileFormat GetFormat(string path)
     {
-        if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+        switch (path[^1])
         {
-            return FileFormat.Markdown;
-        }
+            case 'd':
+            case 'D':
+                if (path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Markdown;
+                }
+                break;
 
-        if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
-        {
-            return FileFormat.Yaml;
-        }
+            case 'l':
+            case 'L':
+                if (path.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Yaml;
+                }
+                break;
 
-        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-        {
-            return FileFormat.Json;
+            case 'n':
+            case 'N':
+                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    return FileFormat.Json;
+                }
+                break;
         }
 
         return FileFormat.Unknown;
