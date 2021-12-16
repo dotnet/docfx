@@ -7,8 +7,6 @@ namespace Microsoft.Docs.Build;
 
 internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath DeclaringFile, MonikerList Monikers) : IXrefSpec
 {
-    public string? DeclaringPropertyPath { get; init; }
-
     public string? PropertyPath { get; init; }
 
     public bool UidGlobalUnique { get; init; }

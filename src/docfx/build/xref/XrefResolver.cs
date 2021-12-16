@@ -321,8 +321,8 @@ internal class XrefResolver
                 return DependencyType.Hierarchy;
             case ("LearningPath", "Achievement"):
             case ("Module", "Achievement"):
-            case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyPath, "trophy", StringComparison.OrdinalIgnoreCase):
-            case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
+            case ("LearningPath", "LearningPath") when string.Equals(xref.SchemaType, "trophy", StringComparison.OrdinalIgnoreCase):
+            case ("Module", "Module") when string.Equals(xref.SchemaType, "badge", StringComparison.OrdinalIgnoreCase):
                 return DependencyType.Achievement;
         }
 
