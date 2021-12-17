@@ -21,7 +21,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     string IXrefSpec.Uid => Uid.Value;
 
-    public string? GetXrefPropertyValue(string propertyName)
+    public string? GetXrefPropertyValueAsString(string propertyName)
     {
         return
           XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr
@@ -29,7 +29,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
           : null;
     }
 
-    public string? GetName() => GetXrefPropertyValue("name");
+    public string? GetName() => GetXrefPropertyValueAsString("name");
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
     {

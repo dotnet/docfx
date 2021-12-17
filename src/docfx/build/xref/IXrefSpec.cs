@@ -15,7 +15,7 @@ internal interface IXrefSpec
 
     MonikerList Monikers { get; }
 
-    string? GetXrefPropertyValue(string propertyName);
+    string? GetXrefPropertyValueAsString(string propertyName);
 
     string? GetName();
 

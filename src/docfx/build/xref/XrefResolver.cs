@@ -82,7 +82,7 @@ internal class XrefResolver
             return (xrefError, new XrefLink(null, alt ?? "", null, !string.IsNullOrEmpty(alt)));
         }
 
-        var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValue(displayProperty);
+        var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
 
         // fallback order:
         // text -> xrefSpec.displayProperty -> xrefSpec.name

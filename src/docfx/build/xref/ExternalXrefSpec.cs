@@ -30,7 +30,7 @@ internal record ExternalXrefSpec : IXrefSpec
 
     FilePath? IXrefSpec.DeclaringFile => null;
 
-    public string? GetXrefPropertyValue(string propertyName)
+    public string? GetXrefPropertyValueAsString(string propertyName)
     {
         if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
         {
@@ -39,7 +39,7 @@ internal record ExternalXrefSpec : IXrefSpec
         return null;
     }
 
-    public string? GetName() => GetXrefPropertyValue("name");
+    public string? GetName() => GetXrefPropertyValueAsString("name");
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => overwriteHref is null ? this : this with { Href = overwriteHref };
 }
