@@ -497,7 +497,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
+    {"conceptual": "<p>Link to <a href=\"a.json#a-b\">a.b</a></p>\n"}
   .xrefmap.json: |
     {
       "references": [{
@@ -1135,13 +1135,13 @@ outputs:
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child.c c</a>
         Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c c</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b a</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a href=\"a.json#children-c\" data-linktype=\"relative-path\">children.c c</a>
         </p>"
     }
   .xrefmap.json: |
@@ -1160,16 +1160,16 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a"
+                "href": "https://docs.com/docs/a.json#children-a"
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
+                "href": "https://docs.com/docs/a.json#children-b",
                 "a": "children.b a"
             },
             {
                 "uid": "children.c",
-                "href": "https://docs.com/docs/a.json#children_c",
+                "href": "https://docs.com/docs/a.json#children-c",
                 "child.c": "children.c c"
             }
         ]
@@ -1269,14 +1269,14 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children_a",
+                "href": "https://docs.com/docs/a.json#children-a",
                 "list": [
                     "1.0"
                 ]
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children_b",
+                "href": "https://docs.com/docs/a.json#children-b",
                 "list": [
                     "2.0",
                     "3.0"
@@ -1860,6 +1860,7 @@ repos:
               {"uid": "nofound",
                 "docsetName": "docset_a",
                 "schemaType": "a-type",
+                "propertyPath": "p1",
                 "count": 1}
             ]
           }
@@ -1889,15 +1890,17 @@ outputs:
         {"uid": "c", 
           "docsetName": "docset_b",
           "schemaType": "c-type",
+          "propertyPath": "ref_other",
           "count": 2},
         {"uid": "d", 
           "docsetName": "docset_b",
           "schemaType": "d-type",
+          "propertyPath": "ref_other",
           "count": 1}
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url' on property 'p1'.","line":0,"column":0}
 ---
 # support SDP validation validateExternalXrefs, locale build
 noSingleFile: true
@@ -1921,6 +1924,7 @@ repos:
             {"uid": "nofound",
               "docsetName": "docset_a",
               "schemaType": "a-type",
+              "propertyPath": "p1",
               "count": 1}
           ]
         }
@@ -1961,7 +1965,82 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'nofound' with type 'a-type' not found, which is referenced by repository 'b_repository_url' on property 'p1'.","line":0,"column":0}
+---
+# support SDP validation validateExternalXrefs, propertyPath
+noSingleFile: true
+repos:
+  https://docs.com/test-valdiate-external-xref:
+    - files:
+        docfx.yml: |
+          name: docset_a
+          xref:
+          - 1.xrefmap.json
+        1.xrefmap.json: |
+          {
+            "repository_url": "b_repository_url",
+            "docset_name": "docset_b",
+            "references":[
+              {"uid": "c", "schemaType": "c-type"},
+              {"uid": "d", "schemaType": "d-type"}
+            ],
+            "external_xrefs":[
+              {"uid": "e",
+                "docsetName": "docset_a",
+                "schemaType": "a-type",
+                "propertyPath": "p1",
+                "count": 1},
+              {"uid": "e",
+                "docsetName": "docset_a",
+                "schemaType": "a-type",
+                "propertyPath": "p2",
+                "count": 1}
+            ]
+          }
+        docs/a.yml: |
+          ### YamlMime:TestData1
+          uid: a
+          ref_other: ["b", "c", "d"]
+        docs/b.yml: |
+          ### YamlMime:TestData1
+          uid: b
+          ref_other_2: ["c"]
+        _themes/ContentTemplate/schemas/TestData1.schema.json: |
+          {
+            "properties": {
+              "uid": { "contentType": "uid"},
+              "ref_other": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}},
+              "ref_other_2": { "type": "array", "items": {"contentType": "xref", "validateExternalXrefs": true}}
+            }
+          }
+outputs:
+  docs/a.json:
+  docs/b.json:
+  .xrefmap.json: |
+    {
+      "docset_name": "docset_a",
+      "repository_url": "https://docs.com/test-valdiate-external-xref",
+      "external_xrefs":[
+        {"uid": "c", 
+          "docsetName": "docset_b",
+          "schemaType": "c-type",
+          "propertyPath": "ref_other",
+          "count": 1},
+        {"uid": "c", 
+          "docsetName": "docset_b",
+          "schemaType": "c-type",
+          "propertyPath": "ref_other_2",
+          "count": 1},
+        {"uid": "d", 
+          "docsetName": "docset_b",
+          "schemaType": "d-type",
+          "propertyPath": "ref_other",
+          "count": 1}
+      ]
+    }
+  .errors.log: |
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'e' with type 'a-type' not found, which is referenced by repository 'b_repository_url' on property 'p1'.","line":0,"column":0}
+    {"message_severity":"warning","code":"uid-not-found","message":"UID 'e' with type 'a-type' not found, which is referenced by repository 'b_repository_url' on property 'p2'.","line":0,"column":0}
 ---
 # multiple duplicated uids with the same MonkerList
 inputs:

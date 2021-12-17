@@ -73,6 +73,21 @@ internal static class Telemetry
                 "SessionId"),
             s_metricConfiguration);
 
+    private static readonly Metric s_htmlElementCountMetric =
+        s_telemetryClient.GetMetric(
+            new MetricIdentifier(
+                null,
+                "HtmlElement",
+                "ElementType",
+                "IsAllowed",
+                "FileExtension",
+                "DocumentType",
+                "MimeType",
+                "Repo",
+                "Branch",
+                "CorrelationId"),
+            s_metricConfiguration);
+
     private static readonly string s_version =
         typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
 
@@ -218,6 +233,41 @@ internal static class Telemetry
                         s_branch,
                         s_correlationId,
                         s_sessionId));
+            }
+        }
+    }
+
+    public static void TrackHtmlElement(
+        FilePath file,
+        ContentType contentType,
+        string? mime,
+        Dictionary<string, Dictionary<string, int>> elementCount,
+        Func<string, string, bool> isAllowed)
+    {
+        if (!s_isRealTimeBuild.Value)
+        {
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+            var documentType = contentType.ToString();
+            var mimeType = CoalesceEmpty(mime);
+
+            foreach (var (tokenName, attributeCount) in elementCount)
+            {
+                foreach (var (attributeName, count) in attributeCount)
+                {
+                    var elementType = string.IsNullOrEmpty(attributeName) ? tokenName : $"{tokenName}_{attributeName}";
+                    TrackValueWithEnsurance(
+                    s_htmlElementCountMetric.Identifier.MetricId,
+                    s_htmlElementCountMetric.TrackValue(
+                    count,
+                    CoalesceEmpty(elementType),
+                    isAllowed(tokenName, attributeName).ToString(),
+                    fileExtension,
+                    documentType,
+                    mimeType,
+                    s_repo,
+                    s_branch,
+                    s_correlationId));
+                }
             }
         }
     }

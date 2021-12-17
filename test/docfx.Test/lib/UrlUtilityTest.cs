@@ -185,6 +185,26 @@ public static class UrlUtilityTest
     }
 
     [Theory]
+    [InlineData("A.b[]", "a-b()")]
+    [InlineData("a b", "a-b")]
+    [InlineData("a\"b", "ab")]
+    [InlineData("a%b", "ab")]
+    [InlineData("a^b", "ab")]
+    [InlineData("a\\b", "ab")]
+    [InlineData("Dictionary<string, List<int>>*", "dictionary(string-list(int))*")]
+    [InlineData("a'b'c", "abc")]
+    [InlineData("{a|b_c'}", "((a-b-c))")]
+    [InlineData("---&&$$##List<string> test(int a`, int a@, string b*)---&&$$##", "list(string)-test(int-a-int-a@-string-b*)")]
+    [InlineData(
+        "Microsoft.StreamProcessing.Streamable.AggregateByKey``4(Microsoft.StreamProcessing.IStreamable{Microsoft.StreamProcessing.Empty,``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``22,``23}},Microsoft.StreamProcessing.Aggregates.IAggregate{``0,``30,``31}},System.Linq.Expressions.Expression{System.Func{``3,``5,``7,``9,``11,``13,``15,``17,``19,``21,``23,``25,``27,``29,``31,``32}})",
+        "microsoft-streamprocessing-streamable-aggregatebykey-4(microsoft-streamprocessing-istreamable((microsoft-streamprocessing-empty-0))-system-linq-expressions-expression((system-func((-0-1))))-microsoft-streamprocessing-aggregates-iaggregate((-0-22-23))))-microsoft-streamprocessing-aggregates-iaggregate((-0-30-31))))-system-linq-expressions-expression((system-func((-3-5-7-9-11-13-15-17-19-21-23-25-27-29-31-32)))))")]
+    public static void StandardizeBookmarks(string uid, string expectedBookmark)
+    {
+        var bookmark = UrlUtility.GetBookmark(uid);
+        Assert.Equal(expectedBookmark, bookmark);
+    }
+
+    [Theory]
     [InlineData("docs.com/en-us/c", "docs.com", true, "docs.com/en-us/c")]
     [InlineData("https://docs.com/en-us/c", "docs.com", true, "/c")]
     [InlineData("https://docs.com/en-us/c", "docs.com", false, "/en-us/c")]

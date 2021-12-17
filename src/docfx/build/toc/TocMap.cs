@@ -156,7 +156,7 @@ internal class TocMap
     {
         using var scope = Progress.Start("Loading TOC");
 
-        var allTocFiles = new ConcurrentBag<FilePath>();
+        var allTocFiles = new ConcurrentHashSet<FilePath>();
         var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
@@ -197,12 +197,11 @@ internal class TocMap
 
         docToTocs.TrimExcess();
 
-        var docToTocsKeys = _publishUrlMap.ResolveUrlConflicts(scope, docToTocs.Keys.Where(ShouldBuildFile));
-        docToTocs = docToTocs.Where(doc => docToTocsKeys.Contains(doc.Key)).ToDictionary(item => item.Key, item => item.Value);
-
         var tocFiles = _publishUrlMap.ResolveUrlConflicts(scope, tocToTocs.Keys.Where(ShouldBuildFile));
 
-        return (tocFiles, docToTocs, allServicePages.Where(item => docToTocsKeys.Contains(item)).ToList());
+        RemoveInvalidServicePage();
+
+        return (tocFiles, docToTocs, allServicePages);
 
         bool ShouldBuildFile(FilePath file)
         {
@@ -219,13 +218,28 @@ internal class TocMap
             // if A toc includes B toc and only B toc is localized, then A need to be included and built
             return value.shouldBuildFile;
         }
+
+        void RemoveInvalidServicePage()
+        {
+            for (var i = 0; i < allServicePages.Count; i++)
+            {
+                var servicePage = allServicePages[i];
+                var url = _documentProvider.GetSiteUrl(servicePage);
+                var files = _publishUrlMap.GetFilesByUrl(url);
+                if (files.Any())
+                {
+                    _errors.Add(Errors.UrlPath.PublishUrlConflict(url, files.Concat(new[] { servicePage }), null, null));
+                    allServicePages.RemoveAt(i--);
+                }
+            }
+        }
     }
 
-    private void SplitToc(FilePath file, TocNode toc, ConcurrentBag<FilePath> result)
+    private void SplitToc(FilePath file, TocNode toc, ConcurrentHashSet<FilePath> result)
     {
         if (!_config.SplitTOC.Contains(file.Path) || toc.Items.Count <= 0)
         {
-            result.Add(file);
+            result.TryAdd(file);
             return;
         }
 
@@ -253,7 +267,7 @@ internal class TocMap
             var newNodeFile = FilePath.Generated(newNodeFilePath);
 
             _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
-            result.Add(newNodeFile);
+            result.TryAdd(newNodeFile);
 
             var newChild = new TocNode(child)
             {
@@ -266,7 +280,7 @@ internal class TocMap
         var newTocFilePath = new PathString(Path.ChangeExtension(file.Path, ".yml"));
         var newTocFile = FilePath.Generated(newTocFilePath);
         _input.AddGeneratedContent(newTocFile, JsonUtility.ToJObject(newToc), null);
-        result.Add(newTocFile);
+        result.TryAdd(newTocFile);
     }
 
     private TocNode SplitTocNode(TocNode node)

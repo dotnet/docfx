@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Web;
 using HtmlReaderWriter;
@@ -293,7 +294,7 @@ internal static class HtmlUtility
     {
         var result = new StringBuilder();
 
-        foreach (var (key, value) in metadata)
+        foreach (var (key, value) in ((IEnumerable<KeyValuePair<string, JToken>>)metadata).OrderBy(p => p.Key))
         {
             if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
             {
@@ -323,6 +324,39 @@ internal static class HtmlUtility
         }
 
         return result.ToString();
+    }
+
+    public static void CollectHtmlUsage(string html, Dictionary<string, Dictionary<string, int>> elementCount)
+    {
+        var reader = new HtmlReader(html);
+
+        while (reader.Read(out var token))
+        {
+            if (token.Type != HtmlTokenType.StartTag)
+            {
+                continue;
+            }
+
+            var tokenName = token.Name.ToString();
+            if (!elementCount.ContainsKey(tokenName))
+            {
+                elementCount.Add(tokenName, new Dictionary<string, int>());
+            }
+
+            var attributeCount = elementCount[tokenName];
+            if (token.Attributes.Span.IsEmpty)
+            {
+                CollectionsMarshal.GetValueRefOrAddDefault(attributeCount, string.Empty, out _)++;
+            }
+            else
+            {
+                foreach (ref var attribute in token.Attributes.Span)
+                {
+                    var attributeName = attribute.Name.ToString();
+                    CollectionsMarshal.GetValueRefOrAddDefault(attributeCount, attributeName, out _)++;
+                }
+            }
+        }
     }
 
     public static SourceInfo WithOffset(this SourceInfo sourceInfo, in HtmlTextRange range)

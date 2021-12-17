@@ -224,9 +224,14 @@ internal class XrefResolver
         {
             if (!internalXrefMap.ContainsKey(xrefGroup.Key))
             {
-                _errorLog.Add(Errors.Xref.UidNotFound(
-                    xrefGroup.Key, xrefGroup.Select(xref => xref.ReferencedRepositoryUrl).Distinct(), xrefGroup.First().SchemaType) with
-                { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                foreach (var item in xrefGroup)
+                {
+                    _errorLog.Add(Errors.Xref.UidNotFound(
+                        xrefGroup.Key,
+                        repository: item.ReferencedRepositoryUrl,
+                        item.SchemaType,
+                        item.PropertyPath) with { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                }
             }
         }
     }
@@ -316,8 +321,8 @@ internal class XrefResolver
                 return DependencyType.Hierarchy;
             case ("LearningPath", "Achievement"):
             case ("Module", "Achievement"):
-            case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyPath, "trophy", StringComparison.OrdinalIgnoreCase):
-            case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
+            case ("LearningPath", "LearningPath") when string.Equals(xref.SchemaType, "trophy", StringComparison.OrdinalIgnoreCase):
+            case ("Module", "Module") when string.Equals(xref.SchemaType, "badge", StringComparison.OrdinalIgnoreCase):
                 return DependencyType.Achievement;
         }
 

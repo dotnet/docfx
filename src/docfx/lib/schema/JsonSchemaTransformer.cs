@@ -25,7 +25,7 @@ internal class JsonSchemaTransformer
     private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
 
     private readonly Scoped<ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)>> _uidReferenceCountList = new();
-    private readonly Scoped<ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType)>> _xrefList = new();
+    private readonly Scoped<ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType, string? propertyPath)>> _xrefList = new();
 
     private static readonly ThreadLocal<Stack<SourceInfo<string>>> s_recursionDetector = new(() => new());
 
@@ -74,11 +74,17 @@ internal class JsonSchemaTransformer
 
     public ExternalXref[] GetValidateExternalXrefs()
     {
-        return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => item.xref.Value).Select(xrefGroup =>
+        return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => (item.xref.Value, item.propertyPath)).Select(xrefGroup =>
         {
             return new ExternalXref
-            { Uid = xrefGroup.Key, Count = xrefGroup.Count(), DocsetName = xrefGroup.First().docsetName, SchemaType = xrefGroup.First().schemaType };
-        }).OrderBy(externalXref => externalXref.Uid).ToArray();
+            {
+                Uid = xrefGroup.Key.Value,
+                PropertyPath = xrefGroup.Key.propertyPath,
+                Count = xrefGroup.Count(),
+                DocsetName = xrefGroup.First().docsetName,
+                SchemaType = xrefGroup.First().schemaType,
+            };
+        }).OrderBy(externalXref => externalXref.Uid).ThenBy(xref => xref.PropertyPath).ToArray();
     }
 
     public JToken TransformContent(ErrorBuilder errors, FilePath file)
@@ -202,13 +208,12 @@ internal class JsonSchemaTransformer
         string? propertyPath)
     {
         schemaMap.TryGetSchema(obj, out var schema);
-        var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
+        var href = GetXrefHref(file, uid, uidCount, string.IsNullOrEmpty(propertyPath));
         var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
         var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
         var xref = new InternalXrefSpec(uid, href, file, monikers)
         {
-            DeclaringPropertyPath = obj.Parent?.Path,
             PropertyPath = JsonUtility.AddToPropertyPath(propertyPath, "uid"),
             UidGlobalUnique = uidSchema.UidGlobalUnique,
             SchemaType = schemaType,
@@ -285,7 +290,7 @@ internal class JsonSchemaTransformer
     private string GetXrefHref(FilePath file, string uid, int uidCount, bool isRootLevel)
     {
         var siteUrl = _documentProvider.GetSiteUrl(file);
-        return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{Regex.Replace(uid, @"\W", "_")}") : siteUrl;
+        return !isRootLevel && uidCount > 1 ? UrlUtility.MergeUrl(siteUrl, "", $"#{UrlUtility.GetBookmark(uid)}") : siteUrl;
     }
 
     private JToken LoadXrefProperty(
@@ -479,7 +484,8 @@ internal class JsonSchemaTransformer
                     Watcher.Write(() => _xrefList.Value.Add((
                         content,
                         (xrefSpec is ExternalXrefSpec externalXref && schema.ValidateExternalXrefs) ? externalXref.DocsetName : null,
-                        xrefSpec?.SchemaType)));
+                        xrefSpec?.SchemaType,
+                        propertyPath)));
                 }
                 return value;
         }

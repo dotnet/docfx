@@ -201,7 +201,7 @@ internal class MarkdownEngine
             .UseDocsValidation(this, _contentValidator, GetFileLevelMonikers, GetCanonicalVersion)
             .UseResolveLink(_markdownContext)
             .UseXref(GetXref)
-            .UseHtml(GetErrors, GetLink, GetXref, _htmlSanitizer)
+            .UseHtml(GetErrors, GetLink, GetXref, _htmlSanitizer, _documentProvider)
             .UseExtractTitle(this, GetConceptual);
     }
 
