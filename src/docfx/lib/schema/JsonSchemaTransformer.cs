@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using HtmlReaderWriter;
 using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;

@@ -23,21 +23,21 @@ internal static class XrefExtension
                 var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
                 var suppressXrefNotFound = raw.StartsWith("@");
                 var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
-                var xrefResolvingResult = resolveXref(source, null, suppressXrefNotFound);
+                var xrefLink = resolveXref(source, null, suppressXrefNotFound);
 
-                if (xrefResolvingResult.Href is null)
+                if (xrefLink.Href is null)
                 {
                     return new LiteralInline(raw);
                 }
 
-                var linkInline = new LinkInline(xrefResolvingResult.Href, null);
-                if (!xrefResolvingResult.Localizable)
+                var linkInline = new LinkInline(xrefLink.Href, null);
+                if (!xrefLink.Localizable)
                 {
                     var attributes = linkInline.GetAttributes();
                     attributes.AddClass("no-loc");
                     linkInline.SetAttributes(attributes);
                 }
-                linkInline.AppendChild(new LiteralInline(xrefResolvingResult.Display));
+                linkInline.AppendChild(new LiteralInline(xrefLink.Display));
                 return linkInline;
             }
             return node;

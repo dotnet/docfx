@@ -88,7 +88,6 @@ internal class XrefResolver
         // text -> xrefSpec.displayProperty -> xrefSpec.name
         var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
 
-        // TODO: if xrefSpec is ExternalXrefSpec without text, then localizable is false.
         var localizable = false;
         if (!string.IsNullOrEmpty(text)
             || (xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable))
@@ -306,6 +305,7 @@ internal class XrefResolver
             var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
+
             return (spec, href);
         }
         return default;
