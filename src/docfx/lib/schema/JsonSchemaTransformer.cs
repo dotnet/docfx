@@ -235,7 +235,8 @@ internal class JsonSchemaTransformer
                 }
 
                 xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                    () => LoadXrefProperty(
+                        schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }

@@ -34,9 +34,9 @@ internal record ExternalXrefSpec : IXrefSpec
     {
         if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
         {
-            return v != null && v.Value is string str ? str : default;
+            return v != null && v.Value is string str ? str : null;
         }
-        return default;
+        return null;
     }
 
     public string? GetName() => GetXrefPropertyValue("name");

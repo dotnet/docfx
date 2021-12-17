@@ -94,7 +94,7 @@ internal class InternalXrefMapBuilder
         var xref = new InternalXrefSpec(metadata.Uid, _documentProvider.GetSiteUrl(file), file, monikers);
 
         xref.IsNameLocalizable = !string.IsNullOrEmpty(metadata.Title);
-        xref.XrefProperties["name"] = new Lazy<JToken>(new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
+        xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
         return xref;
     }
