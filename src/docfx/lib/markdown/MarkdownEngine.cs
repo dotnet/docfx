@@ -364,7 +364,7 @@ internal class MarkdownEngine
         return result;
     }
 
-    private (string? href, string display, bool localizable) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+    private XrefResolvingResult GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
     {
         var status = s_status.Value!.Peek();
 
@@ -378,7 +378,7 @@ internal class MarkdownEngine
         {
             status.Errors.AddIfNotNull(error);
         }
-        return (link, display, localizable);
+        return new(link, display, localizable);
     }
 
     private static FilePath GetFilePath<T>(SourceInfo<T> sourceInfo)

@@ -16,7 +16,7 @@ internal static class HtmlExtension
         this MarkdownPipelineBuilder builder,
         Func<ErrorBuilder> getErrors,
         Func<LinkInfo, string> getLink,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display, bool localizable)> resolveXref,
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefResolvingResult> resolveXref,
         HtmlSanitizer htmlSanitizer,
         DocumentProvider documentProvider)
     {

@@ -15,7 +15,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? SchemaType { get; init; }
 
-    public Dictionary<string, Lazy<LocInfo<JToken>>> XrefProperties { get; } = new Dictionary<string, Lazy<LocInfo<JToken>>>();
+    public Dictionary<string, Lazy<LocInfo<JToken>>> XrefProperties { get; } = new();
 
     string IXrefSpec.Uid => Uid.Value;
 
