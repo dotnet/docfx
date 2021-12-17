@@ -15,26 +15,21 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? SchemaType { get; init; }
 
-    public Dictionary<string, Lazy<LocInfo<JToken>>> XrefProperties { get; } = new();
+    public bool IsNameLocalizable { get; set; }
+
+    public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new();
 
     string IXrefSpec.Uid => Uid.Value;
 
-    public LocInfo<string?> GetXrefPropertyValue(string propertyName)
+    public string? GetXrefPropertyValue(string propertyName)
     {
         return
-          XrefProperties.TryGetValue(propertyName, out var property)
-          && property.Value.Value is JValue propertyValue
-          && propertyValue.Value is string internalStr
-          ? new LocInfo<string?>(internalStr, property.Value.Loc)
-          : new LocInfo<string?>(default, new LocInfo(false));
+          XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr
+          ? internalStr
+          : null;
     }
 
-    public string? GetName() => GetXrefPropertyValue("name").Value;
-
-    public LocInfo<string?> GetXrefPropertyOfName()
-    {
-        return GetXrefPropertyValue("name");
-    }
+    public string? GetName() => GetXrefPropertyValue("name");
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
     {
@@ -48,7 +43,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
         foreach (var (key, value) in XrefProperties)
         {
-            spec.ExtensionData[key] = value.Value.Value;
+            spec.ExtensionData[key] = value.Value;
         }
 
         return spec;

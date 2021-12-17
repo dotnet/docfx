@@ -3,18 +3,29 @@
 
 namespace Microsoft.Docs.Build;
 
-internal readonly struct XrefResolvingResult
+internal readonly struct XrefLink
 {
     public readonly string? Href;
 
     public readonly string Display;
 
+    public readonly FilePath? DeclaringFile;
+
     public readonly bool Localizable;
 
-    public XrefResolvingResult(string? href, string display, bool localizable)
+    public XrefLink()
+    {
+        Href = null;
+        Display = string.Empty;
+        DeclaringFile = null;
+        Localizable = false;
+    }
+
+    public XrefLink(string? href, string display, FilePath? declaringFile, bool localizable)
     {
         Href = href;
         Display = display;
+        DeclaringFile = declaringFile;
         Localizable = localizable;
     }
 }

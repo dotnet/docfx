@@ -12,7 +12,7 @@ internal static class XrefExtension
 {
     public static MarkdownPipelineBuilder UseXref(
         this MarkdownPipelineBuilder builder,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefResolvingResult> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
         return builder.Use(document => document.Replace(node =>
         {

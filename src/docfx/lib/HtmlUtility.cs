@@ -225,7 +225,7 @@ internal static class HtmlUtility
         ref HtmlReader reader,
         ref HtmlToken token,
         MarkdownObject? block,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefResolvingResult> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
         if (!token.NameIs("xref"))
         {

@@ -51,7 +51,7 @@ internal class XrefResolver
         _internalXrefMap = new(BuildInternalXrefMap);
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile, bool localizable) ResolveXrefByHref(
+    public (Error? error, XrefLink xrefLink) ResolveXrefByHref(
         SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
     {
         var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -79,33 +79,21 @@ internal class XrefResolver
         var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
         if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
         {
-            return (xrefError, null, alt ?? "", null, !string.IsNullOrEmpty(alt));
+            return (xrefError, new XrefLink(null, alt ?? "", null, !string.IsNullOrEmpty(alt)));
         }
 
-        var displayPropertyValueWithLocInfo = displayProperty is null ?
-            new LocInfo<string?>(null, new LocInfo(false)) : xrefSpec.GetXrefPropertyValue(displayProperty);
-
-        var nameValueWithLocInfo = !string.IsNullOrEmpty(xrefSpec.GetName()) && xrefSpec is InternalXrefSpec internalXrefSpec ?
-            internalXrefSpec.GetXrefPropertyOfName() :
-            new LocInfo<string?>(null, new LocInfo(false));
+        var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValue(displayProperty);
 
         // fallback order:
         // text -> xrefSpec.displayProperty -> xrefSpec.name
-        var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValueWithLocInfo.Value ?? xrefSpec.GetName() ?? xrefSpec.Uid;
+        var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
 
         // TODO: if xrefSpec is ExternalXrefSpec without text, then localizable is false.
         var localizable = false;
-        if (!string.IsNullOrEmpty(text))
+        if (!string.IsNullOrEmpty(text)
+            || (xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable))
         {
             localizable = true;
-        }
-        else if (!string.IsNullOrEmpty(displayProperty))
-        {
-            localizable = displayPropertyValueWithLocInfo.Loc.Localizable;
-        }
-        else if (!string.IsNullOrEmpty(nameValueWithLocInfo.Value))
-        {
-            localizable = nameValueWithLocInfo.Loc.Localizable;
         }
 
         if (!string.IsNullOrEmpty(moniker))
@@ -118,10 +106,10 @@ internal class XrefResolver
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
         resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-        return (null, resolvedHref, display, xrefSpec.DeclaringFile, localizable);
+        return (null, new XrefLink(resolvedHref, display, xrefSpec.DeclaringFile, localizable));
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile, bool localizable) ResolveXrefByUid(
+    public (Error? error, XrefLink xrefLink) ResolveXrefByUid(
         SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
     {
         if (string.IsNullOrEmpty(uid))
@@ -133,13 +121,12 @@ internal class XrefResolver
         var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
         if (error != null || xrefSpec == null || href == null)
         {
-            return (error, null, "", null, false);
+            return (error, new XrefLink(null, "", null, false));
         }
 
-        var nameValueWithLocInfo = !string.IsNullOrEmpty(xrefSpec.GetName()) && xrefSpec is InternalXrefSpec internalXrefSpec ?
-            internalXrefSpec.GetXrefPropertyOfName() : new LocInfo<string?>(null, new LocInfo(false));
+        var localizable = xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable;
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-        return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, nameValueWithLocInfo.Loc.Localizable);
+        return (null, new XrefLink(href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, localizable));
     }
 
     public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
