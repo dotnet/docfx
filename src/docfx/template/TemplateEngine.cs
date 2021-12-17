@@ -138,7 +138,7 @@ internal class TemplateEngine
 
     public (TemplateModel model, JObject metadata) CreateTemplateModel(FilePath file, string? mime, JObject pageModel)
     {
-        var content = CreateContent(file, mime, ref pageModel);
+        var content = CreateContent(file, mime, pageModel);
 
         if (_config.DryRun)
         {
@@ -182,7 +182,8 @@ internal class TemplateEngine
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains, _locale, addLocale: true);
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
+            HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -196,14 +197,11 @@ internal class TemplateEngine
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }
 
-    private string CreateContent(FilePath file, string? mime, ref JObject pageModel)
+    private string CreateContent(FilePath file, string? mime, JObject pageModel)
     {
         if (JsonSchemaProvider.IsConceptual(mime))
         {
-            var conceptual = JsonUtility.ToObject<ConceptualModel>(ErrorBuilder.Null, pageModel)!;
-            ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "", conceptual);
-            pageModel = _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
-            return conceptual.Conceptual ?? "";
+            return ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "");
         }
         else if (JsonSchemaProvider.IsLandingData(mime))
         {
@@ -217,14 +215,14 @@ internal class TemplateEngine
         return ProcessHtml(_errors, file, content);
     }
 
-    private void ProcessConceptualHtml(string html, ConceptualModel conceptual)
+    private string ProcessConceptualHtml(string html)
     {
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
         });
 
-        conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
+        return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }
 
     private JObject LoadGlobalTokens(ErrorBuilder errors)
