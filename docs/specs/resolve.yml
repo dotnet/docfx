@@ -176,7 +176,7 @@ inputs:
   a.md: Link to [absolute path](/a)
 outputs:
   a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/a\">absolute path</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"/a\">absolute path</a></p>" }
 ---
 # Should not append locale for absolute path starting with api, _themes
 inputs:
@@ -194,7 +194,7 @@ outputs:
         "<p>
             Link to <a href=\"/api/search/rss?search=SDK%20release%20notes\">absolute path</a>
             Link to <a href=\"/API/search/rss?search=SDK%20release%20notes\">absolute path</a>
-            Link to <a href=\"/en-us/api-management/search/rss?search=SDK%20release%20notes\">absolute path</a>
+            Link to <a href=\"/api-management/search/rss?search=SDK%20release%20notes\">absolute path</a>
          </p>
          <iframe src=\"/_themes/docs.theme/master/en-us/_themes/global/video-embed.html\"></iframe>"
     }

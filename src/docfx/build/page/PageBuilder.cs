@@ -347,6 +347,8 @@ internal class PageBuilder
 
     private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
+        var wordCount = 0L;
+
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
@@ -358,6 +360,10 @@ internal class PageBuilder
             if (token.Type == HtmlTokenType.Text)
             {
                 searchText.Append(token.RawText);
+                if (!_config.DryRun)
+                {
+                    wordCount += WordCount.CountWord(token.RawText.Span);
+                }
             }
         });
 
@@ -375,6 +381,7 @@ internal class PageBuilder
         _searchIndexBuilder.SetBody(file, searchText.ToString());
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
+        conceptual.WordCount = wordCount;
     }
 
     private static bool IsCustomized404Page(FilePath file)

@@ -219,23 +219,12 @@ internal class TemplateEngine
 
     private void ProcessConceptualHtml(string html, ConceptualModel conceptual)
     {
-        var wordCount = 0L;
-
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
-
-            if (token.Type == HtmlTokenType.Text)
-            {
-                if (!_config.DryRun)
-                {
-                    wordCount += WordCount.CountWord(token.RawText.Span);
-                }
-            }
         });
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
-        conceptual.WordCount = wordCount;
     }
 
     private JObject LoadGlobalTokens(ErrorBuilder errors)
