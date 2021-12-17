@@ -364,7 +364,7 @@ internal class MarkdownEngine
         return result;
     }
 
-    private (string? href, string display, bool localization) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
+    private (string? href, string display, bool localizable) GetXref(SourceInfo<string>? href, SourceInfo<string>? uid, bool suppressXrefNotFound)
     {
         var status = s_status.Value!.Peek();
 

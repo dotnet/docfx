@@ -15,26 +15,25 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? SchemaType { get; init; }
 
-    public Dictionary<string, Lazy<(JToken token, bool localizable)>> XrefProperties { get; } =
-        new Dictionary<string, Lazy<(JToken token, bool localizable)>>();
+    public Dictionary<string, Lazy<LocInfo<JToken>>> XrefProperties { get; } = new Dictionary<string, Lazy<LocInfo<JToken>>>();
 
     string IXrefSpec.Uid => Uid.Value;
 
-    public (string? propertyValue, bool localizable) GetXrefPropertyValueAsString(string propertyName)
+    public LocInfo<string?> GetXrefPropertyValue(string propertyName)
     {
         return
           XrefProperties.TryGetValue(propertyName, out var property)
-          && property.Value.token is JValue propertyValue
+          && property.Value.Value is JValue propertyValue
           && propertyValue.Value is string internalStr
-          ? (internalStr, property.Value.localizable)
-          : default;
+          ? new LocInfo<string?>(internalStr, property.Value.Loc)
+          : new LocInfo<string?>(default, new LocInfo(false));
     }
 
-    public string? GetName() => GetXrefPropertyValueAsString("name").propertyValue;
+    public string? GetName() => GetXrefPropertyValue("name").Value;
 
-    public (string? name, bool localizable) GetXrefPropertyOfName()
+    public LocInfo<string?> GetXrefPropertyOfName()
     {
-        return GetXrefPropertyValueAsString("name");
+        return GetXrefPropertyValue("name");
     }
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
@@ -49,7 +48,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
         foreach (var (key, value) in XrefProperties)
         {
-            spec.ExtensionData[key] = value.Value.token;
+            spec.ExtensionData[key] = value.Value.Value;
         }
 
         return spec;

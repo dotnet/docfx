@@ -30,16 +30,16 @@ internal record ExternalXrefSpec : IXrefSpec
 
     FilePath? IXrefSpec.DeclaringFile => null;
 
-    public (string? propertyValue, bool localizable) GetXrefPropertyValueAsString(string propertyName)
+    public LocInfo<string?> GetXrefPropertyValue(string propertyName)
     {
         if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))
         {
-            return v != null && v.Value is string str ? (str, false) : default;
+            return v != null && v.Value is string str ? new LocInfo<string?>(str, new LocInfo(false)) : new LocInfo<string?>(default, new LocInfo(false));
         }
-        return default;
+        return new LocInfo<string?>(default, new LocInfo(false));
     }
 
-    public string? GetName() => GetXrefPropertyValueAsString("name").propertyValue;
+    public string? GetName() => GetXrefPropertyValue("name").Value;
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => overwriteHref is null ? this : this with { Href = overwriteHref };
 }

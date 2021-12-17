@@ -4,7 +4,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using HtmlReaderWriter;
 using Microsoft.Docs.Validation;
 using Newtonsoft.Json.Linq;
@@ -231,14 +230,14 @@ internal class JsonSchemaTransformer
 
                 if (!obj.TryGetValue(xrefProperty, out var value))
                 {
-                    xref.XrefProperties[xrefProperty] = new Lazy<(JToken token, bool localizable)>(() => (JValue.CreateNull(), false));
+                    xref.XrefProperties[xrefProperty] = new Lazy<LocInfo<JToken>>(() => new LocInfo<JToken>(JValue.CreateNull(), new LocInfo(false)));
                     continue;
                 }
 
-                xref.XrefProperties[xrefProperty] = new Lazy<(JToken token, bool localizable)>(
-                    () => (
-                        LoadXrefProperty(schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
-                        false),
+                xref.XrefProperties[xrefProperty] = new Lazy<LocInfo<JToken>>(
+                    () => new LocInfo<JToken>(
+                            LoadXrefProperty(schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                            new LocInfo(false)),
                     LazyThreadSafetyMode.PublicationOnly);
             }
         }
