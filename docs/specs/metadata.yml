@@ -345,6 +345,21 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"yaml-header-syntax-error","file":"docs/a.md","line":2,"column":5}
 ---
+# Input metadata doesn't overwrite system generated metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    wordCount: 15
+    document_id: 123
+    ---
+outputs:
+  docs/a.json: |
+    { "wordCount": 0, "document_id": "3862ef10-61c4-6242-7188-36960566ecb6" }
+  .errors.log: |
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute wordCount is reserved for use by Docs.","file":"docs/a.md","line":2,"column":1}
+    {"message_severity":"warning","code":"attribute-reserved","message":"Attribute document_id is reserved for use by Docs.","file":"docs/a.md","line":3,"column":1}
+---
 # Title in file metadata should overwrite H1
 inputs:
   docfx.yml: |
