@@ -5,14 +5,20 @@ using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Docs.Build;
 
-/// <summary>
-/// Provide process utility
-/// </summary>
 internal static class ProcessUtility
 {
+    private static readonly JsonSerializerOptions s_jsonOptions = new()
+    {
+        AllowTrailingCommas = true,
+        Converters = { new JsonStringEnumConverter() },
+        PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(),
+    };
+
     /// <summary>
     /// Start a new process and wait for its execution to complete
     /// </summary>
@@ -73,19 +79,19 @@ internal static class ProcessUtility
 
     /// <summary>
     /// Reads the content of a file.
-    /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
+    /// When used together with <see cref="WriteJsonFile(string,string)"/>, provides inter-process synchronized access to the file.
     /// </summary>
     public static T ReadJsonFile<T>(string path) where T : class, new()
     {
-        var content = "";
+        byte[] bytes;
         using (InterProcessMutex.Create(path))
         {
-            content = File.ReadAllText(path);
+            bytes = File.ReadAllBytes(path);
         }
 
         try
         {
-            return JsonUtility.DeserializeData<T>(content, new FilePath(path));
+            return JsonSerializer.Deserialize<T>(bytes, s_jsonOptions) ?? new();
         }
         catch (Exception ex)
         {
@@ -114,15 +120,14 @@ internal static class ProcessUtility
 
     /// <summary>
     /// Reads the content of a file.
-    /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
+    /// When used together with <see cref="ReadJsonFile{T}(string)"/>, provides inter-process synchronized access to the file.
     /// </summary>
-    public static void WriteFile(string path, string content)
+    public static void WriteJsonFile<T>(string path, T data)
     {
         using (InterProcessMutex.Create(path))
         using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
-        using (var writer = new StreamWriter(fs))
         {
-            writer.Write(content);
+            JsonSerializer.Serialize(fs, data, s_jsonOptions);
         }
     }
 
