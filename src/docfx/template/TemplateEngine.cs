@@ -152,7 +152,8 @@ internal class TemplateEngine
         }
 
         var jsName = $"{mime}.mta.json.js";
-        var templateMetadata = RunJavaScript(jsName, pageModel) as JObject ?? new JObject();
+        var temp = RunJavaScript(jsName, pageModel);
+        var templateMetadata = temp as JObject ?? new JObject();
 
         if (JsonSchemaProvider.IsLandingData(mime))
         {
@@ -173,7 +174,7 @@ internal class TemplateEngine
         return (model, metadata);
     }
 
-    public string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
+    private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
     {
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
@@ -181,7 +182,8 @@ internal class TemplateEngine
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _locale, _config.TrustedDomains);
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
+            HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -197,10 +199,13 @@ internal class TemplateEngine
 
     private string CreateContent(FilePath file, string? mime, JObject pageModel)
     {
-        if (JsonSchemaProvider.IsConceptual(mime) || JsonSchemaProvider.IsLandingData(mime))
+        if (JsonSchemaProvider.IsConceptual(mime))
         {
-            // Conceptual and Landing Data
-            return pageModel.Value<string>("conceptual") ?? "";
+            return ProcessConceptualHtml(pageModel.Value<string>("conceptual") ?? "");
+        }
+        else if (JsonSchemaProvider.IsLandingData(mime))
+        {
+            return ProcessHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "");
         }
 
         // Generate SDP content
@@ -208,6 +213,16 @@ internal class TemplateEngine
         var content = RunMustache(_errors, $"{mime}.html", model);
 
         return ProcessHtml(_errors, file, content);
+    }
+
+    private string ProcessConceptualHtml(string html)
+    {
+        var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+        {
+            HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
+        });
+
+        return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }
 
     private JObject LoadGlobalTokens(ErrorBuilder errors)

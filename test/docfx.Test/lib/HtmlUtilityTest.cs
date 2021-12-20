@@ -13,13 +13,12 @@ public class HtmlUtilityTest
     [InlineData("<a href='a.md' />", "<a href='a.md' data-linktype='relative-path' />")]
     [InlineData("<a href='(https://a)' />", "<a href='(https://a)' data-linktype='relative-path' />")]
     [InlineData("<a href='#aA' />", "<a href='#aA' data-linktype='self-bookmark' />")]
-    [InlineData("<a href='/a' />", "<a href='/zh-cn/a' data-linktype='absolute-path' />")]
-    [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/zh-cn/Alink#fraGMENT' data-linktype='absolute-path' />")]
-    [InlineData("<a href='/Alink?quERY' />", "<a href='/zh-cn/Alink?quERY' data-linktype='absolute-path' />")]
-    [InlineData("<a href='/a#x' />", "<a href='/zh-cn/a#x' data-linktype='absolute-path' />")]
-    [InlineData("<a href='\\a#x' />", "<a href='/zh-cn\\a#x' data-linktype='absolute-path' />")]
-    [InlineData("<a href='/de-de/a' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
-    [InlineData("<a href='/x-y/a' />", "<a href='/zh-cn/x-y/a' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/a' />", "<a href='/a' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/Alink#fraGMENT' />", "<a href='/Alink#fraGMENT' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/Alink?quERY' />", "<a href='/Alink?quERY' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/a#x' />", "<a href='/a#x' data-linktype='absolute-path' />")]
+    [InlineData("<a href='\\a#x' />", "<a href='\\a#x' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/x-y/a' />", "<a href='/x-y/a' data-linktype='absolute-path' />")]
     [InlineData("<a href='http://abc' />", "<a href='http://abc' data-linktype='external' />")]
     [InlineData("<a href='https://abc' />", "<a href='https://abc' data-linktype='external' />")]
     [InlineData("<a href='https://[abc]' />", "<a href='https://[abc]' data-linktype='relative-path' />")]
@@ -28,8 +27,20 @@ public class HtmlUtilityTest
         var actual = HtmlUtility.TransformHtml(
             input,
             (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
-                HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, "zh-cn", new()));
+                HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, new()));
 
+        Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
+    }
+
+    [Theory]
+    [InlineData("<a href='/de-de/a' data-linktype='absolute-path' />", "<a href='/de-de/a' data-linktype='absolute-path' />")]
+    [InlineData("<a href='/a' data-linktype='absolute-path' />", "<a href='/zh-cn/a' data-linktype='absolute-path' />")]
+    public void HtmlAddMissingLocale(string input, string output)
+    {
+        var actual = HtmlUtility.TransformHtml(
+            input,
+            (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
+                HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, "zh-cn"));
         Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
     }
 

@@ -336,7 +336,7 @@ internal class PageBuilder
 
             pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = _templateEngine.ProcessHtml(errors, file, razorHtml),
+                Conceptual = razorHtml,
                 ExtensionData = pageModel,
             });
         }
@@ -347,13 +347,14 @@ internal class PageBuilder
     private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
         var wordCount = 0L;
+
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
             if (token.Type == HtmlTokenType.Text)
             {
