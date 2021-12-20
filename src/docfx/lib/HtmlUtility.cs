@@ -225,7 +225,7 @@ internal static class HtmlUtility
         ref HtmlReader reader,
         ref HtmlToken token,
         MarkdownObject? block,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
         if (!token.NameIs("xref"))
         {
@@ -272,20 +272,21 @@ internal static class HtmlUtility
 
         suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
-        var (resolvedHref, display) = resolveXref(
+        var xrefLink = resolveXref(
             href == null ? null : new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
             uid == null ? null : new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
             suppressXrefNotFound);
 
-        var resolvedNode = string.IsNullOrEmpty(resolvedHref)
+        var resolvedNode = string.IsNullOrEmpty(xrefLink.Href)
             ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
-            : StringUtility.Html($"<a href='{resolvedHref}'>{display}</a>");
+            : StringUtility.Html($"<a href='{xrefLink.Href}'>{xrefLink.Display}</a>");
 
         token = new HtmlToken(resolvedNode);
 
         string GetDefaultResolvedNode()
         {
-            var content = !string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
+            var content = !string.IsNullOrEmpty(xrefLink.Display) ?
+                xrefLink.Display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
             return StringUtility.Html($"<span class=\"xref\">{content}</span>");
         }
     }

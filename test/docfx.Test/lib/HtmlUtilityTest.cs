@@ -113,7 +113,7 @@ public class HtmlUtilityTest
         var actual = HtmlUtility.TransformHtml(
             input,
             (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) => HtmlUtility.TransformXref(
-                ref reader, ref token, null, (href, uid, suppressXrefNotFound) => (xref, display)));
+                ref reader, ref token, null, (href, uid, suppressXrefNotFound) => new XrefLink(xref, display, null, false)));
 
         Assert.Equal(output, actual);
     }
