@@ -994,7 +994,7 @@ exports.getOptions = function (){
                 StatusCode = HttpStatusCode.OK,
                 Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
             });
-            // this method only used for unit test.
+
             var httpClient = new HttpClient(fakeResponseHandler);  // lgtm[cs/httpclient-checkcertrevlist-disabled]
             var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1"), 1).ResolveAsync("xx");
             Assert.Null(result);
