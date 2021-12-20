@@ -207,13 +207,12 @@ internal class JsonSchemaTransformer
         string? propertyPath)
     {
         schemaMap.TryGetSchema(obj, out var schema);
-        var href = GetXrefHref(file, uid, uidCount, obj.Parent == null);
+        var href = GetXrefHref(file, uid, uidCount, string.IsNullOrEmpty(propertyPath));
         var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
         var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
 
         var xref = new InternalXrefSpec(uid, href, file, monikers)
         {
-            DeclaringPropertyPath = obj.Parent?.Path,
             PropertyPath = JsonUtility.AddToPropertyPath(propertyPath, "uid"),
             UidGlobalUnique = uidSchema.UidGlobalUnique,
             SchemaType = schemaType,

@@ -295,7 +295,7 @@ internal static class HtmlUtility
     {
         var result = new StringBuilder();
 
-        foreach (var (key, value) in metadata)
+        foreach (var (key, value) in ((IEnumerable<KeyValuePair<string, JToken>>)metadata).OrderBy(p => p.Key))
         {
             if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
             {
@@ -391,7 +391,10 @@ internal static class HtmlUtility
     }
 
     internal static void AddLinkType(
-        ErrorBuilder errors, FilePath file, ref HtmlToken token, string locale, Dictionary<string, TrustedDomains> trustedDomains)
+        ErrorBuilder errors,
+        FilePath file,
+        ref HtmlToken token,
+        Dictionary<string, TrustedDomains> trustedDomains)
     {
         foreach (ref readonly var attribute in token.Attributes.Span)
         {
@@ -406,7 +409,6 @@ internal static class HtmlUtility
                         break;
                     case LinkType.AbsolutePath:
                         token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                         break;
                     case LinkType.RelativePath:
                         token.SetAttributeValue("data-linktype", "relative-path");
@@ -431,6 +433,22 @@ internal static class HtmlUtility
                             token.SetAttributeValue("data-linktype", "external");
                         }
                         break;
+                }
+            }
+        }
+    }
+
+    internal static void AddLocaleIfMissingForAbsolutePath(ref HtmlToken token, string locale)
+    {
+        foreach (ref readonly var attribute in token.Attributes.Span)
+        {
+            if (attribute.Value.Length > 0 && IsLink(ref token, attribute, out _, out _))
+            {
+                var href = attribute.Value.ToString();
+
+                if (UrlUtility.GetLinkType(href) == LinkType.AbsolutePath)
+                {
+                    token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                 }
             }
         }
