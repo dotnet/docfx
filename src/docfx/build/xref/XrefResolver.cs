@@ -89,8 +89,7 @@ internal class XrefResolver
         var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
 
         var localizable = false;
-        if (!string.IsNullOrEmpty(text)
-            || (xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable))
+        if (!string.IsNullOrEmpty(text) || IsNameLocalizable(xrefSpec))
         {
             localizable = true;
         }
@@ -123,7 +122,7 @@ internal class XrefResolver
             return (error, new XrefLink(null, "", null, false));
         }
 
-        var localizable = xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable;
+        var localizable = IsNameLocalizable(xrefSpec);
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
         return (null, new XrefLink(href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, localizable));
     }
@@ -207,6 +206,9 @@ internal class XrefResolver
         ValidateExternalXref(result);
         return result;
     }
+
+    private static bool IsNameLocalizable(IXrefSpec xrefSpec)
+        => xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable;
 
     private void ValidateUidGlobalUnique(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap)
     {
