@@ -18,56 +18,75 @@ internal static class Telemetry
     // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
     private const int MaxEventPropertyLength = 8192;
     private const int MaxChildrenLength = 5;
-    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule;
-    private static readonly TelemetryClient s_telemetryClient;
 
-    static Telemetry()
-    {
-        var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-        s_dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
-        s_dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
-        s_telemetryClient = new TelemetryClient(telemetryConfiguration);
-    }
+    private static TelemetryClient TelemetryClient { get; }
 
     // Set value per dimension limit to int.MaxValue
     // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
     private static readonly MetricConfiguration s_metricConfiguration = new(int.MaxValue, int.MaxValue, new MetricSeriesConfigurationForMeasurement(false));
 
-    private static readonly Metric s_operationStartMetric =
-        s_telemetryClient.GetMetric(
+    private static Metric OperationStartMetric { get; }
+
+    private static Metric OperationEndMetric { get; }
+
+    private static Metric ErrorCountMetric { get; }
+
+    private static Metric FileLogCountMetric { get; }
+
+    private static Metric BuildFileTypeCountMetric { get; }
+
+    private static Metric GithubRateLimitMetric { get; }
+
+    private static Metric MarkdownElementCountMetric { get; }
+
+    private static Metric HtmlElementCountMetric { get; }
+
+    private static readonly string s_version =
+        typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
+
+    private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
+    private static readonly string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
+    private static readonly string s_sessionId = EnvironmentVariable.SessionId ?? "<null>";
+    private static readonly AsyncLocal<bool> s_isRealTimeBuild = new();
+
+    private static string s_repo = "<null>";
+    private static string s_branch = "<null>";
+
+    static Telemetry()
+    {
+        using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        using var dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
+        dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
+        TelemetryClient = new TelemetryClient(telemetryConfiguration);
+
+        OperationStartMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(null, "OperationStart", "Name", "OS", "Version", "Repo", "Branch", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_operationEndMetric =
-        s_telemetryClient.GetMetric(
+        OperationEndMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(null, "OperationEnd", "Name", "OS", "Version", "Repo", "Branch", "TimeBucket", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_errorCountMetric =
-        s_telemetryClient.GetMetric(
+        ErrorCountMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(
                 null, "BuildLog", "Code", "Level", "Name", "AdditionalErrorInfo", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_fileLogCountMetric =
-        s_telemetryClient.GetMetric(
+        FileLogCountMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(
                 null, "BuildFileLogCount", "Level", "File", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_buildFileTypeCountMetric =
-        s_telemetryClient.GetMetric(
+        BuildFileTypeCountMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(
                 null, "BuildFileType", "FileExtension", "DocumentType", "MimeType", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_githubRateLimitMetric =
-        s_telemetryClient.GetMetric(
+        GithubRateLimitMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(null, "GitHubRateLimit", "Remaining", "OS", "Version", "Repo", "Branch", "CorrelationId", "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_markdownElementCountMetric =
-        s_telemetryClient.GetMetric(
+        MarkdownElementCountMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(
                 null,
                 "MarkdownElement",
@@ -83,8 +102,7 @@ internal static class Telemetry
                 "SessionId"),
             s_metricConfiguration);
 
-    private static readonly Metric s_htmlElementCountMetric =
-        s_telemetryClient.GetMetric(
+        HtmlElementCountMetric = TelemetryClient.GetMetric(
             new MetricIdentifier(
                 null,
                 "HtmlElement",
@@ -97,17 +115,7 @@ internal static class Telemetry
                 "Branch",
                 "CorrelationId"),
             s_metricConfiguration);
-
-    private static readonly string s_version =
-        typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
-
-    private static readonly string s_os = RuntimeInformation.OSDescription ?? "<null>";
-    private static readonly string s_correlationId = EnvironmentVariable.CorrelationId ?? Guid.NewGuid().ToString("N");
-    private static readonly string s_sessionId = EnvironmentVariable.SessionId ?? "<null>";
-    private static readonly AsyncLocal<bool> s_isRealTimeBuild = new();
-
-    private static string s_repo = "<null>";
-    private static string s_branch = "<null>";
+    }
 
     public static void SetRepository(string? repo, string? branch)
     {
@@ -148,14 +156,14 @@ internal static class Telemetry
     {
         var stopwatch = Stopwatch.StartNew();
         TrackValueWithEnsurance(
-                s_operationStartMetric.Identifier.MetricId,
-                s_operationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId));
+                OperationStartMetric.Identifier.MetricId,
+                OperationStartMetric.TrackValue(1, name, s_os, s_version, s_repo, s_branch, s_sessionId));
         return new DelegatingCompletable(() =>
         {
             Log.Important($"{name} done in {Progress.FormatTimeSpan(stopwatch.Elapsed)}", ConsoleColor.Green);
             TrackValueWithEnsurance(
-                s_operationEndMetric.Identifier.MetricId,
-                s_operationEndMetric.TrackValue(
+                OperationEndMetric.Identifier.MetricId,
+                OperationEndMetric.TrackValue(
                 stopwatch.ElapsedMilliseconds, name, s_os, s_version, s_repo, s_branch, GetTimeBucket(stopwatch.Elapsed), s_sessionId));
         });
     }
@@ -169,8 +177,8 @@ internal static class Telemetry
         if (!s_isRealTimeBuild.Value)
         {
             TrackValueWithEnsurance(
-                s_errorCountMetric.Identifier.MetricId,
-                s_errorCountMetric.TrackValue(
+                ErrorCountMetric.Identifier.MetricId,
+                ErrorCountMetric.TrackValue(
                     1,
                     code,
                     level.ToString(),
@@ -190,8 +198,8 @@ internal static class Telemetry
         if (!s_isRealTimeBuild.Value && filePath != null)
         {
             TrackValueWithEnsurance(
-                s_fileLogCountMetric.Identifier.MetricId,
-                s_fileLogCountMetric.TrackValue(
+                FileLogCountMetric.Identifier.MetricId,
+                FileLogCountMetric.TrackValue(
                 1, level.ToString(), CoalesceEmpty(filePath.ToString()), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
         }
     }
@@ -201,8 +209,8 @@ internal static class Telemetry
         if (!s_isRealTimeBuild.Value)
         {
             TrackValueWithEnsurance(
-                s_githubRateLimitMetric.Identifier.MetricId,
-                s_githubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
+                GithubRateLimitMetric.Identifier.MetricId,
+                GithubRateLimitMetric.TrackValue(1, CoalesceEmpty(remaining), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
         }
     }
 
@@ -213,8 +221,8 @@ internal static class Telemetry
             var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
 
             TrackValueWithEnsurance(
-                s_buildFileTypeCountMetric.Identifier.MetricId,
-                s_buildFileTypeCountMetric.TrackValue(
+                BuildFileTypeCountMetric.Identifier.MetricId,
+                BuildFileTypeCountMetric.TrackValue(
                     1, fileExtension, contentType.ToString(), CoalesceEmpty(mime), s_os, s_version, s_repo, s_branch, s_correlationId, s_sessionId));
         }
     }
@@ -230,8 +238,8 @@ internal static class Telemetry
             foreach (var (elementType, value) in elementCount)
             {
                 TrackValueWithEnsurance(
-                    s_markdownElementCountMetric.Identifier.MetricId,
-                    s_markdownElementCountMetric.TrackValue(
+                    MarkdownElementCountMetric.Identifier.MetricId,
+                    MarkdownElementCountMetric.TrackValue(
                         value,
                         CoalesceEmpty(elementType),
                         fileExtension,
@@ -266,8 +274,8 @@ internal static class Telemetry
                 {
                     var elementType = string.IsNullOrEmpty(attributeName) ? tokenName : $"{tokenName}_{attributeName}";
                     TrackValueWithEnsurance(
-                    s_htmlElementCountMetric.Identifier.MetricId,
-                    s_htmlElementCountMetric.TrackValue(
+                    HtmlElementCountMetric.Identifier.MetricId,
+                    HtmlElementCountMetric.TrackValue(
                     count,
                     CoalesceEmpty(elementType),
                     isAllowed(tokenName, attributeName).ToString(),
@@ -284,13 +292,13 @@ internal static class Telemetry
 
     public static void TrackException(Exception ex)
     {
-        s_telemetryClient.TrackException(ex);
+        TelemetryClient.TrackException(ex);
     }
 
     public static void Flush()
     {
         // TelemetryClient.Flush may meet deadlocks: https://github.com/microsoft/ApplicationInsights-dotnet/issues/1186
-        Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
+        Task.WaitAny(Task.Run(TelemetryClient.Flush), Task.Delay(10000));
     }
 
     private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
@@ -320,7 +328,7 @@ internal static class Telemetry
         eventTelemetry.Properties["CorrelationId"] = s_correlationId;
         eventTelemetry.Properties["SessionId"] = s_sessionId;
 
-        s_telemetryClient.TrackEvent(eventTelemetry);
+        TelemetryClient.TrackEvent(eventTelemetry);
     }
 
     private static string CoalesceEmpty(string? str)
