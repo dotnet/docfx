@@ -13,14 +13,6 @@ internal readonly struct XrefLink
 
     public readonly bool Localizable;
 
-    public XrefLink()
-    {
-        Href = null;
-        Display = string.Empty;
-        DeclaringFile = null;
-        Localizable = false;
-    }
-
     public XrefLink(string? href, string display, FilePath? declaringFile, bool localizable)
     {
         Href = href;
