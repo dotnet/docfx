@@ -5,7 +5,7 @@ inputs:
   docs/a.md: Link to <xref:a>
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to &lt;xref:a&gt;</p>" }
+    { "conceptual": "<p>Link to <span class=\"no-loc\">&lt;xref:a&gt;</span></p>" }
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/a.md","line":1,"column":9}
 ---
@@ -15,7 +15,7 @@ inputs:
   docs/a.md: Link to @a
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to @a</p>" }
+    { "conceptual": "<p>Link to <span class=\"no-loc\">@a</span></p>" }
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one

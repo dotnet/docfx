@@ -27,7 +27,12 @@ internal static class XrefExtension
 
                 if (xrefLink.Href is null)
                 {
-                    return new LiteralInline(raw);
+                    var container = new NoLocXrefContainer(new LiteralInline(raw));
+                    var attributes = container.GetAttributes();
+                    attributes.AddClass("no-loc");
+                    container.SetAttributes(attributes);
+
+                    return container;
                 }
 
                 var linkInline = new LinkInline(xrefLink.Href, null);
