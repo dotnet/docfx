@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 using Newtonsoft.Json.Linq;
@@ -17,7 +18,16 @@ internal static class Telemetry
     // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
     private const int MaxEventPropertyLength = 8192;
     private const int MaxChildrenLength = 5;
-    private static readonly TelemetryClient s_telemetryClient = new(TelemetryConfiguration.CreateDefault());
+    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule;
+    private static readonly TelemetryClient s_telemetryClient;
+
+    static Telemetry()
+    {
+        var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        s_dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
+        s_dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
+        s_telemetryClient = new TelemetryClient(telemetryConfiguration);
+    }
 
     // Set value per dimension limit to int.MaxValue
     // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
