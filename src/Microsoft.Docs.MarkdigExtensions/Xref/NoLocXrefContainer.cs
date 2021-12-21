@@ -7,7 +7,7 @@ namespace Microsoft.Docs.MarkdigExtensions;
 
 public class NoLocXrefContainer : ContainerInline
 {
-    private LiteralInline _liternalInline;
+    private readonly LiteralInline _liternalInline;
 
     public NoLocXrefContainer(LiteralInline liternalInline)
     {
