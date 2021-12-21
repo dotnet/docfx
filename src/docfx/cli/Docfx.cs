@@ -39,7 +39,6 @@ public static class Docfx
             try
             {
                 Telemetry.Flush();
-                Telemetry.Dispose();
             }
             catch (Exception ex)
             {

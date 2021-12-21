@@ -301,12 +301,6 @@ internal static class Telemetry
         Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
     }
 
-    public static void Dispose()
-    {
-        s_telemetryConfiguration.Dispose();
-        s_dependencyTrackingTelemetryModule.Dispose();
-    }
-
     private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
     {
         if (!trackValueResult)
