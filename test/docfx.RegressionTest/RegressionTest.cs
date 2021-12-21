@@ -350,7 +350,7 @@ internal static class RegressionTest
         }
     }
 
-    private static (TimeSpan time, long peakMemory) Exec(
+    private static async (TimeSpan time, long peakMemory) Exec(
         string fileName,
         string arguments = "",
         string? stdin = null,
@@ -400,6 +400,7 @@ internal static class RegressionTest
             process.StandardInput.Close();
         }
 
+        var memoryWatcher = WatchPeakMemoryUsage(process);
         var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
         process.WaitForExit();
 
@@ -411,7 +412,18 @@ internal static class RegressionTest
 
         stopwatch.Stop();
         Console.WriteLine($"'{fileName} {sanitizedArguments}' done in '{stopwatch.Elapsed}'");
-        return (stopwatch.Elapsed, process.PeakWorkingSet64);
+        return (stopwatch.Elapsed, memoryWatcher.Result);
+
+        static async Task<long> WatchPeakMemoryUsage(Process process)
+        {
+            var peakWorkingSet = 0L;
+            var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            while (await timer.WaitForNextTickAsync() && !process.HasExited)
+            {
+                peakWorkingSet = Math.Max(peakWorkingSet, process.PeakWorkingSet64);
+            }
+            return peakWorkingSet;
+        }
     }
 
     private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
