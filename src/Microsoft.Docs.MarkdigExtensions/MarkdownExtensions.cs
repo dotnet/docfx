@@ -117,7 +117,6 @@ public static class MarkdownExtensions
     public static MarkdownPipelineBuilder UseXref(this MarkdownPipelineBuilder pipeline)
     {
         pipeline.Extensions.AddIfNotAlready(new XrefInlineExtension());
-        pipeline.Extensions.AddIfNotAlready(new NoLocXrefContainerExtension());
         return pipeline;
     }
 
