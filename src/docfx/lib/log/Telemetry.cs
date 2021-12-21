@@ -19,22 +19,16 @@ internal static class Telemetry
     // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
     private const int MaxEventPropertyLength = 8192;
     private const int MaxChildrenLength = 5;
-    private static readonly TelemetryConfiguration s_telemetryConfiguration = GetConfiguration();
-    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule = GetDependencyTrackingTelemetryModule();
+    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule = new();
+    private static readonly TelemetryConfiguration s_telemetryConfiguration = GetTelemetryConfiguration();
     private static readonly TelemetryClient s_telemetryClient = new(s_telemetryConfiguration);
 
-    private static TelemetryConfiguration GetConfiguration()
+    private static TelemetryConfiguration GetTelemetryConfiguration()
     {
         var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
         telemetryConfiguration.TelemetryInitializers.Add(new DependencyTelemetryInitializer());
+        s_dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
         return telemetryConfiguration;
-    }
-
-    private static DependencyTrackingTelemetryModule GetDependencyTrackingTelemetryModule()
-    {
-        var dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
-        dependencyTrackingTelemetryModule.Initialize(s_telemetryConfiguration);
-        return dependencyTrackingTelemetryModule;
     }
 
     // Set value per dimension limit to int.MaxValue
