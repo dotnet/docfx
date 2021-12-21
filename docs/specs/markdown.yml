@@ -266,8 +266,8 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>body</p>",
-      "title": "This is a title using @b & <",
-      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using @b &amp; <code>&lt;</code></h1>",
+      "title": "This is a title using <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@b</span> & <",
+      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@b</span> &amp; <code>&lt;</code></h1>",
       "metaKey": "metaValue"
     }
 ---

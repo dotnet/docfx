@@ -27,7 +27,7 @@ internal static class XrefExtension
 
                 if (xrefLink.Href is null)
                 {
-                    return new LiteralInline(raw);
+                    return new NolocInline() { Text = raw };
                 }
 
                 var linkInline = new LinkInline(xrefLink.Href, null);

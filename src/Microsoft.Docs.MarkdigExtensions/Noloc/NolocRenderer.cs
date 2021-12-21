@@ -10,6 +10,6 @@ public class NolocRenderer : HtmlObjectRenderer<NolocInline>
 {
     protected override void Write(HtmlRenderer renderer, NolocInline obj)
     {
-        renderer.Write($"<span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">{obj.Text}</span>");
+        renderer.Write($"<span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">{ExtensionsHelper.Escape(obj.Text)}</span>");
     }
 }
