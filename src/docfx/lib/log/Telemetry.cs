@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -55,6 +56,7 @@ internal static class Telemetry
     static Telemetry()
     {
         using var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        telemetryConfiguration.TelemetryInitializers.Add(new DependencyTelemetryInitializer());
         using var dependencyTrackingTelemetryModule = new DependencyTrackingTelemetryModule();
         dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
         TelemetryClient = new TelemetryClient(telemetryConfiguration);
@@ -364,4 +366,15 @@ internal static class Telemetry
             < 20 => "middle",
             _ => "large",
         };
+
+    private class DependencyTelemetryInitializer : ITelemetryInitializer
+    {
+        public void Initialize(ITelemetry telemetry)
+        {
+            if (telemetry is DependencyTelemetry dependencyTelemetry && dependencyTelemetry != null)
+            {
+                dependencyTelemetry.Data = UrlUtility.SanitizeUrl(dependencyTelemetry.Data);
+            }
+        }
+    }
 }
