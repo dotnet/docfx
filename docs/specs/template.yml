@@ -448,8 +448,8 @@ outputs:
       "content": "
         <p>
             <a href=\"self-uid\" data-linktype=\"relative-path\"> root name </a>
-            <a href=\"self-uid#child_1\" data-linktype=\"relative-path\"> child-1 name </a>
-            <a href=\"self-uid#child_2\" data-linktype=\"relative-path\"> child-2 name </a>
+            <a href=\"self-uid#child-1\" data-linktype=\"relative-path\"> child-1 name </a>
+            <a href=\"self-uid#child-2\" data-linktype=\"relative-path\"> child-2 name </a>
         </p>"
     }
 ---

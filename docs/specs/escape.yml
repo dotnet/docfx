@@ -162,11 +162,11 @@ outputs:
           <p>
             Link to <a href='a.json'>text</a>
             Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>&lt;some text &amp;&gt;\n</a>
             Link to @a&amp;c
             Link to &lt;xref:a%26&gt;
-            Link to <a href='a.json'>test\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>test\n</a>
           </p>"
     }
   .errors.log: |

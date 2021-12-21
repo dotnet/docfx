@@ -232,7 +232,7 @@ parameters:
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
-      params: https://github.com/MicrosoftDocs/test --branch master --timeout 30 --no-dry-sync
+      params: https://github.com/MicrosoftDocs/test --branch main --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
     windows-compatibility:

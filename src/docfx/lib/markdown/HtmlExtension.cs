@@ -16,13 +16,16 @@ internal static class HtmlExtension
         this MarkdownPipelineBuilder builder,
         Func<ErrorBuilder> getErrors,
         Func<LinkInfo, string> getLink,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
-        HtmlSanitizer htmlSanitizer)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref,
+        HtmlSanitizer htmlSanitizer,
+        DocumentProvider documentProvider)
     {
         return builder.Use(document =>
         {
             var errors = getErrors();
             var file = ((SourceInfo)InclusionContext.File).File;
+            var rootFile = ((SourceInfo)InclusionContext.RootFile).File;
+            var elementCount = new Dictionary<string, Dictionary<string, int>>();
 
             document.Visit(node =>
             {
@@ -31,19 +34,32 @@ internal static class HtmlExtension
                     case TabTitleBlock:
                         return true;
                     case HtmlBlock block:
-                        block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors));
+                        block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors, elementCount));
                         return false;
                     case HtmlInline inline:
-                        inline.Tag = ProcessHtml(inline.Tag, inline, errors);
+                        inline.Tag = ProcessHtml(inline.Tag, inline, errors, elementCount);
                         return false;
                     default:
                         return false;
                 }
             });
+
+            Telemetry.TrackHtmlElement(
+                file,
+                documentProvider.GetContentType(rootFile),
+                documentProvider.GetMime(rootFile),
+                elementCount,
+                (tagName, attributeName) => htmlSanitizer.IsAllowedHtml(tagName, attributeName));
         });
 
-        string ProcessHtml(string html, MarkdownObject block, ErrorBuilder errors)
+        string ProcessHtml(
+            string html,
+            MarkdownObject block,
+            ErrorBuilder errors,
+            Dictionary<string, Dictionary<string, int>> elementCount)
         {
+            HtmlUtility.CollectHtmlUsage(html, elementCount);
+
             // <a>b</a> generates 3 inline markdown tokens: <a>, b, </a>.
             // `HtmlNode.OuterHtml` turns <a> into <a></a>, and generates <a></a>b</a> for the above input.
             // The following code ensures we preserve the original html when changing links.
