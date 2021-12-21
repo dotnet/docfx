@@ -350,7 +350,7 @@ internal static class RegressionTest
         }
     }
 
-    private static async (TimeSpan time, long peakMemory) Exec(
+    private static (TimeSpan time, long peakMemory) Exec(
         string fileName,
         string arguments = "",
         string? stdin = null,
