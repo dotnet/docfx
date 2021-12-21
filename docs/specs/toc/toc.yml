@@ -1435,3 +1435,16 @@ outputs:
   a.mta.json:
   toc.json: |
     {"items":[{"name":"a","href":"a"}],"_path":"toc.json","schema":"toc","outputType":"pagejson"}
+---
+# unexist xref in toc
+# make sure no-loc attribute won't be added to toc (plain text content)
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b
+outputs: 
+  docs/toc.json: |
+    {"items":[{"uid":"b"}],"metadata":{},"schema":"toc"}
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md"}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}

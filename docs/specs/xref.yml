@@ -976,15 +976,15 @@ outputs:
       "conceptual" : "
         <p>str <a href='c'>Title from yaml header c</a>
         str <span class=\"xref\">altText</span>
-        str <span class=\"xref\">d</span>
-        str @mention
+        str <span class=\"no-loc xref\">d</span>
+        str <span class=\"no-loc\">@mention</span>
         some text
-        str @higher
-        multiple xref @mention-e some text @mention-f</p>
+        str <span class=\"no-loc\">@higher</span>
+        multiple xref <span class=\"no-loc\">@mention-e</span> some text <span class=\"no-loc\">@mention-f</span></p>
         <p>
-          @mention-e
+          <span class=\"no-loc\">@mention-e</span>
           some text
-          mention-f
+          <span class=\"no-loc\">mention-f</span>
         </p>"
     }
   docs/c.json:
@@ -1004,7 +1004,7 @@ inputs:
     </table>
 outputs:
   docs/a.json: |
-    { "conceptual": "<table><tr>A=@Me</tr><tr>A</tr></table>"}
+    { "conceptual": "<table><tr>A=<span class=\"no-loc\">@Me</span></tr><tr>A</tr></table>"}
 ---
 # Support data-throw-if-not-resolved attribute user written <xref> (not in mustache)
 inputs:
@@ -1014,7 +1014,7 @@ inputs:
     2. <xref href="xref-suppress" data-throw-if-not-resolved="False" data-raw-source="xref-suppress"></xref>
 outputs:
   a.json: |
-    { "conceptual": "<ol><li>xref-error</li> <li>xref-suppress</li></ol>"}
+    { "conceptual": "<ol><li><span class=\"no-loc\">xref-error</span></li> <li><span class=\"no-loc\">xref-suppress</span></li></ol>"}
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'xref-error'.","file":"a.md","line":1,"column":4}
 
@@ -1040,12 +1040,12 @@ outputs:
     {
       "conceptual" : "
         <p>str <a href='b'>b title</a>
-        query unsupported <span class='xref'>b?displayProperty=a</span>
-        bookmark unsupported <span class='xref'>b#bookmark</span>
-        use raw name 'html' no warning  @higher
-        use raw name 'source' no warning  @mention
+        query unsupported <span class='no-loc xref'>b?displayProperty=a</span>
+        bookmark unsupported <span class='no-loc xref'>b#bookmark</span>
+        use raw name 'html' no warning  <span class=\"no-loc\">@higher</span>
+        use raw name 'source' no warning  <span class=\"no-loc\">@mention</span>
         href higher priority <a href='b'>b title</a>
-        href higher priority even unexist <span class='xref'>unexist</span>
+        href higher priority even unexist <span class='no-loc xref'>unexist</span>
         "
     }
   docs/b.json:
@@ -1061,7 +1061,7 @@ inputs:
     <xref data-raw-source="@Me"></xref>
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>@Me</p>"}
+    { "conceptual": "<p><span class=\"no-loc\">@Me</span></p>"}
 ---
 # support multiple uids with different xref properties
 repos:
