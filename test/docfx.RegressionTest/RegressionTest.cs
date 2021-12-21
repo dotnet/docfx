@@ -258,7 +258,7 @@ internal static class RegressionTest
             ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
             : null;
 
-        testResult.BuildTime = Exec(
+        (testResult.BuildTime, testResult.PeakMemory) = Exec(
             Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
             arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
             stdin: docfxConfig,
@@ -350,7 +350,7 @@ internal static class RegressionTest
         }
     }
 
-    private static TimeSpan Exec(
+    private static (TimeSpan time, long peakMemory) Exec(
         string fileName,
         string arguments = "",
         string? stdin = null,
@@ -411,7 +411,7 @@ internal static class RegressionTest
 
         stopwatch.Stop();
         Console.WriteLine($"'{fileName} {sanitizedArguments}' done in '{stopwatch.Elapsed}'");
-        return stopwatch.Elapsed;
+        return (stopwatch.Elapsed, process.PeakWorkingSet64);
     }
 
     private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
@@ -478,6 +478,7 @@ internal static class RegressionTest
             body.Append($", {testResult.MoreLines} more diff");
         }
 
+        body.Append($", {testResult.PeakMemory / 1000 / 1000}MB");
         body.Append(")</summary>\n\n");
 
         if (!string.IsNullOrEmpty(testResult.CrashMessage))
@@ -517,7 +518,7 @@ internal static class RegressionTest
         response.EnsureSuccessStatusCode();
     }
 
-    private static TimeSpan Retry(Func<TimeSpan> action, int retryCount = 5)
+    private static T Retry<T>(Func<T> action, int retryCount = 5)
         => Policy
         .Handle<Exception>()
         .WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
