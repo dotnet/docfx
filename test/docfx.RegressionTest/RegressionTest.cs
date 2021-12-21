@@ -266,6 +266,8 @@ internal static class RegressionTest
             allowExitCodes: new[] { 0, 1 },
             env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
 
+        Console.WriteLine($"docfx peak memory usage: {testResult.PeakMemory / 1000 / 1000}MB");
+
         if (profiler != null)
         {
             profiler.WaitForExit();
