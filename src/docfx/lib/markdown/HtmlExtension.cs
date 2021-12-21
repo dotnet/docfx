@@ -13,12 +13,12 @@ namespace Microsoft.Docs.Build;
 internal static class HtmlExtension
 {
     public static MarkdownPipelineBuilder UseHtml(
-            this MarkdownPipelineBuilder builder,
-            Func<ErrorBuilder> getErrors,
-            Func<LinkInfo, string> getLink,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref,
-            HtmlSanitizer htmlSanitizer,
-            DocumentProvider documentProvider)
+        this MarkdownPipelineBuilder builder,
+        Func<ErrorBuilder> getErrors,
+        Func<LinkInfo, string> getLink,
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref,
+        HtmlSanitizer htmlSanitizer,
+        DocumentProvider documentProvider)
     {
         return builder.Use(document =>
         {

@@ -19,7 +19,7 @@ public class NolocTest
         // Escape syntax
         TestUtility.VerifyMarkup(
             "使用 :::no-loc text=\"Find a \\\"Quotation\\\"\"::: 方法.",
-            "<p>使用 <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">Find a \"Quotation\"</span> 方法.</p>\n");
+            "<p>使用 <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">Find a &quot;Quotation&quot;</span> 方法.</p>\n");
 
         // Markdown in noloc
         TestUtility.VerifyMarkup(
