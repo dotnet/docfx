@@ -78,6 +78,33 @@ public static class WatcherTest
     }
 
     [Fact]
+    public static void Watch_Disable_Stops_Dependency_Change_On_Activity()
+    {
+        using (Watcher.Disable())
+        {
+            var counter = 0;
+            var watch = new Watch<int>(() => GetCounter());
+
+            int GetCounter() => Watcher.Read(() => ++counter);
+
+            Assert.Equal(1, watch.Value);
+            Assert.Equal(1, watch.Value);
+
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(1, watch.Value);
+                Assert.Equal(1, watch.Value);
+            }
+
+            using (Watcher.BeginScope())
+            {
+                Assert.Equal(1, watch.Value);
+                Assert.Equal(1, watch.Value);
+            }
+        }
+    }
+
+    [Fact]
     public static void Watch_Value_Nested_Watch()
     {
         var counter = 0;

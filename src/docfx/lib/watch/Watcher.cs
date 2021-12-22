@@ -10,9 +10,17 @@ public static class Watcher
     private static readonly object s_defaultScope = new();
     private static readonly AsyncLocal<ImmutableStack<IFunction>> s_callstack = new();
     private static readonly AsyncLocal<IDisposable?> s_scope = new();
+    private static readonly AsyncLocal<bool> s_disabled = new();
+
+    public static bool IsDisabled => s_disabled.Value;
 
     public static T Read<T>(Func<T> valueFactory)
     {
+        if (IsDisabled)
+        {
+            return valueFactory();
+        }
+
         var function = new ReadFunction<T>(valueFactory);
         BeginFunctionScope(function);
 
@@ -31,6 +39,11 @@ public static class Watcher
 
     public static T Read<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
     {
+        if (IsDisabled)
+        {
+            return valueFactory();
+        }
+
         var function = new ReadFunction<TChangeToken>(changeTokenFactory);
         BeginFunctionScope(function);
 
@@ -50,6 +63,12 @@ public static class Watcher
 
     public static void Write(Action action)
     {
+        if (IsDisabled)
+        {
+            action();
+            return;
+        }
+
         var function = new WriteFunction(action);
         BeginFunctionScope(function);
 
@@ -70,6 +89,12 @@ public static class Watcher
             throw new InvalidOperationException("Cannot start a nested scope.");
         }
         return s_scope.Value = new DelegatingDisposable(() => s_scope.Value = null);
+    }
+
+    public static IDisposable Disable()
+    {
+        s_disabled.Value = true;
+        return new DelegatingDisposable(() => s_disabled.Value = false);
     }
 
     internal static object GetCurrentScope() => s_scope.Value ?? s_defaultScope;

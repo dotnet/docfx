@@ -45,6 +45,13 @@ public class Watch<T>
                     return value;
                 }
 
+                if (Watcher.IsDisabled)
+                {
+                    _value = _valueFactory();
+                    _changeCount++;
+                    return _value;
+                }
+
                 _changeCount++;
 
                 var function = new WatchFunction();
@@ -69,6 +76,12 @@ public class Watch<T>
 
     private bool TryGetValue([NotNullWhen(true)] out T? value)
     {
+        if (Watcher.IsDisabled)
+        {
+            value = _value;
+            return _changeCount > 0;
+        }
+
         var currentFunction = _function;
         if (currentFunction != null && !currentFunction.HasChanged())
         {
