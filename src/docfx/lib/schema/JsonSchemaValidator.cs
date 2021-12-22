@@ -68,10 +68,7 @@ internal class JsonSchemaValidator
 
     private void Validate(JsonSchema schema, string propertyPath, JToken token, List<Error> errors, JsonSchemaMap? schemaMap)
     {
-        if (!string.IsNullOrEmpty(schema.Ref))
-        {
-            schema = schema.SchemaResolver.ResolveSchema(schema.Ref) ?? schema;
-        }
+        schema = schema.SchemaResolver.ResolveSchema(schema) ?? schema;
 
         if (!ValidateType(schema, propertyPath, token, errors))
         {
@@ -103,8 +100,6 @@ internal class JsonSchemaValidator
         ValidateOneOf(schema, propertyPath, token, errors, schemaMap);
         ValidateIfThenElse(schema, propertyPath, token, errors, schemaMap);
         ValidateNot(schema, propertyPath, token, errors);
-
-        schemaMap?.Add(token, schema);
     }
 
     private static bool ValidateType(JsonSchema schema, string propertyPath, JToken token, List<Error> errors)
@@ -166,13 +161,13 @@ internal class JsonSchemaValidator
 
     private void ValidateItems(JsonSchema schema, string propertyPath, JArray array, List<Error> errors, JsonSchemaMap? schemaMap)
     {
-        var (items, eachItem) = schema.Items;
+        var (allItems, eachItem) = schema.Items;
 
-        if (items != null)
+        if (allItems != null)
         {
             foreach (var item in array)
             {
-                Validate(items, propertyPath, item, errors, schemaMap);
+                Validate(allItems, propertyPath, item, errors, schemaMap);
             }
         }
         else if (eachItem != null)
@@ -616,14 +611,15 @@ internal class JsonSchemaValidator
         foreach (var subschema in schema.AnyOf)
         {
             var subschemaErrors = new List<Error>();
-            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap();
             Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
             if (subschemaErrors.Count <= 0)
             {
-                if (subschemaMap != null)
+                if (schemaMap != null && subschemaMap != null)
                 {
-                    schemaMap?.Add(subschemaMap);
+                    schemaMap.Add(token, subschema);
+                    schemaMap.Add(subschemaMap);
                 }
                 return;
             }
@@ -657,17 +653,19 @@ internal class JsonSchemaValidator
         }
 
         var validCount = 0;
+        JsonSchema? bestSchema = null;
         JsonSchemaMap? bestSchemaMap = null;
         List<Error>? bestErrors = null;
 
         foreach (var subschema in schema.OneOf)
         {
             var subschemaErrors = new List<Error>();
-            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap(schemaMap);
+            var subschemaMap = schemaMap is null ? null : new JsonSchemaMap();
             Validate(subschema, propertyPath, token, subschemaErrors, subschemaMap);
 
             if (subschemaErrors.Count <= 0)
             {
+                bestSchema = subschema;
                 bestSchemaMap = subschemaMap;
                 validCount++;
                 continue;
@@ -691,9 +689,10 @@ internal class JsonSchemaValidator
                 errors.Add(Errors.JsonSchema.OneOfFailed(JsonUtility.GetSourceInfo(token), propertyPath, token));
             }
         }
-        else if (bestSchemaMap != null)
+        else if (schemaMap != null && bestSchemaMap != null && bestSchema != null)
         {
-            schemaMap?.Add(bestSchemaMap);
+            schemaMap.Add(token, bestSchema);
+            schemaMap.Add(bestSchemaMap);
         }
     }
 
@@ -712,6 +711,7 @@ internal class JsonSchemaValidator
             if (schema.Then != null)
             {
                 Validate(schema.Then, propertyPath, token, errors, schemaMap);
+                schemaMap?.Add(token, schema.Then);
             }
         }
         else
@@ -719,6 +719,7 @@ internal class JsonSchemaValidator
             if (schema.Else != null)
             {
                 Validate(schema.Else, propertyPath, token, errors, schemaMap);
+                schemaMap?.Add(token, schema.Else);
             }
         }
     }
