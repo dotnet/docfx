@@ -9,6 +9,8 @@ internal class RegressionTestResult
 
     public TimeSpan BuildTime { get; set; }
 
+    public long PeakMemory { get; set; }
+
     public int? Timeout { get; set; }
 
     public string? Diff { get; set; }
