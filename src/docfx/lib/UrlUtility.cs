@@ -344,60 +344,6 @@ internal static class UrlUtility
             : $"/{path}";
     }
 
-    public static string GetBookmark(string uid)
-    {
-        var sb = new StringBuilder();
-        for (var i = 0; i < uid.Length; i++)
-        {
-            var ch = char.ToLowerInvariant(uid[i]);
-            switch (ch)
-            {
-                case '"'or '\'' or '%' or '^' or '\\':
-                    continue;
-                case '<'or '[':
-                    sb.Append('(');
-                    break;
-                case '>' or ']':
-                    sb.Append(')');
-                    break;
-                case '{':
-                    sb.Append("((");
-                    break;
-                case '}':
-                    sb.Append("))");
-                    break;
-                case char c when (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'):
-                case '(' or ')' or '*' or '@':
-                    sb.Append(ch);
-                    break;
-                default:
-                    if (sb.Length == 0 || sb[^1] == '-')
-                    {
-                        continue;
-                    }
-                    sb.Append('-');
-                    break;
-            }
-        }
-
-        if (sb[^1] == '-')
-        {
-            for (var i = sb.Length - 1; i >= 0; i--)
-            {
-                if (sb[i] == '-')
-                {
-                    sb.Remove(i, 1);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-
-        return sb.ToString();
-    }
-
     private static string ToQueryString(this NameValueCollection collection)
     {
         var result = new StringBuilder("?");

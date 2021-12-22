@@ -1160,16 +1160,16 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children-a"
+                "href": "https://docs.com/docs/a.json#children_a"
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children-b",
+                "href": "https://docs.com/docs/a.json#children_b",
                 "a": "children.b a"
             },
             {
                 "uid": "children.c",
-                "href": "https://docs.com/docs/a.json#children-c",
+                "href": "https://docs.com/docs/a.json#children_c",
                 "child.c": "children.c c"
             }
         ]
@@ -1269,14 +1269,14 @@ outputs:
             },
             {
                 "uid": "children.a",
-                "href": "https://docs.com/docs/a.json#children-a",
+                "href": "https://docs.com/docs/a.json#children_a",
                 "list": [
                     "1.0"
                 ]
             },
             {
                 "uid": "children.b",
-                "href": "https://docs.com/docs/a.json#children-b",
+                "href": "https://docs.com/docs/a.json#children_b",
                 "list": [
                     "2.0",
                     "3.0"
