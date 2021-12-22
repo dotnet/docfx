@@ -292,7 +292,7 @@ internal static class HtmlUtility
             return StringUtility.Html($"<span class=\"{(xrefLink.Localizable ? string.Empty : "no-loc ")}xref\">{content}</span>");
         }
 
-        string AddNoLocSpan(string? content)
+        static string AddNoLocSpan(string? content)
             => $"<span class=\"no-loc\">{content}</span>";
     }
 
