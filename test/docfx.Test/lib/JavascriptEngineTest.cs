@@ -51,9 +51,11 @@ public class JavascriptEngineTest
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void ReleaseMemoryOnDispose()
     {
+        Skip.IfNot(OperatingSystem.IsWindows());
+
         var js = new ChakraCoreJsEngine(new LocalPackage("data/javascript"));
         var before = Process.GetCurrentProcess().WorkingSet64;
         var size = 1000_000_000;

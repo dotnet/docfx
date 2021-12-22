@@ -95,7 +95,7 @@ jobs:
 
 
 # Run RegressionTest
-- job: RunRegressionTest
+- job: Run
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'true'))
   dependsOn: WindowsBuild
   pool:
