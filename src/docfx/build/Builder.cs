@@ -51,7 +51,6 @@ internal class Builder
             return;
         }
 
-        using (Watcher.BeginScope())
         using (_errors.BeginScope(errors))
         using (_progressReporter.BeginScope(progressReporter))
         {

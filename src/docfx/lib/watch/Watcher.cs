@@ -13,6 +13,11 @@ public static class Watcher
 
     public static T Read<T>(Func<T> valueFactory)
     {
+        if (s_scope.Value is null)
+        {
+            return valueFactory();
+        }
+
         var function = new ReadFunction<T>(valueFactory);
         BeginFunctionScope(function);
 
@@ -31,6 +36,11 @@ public static class Watcher
 
     public static T Read<T, TChangeToken>(Func<T> valueFactory, Func<TChangeToken> changeTokenFactory)
     {
+        if (s_scope.Value is null)
+        {
+            return valueFactory();
+        }
+
         var function = new ReadFunction<TChangeToken>(changeTokenFactory);
         BeginFunctionScope(function);
 
@@ -50,6 +60,12 @@ public static class Watcher
 
     public static void Write(Action action)
     {
+        if (s_scope.Value is null)
+        {
+            action();
+            return;
+        }
+
         var function = new WriteFunction(action);
         BeginFunctionScope(function);
 

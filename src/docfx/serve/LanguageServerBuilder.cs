@@ -71,7 +71,11 @@ internal class LanguageServerBuilder
                 // But the responses of language server are handled sequentially, which cause the deadlock.
                 await Task.Yield();
                 Telemetry.SetIsRealTimeBuild(true);
-                _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
+
+                using (Watcher.BeginScope())
+                {
+                    _builder.Build(errors, progressReporter, filesToBuild.Select(f => f.Value).ToArray());
+                }
 
                 PublishDiagnosticsParams(errors, filesToBuild);
 
