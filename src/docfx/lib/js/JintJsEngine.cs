@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
 
-internal class JintJsEngine : JavaScriptEngine
+internal sealed class JintJsEngine : JavaScriptEngine
 {
     private readonly Engine _engine = new();
     private readonly Package _package;
@@ -37,6 +37,10 @@ internal class JintJsEngine : JavaScriptEngine
         }
 
         return ToJToken(method.Invoke(jsArg));
+    }
+
+    public override void Dispose()
+    {
     }
 
     private JsValue Run(PathString scriptPath)

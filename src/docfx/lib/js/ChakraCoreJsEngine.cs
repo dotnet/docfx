@@ -11,12 +11,13 @@ namespace Microsoft.Docs.Build;
 /// <summary>
 /// Javascript engine based on https://github.com/microsoft/ChakraCore
 /// </summary>
-internal class ChakraCoreJsEngine : JavaScriptEngine
+internal sealed class ChakraCoreJsEngine : JavaScriptEngine
 {
     private static int s_currentSourceContext;
 
     private readonly Package _package;
-    private readonly JavaScriptContext _context = CreateContext();
+    private readonly JavaScriptRuntime _runtime;
+    private readonly JavaScriptContext _context;
     private readonly JavaScriptValue _global;
     private readonly JavaScriptNativeFunction _requireFunction;
     private readonly Stack<string> _dirnames = new();
@@ -26,6 +27,13 @@ internal class ChakraCoreJsEngine : JavaScriptEngine
     {
         _package = package;
         _requireFunction = new(Require);
+
+        var flags = JavaScriptRuntimeAttributes.DisableBackgroundWork |
+                    JavaScriptRuntimeAttributes.DisableEval |
+                    JavaScriptRuntimeAttributes.EnableIdleProcessing;
+
+        _runtime = JavaScriptRuntime.Create(flags);
+        _context = _runtime.CreateContext();
 
         if (global != null)
         {
@@ -57,6 +65,11 @@ internal class ChakraCoreJsEngine : JavaScriptEngine
         });
     }
 
+    public override void Dispose()
+    {
+        _runtime.Dispose();
+    }
+
     private T RunInContext<T>(Func<T> action)
     {
         Native.ThrowIfError(Native.JsSetCurrentContext(_context));
@@ -73,15 +86,6 @@ internal class ChakraCoreJsEngine : JavaScriptEngine
         {
             Native.ThrowIfError(Native.JsSetCurrentContext(JavaScriptContext.Invalid));
         }
-    }
-
-    private static JavaScriptContext CreateContext()
-    {
-        var flags = JavaScriptRuntimeAttributes.DisableBackgroundWork |
-                    JavaScriptRuntimeAttributes.DisableEval |
-                    JavaScriptRuntimeAttributes.EnableIdleProcessing;
-
-        return JavaScriptRuntime.Create(flags).CreateContext();
     }
 
     private JavaScriptValue Run(PathString scriptPath)

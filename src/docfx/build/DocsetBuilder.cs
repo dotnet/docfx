@@ -191,6 +191,8 @@ internal class DocsetBuilder
                 return;
             }
 
+            _templateEngine.FreeJavaScriptEngineMemory();
+
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = _xrefResolver.ToXrefMapModel();
             var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);

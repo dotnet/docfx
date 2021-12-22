@@ -51,7 +51,7 @@ internal class SearchIndexBuilder
         }
 
         var documents = JToken.FromObject(_searchIndex.Value.Values);
-        var js = JavaScriptEngine.Create(new LocalPackage());
+        using var js = JavaScriptEngine.Create(new LocalPackage());
         var scriptPath = Path.Combine(AppContext.BaseDirectory, "data/scripts/lunr.interop.js");
 
         return js.Run(scriptPath, "transform", documents).ToString();
