@@ -422,6 +422,7 @@ internal static class RegressionTest
             var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
             while (await timer.WaitForNextTickAsync() && !process.HasExited)
             {
+                process.Refresh();
                 peakWorkingSet = Math.Max(peakWorkingSet, process.PeakWorkingSet64);
             }
             return peakWorkingSet;
