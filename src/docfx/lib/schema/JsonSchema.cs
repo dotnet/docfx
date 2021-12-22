@@ -98,7 +98,7 @@ internal class JsonSchema
     /// The JSON schema that applies to the array items if the current value is array.
     /// </summary>
     [JsonConverter(typeof(UnionTypeConverter))]
-    public (JsonSchema? items, JsonSchema[]? eachItem) Items { get; init; }
+    public (JsonSchema? allItems, JsonSchema[]? eachItem) Items { get; init; }
 
     /// <summary>
     /// The JSON schema that applies to additional items of an array.
@@ -190,15 +190,13 @@ internal class JsonSchema
     /// Split from the dependencies in draft 2019-09
     /// </summary>
     [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
-    public Dictionary<string, (string[] propertyNames, JsonSchema schema)> DependentSchemas { get; }
-     = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
+    public Dictionary<string, (string[] propertyNames, JsonSchema schema)> DependentSchemas { get; } = new();
 
     /// <summary>
     /// [Obsolete] Properties that are used to indicate the dependencies between fields
     /// </summary>
     [JsonProperty(ItemConverterType = typeof(UnionTypeConverter))]
-    public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; }
-     = new Dictionary<string, (string[] propertyNames, JsonSchema schema)>();
+    public Dictionary<string, (string[] propertyNames, JsonSchema schema)> Dependencies { get; } = new();
 
     /// <summary>
     /// The given data must be valid against any (one or more) of the given subschemas.

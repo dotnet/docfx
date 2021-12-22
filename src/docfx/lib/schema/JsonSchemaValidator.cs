@@ -161,13 +161,13 @@ internal class JsonSchemaValidator
 
     private void ValidateItems(JsonSchema schema, string propertyPath, JArray array, List<Error> errors, JsonSchemaMap? schemaMap)
     {
-        var (items, eachItem) = schema.Items;
+        var (allItems, eachItem) = schema.Items;
 
-        if (items != null)
+        if (allItems != null)
         {
             foreach (var item in array)
             {
-                Validate(items, propertyPath, item, errors, schemaMap);
+                Validate(allItems, propertyPath, item, errors, schemaMap);
             }
         }
         else if (eachItem != null)

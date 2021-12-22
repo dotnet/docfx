@@ -30,10 +30,10 @@ internal class JsonSchemaMap
                 return subschema;
             }
 
-            var (items, eachItem) = schema.Items;
-            if (items != null)
+            var (allItems, eachItem) = schema.Items;
+            if (allItems != null)
             {
-                return items;
+                return allItems;
             }
             else if (eachItem != null)
             {
