@@ -497,7 +497,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual": "<p>Link to <a class=\"no-loc\" href=\"a.json#a-b\">a.b</a></p>\n"}
+    {"conceptual": "<p>Link to <a class=\"no-loc\" href=\"a.json#a_b\">a.b</a></p>\n"}
   .xrefmap.json: |
     {
       "references": [{
@@ -1135,13 +1135,13 @@ outputs:
         Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
         Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child.c c</a>
         Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b a</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a class=\"no-loc\" href=\"a.json#children-c\" data-linktype=\"relative-path\">children.c c</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c c</a>
         </p>"
     }
   .xrefmap.json: |
