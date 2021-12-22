@@ -291,6 +291,9 @@ internal static class HtmlUtility
                 xrefLink.Display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
             return StringUtility.Html($"<span class=\"{(xrefLink.Localizable ? string.Empty : "no-loc ")}xref\">{content}</span>");
         }
+
+        string AddNoLocSpan(string? content)
+            => $"<span class=\"no-loc\">{content}</span>";
     }
 
     public static string CreateHtmlMetaTags(JObject metadata)
@@ -514,7 +517,4 @@ internal static class HtmlUtility
     private static bool IsSelfClosingElement(string tagName) => s_selfClosingTags.Contains(tagName.ToLowerInvariant());
 
     private static bool IsSelfClosingElement(this HtmlToken token) => IsSelfClosingElement(token.Name.ToString());
-
-    private static string AddNoLocSpan(string? content)
-        => $"<span class=\"no-loc\">{content}</span>";
 }

@@ -2149,3 +2149,16 @@ outputs:
     {
       "conceptual": "<ul>\n<li>Link to <a href=\"a\" class=\"no-loc\" data-linktype=\"relative-path\">name a</a></li>\n<li>Link to <a href=\"a\" class=\"no-loc\" data-linktype=\"relative-path\">name a</a></li>\n<li>Link to <a href=\"b\" data-linktype=\"relative-path\">Title from internal b.md</a></li>\n<li>Link to <a href=\"b\" data-linktype=\"relative-path\">Title from internal b.md</a></li>\n</ul>\n"
     }
+---
+# unknown xref in toc
+# make sure no-loc attribute won't be added to toc (plain text content)
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b
+outputs: 
+  docs/toc.json: |
+    {"items":[{"uid":"b"}],"metadata":{},"schema":"toc"}
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md"}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}
