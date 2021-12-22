@@ -278,8 +278,10 @@ internal static class HtmlUtility
             suppressXrefNotFound);
 
         var resolvedNode = string.IsNullOrEmpty(xrefLink.Href)
-            ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
-            : StringUtility.Html($"<a href='{xrefLink.Href}'>{xrefLink.Display}</a>");
+            ? rawHtml is not null
+                ? AddNoLocSpan(rawHtml)
+                : rawSource is not null ? AddNoLocSpan(rawSource) : GetDefaultResolvedNode()
+            : StringUtility.Html($"<a {(xrefLink.Localizable ? string.Empty : "class=no-loc ")}href='{xrefLink.Href}'>{xrefLink.Display}</a>");
 
         token = new HtmlToken(resolvedNode);
 
@@ -287,8 +289,11 @@ internal static class HtmlUtility
         {
             var content = !string.IsNullOrEmpty(xrefLink.Display) ?
                 xrefLink.Display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
-            return StringUtility.Html($"<span class=\"xref\">{content}</span>");
+            return StringUtility.Html($"<span class=\"{(xrefLink.Localizable ? string.Empty : "no-loc ")}xref\">{content}</span>");
         }
+
+        static string AddNoLocSpan(string? content)
+            => $"<span class=\"no-loc\">{content}</span>";
     }
 
     public static string CreateHtmlMetaTags(JObject metadata)
