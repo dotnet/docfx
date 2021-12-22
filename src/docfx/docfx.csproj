@@ -20,6 +20,7 @@
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.2.1744.22" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1719.2" Aliases="maml" />
