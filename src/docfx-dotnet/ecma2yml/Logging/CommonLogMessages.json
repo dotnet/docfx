@@ -1,0 +1,179 @@
+{
+  "categories": [
+    {
+      "category": "ECMA2Yaml",
+      "log_codes": [
+        {
+          "log_code": "ECMA2Yaml_Info",
+          "message": "This log level is only used to write information.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_SDP_MigrationNeeded",
+          "message": "This repo/docset is not SDP-enabled. Please contact apidocs-team@service.microsoft.com to enable SDP on this repo.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Uid_Duplicated",
+          "message": "Duplicate uid found: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_DocId_Duplicated",
+          "message": "Duplicated DocId found: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_MemberGroup_Duplicated",
+          "message": "Found duplicated <MemberGroup> {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_DocId_IsNull",
+          "message": "DocId is required for {0}.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_MemberNameAndSignature_NotUnique",
+          "message": "Member {0}'s name and signature is not unique",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Framework_NotFound",
+          "message": "Unable to find framework info for {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Type_NotFound",
+          "message": "Unable to identify the type of Type {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_TypeString_ParseFailed",
+          "message": "Unable to parse type string {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_CommentID_ParseFailed",
+          "message": "Unable to parse string as comment id: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_PackageInformation_LoadFailed",
+          "message": "Unable to load package information: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_MonikerToAssembly_Failed",
+          "message": "Unable to load moniker to assembly mapping: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Moniker_EmptyAssembly",
+          "message": "{0} have empty assembly.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_CommentId_ResolveFailed",
+          "message": "Unable to resolve: <InterfaceMember>{0}</InterfaceMember>",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Namespace_LoadFailed",
+          "message": "Failed to load namespace",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_File_LoadFailed",
+          "message": "Failed to load {0} files, aborting...",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Uid_NotFound",
+          "message": "Can't find uid in yaml header: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_NotesType_UnKnown",
+          "message": "Can't recognize additional notes type: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_UidAssembly_NotMatched",
+          "message": "{0}'s moniker {1} can't match any assembly.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_ExtraMonikerFoundInMember",
+          "message": "Moniker {0} exists in member {1} but can't be found in parent type.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Command_Invalid",
+          "message": "Invalid command line parameter.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_InternalError",
+          "message": "Intenal Several Error: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Namespace_NoTypes",
+          "message": "Namespace {0} has no types",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Type_ExternalBaseType",
+          "message": "Type {0} has an external base type {1}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_ExceptionTypeNotFound",
+          "message": "Referenced exception type not found: {0}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_CrefTypePrefixMissing",
+          "message": "Invalid cref format ({0}) detected in {1}",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Member_EmptyMoniker",
+          "message": "{0} have empty Moniker",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Enum_NoRemarks",
+          "message": "Please note: <remarks> node on Enum fields will be ignored.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Inheritdoc_NoFoundParent",
+          "message": "Found no member can be inherited by key:{0} for uid: {1}.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Inheritdoc_NoFoundDocs",
+          "message": "Inheridoc tag exists but no inheritdoc found for uid:{0}.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Inheritdoc_InvalidTags",
+          "message": "Inheridoc and summary tags both exists for uid:{0}.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Inheritdoc_InvalidTagsForStatic",
+          "message": "Inheridoc should not use on static object for uid:{0}.",
+          "document_url": ""
+        },
+        {
+          "log_code": "ECMA2Yaml_Inheritdoc_NotSupportType",
+          "message": "Inheridoc not support type: {0} for uid:{1}.",
+          "document_url": ""
+        }
+      ]
+    }
+  ]
+}
