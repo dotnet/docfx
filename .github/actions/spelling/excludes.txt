@@ -18,4 +18,5 @@ ignore$
 ^\.github/
 lunr.js
 test.*?data
+docfx-dotnet
 AzureResourceTypes\.txt
