@@ -126,6 +126,13 @@ internal static class Errors
         /// Behavior: ❌ Message: ❌
         public static Error ViolateSchema(SourceInfo? source, string message)
             => new(ErrorLevel.Error, "violate-schema", $"{message}", source);
+
+        /// <summary>
+        /// Path string contains invalid path chars.
+        /// </summary>
+        /// Behavior: ❌ Message: ❌
+        public static Error PathInvalid(SourceInfo? source, string message)
+            => new(ErrorLevel.Warning, "path-invalid", $"{message}", source);
     }
 
     public static class Yaml

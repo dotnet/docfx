@@ -591,6 +591,12 @@ internal static class JsonUtility
                 state.Errors.Add(Errors.Json.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                 args.ErrorContext.Handled = true;
             }
+            if (args?.ErrorContext.Error is InvalidDataException)
+            {
+                var state = s_status.Value!.Peek();
+                state.Errors.Add(Errors.Json.PathInvalid(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
+                args.ErrorContext.Handled = true;
+            }
         }
     }
 

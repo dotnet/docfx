@@ -19,6 +19,9 @@ internal static class PathUtility
 
     public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
+    private static readonly HashSet<char> s_invalidPathChars =
+        Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Except(new char[] { '/' }).Distinct().ToHashSet();
+
     /// <summary>
     /// Create a relative path from one path to another file.
     /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
@@ -68,6 +71,27 @@ internal static class PathUtility
             str += '/';
         }
         return str;
+    }
+
+    public static string NormalizeFileWithValidation(string path)
+    {
+        path = NormalizeFile(path);
+        var invalidPathChars = new HashSet<char>();
+        if (!string.IsNullOrEmpty(path))
+        {
+            foreach (var c in path)
+            {
+                if (s_invalidPathChars.Contains(c))
+                {
+                    invalidPathChars.Add(c);
+                }
+            }
+        }
+        if (invalidPathChars.Count > 0)
+        {
+            throw new InvalidDataException($"Path {path} contains invalid chars {string.Join(", ", invalidPathChars.Select(c => $"'{c}'"))}.");
+        }
+        return path;
     }
 
     /// <summary>
