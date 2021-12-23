@@ -332,13 +332,7 @@ internal class PageBuilder
         if (JsonSchemaProvider.IsLandingData(mime))
         {
             var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
-            var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
-
-            pageModel = JsonUtility.ToJObject(new ConceptualModel
-            {
-                Conceptual = razorHtml,
-                ExtensionData = pageModel,
-            });
+            pageModel["conceptual"] = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
         }
 
         return pageModel;

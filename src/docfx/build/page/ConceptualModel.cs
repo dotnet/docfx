@@ -15,7 +15,4 @@ internal class ConceptualModel
     public SourceInfo<string?> Title { get; set; }
 
     public string RawTitle { get; set; } = "";
-
-    [JsonExtensionData]
-    public JObject? ExtensionData { get; set; }
 }
