@@ -161,12 +161,12 @@ outputs:
       "conceptual": "
           <p>
             Link to <a href='a.json'>text</a>
-            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to <a href='a.json'>&lt;some text &amp;&gt;\n</a>
-            Link to @a&amp;c
-            Link to &lt;xref:a%26&gt;
-            Link to <a href='a.json'>test\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <a class=\"no-loc\" href='a.json'>&lt;some text &amp;&gt;\n</a>
+            Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@a&amp;c</span>
+            Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">&lt;xref:a%26&gt;</span>
+            Link to <a class=\"no-loc\" href='a.json'>test\n</a>
           </p>"
     }
   .errors.log: |
@@ -182,5 +182,5 @@ inputs:
 outputs:
   a.json: |
     {
-      "conceptual": "<p>the <span class=\"xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
+      "conceptual": "<p>the <span class=\"no-loc xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
     }

@@ -78,7 +78,7 @@ outputs:
     {
       "conceptual": "<ul class=\"cardsM cols cols1\">
                        <li>
-                         <a class=\"card\" href=\"/en-us/a\" data-linktype=\"absolute-path\">
+                         <a class=\"card\" href=\"/a\" >
                            <div class=\"cardText\">
                              <h3>SDK &amp; Tools</h3>
                              <p>Developer tools for .NET and .NET Core</p>

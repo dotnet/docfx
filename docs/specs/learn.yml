@@ -296,7 +296,7 @@ inputs:
         "modules": {"items": {"contentType": "xref"}},
         "achievement": {"contentType": "xref"},
         "trophy": {
-          "properties": {"uid" : {"contentType": "uid"}}
+          "properties": {"uid" : {"contentType": "uid", "schemaType": "trophy"}}
         }
       }
     }
@@ -307,7 +307,7 @@ inputs:
         "units": {"items": {"contentType": "xref" }},
         "achievement": {"contentType": "xref"},
         "badge": {
-          "properties": {"uid" : {"contentType": "uid"}}
+          "properties": {"uid" : {"contentType": "uid", "schemaType": "badge"}}
         }
       }
     }

@@ -5,7 +5,7 @@ inputs:
   docs/a.md: Link to <xref:a>
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to &lt;xref:a&gt;</p>" }
+    { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">&lt;xref:a&gt;</span></p>" }
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"docs/a.md","line":1,"column":9}
 ---
@@ -15,7 +15,7 @@ inputs:
   docs/a.md: Link to @a
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to @a</p>" }
+    { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@a</span></p>" }
 ---
 # Restore xref map from configured url and use the map for resolving
 # hostname should be removed if docset sharing the same one
@@ -43,7 +43,7 @@ inputs:
     { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # original config should have higher priority than extend config
 inputs:
@@ -77,7 +77,7 @@ inputs:
     }
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String.Higher</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">System.String.Higher</a></p>\n"}
 ---
 # Should not remove host name if not sharing with xref href
 inputs:
@@ -98,7 +98,7 @@ inputs:
     }
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -115,7 +115,7 @@ inputs:
         nameWithType: System.String
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the zip file for resolving
 inputs:
@@ -135,7 +135,7 @@ inputs:
       { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Define uid in conceptual, resolve it
 repos:
@@ -208,7 +208,7 @@ repos:
           }
 outputs:
   base_path/docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # The same uid in internal and external
 # should resolve it from the internal one
@@ -319,11 +319,11 @@ outputs:
     {
       "conceptual":"<p>
                         Link to <a href=\"a.json\">some text</a>
-                        Link to <a href=\"a.json\">test.test</a>
-                        Link to <a href=\"a.json??displayProperty=fullName\">test</a>
-                        Link to <a href=\"a.json\">test.test</a>
-                        Link to <a href=\"a.json\">test</a>??displayProperty=fullName
-                        Link to <a href=\"a.json\">test</a></p>"
+                        Link to <a class=\"no-loc\" href=\"a.json\">test.test</a>
+                        Link to <a class=\"no-loc\" href=\"a.json??displayProperty=fullName\">test</a>
+                        Link to <a class=\"no-loc\" href=\"a.json\">test.test</a>
+                        Link to <a class=\"no-loc\" href=\"a.json\">test</a>??displayProperty=fullName
+                        Link to <a class=\"no-loc\" href=\"a.json\">test</a></p>"
     }
   docs/a.json:
   .xrefmap.json: | 
@@ -369,7 +369,7 @@ outputs:
   base_path/docs/a.json:
   base_path/docs/b.json: 
   base_path/docs/c.json: |
-    {"conceptual": "<p>Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
+    {"conceptual": "<p>Link to <a class=\"no-loc\" href=\"a.json\" data-linktype=\"relative-path\">a</a></p>\n"}
   .errors.log: |
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/a.yml","line":2,"column":6}
     {"message_severity":"warning","code":"duplicate-uid","message":"UID 'a' is duplicated in 'docs/a.yml(2,6)', 'docs/b.json(3,12)'.","file":"docs/b.json","line":3,"column":12}
@@ -497,7 +497,7 @@ inputs:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual": "<p>Link to <a href=\"a.json#a_b\">a.b</a></p>\n"}
+    {"conceptual": "<p>Link to <a class=\"no-loc\" href=\"a.json#a_b\">a.b</a></p>\n"}
   .xrefmap.json: |
     {
       "references": [{
@@ -921,10 +921,10 @@ outputs:
     {
       "uid": "a",
       "name": "name for a",
-      "inlineDescription": "Link to <a href=\"b.json\">description for &lt;em&gt;b&lt;/em&gt;</a>",
+      "inlineDescription": "Link to <a href=\"b.json\" class=\"no-loc\">description for &lt;em&gt;b&lt;/em&gt;</a>",
       "summary": "
           <p>
-            Link to <a href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a.json&quot;&gt;name for a&lt;/a&gt;&lt;/p&gt;</a>
+            Link to <a class=\"no-loc\" href=\"b.json\">&lt;p&gt;Link to &lt;a href=&quot;a.json&quot;  class=&quot;no-loc&quot;&gt;name for a&lt;/a&gt;&lt;/p&gt;</a>
           </p>"
     }
   docs/b.json: |
@@ -934,7 +934,7 @@ outputs:
       "inlineDescription": "description for <em>b</em>",
       "summary": "
           <p>
-            Link to <a href=\"a.json\">name for a</a>
+            Link to <a class=\"no-loc\" href=\"a.json\">name for a</a>
           </p>"
     }
 ---
@@ -976,15 +976,15 @@ outputs:
       "conceptual" : "
         <p>str <a href='c'>Title from yaml header c</a>
         str <span class=\"xref\">altText</span>
-        str <span class=\"xref\">d</span>
-        str @mention
+        str <span class=\"no-loc xref\">d</span>
+        str <span class=\"no-loc\">@mention</span>
         some text
-        str @higher
-        multiple xref @mention-e some text @mention-f</p>
+        str <span class=\"no-loc\">@higher</span>
+        multiple xref <span class=\"no-loc\">@mention-e</span> some text <span class=\"no-loc\">@mention-f</span></p>
         <p>
-          @mention-e
+          <span class=\"no-loc\">@mention-e</span>
           some text
-          mention-f
+          <span class=\"no-loc\">mention-f</span>
         </p>"
     }
   docs/c.json:
@@ -1004,7 +1004,7 @@ inputs:
     </table>
 outputs:
   docs/a.json: |
-    { "conceptual": "<table><tr>A=@Me</tr><tr>A</tr></table>"}
+    { "conceptual": "<table><tr>A=<span class=\"no-loc\">@Me</span></tr><tr>A</tr></table>"}
 ---
 # Support data-throw-if-not-resolved attribute user written <xref> (not in mustache)
 inputs:
@@ -1014,7 +1014,7 @@ inputs:
     2. <xref href="xref-suppress" data-throw-if-not-resolved="False" data-raw-source="xref-suppress"></xref>
 outputs:
   a.json: |
-    { "conceptual": "<ol><li>xref-error</li> <li>xref-suppress</li></ol>"}
+    { "conceptual": "<ol><li><span class=\"no-loc\">xref-error</span></li> <li><span class=\"no-loc\">xref-suppress</span></li></ol>"}
   .errors.log: |
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'xref-error'.","file":"a.md","line":1,"column":4}
 
@@ -1040,12 +1040,12 @@ outputs:
     {
       "conceptual" : "
         <p>str <a href='b'>b title</a>
-        query unsupported <span class='xref'>b?displayProperty=a</span>
-        bookmark unsupported <span class='xref'>b#bookmark</span>
-        use raw name 'html' no warning  @higher
-        use raw name 'source' no warning  @mention
+        query unsupported <span class='no-loc xref'>b?displayProperty=a</span>
+        bookmark unsupported <span class='no-loc xref'>b#bookmark</span>
+        use raw name 'html' no warning  <span class=\"no-loc\">@higher</span>
+        use raw name 'source' no warning  <span class=\"no-loc\">@mention</span>
         href higher priority <a href='b'>b title</a>
-        href higher priority even unexist <span class='xref'>unexist</span>
+        href higher priority even unexist <span class='no-loc xref'>unexist</span>
         "
     }
   docs/b.json:
@@ -1061,7 +1061,7 @@ inputs:
     <xref data-raw-source="@Me"></xref>
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>@Me</p>"}
+    { "conceptual": "<p><span class=\"no-loc\">@Me</span></p>"}
 ---
 # support multiple uids with different xref properties
 repos:
@@ -1128,20 +1128,20 @@ outputs:
     {
       "conceptual":
         "<p>
-        Link to <a href=\"a.json\" data-linktype=\"relative-path\">description for a</a>
-        Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
-        Link to <a href=\"a.json\" data-linktype=\"relative-path\">a</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child a</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child.c c</a>
-        Link to <a href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b a</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
-        Link to <a href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c c</a>
+        Link to <a class=\"no-loc\" href=\"a.json\" data-linktype=\"relative-path\">description for a</a>
+        Link to <a class=\"no-loc\" href=\"a.json\" data-linktype=\"relative-path\">a</a>
+        Link to <a class=\"no-loc\" href=\"a.json\" data-linktype=\"relative-path\">a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
+        Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child.c c</a>
+        Link to <a class=\"no-loc\" href=\"a.json#child\" data-linktype=\"relative-path\">child</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_a\" data-linktype=\"relative-path\">children.a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b a</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_b\" data-linktype=\"relative-path\">children.b</a>
+        Link to <a class=\"no-loc\" href=\"a.json#children_c\" data-linktype=\"relative-path\">children.c c</a>
         </p>"
     }
   .xrefmap.json: |
@@ -1194,7 +1194,7 @@ inputs:
     { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # support non-leaf nodes for xref properties
 repos:
@@ -1457,8 +1457,8 @@ outputs:
     { 
       "conceptual": 
       "<p>
-          Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a>
-          Link to <a href=\"https://docs.microsoft.com/dotnet/api/system.string.1\">System.String.1</a>
+          Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a>
+          Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string.1\">System.String.1</a>
       </p>"
     }
 ---
@@ -1585,7 +1585,7 @@ outputs:
   .xrefmap.json: |
     {
       "references": [
-        { "uid": "a", "name": "name 2", "description": "<p>test 2 <a href=\"b.json\">name b</a></p>" },
+        { "uid": "a", "name": "name 2", "description": "<p>test 2 <a class=\"no-loc\" href=\"b.json\">name b</a></p>" },
         { "uid": "b", "name": "name b" }
       ]
     }
@@ -2098,7 +2098,7 @@ outputs:
   docs/a/a/a.json:
   docs/c/c.json:
   docs/b/b.json: |
-    {"conceptual": "<p>Link to <a href=\"../a/a/a\" data-linktype=\"relative-path\">&lt;p&gt;&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!&lt;/p&gt;\n</a></p>\n"}
+    {"conceptual": "<p>Link to <a class=\"no-loc\" href=\"../a/a/a\" data-linktype=\"relative-path\">&lt;p&gt;&lt;a href=&quot;/docs/c/c&quot;&gt;Title from yaml header c&lt;/a&gt; Hello docfx!&lt;/p&gt;\n</a></p>\n"}
   .xrefmap.json: | 
     {
       "references":[
@@ -2106,3 +2106,59 @@ outputs:
         {"uid": "c", "href": "https://docs.com/docs/c/c", "name": "Title from yaml header c"}
       ]
     }
+---
+# no-loc for internal xref
+# Note: But for internal UID in conceptual repo, when title is chosen as XRef spec name, the resolved link text should be localizable.
+inputs:
+  docfx.yml: 
+  a.yml: |
+    ### YamlMime:ModuleUnit
+    uid: a
+    title: Title from internal a.yml
+    name: name a
+    fullName: fullName a
+  b.md: |
+    ---
+    title: Title from internal b.md
+    uid: b
+    ---
+  index.md: |
+    # File b
+    - Link to <xref:a>
+    - Link to @a
+    - Link to <xref:b>
+    - Link to @b
+  _themes/ContentTemplate/schemas/ModuleUnit.schema.json: |
+    {
+      "type": "object",
+      "title": "Link from yaml",
+      "properties": {
+        "uid": { "contentType": "uid"},
+        "title": {"type": "string", "tags": ["localizable"]},
+        "name": {"type": "string", "tags": ["localizable"]},
+        "fullName": {"type": "string", "tags": ["localizable"]}
+      },
+      "xrefProperties": ["name", "fullName", "title"]
+    }
+  _themes/ContentTemplate/ModuleUnit.html.primary.tmpl: |
+    <h2 id="{{heading}}"></h2>{{{description}}}
+outputs:
+  a.json:
+  b.json: 
+  index.json: | 
+    {
+      "conceptual": "<ul>\n<li>Link to <a href=\"a\" class=\"no-loc\" data-linktype=\"relative-path\">name a</a></li>\n<li>Link to <a href=\"a\" class=\"no-loc\" data-linktype=\"relative-path\">name a</a></li>\n<li>Link to <a href=\"b\" data-linktype=\"relative-path\">Title from internal b.md</a></li>\n<li>Link to <a href=\"b\" data-linktype=\"relative-path\">Title from internal b.md</a></li>\n</ul>\n"
+    }
+---
+# unknown xref in toc
+# make sure no-loc attribute won't be added to toc (plain text content)
+inputs:
+  docfx.yml:
+  docs/TOC.md: |
+    # @b
+outputs: 
+  docs/toc.json: |
+    {"items":[{"uid":"b"}],"metadata":{},"schema":"toc"}
+  .errors.log: |
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md"}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}

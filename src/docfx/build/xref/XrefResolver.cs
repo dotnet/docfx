@@ -51,7 +51,7 @@ internal class XrefResolver
         _internalXrefMap = new(BuildInternalXrefMap);
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByHref(
+    public (Error? error, XrefLink xrefLink) ResolveXrefByHref(
         SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot)
     {
         var (uid, query, fragment) = UrlUtility.SplitUrl(href);
@@ -79,7 +79,7 @@ internal class XrefResolver
         var (xrefError, xrefSpec, resolvedHref) = ResolveXrefSpec(new SourceInfo<string>(uid, href.Source), referencingFile, inclusionRoot);
         if (xrefError != null || xrefSpec is null || string.IsNullOrEmpty(resolvedHref))
         {
-            return (xrefError, null, alt ?? "", null);
+            return (xrefError, new XrefLink(null, alt ?? "", null, !string.IsNullOrEmpty(alt)));
         }
 
         var displayPropertyValue = displayProperty is null ? null : xrefSpec.GetXrefPropertyValueAsString(displayProperty);
@@ -87,6 +87,12 @@ internal class XrefResolver
         // fallback order:
         // text -> xrefSpec.displayProperty -> xrefSpec.name
         var display = !string.IsNullOrEmpty(text) ? text : displayPropertyValue ?? xrefSpec.GetName() ?? xrefSpec.Uid;
+
+        var localizable = false;
+        if (!string.IsNullOrEmpty(text) || IsNameLocalizable(xrefSpec))
+        {
+            localizable = true;
+        }
 
         if (!string.IsNullOrEmpty(moniker))
         {
@@ -98,10 +104,10 @@ internal class XrefResolver
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
 
         resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
-        return (null, resolvedHref, display, xrefSpec.DeclaringFile);
+        return (null, new XrefLink(resolvedHref, display, xrefSpec.DeclaringFile, localizable));
     }
 
-    public (Error? error, string? href, string display, FilePath? declaringFile) ResolveXrefByUid(
+    public (Error? error, XrefLink xrefLink) ResolveXrefByUid(
         SourceInfo<string> uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers = null)
     {
         if (string.IsNullOrEmpty(uid))
@@ -113,10 +119,12 @@ internal class XrefResolver
         var (error, xrefSpec, href) = ResolveXrefSpec(uid, referencingFile, inclusionRoot, monikers);
         if (error != null || xrefSpec == null || href == null)
         {
-            return (error, null, "", null);
+            return (error, new XrefLink(null, "", null, false));
         }
+
+        var localizable = IsNameLocalizable(xrefSpec);
         _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
-        return (null, href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile);
+        return (null, new XrefLink(href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, localizable));
     }
 
     public (Error?, IXrefSpec?, string? href) ResolveXrefSpec(
@@ -199,6 +207,9 @@ internal class XrefResolver
         return result;
     }
 
+    private static bool IsNameLocalizable(IXrefSpec xrefSpec)
+        => xrefSpec is InternalXrefSpec internalXrefSpec && internalXrefSpec.IsNameLocalizable;
+
     private void ValidateUidGlobalUnique(IReadOnlyDictionary<string, InternalXrefSpec[]> internalXrefMap)
     {
         var globalXrefSpecs = internalXrefMap.Values.Where(xrefs => xrefs.Any(xref => xref.UidGlobalUnique)).Select(xrefs => xrefs.First());
@@ -240,7 +251,7 @@ internal class XrefResolver
     {
         // TODO: this workaround can be removed when all xref related repos migrated to v3
         if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
-                    && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
+            && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
         {
             return url["https://review.docs.microsoft.com".Length..];
         }
@@ -321,8 +332,8 @@ internal class XrefResolver
                 return DependencyType.Hierarchy;
             case ("LearningPath", "Achievement"):
             case ("Module", "Achievement"):
-            case ("LearningPath", "LearningPath") when string.Equals(xref.DeclaringPropertyPath, "trophy", StringComparison.OrdinalIgnoreCase):
-            case ("Module", "Module") when string.Equals(xref.DeclaringPropertyPath, "badge", StringComparison.OrdinalIgnoreCase):
+            case ("LearningPath", "LearningPath") when string.Equals(xref.SchemaType, "trophy", StringComparison.OrdinalIgnoreCase):
+            case ("Module", "Module") when string.Equals(xref.SchemaType, "badge", StringComparison.OrdinalIgnoreCase):
                 return DependencyType.Achievement;
         }
 

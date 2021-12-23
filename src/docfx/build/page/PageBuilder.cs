@@ -146,28 +146,27 @@ internal class PageBuilder
         }
 
         outputModel["schema"] = mime.Value;
-        outputModel = JsonUtility.SortProperties(outputModel);
         if (_config.OutputType == OutputType.Json)
         {
-            return (outputModel, JsonUtility.SortProperties(outputMetadata));
+            return (outputModel, outputMetadata);
         }
 
         var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, outputModel);
 
         if (_config.OutputType == OutputType.PageJson)
         {
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
 
         try
         {
             var html = _templateEngine.RunLiquid(errors, mime, templateModel);
-            return (html, JsonUtility.SortProperties(templateMetadata));
+            return (html, templateMetadata);
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
         {
             errors.AddRange(dex.Select(ex => ex.Error));
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
     }
 
@@ -337,7 +336,7 @@ internal class PageBuilder
 
             pageModel = JsonUtility.ToJObject(new ConceptualModel
             {
-                Conceptual = _templateEngine.ProcessHtml(errors, file, razorHtml),
+                Conceptual = razorHtml,
                 ExtensionData = pageModel,
             });
         }
@@ -348,13 +347,14 @@ internal class PageBuilder
     private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
         var wordCount = 0L;
+
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
             if (token.Type == HtmlTokenType.Text)
             {

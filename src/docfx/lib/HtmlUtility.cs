@@ -225,7 +225,7 @@ internal static class HtmlUtility
         ref HtmlReader reader,
         ref HtmlToken token,
         MarkdownObject? block,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
         if (!token.NameIs("xref"))
         {
@@ -272,29 +272,35 @@ internal static class HtmlUtility
 
         suppressXrefNotFound = suppressXrefNotFound || ((rawHtml ?? rawSource)?.StartsWith("@") ?? false);
 
-        var (resolvedHref, display) = resolveXref(
+        var xrefLink = resolveXref(
             href == null ? null : new SourceInfo<string>(href, block?.GetSourceInfo()?.WithOffset(token.Range)),
             uid == null ? null : new SourceInfo<string>(uid, block?.GetSourceInfo()?.WithOffset(token.Range)),
             suppressXrefNotFound);
 
-        var resolvedNode = string.IsNullOrEmpty(resolvedHref)
-            ? rawHtml ?? rawSource ?? GetDefaultResolvedNode()
-            : StringUtility.Html($"<a href='{resolvedHref}'>{display}</a>");
+        var resolvedNode = string.IsNullOrEmpty(xrefLink.Href)
+            ? rawHtml is not null
+                ? AddNoLocSpan(rawHtml)
+                : rawSource is not null ? AddNoLocSpan(rawSource) : GetDefaultResolvedNode()
+            : StringUtility.Html($"<a {(xrefLink.Localizable ? string.Empty : "class=no-loc ")}href='{xrefLink.Href}'>{xrefLink.Display}</a>");
 
         token = new HtmlToken(resolvedNode);
 
         string GetDefaultResolvedNode()
         {
-            var content = !string.IsNullOrEmpty(display) ? display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
-            return StringUtility.Html($"<span class=\"xref\">{content}</span>");
+            var content = !string.IsNullOrEmpty(xrefLink.Display) ?
+                xrefLink.Display : (href != null ? UrlUtility.SplitUrl(href).path : uid);
+            return StringUtility.Html($"<span class=\"{(xrefLink.Localizable ? string.Empty : "no-loc ")}xref\">{content}</span>");
         }
+
+        static string AddNoLocSpan(string? content)
+            => $"<span class=\"no-loc\">{content}</span>";
     }
 
     public static string CreateHtmlMetaTags(JObject metadata)
     {
         var result = new StringBuilder();
 
-        foreach (var (key, value) in metadata)
+        foreach (var (key, value) in ((IEnumerable<KeyValuePair<string, JToken>>)metadata).OrderBy(p => p.Key))
         {
             if (value is null || value is JObject || s_htmlMetaHidden.Contains(key))
             {
@@ -390,7 +396,10 @@ internal static class HtmlUtility
     }
 
     internal static void AddLinkType(
-        ErrorBuilder errors, FilePath file, ref HtmlToken token, string locale, Dictionary<string, TrustedDomains> trustedDomains)
+        ErrorBuilder errors,
+        FilePath file,
+        ref HtmlToken token,
+        Dictionary<string, TrustedDomains> trustedDomains)
     {
         foreach (ref readonly var attribute in token.Attributes.Span)
         {
@@ -405,7 +414,6 @@ internal static class HtmlUtility
                         break;
                     case LinkType.AbsolutePath:
                         token.SetAttributeValue("data-linktype", "absolute-path");
-                        token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                         break;
                     case LinkType.RelativePath:
                         token.SetAttributeValue("data-linktype", "relative-path");
@@ -430,6 +438,22 @@ internal static class HtmlUtility
                             token.SetAttributeValue("data-linktype", "external");
                         }
                         break;
+                }
+            }
+        }
+    }
+
+    internal static void AddLocaleIfMissingForAbsolutePath(ref HtmlToken token, string locale)
+    {
+        foreach (ref readonly var attribute in token.Attributes.Span)
+        {
+            if (attribute.Value.Length > 0 && IsLink(ref token, attribute, out _, out _))
+            {
+                var href = attribute.Value.ToString();
+
+                if (UrlUtility.GetLinkType(href) == LinkType.AbsolutePath)
+                {
+                    token.SetAttributeValue(attribute.Name.ToString(), AddLocaleIfMissingForAbsolutePath(href, locale));
                 }
             }
         }

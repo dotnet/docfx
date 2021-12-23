@@ -258,13 +258,15 @@ internal static class RegressionTest
             ? Process.Start("dotnet-trace", $"collect --providers Microsoft-DotNETCore-SampleProfiler --diagnostic-port {diagnosticPort} --output \"{traceFile}\"")
             : null;
 
-        testResult.BuildTime = Exec(
+        (testResult.BuildTime, testResult.PeakMemory) = Exec(
             Path.Combine(AppContext.BaseDirectory, "docfx.exe"),
             arguments: $"build -o \"{outputPath}\" {logOption} {dryRunOption} {noDrySyncOption} --verbose --no-restore --stdin",
             stdin: docfxConfig,
             cwd: repositoryPath,
             allowExitCodes: new[] { 0, 1 },
             env: profiler != null ? new() { ["DOTNET_DiagnosticPorts"] = diagnosticPort } : null);
+
+        Console.WriteLine($"docfx peak memory usage: {testResult.PeakMemory / 1000 / 1000}MB");
 
         if (profiler != null)
         {
@@ -350,7 +352,7 @@ internal static class RegressionTest
         }
     }
 
-    private static TimeSpan Exec(
+    private static (TimeSpan time, long peakMemory) Exec(
         string fileName,
         string arguments = "",
         string? stdin = null,
@@ -400,6 +402,7 @@ internal static class RegressionTest
             process.StandardInput.Close();
         }
 
+        var memoryWatcher = WatchPeakMemoryUsage(process);
         var stderr = redirectStandardError ? process.StandardError.ReadToEnd() : default;
         process.WaitForExit();
 
@@ -411,7 +414,19 @@ internal static class RegressionTest
 
         stopwatch.Stop();
         Console.WriteLine($"'{fileName} {sanitizedArguments}' done in '{stopwatch.Elapsed}'");
-        return stopwatch.Elapsed;
+        return (stopwatch.Elapsed, memoryWatcher.Result);
+
+        static async Task<long> WatchPeakMemoryUsage(Process process)
+        {
+            var peakWorkingSet = 0L;
+            var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+            while (await timer.WaitForNextTickAsync() && !process.HasExited)
+            {
+                process.Refresh();
+                peakWorkingSet = Math.Max(peakWorkingSet, process.PeakWorkingSet64);
+            }
+            return peakWorkingSet;
+        }
     }
 
     private static (string, int) PipeOutputToFile(StreamReader reader, string path, int maxLines)
@@ -478,6 +493,7 @@ internal static class RegressionTest
             body.Append($", {testResult.MoreLines} more diff");
         }
 
+        body.Append($", {testResult.PeakMemory / 1000 / 1000}MB");
         body.Append(")</summary>\n\n");
 
         if (!string.IsNullOrEmpty(testResult.CrashMessage))
@@ -517,7 +533,7 @@ internal static class RegressionTest
         response.EnsureSuccessStatusCode();
     }
 
-    private static TimeSpan Retry(Func<TimeSpan> action, int retryCount = 5)
+    private static T Retry<T>(Func<T> action, int retryCount = 5)
         => Policy
         .Handle<Exception>()
         .WaitAndRetry(retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))

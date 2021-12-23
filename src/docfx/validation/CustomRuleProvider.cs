@@ -122,9 +122,11 @@ internal class CustomRuleProvider
                     // compare with code + propertyPath + contentType
                     var source = error.Source?.File;
                     var pageType = source != null ? _documentProvider.GetPageType(source) : null;
-                    if (rule.PropertyPath.Equals(error.PropertyPath, StringComparison.Ordinal) &&
-                        rule.ContentTypes != null &&
-                        rule.ContentTypes.Contains(pageType))
+                    var isPageTypeInScope =
+                        pageType == null ||
+                        rule.ContentTypes == null ||
+                        rule.ContentTypes.Contains(pageType);
+                    if (rule.PropertyPath == error.PropertyPath && isPageTypeInScope)
                     {
                         customRule = rule;
                         return true;

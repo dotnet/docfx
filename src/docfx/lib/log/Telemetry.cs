@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 using Newtonsoft.Json.Linq;
@@ -17,7 +19,17 @@ internal static class Telemetry
     // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
     private const int MaxEventPropertyLength = 8192;
     private const int MaxChildrenLength = 5;
-    private static readonly TelemetryClient s_telemetryClient = new(TelemetryConfiguration.CreateDefault());
+    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule = new();
+    private static readonly TelemetryConfiguration s_telemetryConfiguration = GetTelemetryConfiguration();
+    private static readonly TelemetryClient s_telemetryClient = new(s_telemetryConfiguration);
+
+    private static TelemetryConfiguration GetTelemetryConfiguration()
+    {
+        var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        telemetryConfiguration.TelemetryInitializers.Add(new DependencyTelemetryInitializer());
+        s_dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
+        return telemetryConfiguration;
+    }
 
     // Set value per dimension limit to int.MaxValue
     // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
@@ -346,4 +358,15 @@ internal static class Telemetry
             < 20 => "middle",
             _ => "large",
         };
+
+    private class DependencyTelemetryInitializer : ITelemetryInitializer
+    {
+        public void Initialize(ITelemetry telemetry)
+        {
+            if (telemetry is DependencyTelemetry dependencyTelemetry)
+            {
+                dependencyTelemetry.Data = UrlUtility.SanitizeUrl(dependencyTelemetry.Data);
+            }
+        }
+    }
 }
