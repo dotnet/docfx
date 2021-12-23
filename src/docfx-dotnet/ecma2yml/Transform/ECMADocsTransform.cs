@@ -1,4 +1,4 @@
-﻿namespace ECMA2Yaml
+namespace ECMA2Yaml
 {
     using System.IO;
     using System.Xml;
@@ -17,7 +17,7 @@
         {
             var assembly = this.GetType().Assembly;
             var xsltFilePath = $"ECMA2Yaml.Transform.ECMADocsTransform.xsl";
-            using (var stream = assembly.GetManifestResourceStream(xsltFilePath))
+            using (var stream = File.OpenRead(Path.Combine(AppContext.BaseDirectory, "data/ECMADocsTransform.xsl")))
             using (var reader = XmlReader.Create(stream))
             {
                 var xsltSettings = new XsltSettings(true, true);
