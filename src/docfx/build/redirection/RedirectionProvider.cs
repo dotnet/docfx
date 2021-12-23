@@ -18,6 +18,9 @@ internal class RedirectionProvider
     private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
 
+    private static readonly HashSet<char> s_invalidPathChars =
+        Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Except(new char[] { '/' }).Distinct().ToHashSet();
+
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
 
     public RedirectionProvider(
@@ -222,6 +225,11 @@ internal class RedirectionProvider
                     _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
                     continue;
                 }
+                if (TryGetInvalidPathChars(item.SourcePath.Value, out var invalidPathChars))
+                {
+                    _errors.Add(Errors.Redirection.RedirectionPathInvalid(item.RedirectUrl, item.SourcePath, invalidPathChars));
+                    continue;
+                }
                 sourcePath = Path.GetRelativePath(_buildOptions.DocsetPath, Path.Combine(basedir, item.SourcePath));
             }
             else
@@ -229,6 +237,11 @@ internal class RedirectionProvider
                 if (!item.SourcePathFromRoot.Value.StartsWith("/"))
                 {
                     _errors.Add(Errors.Redirection.RedirectionPathSyntaxError(item.RedirectUrl));
+                    continue;
+                }
+                if (TryGetInvalidPathChars(item.SourcePathFromRoot.Value, out var invalidPathChars))
+                {
+                    _errors.Add(Errors.Redirection.RedirectionPathInvalid(item.RedirectUrl, item.SourcePathFromRoot, invalidPathChars));
                     continue;
                 }
                 var sourcePathRelativeToRepoRoot = item.SourcePathFromRoot.Value[1..];
@@ -363,5 +376,21 @@ internal class RedirectionProvider
     {
         var (path, query, _) = UrlUtility.SplitUrl(redirectionUrl);
         return (path.EndsWith("/index", PathUtility.PathComparison) ? path[..^"index".Length] : path, query);
+    }
+
+    private static bool TryGetInvalidPathChars(string path, out HashSet<char> invalidPathChars)
+    {
+        invalidPathChars = new HashSet<char>();
+        if (!string.IsNullOrEmpty(path))
+        {
+            foreach (var c in path)
+            {
+                if (s_invalidPathChars.Contains(c))
+                {
+                    invalidPathChars.Add(c);
+                }
+            }
+        }
+        return invalidPathChars.Count > 0;
     }
 }

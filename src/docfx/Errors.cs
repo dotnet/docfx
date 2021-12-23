@@ -360,6 +360,13 @@ internal static class Errors
         /// Behavior: ✔️ Message: ✔️
         public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
             => new(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
+
+        /// <summary>
+        /// Check invalid path chars in redirection source path.
+        /// </summary>
+        /// Behavior: ✔️ Message: ✔️
+        public static Error RedirectionPathInvalid(SourceInfo<string> source, PathString path, IEnumerable<char> invalidPathChars)
+            => new(ErrorLevel.Warning, "redirection-path-invalid", $"Redirection path {path} contains invalid chars {string.Join(", ", invalidPathChars.Select(c => $"'{c}'"))}.", source);
     }
 
     public static class Toc
