@@ -1,14 +1,17 @@
+using ECMA2Yaml;
 using Mono.Documentation;
 
-var dir = args.FirstOrDefault() ?? Directory.GetCurrentDirectory();
+var dllDirectory = args.FirstOrDefault() ?? Directory.GetCurrentDirectory();
+var xmlDirectory = Path.Combine(dllDirectory, "xml");
+var ymlDirectory = Path.Combine(dllDirectory, "api");
 
-new MDocFrameworksBootstrapper().Run(new[] { "fx-bootstrap", dir });
+new MDocFrameworksBootstrapper().Run(new[] { "fx-bootstrap", dllDirectory });
 
 new MDocUpdater().Run(new[]
 {
     "update",
-    "-o", Path.Combine(dir, "_xml"),
-    "-fx", dir,
+    "-o", xmlDirectory,
+    "-fx", dllDirectory,
     "-lang", "docid",
     "-index", "false",
     "--debug", "--delete",
@@ -20,3 +23,5 @@ new MDocUpdater().Run(new[]
     "-lang", "c++/cli",
     "--ang", "fsharp",
 });
+
+ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory);
