@@ -366,6 +366,7 @@ internal static class Telemetry
             if (telemetry is DependencyTelemetry dependencyTelemetry)
             {
                 dependencyTelemetry.Data = UrlUtility.SanitizeUrl(dependencyTelemetry.Data);
+                dependencyTelemetry.Properties["CorrelationId"] = s_correlationId;
             }
         }
     }
