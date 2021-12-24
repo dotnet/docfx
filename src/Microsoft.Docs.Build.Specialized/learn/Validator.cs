@@ -49,7 +49,8 @@ internal partial class Validator
 
         // no duplicated uids
         var itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
-        var isValid = validators.All(v => v.Validate(itemDict));
+        var isValid = true;
+        validators.ForEach(v => isValid &= v.Validate(itemDict));
         return (isValid, hierarchyItems);
     }
 
