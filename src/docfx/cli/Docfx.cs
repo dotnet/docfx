@@ -19,6 +19,7 @@ public static class Docfx
     {
         try
         {
+            using var operation = Telemetry.StartOperation();
             return Run(args);
         }
         catch (Exception ex)

@@ -295,6 +295,13 @@ internal static class Telemetry
         Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
     }
 
+    public static IOperationHolder<RequestTelemetry> StartOperation()
+    {
+        var operation = s_telemetryClient.StartOperation<RequestTelemetry>("docfx");
+        operation.Telemetry.Properties.Add("CorrelationId", s_correlationId);
+        return operation;
+    }
+
     private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
     {
         if (!trackValueResult)
