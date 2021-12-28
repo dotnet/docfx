@@ -298,7 +298,7 @@ internal static class Telemetry
     public static IOperationHolder<RequestTelemetry> StartOperation()
     {
         var operation = s_telemetryClient.StartOperation<RequestTelemetry>("docfx");
-        operation.Telemetry.Properties.Add("CorrelationId", s_correlationId);
+        operation.Telemetry.Properties["CorrelationId"] = s_correlationId;
         return operation;
     }
 

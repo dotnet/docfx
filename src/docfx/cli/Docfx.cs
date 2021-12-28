@@ -17,9 +17,9 @@ public static class Docfx
 {
     internal static int Main(params string[] args)
     {
+        using var operation = Telemetry.StartOperation();
         try
         {
-            using var operation = Telemetry.StartOperation();
             return Run(args);
         }
         catch (Exception ex)
