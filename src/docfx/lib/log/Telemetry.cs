@@ -146,7 +146,12 @@ internal static class Telemetry
         }
     }
 
-    public static DelegatingCompletable StartOperation(string name)
+    public static IOperationHolder<RequestTelemetry> StartOperation(string name)
+    {
+        return s_telemetryClient.StartOperation<RequestTelemetry>(name, s_correlationId);
+    }
+
+    public static DelegatingCompletable StartMetricOperation(string name)
     {
         var stopwatch = Stopwatch.StartNew();
         TrackValueWithEnsurance(
@@ -295,13 +300,6 @@ internal static class Telemetry
         Task.WaitAny(Task.Run(s_telemetryClient.Flush), Task.Delay(10000));
     }
 
-    public static IOperationHolder<RequestTelemetry> StartOperation()
-    {
-        var operation = s_telemetryClient.StartOperation<RequestTelemetry>("docfx");
-        operation.Telemetry.Properties["CorrelationId"] = s_correlationId;
-        return operation;
-    }
-
     private static void TrackValueWithEnsurance(string metricsName, bool trackValueResult)
     {
         if (!trackValueResult)
@@ -358,13 +356,12 @@ internal static class Telemetry
         }
     }
 
-    private static string GetTimeBucket(TimeSpan value)
-        => value.TotalSeconds switch
-        {
-            < 0.5 => "small",
-            < 20 => "middle",
-            _ => "large",
-        };
+    private static string GetTimeBucket(TimeSpan value) => value.TotalSeconds switch
+    {
+        < 0.5 => "small",
+        < 20 => "middle",
+        _ => "large",
+    };
 
     private class DependencyTelemetryInitializer : ITelemetryInitializer
     {
@@ -373,7 +370,6 @@ internal static class Telemetry
             if (telemetry is DependencyTelemetry dependencyTelemetry)
             {
                 dependencyTelemetry.Data = UrlUtility.SanitizeUrl(dependencyTelemetry.Data);
-                dependencyTelemetry.Properties["CorrelationId"] = s_correlationId;
             }
         }
     }

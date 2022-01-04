@@ -7,7 +7,6 @@ internal static class Restore
 {
     public static bool Run(CommandLineOptions options)
     {
-        var operation = Telemetry.StartOperation("restore");
         using var errors = new ErrorWriter(options.Log);
 
         var package = new LocalPackage(options.WorkingDirectory);
@@ -21,12 +20,8 @@ internal static class Restore
             return errors.HasError;
         }
 
-        Parallel.ForEach(docsets, docset =>
-        {
-            RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
-        });
+        Parallel.ForEach(docsets, docset => RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
 
-        operation.Complete();
         errors.PrintSummary();
         return errors.HasError;
     }

@@ -60,7 +60,7 @@ internal class LanguageServerBuilder
                 using var progressReporter = await CreateProgressReporter();
 
                 progressReporter.Report("Start build...");
-                var operation = Telemetry.StartOperation("realTimeBuild");
+                var operation = Telemetry.StartMetricOperation("realTimeBuild");
 
                 var errors = new ErrorList();
                 var filesToBuild = _languageServerPackage.GetAllFilesInMemory();

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -17,22 +18,12 @@ public static class Docfx
 {
     internal static int Main(params string[] args)
     {
-        using var operation = Telemetry.StartOperation();
         try
         {
             return Run(args);
         }
-        catch (Exception ex)
+        catch
         {
-            try
-            {
-                PrintFatalErrorMessage(ex);
-                Telemetry.TrackException(ex);
-            }
-            catch
-            {
-            }
-
             return -99999;
         }
         finally
@@ -54,13 +45,29 @@ public static class Docfx
         var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
         ThreadPool.SetMinThreads(minThreads, minThreads);
 
-        return new RootCommand()
-            {
-                NewCommand(),
-                RestoreCommand(),
-                BuildCommand(package),
-                ServeCommand(package),
-            }.Invoke(args);
+        var rootCommand = new RootCommand()
+        {
+            NewCommand(),
+            RestoreCommand(),
+            BuildCommand(package),
+            ServeCommand(package),
+        };
+
+        var command = rootCommand.Parse(args);
+        var name = command.CommandResult.Command == rootCommand ? "docfx" : $"docfx/{command.CommandResult?.Command.Name}";
+        using var operation = Telemetry.StartOperation(name);
+
+        try
+        {
+            return rootCommand.Invoke(args);
+        }
+        catch (Exception ex)
+        {
+            PrintFatalErrorMessage(ex);
+            Telemetry.TrackException(ex);
+            operation.Telemetry.Success = false;
+            throw;
+        }
     }
 
     private static Command NewCommand()
