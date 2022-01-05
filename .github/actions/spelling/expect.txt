@@ -278,7 +278,6 @@ hubpage
 hyperlink
 hyperlinks
 hypertrm
-iaggregate
 ico
 idx
 iframe
@@ -757,4 +756,3 @@ yyyy
 zoneinfo
 zonepivotgroups
 zzz
-istreamable
