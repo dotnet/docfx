@@ -233,6 +233,7 @@ internal class PageBuilder
         systemMetadata.Locale = _buildOptions.Locale;
         systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? _documentProvider.GetCanonicalUrl(file) : null;
         systemMetadata.Path = _documentProvider.GetSitePath(file);
+        systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
         systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", systemMetadata.Locale, _config.BasePath) + "/";
 
         systemMetadata.EnableLocSxs = _buildOptions.EnableSideBySide;
