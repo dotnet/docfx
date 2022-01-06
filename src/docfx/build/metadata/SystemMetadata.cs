@@ -59,6 +59,9 @@ internal class SystemMetadata
     [JsonProperty("_path")]
     public string? Path { get; set; }
 
+    [JsonProperty("_rel")]
+    public string? Rel { get; set; }
+
     [JsonProperty("_op_canonicalUrlPrefix")]
     public string? CanonicalUrlPrefix { get; set; }
 
