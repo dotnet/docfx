@@ -122,7 +122,7 @@ public static class Docfx
         command.AddOption(new Option<bool>(
             "--language-server", "Starts a language server"));
         command.AddOption(new Option<string>(
-            "--address", () => "0.0.0.0", "The address used to serve"));
+            "--address", () => "127.0.0.1", "The address used to serve"));
         command.AddOption(new Option<int>(
             "--port", () => 8080, "The port used to communicate with the client"));
         command.AddOption(new Option<bool>(
