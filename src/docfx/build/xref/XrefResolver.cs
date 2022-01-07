@@ -10,6 +10,7 @@ internal class XrefResolver
 {
     private readonly Config _config;
     private readonly DocumentProvider _documentProvider;
+    private readonly RedirectionProvider _redirectionProvider;
     private readonly ErrorBuilder _errorLog;
     private readonly DependencyMapBuilder _dependencyMapBuilder;
     private readonly FileLinkMapBuilder _fileLinkMapBuilder;
@@ -34,18 +35,21 @@ internal class XrefResolver
         BuildScope buildScope,
         RepositoryProvider repositoryProvider,
         Input input,
-        Func<JsonSchemaTransformer> jsonSchemaTransformer)
+        Func<JsonSchemaTransformer> jsonSchemaTransformer,
+        RedirectionProvider redirectionProvider)
     {
         _config = config;
         _errorLog = errorLog;
         _repository = repository;
         _documentProvider = documentProvider;
         _jsonSchemaTransformer = jsonSchemaTransformer;
+        _redirectionProvider = redirectionProvider;
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         _internalXrefMapBuilder = new(
-            config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider, input, jsonSchemaTransformer);
+            config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider,
+            input, jsonSchemaTransformer, _redirectionProvider);
 
         _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
         _internalXrefMap = new(BuildInternalXrefMap);
