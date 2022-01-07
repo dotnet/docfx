@@ -17,6 +17,7 @@ internal class InternalXrefMapBuilder
     private readonly RepositoryProvider _repositoryProvider;
     private readonly Input _input;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
+    private readonly RedirectionProvider _redirectionProvider;
 
     public InternalXrefMapBuilder(
         Config config,
@@ -27,7 +28,8 @@ internal class InternalXrefMapBuilder
         BuildScope buildScope,
         RepositoryProvider repositoryProvider,
         Input input,
-        Func<JsonSchemaTransformer> jsonSchemaTransformer)
+        Func<JsonSchemaTransformer> jsonSchemaTransformer,
+        RedirectionProvider redirectionProvider)
     {
         _config = config;
         _errors = errors;
@@ -38,6 +40,7 @@ internal class InternalXrefMapBuilder
         _repositoryProvider = repositoryProvider;
         _input = input;
         _jsonSchemaTransformer = jsonSchemaTransformer;
+        _redirectionProvider = redirectionProvider;
     }
 
     public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
@@ -64,6 +67,12 @@ internal class InternalXrefMapBuilder
 
     private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
     {
+
+        // if the file is already to be redirected, it should be excluded from xref map
+        if (_redirectionProvider.TryGetValue(file.Path, out var actualPath))
+        {
+            return;
+        }
         switch (file.Format)
         {
             case FileFormat.Markdown:
