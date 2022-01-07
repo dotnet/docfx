@@ -260,12 +260,6 @@ internal sealed class GitCommitLoader : IDisposable
             committish = _repository.Commit;
         }
 
-        var commitIds = new List<git_oid>();
-
-        // walk commit list
-        git_revwalk_new(out var walk, _repo);
-        git_revwalk_sorting(walk, (1 << 0) | (1 << 1) /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
-
         var headCommit = IntPtr.Zero;
         foreach (var branch in GitUtility.GetFallbackBranch(committish))
         {
@@ -277,13 +271,18 @@ internal sealed class GitCommitLoader : IDisposable
 
         if (headCommit == IntPtr.Zero)
         {
-            git_object_free(walk);
             throw Errors.Config.CommittishNotFound(_repository.Url, committish).ToException();
         }
+
+        // walk commit list
+        git_revwalk_new(out var walk, _repo);
+        git_revwalk_sorting(walk, (1 << 0) | (1 << 1) /* GIT_SORT_TOPOLOGICAL | GIT_SORT_TIME */);
 
         var lastCommitId = *git_object_id(headCommit);
         git_revwalk_push(walk, &lastCommitId);
         git_object_free(headCommit);
+
+        var commitIds = new List<git_oid>();
 
         while (true)
         {
