@@ -1,0 +1,430 @@
+{
+  "author": {
+    "name": "author",
+    "description": "Identify the author by GitHub ID. Used for GitHub workflow automation and notifications.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "author-missing",
+        "additionalErrorMessage": "Add a valid GitHub ID."
+      }
+    ]
+  },
+  "ms.author": {
+    "name": "ms.author",
+    "description": "Identify the author by Microsoft alias. Used for internal content reporting.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-author-missing",
+        "additionalErrorMessage": "Add a valid Microsoft alias."
+      },
+      {
+        "type": "MicrosoftAlias",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-author-invalid",
+        "allowedDLs": "list:ms.author"
+      }
+    ]
+  },
+  "ms.prod": {
+    "name": "ms.prod",
+    "description": "The on-prem product the article refers to.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Either",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-prod-or-service-missing",
+        "name": "ms.service",
+        "additionalErrorMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
+      },
+      {
+        "type": "Precludes",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-prod-and-service",
+        "name": "ms.service",
+        "additionalErrorMessage": "Use ms.prod for on-premise products, or ms.service for cloud services."
+      },
+      {
+        "type": "List",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-prod-technology-invalid",
+        "list": "list:ms.prod"
+      }
+    ]
+  },
+  "ms.service": {
+    "name": "ms.service",
+    "description": "The cloud service the article refers to.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "List",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-service-subservice-invalid",
+        "list": "list:ms.service"
+      }
+    ]
+  },
+  "ms.technology": {
+    "name": "ms.technology",
+    "description": "Sub-category of ms.prod.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Requires",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-prod-technology-invalid",
+        "name": "ms.prod"
+      }
+    ]
+  },
+  "ms.subservice": {
+    "name": "ms.subservice",
+    "description": "Sub-category of ms.service.",
+    "aliases": [
+      "ms.component"
+    ],
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Requires",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-service-subservice-invalid",
+        "name": "ms.service"
+      }
+    ]
+  },
+  "title": {
+    "name": "title",
+    "description": "The title for browser tabs and search results.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values",
+        "tags": [ "SEO" ]
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual"
+        ],
+        "severity": "SUGGESTION",
+        "code": "title-missing",
+        "additionalErrorMessage": "Add a title string to show in search engine results.",
+        "tags": [ "SEO" ]
+      },
+      {
+        "type": "Uniqueness",
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ],
+        "severity": "SUGGESTION",
+        "code": "duplicate-title-within-docset",
+        "additionalErrorMessage": "Title must be unique within a docset.",
+        "tags": [ "SEO" ]
+      }
+    ]
+  },
+  "ms.topic": {
+    "name": "ms.topic",
+    "description": "The article type for concepual Markdown files.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-topic-missing",
+        "additionalErrorMessage": "Add a valid value to indicate the article type."
+      },
+      {
+        "type": "List",
+        "contentTypes": [
+          "conceptual"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-topic-invalid",
+        "list": "list:ms.topic"
+      },
+      {
+        "type": "Match",
+        "contentTypes": [
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-topic-invalid",
+        "value": "include"
+      }
+    ]
+  },
+  "product": {
+    "name": "product",
+    "description": "The page type and page kind for Learn files.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ],
+        "multipleValues": true,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ],
+        "severity": "SUGGESTION",
+        "code": "page-type"
+      },
+      {
+        "type": "List",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ],
+        "severity": "SUGGESTION",
+        "code": "page-type",
+        "list": "list:product"
+      }
+    ]
+  },
+  "ms.date": {
+    "name": "ms.date",
+    "description": "The freshness date (when content was verified accurate). Shows on the published page.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values"
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-date-missing",
+        "additionalErrorMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY."
+      },
+      {
+        "type": "Date",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-date-invalid",
+        "format": "M/d/yyyy",
+        "relativeMax": "5:00:00:00",
+        "additionalErrorMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
+        "pullRequestOnly": true
+      }
+    ]
+  },
+  "ms.component": {
+    "name": "ms.component",
+    "description": "Old name for ms.subservice.",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Deprecated",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "deprecated-attribute",
+        "replacedBy": "ms.subservice"
+      }
+    ]
+  },
+  "description": {
+    "name": "description",
+    "description": "The description of this page",
+    "aliases": null,
+    "rules": [
+      {
+        "type": "Kind",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "multipleValues": false,
+        "severity": "SUGGESTION",
+        "code": "multiple-values",
+        "pullRequestOnly": true
+      },
+      {
+        "type": "Uniqueness",
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ],
+        "severity": "SUGGESTION",
+        "code": "duplicate-description-within-docset",
+        "additionalErrorMessage": "Description must be unique within a docset.",
+        "pullRequestOnly": false
+      },
+      {
+        "type": "Length",
+        "contentTypes": [
+          "conceptual"
+        ],
+        "MinLength": 2,
+        "MaxLength": 10,
+        "severity": "SUGGESTION",
+        "code": "description-bad-length",
+        "additionalErrorMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces."
+      },
+      {
+        "type": "Required",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "severity": "SUGGESTION",
+        "code": "ms-date-missing",
+        "additionalErrorMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
+        "disabled": true
+      }
+    ]
+  }
+}

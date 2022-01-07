@@ -1,0 +1,590 @@
+{
+  "docsetUnique": [
+    "title",
+    "description"
+  ],
+  "properties": {
+    "author": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.author": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "microsoftAlias": {
+        "allowedDLs": [
+          "amlstudiodocs",
+          "apimpm",
+          "archiveddocs",
+          "azfuncdf",
+          "betafred",
+          "dotnetcontent",
+          "hisdocs",
+          "ncldev"
+        ]
+      }
+    },
+    "ms.prod": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.service": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.technology": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.subservice": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ms.topic": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "archived",
+        "article",
+        "best-practice",
+        "callback",
+        "checklist",
+        "class",
+        "conceptual"
+      ]
+    },
+    "product": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "enum": [
+          "azure",
+          "azue-speech-translation",
+          "azure-active-directory",
+          "azure-active-directory-b2c",
+          "azure-active-directory-domain",
+          "azure-advisor",
+          "azure-analysis-services",
+          "azure-anomaly-detector",
+          "azure-api-apps",
+          "azure-api-fhir",
+          "azure-api-management",
+          "dotnet",
+          "aspnet",
+          "aspnet-core",
+          "dotnet-core",
+          "dotnet-standard",
+          "ef-core",
+          "mlnet",
+          "xamarin",
+          "dynamics",
+          "dynamics-365",
+          "customer-voice",
+          "dynamics-business-central",
+          "dynamics-commerce",
+          "dynamics-cust-insights",
+          "dynamics-customer-engagement",
+          "dynamics-customer-service",
+          "dynamics-cust-svc-insights",
+          "dynamics-field-service",
+          "expression",
+          "expression-studio",
+          "m365",
+          "m365-ems",
+          "m365-ems-cloud-app-security",
+          "m365-information-protection",
+          "m365-security-center",
+          "m365-security-score",
+          "mem",
+          "mem-configuration-manager",
+          "mem-intune"
+        ]
+      }
+    },
+    "ms.date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "dateFormat": "M/d/yyyy",
+      "relativeMaxDate": "5.00:00:00"
+    },
+    "ms.component": {
+      "replacedBy": "ms.subservice"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 2,
+      "maxLength": 10
+    }
+  },
+  "strictRequired": [
+    "author",
+    "ms.author",
+    "title",
+    "ms.topic",
+    "product",
+    "ms.date"
+  ],
+  "dependencies": {
+    "ms.technology": [
+      "ms.prod"
+    ],
+    "ms.subservice": [
+      "ms.service"
+    ]
+  },
+  "either": [
+    [
+      "ms.prod",
+      "ms.service"
+    ]
+  ],
+  "precludes": [
+    [
+      "ms.prod",
+      "ms.service"
+    ]
+  ],
+  "enumDependencies": {
+    "ms.prod[0]": {
+      ".net": {
+        "ms.technology[0]": {
+          "": null,
+          "csharp-interactive": null,
+          "devlang-csharp": null,
+          "devlang-fsharp": null
+        }
+      },
+      ".net-core": {
+        "ms.technology[0]": {
+          "": null,
+          "devlang-cpp": null,
+          "devlang-csharp": null,
+          "devlang-fsharp": null,
+          "devlang-javascript": null,
+          "devlang-python": null
+        }
+      },
+      ".net-core-technologies": {
+        "ms.technology[0]": {
+          "": null,
+          "devlang-cpp": null,
+          "devlang-csharp": null,
+          "devlang-fsharp": null,
+          "devlang-javascript": null,
+          "devlang-python": null,
+          "devlang-visual-basic": null,
+          "dotnet-asp5": null
+        }
+      },
+      ".net-framework": {
+        "ms.technology[0]": {
+          "": null,
+          "devlang-cpp": null,
+          "devlang-csharp": null,
+          "devlang-fsharp": null,
+          "devlang-javascript": null
+        }
+      }
+    },
+    "ms.service[0]": {
+      "3d-data-preparation": {
+        "ms.subservice[0]": {
+          "": null
+        }
+      },
+      "active-directory": {
+        "ms.subservice[0]": {
+          "": null,
+          "app-mgmt": null,
+          "app-provisioning": null,
+          "authentication": null,
+          "azuread-dev": null
+        }
+      },
+      "architecture-center": {
+        "ms.subservice[0]": {
+          "": null,
+          "asc-for-iot": null,
+          "attestation": null,
+          "cloud-fundamentals": null,
+          "enterprise-cloud-adoption": null,
+          "example-scenario": null
+        }
+      },
+      "automation": {
+        "ms.subservice[0]": {
+          "": null,
+          "change-inventory-management": null,
+          "dsc": null,
+          "process-automation": null,
+          "shared-capabilities": null,
+          "update-management": null
+        }
+      }
+    }
+  },
+  "rules": {
+    "author": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "author-missing",
+        "additionalMessage": "Add a valid GitHub ID.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.author": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "ms-author-missing",
+        "additionalMessage": "Add a valid Microsoft alias.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "ms-alias-invalid": {
+        "severity": "suggestion",
+        "code": "ms-author-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.prod": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-either-attribute": {
+        "severity": "suggestion",
+        "code": "ms-prod-or-service-missing",
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "precluded-attributes": {
+        "severity": "suggestion",
+        "code": "ms-prod-and-service",
+        "additionalMessage": "Use ms.prod for on-premise products, or ms.service for cloud services.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "invalid-paired-attribute": {
+        "severity": "suggestion",
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "invalid-value": {
+        "severity": "suggestion",
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.service": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "invalid-paired-attribute": {
+        "severity": "suggestion",
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "invalid-value": {
+        "severity": "suggestion",
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.technology": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-paired-attribute": {
+        "severity": "suggestion",
+        "code": "ms-prod-technology-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.subservice": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-paired-attribute": {
+        "severity": "suggestion",
+        "code": "ms-service-subservice-invalid",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "title": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ],
+        "tags": [ "SEO" ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "title-missing",
+        "additionalMessage": "Add a title string to show in search engine results.",
+        "contentTypes": [
+          "conceptual"
+        ],
+        "tags": [ "SEO" ]
+      },
+      "duplicate-attribute": {
+        "severity": "suggestion",
+        "code": "duplicate-title-within-docset",
+        "additionalMessage": "Title must be unique within a docset.",
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ],
+        "tags": [ "SEO" ]
+      }
+    },
+    "ms.topic": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "ms-topic-missing",
+        "additionalMessage": "Add a valid value to indicate the article type.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "invalid-paired-attribute": {
+        "severity": "suggestion",
+        "code": "ms-topic-invalid",
+        "contentTypes": [
+          "conceptual"
+        ]
+      },
+      "invalid-value": {
+        "severity": "suggestion",
+        "code": "ms-topic-invalid",
+        "contentTypes": [
+          "conceptual"
+        ]
+      }
+    },
+    "product": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "page-type",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
+      },
+      "invalid-paired-attribute": {
+        "severity": "suggestion",
+        "code": "page-type",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
+      },
+      "invalid-value": {
+        "severity": "suggestion",
+        "code": "page-type",
+        "contentTypes": [
+          "Learn.Module",
+          "Learn.LearningPath"
+        ]
+      }
+    },
+    "ms.date": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "missing-attribute": {
+        "severity": "suggestion",
+        "code": "ms-date-missing",
+        "additionalMessage": "A freshness date is required for this content set. Add a date in format MM/DD/YYYY.",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "date-format-invalid": {
+        "severity": "suggestion",
+        "code": "ms-date-invalid",
+        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "date-out-of-range": {
+        "severity": "suggestion",
+        "code": "ms-date-invalid",
+        "additionalMessage": "Must be a date in format MM/DD/YYYY, no more than five days from today.",
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "ms.component": {
+      "attribute-deprecated": {
+        "severity": "suggestion",
+        "code": "deprecated-attribute",
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      }
+    },
+    "description": {
+      "unexpected-type": {
+        "severity": "suggestion",
+        "code": "multiple-values",
+        "pullRequestOnly": true,
+        "contentTypes": [
+          "conceptual",
+          "include"
+        ]
+      },
+      "duplicate-attribute": {
+        "severity": "suggestion",
+        "code": "duplicate-description-within-docset",
+        "additionalMessage": "Description must be unique within a docset.",
+        "pullRequestOnly": false,
+        "contentTypes": [
+          "conceptual",
+          "include",
+          "landingpage",
+          "hubpage"
+        ]
+      },
+      "string-length-invalid": {
+        "severity": "suggestion",
+        "code": "description-bad-length",
+        "additionalMessage": "Description length of characters is out of range. The description should be between MinLength and MaxLength characters, including spaces.",
+        "contentTypes": [
+          "conceptual"
+        ]
+      }
+    }
+  }
+}
