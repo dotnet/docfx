@@ -21,7 +21,6 @@ internal class TemplateEngine
     private readonly MustacheTemplate _mustacheTemplate;
     private readonly string _locale;
     private readonly CultureInfo _cultureInfo;
-    private readonly SearchIndexBuilder? _searchIndexBuilder;
     private readonly BookmarkValidator? _bookmarkValidator;
 
     public static TemplateEngine CreateTemplateEngine(
@@ -29,8 +28,7 @@ internal class TemplateEngine
         Config config,
         PackageResolver packageResolver,
         string locale,
-        BookmarkValidator? bookmarkValidator = null,
-        SearchIndexBuilder? searchIndexBuilder = null)
+        BookmarkValidator? bookmarkValidator = null)
     {
         var template = config.Template;
         var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -41,7 +39,7 @@ internal class TemplateEngine
         }
         var package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-        return new TemplateEngine(errors, config, package, locale, bookmarkValidator, searchIndexBuilder);
+        return new TemplateEngine(errors, config, package, locale, bookmarkValidator);
     }
 
     public static TemplateEngine CreateTemplateEngine(ErrorBuilder errors, Config config, string locale, Package package)
@@ -54,8 +52,7 @@ internal class TemplateEngine
          Config config,
          Package package,
          string locale,
-         BookmarkValidator? bookmarkValidator = null,
-         SearchIndexBuilder? searchIndexBuilder = null)
+         BookmarkValidator? bookmarkValidator = null)
     {
         _errors = errors;
         _config = config;
@@ -67,7 +64,6 @@ internal class TemplateEngine
         _liquid = new(_package, _config.TemplateBasePath, _global);
         _mustacheTemplate = new(_package, "ContentTemplate", _global);
         _bookmarkValidator = bookmarkValidator;
-        _searchIndexBuilder = searchIndexBuilder;
     }
 
     public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -209,7 +205,6 @@ internal class TemplateEngine
         });
 
         _bookmarkValidator?.AddBookmarks(file, bookmarks);
-        _searchIndexBuilder?.SetBody(file, searchText.ToString());
 
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }

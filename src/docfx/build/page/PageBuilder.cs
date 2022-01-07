@@ -25,7 +25,6 @@ internal class PageBuilder
     private readonly ContentValidator _contentValidator;
     private readonly MetadataValidator _metadataValidator;
     private readonly MarkdownEngine _markdownEngine;
-    private readonly SearchIndexBuilder _searchIndexBuilder;
     private readonly RedirectionProvider _redirectionProvider;
     private readonly JsonSchemaTransformer _jsonSchemaTransformer;
     private readonly LearnHierarchyBuilder _learnHierarchyBuilder;
@@ -47,7 +46,6 @@ internal class PageBuilder
         ContentValidator contentValidator,
         MetadataValidator metadataValidator,
         MarkdownEngine markdownEngine,
-        SearchIndexBuilder searchIndexBuilder,
         RedirectionProvider redirectionProvider,
         JsonSchemaTransformer jsonSchemaTransformer,
         LearnHierarchyBuilder learnHierarchyBuilder)
@@ -68,7 +66,6 @@ internal class PageBuilder
         _contentValidator = contentValidator;
         _metadataValidator = metadataValidator;
         _markdownEngine = markdownEngine;
-        _searchIndexBuilder = searchIndexBuilder;
         _redirectionProvider = redirectionProvider;
         _jsonSchemaTransformer = jsonSchemaTransformer;
         _learnHierarchyBuilder = learnHierarchyBuilder;
@@ -252,8 +249,6 @@ internal class PageBuilder
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-        systemMetadata.SearchEngine = _config.SearchEngine;
-
         if (!_config.IsReferenceRepository && _config.OutputPdf)
         {
             systemMetadata.PdfUrlPrefixTemplate = UrlUtility.Combine(
@@ -277,7 +272,6 @@ internal class PageBuilder
         var conceptual = new ConceptualModel { Title = userMetadata.Title };
         var html = _markdownEngine.ToHtml(errors, content, new SourceInfo(file), MarkdownPipelineType.Markdown, conceptual);
 
-        _searchIndexBuilder.SetTitle(file, conceptual.Title);
         _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
         ProcessConceptualHtml(errors, file, html, conceptual);
@@ -295,7 +289,6 @@ internal class PageBuilder
             var userMetadata = _metadataProvider.GetMetadata(errors, file);
 
             _metadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
-            _searchIndexBuilder.SetTitle(file, userMetadata.Title);
 
             JsonUtility.Merge(pageModel, new JObject { ["metadata"] = userMetadata.RawJObject });
         }
@@ -372,7 +365,6 @@ internal class PageBuilder
         }
 
         _bookmarkValidator.AddBookmarks(file, bookmarks);
-        _searchIndexBuilder.SetBody(file, searchText.ToString());
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
         conceptual.WordCount = wordCount;
