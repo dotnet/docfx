@@ -268,11 +268,6 @@ internal class Config : PreloadConfig
     public string? TemplateBasePath { get; init; }
 
     /// <summary>
-    /// Gets the search index type like [lunr](https://lunrjs.com/)
-    /// </summary>
-    public SearchEngineType SearchEngine { get; init; }
-
-    /// <summary>
     /// When enabled, updated_at for each document will be the last build time
     /// for the latest commit that touches that document.
     /// </summary>

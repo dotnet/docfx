@@ -53,9 +53,6 @@ internal class SystemMetadata
 
     public string? DepotName { get; set; }
 
-    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public SearchEngineType SearchEngine { get; set; }
-
     [JsonProperty("_path")]
     public string? Path { get; set; }
 
