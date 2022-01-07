@@ -24,7 +24,7 @@ jobs:
     - uses: codecov/codecov-action@v1
       if: ${{ matrix.os == 'windows-latest' }}
 
-    - run: dotnet publish src\docfx\docfx.csproj -warnAsError -c Release -o $RUNNER_TEMP/publish
+    - run: dotnet publish src/docfx/docfx.csproj -warnAsError -c Release -o ${{ runner.temp }}/publish
     - uses: actions/upload-artifact@v2
       with:
         name: docfx-${{ matrix.os }}
