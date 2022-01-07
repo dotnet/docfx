@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -20,7 +20,7 @@ jobs:
       with:
         dotnet-version: '6.0.x'
     - run: dotnet build -warnAsError -c Release
-    - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --logger "console;verbosity=detailed"
+    - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v1
       if: ${{ matrix.os == 'windows-latest' }}
 
