@@ -189,6 +189,11 @@ public static class DocfxTest
 
         if (spec.LanguageServer.Count != 0)
         {
+            if (OperatingSystem.IsLinux())
+            {
+                throw new TestSkippedException("Skip language server tests on linux");
+            }
+
             RunLanguageServer(docsetPath, spec, package).GetAwaiter().GetResult();
         }
         else if (spec.Locale != null)
