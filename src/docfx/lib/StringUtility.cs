@@ -18,9 +18,13 @@ internal static class StringUtility
 
     public static string ToCamelCase(char wordSeparator, string value)
     {
+        var words = value.ToLowerInvariant().Split(wordSeparator, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length <= 0)
+        {
+            return "";
+        }
+
         var sb = new StringBuilder();
-        var words = value.ToLowerInvariant().Split(wordSeparator);
-        sb.Length = 0;
         sb.Append(words[0]);
         for (var i = 1; i < words.Length; i++)
         {

@@ -146,7 +146,12 @@ internal static class Telemetry
         }
     }
 
-    public static DelegatingCompletable StartOperation(string name)
+    public static IOperationHolder<RequestTelemetry> StartOperation(string name)
+    {
+        return s_telemetryClient.StartOperation<RequestTelemetry>(name, s_correlationId);
+    }
+
+    public static DelegatingCompletable StartMetricOperation(string name)
     {
         var stopwatch = Stopwatch.StartNew();
         TrackValueWithEnsurance(
@@ -351,13 +356,12 @@ internal static class Telemetry
         }
     }
 
-    private static string GetTimeBucket(TimeSpan value)
-        => value.TotalSeconds switch
-        {
-            < 0.5 => "small",
-            < 20 => "middle",
-            _ => "large",
-        };
+    private static string GetTimeBucket(TimeSpan value) => value.TotalSeconds switch
+    {
+        < 0.5 => "small",
+        < 20 => "middle",
+        _ => "large",
+    };
 
     private class DependencyTelemetryInitializer : ITelemetryInitializer
     {

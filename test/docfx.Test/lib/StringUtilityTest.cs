@@ -11,6 +11,9 @@ public static class StringUtilityTest
     [InlineData("", "")]
     [InlineData("a", "a")]
     [InlineData("OUTPUT_PATH", "outputPath")]
+    [InlineData("OUTPUT_PATH_", "outputPath")]
+    [InlineData("_OUTPUT_PATH", "outputPath")]
+    [InlineData("_OUTPUT_PATH_", "outputPath")]
     [InlineData("OUTPUT_PATH_NAME", "outputPathName")]
     public static void ToCamelCaseTest(string name, string camelCaseName)
     {
