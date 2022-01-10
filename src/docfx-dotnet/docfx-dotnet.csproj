@@ -8,6 +8,12 @@
     <DefineConstants>NEW_CECIL</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>CS0067;CS0414;SYSLIB0003</NoWarn>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
