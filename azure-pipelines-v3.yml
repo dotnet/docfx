@@ -83,8 +83,6 @@ jobs:
   - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
     displayName: 'Component Detection'
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    inputs:
-      ignoreDirectories: $(System.DefaultWorkingDirectory)/test/docfx.Test/bin
 
   # Put this step in the end, for this step always return status:succeeded, and following task won't be skipped
   - task: PublishTestResults@2
