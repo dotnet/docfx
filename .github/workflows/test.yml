@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [ v3 ]
   push:
-    branches: [ v3 ]
+    branches: [ v3, v3-template ]
 
 jobs:
   test:
