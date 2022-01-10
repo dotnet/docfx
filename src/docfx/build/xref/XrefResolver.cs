@@ -22,7 +22,8 @@ internal class XrefResolver
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
-    public XrefResolver(Config config,
+    public XrefResolver(
+        Config config,
         FileResolver fileResolver,
         Repository? repository,
         DependencyMapBuilder dependencyMapBuilder,

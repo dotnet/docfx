@@ -19,7 +19,8 @@ internal class InternalXrefMapBuilder
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
     private readonly RedirectionProvider _redirectionProvider;
 
-    public InternalXrefMapBuilder(Config config,
+    public InternalXrefMapBuilder(
+        Config config,
         ErrorBuilder errors,
         DocumentProvider documentProvider,
         MetadataProvider metadataProvider,
