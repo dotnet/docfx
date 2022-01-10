@@ -119,14 +119,14 @@ public static class Docfx
     {
         var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
         DefineCommonCommands(command);
-        command.AddOption(new Option<bool>(
-            "--language-server", "Starts a language server"));
         command.AddOption(new Option<string>(
-            "--address", () => "127.0.0.1", "The address used to serve"));
+            "--address", () => "127.0.0.1", "Address to use."));
         command.AddOption(new Option<int>(
-            "--port", () => 8080, "The port used to communicate with the client"));
+            "--port", () => 8080, "Port to use. If 0, look for open port."));
         command.AddOption(new Option<bool>(
             "--no-cache", "Always fetch latest dependencies in build."));
+        command.AddOption(new Option<bool>(
+            "--language-server", "Starts a language server."));
         return command;
     }
 
