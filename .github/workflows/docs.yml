@@ -1,0 +1,35 @@
+name: Publish Docs
+on:
+  push:
+    branches: [ v3-release, v3-docs-gs ]
+jobs:
+  docs:
+    name: Publish GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+    - run: dotnet build -c Release -o ${{ runner.temp }}/bin src/docfx/docfx.csproj
+    - run: ${{ runner.temp }}/bin/docfx build docs -o ${{ runner.temp }}/_site
+      env:
+        DOCFX__SECRETS__GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: |
+        git fetch origin gh-pages
+        git checkout gh-pages
+        git rm -r --ignore-unmatch v3
+        mkdir -p v3
+        cp -r ${{ runner.temp }}/_site/* v3
+        git add v3
+
+        git config user.email ${{ github.event.head_commit.author.email }}
+        git config user.name ${{ github.event.head_commit.author.name }}
+
+        # Ignore empty commits
+        git diff-index --quiet HEAD || (git commit -a -m "docfx: ${{ github.event.head_commit.message }}" && git push)
+      name: Publish GitHub Pages
