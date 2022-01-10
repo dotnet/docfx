@@ -1,0 +1,7 @@
+template: https://github.com/docascode/template
+exclude:
+- specs/**
+- designs/**
+globalMetadata:
+  titleSuffix: docfx
+  menu_path: /menu.json

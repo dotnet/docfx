@@ -52,7 +52,7 @@ internal static class ConfigLoader
         var unionProperties = new string[] { "xref" };
 
         // Load configs available locally
-        var envConfig = LoadEnvironmentVariables();
+        var envConfig = LoadEnvironmentVariables(Environment.GetEnvironmentVariables().Cast<DictionaryEntry>());
         var cliConfig = new JObject();
         JsonUtility.Merge(unionProperties, cliConfig, options.StdinConfig, options.ToJObject());
 
@@ -103,6 +103,78 @@ internal static class ConfigLoader
 
         Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
         return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
+    }
+
+    internal static JObject LoadEnvironmentVariables(IEnumerable<DictionaryEntry> environmentVariables)
+    {
+        var root = new JObject();
+
+        foreach (var entry in environmentVariables)
+        {
+            var key = entry.Key.ToString();
+            if (key is null || !key.StartsWith("DOCFX_"))
+            {
+                continue;
+            }
+
+            var value = entry.Value?.ToString();
+            if (string.IsNullOrEmpty(value))
+            {
+                continue;
+            }
+
+            var segments = key["DOCFX".Length..].Split("__", StringSplitOptions.RemoveEmptyEntries);
+            var container = ExpandProperties(root, segments);
+            if (container is null)
+            {
+                continue;
+            }
+
+            var name = StringUtility.ToCamelCase('_', segments[^1]);
+            container[name] = GetJsonValue(value);
+        }
+
+        return root;
+
+        static JObject? ExpandProperties(JObject root, string[] segments)
+        {
+            var current = root;
+            for (var i = 0; i < segments.Length - 1; i++)
+            {
+                var name = StringUtility.ToCamelCase('_', segments[i]);
+                if (!current.TryGetValue(name, out var item))
+                {
+                    current = (JObject)(current[name] = new JObject());
+                }
+                else if (item is JObject obj)
+                {
+                    current = obj;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return current;
+        }
+
+        static JToken GetJsonValue(string value)
+        {
+            var trimmedValue = value.Trim();
+            if (trimmedValue.StartsWith('{') && trimmedValue.EndsWith('}'))
+            {
+                try
+                {
+                    return JObject.Parse(value);
+                }
+                catch
+                {
+                }
+            }
+
+            var values = value.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            return values.Length == 1 ? values[0] : new JArray(values);
+        }
     }
 
     private static JObject? LoadConfig(ErrorBuilder errors, Package package, PathString directory = default)
@@ -185,31 +257,5 @@ internal static class ConfigLoader
         }
 
         return null;
-    }
-
-    private static JObject LoadEnvironmentVariables()
-    {
-        return new JObject(
-            from entry in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
-            let key = entry.Key.ToString()
-            where key.StartsWith("DOCFX_")
-            let configKey = StringUtility.ToCamelCase('_', key["DOCFX_".Length..])
-            let configValue = entry.Value?.ToString()
-            where !string.IsNullOrEmpty(configValue)
-            select new JProperty(configKey, GetJsonValue(configValue)));
-    }
-
-    private static object GetJsonValue(string value)
-    {
-        try
-        {
-            return JObject.Parse(value);
-        }
-        catch (Exception)
-        {
-        }
-
-        var values = value.Split(';', StringSplitOptions.RemoveEmptyEntries);
-        return values.Length == 1 ? values[0] : values;
     }
 }
