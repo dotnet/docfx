@@ -49,7 +49,7 @@ internal class XrefResolver
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
         _internalXrefMapBuilder = new(
             config, errorLog, documentProvider, metadataProvider, monikerProvider, buildScope, repositoryProvider,
-            input, jsonSchemaTransformer, _redirectionProvider);
+            input, _redirectionProvider, jsonSchemaTransformer);
 
         _externalXrefMap = new(() => ExternalXrefMapLoader.Load(config, fileResolver, errorLog));
         _internalXrefMap = new(BuildInternalXrefMap);
