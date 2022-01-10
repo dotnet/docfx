@@ -90,7 +90,8 @@ internal static class Telemetry
             new MetricIdentifier(
                 null,
                 "HtmlElement",
-                "ElementType",
+                "Tag",
+                "Attribute",
                 "IsAllowed",
                 "FileExtension",
                 "DocumentType",
@@ -271,12 +272,12 @@ internal static class Telemetry
             {
                 foreach (var (attributeName, count) in attributeCount)
                 {
-                    var elementType = string.IsNullOrEmpty(attributeName) ? tokenName : $"{tokenName}_{attributeName}";
                     TrackValueWithEnsurance(
                     s_htmlElementCountMetric.Identifier.MetricId,
                     s_htmlElementCountMetric.TrackValue(
                     count,
-                    CoalesceEmpty(elementType),
+                    CoalesceEmpty(tokenName),
+                    CoalesceEmpty(attributeName),
                     isAllowed(tokenName, attributeName).ToString(),
                     fileExtension,
                     documentType,
