@@ -1,0 +1,6 @@
+#YamlMime:Menu
+items:
+- name: Home
+  href: index.yml
+- name: Docs
+  href: getting-started.md

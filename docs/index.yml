@@ -1,0 +1,9 @@
+#YamlMime:Home
+title: docfx
+description: Static site generator for .NET API documentation.
+hero:
+  buttons:
+  - name: Getting Started
+    href: getting-started.md
+  - name: Download
+    href: https://github.com/dotnet/docfx/releases
