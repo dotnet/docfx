@@ -22,8 +22,7 @@ internal class XrefResolver
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
 
-    public XrefResolver(
-        Config config,
+    public XrefResolver(Config config,
         FileResolver fileResolver,
         Repository? repository,
         DependencyMapBuilder dependencyMapBuilder,
@@ -35,8 +34,8 @@ internal class XrefResolver
         BuildScope buildScope,
         RepositoryProvider repositoryProvider,
         Input input,
-        Func<JsonSchemaTransformer> jsonSchemaTransformer,
-        RedirectionProvider redirectionProvider)
+        RedirectionProvider redirectionProvider,
+        Func<JsonSchemaTransformer> jsonSchemaTransformer)
     {
         _config = config;
         _errorLog = errorLog;
