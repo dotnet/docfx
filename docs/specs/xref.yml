@@ -2162,3 +2162,39 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md"}
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}
+---
+# exclude redirected files from xref map
+noSingleFile: true
+inputs:
+    docfx.yml:
+    a.md: |
+      ---
+      title: Title a
+      uid: a
+      ---
+    b.md: |
+      ---
+      title: Title b
+      uid: b
+      ---
+    c.md: |
+      Link to <xref:a>
+    redirections.yml: |
+      redirections:
+        a.md: /absolute/path2
+outputs: 
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "b",
+          "name": "Title b"
+        }
+      ]
+    }
+  b.json:
+  .errors.log: | 
+    {"message_severity":"warning","code":"redirected-file-not-removed","message":"Redirected file 'a.md' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo."}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"c.md"}
+  c.json: |
+    { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\"> &lt;xref:a&gt;</span></p>" }
