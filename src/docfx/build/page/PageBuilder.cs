@@ -73,7 +73,7 @@ internal class PageBuilder
 
     public void Build(ErrorBuilder errors, FilePath file)
     {
-        var sourceModel = file.Format switch
+        var (sourceModel, sourceMetadata) = file.Format switch
         {
             FileFormat.Markdown => LoadMarkdown(errors, file),
             _ => LoadSchemaDocument(errors, file),
@@ -85,7 +85,10 @@ internal class PageBuilder
         }
 
         var isContentRenderType = _documentProvider.GetRenderType(file) == RenderType.Content;
-        var (output, metadata) = isContentRenderType ? CreatePageOutput(errors, file, sourceModel) : CreateDataOutput(file, sourceModel);
+        var (output, outputMetadata) = isContentRenderType
+            ? CreatePageOutput(errors, file, sourceModel, sourceMetadata)
+            : CreateDataOutput(file, sourceModel);
+
         var outputPath = _documentProvider.GetOutputPath(file);
 
         if (!errors.FileHasError(file) && !_config.DryRun)
@@ -102,14 +105,14 @@ internal class PageBuilder
             if (_config.OutputType == OutputType.PageJson && isContentRenderType)
             {
                 var metadataPath = outputPath[..^".raw.page.json".Length] + ".mta.json";
-                _output.WriteJson(metadataPath, metadata);
+                _output.WriteJson(metadataPath, outputMetadata);
             }
         }
 
-        _publishModelBuilder.AddOrUpdate(file, metadata, outputPath);
+        _publishModelBuilder.AddOrUpdate(file, outputMetadata, outputPath);
     }
 
-    private (object output, JObject metadata) CreatePageOutput(ErrorBuilder errors, FilePath file, JObject sourceModel)
+    private (object output, JObject metadata) CreatePageOutput(ErrorBuilder errors, FilePath file, JObject sourceModel, JObject sourceMetadata)
     {
         var outputMetadata = new JObject();
         var outputModel = new JObject();
@@ -130,15 +133,12 @@ internal class PageBuilder
         if (JsonSchemaProvider.IsConceptual(mime))
         {
             // conceptual raw metadata and raw model
-            JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
-            JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
+            JsonUtility.Merge(outputMetadata, sourceMetadata, systemMetadataJObject);
+            JsonUtility.Merge(outputModel, sourceMetadata, sourceModel, systemMetadataJObject);
         }
         else
         {
-            JsonUtility.Merge(
-                outputMetadata,
-                sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(),
-                systemMetadataJObject);
+            JsonUtility.Merge(outputMetadata, sourceMetadata, systemMetadataJObject);
             JsonUtility.Merge(outputModel, sourceModel, new JObject { ["metadata"] = outputMetadata });
         }
 
@@ -258,7 +258,7 @@ internal class PageBuilder
         return systemMetadata;
     }
 
-    private JObject LoadMarkdown(ErrorBuilder errors, FilePath file)
+    private (JObject pageModel, JObject metadata) LoadMarkdown(ErrorBuilder errors, FilePath file)
     {
         var content = _input.ReadString(file);
         errors.AddIfNotNull(MergeConflict.CheckMergeConflictMarker(content, file));
@@ -267,7 +267,7 @@ internal class PageBuilder
 
         var userMetadata = _metadataProvider.GetMetadata(errors, file);
 
-        _metadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
+        var metadata = _metadataValidator.ValidateAndTransformMetadata(errors, userMetadata.RawJObject, file);
 
         var conceptual = new ConceptualModel { Title = userMetadata.Title };
         var html = _markdownEngine.ToHtml(errors, content, new SourceInfo(file), MarkdownPipelineType.Markdown, conceptual);
@@ -276,21 +276,22 @@ internal class PageBuilder
 
         ProcessConceptualHtml(errors, file, html, conceptual);
 
-        return _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
+        return _config.DryRun ? (new(), new()) : (JsonUtility.ToJObject(conceptual), metadata);
     }
 
-    private JObject LoadSchemaDocument(ErrorBuilder errors, FilePath file)
+    private (JObject pageModel, JObject metadata) LoadSchemaDocument(ErrorBuilder errors, FilePath file)
     {
         var pageModel = new JObject();
+        var metadata = new JObject();
 
         // Validate and transform metadata using JSON schema
         if (_documentProvider.GetRenderType(file) == RenderType.Content)
         {
             var userMetadata = _metadataProvider.GetMetadata(errors, file);
 
-            _metadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
+            metadata = _metadataValidator.ValidateAndTransformMetadata(errors, userMetadata.RawJObject, file);
 
-            JsonUtility.Merge(pageModel, new JObject { ["metadata"] = userMetadata.RawJObject });
+            JsonUtility.Merge(pageModel, new JObject { ["metadata"] = metadata });
         }
 
         var mime = _documentProvider.GetMime(file);
@@ -302,24 +303,7 @@ internal class PageBuilder
             throw Errors.JsonSchema.UnexpectedType(new SourceInfo(file, 1, 1), JTokenType.Object, content.Type).ToException();
         }
 
-        switch (mime.Value?.ToLowerInvariant())
-        {
-            case "learningpath":
-                _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
-                break;
-
-            case "module":
-                _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
-                break;
-
-            case "moduleunit":
-                _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
-                break;
-
-            case "achievements":
-                _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
-                break;
-        }
+        AddLearnHierarchy(errors, mime, transformedContent);
 
         JsonUtility.Merge(pageModel, transformedContent);
 
@@ -329,7 +313,29 @@ internal class PageBuilder
             pageModel["conceptual"] = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
         }
 
-        return pageModel;
+        return (pageModel, metadata);
+
+        void AddLearnHierarchy(ErrorBuilder errors, SourceInfo<string?> mime, JObject transformedContent)
+        {
+            switch (mime.Value?.ToLowerInvariant())
+            {
+                case "learningpath":
+                    _learnHierarchyBuilder.AddLearningPath(JsonUtility.ToObject<LearningPath>(errors, transformedContent));
+                    break;
+
+                case "module":
+                    _learnHierarchyBuilder.AddModule(JsonUtility.ToObject<Module>(errors, transformedContent));
+                    break;
+
+                case "moduleunit":
+                    _learnHierarchyBuilder.AddModuleUnit(JsonUtility.ToObject<ModuleUnit>(errors, transformedContent));
+                    break;
+
+                case "achievements":
+                    _learnHierarchyBuilder.AddAchievements(JsonUtility.ToObject<AchievementArray>(errors, transformedContent));
+                    break;
+            }
+        }
     }
 
     private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
