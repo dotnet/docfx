@@ -24,7 +24,6 @@ internal class Builder
     {
         using (Watcher.Disable())
         {
-            var operation = Telemetry.StartOperation("build");
             using var errors = new ErrorWriter(options.Log);
 
             if (options.Continue)
@@ -41,7 +40,6 @@ internal class Builder
                 new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
             }
 
-            operation.Complete();
             errors.PrintSummary();
             return errors.HasError;
         }

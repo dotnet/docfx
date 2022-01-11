@@ -62,6 +62,14 @@ public static class PathUtilityTest
         => Assert.Equal(expected, PathUtility.GetRelativePathToFile(relativeTo, path).Replace("\\", "/"));
 
     [Theory]
+    [InlineData("", "./")]
+    [InlineData("a", "./")]
+    [InlineData("a/b", "../")]
+    [InlineData("a/b/c", "../../")]
+    public static void GetRelativePathToRoot(string path, string expected)
+        => Assert.Equal(expected, PathUtility.GetRelativePathToRoot(path));
+
+    [Theory]
     [InlineData("", "", true, "")]
     [InlineData("a", "a", true, "")]
     [InlineData("a/b", "a/b", true, "")]

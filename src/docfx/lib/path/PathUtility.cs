@@ -50,6 +50,21 @@ internal static class PathUtility
         return result;
     }
 
+    public static string GetRelativePathToRoot(string path)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var ch in path)
+        {
+            if (ch == '/' || ch == '\\')
+            {
+                sb.Append("../");
+            }
+        }
+
+        return sb.Length > 0 ? sb.ToString() : "./";
+    }
+
     /// <summary>
     /// A normalized folder always ends with `/`, does not contain `\` and does not have consecutive `.` or `/`.
     /// </summary>

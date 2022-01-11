@@ -4,32 +4,60 @@
 using System.IO.Pipelines;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Nerdbank.Streams;
 
 namespace Microsoft.Docs.Build;
 
 internal static class Serve
 {
-    public static bool Run(CommandLineOptions options, Package? package = null)
+    public static bool Run(CommandLineOptions options, Package? package = null, Action<string>? onUrl = null)
     {
-        new WebHostBuilder()
-            .UseKestrel()
-            .UseUrls($"http://{options.Address}:{options.Port}/")
-            .Configure(Configure)
-            .Build()
-            .Run();
+        var url = $"http://{options.Address}:{options.Port}/";
+        var builder = WebApplication.CreateBuilder();
+
+        builder.WebHost
+            .ConfigureLogging(options => options.ClearProviders())
+            .UseUrls(url);
+
+        using var app = builder.Build();
+
+        if (options.LanguageServer)
+        {
+            PrintServeDirectory(options.WorkingDirectory);
+            app.UseWebSockets().Map("/lsp", app => app.Run(context => StartLanguageServer(context, options, package)));
+        }
+        else
+        {
+            if (!ServeStaticFiles(app, options))
+            {
+                return true;
+            }
+        }
+
+        app.Start();
+
+        LogServerAddress(app);
+        app.WaitForShutdown();
+
         return false;
 
-        void Configure(IApplicationBuilder app)
+        void LogServerAddress(IApplicationBuilder app)
         {
-            if (options.LanguageServer)
+            var urls = app.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses;
+            if (urls != null)
             {
-                app.UseWebSockets()
-                   .Map("/lsp", app => app.Run(context => StartLanguageServer(context, options, package)));
+                foreach (var url in urls)
+                {
+                    Console.WriteLine($"  {url}");
+                    onUrl?.Invoke(url);
+                }
             }
+            Console.WriteLine("Press Ctrl+C to shut down.");
         }
     }
 
@@ -49,5 +77,38 @@ internal static class Serve
                 context.Response.StatusCode = 400;
             }
         }
+    }
+
+    private static bool ServeStaticFiles(IApplicationBuilder app, CommandLineOptions options)
+    {
+        var publishFiles = Directory.GetFiles(options.WorkingDirectory, ".publish.json", SearchOption.AllDirectories);
+        if (!publishFiles.Any())
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"No files to serve, did you forget to run 'docfx build'?");
+            Console.ResetColor();
+            return false;
+        }
+
+        foreach (var publishFile in publishFiles)
+        {
+            var directory = Path.GetDirectoryName(publishFile);
+            PrintServeDirectory(directory);
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(directory),
+            });
+        }
+
+        return true;
+    }
+
+    private static void PrintServeDirectory(string? directory)
+    {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write("Serving ");
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine(directory);
+        Console.ResetColor();
     }
 }

@@ -343,7 +343,7 @@ internal static class HtmlUtility
                 continue;
             }
 
-            var tokenName = token.Name.ToString();
+            var tokenName = token.Name.ToString().ToLowerInvariant();
             if (!elementCount.ContainsKey(tokenName))
             {
                 elementCount.Add(tokenName, new Dictionary<string, int>());
@@ -358,7 +358,7 @@ internal static class HtmlUtility
             {
                 foreach (ref var attribute in token.Attributes.Span)
                 {
-                    var attributeName = attribute.Name.ToString();
+                    var attributeName = attribute.Name.ToString().ToLowerInvariant();
                     CollectionsMarshal.GetValueRefOrAddDefault(attributeCount, attributeName, out _)++;
                 }
             }
