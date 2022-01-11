@@ -73,29 +73,42 @@ internal class JsonSchemaTransformer
 
     public ExternalXref[] GetValidateExternalXrefs()
     {
-        return _xrefList.Value.Where(item => item.docsetName != null).GroupBy(item => (item.xref.Value, item.propertyPath)).Select(xrefGroup =>
-        {
-            return new ExternalXref
+        return _xrefList.Value
+            .Where(item => item.docsetName != null)
+            .GroupBy(item => (item.xref.Value, item.propertyPath))
+            .Select(xrefGroup => new ExternalXref
             {
                 Uid = xrefGroup.Key.Value,
                 PropertyPath = xrefGroup.Key.propertyPath,
                 Count = xrefGroup.Count(),
                 DocsetName = xrefGroup.First().docsetName,
                 SchemaType = xrefGroup.First().schemaType,
-            };
-        }).OrderBy(externalXref => externalXref.Uid).ThenBy(xref => xref.PropertyPath).ToArray();
+            })
+            .OrderBy(externalXref => externalXref.Uid)
+            .ThenBy(xref => xref.PropertyPath)
+            .ToArray();
     }
 
     public JToken TransformContent(ErrorBuilder errors, FilePath file)
     {
         var (token, schema, schemaMap, uidCount) = ValidateContent(errors, file);
         var xrefmap = new JObject();
-        var result = TransformContentCore(errors, schemaMap, file, schema, schema, token, uidCount, "", xrefmap);
+        var result = TransformContentCore(errors, schemaMap, file, schema, schema, token, uidCount, "", xrefmap, preserveSourceInfo: false);
         if (xrefmap.Count > 0)
         {
             result["_xrefmap"] = xrefmap;
         }
         return result;
+    }
+
+    public JToken TransformMetadata(ErrorBuilder errors, FilePath file, JToken token, JsonSchemaValidator schemaValidator)
+    {
+        var schema = schemaValidator.Schema;
+        var schemaMap = new JsonSchemaMap();
+        var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
+        errors.AddRange(schemaErrors);
+
+        return TransformContentCore(errors, schemaMap, file, schema, schema, token, 0, "", new(), preserveSourceInfo: true);
     }
 
     public IReadOnlyList<InternalXrefSpec> LoadXrefSpecs(ErrorBuilder errors, FilePath file)
@@ -326,7 +339,8 @@ internal class JsonSchemaTransformer
                 value,
                 uidCount,
                 propertyPath,
-                new JObject());
+                new JObject(),
+                preserveSourceInfo: false);
         }
         finally
         {
@@ -344,7 +358,8 @@ internal class JsonSchemaTransformer
         JToken token,
         int uidCount,
         string? propertyPath,
-        JObject xrefmap)
+        JObject xrefmap,
+        bool preserveSourceInfo)
     {
         switch (token)
         {
@@ -354,10 +369,10 @@ internal class JsonSchemaTransformer
                 foreach (var (item, subschema) in schemaMap.ForEachJArray(schema, array))
                 {
                     newArray.Add(TransformContentCore(
-                        errors, schemaMap, file, rootSchema, subschema, item, uidCount, propertyPath, xrefmap));
+                        errors, schemaMap, file, rootSchema, subschema, item, uidCount, propertyPath, xrefmap, preserveSourceInfo));
                 }
 
-                return newArray;
+                return PreserveSourceInfo(array, newArray);
 
             case JObject obj:
                 var newObject = new JObject();
@@ -366,34 +381,40 @@ internal class JsonSchemaTransformer
                     if (value != null)
                     {
                         newObject[key] = TransformContentCore(
-                        errors,
-                        schemaMap,
-                        file,
-                        rootSchema,
-                        schemaMap.GetPropertySchema(schema, obj, key),
-                        value,
-                        uidCount,
-                        JsonUtility.AddToPropertyPath(propertyPath, key),
-                        xrefmap);
+                            errors,
+                            schemaMap,
+                            file,
+                            rootSchema,
+                            schemaMap.GetPropertySchema(schema, obj, key),
+                            value,
+                            uidCount,
+                            JsonUtility.AddToPropertyPath(propertyPath, key),
+                            xrefmap,
+                            preserveSourceInfo);
                     }
                 }
-                return newObject;
+                return PreserveSourceInfo(obj, newObject);
 
             case JValue value when schema != null:
-                return TransformScalar(
+                return PreserveSourceInfo(value, TransformScalar(
                     errors.With(e => e with { PropertyPath = propertyPath }),
                     rootSchema,
                     schema,
                     file,
                     value,
                     propertyPath,
-                    xrefmap);
+                    xrefmap));
 
             case JValue value:
                 return value;
 
             default:
                 throw new NotSupportedException();
+        }
+
+        T PreserveSourceInfo<T>(T originalToken, T token) where T : JToken
+        {
+            return preserveSourceInfo ? (T)JsonUtility.SetSourceInfo(token, JsonUtility.GetSourceInfo(originalToken)) : token;
         }
     }
 
@@ -420,10 +441,14 @@ internal class JsonSchemaTransformer
         var sourceInfo = JsonUtility.GetSourceInfo(value) ?? new SourceInfo(file);
         var content = new SourceInfo<string>(stringValue, sourceInfo);
 
+        // Prefer JToken declared file because globalMetadata and fileMetadata is defined in docfx.yml,
+        // link resolve should be relative to docfx.yml in that case.
+        var referencingFile = sourceInfo.File;
+
         switch (schema.ContentType)
         {
             case JsonSchemaContentType.Href:
-                var (error, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
+                var (error, link, _) = _linkResolver.ResolveLink(content, referencingFile, file, new HyperLinkNode
                 {
                     HyperLinkType = HyperLinkType.Default,
                     IsVisible = true,  // trun around to skip 'link-text-missing' validation
@@ -449,22 +474,20 @@ internal class JsonSchemaTransformer
             case JsonSchemaContentType.Html:
 
                 return HtmlUtility.TransformHtml(content, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
-                {
                     HtmlUtility.TransformLink(ref token, null, link =>
                     {
                         var source = new SourceInfo<string>(link.Href, content.Source?.WithOffset(link.Href.Source));
-                        var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
+                        var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, referencingFile, file);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
-                    });
-                });
+                    }));
 
             case JsonSchemaContentType.Uid:
             case JsonSchemaContentType.Xref:
 
                 // the content here must be an UID, not href
                 var (xrefError, xrefSpec, href) = _xrefResolver.ResolveXrefSpec(
-                    content, file, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
+                    content, referencingFile, file, _monikerProvider.GetFileLevelMonikers(ErrorBuilder.Null, file));
 
                 errors.AddIfNotNull(xrefError);
 

@@ -7,6 +7,9 @@ namespace Microsoft.Docs.Build;
 
 internal class MetadataValidator
 {
+    private readonly DocumentProvider _documentProvider;
+    private readonly JsonSchemaProvider _jsonSchemaProvider;
+    private readonly JsonSchemaTransformer _jsonSchemaTransformer;
     private readonly JsonSchemaValidator[] _schemaValidators;
     private readonly HashSet<string> _reservedMetadata;
 
@@ -15,11 +18,25 @@ internal class MetadataValidator
     public MetadataValidator(
         Config config,
         MicrosoftGraphAccessor microsoftGraphAccessor,
+        DocumentProvider documentProvider,
         JsonSchemaLoader jsonSchemaLoader,
+        JsonSchemaProvider jsonSchemaProvider,
+        JsonSchemaTransformer jsonSchemaTransformer,
         MonikerProvider monikerProvider,
         CustomRuleProvider customRuleProvider)
     {
-        MetadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
+        _documentProvider = documentProvider;
+        _jsonSchemaProvider = jsonSchemaProvider;
+        _jsonSchemaTransformer = jsonSchemaTransformer;
+
+        var metadataSchemas = config.MetadataSchema.Select(jsonSchemaLoader.LoadSchema).ToList();
+
+        if (jsonSchemaProvider.TryGetSchema("Metadata") is JsonSchema schema)
+        {
+            metadataSchemas.Add(schema);
+        }
+
+        MetadataSchemas = metadataSchemas.ToArray();
 
         _schemaValidators = Array.ConvertAll(
             MetadataSchemas,
@@ -32,7 +49,7 @@ internal class MetadataValidator
             .ToHashSet();
     }
 
-    public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath file)
+    public JObject ValidateAndTransformMetadata(ErrorBuilder errors, JObject metadata, FilePath file)
     {
         foreach (var (key, value) in metadata)
         {
@@ -46,10 +63,21 @@ internal class MetadataValidator
             }
         }
 
+        JToken token = metadata;
+
         foreach (var schemaValidator in _schemaValidators)
         {
-            errors.AddRange(schemaValidator.Validate(metadata, file));
+            token = _jsonSchemaTransformer.TransformMetadata(errors, file, token, schemaValidator);
         }
+
+        var mime = _documentProvider.GetMime(file).Value;
+        if (mime != null && _jsonSchemaProvider.TryGetSchema(mime) is JsonSchema schema &&
+            schema.Properties.TryGetValue("metadata", out var metadataSchema))
+        {
+            token = _jsonSchemaTransformer.TransformMetadata(errors, file, token, new(metadataSchema));
+        }
+
+        return (JObject)token;
     }
 
     public List<Error> PostValidate()

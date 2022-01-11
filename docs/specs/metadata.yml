@@ -429,3 +429,64 @@ outputs:
         <meta content=\"8\" name=\"wordCount\" />"
     }
   docs/a.mta.json:
+---
+# Support metadata schema definition defined in template
+inputs:
+  docfx.yml:
+  a.md: |
+    ---    
+    foo: []
+    ---
+  _themes/ContentTemplate/schemas/Metadata.schema.json: |
+    {
+      "properties": {
+          "foo": { "type": "string" },
+      }
+    }
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"unexpected-type","file":"a.md","line":2,"end_line":2,"column":6,"end_column":6}
+  a.json:
+---
+# Transform metadata based on metadata schema
+inputs:
+  docfx.yml: |
+    globalMetadata:
+      bar: docs/data.yml
+  docs/page.md: |
+    ---
+    foo: data.yml
+    ---
+  docs/data.yml: |
+    #YamlMime:TestData
+    metadata:
+      foo: data.yml
+  docs/yml-page.yml: |
+    #YamlMime:TestData
+    metadata:
+      foo: data.yml
+  docs/TOC.yml: |
+    metadata:
+      foo: data.yml
+  _themes/ContentTemplate/schemas/Metadata.schema.json: |
+    {
+      "properties": {
+          "foo": { "contentType": "href" },
+          "bar": { "contentType": "href" }
+      }
+    }
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    { }
+outputs:
+  docs/page.json: |
+    { "foo": "data", "bar": "data" }
+  docs/yml-page.json: |
+    {
+      "metadata": { "foo": "data", "bar": "data" }
+    }
+  docs/data.json: |
+    { "foo": undefined, "bar": undefined }
+  docs/toc.json: |
+    {
+      "metadata": { "foo": "data", "bar": "data" }
+    }
