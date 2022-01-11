@@ -2164,6 +2164,7 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}
 ---
 # exclude redirected files from xref map
+noSingleFile: true
 inputs:
     docfx.yml:
     a.md: |
