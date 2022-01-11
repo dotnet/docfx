@@ -93,7 +93,7 @@ internal class DocsetBuilder
         _htmlSanitizer = new(_config);
         _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
         _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
-        _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
+        _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _documentProvider, _jsonSchemaLoader, _jsonSchemaProvider, _jsonSchemaTransformer, _monikerProvider, _customRuleProvider);
         _tocParser = new(_input, _markdownEngine);
         _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
         _tocMap = new(_config, _errors, _input, _buildScope, _dependencyMapBuilder, _tocParser, _tocLoader, _documentProvider, _contentValidator, _publishUrlMap);

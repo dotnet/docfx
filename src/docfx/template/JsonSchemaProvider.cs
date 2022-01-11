@@ -82,6 +82,11 @@ internal class JsonSchemaProvider
         return _schemas.GetOrAdd(name, GetSchemaCore) ?? throw Errors.Yaml.SchemaNotFound(mime).ToException();
     }
 
+    public JsonSchema? TryGetSchema(string mime)
+    {
+        return _schemas.GetOrAdd(mime, GetSchemaCore)?.Schema;
+    }
+
     private JsonSchema GetSchema(SourceInfo<string?> mime)
     {
         return GetSchemaValidator(mime).Schema;

@@ -48,9 +48,9 @@ internal class TocBuilder
         _contentValidator.ValidateTocDeprecated(file);
 
         var metadata = _metadataProvider.GetMetadata(errors, file);
-        _metadataValidator.ValidateMetadata(errors, metadata.RawJObject, file);
+        var transformedMetadata = _metadataValidator.ValidateAndTransformMetadata(errors, metadata.RawJObject, file);
 
-        var tocMetadata = JsonUtility.ToObject<TocMetadata>(errors, metadata.RawJObject);
+        var tocMetadata = JsonUtility.ToObject<TocMetadata>(errors, transformedMetadata);
 
         var path = _documentProvider.GetSitePath(file);
 
