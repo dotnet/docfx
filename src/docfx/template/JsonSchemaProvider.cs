@@ -103,16 +103,12 @@ internal class JsonSchemaProvider
 
     private RenderType GetTocRenderType()
     {
-        try
+        if (_template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ||
+            _template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
         {
-            return GetSchema(new SourceInfo<string?>("toc")).RenderType;
+            return RenderType.Content;
         }
-        catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
-        {
-            // TODO: Remove after schema of toc is support in template
-            var isContentRenderType = _template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-                || _template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
-            return isContentRenderType ? RenderType.Content : RenderType.Component;
-        }
+
+        return GetSchema(new SourceInfo<string?>("toc")).RenderType;
     }
 }
