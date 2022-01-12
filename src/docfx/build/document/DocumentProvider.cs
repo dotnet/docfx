@@ -207,7 +207,7 @@ internal class DocumentProvider
         var sitePath = ApplyRoutes(filePath.Path).Value;
         if (contentType == ContentType.Page || contentType == ContentType.Redirection || contentType == ContentType.Toc)
         {
-            sitePath = contentType == ContentType.Page && renderType == RenderType.Component
+            sitePath = renderType == RenderType.Component
                 ? Path.ChangeExtension(sitePath, ".json")
                 : urlType switch
                 {
