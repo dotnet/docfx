@@ -499,7 +499,7 @@ namespace Mono.Documentation
         {
             try
             {
-                XmlReader r = new XmlTextReader (path);
+                XmlReader r = new XmlTextReader (path.Replace("\\", "/"));
                 if (r.Read ())
                 {
                     while (r.NodeType != XmlNodeType.Element)

@@ -594,14 +594,17 @@ namespace Mono.Documentation.Updater.Frameworks
             var gacs = new[] { "GAC_MSIL", "GAC_32", "GAC_64", "GAC" };
             var prefixes = new[] { string.Empty, "v4.0_" };
 
-            for (int i = 0; i < 2; i++)
+            foreach (var prefix in prefixes)
             {
-                for (int j = 0; j < gacs.Length; j++)
+                foreach (var gacPath in gac_paths)
                 {
-                    var gac = Path.Combine(gac_paths[i], gacs[j]);
-                    var file = GetAssemblyFile(reference, prefixes[i], gac);
-                    if (Directory.Exists(gac) && File.Exists(file))
-                        return GetAssembly(file, parameters);
+                    foreach (var gacName in gacs)
+                    {
+                        var gac = Path.Combine(gacPath, gacName);
+                        var file = GetAssemblyFile(reference, prefix, gac);
+                        if (Directory.Exists(gac) && File.Exists(file))
+                            return GetAssembly(file, parameters);
+                    }
                 }
             }
 
