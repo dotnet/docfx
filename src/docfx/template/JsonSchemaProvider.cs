@@ -114,6 +114,13 @@ internal class JsonSchemaProvider
             return RenderType.Content;
         }
 
-        return GetSchema(new SourceInfo<string?>("toc")).RenderType;
+        try
+        {
+            return GetSchema(new SourceInfo<string?>("toc")).RenderType;
+        }
+        catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
+        {
+            return RenderType.Component;
+        }
     }
 }
