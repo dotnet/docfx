@@ -25,16 +25,19 @@ internal class MonikerProvider
         _buildScope = buildScope;
         _metadataProvider = metadataProvider;
 
-        var monikerDefinition = new MonikerDefinitionModel();
-        if (!string.IsNullOrEmpty(_config.MonikerDefinition))
-        {
-            var content = fileResolver.ReadString(_config.MonikerDefinition);
-            monikerDefinition = JsonUtility.DeserializeData<MonikerDefinitionModel>(content, new FilePath(_config.MonikerDefinition));
-        }
+        var monikerDefinition = _config.MonikerDefinition.value ?? LoadMonikerDefinition(_config.MonikerDefinition.src) ?? new();
+
         _rangeParser = new(monikerDefinition);
 
         _rules = _config.MonikerRange.Select(pair => (GlobUtility.CreateGlobMatcher(pair.Key), pair.Value)).Reverse().ToArray();
         _monikerOrder = GetMonikerOrder(monikerDefinition);
+
+        MonikerDefinitionModel? LoadMonikerDefinition(SourceInfo<string>? src)
+        {
+            return src != null && !string.IsNullOrEmpty(src)
+                ? JsonUtility.DeserializeData<MonikerDefinitionModel>(fileResolver.ReadString(src.Value), new FilePath(src.Value))
+                : null;
+        }
     }
 
     public MonikerList Validate(ErrorBuilder errors, SourceInfo<string>[] monikers)
