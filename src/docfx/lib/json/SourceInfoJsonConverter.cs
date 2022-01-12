@@ -10,6 +10,8 @@ internal class SourceInfoJsonConverter : JsonConverter
 {
     public override bool CanConvert(Type objectType)
     {
+        objectType = UnwrapNullable(objectType);
+
         return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(SourceInfo<>);
     }
 
@@ -31,6 +33,8 @@ internal class SourceInfoJsonConverter : JsonConverter
                 }
                 break;
         }
+
+        objectType = UnwrapNullable(objectType);
 
         var valueType = objectType.GenericTypeArguments[0];
         var value = serializer.Deserialize(reader, valueType);
@@ -54,5 +58,12 @@ internal class SourceInfoJsonConverter : JsonConverter
         {
             serializer.Serialize(writer, sourceInfo.GetValue());
         }
+    }
+
+    private static Type UnwrapNullable(Type objectType)
+    {
+        return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Nullable<>)
+            ? objectType.GetGenericArguments()[0]
+            : objectType;
     }
 }

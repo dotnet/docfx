@@ -11,20 +11,16 @@ inputs:
       docs/: .
       docs/v1/: .
       docs/v2/: .
-    monikerDefinition: monikerDefinition.json
+    monikerDefinition:
+      monikers:
+      - { moniker_name: netcore-1.0, product_name: .NET Core }
+      - { moniker_name: netcore-1.1, product_name: .NET Core }
+      - { moniker_name: netcore-2.0, product_name: .NET Core }
+      - { moniker_name: netcore-2.1, product_name: .NET Core }
   docs/v1/a.md: |
     Moniker: netcore-1.0, netcore-1.1
   docs/v2/a.md: |
     Moniker: netcore-2.0, netcore-2.1
-  monikerDefinition.json: |
-    {
-      "monikers": [
-        { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
-        { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
-      ]
-    }
 outputs:
   docs/17b9fe681514513cbf7d5c90e32f107a/a.json: |
     {
