@@ -838,8 +838,8 @@ internal static class Errors
         /// Liquid is not found for current mime type.
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error LiquidNotFound(SourceInfo<string?> source, string layout)
-            => new(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for layout '{layout}' and mime type '{source}', the output HTML will not be generated.", source);
+        public static Error LiquidNotFound(SourceInfo<string?> source, string templateName)
+            => new(ErrorLevel.Warning, "liquid-not-found", $"Liquid template '{templateName}' not found for mime type '{source}', the output HTML will not be generated.", source);
 
         /// <summary>
         /// Mustache is not found for current mime type.
