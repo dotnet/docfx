@@ -20,6 +20,7 @@ public static class ModuleInitializer
         Environment.SetEnvironmentVariable("DOCFX_HOST_NAME", "docs.com");
         Environment.SetEnvironmentVariable("DOCFX_OUTPUT_TYPE", "Json");
         Environment.SetEnvironmentVariable("DOCFX_URL_TYPE", "Docs");
+        Environment.SetEnvironmentVariable("DOCFX_INCLUDE_MONIKER_HASH_IN_OUTPUT_PATH", "true");
         Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", "PPE");
 
         TestQuirks.Verbose = true;

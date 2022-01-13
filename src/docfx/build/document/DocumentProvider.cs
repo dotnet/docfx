@@ -220,11 +220,12 @@ internal class DocumentProvider
                 };
         }
 
-        if (urlType != UrlType.Docs)
+        if (urlType != UrlType.Docs && _config.IncludeMonikerHashInOutputPath)
         {
             var monikers = _monikerProvider.GetFileLevelMonikers(_errors, filePath);
             sitePath = Path.Combine(monikers.MonikerGroup ?? "", sitePath);
         }
+
         if (_config.LowerCaseUrl)
         {
             sitePath = sitePath.ToLowerInvariant();
@@ -321,7 +322,7 @@ internal class DocumentProvider
                 break;
         }
 
-        if (_config.UrlType == UrlType.Docs)
+        if (_config.IncludeMonikerHashInOutputPath)
         {
             var monikers = _monikerProvider.GetFileLevelMonikers(_errors, path);
             outputPath = UrlUtility.Combine(monikers.MonikerGroup ?? "", outputPath);

@@ -216,6 +216,12 @@ internal class Config : PreloadConfig
     public (MonikerDefinitionModel? value, SourceInfo<string>? src) MonikerDefinition { get; init; }
 
     /// <summary>
+    /// Gets if moniker hash should be included in output path to
+    /// allow publishing files with different monikers to the same URL.
+    /// </summary>
+    public bool IncludeMonikerHashInOutputPath { get; init; }
+
+    /// <summary>
     /// Get a list of trusted domains by tag name.
     /// </summary>
     /// <example>

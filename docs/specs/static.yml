@@ -436,3 +436,19 @@ outputs:
       <a href="a"> link-a </a>
   toc.json: |
     {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}
+---
+# Do not include moniker hash in output path or url for static pages
+inputs: 
+  docfx.yml: |
+    urlType: pretty
+    includeMonikerHashInOutputPath: false
+    monikerDefinition:
+      monikers:
+      - moniker_name: v1
+    monikerRange:
+      a.md: v1
+  a.md:
+outputs: 
+  a/index.json: |
+    { "monikers": ["v1"] }
+---

@@ -20,10 +20,9 @@ internal class Document
     /// <summary>
     /// Gets file path relative to <see cref="Config.BasePath"/> that is:
     /// For dynamic rendering:
-    ///       locale  moniker-list-hash    site-path
-    ///                       base_path
-    ///       |-^-| |--^---| |--^--|----------^----------------|
-    /// _site/en-us/603b739b/dotnet/api/system.string/index.json
+    ///      locale base_path    site-path
+    ///       |-^-| |--^--|----------^----------------|
+    /// _site/en-us/dotnet/api/system.string/index.json
     ///
     ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
     ///  - Does not start with '/'
@@ -34,9 +33,9 @@ internal class Document
     /// <summary>
     /// Gets the Url relative to site root that is:
     /// For dynamic rendering:
-    ///       locale moniker-list-hash    site-url
-    ///       |-^-| |---^--| |----------------^-----|
-    /// _site/en-us/603b739b/dotnet/api/system.string
+    ///       locale            site-url
+    ///       |-^-||----------------^------|
+    /// _site/en-us/dotnet/api/system.string
     ///
     ///  - Normalized using <see cref="PathUtility.NormalizeFile(string)"/>
     ///  - Always start with '/'

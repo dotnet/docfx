@@ -72,7 +72,7 @@ Each input file transforms to zero or more output files depending on its content
 
 ```
   base-path moniker-hash    site-path (relative-to-base-path)
-      |--^-| |--^--| |----------^----------|
+      |--^--|--^-----|----------^----------|
 _site/dotnet/01ddf122/api/system.string.json
 ```
 
@@ -81,9 +81,9 @@ _site/dotnet/01ddf122/api/system.string.json
 `{output-dir}/{base-path}/{site-path}`
 
 ```
-  base-path     site-path (relative-to-base-path)
-      |--^-| |------------------^-----------------|
-_site/dotnet/01ddf122/api/system.string/index.html
+  base-path   site-path (relative-to-base-path)
+      |--^--|------------------^--------|
+_site/dotnet/api/system.string/index.html
 ```
 
 Different files can share the same `{site-url}` or `{site-path}` due to versioning and localization.
