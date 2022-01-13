@@ -383,13 +383,12 @@ outputs:
     <link rel="stylesheet" href="/dev/test.css">
     <div></div>
 ---
-# TOC with output-type="html"
+# TOC with outputType: html and urlType: docs
 repos:
   https://github.com/toc/toc-output-type-is-html:
   - files:
       docfx.yml: |
         outputType: html
-        renderType: Content
         template: https://docs.com/theme
       TOC.yml: |
         - name: link-a
@@ -436,3 +435,14 @@ outputs:
       <a href="a"> link-a </a>
   toc.json: |
     {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}
+---
+# TOC with outputType: html and urlType: pretty
+inputs:
+  docfx.yml: |
+    outputType: html
+    urlType: pretty
+  TOC.yml: |
+    - name: a
+outputs:
+  toc.json: |
+    {"items":[{"name":"a"}]}
