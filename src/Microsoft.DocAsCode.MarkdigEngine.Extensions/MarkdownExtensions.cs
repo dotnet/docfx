@@ -36,6 +36,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseTripleColon(context)
                 .UseNoloc()
                 .UseResolveLink(context)
+                .UseTaskLists()
                 .RemoveUnusedExtensions();
         }
 

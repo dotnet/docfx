@@ -27,8 +27,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         {
             // Confirm that the [ ] and { } in the middle of list should not be parsed.
             var source = @"* Not contain a special character: &#92; ! # $ % & * + / = ? ^ &#96; { } | ~ < > ( ) ' ; : , [ ] "" @ _";
-            var expected = @"<ul>
-<li>Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , [ ] &quot; @ _</li>
+            var expected = @"<ul class=""contains-task-list"">
+<li class=""task-list-item"">Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , <input disabled=""disabled"" type=""checkbox"" /> &quot; @ _</li>
 </ul>
 ";
             TestUtility.VerifyMarkup(source, expected);
