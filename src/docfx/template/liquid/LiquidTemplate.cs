@@ -41,7 +41,7 @@ internal class LiquidTemplate
         var template = LoadTemplate(new PathString($"{templateName}.html.liquid"));
         if (template is null)
         {
-            errors.Add(Errors.Template.LiquidNotFound(mime, templateName));
+            errors.Add(Errors.Template.LiquidNotFound(mime, $"{templateName}.html.liquid"));
             return "";
         }
 
