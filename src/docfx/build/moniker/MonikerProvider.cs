@@ -75,9 +75,9 @@ internal class MonikerProvider
         // For conceptual docset,
         // Moniker range not defined in docfx.yml/docfx.json,
         // User should not define it in moniker zone
-        if (configMonikerRange.Value is null && ValidateMoniker(file))
+        if (configMonikerRange.Value is null && ShouldValidateMoniker(file))
         {
-            errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString));
+            errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString, null));
             return default;
         }
 
@@ -109,7 +109,7 @@ internal class MonikerProvider
         var metadata = _metadataProvider.GetMetadata(errors, file);
         var configMonikerRange = GetConfigMonikerRange(file);
         var configMonikers = _rangeParser.Parse(errors, configMonikerRange);
-        var validateMoniker = ValidateMoniker(file);
+        var validateMoniker = ShouldValidateMoniker(file);
 
         if (metadata.MonikerRange != null)
         {
@@ -118,7 +118,7 @@ internal class MonikerProvider
             // user should not define it in file metadata
             if (validateMoniker && configMonikerRange.Value is null)
             {
-                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source));
+                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source, metadata.MonikerRange.Value!));
                 return (errors, default, default);
             }
         }
@@ -221,7 +221,7 @@ internal class MonikerProvider
         return result;
     }
 
-    private bool ValidateMoniker(FilePath path)
+    private bool ShouldValidateMoniker(FilePath path)
     {
         var contentType = _buildScope.GetContentType(path);
         return contentType == ContentType.Toc || (path.Format == FileFormat.Markdown && contentType == ContentType.Page);
