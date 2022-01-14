@@ -118,7 +118,7 @@ internal class MonikerProvider
             // user should not define it in file metadata
             if (validateMoniker && configMonikerRange.Value is null)
             {
-                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source, metadata.MonikerRange.Value!));
+                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source, metadata.MonikerRange.Value));
                 return (errors, default, default);
             }
         }
