@@ -24,12 +24,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             Dictionary<string, string> tokens = null,
             Dictionary<string, string> files = null,
             Action<MarkdownObject> verifyAST = null,
-            Dictionary<string, object> optionalExtensions = null)
+            IEnumerable<string> optionalExtensions = null)
         {
             errors = errors ?? Array.Empty<string>();
             tokens = tokens ?? new Dictionary<string, string>();
             files = files ?? new Dictionary<string, string>();
-            optionalExtensions = optionalExtensions ?? new Dictionary<string, object>();
+            optionalExtensions = optionalExtensions ?? new List<string>();
 
             var actualErrors = new List<string>();
             var actualDependencies = new HashSet<string>();
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
             var pipelineBuilder = new MarkdownPipelineBuilder()
                 .UseDocfxExtensions(markdownContext)
                 .UseYamlFrontMatter()
-                .UseOptionalExtensions(markdownContext, optionalExtensions);
+                .UseOptionalExtensions(optionalExtensions);
 
             if (lineNumber)
             {

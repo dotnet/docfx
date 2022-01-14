@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
@@ -44,43 +45,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         /// Enables optional Markdig extensions that are not added by default with DocFX
         /// </summary>
         /// <param name="pipeline">The markdown pipeline builder</param>
-        /// <param name="context">The markdown context</param>
-        /// <param name="extensions">The extension dictionary</param>
+        /// <param name="optionalExtensions">The list of optional extensions</param>
         /// <returns>The pipeline with optional extensions enabled</returns>
         public static MarkdownPipelineBuilder UseOptionalExtensions(
             this MarkdownPipelineBuilder pipeline,
-            MarkdownContext context,
-            IReadOnlyDictionary<string, object> extensions)
+            IEnumerable<string> optionalExtensions)
         {
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableTaskLists, extensions))
+            if (!optionalExtensions.Any())
             {
-                pipeline.UseTaskLists();
+                return pipeline;
             }
 
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableGridTables, extensions))
-            {
-                pipeline.UseGridTables();
-            }
-
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableFootnotes, extensions))
-            {
-                pipeline.UseFootnotes();
-            }
-
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableMathematics, extensions))
-            {
-                pipeline.UseMathematics();
-            }
-
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableDiagrams, extensions))
-            {
-                pipeline.UseDiagrams();
-            }
-
-            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableDefinitionLists, extensions))
-            {
-                pipeline.UseDefinitionLists();
-            }
+            pipeline.Configure(string.Join("+", optionalExtensions));
 
             return pipeline;
         }

@@ -13,40 +13,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         }
 
         /// <summary>
-        /// Optional extensions that can be enabled from
-        /// the markdownEngineProperties property in the docfx.json.
+        /// Names of properties supported in the markdownEngineProperties
+        /// property in the docfx.json
         /// </summary>
-        public static class OptionalExtensionPropertyNames
+        public static class EngineProperties
         {
             /// <summary>
-            /// Enables the Task List Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseTaskLists(Markdig.MarkdownPipelineBuilder)"/>.
+            /// Enables the <see cref="LineNumberExtension"/>.
             /// </summary>
-            public const string EnableTaskLists = "enableTaskLists";
+            public const string EnableSourceInfo = "EnableSourceInfo";
 
             /// <summary>
-            /// Enables the Grid Tables Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseGridTables(Markdig.MarkdownPipelineBuilder)"/>.
+            /// Contains a list of optional Markdig extensions that are not
+            /// enabled by default by DocFX.
             /// </summary>
-            public const string EnableGridTables = "enableGridTables";
-
-            /// <summary>
-            /// Enables the Footnotes Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseFootnotes(Markdig.MarkdownPipelineBuilder)"/>.
-            /// </summary>
-            public const string EnableFootnotes = "enableFootnotes";
-
-            /// <summary>
-            /// Enables the Mathematics Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseMathematics(Markdig.MarkdownPipelineBuilder)"/>.
-            /// </summary>
-            public const string EnableMathematics = "enableMathematics";
-
-            /// <summary>
-            /// Enables the Diagrams Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseDiagrams(Markdig.MarkdownPipelineBuilder)"/>.
-            /// </summary>
-            public const string EnableDiagrams = "enableDiagrams";
-
-            /// <summary>
-            /// Enables the Definition Lists Markdig extension by invoking <see cref="Markdig.MarkdownExtensions.UseDefinitionLists(Markdig.MarkdownPipelineBuilder)"/>.
-            /// </summary>
-            public const string EnableDefinitionLists = "enableDefinitionLists";
+            public const string MarkdigExtensions = "markdigExtensions";
         }
     }
 }
