@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 ";
             TestUtility.VerifyMarkup(source, expected, optionalExtensions: new Dictionary<string, object>
             {
-                { "EnableTaskLists", false }
+                { "enableTaskLists", false }
             });
         }
 
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 ";
             TestUtility.VerifyMarkup(source, expected, optionalExtensions: new Dictionary<string, object>
             {
-                { "EnableTaskLists", true }
+                { "enableTaskLists", true }
             });
         }
 
