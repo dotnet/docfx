@@ -160,6 +160,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 builder.UseInlineOnly();
             }
 
+            builder.UseOptionalExtensions(_context, _parameters.Extensions);
+
             return builder.Build();
         }
 

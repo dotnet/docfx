@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
@@ -36,8 +37,52 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseTripleColon(context)
                 .UseNoloc()
                 .UseResolveLink(context)
-                .UseTaskLists()
                 .RemoveUnusedExtensions();
+        }
+
+        /// <summary>
+        /// Enables optional Markdig extensions that are not added by default with DocFX
+        /// </summary>
+        /// <param name="pipeline">The markdown pipeline builder</param>
+        /// <param name="context">The markdown context</param>
+        /// <param name="extensions">The extension dictionary</param>
+        /// <returns>The pipeline with optional extensions enabled</returns>
+        public static MarkdownPipelineBuilder UseOptionalExtensions(
+            this MarkdownPipelineBuilder pipeline,
+            MarkdownContext context,
+            IReadOnlyDictionary<string, object> extensions)
+        {
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableTaskLists, extensions))
+            {
+                pipeline.UseTaskLists();
+            }
+
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableGridTables, extensions))
+            {
+                pipeline.UseGridTables();
+            }
+
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableFootnotes, extensions))
+            {
+                pipeline.UseFootnotes();
+            }
+
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableMathematics, extensions))
+            {
+                pipeline.UseMathematics();
+            }
+
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableDiagrams, extensions))
+            {
+                pipeline.UseDiagrams();
+            }
+
+            if (IsExtensionEnabled(Constants.OptionalExtensionPropertyNames.EnableDefinitionLists, extensions))
+            {
+                pipeline.UseDefinitionLists();
+            }
+
+            return pipeline;
         }
 
         private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -150,6 +195,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         {
             pipeline.Extensions.AddIfNotAlready(new NolocExtension());
             return pipeline;
+        }
+
+        /// <summary>
+        /// Checks the extensions dictionary if an extension is enabled.
+        /// </summary>
+        /// <param name="extensionPropertyName">The property name for the extension</param>
+        /// <param name="extensions">The read-only dictionary containing the extensions</param>
+        /// <returns>True if the extension is in the dictionary and its value is set to true. False, otherwise.</returns>
+        private static bool IsExtensionEnabled(string extensionPropertyName, IReadOnlyDictionary<string, object> extensions)
+        {
+            object enableExtensionObj = null;
+            extensions?.TryGetValue(extensionPropertyName, out enableExtensionObj);
+
+            return enableExtensionObj is bool enabled && enabled;
         }
     }
 }
