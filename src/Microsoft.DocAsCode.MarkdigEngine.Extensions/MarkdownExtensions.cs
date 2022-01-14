@@ -172,19 +172,5 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             pipeline.Extensions.AddIfNotAlready(new NolocExtension());
             return pipeline;
         }
-
-        /// <summary>
-        /// Checks the extensions dictionary if an extension is enabled.
-        /// </summary>
-        /// <param name="extensionPropertyName">The property name for the extension</param>
-        /// <param name="extensions">The read-only dictionary containing the extensions</param>
-        /// <returns>True if the extension is in the dictionary and its value is set to true. False, otherwise.</returns>
-        private static bool IsExtensionEnabled(string extensionPropertyName, IReadOnlyDictionary<string, object> extensions)
-        {
-            object enableExtensionObj = null;
-            extensions?.TryGetValue(extensionPropertyName, out enableExtensionObj);
-
-            return enableExtensionObj is bool enabled && enabled;
-        }
     }
 }
