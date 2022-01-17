@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
@@ -37,6 +39,26 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 .UseNoloc()
                 .UseResolveLink(context)
                 .RemoveUnusedExtensions();
+        }
+
+        /// <summary>
+        /// Enables optional Markdig extensions that are not added by default with DocFX
+        /// </summary>
+        /// <param name="pipeline">The markdown pipeline builder</param>
+        /// <param name="optionalExtensions">The list of optional extensions</param>
+        /// <returns>The pipeline with optional extensions enabled</returns>
+        public static MarkdownPipelineBuilder UseOptionalExtensions(
+            this MarkdownPipelineBuilder pipeline,
+            IEnumerable<string> optionalExtensions)
+        {
+            if (!optionalExtensions.Any())
+            {
+                return pipeline;
+            }
+
+            pipeline.Configure(string.Join("+", optionalExtensions));
+
+            return pipeline;
         }
 
         private static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
