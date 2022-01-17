@@ -470,7 +470,7 @@ internal static class Errors
         /// </summary>
         /// Behavior: ✔️ Message: ❌
         public static Error MonikerRangeUndefined(SourceInfo? source, string? monikerRange)
-            => new(ErrorLevel.Suggestion, "moniker-range-undefined", $"Moniker range {(monikerRange != null ? "'" + monikerRange + "'" : string.Empty)} is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.", source);
+            => new(ErrorLevel.Suggestion, "moniker-range-undefined", $"Moniker range {(monikerRange != null ? $"'{monikerRange }' " : string.Empty)}is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.", source);
 
         /// <summary>
         /// Moniker-zone defined in article.md has no intersection with file-level monikers.
