@@ -109,14 +109,14 @@ internal class MonikerProvider
         var metadata = _metadataProvider.GetMetadata(errors, file);
         var configMonikerRange = GetConfigMonikerRange(file);
         var configMonikers = _rangeParser.Parse(errors, configMonikerRange);
-        var validateMoniker = ShouldValidateMoniker(file);
+        var shouldValidateMoniker = ShouldValidateMoniker(file);
 
         if (metadata.MonikerRange != null)
         {
             // For conceptual docset,
             // Moniker range not defined in docfx.yml/docfx.json,
             // user should not define it in file metadata
-            if (validateMoniker && configMonikerRange.Value is null)
+            if (shouldValidateMoniker && configMonikerRange.Value is null)
             {
                 errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source, metadata.MonikerRange.Value));
                 return (errors, default, default);
@@ -163,12 +163,12 @@ internal class MonikerProvider
 
         // for non-markdown documents, if config monikers is not defined
         // just use file monikers
-        if (configMonikerRange.Value is null && !validateMoniker)
+        if (configMonikerRange.Value is null && !shouldValidateMoniker)
         {
             return (errors, fileMonikers, ignoreExclude);
         }
 
-        if (validateMoniker && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
+        if (shouldValidateMoniker && (configMonikers.HasMonikers || fileMonikers.HasMonikers))
         {
             // With config monikers defined,
             // warn if no intersection of config monikers and file monikers
