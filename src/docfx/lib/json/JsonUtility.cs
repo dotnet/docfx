@@ -104,6 +104,75 @@ internal static class JsonUtility
     }
 
     /// <summary>
+    /// Serialize an object to stream and produces a stable output for JToken.
+    /// </summary>
+    public static void SerializeStable(Stream stream, object graph, bool indent = false)
+    {
+        if (graph is JToken token)
+        {
+            using var writer = new System.Text.Json.Utf8JsonWriter(stream, new() { Indented = indent });
+            WriteJToken(writer, token);
+        }
+        else
+        {
+            var serializer = indent ? s_indentSerializer : s_serializer;
+            using var writer = new StreamWriter(stream);
+            serializer.Serialize(writer, graph);
+        }
+
+        static void WriteJToken(System.Text.Json.Utf8JsonWriter writer, JToken token)
+        {
+            switch (token)
+            {
+                case JObject obj:
+                    writer.WriteStartObject();
+                    foreach (var (key, value) in ((IEnumerable<KeyValuePair<string, JToken>>)obj).OrderBy(p => p.Key))
+                    {
+                        writer.WritePropertyName(key);
+                        WriteJToken(writer, value);
+                    }
+                    writer.WriteEndObject();
+                    break;
+
+                case JArray array:
+                    writer.WriteStartArray();
+                    foreach (var item in array)
+                    {
+                        WriteJToken(writer, item);
+                    }
+                    writer.WriteEndArray();
+                    break;
+
+                case JValue value:
+                    switch (value.Value)
+                    {
+                        case null:
+                            writer.WriteNullValue();
+                            break;
+                        case bool b:
+                            writer.WriteBooleanValue(b);
+                            break;
+                        case string s:
+                            writer.WriteStringValue(s);
+                            break;
+                        case DateTime d:
+                            writer.WriteStringValue(d.ToString("o"));
+                            break;
+                        case double f:
+                            writer.WriteNumberValue(f);
+                            break;
+                        case long l:
+                            writer.WriteNumberValue(l);
+                            break;
+                        default:
+                            throw new NotSupportedException(value.Value?.GetType()?.ToString());
+                    }
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
     /// Serialize an object to string
     /// </summary>
     public static string Serialize(object graph, bool indent = false)
@@ -431,17 +500,6 @@ internal static class JsonUtility
     public static SourceInfo? GetKeySourceInfo(JToken token)
     {
         return token.Annotation<SourceInfo>()?.KeySourceInfo;
-    }
-
-    public static JObject SortProperties(JObject obj)
-    {
-        var properties = new SortedList<string, JProperty>();
-        foreach (var property in obj.Properties())
-        {
-            properties.Add(property.Name, property.Value is not JObject childObj ? property : new JProperty(property.Name, SortProperties(childObj)));
-        }
-
-        return new JObject(properties.Values);
     }
 
     internal static void SkipToken(JsonReader reader)

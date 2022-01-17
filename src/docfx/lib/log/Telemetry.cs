@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Metrics;
 using Newtonsoft.Json.Linq;
@@ -17,7 +19,17 @@ internal static class Telemetry
     // https://github.com/microsoft/ApplicationInsights-Home/blob/master/EndpointSpecs/Schemas/Bond/EventData.bond#L19
     private const int MaxEventPropertyLength = 8192;
     private const int MaxChildrenLength = 5;
-    private static readonly TelemetryClient s_telemetryClient = new(TelemetryConfiguration.CreateDefault());
+    private static readonly DependencyTrackingTelemetryModule s_dependencyTrackingTelemetryModule = new();
+    private static readonly TelemetryConfiguration s_telemetryConfiguration = GetTelemetryConfiguration();
+    private static readonly TelemetryClient s_telemetryClient = new(s_telemetryConfiguration);
+
+    private static TelemetryConfiguration GetTelemetryConfiguration()
+    {
+        var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        telemetryConfiguration.TelemetryInitializers.Add(new DependencyTelemetryInitializer());
+        s_dependencyTrackingTelemetryModule.Initialize(telemetryConfiguration);
+        return telemetryConfiguration;
+    }
 
     // Set value per dimension limit to int.MaxValue
     // https://github.com/microsoft/ApplicationInsights-dotnet/issues/1496
@@ -73,6 +85,22 @@ internal static class Telemetry
                 "SessionId"),
             s_metricConfiguration);
 
+    private static readonly Metric s_htmlElementCountMetric =
+        s_telemetryClient.GetMetric(
+            new MetricIdentifier(
+                null,
+                "HtmlElement",
+                "Tag",
+                "Attribute",
+                "IsAllowed",
+                "FileExtension",
+                "DocumentType",
+                "MimeType",
+                "Repo",
+                "Branch",
+                "CorrelationId"),
+            s_metricConfiguration);
+
     private static readonly string s_version =
         typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
 
@@ -119,7 +147,12 @@ internal static class Telemetry
         }
     }
 
-    public static DelegatingCompletable StartOperation(string name)
+    public static IOperationHolder<RequestTelemetry> StartOperation(string name)
+    {
+        return s_telemetryClient.StartOperation<RequestTelemetry>(name, s_correlationId);
+    }
+
+    public static DelegatingCompletable StartMetricOperation(string name)
     {
         var stopwatch = Stopwatch.StartNew();
         TrackValueWithEnsurance(
@@ -222,6 +255,41 @@ internal static class Telemetry
         }
     }
 
+    public static void TrackHtmlElement(
+        FilePath file,
+        ContentType contentType,
+        string? mime,
+        Dictionary<string, Dictionary<string, int>> elementCount,
+        Func<string, string, bool> isAllowed)
+    {
+        if (!s_isRealTimeBuild.Value)
+        {
+            var fileExtension = CoalesceEmpty(Path.GetExtension(file.Path)?.ToLowerInvariant());
+            var documentType = contentType.ToString();
+            var mimeType = CoalesceEmpty(mime);
+
+            foreach (var (tokenName, attributeCount) in elementCount)
+            {
+                foreach (var (attributeName, count) in attributeCount)
+                {
+                    TrackValueWithEnsurance(
+                    s_htmlElementCountMetric.Identifier.MetricId,
+                    s_htmlElementCountMetric.TrackValue(
+                    count,
+                    CoalesceEmpty(tokenName),
+                    CoalesceEmpty(attributeName),
+                    isAllowed(tokenName, attributeName).ToString(),
+                    fileExtension,
+                    documentType,
+                    mimeType,
+                    s_repo,
+                    s_branch,
+                    s_correlationId));
+                }
+            }
+        }
+    }
+
     public static void TrackException(Exception ex)
     {
         s_telemetryClient.TrackException(ex);
@@ -289,11 +357,21 @@ internal static class Telemetry
         }
     }
 
-    private static string GetTimeBucket(TimeSpan value)
-        => value.TotalSeconds switch
+    private static string GetTimeBucket(TimeSpan value) => value.TotalSeconds switch
+    {
+        < 0.5 => "small",
+        < 20 => "middle",
+        _ => "large",
+    };
+
+    private class DependencyTelemetryInitializer : ITelemetryInitializer
+    {
+        public void Initialize(ITelemetry telemetry)
         {
-            < 0.5 => "small",
-            < 20 => "middle",
-            _ => "large",
-        };
+            if (telemetry is DependencyTelemetry dependencyTelemetry)
+            {
+                dependencyTelemetry.Data = UrlUtility.SanitizeUrl(dependencyTelemetry.Data);
+            }
+        }
+    }
 }

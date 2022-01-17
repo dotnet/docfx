@@ -25,7 +25,6 @@ internal class PageBuilder
     private readonly ContentValidator _contentValidator;
     private readonly MetadataValidator _metadataValidator;
     private readonly MarkdownEngine _markdownEngine;
-    private readonly SearchIndexBuilder _searchIndexBuilder;
     private readonly RedirectionProvider _redirectionProvider;
     private readonly JsonSchemaTransformer _jsonSchemaTransformer;
     private readonly LearnHierarchyBuilder _learnHierarchyBuilder;
@@ -47,7 +46,6 @@ internal class PageBuilder
         ContentValidator contentValidator,
         MetadataValidator metadataValidator,
         MarkdownEngine markdownEngine,
-        SearchIndexBuilder searchIndexBuilder,
         RedirectionProvider redirectionProvider,
         JsonSchemaTransformer jsonSchemaTransformer,
         LearnHierarchyBuilder learnHierarchyBuilder)
@@ -68,7 +66,6 @@ internal class PageBuilder
         _contentValidator = contentValidator;
         _metadataValidator = metadataValidator;
         _markdownEngine = markdownEngine;
-        _searchIndexBuilder = searchIndexBuilder;
         _redirectionProvider = redirectionProvider;
         _jsonSchemaTransformer = jsonSchemaTransformer;
         _learnHierarchyBuilder = learnHierarchyBuilder;
@@ -146,28 +143,27 @@ internal class PageBuilder
         }
 
         outputModel["schema"] = mime.Value;
-        outputModel = JsonUtility.SortProperties(outputModel);
         if (_config.OutputType == OutputType.Json)
         {
-            return (outputModel, JsonUtility.SortProperties(outputMetadata));
+            return (outputModel, outputMetadata);
         }
 
         var (templateModel, templateMetadata) = _templateEngine.CreateTemplateModel(file, mime, outputModel);
 
         if (_config.OutputType == OutputType.PageJson)
         {
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
 
         try
         {
             var html = _templateEngine.RunLiquid(errors, mime, templateModel);
-            return (html, JsonUtility.SortProperties(templateMetadata));
+            return (html, templateMetadata);
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
         {
             errors.AddRange(dex.Select(ex => ex.Error));
-            return (templateModel, JsonUtility.SortProperties(templateMetadata));
+            return (templateModel, templateMetadata);
         }
     }
 
@@ -234,6 +230,7 @@ internal class PageBuilder
         systemMetadata.Locale = _buildOptions.Locale;
         systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? _documentProvider.GetCanonicalUrl(file) : null;
         systemMetadata.Path = _documentProvider.GetSitePath(file);
+        systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
         systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", systemMetadata.Locale, _config.BasePath) + "/";
 
         systemMetadata.EnableLocSxs = _buildOptions.EnableSideBySide;
@@ -251,8 +248,6 @@ internal class PageBuilder
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
-
-        systemMetadata.SearchEngine = _config.SearchEngine;
 
         if (!_config.IsReferenceRepository && _config.OutputPdf)
         {
@@ -277,7 +272,6 @@ internal class PageBuilder
         var conceptual = new ConceptualModel { Title = userMetadata.Title };
         var html = _markdownEngine.ToHtml(errors, content, new SourceInfo(file), MarkdownPipelineType.Markdown, conceptual);
 
-        _searchIndexBuilder.SetTitle(file, conceptual.Title);
         _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
         ProcessConceptualHtml(errors, file, html, conceptual);
@@ -295,7 +289,6 @@ internal class PageBuilder
             var userMetadata = _metadataProvider.GetMetadata(errors, file);
 
             _metadataValidator.ValidateMetadata(errors, userMetadata.RawJObject, file);
-            _searchIndexBuilder.SetTitle(file, userMetadata.Title);
 
             JsonUtility.Merge(pageModel, new JObject { ["metadata"] = userMetadata.RawJObject });
         }
@@ -333,13 +326,7 @@ internal class PageBuilder
         if (JsonSchemaProvider.IsLandingData(mime))
         {
             var landingData = JsonUtility.ToObject<LandingData>(errors, pageModel);
-            var razorHtml = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
-
-            pageModel = JsonUtility.ToJObject(new ConceptualModel
-            {
-                Conceptual = _templateEngine.ProcessHtml(errors, file, razorHtml),
-                ExtensionData = pageModel,
-            });
+            pageModel["conceptual"] = RazorTemplate.Render(mime, landingData).GetAwaiter().GetResult();
         }
 
         return pageModel;
@@ -348,13 +335,14 @@ internal class PageBuilder
     private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
     {
         var wordCount = 0L;
+
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
+            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _buildOptions.Locale, _config.TrustedDomains);
 
             if (token.Type == HtmlTokenType.Text)
             {
@@ -377,7 +365,6 @@ internal class PageBuilder
         }
 
         _bookmarkValidator.AddBookmarks(file, bookmarks);
-        _searchIndexBuilder.SetBody(file, searchText.ToString());
 
         conceptual.Conceptual = LocalizationUtility.AddLeftToRightMarker(_buildOptions.Culture, result);
         conceptual.WordCount = wordCount;

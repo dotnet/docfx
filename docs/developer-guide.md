@@ -15,7 +15,7 @@ You can use [Visual Studio](https://www.visualstudio.com/vs/) or [Visual Studio 
 
 > **For Microsoft Internal Users:**
 >
-> Make sure you have the permissions to run this repo locally. Contact [docfxvnext@microsoft.com](docfxvnext@microsoft.com) to add read permission, please.
+> Make sure you have the permissions to run this repo locally. Contact <docfxvnext@microsoft.com> to add read permission, please.
 
 ### Step 1: Clone Repo
 Clone the repo and check out to v3 branch.

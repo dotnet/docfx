@@ -22,26 +22,27 @@ internal class Builder
 
     public static bool Run(CommandLineOptions options, Package? package = null)
     {
-        var operation = Telemetry.StartOperation("build");
-        using var errors = new ErrorWriter(options.Log);
-
-        if (options.Continue)
+        using (Watcher.Disable())
         {
-            // Apply templates.
-            ContinueBuild.Run(errors, options);
+            using var errors = new ErrorWriter(options.Log);
+
+            if (options.Continue)
+            {
+                // Apply templates.
+                ContinueBuild.Run(errors, options);
+            }
+            else
+            {
+                var files = options.File?.Select(Path.GetFullPath).ToArray();
+
+                package ??= new LocalPackage(options.WorkingDirectory);
+
+                new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
+            }
+
+            errors.PrintSummary();
+            return errors.HasError;
         }
-        else
-        {
-            var files = options.File?.Select(Path.GetFullPath).ToArray();
-
-            package ??= new LocalPackage(options.WorkingDirectory);
-
-            new Builder(options, package).Build(errors, new ConsoleProgressReporter(), files);
-        }
-
-        operation.Complete();
-        errors.PrintSummary();
-        return errors.HasError;
     }
 
     public void Build(ErrorBuilder errors, IProgress<string> progressReporter, string[]? files = null)

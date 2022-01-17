@@ -79,12 +79,12 @@ internal class LinkResolver
     {
         if (href.Value.StartsWith("xref:"))
         {
-            var (xrefError, resolvedHref, _, declaringFile) = _xrefResolver.ResolveXrefByHref(
+            var (xrefError, xrefLink) = _xrefResolver.ResolveXrefByHref(
                 new SourceInfo<string>(href.Value["xref:".Length..], href),
                 referencingFile,
                 inclusionRoot);
 
-            return (xrefError, resolvedHref ?? "", declaringFile);
+            return (xrefError, xrefLink.Href ?? "", xrefLink.DeclaringFile);
         }
 
         var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(

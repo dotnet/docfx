@@ -89,7 +89,7 @@ outputs:
 ---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
-# Resource file should not be prettify
+# Resource file should not be prettified
 inputs:
   docfx.yml: |
     outputType: html
@@ -364,25 +364,6 @@ outputs:
         { "url": "/docs/a.html" }
       ]
     }
----
-# Prebuild lunr search index as .lunr.json when searchEngine is lunr
-inputs:
-  docfx.yml: |
-    outputType: html
-    urlType: pretty
-    searchEngine: lunr
-  _themes/Conceptual.html.liquid: |
-    {{page.search_engine}}
-    {{content}}
-  a.md: |
-    # Markdown Title
-
-    Type `javascript` *here*
-outputs:
-  a/index.html: |
-    lunr <p>Type <code>javascript</code><em>here</em>
-  .lunr.json: |
-    { "version": "2.3.8", "fields": ["title", "body"] }
 ---
 # Liquid with register tag
 inputs:

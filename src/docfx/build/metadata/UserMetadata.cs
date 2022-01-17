@@ -22,22 +22,22 @@ internal class UserMetadata
     public SourceInfo<string> Author { get; init; } = new SourceInfo<string>("");
 
     [JsonProperty("ms.author")]
-    public SourceInfo<string?> MsAuthor { get; init; }
+    public string? MsAuthor { get; init; }
 
     [JsonProperty("ms.prod")]
-    public SourceInfo<string?> MsProd { get; init; }
+    public string? MsProd { get; init; }
 
     [JsonProperty("ms.technology")]
-    public SourceInfo<string?> MsTechnology { get; init; }
+    public string? MsTechnology { get; init; }
 
     [JsonProperty("ms.service")]
-    public SourceInfo<string?> MsService { get; init; }
+    public string? MsService { get; init; }
 
     [JsonProperty("ms.subservice")]
-    public SourceInfo<string?> MsSubservice { get; init; }
+    public string? MsSubservice { get; init; }
 
     [JsonProperty("ms.topic")]
-    public SourceInfo<string?> MsTopic { get; init; }
+    public string? MsTopic { get; init; }
 
     public SourceInfo<string> BreadcrumbPath { get; init; } = new SourceInfo<string>("");
 

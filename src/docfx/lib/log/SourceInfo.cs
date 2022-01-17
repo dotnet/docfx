@@ -8,22 +8,22 @@ internal record SourceInfo(FilePath File) : IComparable<SourceInfo>
     /// <summary>
     /// A one based start line value, or zero if there is no line info.
     /// </summary>
-    public int Line { get; init; }
+    public ushort Line { get; init; }
 
     /// <summary>
     /// A one based start column value, or zero if there is no line info.
     /// </summary>
-    public int Column { get; init; }
+    public ushort Column { get; init; }
 
     /// <summary>
     /// A one based end line value, or zero if there is no line info.
     /// </summary>
-    public int EndLine { get; init; }
+    public ushort EndLine { get; init; }
 
     /// <summary>
     /// A one based end column value, or zero if there is no line info.
     /// </summary>
-    public int EndColumn { get; init; }
+    public ushort EndColumn { get; init; }
 
     /// <summary>
     /// A special storage for source info of the JObject property key
@@ -35,10 +35,10 @@ internal record SourceInfo(FilePath File) : IComparable<SourceInfo>
         : this(file)
     {
         File = file;
-        Line = startLine;
-        Column = startColumn;
-        EndLine = endLine ?? startLine;
-        EndColumn = endColumn ?? startColumn;
+        Line = (ushort)Math.Clamp(startLine, 0, ushort.MaxValue);
+        Column = (ushort)Math.Clamp(startColumn, 0, ushort.MaxValue);
+        EndLine = (ushort)Math.Clamp(endLine ?? startLine, 0, ushort.MaxValue);
+        EndColumn = (ushort)Math.Clamp(endColumn ?? startColumn, 0, ushort.MaxValue);
     }
 
     public SourceInfo WithOffset(SourceInfo? offset)
@@ -107,13 +107,15 @@ internal record SourceInfo(FilePath File) : IComparable<SourceInfo>
         return result;
     }
 
-    private static (int line, int column) OffSet(int line1, int column1, int line2, int column2)
+    private static (ushort line, ushort column) OffSet(int line1, int column1, int line2, int column2)
     {
         line1 = line1 <= 0 ? 1 : line1;
         column1 = column1 <= 0 ? 1 : column1;
         line2 = line2 <= 0 ? 1 : line2;
         column2 = column2 <= 0 ? 1 : column2;
 
-        return line2 == 1 ? (line1, column1 + column2 - 1) : (line1 + line2 - 1, column2);
+        var (line, column) = line2 == 1 ? (line1, column1 + column2 - 1) : (line1 + line2 - 1, column2);
+
+        return ((ushort)Math.Clamp(line, 0, ushort.MaxValue), (ushort)Math.Clamp(column, 0, ushort.MaxValue));
     }
 }

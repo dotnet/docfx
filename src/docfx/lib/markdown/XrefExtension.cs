@@ -12,7 +12,7 @@ internal static class XrefExtension
 {
     public static MarkdownPipelineBuilder UseXref(
         this MarkdownPipelineBuilder builder,
-        Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
         return builder.Use(document => document.Replace(node =>
         {
@@ -23,14 +23,22 @@ internal static class XrefExtension
                 var raw = xref.GetAttributes().Properties.First(p => p.Key == "data-raw-source").Value;
                 var suppressXrefNotFound = raw.StartsWith("@");
                 var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
-                var (href, display) = resolveXref(source, null, suppressXrefNotFound);
+                var xrefLink = resolveXref(source, null, suppressXrefNotFound);
 
-                if (href is null)
+                if (xrefLink.Href is null)
                 {
-                    return new LiteralInline(raw);
+                    return new NolocInline() { Text = raw };
                 }
 
-                return new LinkInline(href, null).AppendChild(new LiteralInline(display));
+                var linkInline = new LinkInline(xrefLink.Href, null);
+                if (!xrefLink.Localizable)
+                {
+                    var attributes = linkInline.GetAttributes();
+                    attributes.AddClass("no-loc");
+                    linkInline.SetAttributes(attributes);
+                }
+                linkInline.AppendChild(new LiteralInline(xrefLink.Display));
+                return linkInline;
             }
             return node;
         }));

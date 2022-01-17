@@ -275,10 +275,13 @@ internal static class Errors
         /// Files published to the same url have no monikers or share common monikers.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error PublishUrlConflict(string url, IReadOnlyDictionary<FilePath, MonikerList> files, List<string> conflictMonikers)
+        public static Error PublishUrlConflict(string url, IEnumerable<FilePath>? files, IReadOnlyDictionary<FilePath, MonikerList>? filesWithMoniker, List<string>? conflictMonikers)
         {
-            var message = conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
-            var filesList = StringUtility.Join(files.Select(file => $"{file.Key}{(conflictMonikers.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}"));
+            var message = conflictMonikers != null && conflictMonikers.Count != 0 ? $" of the same version({StringUtility.Join(conflictMonikers)})" : null;
+            var filesList = files != null
+                ? StringUtility.Join(files)
+                : StringUtility.Join(filesWithMoniker?.Select(file => $"{file.Key}{(conflictMonikers?.Count == 0 ? null : $"<{StringUtility.Join(file.Value)}>")}") ?? Array.Empty<string>());
+
             return new Error(
                 ErrorLevel.Warning,
                 "publish-url-conflict",
@@ -421,8 +424,8 @@ internal static class Errors
         public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
            => new(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
 
-        public static Error UidNotFound(string uid, IEnumerable<string?> repositories, string? schemaType)
-            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository {StringUtility.Join(repositories)}.", null);
+        public static Error UidNotFound(string uid, string? repository, string? schemaType, string? propertyPath)
+            => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository '{repository}' on property '{propertyPath}'.", null, propertyPath);
 
         /// <summary>
         /// The same uid of the same version is defined in multiple places
@@ -835,8 +838,8 @@ internal static class Errors
         /// Liquid is not found for current mime type.
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error LiquidNotFound(SourceInfo<string?> source)
-            => new(ErrorLevel.Warning, "liquid-not-found", $"Liquid template is not found for mime type '{source}', the output HTML will not be generated.", source);
+        public static Error LiquidNotFound(SourceInfo<string?> source, string templateName)
+            => new(ErrorLevel.Warning, "liquid-not-found", $"Liquid template '{templateName}' not found for mime type '{source}', the output HTML will not be generated.", source);
 
         /// <summary>
         /// Mustache is not found for current mime type.

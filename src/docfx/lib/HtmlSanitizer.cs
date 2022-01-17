@@ -166,34 +166,44 @@ internal class HtmlSanitizer
         foreach (ref var attribute in token.Attributes.Span)
         {
             var attributeName = attribute.Name.ToString();
-            if (!IsAllowedAttribute(attributeName))
+            if (!IsAllowedAttribute(attributeName, allowedAttributes))
             {
                 errors.Add(Errors.Content.DisallowedHtmlAttribute(obj?.GetSourceInfo()?.WithOffset(attribute.NameRange), tokenName, attributeName));
                 attribute = default;
             }
         }
+    }
 
-        bool IsAllowedAttribute(string attributeName)
+    public bool IsAllowedHtml(string tokenName, string attributeName)
+    {
+        if (!_allowedHtml.TryGetValue(tokenName, out var allowedAttributes))
         {
-            if (_allowedHtml.TryGetValue("*", out var allowedGlobalAttributes)
-                && allowedGlobalAttributes != null
-                && allowedGlobalAttributes.Contains(attributeName))
-            {
-                return true;
-            }
-
-            if (allowedAttributes != null && allowedAttributes.Contains(attributeName))
-            {
-                return true;
-            }
-
-            if (attributeName.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) ||
-                attributeName.StartsWith("data-", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
             return false;
         }
+
+        return string.IsNullOrEmpty(attributeName) || IsAllowedAttribute(attributeName, allowedAttributes);
+    }
+
+    private bool IsAllowedAttribute(string attributeName, HashSet<string>? allowedAttributes)
+    {
+        if (_allowedHtml.TryGetValue("*", out var allowedGlobalAttributes)
+            && allowedGlobalAttributes != null
+            && allowedGlobalAttributes.Contains(attributeName))
+        {
+            return true;
+        }
+
+        if (allowedAttributes != null && allowedAttributes.Contains(attributeName))
+        {
+            return true;
+        }
+
+        if (attributeName.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) ||
+            attributeName.StartsWith("data-", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

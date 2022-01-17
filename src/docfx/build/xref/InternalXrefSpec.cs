@@ -7,15 +7,15 @@ namespace Microsoft.Docs.Build;
 
 internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath DeclaringFile, MonikerList Monikers) : IXrefSpec
 {
-    public string? DeclaringPropertyPath { get; init; }
-
     public string? PropertyPath { get; init; }
 
     public bool UidGlobalUnique { get; init; }
 
     public string? SchemaType { get; init; }
 
-    public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
+    public bool IsNameLocalizable { get; set; }
+
+    public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new();
 
     string IXrefSpec.Uid => Uid.Value;
 

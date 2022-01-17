@@ -17,6 +17,7 @@ internal class InternalXrefMapBuilder
     private readonly RepositoryProvider _repositoryProvider;
     private readonly Input _input;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
+    private readonly RedirectionProvider _redirectionProvider;
 
     public InternalXrefMapBuilder(
         Config config,
@@ -27,6 +28,7 @@ internal class InternalXrefMapBuilder
         BuildScope buildScope,
         RepositoryProvider repositoryProvider,
         Input input,
+        RedirectionProvider redirectionProvider,
         Func<JsonSchemaTransformer> jsonSchemaTransformer)
     {
         _config = config;
@@ -38,6 +40,7 @@ internal class InternalXrefMapBuilder
         _repositoryProvider = repositoryProvider;
         _input = input;
         _jsonSchemaTransformer = jsonSchemaTransformer;
+        _redirectionProvider = redirectionProvider;
     }
 
     public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
@@ -64,6 +67,11 @@ internal class InternalXrefMapBuilder
 
     private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
     {
+        // if the file is already redirected, it should be excluded from xref map
+        if (_redirectionProvider.TryGetValue(file.Path, out _))
+        {
+            return;
+        }
         switch (file.Format)
         {
             case FileFormat.Markdown:
@@ -93,6 +101,7 @@ internal class InternalXrefMapBuilder
         var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
         var xref = new InternalXrefSpec(metadata.Uid, _documentProvider.GetSiteUrl(file), file, monikers);
 
+        xref.IsNameLocalizable = !string.IsNullOrEmpty(metadata.Title);
         xref.XrefProperties["name"] = new Lazy<JToken>(() => new JValue(string.IsNullOrEmpty(metadata.Title) ? metadata.Uid : metadata.Title.Value));
 
         return xref;
