@@ -83,7 +83,7 @@ internal class OpsAccessor : ILearnServiceAccessor
     public Task<string> GetAllowlists(DocsEnvironment environment = DocsEnvironment.Prod)
     {
         return Fetch(TaxonomyApi(environment) +
-            "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product");
+            "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product&name=microsoft.domain");
     }
 
     public Task<string> GetTrustedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
