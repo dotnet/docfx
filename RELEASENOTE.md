@@ -1,7 +1,7 @@
 Version Notes (Current Version: v2.59.0)
 =======================================
 
-v2.58.9
+v2.59.0
 -----------
 1. Upgrade markdig to 2.26.0. (#7701)
 2. Allow custom markdig extensions. (#3387)
