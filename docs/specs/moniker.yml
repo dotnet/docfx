@@ -472,8 +472,8 @@ outputs:
     { "monikers": undefined }
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range '> netcore-1.0' is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.","file":"docs/a.md","line":2,"column":15}
-    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range '> netcore-1.0' is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.","file":"docfx.yml","line":4,"column":16}
+    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range '> netcore-1.0' should not be defined in file metadata of docfx.yml/docfx.json or in moniker zone of file 'docs/a.md'. Please check the 'groups' setting in docfx.yml/docfx.json.","file":"docs/a.md","line":2,"column":15}
+    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range '> netcore-1.0' should not be defined in file metadata of docfx.yml/docfx.json or in moniker zone of file 'docs/b.md'. Please check the 'groups' setting in docfx.yml/docfx.json.","file":"docfx.yml","line":4,"column":16}
 ---
 # With moniker range not defined in config, user should not define it in moniker zone
 inputs:
@@ -496,7 +496,7 @@ outputs:
       "monikers": undefined
     }
   .errors.log: |
-    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.","file":"docs/v1/a.md","line":2,"column":1}
+    {"message_severity":"suggestion","code":"moniker-range-undefined","message":"Moniker range 'netcore-1.0' should not be defined in file metadata of docfx.yml/docfx.json or in moniker zone of file 'docs/v1/a.md'. Please check the 'groups' setting in docfx.yml/docfx.json.","file":"docs/v1/a.md","line":2,"column":1}
 ---
 # No intersection of config monikers and file monikers
 inputs:
