@@ -1,5 +1,11 @@
-Version Notes (Current Version: v2.58.9)
+Version Notes (Current Version: v2.59.0)
 =======================================
+
+v2.58.9
+-----------
+1. Upgrade markdig to 2.26.0. (#7701)
+2. Allow custom markdig extensions. (#3387)
+3. Only show public interfaces in generated syntax. (#3154)
 
 v2.58.9
 -----------
