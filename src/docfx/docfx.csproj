@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../docfx-dotnet/docfx-dotnet.csproj" />
+    <ProjectReference Include="../docfx-api-dotnet/docfx-api-dotnet.csproj" />
     <ProjectReference Include="../Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj" />
     <ProjectReference Include="../Microsoft.Docs.Build.Specialized/Microsoft.Docs.Build.Specialized.csproj" />
   </ItemGroup>

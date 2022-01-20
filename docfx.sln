@@ -20,7 +20,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Docs.Build.Specialized", "src\Microsoft.Docs.Build.Specialized\Microsoft.Docs.Build.Specialized.csproj", "{92FB16D7-A628-41FA-89C1-E2905A8032F7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.SpecTest", "test\docfx.SpecTest\docfx.SpecTest.csproj", "{96A85859-BF5C-4BCC-BCCF-7BDFB38B016D}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx-dotnet", "src\docfx-dotnet\docfx-dotnet.csproj", "{16C9642E-4910-4250-AF1C-8C31EA061B48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx-api-dotnet", "src\docfx-api-dotnet\docfx-api-dotnet.csproj", "{16C9642E-4910-4250-AF1C-8C31EA061B48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
