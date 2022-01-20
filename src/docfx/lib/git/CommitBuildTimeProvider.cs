@@ -53,9 +53,7 @@ internal class CommitBuildTimeProvider
 
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)) ?? ".");
 
-            ProcessUtility.WriteFile(
-                _commitBuildTimePath,
-                JsonUtility.Serialize(new CommitBuildTime { Commits = commits }));
+            ProcessUtility.WriteJsonFile(_commitBuildTimePath, new CommitBuildTime { Commits = commits });
         }
     }
 }
