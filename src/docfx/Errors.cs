@@ -79,6 +79,12 @@ internal static class Errors
 
         public static Error MetadataValidationRuleset(string ruleset, string url)
             => new(ErrorLevel.Info, "MetadataValidationRuleset", $"Metadata validation ruleset used: {ruleset}. Document url: {url}");
+
+        public static Error ContentValidationRuleset(string ruleset, string url)
+            => new(ErrorLevel.Info, "ContentValidationRuleset", $"Content validation ruleset used: {ruleset}. Document url: {url}");
+
+        public static Error BuildValidationRuleset(string ruleset, string url)
+            => new(ErrorLevel.Info, "BuildValidationRuleset", $"Build validation ruleset used: {ruleset}. Document url: {url}");
     }
 
     public static class Logging

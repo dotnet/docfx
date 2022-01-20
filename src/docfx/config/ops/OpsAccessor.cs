@@ -183,11 +183,21 @@ internal class OpsAccessor : ILearnServiceAccessor
 
             var response = await next(request);
 
-            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
-                Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
+            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
             {
                 var documentUrl = response.Headers.TryGetValues("X-Ruleset-DocumentURL", out var url) ? string.Join(",", url) : "";
-                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                if (request.RequestUri!.AbsolutePath.Contains("/metadatarules"))
+                {
+                    _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                }
+                else if (request.RequestUri!.AbsolutePath.Contains("/contentrules"))
+                {
+                    _errors.Add(Errors.System.ContentValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                }
+                else
+                {
+                    _errors.Add(Errors.System.BuildValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                }
             }
 
             return response;
