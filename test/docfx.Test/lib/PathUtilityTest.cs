@@ -148,6 +148,7 @@ public static class PathUtilityTest
         var str = new string(Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()).ToArray());
         Path.GetFileName(str);
         Path.GetDirectoryName(str);
+        Path.IsPathRooted(str);
     }
 
     [Fact]
