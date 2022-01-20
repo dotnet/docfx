@@ -21,6 +21,8 @@ internal record Error
 
     public bool PullRequestOnly { get; init; }
 
+    public bool AddOnly { get; init; }
+
     public string? DocumentUrl { get; init; }
 
     public object?[] MessageArguments { get; init; } = Array.Empty<object?>();
@@ -60,6 +62,7 @@ internal record Error
             end_column,
             log_item_type = Type,
             pull_request_only = PullRequestOnly ? (bool?)true : null,
+            add_only = AddOnly ? (bool?)true : null,
             property_path = PropertyPath,
             ms_author = AdditionalErrorInfo?.MsAuthor,
             ms_prod = AdditionalErrorInfo?.MsProd,
