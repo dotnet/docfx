@@ -25,10 +25,11 @@
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.2.1744.22" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1719.2" Aliases="maml" />
     <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
-    <PackageReference Include="Microsoft.Graph" Version="4.15.0" />
+    <PackageReference Include="Microsoft.Graph" Version="4.16.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2035" />
+    <PackageReference Include="O9d.Json.Formatting" Version="0.1.0" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.1" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Quickenshtein" Version="1.5.0" />
