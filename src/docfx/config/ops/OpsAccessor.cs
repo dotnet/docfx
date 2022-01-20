@@ -19,8 +19,6 @@ internal class OpsAccessor : ILearnServiceAccessor
 
     public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-    private static int s_validationRulesetReported;
-
     private readonly CredentialHandler _credentialHandler;
     private readonly ErrorBuilder _errors;
     private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
