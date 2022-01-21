@@ -217,7 +217,7 @@ internal static class Errors
         /// <summary>
         /// Failed to invoke `git revparse`(resolve commit history of a file on a non-existent branch).
         /// Examples:
-        ///   - resolve contributors or authors on a locale-sxs branch while the corresponding locale branch doesn't exist
+        ///   - resolve contributors or authors on a locale branch while the corresponding locale branch doesn't exist
         /// </summary>
         /// Behavior: ❌ Message: ✔️
         public static Error CommittishNotFound(string repo, string committish)

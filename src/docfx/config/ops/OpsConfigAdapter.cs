@@ -229,6 +229,6 @@ internal class OpsConfigAdapter
 
     private static bool IsLive(string branch)
     {
-        return branch == "live" || branch == "live-sxs";
+        return branch == "live";
     }
 }

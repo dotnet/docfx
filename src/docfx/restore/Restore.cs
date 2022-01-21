@@ -76,7 +76,6 @@ internal static class Restore
                 GetPackages(config).Distinct(),
                 item => packageResolver.DownloadPackage(item.package, item.flags));
         }
-        LocalizationUtility.EnsureLocalizationContributionBranch(config.Secrets, buildOptions.Repository);
     }
 
     private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config)
