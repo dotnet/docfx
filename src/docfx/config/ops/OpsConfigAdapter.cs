@@ -224,11 +224,6 @@ internal class OpsConfigAdapter
 
     private static string GetXrefHostName(string siteName, string branch)
     {
-        return !IsLive(branch) && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
-    }
-
-    private static bool IsLive(string branch)
-    {
-        return branch == "live";
+        return branch != "live" && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
     }
 }

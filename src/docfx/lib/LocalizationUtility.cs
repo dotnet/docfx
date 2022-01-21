@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -10,9 +9,6 @@ namespace Microsoft.Docs.Build;
 
 internal static class LocalizationUtility
 {
-    // NOTE: This line assumes each build runs in a new process
-    private static readonly ConcurrentHashSet<Repository> s_fetchedLocalizationRepositories = new();
-
     private static readonly HashSet<string> s_locales = new(
         CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
             CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
