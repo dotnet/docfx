@@ -482,6 +482,58 @@ outputs:
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://technet.com/index-hero.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
   file1.json:
 ---
+# Validate dynamic secure link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+    allowlists: allowlist.json
+  rules.json: |
+    {
+      "links": {
+        "rules": [
+          {
+            "type": "SecureLinks",
+            "message": "Link '{0}' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.",
+            "code": "insecure-link-2",
+            "severity": "INFO",
+            "contentTypes": ["conceptual"],
+            "useDynamicDomains": true,
+            "domains": [
+              "microsoft.com",
+              "office.com",
+              "msdn.com",
+              "aka.ms",
+              "visualstudio.com",
+              "azure.com",
+              "technet.com"
+            ]
+          }
+        ]
+      }
+    }
+  allowlist.json: |
+    {
+        "microsoft.domain": {
+            "nestedValue": "",
+            "nestedTaxonomy": [
+                "microsoft.com",
+                "channel9.com"
+            ]
+        }
+    }
+  file1.md: |
+    [external link](http://docs.microsoft.com/should-report)
+    <a href="http://docs.microsoft.com/should-report">inline html link</a>
+    <a href="https://docs.microsoft.com/should-not-report">inline html link</a>
+    [external link](http://www.google.com/should-not-report)
+    ![image link](http://image.channel9.com/should-report.jpg)
+outputs:
+  .errors.log: |
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":49}
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://image.channel9.com/should-report.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":5,"end_line":5,"column":1,"end_column":1}
+  file1.json:
+---
 # Validate html link
 inputs:
   docfx.yml: |

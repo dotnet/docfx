@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Threading.Tasks.Dataflow;
 
 namespace Microsoft.Docs.Build;
 
@@ -10,8 +9,6 @@ internal class Output
 {
     private readonly Input _input;
     private readonly bool _dryRun;
-    private readonly ActionBlock<Action> _queue = new(
-        action => action(), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = Environment.ProcessorCount });
 
     public string OutputPath { get; }
 
@@ -30,11 +27,8 @@ internal class Output
     {
         EnsureNoDryRun();
 
-        _queue.Post(() =>
-        {
-            using var stream = new FileStream(EnsureDestinationPath(destRelativePath), FileMode.Create);
-            JsonUtility.SerializeStable(stream, graph);
-        });
+        using var stream = new FileStream(EnsureDestinationPath(destRelativePath), FileMode.Create);
+        JsonUtility.SerializeStable(stream, graph);
     }
 
     /// <summary>
@@ -47,7 +41,7 @@ internal class Output
 
         if (text != null)
         {
-            _queue.Post(() => File.WriteAllText(EnsureDestinationPath(destRelativePath), text));
+            File.WriteAllText(EnsureDestinationPath(destRelativePath), text);
         }
     }
 
@@ -61,14 +55,11 @@ internal class Output
 
         if (destRelativePaths.Length > 0)
         {
-            _queue.Post(() =>
+            File.WriteAllLines(EnsureDestinationPath(destRelativePaths[0]), lines);
+            for (var i = 1; i < destRelativePaths.Length; i++)
             {
-                File.WriteAllLines(EnsureDestinationPath(destRelativePaths[0]), lines);
-                for (var i = 1; i < destRelativePaths.Length; i++)
-                {
-                    File.Copy(EnsureDestinationPath(destRelativePaths[0]), EnsureDestinationPath(destRelativePaths[i]), overwrite: true);
-                }
-            });
+                File.Copy(EnsureDestinationPath(destRelativePaths[0]), EnsureDestinationPath(destRelativePaths[i]), overwrite: true);
+            }
         }
     }
 
@@ -80,20 +71,17 @@ internal class Output
     {
         EnsureNoDryRun();
 
-        _queue.Post(() =>
+        var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
+        if (_input.TryGetPhysicalPath(file) is PathString sourcePhysicalPath)
         {
-            var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
-            if (_input.TryGetPhysicalPath(file) is PathString sourcePhysicalPath)
-            {
-                File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
-                return;
-            }
+            File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
+            return;
+        }
 
-            using var sourceStream = _input.ReadStream(file);
-            using var targetStream = File.Create(targetPhysicalPath);
-            sourceStream.CopyTo(targetStream);
-            sourceStream.Flush();
-        });
+        using var sourceStream = _input.ReadStream(file);
+        using var targetStream = File.Create(targetPhysicalPath);
+        sourceStream.CopyTo(targetStream);
+        sourceStream.Flush();
     }
 
     /// <summary>
@@ -104,27 +92,18 @@ internal class Output
     {
         EnsureNoDryRun();
 
-        _queue.Post(() =>
+        var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
+        var sourcePhysicalPath = package.TryGetPhysicalPath(sourcePath);
+        if (sourcePhysicalPath != null)
         {
-            var targetPhysicalPath = EnsureDestinationPath(destRelativePath);
-            var sourcePhysicalPath = package.TryGetPhysicalPath(sourcePath);
-            if (sourcePhysicalPath != null)
-            {
-                File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
-                return;
-            }
+            File.Copy(sourcePhysicalPath, targetPhysicalPath, overwrite: true);
+            return;
+        }
 
-            using var sourceStream = package.ReadStream(sourcePath);
-            using var targetStream = File.Create(targetPhysicalPath);
-            sourceStream.CopyTo(targetStream);
-            sourceStream.Flush();
-        });
-    }
-
-    public void WaitForCompletion()
-    {
-        _queue.Complete();
-        _queue.Completion.Wait();
+        using var sourceStream = package.ReadStream(sourcePath);
+        using var targetStream = File.Create(targetPhysicalPath);
+        sourceStream.CopyTo(targetStream);
+        sourceStream.Flush();
     }
 
     private string EnsureDestinationPath(string destRelativePath)

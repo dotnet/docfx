@@ -209,11 +209,6 @@ internal class DocsetBuilder
                 () => output.WriteJson(".links.json", _fileLinkMapBuilder.Build(publishModel)),
                 () => Legacy.ConvertToLegacyModel(_buildOptions.DocsetPath, legacyContext, fileManifests, dependencyMap));
 
-            using (Progress.Start("Waiting for pending outputs"))
-            {
-                output.WaitForCompletion();
-            }
-
             new OpsPostProcessor(_config, _errors, _buildOptions, _opsAccessor, _jsonSchemaTransformer.GetValidateExternalXrefs()).Run();
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
