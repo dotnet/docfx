@@ -1,0 +1,3 @@
+[submodule "markdig"]
+	path = markdig
+	url = https://github.com/yufeih/markdig
