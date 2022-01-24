@@ -44,7 +44,7 @@ noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs: 
   toc.json:
@@ -54,7 +54,7 @@ noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"content\"}"
 outputs: 
   toc.json:
@@ -64,7 +64,7 @@ inputs:
   docfx.yml: |
     template: _themes
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/test:
 outputs: 
   toc.html: 
@@ -75,7 +75,7 @@ inputs:
   docfx.yml: |
     template: _themes.pdf
     outputType: html
-  TOC.md:
+  toc.md:
   _themes.pdf/ContentTemplate/toc.html.js: |
     exports.transform = function (model) {
       return {
@@ -216,7 +216,7 @@ inputs:
     ---
     monikerRange: netcore-1.1
     ---
-  docs/v1/TOC.md: |
+  docs/v1/toc.md: |
     # [A](a.md)
 outputs:
   c83d387e11975a5f5fe51ced25ba46a7/toc.html: |
@@ -246,7 +246,7 @@ outputs:
           "group": "c83d387e11975a5f5fe51ced25ba46a7",
           "version":"< netcore-2.0",
           "is_moniker_range": true,
-          "source_relative_path": "docs/v1/TOC.md"
+          "source_relative_path": "docs/v1/toc.md"
         },
       ]
     }
@@ -390,7 +390,7 @@ repos:
       docfx.yml: |
         outputType: html
         template: https://docs.com/theme
-      TOC.yml: |
+      toc.yml: |
         - name: link-a
           href: a.md
       a.md:
@@ -441,7 +441,7 @@ inputs:
   docfx.yml: |
     outputType: html
     urlType: pretty
-  TOC.yml: |
+  toc.yml: |
     - name: a
 outputs:
   toc.json: |

@@ -235,9 +235,9 @@ locale: zh-cn
 repos:
   https://docs.com/toc1#master:
     - files:
-        docs/TOC.md: |
+        docs/toc.md: |
           # [reference a](a.md)
-        docs/b/TOC.md: |
+        docs/b/toc.md: |
           # [reference b](../b.md)
         docfx.yml:
   https://docs.com/toc1.zh-cn#master:
@@ -245,7 +245,7 @@ repos:
         docfx.yml:
         docs/a.md:
         docs/b.md:
-        docs/TOC.md: |
+        docs/toc.md: |
           # [reference a](a.md)
           # [reference b](b.md)
 outputs:
@@ -262,13 +262,13 @@ repos:
   https://docs.com/toc2#master:
     - files:
         docs/a/a.md:
-        docs/b/TOC.md: |
+        docs/b/toc.md: |
           # [reference b](b.md)
         docfx.yml:
   https://docs.com/toc2.zh-cn#master:
     - files:
         docfx.yml:
-        docs/a/TOC.md: |
+        docs/a/toc.md: |
           # [reference a](a.md)
         docs/b/b.md:
 outputs:
@@ -397,13 +397,13 @@ locale: zh-cn
 repos:
   https://github.com/conflictedtoc/a:
     - files:
-        docs/a/TOC.md: |
+        docs/a/toc.md: |
           # [md reference a](a.md)
         docfx.yml:
   https://github.com/conflictedtoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: yml reference a
         docs/a/a.md:
@@ -475,14 +475,14 @@ repos:
         docfx.yml:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
   https://github.com/deletedtoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
         docs/a/a.md:
 outputs:
@@ -495,13 +495,13 @@ repos:
   https://github.com/onlyloc/a:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
         docs/a/a.md:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
 outputs:
@@ -536,16 +536,16 @@ repos:
   https://github.com/inclusiontoc/a:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: b.md
             name: reference markdown b
   https://github.com/inclusiontoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
         docs/a/a.md:
@@ -750,7 +750,7 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p>test</p>"}
 ---
-# should fallback to deleted TOC.md not TOC.json
+# should fallback to deleted toc.md not toc.json
 locale: zh-cn
 repos:
   https://github.com/deletedtoc-1/a:
@@ -760,42 +760,42 @@ repos:
         docs/c.md:
     - files:
         docfx.yml:
-        docs/dir/TOC.json: |
+        docs/dir/toc.json: |
           {"items":[{"name":"reference c", "href":"../c.md"}]}
-        docs/dir/TOC.md: |
+        docs/dir/toc.md: |
           # [reference b.md](../b.md)
         docs/b.md:
         docs/c.md:
   https://github.com/deletedtoc-1/a.zh-cn:
     - files:
         docfx.yml:
-        docs/TOC.yml: |
+        docs/toc.yml: |
           - name: name
             href: dir/
 outputs:
   docs/toc.json: |
     {"items":[{"href":"b"}]}
 ---
-# should not fallback to deleted TOC.md if TOC.yml exists
+# should not fallback to deleted toc.md if toc.yml exists
 locale: zh-cn
 repos:
   https://github.com/deletedtoc-2/a:
     - files:
         docfx.yml:
-        docs/dir/TOC.yml: |
+        docs/dir/toc.yml: |
           - name: toc existed
             href: ../a.md
         docs/a.md:
         docs/b.md:
     - files:
         docfx.yml:
-        docs/dir/TOC.md: |
+        docs/dir/toc.md: |
           # [reference b.md](../b.md)
         docs/b.md:
   https://github.com/deletedtoc-2/a.zh-cn:
     - files:
         docfx.yml:
-        docs/TOC.yml: |
+        docs/toc.yml: |
           - name: name
             href: dir/
 outputs:
@@ -870,7 +870,7 @@ repos:
   https://github.com/error-from-fallback#live:
     - files:
         docfx.yml:
-        docs/TOC.md: |
+        docs/toc.md: |
           # a 
           ### b
   https://github.com/error-from-fallback.zh-cn#live:
@@ -888,10 +888,10 @@ repos:
         .openpublishing.publish.config.json: |
           {
             "docsets_to_publish": [{  "build_source_folder": "a"}],
-            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/toc.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
           }
         a/docfx.yml:
-        a/api/bot/TOC.yml: |
+        a/api/bot/toc.yml: |
           items:
           - name: MS.ServicePage2.xxx
             items:
@@ -904,9 +904,9 @@ repos:
         .openpublishing.publish.config.json: |
           {
             "docsets_to_publish": [{  "build_source_folder": "a"}],
-            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/toc.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
           }
         a/docfx.yml:
-        a/TOC.yml:
+        a/toc.yml:
 outputs:
   a/toc.json:

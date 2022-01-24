@@ -3,7 +3,7 @@
 inputs:
   docfx.yml:
   docs/a.md:
-  docs/TOC.md:
+  docs/toc.md:
   docs/folder/b~$.md:
   docs/index.md:
 outputs:
@@ -17,7 +17,7 @@ outputs:
         { "url": "/docs/a", "path": "docs/a.json", "source_path": "docs/a.md" },
         { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json", "source_path": "docs/folder/b~$.md" },
         { "url": "/docs/", "path": "docs/index.json", "source_path": "docs/index.md" },
-        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/TOC.md" }
+        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/toc.md" }
       ]
     }
 ---
@@ -98,7 +98,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [file reference](a.md)
 outputs:
   docs/a.json:
@@ -106,7 +106,7 @@ outputs:
   .dependencymap.json: |
     {  
        "dependencies":{  
-          "docs/TOC.md":[  
+          "docs/toc.md":[  
              {  
                 "source":"docs/a.md",
                 "type":"file"
@@ -182,9 +182,9 @@ outputs:
 # Manifest contains nested TOC dependencies
 inputs:
   docfx.yml:
-  docs/TOC.md: |
-    # [a](a/TOC.md)
-  docs/a/TOC.md: |
+  docs/toc.md: |
+    # [a](a/toc.md)
+  docs/a/toc.md: |
     # [b](b.md)
   docs/a/b.md:
 outputs:
@@ -193,8 +193,8 @@ outputs:
   .dependencymap.json: |
     {
        "dependencies": {
-          "docs/TOC.md": [{ "source":"docs/a/TOC.md", "type": "include" }],
-          "docs/a/TOC.md": [{ "source":"docs/a/b.md", "type": "file" }]
+          "docs/toc.md": [{ "source":"docs/a/toc.md", "type": "include" }],
+          "docs/a/toc.md": [{ "source":"docs/a/b.md", "type": "file" }]
        }
     }
 ---
@@ -505,12 +505,12 @@ repos:
         some text
       docs/v2/d.md: |
         # title 1
-      docs/a/TOC.yml: |
+      docs/a/toc.yml: |
         - name: Toc Reference
           href: ../v1/b.md
         - name: Non-existed Toc reference
           href: b.md
-      docs/v1/TOC.yml: |
+      docs/v1/toc.yml: |
         - name: Toc Reference
           href: b.md
       monikerDefinition.json: |
@@ -534,8 +534,8 @@ outputs:
   .links.json: |
     {
       "links":[
-        {"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/TOC.yml","source_line":2},
-        {"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/TOC.yml","source_line":4},
+        {"source_url":"/docs/a/toc.json","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/toc.yml","source_line":2},
+        {"source_url":"/docs/a/toc.json","target_url":"b.md","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/a/toc.yml","source_line":4},
         {"source_url":"/docs/b","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":1},
         {"source_url":"/docs/b","source_moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a","target_url":"/docs/a","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v2/b.md","source_line":1},
         {"source_url":"/docs/b","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"/docs/c","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":2},
@@ -545,12 +545,12 @@ outputs:
         {"source_url":"/docs/b","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"/docs/e.png","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":8},
         {"source_url":"/docs/b","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"c.md","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line":3},
         {"source_url":"/docs/b","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"https://autolink","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/b.md","source_line": 9},
-        {"source_url":"/docs/toc.json","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/TOC.yml","source_line":2}
+        {"source_url":"/docs/toc.json","source_moniker_group":"17b9fe681514513cbf7d5c90e32f107a","target_url":"/docs/b","source_git_url":"https://github.com/output-links/markdown/blob/main/docs/v1/toc.yml","source_line":2}
       ]
     }
   .errors.log: |
     {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/v1/b.md","line":3,"column":9}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md'.","file":"docs/a/TOC.yml","line":4,"column":9}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'b.md'.","file":"docs/a/toc.yml","line":4,"column":9}
 ---
 # source_url is the includer for links and xrefs in markdown token
 repos:
@@ -587,16 +587,16 @@ repos:
         warningsAsErrors: true
         globalMetadata:
           "breadcrumb_path": "/docs/breadcrumbs/toc.json"
-      docs/breadcrumbs/TOC.yml: |
+      docs/breadcrumbs/toc.yml: |
         - name: Docs
           tocHref: /
           topicHref: /
-      docs/TOC.yml: |
+      docs/toc.yml: |
         - name: TOC Ref
-          tocHref: a/TOC.yml
+          tocHref: a/toc.yml
         - name: link
           href: c.md
-      docs/a/TOC.yml: |
+      docs/a/toc.yml: |
         - name: Link
           href: ../b.md
         - name: Uid ref
@@ -628,7 +628,7 @@ outputs:
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/breadcrumbs/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/breadcrumbs/toc.yml",
             "source_line": 3,
             "source_url": "/docs/breadcrumbs/toc.json",
             "target_url": "/"
@@ -640,19 +640,19 @@ outputs:
             "target_url": "/docs/breadcrumbs/toc.json"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/toc.yml",
             "source_line": 4,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/a"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/a/toc.yml",
             "source_line": 2,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/b"
         },
         {
-            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/TOC.yml",
+            "source_git_url": "https://github.com/toc-inclusion/markdown/blob/main/docs/toc.yml",
             "source_line": 4,
             "source_url": "/docs/toc.json",
             "target_url": "/docs/c"
@@ -838,9 +838,9 @@ outputs:
 inputs:
   docfx.yml:
   docs/a.md:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [file reference](a.md)
-  docs/a/TOC.md: |
+  docs/a/toc.md: |
     # [file reference](../a.md)
 outputs:
   docs/a.json:
@@ -853,26 +853,26 @@ outputs:
               "dependencies": [
                   {
                       "from_file_path": "docs/a.md",
-                      "to_file_path": "docs/TOC.md",
+                      "to_file_path": "docs/toc.md",
                       "dependency_type": "metadata"
                   }
               ],
               "type": "Content"
           },
-          "docs/a/TOC.md": {
+          "docs/a/toc.md": {
               "dependencies": [
                   {
-                      "from_file_path": "docs/a/TOC.md",
+                      "from_file_path": "docs/a/toc.md",
                       "to_file_path": "docs/a.md",
                       "dependency_type": "file"
                   }
               ],
               "type": "Toc"
           },
-          "docs/TOC.md": {
+          "docs/toc.md": {
               "dependencies": [
                   {
-                      "from_file_path": "docs/TOC.md",
+                      "from_file_path": "docs/toc.md",
                       "to_file_path": "docs/a.md",
                       "dependency_type": "file"
                   }
