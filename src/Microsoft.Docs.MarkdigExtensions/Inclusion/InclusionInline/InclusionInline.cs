@@ -3,14 +3,13 @@
 
 using Markdig.Syntax.Inlines;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class InclusionInline : ContainerInline
 {
-    public class InclusionInline : ContainerInline
-    {
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public string IncludedFilePath { get; set; }
+    public string IncludedFilePath { get; set; }
 
-        public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
-    }
+    public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
 }

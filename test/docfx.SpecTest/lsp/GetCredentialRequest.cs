@@ -3,12 +3,11 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
-{
-    public class GetCredentialRequest
-    {
-        public JToken Params { get; init; }
+namespace Microsoft.Docs.Build;
 
-        public JToken Response { get; init; }
-    }
+public class GetCredentialRequest
+{
+    public JToken Params { get; init; }
+
+    public JToken Response { get; init; }
 }

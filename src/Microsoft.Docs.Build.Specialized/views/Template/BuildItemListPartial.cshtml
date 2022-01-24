@@ -36,7 +36,7 @@
     }
 }
 
-@if (@Model.Style == "unordered")
+@if (@Model?.Style == "unordered")
 {
     <ul class="@Model.ClassName">
         @foreach (var listItem in @Model.Items)
@@ -58,7 +58,7 @@
         }
     </ul>
 }
-else if (@Model.Style == "ordered")
+else if (@Model?.Style == "ordered")
 {
     <ol>
         @foreach (var listItem in @Model.Items)
@@ -80,7 +80,7 @@ else if (@Model.Style == "ordered")
         }
     </ol>
 }
-else if (Model.Style == "cards")
+else if (Model?.Style == "cards")
 {
     string className = "";
     if (!string.IsNullOrEmpty(Model.ClassName))
@@ -196,7 +196,7 @@ else if (Model.Style == "cards")
 
     </ul>
 }
-else if (Model.Style != null && Model.Style.StartsWith("icon"))
+else if (Model?.Style != null && Model.Style.StartsWith("icon"))
 {
     string outerClass = "";
     string innerClass = "";

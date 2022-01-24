@@ -89,7 +89,7 @@ outputs:
 ---
 # Apply template and produce html page when output type is html
 # Index page should be handled specially
-# Resource file should not be prettify
+# Resource file should not be prettified
 inputs:
   docfx.yml: |
     outputType: html
@@ -365,25 +365,6 @@ outputs:
       ]
     }
 ---
-# Prebuild lunr search index as .lunr.json when searchEngine is lunr
-inputs:
-  docfx.yml: |
-    outputType: html
-    urlType: pretty
-    searchEngine: lunr
-  _themes/Conceptual.html.liquid: |
-    {{page.search_engine}}
-    {{content}}
-  a.md: |
-    # Markdown Title
-
-    Type `javascript` *here*
-outputs:
-  a/index.html: |
-    lunr <p>Type <code>javascript</code><em>here</em>
-  .lunr.json: |
-    { "version": "2.3.8", "fields": ["title", "body"] }
----
 # Liquid with register tag
 inputs:
   docfx.yml: |
@@ -402,13 +383,12 @@ outputs:
     <link rel="stylesheet" href="/dev/test.css">
     <div></div>
 ---
-# TOC with output-type="html"
+# TOC with outputType: html and urlType: docs
 repos:
   https://github.com/toc/toc-output-type-is-html:
   - files:
       docfx.yml: |
         outputType: html
-        renderType: Content
         template: https://docs.com/theme
       TOC.yml: |
         - name: link-a
@@ -455,3 +435,14 @@ outputs:
       <a href="a"> link-a </a>
   toc.json: |
     {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}
+---
+# TOC with outputType: html and urlType: pretty
+inputs:
+  docfx.yml: |
+    outputType: html
+    urlType: pretty
+  TOC.yml: |
+    - name: a
+outputs:
+  toc.json: |
+    {"items":[{"name":"a"}]}

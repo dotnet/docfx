@@ -9,7 +9,7 @@ pr: none
 
 variables:
 - name: dotnetVersion
-  value: 5.0.x
+  value: 6.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
@@ -63,9 +63,9 @@ jobs:
       InputType: 'Basic'
       Function: 'analyze'
       AnalyzeTarget: >
-        src/docfx/bin/Release/net5.0/docfx.dll;
-        src/docfx/bin/Release/net5.0/Microsoft.Docs.MarkdigExtensions.dll;
-        src/docfx/bin/Release/net5.0/Microsoft.Docs.Build.Specialized.dll;
+        src/docfx/bin/Release/net6.0/docfx.dll;
+        src/docfx/bin/Release/net6.0/Microsoft.Docs.MarkdigExtensions.dll;
+        src/docfx/bin/Release/net6.0/Microsoft.Docs.Build.Specialized.dll;
 
   - task: Semmle@0
     displayName: Security - LGTM

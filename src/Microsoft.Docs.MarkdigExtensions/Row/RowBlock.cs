@@ -4,15 +4,14 @@
 using Markdig.Parsers;
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
-{
-    public class RowBlock : ContainerBlock
-    {
-        public int ColonCount { get; set; }
+namespace Microsoft.Docs.MarkdigExtensions;
 
-        public RowBlock(BlockParser parser)
-            : base(parser)
-        {
-        }
+public class RowBlock : ContainerBlock
+{
+    public int ColonCount { get; set; }
+
+    public RowBlock(BlockParser parser)
+        : base(parser)
+    {
     }
 }

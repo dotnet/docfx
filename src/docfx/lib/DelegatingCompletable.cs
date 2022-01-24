@@ -1,16 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
+namespace Microsoft.Docs.Build;
 
-namespace Microsoft.Docs.Build
+internal class DelegatingCompletable
 {
-    internal class DelegatingCompletable
-    {
-        private readonly Action _complete;
+    private readonly Action _complete;
 
-        public DelegatingCompletable(Action complete) => _complete = complete;
+    public DelegatingCompletable(Action complete) => _complete = complete;
 
-        public void Complete() => _complete();
-    }
+    public void Complete() => _complete();
 }

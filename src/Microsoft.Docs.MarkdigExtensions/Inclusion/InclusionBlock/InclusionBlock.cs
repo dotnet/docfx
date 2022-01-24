@@ -4,19 +4,18 @@
 using Markdig.Parsers;
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class InclusionBlock : ContainerBlock
 {
-    public class InclusionBlock : ContainerBlock
+    public string Title { get; set; }
+
+    public string IncludedFilePath { get; set; }
+
+    public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
+
+    public InclusionBlock(BlockParser parser)
+        : base(parser)
     {
-        public string Title { get; set; }
-
-        public string IncludedFilePath { get; set; }
-
-        public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
-
-        public InclusionBlock(BlockParser parser)
-            : base(parser)
-        {
-        }
     }
 }

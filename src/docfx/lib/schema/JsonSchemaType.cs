@@ -1,17 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal enum JsonSchemaType
 {
-    internal enum JsonSchemaType
-    {
-        None,
-        Array,
-        Boolean,
-        Integer,
-        Number,
-        Null,
-        Object,
-        String,
-    }
+    None,
+    Array,
+    Boolean,
+    Integer,
+    Number,
+    Null,
+    Object,
+    String,
 }

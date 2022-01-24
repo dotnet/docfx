@@ -1,69 +1,65 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class MetadataValidator
 {
-    internal class MetadataValidator
+    private readonly JsonSchemaValidator[] _schemaValidators;
+    private readonly HashSet<string> _reservedMetadata;
+
+    public JsonSchema[] MetadataSchemas { get; }
+
+    public MetadataValidator(
+        Config config,
+        MicrosoftGraphAccessor microsoftGraphAccessor,
+        JsonSchemaLoader jsonSchemaLoader,
+        MonikerProvider monikerProvider,
+        CustomRuleProvider customRuleProvider)
     {
-        private readonly JsonSchemaValidator[] _schemaValidators;
-        private readonly HashSet<string> _reservedMetadata;
+        MetadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
 
-        public JsonSchema[] MetadataSchemas { get; }
+        _schemaValidators = Array.ConvertAll(
+            MetadataSchemas,
+            schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, customRuleProvider));
 
-        public MetadataValidator(
-            Config config,
-            MicrosoftGraphAccessor microsoftGraphAccessor,
-            JsonSchemaLoader jsonSchemaLoader,
-            MonikerProvider monikerProvider,
-            CustomRuleProvider customRuleProvider)
+        _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
+            .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
+            .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
+            .Except(JsonUtility.GetPropertyNames(typeof(UserMetadata)))
+            .ToHashSet();
+    }
+
+    public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath file)
+    {
+        foreach (var (key, value) in metadata)
         {
-            MetadataSchemas = Array.ConvertAll(config.MetadataSchema, jsonSchemaLoader.LoadSchema);
-
-            _schemaValidators = Array.ConvertAll(
-                MetadataSchemas,
-                schema => new JsonSchemaValidator(schema, microsoftGraphAccessor, monikerProvider, false, customRuleProvider));
-
-            _reservedMetadata = JsonUtility.GetPropertyNames(typeof(SystemMetadata))
-                .Concat(JsonUtility.GetPropertyNames(typeof(ConceptualModel)))
-                .Concat(MetadataSchemas.SelectMany(schema => schema.Reserved))
-                .Except(JsonUtility.GetPropertyNames(typeof(UserMetadata)))
-                .ToHashSet();
-        }
-
-        public void ValidateMetadata(ErrorBuilder errors, JObject metadata, FilePath file)
-        {
-            foreach (var (key, value) in metadata)
+            if (value is null)
             {
-                if (value is null)
-                {
-                    continue;
-                }
-                if (_reservedMetadata.Contains(key))
-                {
-                    errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
-                }
+                continue;
             }
-
-            foreach (var schemaValidator in _schemaValidators)
+            if (_reservedMetadata.Contains(key))
             {
-                errors.AddRange(schemaValidator.Validate(metadata, file));
+                errors.Add(Errors.Metadata.AttributeReserved(JsonUtility.GetKeySourceInfo(value), key));
             }
         }
 
-        public List<Error> PostValidate()
+        foreach (var schemaValidator in _schemaValidators)
         {
-            var errors = new List<Error>();
-            foreach (var validator in _schemaValidators)
-            {
-                errors.AddRange(validator.PostValidate());
-            }
-
-            return errors;
+            errors.AddRange(schemaValidator.Validate(metadata, file));
         }
+    }
+
+    public List<Error> PostValidate()
+    {
+        var errors = new List<Error>();
+        foreach (var validator in _schemaValidators)
+        {
+            errors.AddRange(validator.PostValidate());
+        }
+
+        return errors;
     }
 }

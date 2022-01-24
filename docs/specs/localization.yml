@@ -323,7 +323,7 @@ repos:
 outputs:
   docs/a.json:
   docs/b.json: |
-    {"conceptual":"<p>link to <a href=\"a\">a</a>\nlink to <a href=\"c\">c</a></p>\n"}
+    {"conceptual":"<p>link to <a class=\"no-loc\" href=\"a\">a</a>\nlink to <a class=\"no-loc\" href=\"c\">c</a></p>\n"}
   .xrefmap.json: |
     {}
 ---

@@ -1,91 +1,86 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Markdig;
 using Markdig.Syntax;
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public static class TestUtility
 {
-    public static class TestUtility
+    public static void VerifyMarkup(
+        string markdown,
+        string html,
+        string[] errors = null,
+        string[] dependencies = null,
+        bool lineNumber = false,
+        string filePath = "test.md",
+        Dictionary<string, string> tokens = null,
+        Dictionary<string, string> files = null)
     {
-        public static void VerifyMarkup(
-            string markdown,
-            string html,
-            string[] errors = null,
-            string[] dependencies = null,
-            bool lineNumber = false,
-            string filePath = "test.md",
-            Dictionary<string, string> tokens = null,
-            Dictionary<string, string> files = null)
+        errors ??= Array.Empty<string>();
+        tokens ??= new Dictionary<string, string>();
+        files ??= new Dictionary<string, string>();
+
+        var actualErrors = new List<string>();
+        var actualDependencies = new HashSet<string>();
+
+        var markdownContext = new MarkdownContext(
+            getToken: key => tokens.TryGetValue(key, out var value) ? value : null,
+            logInfo: (a, b, c, d) => { },
+            logSuggestion: Log(),
+            logWarning: Log(),
+            logError: Log(),
+            readFile: ReadFile);
+
+        var pipelineBuilder = new MarkdownPipelineBuilder()
+            .UseDocfxExtensions(markdownContext)
+            .UseYamlFrontMatter();
+
+        if (lineNumber)
         {
-            errors ??= Array.Empty<string>();
-            tokens ??= new Dictionary<string, string>();
-            files ??= new Dictionary<string, string>();
+            pipelineBuilder.UseLineNumber();
+        }
 
-            var actualErrors = new List<string>();
-            var actualDependencies = new HashSet<string>();
+        var pipeline = pipelineBuilder.Build();
 
-            var markdownContext = new MarkdownContext(
-                getToken: key => tokens.TryGetValue(key, out var value) ? value : null,
-                logInfo: (a, b, c, d) => { },
-                logSuggestion: Log(),
-                logWarning: Log(),
-                logError: Log(),
-                readFile: ReadFile);
+        using (InclusionContext.PushFile(filePath))
+        {
+            var actualHtml = Markdown.ToHtml(markdown, pipeline);
 
-            var pipelineBuilder = new MarkdownPipelineBuilder()
-                .UseDocfxExtensions(markdownContext)
-                .UseYamlFrontMatter();
-
-            if (lineNumber)
+            if (html != null)
             {
-                pipelineBuilder.UseLineNumber();
+                Assert.Equal(
+                    html.Replace("\r", "").Replace("\n", ""),
+                    actualHtml.Replace("\r", "").Replace("\n", ""));
             }
 
-            var pipeline = pipelineBuilder.Build();
+            Assert.Equal(errors.OrderBy(_ => _), actualErrors.OrderBy(_ => _));
 
-            using (InclusionContext.PushFile(filePath))
+            if (dependencies != null)
             {
-                var actualHtml = Markdown.ToHtml(markdown, pipeline);
+                Assert.Equal(dependencies.OrderBy(_ => _), actualDependencies.OrderBy(_ => _));
+            }
+        }
 
-                if (html != null)
-                {
-                    Assert.Equal(
-                        html.Replace("\r", "").Replace("\n", ""),
-                        actualHtml.Replace("\r", "").Replace("\n", ""));
-                }
+        MarkdownContext.LogActionDelegate Log()
+        {
+            return (code, message, origin, line) => actualErrors.Add(code);
+        }
 
-                Assert.Equal(errors.OrderBy(_ => _), actualErrors.OrderBy(_ => _));
+        (string content, object file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
+        {
+            var key = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), path).Replace('\\', '/');
 
-                if (dependencies != null)
-                {
-                    Assert.Equal(dependencies.OrderBy(_ => _), actualDependencies.OrderBy(_ => _));
-                }
+            if (path.StartsWith("~/"))
+            {
+                path = path[2..];
+                key = path;
             }
 
-            MarkdownContext.LogActionDelegate Log()
-            {
-                return (code, message, origin, line) => actualErrors.Add(code);
-            }
-
-            (string content, object file) ReadFile(string path, MarkdownObject origin, bool? contentFallback = null)
-            {
-                var key = Path.Combine(Path.GetDirectoryName(InclusionContext.File.ToString()), path).Replace('\\', '/');
-
-                if (path.StartsWith("~/"))
-                {
-                    path = path[2..];
-                    key = path;
-                }
-
-                actualDependencies.Add(path);
-                return files.TryGetValue(key, out var value) ? (value, key) : default;
-            }
+            actualDependencies.Add(path);
+            return files.TryGetValue(key, out var value) ? (value, key) : default;
         }
     }
 }

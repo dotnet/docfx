@@ -10,7 +10,7 @@ pr:
 variables:
 - group: devresourcekeyvault
 - name: dotnetVersion
-  value: 5.0.x
+  value: 6.0.x
 - name: runCodesignValidationInjection
   value: false
 - name: NugetSecurityAnalysisWarningLevel
@@ -95,7 +95,7 @@ jobs:
 
 
 # Run RegressionTest
-- job: RunRegressionTest
+- job: Run
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/v3-release'), ne(variables['warm-up'], 'true'))
   dependsOn: WindowsBuild
   pool:
@@ -232,7 +232,7 @@ parameters:
     DevSandbox:
       params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
-      params: https://github.com/MicrosoftDocs/test --branch master --timeout 30 --no-dry-sync
+      params: https://github.com/MicrosoftDocs/test --branch main --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
     windows-compatibility:

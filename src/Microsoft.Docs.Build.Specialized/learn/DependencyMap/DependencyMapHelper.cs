@@ -1,43 +1,40 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.IO;
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.LearnValidation
+namespace Microsoft.Docs.LearnValidation;
+
+public static class DependencyMapHelper
 {
-    public static class DependencyMapHelper
+    public static List<DependencyItem> LoadDependentFileInfo(string dependencyMapFile)
     {
-        public static List<DependencyItem> LoadDependentFileInfo(string dependencyMapFile)
+        var dependencyItems = new List<DependencyItem>();
+        using (var stream = File.OpenRead(dependencyMapFile))
+        using (var reader = new StreamReader(stream))
         {
-            var dependencyItems = new List<DependencyItem>();
-            using (var stream = File.OpenRead(dependencyMapFile))
-            using (var reader = new StreamReader(stream))
+            string? line;
+            while ((line = reader.ReadLine()) != null)
             {
-                string? line;
-                while ((line = reader.ReadLine()) != null)
+                var dependentInfo = !string.IsNullOrEmpty(line) ? JsonConvert.DeserializeObject<DependencyItem>(line) : null;
+
+                if (dependentInfo != null && !string.IsNullOrEmpty(dependentInfo.FromFilePath) && !string.IsNullOrEmpty(dependentInfo.ToFilePath))
                 {
-                    var dependentInfo = !string.IsNullOrEmpty(line) ? JsonConvert.DeserializeObject<DependencyItem>(line) : null;
+                    var normalizedToFilePath = dependentInfo.ToFilePath.Replace('/', '\\');
+                    var normalizedFromFilePath = dependentInfo.FromFilePath.Replace('/', '\\');
 
-                    if (dependentInfo != null && !string.IsNullOrEmpty(dependentInfo.FromFilePath) && !string.IsNullOrEmpty(dependentInfo.ToFilePath))
-                    {
-                        var normalizedToFilePath = dependentInfo.ToFilePath.Replace('/', '\\');
-                        var normalizedFromFilePath = dependentInfo.FromFilePath.Replace('/', '\\');
-
-                        dependencyItems.Add(
-                            new DependencyItem
-                            {
-                                FromFilePath = normalizedFromFilePath,
-                                ToFilePath = normalizedToFilePath,
-                                DependencyType = dependentInfo.DependencyType,
-                                Version = dependentInfo.Version,
-                            });
-                    }
+                    dependencyItems.Add(
+                        new DependencyItem
+                        {
+                            FromFilePath = normalizedFromFilePath,
+                            ToFilePath = normalizedToFilePath,
+                            DependencyType = dependentInfo.DependencyType,
+                            Version = dependentInfo.Version,
+                        });
                 }
             }
-
-            return dependencyItems;
         }
+
+        return dependencyItems;
     }
 }

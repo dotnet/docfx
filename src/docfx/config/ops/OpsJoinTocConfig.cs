@@ -3,22 +3,21 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class OpsJoinTocConfig
 {
-    internal class OpsJoinTocConfig
-    {
-        public string? ReferenceTOC { get; init; }
+    public string? ReferenceTOC { get; init; }
 
-        public string? ReferenceTOCUrl { get; init; }
+    public string? ReferenceTOCUrl { get; init; }
 
-        public string? TopLevelTOC { get; init; }
+    public string? TopLevelTOC { get; init; }
 
-        public string? ConceptualTOCUrl { get; init; }
+    public string? ConceptualTOCUrl { get; init; }
 
-        public string? ConceptualTOC { get; init; }
+    public string? ConceptualTOC { get; init; }
 
-        public string? OutputFolder { get; init; }
+    public string? OutputFolder { get; init; }
 
-        public JObject? ContainerPageMetadata { get; init; }
-    }
+    public JObject? ContainerPageMetadata { get; init; }
 }

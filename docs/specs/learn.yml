@@ -296,7 +296,7 @@ inputs:
         "modules": {"items": {"contentType": "xref"}},
         "achievement": {"contentType": "xref"},
         "trophy": {
-          "properties": {"uid" : {"contentType": "uid"}}
+          "properties": {"uid" : {"contentType": "uid", "schemaType": "trophy"}}
         }
       }
     }
@@ -307,7 +307,7 @@ inputs:
         "units": {"items": {"contentType": "xref" }},
         "achievement": {"contentType": "xref"},
         "badge": {
-          "properties": {"uid" : {"contentType": "uid"}}
+          "properties": {"uid" : {"contentType": "uid", "schemaType": "badge"}}
         }
       }
     }
@@ -1253,7 +1253,7 @@ outputs:
     {"message_severity":"error","code":"unit-duration-missing","message":"Missing attribute: durationInMinutes. DurationInMinutes is required for each unit and must be greater than 0.","file":"unit-b.yml","line":3}
     {"message_severity":"error","code":"unit-multiple-parents","message":"Unit 'unit-c' can't have two or more parents ('module-a.yml(2,19)', 'module-b.yml(2,9)').","file":"unit-c.yml","line":2}
     {"message_severity":"error","code":"unit-no-module-parent","message":"Unit 'unit-a' must belong to a valid module.","file":"unit-a.yml","line":2}
-    {"message_severity":"error","code":"uid-not-found","message":"UID 'nofound' with type 'module' not found, which is referenced by repository 'https://github.com/learn/learn-pr2'.","line": 0}
+    {"message_severity":"error","code":"uid-not-found","message":"UID 'nofound' with type 'module' not found, which is referenced by repository 'https://github.com/learn/learn-pr2' on property ''.","line": 0}
 ---
 # Test: unit-task-and-quiz, task-type-invalid, tasks-format-invalid, quiz-no-answer, quiz-multiple-answers
 # SDP validation to implement Learn Validation 

@@ -2,153 +2,150 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class ErrorLog : ErrorBuilder
 {
-    internal class ErrorLog : ErrorBuilder
+    private readonly ErrorBuilder _errors;
+    private readonly PathString _docsetBasePath;
+
+    private readonly Scoped<ErrorSink> _errorSink = new();
+    private readonly Scoped<ConcurrentDictionary<FilePath, ErrorSink>> _fileSink = new();
+
+    public Config? Config { get; set; }
+
+    public SourceMap? SourceMap { get; set; }
+
+    public MetadataProvider? MetadataProvider { get; set; }
+
+    public CustomRuleProvider? CustomRuleProvider { get; set; }
+
+    public override bool HasError => _errorSink.Value.ErrorCount > 0 || _fileSink.Value.Values.Any(file => file.ErrorCount > 0);
+
+    public override bool FileHasError(FilePath file) => _fileSink.Value.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
+
+    public ErrorLog(ErrorBuilder errors, string workingDirectory, string docsetPath)
     {
-        private readonly ErrorBuilder _errors;
-        private readonly PathString _docsetBasePath;
+        _errors = errors;
+        _docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
+    }
 
-        private readonly Scoped<ErrorSink> _errorSink = new();
-        private readonly Scoped<ConcurrentDictionary<FilePath, ErrorSink>> _fileSink = new();
-
-        public Config? Config { get; set; }
-
-        public SourceMap? SourceMap { get; set; }
-
-        public MetadataProvider? MetadataProvider { get; set; }
-
-        public CustomRuleProvider? CustomRuleProvider { get; set; }
-
-        public override bool HasError => _errorSink.Value.ErrorCount > 0 || _fileSink.Value.Values.Any(file => file.ErrorCount > 0);
-
-        public override bool FileHasError(FilePath file) => _fileSink.Value.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
-
-        public ErrorLog(ErrorBuilder errors, string workingDirectory, string docsetPath)
+    public override void Add(Error error)
+    {
+        if (error.Source?.File is FilePath source)
         {
-            _errors = errors;
-            _docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
-        }
-
-        public override void Add(Error error)
-        {
-            if (error.Source?.File is FilePath source)
+            try
             {
-                try
+                if (error.AdditionalErrorInfo == null)
                 {
-                    if (error.AdditionalErrorInfo == null)
+                    var metadata = MetadataProvider?.GetMetadata(Null, source);
+                    if (new[]
                     {
-                        var metadata = MetadataProvider?.GetMetadata(Null, source);
-                        if (new[]
-                            {
-                            metadata?.MsAuthor,
-                            metadata?.MsProd,
-                            metadata?.MsTechnology,
-                            metadata?.MsService,
-                            metadata?.MsSubservice,
-                            metadata?.MsTopic,
-                            }.Any(value => !string.IsNullOrEmpty(value)))
+                        metadata?.MsAuthor,
+                        metadata?.MsProd,
+                        metadata?.MsTechnology,
+                        metadata?.MsService,
+                        metadata?.MsSubservice,
+                        metadata?.MsTopic,
+                    }.Any(value => !string.IsNullOrEmpty(value)))
+                    {
+                        error = error with
                         {
-                            error = error with
-                            {
-                                AdditionalErrorInfo = new AdditionalErrorInfo(
-                                    metadata?.MsAuthor,
-                                    metadata?.MsProd,
-                                    metadata?.MsTechnology,
-                                    metadata?.MsService,
-                                    metadata?.MsSubservice,
-                                    metadata?.MsTopic),
-                            };
-                        }
+                            AdditionalErrorInfo = new AdditionalErrorInfo(
+                                metadata?.MsAuthor,
+                                metadata?.MsProd,
+                                metadata?.MsTechnology,
+                                metadata?.MsService,
+                                metadata?.MsSubservice,
+                                metadata?.MsTopic),
+                        };
                     }
                 }
-                catch
-                {
-                }
+            }
+            catch
+            {
+            }
+        }
+
+        error = CustomRuleProvider?.ApplyCustomRule(error) ?? error;
+
+        if (error.Level == ErrorLevel.Off)
+        {
+            return;
+        }
+
+        if (error.Source != null && SourceMap != null)
+        {
+            error = error with { OriginalPath = SourceMap.GetOriginalFilePath(error.Source.File)?.Path };
+        }
+
+        var config = Config;
+        if (config != null)
+        {
+            if (config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
+            {
+                error = error with { Level = ErrorLevel.Error };
             }
 
-            error = CustomRuleProvider?.ApplyCustomRule(error) ?? error;
-
-            if (error.Level == ErrorLevel.Off)
+            if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
             {
+                if (error.Level == ErrorLevel.Error)
+                {
+                    Log.Write(error.ToString());
+                    Add(Errors.Logging.FallbackError(config.DefaultLocale));
+                }
                 return;
             }
 
-            if (error.Source != null && SourceMap != null)
+            if (config.DocumentUrls.TryGetValue(error.Code, out var documentUrl))
             {
-                error = error with { OriginalPath = SourceMap.GetOriginalFilePath(error.Source.File)?.Path };
+                error = error with { DocumentUrl = documentUrl };
             }
-
-            var config = Config;
-            if (config != null)
-            {
-                if (config.WarningsAsErrors && error.Level == ErrorLevel.Warning)
-                {
-                    error = error with { Level = ErrorLevel.Error };
-                }
-
-                if (error.Source?.File != null && error.Source?.File.Origin == FileOrigin.Fallback)
-                {
-                    if (error.Level == ErrorLevel.Error)
-                    {
-                        Log.Write(error.ToString());
-                        Add(Errors.Logging.FallbackError(config.DefaultLocale));
-                    }
-                    return;
-                }
-
-                if (config.DocumentUrls.TryGetValue(error.Code, out var documentUrl))
-                {
-                    error = error with { DocumentUrl = documentUrl };
-                }
-            }
-
-            Watcher.Write(() =>
-            {
-                var errorSink = error.Source?.File is null ? _errorSink.Value : _fileSink.Value.GetOrAdd(error.Source.File, _ => new ErrorSink());
-
-                switch (errorSink.Add(error.Source?.File is null ? null : config, error))
-                {
-                    case ErrorSinkResult.Ok:
-                        AddError(error);
-                        break;
-
-                    case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
-                        var maxAllowed = error.Level switch
-                        {
-                            ErrorLevel.Error => config.MaxFileErrors,
-                            ErrorLevel.Warning => config.MaxFileWarnings,
-                            ErrorLevel.Suggestion => config.MaxFileSuggestions,
-                            ErrorLevel.Info => config.MaxFileInfos,
-                            _ => 0,
-                        };
-                        AddError(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
-                        break;
-                }
-            });
         }
 
-        private void AddError(Error error)
+        Watcher.Write(() =>
         {
-            // Convert from path relative to docset to path relative to working directory
-            if (!_docsetBasePath.IsDefault)
-            {
-                if (error.Source != null)
-                {
-                    var path = _docsetBasePath.Concat(error.Source.File.Path);
-                    error = error with { Source = error.Source with { File = error.Source.File with { Path = path } } };
-                }
+            var errorSink = error.Source?.File is null ? _errorSink.Value : _fileSink.Value.GetOrAdd(error.Source.File, _ => new ErrorSink());
 
-                if (error.OriginalPath != null)
-                {
-                    error = error with { OriginalPath = _docsetBasePath.Concat(error.OriginalPath.Value) };
-                }
+            switch (errorSink.Add(error.Source?.File is null ? null : config, error))
+            {
+                case ErrorSinkResult.Ok:
+                    AddError(error);
+                    break;
+
+                case ErrorSinkResult.Exceed when error.Source?.File != null && config != null:
+                    var maxAllowed = error.Level switch
+                    {
+                        ErrorLevel.Error => config.MaxFileErrors,
+                        ErrorLevel.Warning => config.MaxFileWarnings,
+                        ErrorLevel.Suggestion => config.MaxFileSuggestions,
+                        ErrorLevel.Info => config.MaxFileInfos,
+                        _ => 0,
+                    };
+                    AddError(Errors.Logging.ExceedMaxFileErrors(maxAllowed, error.Level, error.Source.File));
+                    break;
+            }
+        });
+    }
+
+    private void AddError(Error error)
+    {
+        // Convert from path relative to docset to path relative to working directory
+        if (!_docsetBasePath.IsDefault)
+        {
+            if (error.Source != null)
+            {
+                var path = _docsetBasePath.Concat(error.Source.File.Path);
+                error = error with { Source = error.Source with { File = error.Source.File with { Path = path } } };
             }
 
-            _errors.Add(error);
+            if (error.OriginalPath != null)
+            {
+                error = error with { OriginalPath = _docsetBasePath.Concat(error.OriginalPath.Value) };
+            }
         }
+
+        _errors.Add(error);
     }
 }

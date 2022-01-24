@@ -4,15 +4,14 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class MonikerRangeRender : HtmlObjectRenderer<MonikerRangeBlock>
 {
-    public class MonikerRangeRender : HtmlObjectRenderer<MonikerRangeBlock>
+    protected override void Write(HtmlRenderer renderer, MonikerRangeBlock obj)
     {
-        protected override void Write(HtmlRenderer renderer, MonikerRangeBlock obj)
-        {
-            renderer.Write("<div").WriteAttributes(obj).WriteLine(">");
-            renderer.WriteChildren(obj);
-            renderer.WriteLine("</div>");
-        }
+        renderer.Write("<div").WriteAttributes(obj).WriteLine(">");
+        renderer.WriteChildren(obj);
+        renderer.WriteLine("</div>");
     }
 }

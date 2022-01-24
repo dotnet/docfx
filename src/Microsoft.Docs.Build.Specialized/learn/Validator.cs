@@ -1,47 +1,43 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.TripleCrown.Hierarchy.DataContract.Hierarchy;
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.LearnValidation
+namespace Microsoft.Docs.LearnValidation;
+
+internal partial class Validator
 {
-    internal partial class Validator
+    private readonly LegacyManifest _manifest;
+    private readonly string _outputBasePath;
+    private readonly LearnValidationLogger _logger;
+    private readonly Func<string, string, bool> _isSharedItem;
+
+    public Validator(string manifestFilePath, LearnValidationLogger logger, Func<string, string, bool> isSharedItem)
     {
-        private readonly LegacyManifest _manifest;
-        private readonly string _outputBasePath;
-        private readonly LearnValidationLogger _logger;
-        private readonly Func<string, string, bool> _isSharedItem;
+        _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath)) ?? new();
+        _outputBasePath = Path.GetDirectoryName(manifestFilePath) ?? "";
+        _logger = logger;
+        _isSharedItem = isSharedItem;
+    }
 
-        public Validator(string manifestFilePath, LearnValidationLogger logger, Func<string, string, bool> isSharedItem)
-        {
-            _manifest = JsonConvert.DeserializeObject<LegacyManifest>(File.ReadAllText(manifestFilePath)) ?? new();
-            _outputBasePath = Path.GetDirectoryName(manifestFilePath) ?? "";
-            _logger = logger;
-            _isSharedItem = isSharedItem;
-        }
+    public (bool, List<IValidateModel>) Validate()
+    {
+        var moduleFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Module", StringComparison.OrdinalIgnoreCase)).ToList();
+        var unitFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "ModuleUnit", StringComparison.OrdinalIgnoreCase)).ToList();
+        var pathFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "LearningPath", StringComparison.OrdinalIgnoreCase)).ToList();
+        var achievementFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Achievements", StringComparison.OrdinalIgnoreCase)).ToList();
 
-        public (bool, List<IValidateModel>) Validate()
-        {
-            var moduleFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Module", StringComparison.OrdinalIgnoreCase)).ToList();
-            var unitFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "ModuleUnit", StringComparison.OrdinalIgnoreCase)).ToList();
-            var pathFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "LearningPath", StringComparison.OrdinalIgnoreCase)).ToList();
-            var achievementFiles = _manifest.Files.Where(item => string.Equals(item.OriginalType, "Achievements", StringComparison.OrdinalIgnoreCase)).ToList();
+        var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
+        var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
+        var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
+        var pathValidator = new PathValidator(pathFiles, _outputBasePath, _logger, _isSharedItem);
 
-            var achievementValidator = new AchievementValidator(achievementFiles, _outputBasePath, _logger);
-            var unitValidator = new UnitValidator(unitFiles, _outputBasePath, _logger);
-            var moduleValidator = new ModuleValidator(moduleFiles, _outputBasePath, _logger);
-            var pathValidator = new PathValidator(pathFiles, _outputBasePath, _logger, _isSharedItem);
+        // Add badge and trophy (defined in path or module) to achievements
+        achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
+        achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
 
-            // Add badge and trophy (defined in path or module) to achievements
-            achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(moduleValidator.Items, true));
-            achievementValidator.Items.AddRange(ExtractAchievementFromModuleOrPath(pathValidator.Items, false));
-
-            var validators = new List<ValidatorBase>
+        var validators = new List<ValidatorBase>
             {
                 pathValidator,
                 moduleValidator,
@@ -49,39 +45,39 @@ namespace Microsoft.Docs.LearnValidation
                 achievementValidator,
             };
 
-            var hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).Where(i => i.Uid != null).ToList();
+        var hierarchyItems = validators.Where(v => v.Items != null).SelectMany(v => v.Items).Where(i => i.Uid != null).ToList();
 
-            // no duplicated uids
-            var itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
-            var isValid = validators.All(v => v.Validate(itemDict));
-            return (isValid, hierarchyItems);
-        }
+        // no duplicated uids
+        var itemDict = hierarchyItems.ToDictionary(i => i.Uid, i => i);
+        var isValid = true;
+        validators.ForEach(v => isValid &= v.Validate(itemDict));
+        return (isValid, hierarchyItems);
+    }
 
-        private static List<IValidateModel> ExtractAchievementFromModuleOrPath(List<IValidateModel> items, bool isModule)
+    private static List<IValidateModel> ExtractAchievementFromModuleOrPath(List<IValidateModel> items, bool isModule)
+    {
+        var achievements = new List<IValidateModel>();
+        foreach (var item in items)
         {
-            var achievements = new List<IValidateModel>();
-            foreach (var item in items)
+            var achievement = isModule ? (item as ModuleValidateModel)?.Achievement : (item as PathValidateModel)?.Achievement;
+            if (achievement != null && achievement is not string)
             {
-                var achievement = isModule ? (item as ModuleValidateModel)?.Achievement : (item as PathValidateModel)?.Achievement;
-                if (achievement != null && !(achievement is string))
+                var (_, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);
+                if (achievementModel != null)
                 {
-                    var (_, achievementModel) = AchievementSyncModel.ConvertAchievement(achievement);
-                    if (achievementModel != null)
+                    achievements.Add(new AchievementValidateModel
                     {
-                        achievements.Add(new AchievementValidateModel
-                        {
-                            UId = achievementModel.UId,
-                            Type = achievementModel.Type,
-                            Title = achievementModel.Title,
-                            Summary = achievementModel.Summary,
-                            IconUrl = achievementModel.IconUrl,
-                            SourceRelativePath = item.SourceRelativePath,
-                        });
-                    }
+                        UId = achievementModel.UId,
+                        Type = achievementModel.Type,
+                        Title = achievementModel.Title,
+                        Summary = achievementModel.Summary,
+                        IconUrl = achievementModel.IconUrl,
+                        SourceRelativePath = item.SourceRelativePath,
+                    });
                 }
             }
-
-            return achievements;
         }
+
+        return achievements;
     }
 }

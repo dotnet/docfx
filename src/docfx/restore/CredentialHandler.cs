@@ -1,84 +1,80 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class CredentialHandler
 {
-    internal class CredentialHandler
+    private const int RetryCount = 3;
+
+    private readonly CredentialProvider[] _credentialProviders;
+    private readonly ConcurrentDictionary<string, Task<HttpConfig>> _credentialCache = new();
+
+    public CredentialHandler(params CredentialProvider[] credentialProviders) => _credentialProviders = credentialProviders;
+
+    public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> requestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
     {
-        private const int RetryCount = 3;
+        HttpResponseMessage? response = null;
 
-        private readonly CredentialProvider[] _credentialProviders;
-        private readonly ConcurrentDictionary<string, Task<HttpConfig>> _credentialCache = new();
+        var needRefresh = false;
+        HttpConfig? httpConfigUsed = null;
 
-        public CredentialHandler(params CredentialProvider[] credentialProviders) => _credentialProviders = credentialProviders;
-
-        public async Task<HttpResponseMessage> SendRequest(Func<HttpRequestMessage> requestFactory, Func<HttpRequestMessage, Task<HttpResponseMessage>> next)
+        for (var i = 0; i < RetryCount; i++)
         {
-            HttpResponseMessage? response = null;
+            using var request = requestFactory();
+            var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
 
-            var needRefresh = false;
-            HttpConfig? httpConfigUsed = null;
-
-            for (var i = 0; i < RetryCount; i++)
+            if (i > 0)
             {
-                using var request = requestFactory();
-                var url = request.RequestUri?.ToString() ?? throw new InvalidOperationException();
-
-                if (i > 0)
-                {
-                    Log.Write($"[{nameof(CredentialHandler)}] Retry '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
-                }
-
-                var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
-                FillInCredentials(request, httpConfig);
-
-                response = await next(request);
-                if (response.StatusCode != HttpStatusCode.Unauthorized)
-                {
-                    break;
-                }
-
-                needRefresh = true;
-                _credentialCache.TryRemove(url, out _);
-                httpConfigUsed = httpConfig;
+                Log.Write($"[{nameof(CredentialHandler)}] Retry '{request.Method} {UrlUtility.SanitizeUrl(url)}'");
             }
 
-            return response!;
-        }
+            var httpConfig = await GetCredentials(url, httpConfigUsed, needRefresh);
+            FillInCredentials(request, httpConfig);
 
-        internal static void FillInCredentials(HttpRequestMessage request, HttpConfig httpConfig)
-        {
-            foreach (var (key, value) in httpConfig.Headers)
+            response = await next(request);
+            if (response.StatusCode != HttpStatusCode.Unauthorized)
             {
-                if (request.Headers.Contains(key))
-                {
-                    request.Headers.Remove(key);
-                }
-                request.Headers.Add(key, value);
+                break;
             }
+
+            needRefresh = true;
+            _credentialCache.TryRemove(url, out _);
+            httpConfigUsed = httpConfig;
         }
 
-        private Task<HttpConfig> GetCredentials(string url, HttpConfig? httpConfigUsed, bool needRefresh)
+        return response!;
+    }
+
+    internal static void FillInCredentials(HttpRequestMessage request, HttpConfig httpConfig)
+    {
+        foreach (var (key, value) in httpConfig.Headers)
         {
-            return _credentialCache.GetOrAdd(url, async _ =>
+            if (request.Headers.Contains(key))
             {
-                foreach (var credentialProvider in _credentialProviders)
-                {
-                    var httpConfig = await credentialProvider.Invoke(url, httpConfigUsed, needRefresh);
-                    if (httpConfig != null)
-                    {
-                        return httpConfig;
-                    }
-                }
-
-                return new();
-            });
+                request.Headers.Remove(key);
+            }
+            request.Headers.Add(key, value);
         }
+    }
+
+    private Task<HttpConfig> GetCredentials(string url, HttpConfig? httpConfigUsed, bool needRefresh)
+    {
+        return _credentialCache.GetOrAdd(url, async _ =>
+        {
+            foreach (var credentialProvider in _credentialProviders)
+            {
+                var httpConfig = await credentialProvider.Invoke(url, httpConfigUsed, needRefresh);
+                if (httpConfig != null)
+                {
+                    return httpConfig;
+                }
+            }
+
+            return new();
+        });
     }
 }

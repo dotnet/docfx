@@ -3,14 +3,13 @@
 
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public interface IMarkdownObjectRewriter
 {
-    public interface IMarkdownObjectRewriter
-    {
-        void PreProcess(IMarkdownObject markdownObject);
+    void PreProcess(IMarkdownObject markdownObject);
 
-        IMarkdownObject Rewrite(IMarkdownObject markdownObject);
+    IMarkdownObject Rewrite(IMarkdownObject markdownObject);
 
-        void PostProcess(IMarkdownObject markdownObject);
-    }
+    void PostProcess(IMarkdownObject markdownObject);
 }

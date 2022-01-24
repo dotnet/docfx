@@ -4,19 +4,15 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class ConceptualModel
 {
-    internal class ConceptualModel
-    {
-        public string? Conceptual { get; set; }
+    public string? Conceptual { get; set; }
 
-        public long? WordCount { get; set; }
+    public long? WordCount { get; set; }
 
-        public SourceInfo<string?> Title { get; set; }
+    public SourceInfo<string?> Title { get; set; }
 
-        public string RawTitle { get; set; } = "";
-
-        [JsonExtensionData]
-        public JObject? ExtensionData { get; set; }
-    }
+    public string RawTitle { get; set; } = "";
 }

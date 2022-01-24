@@ -5,35 +5,34 @@ using Markdig;
 using Markdig.Extensions.CustomContainers;
 using Markdig.Renderers;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class RowExtension : IMarkdownExtension
 {
-    public class RowExtension : IMarkdownExtension
+    private readonly MarkdownContext _context;
+
+    public RowExtension(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public RowExtension(MarkdownContext context)
+    public void Setup(MarkdownPipelineBuilder pipeline)
+    {
+        if (pipeline.BlockParsers.Contains<CustomContainerParser>())
         {
-            _context = context;
+            pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new RowParser(_context));
         }
-
-        public void Setup(MarkdownPipelineBuilder pipeline)
+        else
         {
-            if (pipeline.BlockParsers.Contains<CustomContainerParser>())
-            {
-                pipeline.BlockParsers.InsertBefore<CustomContainerParser>(new RowParser(_context));
-            }
-            else
-            {
-                pipeline.BlockParsers.AddIfNotAlready(new RowParser(_context));
-            }
+            pipeline.BlockParsers.AddIfNotAlready(new RowParser(_context));
         }
+    }
 
-        public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
+        if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<RowRender>())
         {
-            if (renderer is HtmlRenderer htmlRenderer && !htmlRenderer.ObjectRenderers.Contains<RowRender>())
-            {
-                htmlRenderer.ObjectRenderers.Insert(0, new RowRender());
-            }
+            htmlRenderer.ObjectRenderers.Insert(0, new RowRender());
         }
     }
 }

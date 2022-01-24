@@ -2,20 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.LearnValidation.Models
+namespace Microsoft.Docs.LearnValidation.Models;
+
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+public class LearnPublishItem
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class LearnPublishItem
-    {
-        public string SourcePath { get; set; } = "";
+    public string SourcePath { get; set; } = "";
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool HasError { get; set; }
+    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+    public bool HasError { get; set; }
 
-        [JsonExtensionData]
-        public JObject? ExtensionData { get; private set; }
-    }
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData { get; set; }
 }

@@ -5,7 +5,13 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Hello <code>docfx</code>!</p>", "wordCount": 2, "_op_canonicalUrlPrefix": "https://docs.com/en-us/", "_path": "docs/a.json"}
+    {
+      "conceptual": "<p>Hello <code>docfx</code>!</p>",
+      "wordCount": 2,
+      "_op_canonicalUrlPrefix": "https://docs.com/en-us/",
+      "_path": "docs/a.json",
+      "_rel": "../"
+    }
 ---
 # Basic markdown syntax
 inputs:
@@ -266,8 +272,8 @@ outputs:
   docs/a.json: |
     {
       "conceptual": "<p>body</p>",
-      "title": "This is a title using @b & <",
-      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using @b &amp; <code>&lt;</code></h1>",
+      "title": "This is a title using <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@b</span> & <",
+      "rawTitle": "<h1 id=\"this-is-a-title-using---\">This is <em>a</em> title using <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">@b</span> &amp; <code>&lt;</code></h1>",
       "metaKey": "metaValue"
     }
 ---
@@ -408,7 +414,7 @@ inputs:
     [external link](https://docs.com/c)
 outputs:
   docs/a.json: |
-    {"conceptual": "<p><a href=\"/en-us/c\" data-linktype=\"absolute-path\">external link</a></p>"}
+    {"conceptual": "<p><a href=\"/c\" data-linktype=\"absolute-path\">external link</a></p>"}
 ---
 # do not output file if bookmark-not-found is treated as error
 noSingleFile: true
@@ -699,7 +705,7 @@ inputs:
   b.png:
 outputs:
   a.json: |
-    { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"/en-us/\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
+    { "conceptual": "<div class=\"TIP\"><h5>TIP</h5><p><a href=\"/\"><img alt=\"\" src=\"b.png\"></img></a></p></div>" }
   b.png:
 ---
 # Use lang- prefix for fenced code

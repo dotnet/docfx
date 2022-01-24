@@ -1,52 +1,49 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath DeclaringFile, MonikerList Monikers) : IXrefSpec
 {
-    internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath DeclaringFile, MonikerList Monikers) : IXrefSpec
+    public string? PropertyPath { get; init; }
+
+    public bool UidGlobalUnique { get; init; }
+
+    public string? SchemaType { get; init; }
+
+    public bool IsNameLocalizable { get; set; }
+
+    public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new();
+
+    string IXrefSpec.Uid => Uid.Value;
+
+    public string? GetXrefPropertyValueAsString(string propertyName)
     {
-        public string? DeclaringPropertyPath { get; init; }
+        return
+          XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr
+          ? internalStr
+          : null;
+    }
 
-        public string? PropertyPath { get; init; }
+    public string? GetName() => GetXrefPropertyValueAsString("name");
 
-        public bool UidGlobalUnique { get; init; }
-
-        public string? SchemaType { get; init; }
-
-        public Dictionary<string, Lazy<JToken>> XrefProperties { get; } = new Dictionary<string, Lazy<JToken>>();
-
-        string IXrefSpec.Uid => Uid.Value;
-
-        public string? GetXrefPropertyValueAsString(string propertyName)
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
+    {
+        var spec = new ExternalXrefSpec
         {
-            return
-              XrefProperties.TryGetValue(propertyName, out var property) && property.Value is JValue propertyValue && propertyValue.Value is string internalStr
-              ? internalStr
-              : null;
+            Uid = Uid,
+            Href = overwriteHref ?? Href,
+            Monikers = Monikers,
+            SchemaType = SchemaType,
+        };
+
+        foreach (var (key, value) in XrefProperties)
+        {
+            spec.ExtensionData[key] = value.Value;
         }
 
-        public string? GetName() => GetXrefPropertyValueAsString("name");
-
-        public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
-        {
-            var spec = new ExternalXrefSpec
-            {
-                Uid = Uid,
-                Href = overwriteHref ?? Href,
-                Monikers = Monikers,
-                SchemaType = SchemaType,
-            };
-
-            foreach (var (key, value) in XrefProperties)
-            {
-                spec.ExtensionData[key] = value.Value;
-            }
-
-            return spec;
-        }
+        return spec;
     }
 }

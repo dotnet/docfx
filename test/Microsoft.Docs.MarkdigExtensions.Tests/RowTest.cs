@@ -3,53 +3,53 @@
 
 using Xunit;
 
-namespace Microsoft.Docs.MarkdigExtensions.Tests
+namespace Microsoft.Docs.MarkdigExtensions.Tests;
+
+public class RowTest
 {
-    public class RowTest
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_SimpleRow()
     {
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_SimpleRow()
-        {
-            var source = @":::row:::
+        var source = @":::row:::
     :::column:::
         This is where your content goes.
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column"">
 <p>This is where your content goes.</p>
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_WithColumns()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_WithColumns()
+    {
+        var source = @":::row:::
     :::column:::
         This is where your content goes.
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column"">
 <p>This is where your content goes.</p>
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_WithColumnsWithSpans()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_WithColumnsWithSpans()
+    {
+        var source = @":::row:::
     :::column span=""2"":::
         This is where your content goes.
     :::column-end:::
@@ -58,7 +58,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column span2"">
 <p>This is where your content goes.</p>
 </div>
@@ -67,14 +67,14 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_WithThreeColumnsWithSpans()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_WithThreeColumnsWithSpans()
+    {
+        var source = @":::row:::
     :::column span=""2"":::
         This is where your content goes.
     :::column-end:::
@@ -86,7 +86,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column span2"">
 <p>This is where your content goes.</p>
 </div>
@@ -98,14 +98,14 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_WithColumnsWithThreeSpan()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_WithColumnsWithThreeSpan()
+    {
+        var source = @":::row:::
     :::column:::
         This is where your content goes.
     :::column-end:::
@@ -114,7 +114,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column"">
 <p>This is where your content goes.</p>
 </div>
@@ -123,14 +123,14 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_WithColumnsOtherContent()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_WithColumnsOtherContent()
+    {
+        var source = @":::row:::
     :::column:::
         ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)
         ### A Headline
@@ -145,7 +145,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"">
+        var expected = @"<section class=""row"">
 <div class=""column"">
 <p><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" alt=""alt text"" /></p>
 <h3 id=""a-headline"">A Headline</h3>
@@ -160,14 +160,14 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected);
-        }
+        TestUtility.VerifyMarkup(source, expected);
+    }
 
-        [Fact]
-        [Trait("Related", "Row")]
-        public void RowTest_FullWithWriteAttributes()
-        {
-            var source = @":::row:::
+    [Fact]
+    [Trait("Related", "Row")]
+    public void RowTest_FullWithWriteAttributes()
+    {
+        var source = @":::row:::
     :::column:::
         ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png)
         ### A Headline
@@ -182,7 +182,7 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
     :::column-end:::
 :::row-end:::
 ";
-            var expected = @"<section class=""row"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+        var expected = @"<section class=""row"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <div class=""column"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">
 <p sourceFile=""Topic.md"" sourceStartLineNumber=""3""><img src=""https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png"" sourceFile=""Topic.md"" sourceStartLineNumber=""3"" alt=""alt text"" /></p>
 <h3 id=""a-headline"" sourceFile=""Topic.md"" sourceStartLineNumber=""4"">A Headline</h3>
@@ -197,7 +197,6 @@ namespace Microsoft.Docs.MarkdigExtensions.Tests
 </div>
 </section>
 ";
-            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
-        }
+        TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
     }
 }

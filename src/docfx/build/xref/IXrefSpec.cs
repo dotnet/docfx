@@ -1,24 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal interface IXrefSpec
 {
-    internal interface IXrefSpec
-    {
-        string Uid { get; }
+    string Uid { get; }
 
-        string? SchemaType { get; }
+    string? SchemaType { get; }
 
-        string Href { get; }
+    string Href { get; }
 
-        FilePath? DeclaringFile { get; }
+    FilePath? DeclaringFile { get; }
 
-        MonikerList Monikers { get; }
+    MonikerList Monikers { get; }
 
-        string? GetXrefPropertyValueAsString(string propertyName);
+    string? GetXrefPropertyValueAsString(string propertyName);
 
-        string? GetName();
+    string? GetName();
 
-        ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null);
-    }
+    ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null);
 }

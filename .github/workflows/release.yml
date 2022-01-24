@@ -6,11 +6,15 @@ jobs:
   build:
     name: Release
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
     - run: dotnet test -warnAsError -c Release
     - run: dotnet pack -warnAsError -c Release -o drop src/docfx/docfx.csproj
     - run: dotnet pack -warnAsError -c Release -o drop src/Microsoft.Docs.MarkdigExtensions/Microsoft.Docs.MarkdigExtensions.csproj
@@ -24,7 +28,7 @@ jobs:
         $rids = @("win7-x64", "osx-x64", "linux-x64") # Microsoft.ChakraCore doesn't provide win-x64 runtime build, using win7-x64
         foreach ($rid in $rids)
         {
-          dotnet publish src\docfx\docfx.csproj -warnAsError -c release -r $rid -o $packagesBasePath/$rid /p:PackAsTool=false
+          dotnet publish src\docfx\docfx.csproj -warnAsError -c release -r $rid --self-contained -o $packagesBasePath/$rid /p:PackAsTool=false
           if ($rid -eq "win7-x64") {
             $version = Invoke-Expression "$packagesBasePath/win7-x64/docfx.exe --version"
             Write-Host "package version: $version"
@@ -37,7 +41,7 @@ jobs:
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: ${{ env.GitAssemblyInformationalVersion }}
+        automatic_release_tag: ${{ env.GitAssemblyInformationalVersion }} # auto populated by NerdBank.GitVersioning
         title: Version ${{ env.GitAssemblyInformationalVersion }}
         prerelease: true
         files: |

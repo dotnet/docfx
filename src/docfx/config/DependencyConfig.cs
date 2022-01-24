@@ -3,22 +3,21 @@
 
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal record DependencyConfig : PackagePath
 {
-    internal record DependencyConfig : PackagePath
-    {
-        /// <summary>
-        /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
-        /// </summary>
-        public bool IncludeInBuild { get; init; }
+    /// <summary>
+    /// Indicate the dependency repository may be added to <see cref="BuildScope"/> and treated as inScope.
+    /// </summary>
+    public bool IncludeInBuild { get; init; }
 
-        [JsonIgnore]
-        public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.None : PackageFetchOptions.DepthOne;
+    [JsonIgnore]
+    public PackageFetchOptions PackageFetchOptions => IncludeInBuild ? PackageFetchOptions.None : PackageFetchOptions.DepthOne;
 
-        public DependencyConfig()
-            : base() { }
+    public DependencyConfig()
+        : base() { }
 
-        public DependencyConfig(string url)
-            : base(url) { }
-    }
+    public DependencyConfig(string url)
+        : base(url) { }
 }

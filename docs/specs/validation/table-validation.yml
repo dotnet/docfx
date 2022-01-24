@@ -191,10 +191,10 @@ inputs:
     YEAR[S] | MONTH[S] | WEEK[S] | DAY[S] | HOUR[S] | MINUTE[S] | SECOND[S] | 
     MILLISECOND[S] | MICROSECOND[S] 
   f.md: |
-    **Clients** – Windows XP | Windows Vista | Windows 7 | Windows 7 SP1 | Windows 8 
-    **Servers** – Windows Server 2003 | Windows Server 2008 | Windows Server 2008 R2 |DAY[S] | HOUR[S] | MINUTE[S] | SECOND[S] | 
-    **Clients** – Windows XP | Windows Vista | Windows 7 | Windows 7 SP1 | Windows 8 
-    **Servers** – Windows Server 2003 | Windows Server 2008 | Windows Server 2008 R2 | 
+    **Clients**–WindowsXP|WindowsVista|Windows7|Windows7SP1|Windows8 
+    **Servers**–WindowsServer2003|WindowsServer2008|WindowsServer2008R2|DAY[S] | HOUR[S] | MINUTE[S] | SECOND[S] | 
+    **Clients**–WindowsXP|WindowsVista|Windows7|Windows7SP1|Windows8 
+    **Servers**–WindowsServer2003|WindowsServer2008|WindowsServer2008R2| 
   g.md: |
     |A|B|C|D|E|    
     |Column1|Column2|Column3|Column4|Column5| 

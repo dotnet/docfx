@@ -1,42 +1,40 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using Newtonsoft.Json;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal class DependencyItem
 {
-    internal class DependencyItem
+    public FilePath From { get; }
+
+    [JsonIgnore]
+    public bool Transitive { get; }
+
+    public FilePath To { get; }
+
+    public DependencyType Type { get; }
+
+    public DependencyItem(FilePath from, FilePath to, DependencyType type, bool transitive)
     {
-        public FilePath From { get; }
+        From = from;
+        Transitive = transitive;
+        To = to;
+        Type = type;
+    }
 
-        [JsonIgnore]
-        public bool Transitive { get; }
+    public override int GetHashCode() => HashCode.Combine(To, From, Type);
 
-        public FilePath To { get; }
+    public override bool Equals(object? obj) => Equals(obj as DependencyItem);
 
-        public DependencyType Type { get; }
-
-        public DependencyItem(FilePath from, FilePath to, DependencyType type, bool transitive)
+    public bool Equals(DependencyItem? other)
+    {
+        if (other is null)
         {
-            From = from;
-            Transitive = transitive;
-            To = to;
-            Type = type;
+            return false;
         }
 
-        public override int GetHashCode() => HashCode.Combine(To, From, Type);
-
-        public override bool Equals(object? obj) => Equals(obj as DependencyItem);
-
-        public bool Equals(DependencyItem? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return From.Equals(other.From) && To.Equals(other.To) && Type == other.Type;
-        }
+        return From.Equals(other.From) && To.Equals(other.To) && Type == other.Type;
     }
 }

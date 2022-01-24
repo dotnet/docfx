@@ -4,13 +4,12 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class NolocRenderer : HtmlObjectRenderer<NolocInline>
 {
-    public class NolocRenderer : HtmlObjectRenderer<NolocInline>
+    protected override void Write(HtmlRenderer renderer, NolocInline obj)
     {
-        protected override void Write(HtmlRenderer renderer, NolocInline obj)
-        {
-            renderer.Write($"<span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">{obj.Text}</span>");
-        }
+        renderer.Write($"<span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\">{ExtensionsHelper.Escape(obj.Text)}</span>");
     }
 }

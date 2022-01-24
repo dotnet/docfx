@@ -3,16 +3,15 @@
 
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
-{
-    public abstract class BlockAggregator<TBlock> : IBlockAggregator
-        where TBlock : class, IBlock
-    {
-        public bool Aggregate(BlockAggregateContext context)
-        {
-            return context.CurrentBlock is TBlock block && AggregateCore(block, context);
-        }
+namespace Microsoft.Docs.MarkdigExtensions;
 
-        protected abstract bool AggregateCore(TBlock block, BlockAggregateContext context);
+public abstract class BlockAggregator<TBlock> : IBlockAggregator
+    where TBlock : class, IBlock
+{
+    public bool Aggregate(BlockAggregateContext context)
+    {
+        return context.CurrentBlock is TBlock block && AggregateCore(block, context);
     }
+
+    protected abstract bool AggregateCore(TBlock block, BlockAggregateContext context);
 }

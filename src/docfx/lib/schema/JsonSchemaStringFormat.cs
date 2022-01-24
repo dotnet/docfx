@@ -3,17 +3,16 @@
 
 using System.Runtime.Serialization;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal enum JsonSchemaStringFormat
 {
-    internal enum JsonSchemaStringFormat
-    {
-        None,
+    None,
 
-        [EnumMember(Value = "date-time")]
-        DateTime,
+    [EnumMember(Value = "date-time")]
+    DateTime,
 
-        Date,
+    Date,
 
-        Time,
-    }
+    Time,
 }

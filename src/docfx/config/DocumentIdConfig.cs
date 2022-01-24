@@ -4,13 +4,12 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Microsoft.Docs.Build
-{
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    internal struct DocumentIdConfig
-    {
-        public string? DepotName { get; init; }
+namespace Microsoft.Docs.Build;
 
-        public PathString? FolderRelativePathInDocset { get; init; }
-    }
+[JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+internal struct DocumentIdConfig
+{
+    public string? DepotName { get; init; }
+
+    public PathString? FolderRelativePathInDocset { get; init; }
 }

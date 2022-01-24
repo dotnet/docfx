@@ -3,32 +3,31 @@
 
 using System.Text.RegularExpressions;
 
-namespace Microsoft.Docs.LearnValidation
+namespace Microsoft.Docs.LearnValidation;
+
+public static class Utility
 {
-    public static class Utility
+    private static readonly Regex s_sshGitUrlRegex = new(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    /// <summary>
+    /// Transform SSH URL to Https URL
+    /// </summary>
+    public static string TransformGitUrl(string repoUrl)
     {
-        private static readonly Regex s_sshGitUrlRegex = new(@"git@(?<host>.+?):(?<userName>.+?)\/(?<repoName>.+)\.git", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        /// <summary>
-        /// Transform SSH URL to Https URL
-        /// </summary>
-        public static string TransformGitUrl(string repoUrl)
+        if (string.IsNullOrEmpty(repoUrl))
         {
-            if (string.IsNullOrEmpty(repoUrl))
-            {
-                return repoUrl;
-            }
-
-            var match = s_sshGitUrlRegex.Match(repoUrl);
-            if (match.Success)
-            {
-                var host = match.Groups["host"];
-                var userName = match.Groups["userName"];
-                var repoName = match.Groups["repoName"];
-                return $"https://{host}/{userName}/{repoName}";
-            }
-
             return repoUrl;
         }
+
+        var match = s_sshGitUrlRegex.Match(repoUrl);
+        if (match.Success)
+        {
+            var host = match.Groups["host"];
+            var userName = match.Groups["userName"];
+            var repoName = match.Groups["repoName"];
+            return $"https://{host}/{userName}/{repoName}";
+        }
+
+        return repoUrl;
     }
 }

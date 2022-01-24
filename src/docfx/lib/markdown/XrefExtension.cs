@@ -1,44 +1,46 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Linq;
 using Markdig;
 using Markdig.Renderers.Html;
 using Markdig.Syntax.Inlines;
 using Microsoft.Docs.MarkdigExtensions;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal static class XrefExtension
 {
-    internal static class XrefExtension
+    public static MarkdownPipelineBuilder UseXref(
+        this MarkdownPipelineBuilder builder,
+        Func<SourceInfo<string>?, SourceInfo<string>?, bool, XrefLink> resolveXref)
     {
-        public static MarkdownPipelineBuilder UseXref(
-            this MarkdownPipelineBuilder builder,
-            Func<SourceInfo<string>?, SourceInfo<string>?, bool, (string? href, string display)> resolveXref)
+        return builder.Use(document => document.Replace(node =>
         {
-            return builder.Use(document =>
+            // <xref:uid>
+            // @uid
+            if (node is XrefInline xref)
             {
-                document.Replace(node =>
+                var raw = xref.GetAttributes().Properties?.First(p => p.Key == "data-raw-source").Value ?? "";
+                var suppressXrefNotFound = raw.StartsWith("@");
+                var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
+                var xrefLink = resolveXref(source, null, suppressXrefNotFound);
+
+                if (xrefLink.Href is null)
                 {
-                    // <xref:uid>
-                    // @uid
-                    if (node is XrefInline xref)
-                    {
-                        var raw = xref.GetAttributes().Properties?.First(p => p.Key == "data-raw-source").Value ?? "";
-                        var suppressXrefNotFound = raw.StartsWith("@");
-                        var source = new SourceInfo<string>(xref.Href, xref.GetSourceInfo());
-                        var (href, display) = resolveXref(source, null, suppressXrefNotFound);
+                    return new NolocInline() { Text = raw };
+                }
 
-                        if (href is null)
-                        {
-                            return new LiteralInline(raw);
-                        }
-
-                        return new LinkInline(href, "").AppendChild(new LiteralInline(display));
-                    }
-                    return node;
-                });
-            });
-        }
+                var linkInline = new LinkInline(xrefLink.Href, "");
+                if (!xrefLink.Localizable)
+                {
+                    var attributes = linkInline.GetAttributes();
+                    attributes.AddClass("no-loc");
+                    linkInline.SetAttributes(attributes);
+                }
+                linkInline.AppendChild(new LiteralInline(xrefLink.Display));
+                return linkInline;
+            }
+            return node;
+        }));
     }
 }

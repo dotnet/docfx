@@ -5,49 +5,48 @@ using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class InclusionInlineParser : InlineParser
 {
-    public class InclusionInlineParser : InlineParser
+    private const string StartString = "[!include";
+
+    public InclusionInlineParser()
     {
-        private const string StartString = "[!include";
+        OpeningCharacters = new[] { '[' };
+    }
 
-        public InclusionInlineParser()
+    public override bool Match(InlineProcessor processor, ref StringSlice slice)
+    {
+        var startPosition = processor.GetSourcePosition(slice.Start, out var line, out var column);
+
+        if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
         {
-            OpeningCharacters = new[] { '[' };
+            return false;
         }
 
-        public override bool Match(InlineProcessor processor, ref StringSlice slice)
+        if (slice.CurrentChar == '-')
         {
-            var startPosition = processor.GetSourcePosition(slice.Start, out var line, out var column);
-
-            if (!ExtensionsHelper.MatchStart(ref slice, StartString, false))
-            {
-                return false;
-            }
-
-            if (slice.CurrentChar == '-')
-            {
-                slice.NextChar();
-            }
-
-            string title = null, path = null;
-
-            if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref slice))
-            {
-                return false;
-            }
-
-            processor.Inline = new InclusionInline
-            {
-                Title = title,
-                IncludedFilePath = path,
-                Line = line,
-                Column = column,
-                Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1)),
-                IsClosed = true,
-            };
-
-            return true;
+            slice.NextChar();
         }
+
+        string title = null, path = null;
+
+        if (!ExtensionsHelper.MatchLink(ref slice, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref slice))
+        {
+            return false;
+        }
+
+        processor.Inline = new InclusionInline
+        {
+            Title = title,
+            IncludedFilePath = path,
+            Line = line,
+            Column = column,
+            Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1)),
+            IsClosed = true,
+        };
+
+        return true;
     }
 }

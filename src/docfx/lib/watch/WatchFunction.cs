@@ -1,123 +1,119 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+namespace Microsoft.Docs.Build;
 
-namespace Microsoft.Docs.Build
+internal class WatchFunction : IFunction
 {
-    internal class WatchFunction : IFunction
+    private const int MaxSerialProcessingCount = 10;
+
+    private readonly HashSet<IFunction> _children = new();
+
+    private bool _hasChanged;
+    private object _hasChangedScope;
+    private object _replayScope;
+
+    public WatchFunction()
     {
-        private const int MaxSerialProcessingCount = 10;
+        _hasChangedScope = _replayScope = Watcher.GetCurrentScope();
+    }
 
-        private readonly HashSet<IFunction> _children = new();
+    public bool HasChildren => _children.Count > 0;
 
-        private bool _hasChanged;
-        private object _hasChangedScope;
-        private object _replayScope;
-
-        public WatchFunction()
+    public void AddChild(IFunction childFunction)
+    {
+        lock (_children)
         {
-            _hasChangedScope = _replayScope = Watcher.GetCurrentScope();
+            _children.Add(childFunction);
+        }
+    }
+
+    public bool HasChanged()
+    {
+        var scope = Watcher.GetCurrentScope();
+        if (scope == _hasChangedScope)
+        {
+            return _hasChanged;
         }
 
-        public bool HasChildren => _children.Count > 0;
-
-        public void AddChild(IFunction childFunction)
+        lock (_children)
         {
-            lock (_children)
-            {
-                _children.Add(childFunction);
-            }
-        }
-
-        public bool HasChanged()
-        {
-            var scope = Watcher.GetCurrentScope();
             if (scope == _hasChangedScope)
             {
                 return _hasChanged;
             }
 
-            lock (_children)
-            {
-                if (scope == _hasChangedScope)
-                {
-                    return _hasChanged;
-                }
+            _hasChanged = HasChangedCore();
+            _hasChangedScope = scope;
+            return _hasChanged;
+        }
+    }
 
-                _hasChanged = HasChangedCore();
-                _hasChangedScope = scope;
-                return _hasChanged;
-            }
+    public void Replay()
+    {
+        var scope = Watcher.GetCurrentScope();
+        if (scope == _replayScope)
+        {
+            return;
         }
 
-        public void Replay()
+        lock (_children)
         {
-            var scope = Watcher.GetCurrentScope();
             if (scope == _replayScope)
             {
                 return;
             }
 
-            lock (_children)
-            {
-                if (scope == _replayScope)
-                {
-                    return;
-                }
-
-                _replayScope = scope;
-                ReplayCore();
-            }
+            _replayScope = scope;
+            ReplayCore();
         }
+    }
 
-        private bool HasChangedCore()
+    private bool HasChangedCore()
+    {
+        lock (_children)
         {
-            lock (_children)
+            if (_children.Count < MaxSerialProcessingCount)
             {
-                if (_children.Count < MaxSerialProcessingCount)
+                foreach (var child in _children)
                 {
-                    foreach (var child in _children)
+                    if (child.HasChanged())
                     {
-                        if (child.HasChanged())
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                else
-                {
-                    var result = false;
-                    Parallel.ForEach(_children, (child, loop) =>
-                    {
-                        if (child.HasChanged())
-                        {
-                            result = true;
-                            loop.Break();
-                        }
-                    });
-                    return result;
-                }
-            }
-        }
-
-        private void ReplayCore()
-        {
-            lock (_children)
-            {
-                if (_children.Count < MaxSerialProcessingCount)
-                {
-                    foreach (var child in _children)
-                    {
-                        child.Replay();
+                        return true;
                     }
                 }
-                else
+                return false;
+            }
+            else
+            {
+                var result = false;
+                Parallel.ForEach(_children, (child, loop) =>
                 {
-                    Parallel.ForEach(_children, child => child.Replay());
+                    if (child.HasChanged())
+                    {
+                        result = true;
+                        loop.Break();
+                    }
+                });
+                return result;
+            }
+        }
+    }
+
+    private void ReplayCore()
+    {
+        lock (_children)
+        {
+            if (_children.Count < MaxSerialProcessingCount)
+            {
+                foreach (var child in _children)
+                {
+                    child.Replay();
                 }
+            }
+            else
+            {
+                Parallel.ForEach(_children, child => child.Replay());
             }
         }
     }

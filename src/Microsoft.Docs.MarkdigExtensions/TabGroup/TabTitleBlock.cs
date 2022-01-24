@@ -3,13 +3,12 @@
 
 using Markdig.Syntax;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class TabTitleBlock : LeafBlock
 {
-    public class TabTitleBlock : LeafBlock
+    public TabTitleBlock()
+        : base(null)
     {
-        public TabTitleBlock()
-            : base(null)
-        {
-        }
     }
 }

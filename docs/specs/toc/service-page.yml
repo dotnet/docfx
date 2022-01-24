@@ -718,7 +718,7 @@ outputs:
   a/test/index.json:
   a/api/bot/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'test/index.json': 'test/index.md', 'test/index.yml [generated]'."}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/test/': 'test/index.md', 'test/index.yml [generated]'."}
 ---
 # publish url conflicts for generated service pages
 repos:
@@ -789,7 +789,7 @@ outputs:
     {"title": "hello world"}
   a/api/bot/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files of the same version('v-0.2') publish to the same url '/docs/': 'test/index.yml [generated]<'v-0.2', 'v-0.3'>', 'test1/index.md<'v-0.1', 'v-0.2'>'."}
+    {"message_severity":"warning","code":"publish-url-conflict","message":"Two or more files publish to the same url '/docs/': 'test/index.yml [generated]', 'test1/index.md'."}
   a/.publish.json: |
     {
       "files": [

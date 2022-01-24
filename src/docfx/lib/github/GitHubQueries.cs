@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal static class GitHubQueries
 {
-    internal static class GitHubQueries
-    {
-        public const string UserQuery = @"
+    public const string UserQuery = @"
 query ($login: String!) {
   user(login: $login) {
     name
@@ -15,7 +15,7 @@ query ($login: String!) {
   }
 }";
 
-        public const string CommitQuery = @"
+    public const string CommitQuery = @"
 query ($owner: String!, $name: String!, $commit: String!) {
   repository(owner: $owner, name: $name) {
     object(expression: $commit) {
@@ -37,5 +37,4 @@ query ($owner: String!, $name: String!, $commit: String!) {
     }
   }
 }";
-    }
 }

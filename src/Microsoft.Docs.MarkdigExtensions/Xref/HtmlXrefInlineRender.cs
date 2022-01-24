@@ -4,25 +4,24 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
-namespace Microsoft.Docs.MarkdigExtensions
+namespace Microsoft.Docs.MarkdigExtensions;
+
+public class HtmlXrefInlineRender : HtmlObjectRenderer<XrefInline>
 {
-    public class HtmlXrefInlineRender : HtmlObjectRenderer<XrefInline>
+    protected override void Write(HtmlRenderer renderer, XrefInline obj)
     {
-        protected override void Write(HtmlRenderer renderer, XrefInline obj)
+        if (renderer.EnableHtmlForInline)
         {
-            if (renderer.EnableHtmlForInline)
+            renderer.Write("<xref href=\"").Write(obj.Href).Write("\"").WriteAttributes(obj).Write("></xref>");
+        }
+        else
+        {
+            foreach (var pair in obj.GetAttributes().Properties)
             {
-                renderer.Write("<xref href=\"").Write(obj.Href).Write("\"").WriteAttributes(obj).Write("></xref>");
-            }
-            else
-            {
-                foreach (var pair in obj.GetAttributes().Properties)
+                if (pair.Key == "data-raw-source")
                 {
-                    if (pair.Key == "data-raw-source")
-                    {
-                        renderer.Write(pair.Value);
-                        break;
-                    }
+                    renderer.Write(pair.Value);
+                    break;
                 }
             }
         }

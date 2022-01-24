@@ -1,150 +1,152 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using O9d.Json.Formatting;
 
-namespace Microsoft.Docs.Build
+namespace Microsoft.Docs.Build;
+
+internal static class ProcessUtility
 {
-    /// <summary>
-    /// Provide process utility
-    /// </summary>
-    internal static class ProcessUtility
+    private static readonly JsonSerializerOptions s_jsonOptions = new()
     {
-        /// <summary>
-        /// Start a new process and wait for its execution to complete
-        /// </summary>
-        public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
+        AllowTrailingCommas = true,
+        Converters = { new JsonStringEnumConverter() },
+        PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(),
+    };
+
+    /// <summary>
+    /// Start a new process and wait for its execution to complete
+    /// </summary>
+    public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
+    {
+        var sanitizedCommandLineArgs = MaskUtility.HideSecret(commandLineArgs, secret);
+
+        using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
         {
-            var sanitizedCommandLineArgs = MaskUtility.HideSecret(commandLineArgs, secret);
-
-            using (PerfScope.Start($"Executing '\"{fileName}\" {sanitizedCommandLineArgs}' in '{Path.GetFullPath(cwd ?? ".")}'"))
+            var psi = new ProcessStartInfo
             {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = fileName,
-                    WorkingDirectory = cwd ?? ".",
-                    Arguments = commandLineArgs,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = stdout,
-                    RedirectStandardError = true,
-                };
+                FileName = fileName,
+                WorkingDirectory = cwd ?? ".",
+                Arguments = commandLineArgs,
+                UseShellExecute = false,
+                RedirectStandardOutput = stdout,
+                RedirectStandardError = true,
+            };
 
-                using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
+            using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 
-                var error = new StringBuilder();
-                var result = new StringBuilder();
+            var error = new StringBuilder();
+            var result = new StringBuilder();
 
-                var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
-                var pipeOutput = stdout
-                    ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
-                    : Task.CompletedTask;
+            var pipeError = Task.Run(() => PipeStream(process.StandardError, Console.Out, new StringWriter(error)));
+            var pipeOutput = stdout
+                ? Task.Run(() => PipeStream(process.StandardOutput, new StringWriter(result)))
+                : Task.CompletedTask;
 
-                Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
+            Task.WhenAll(process.WaitForExitAsync(), pipeError, pipeOutput).GetAwaiter().GetResult();
 
-                if (process.ExitCode != 0)
-                {
-                    var errorData = error.ToString();
-                    var sanitizedErrorData = MaskUtility.HideSecret(errorData, secret);
+            if (process.ExitCode != 0)
+            {
+                var errorData = error.ToString();
+                var sanitizedErrorData = MaskUtility.HideSecret(errorData, secret);
 
-                    throw new InvalidOperationException(
-                        $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
-                        $"\nSTDOUT:'{result}': \nSTDERR:'{sanitizedErrorData}'");
-                }
-
-                return result.ToString();
+                throw new InvalidOperationException(
+                    $"'\"{fileName}\" {sanitizedCommandLineArgs}' failed in directory '{cwd}' with exit code {process.ExitCode}: " +
+                    $"\nSTDOUT:'{result}': \nSTDERR:'{sanitizedErrorData}'");
             }
 
-            static void PipeStream(TextReader input, TextWriter output1, TextWriter? output2 = null)
-            {
-                var buffer = ArrayPool<char>.Shared.Rent(1024);
-
-                while (input.Read(buffer, 0, buffer.Length) is var length && length > 0)
-                {
-                    output1.Write(buffer, 0, length);
-                    output2?.Write(buffer, 0, length);
-                }
-
-                ArrayPool<char>.Shared.Return(buffer);
-            }
+            return result.ToString();
         }
 
-        /// <summary>
-        /// Reads the content of a file.
-        /// When used together with <see cref="WriteFile(string,string)"/>, provides inter-process synchronized access to the file.
-        /// </summary>
-        public static T ReadJsonFile<T>(string path) where T : class, new()
+        static void PipeStream(TextReader input, TextWriter output1, TextWriter? output2 = null)
         {
-            var content = "";
-            using (InterProcessMutex.Create(path))
+            var buffer = ArrayPool<char>.Shared.Rent(1024);
+
+            while (input.Read(buffer, 0, buffer.Length) is var length && length > 0)
             {
-                content = File.ReadAllText(path);
+                output1.Write(buffer, 0, length);
+                output2?.Write(buffer, 0, length);
             }
 
+            ArrayPool<char>.Shared.Return(buffer);
+        }
+    }
+
+    /// <summary>
+    /// Reads the content of a file.
+    /// When used together with <see cref="WriteJsonFile(string,string)"/>, provides inter-process synchronized access to the file.
+    /// </summary>
+    public static T ReadJsonFile<T>(string path) where T : class, new()
+    {
+        byte[] bytes;
+        using (InterProcessMutex.Create(path))
+        {
+            bytes = File.ReadAllBytes(path);
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<T>(bytes, s_jsonOptions) ?? new();
+        }
+        catch (Exception ex)
+        {
+            Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
+            Log.Write(ex);
+            return new T();
+        }
+    }
+
+    public static void ReadFile(string path, Action<Stream> read)
+    {
+        using (InterProcessMutex.Create(path))
+        using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
+        {
             try
             {
-                return JsonUtility.DeserializeData<T>(content, new FilePath(path));
+                read(fs);
             }
             catch (Exception ex)
             {
                 Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
                 Log.Write(ex);
-                return new T();
             }
         }
+    }
 
-        public static void ReadFile(string path, Action<Stream> read)
+    /// <summary>
+    /// Reads the content of a file.
+    /// When used together with <see cref="ReadJsonFile{T}(string)"/>, provides inter-process synchronized access to the file.
+    /// </summary>
+    public static void WriteJsonFile<T>(string path, T data)
+    {
+        using (InterProcessMutex.Create(path))
+        using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
         {
-            using (InterProcessMutex.Create(path))
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 1024, FileOptions.SequentialScan))
-            {
-                try
-                {
-                    read(fs);
-                }
-                catch (Exception ex)
-                {
-                    Log.Important($"Ignore data file due to a problem reading '{path}'.", ConsoleColor.Yellow);
-                    Log.Write(ex);
-                }
-            }
+            JsonSerializer.Serialize(fs, data, s_jsonOptions);
         }
+    }
 
-        /// <summary>
-        /// Reads the content of a file.
-        /// When used together with <see cref="ReadFile(string)"/>, provides inter-process synchronized access to the file.
-        /// </summary>
-        public static void WriteFile(string path, string content)
+    public static void WriteFile(string path, Action<Stream> write)
+    {
+        using (InterProcessMutex.Create(path))
+        using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
         {
-            using (InterProcessMutex.Create(path))
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
-            using (var writer = new StreamWriter(fs))
-            {
-                writer.Write(content);
-            }
+            write(fs);
         }
+    }
 
-        public static void WriteFile(string path, Action<Stream> write)
-        {
-            using (InterProcessMutex.Create(path))
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
-            {
-                write(fs);
-            }
-        }
-
-        /// <summary>
-        /// Checks if the exception thrown by Process.Start is caused by file not found.
-        /// </summary>
-        public static bool IsExeNotFoundException(Win32Exception ex)
-        {
-            return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
-                || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
-        }
+    /// <summary>
+    /// Checks if the exception thrown by Process.Start is caused by file not found.
+    /// </summary>
+    public static bool IsExeNotFoundException(Win32Exception ex)
+    {
+        return ex.ErrorCode == -2147467259 // Error_ENOENT = 0x1002D, No such file or directory
+            || ex.ErrorCode == 2; // ERROR_FILE_NOT_FOUND = 0x2, The system cannot find the file specified
     }
 }
