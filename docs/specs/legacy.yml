@@ -21,7 +21,7 @@ repos:
         ---
         [d](d.png)
       d.png:
-      TOC.md: |
+      toc.md: |
         # [c](c.md)
       schema.json: |
         {
@@ -69,7 +69,7 @@ outputs:
         <meta name=\"depot_name\" content=\".\" />
         <meta name=\"document_id\" content=\"d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2\" />
         <meta name=\"document_version_independent_id\" content=\"d4c1d336-d9a7-3b5c-e27f-b8c630a6d5c2\" />
-        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/42eb7605fdef9f5e7674a1cae803f86a39ee628a/c.md\" />
+        <meta name=\"gitcommit\" content=\"https://github.com/legacy/test/blob/5bafb3dc8f9d74504f430bdb51fe7667d4e9eeb9/c.md\" />
         <meta name=\"locale\" content=\"en-us\" />
         <meta name=\"ms.author\" content=\"yufeih\" />
         <meta name=\"original_content_git_url\" content=\"https://github.com/legacy/test/blob/main/c.md\" />
@@ -116,7 +116,7 @@ repos:
         # Title
         [d](d.png)
       d.png:
-      TOC.md: |
+      toc.md: |
         # [c](c.md)
       index.yml: |
         ### YamlMime:YamlDocument
@@ -162,7 +162,7 @@ outputs:
         "content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
         "original_content_git_url": "https://github.com/a/rawmetadata/blob/main/c.md",
         "original_content_git_url_template": "{repo}/blob/{branch}/c.md",
-        "gitcommit": "https://github.com/a/rawmetadata/blob/059da4c838d11026288349e031208d1e1c9aeeb5/c.md",
+        "gitcommit": "https://github.com/a/rawmetadata/blob/ca95ae33a6924b1a6d35e2099a0e994f115ecd24/c.md",
         "site_name": "Docs",
         "depot_name": ".",
         "_path": "c.json",
@@ -357,9 +357,9 @@ inputs:
       docs/v1/: .
       docs/v2/: .
     monikerDefinition: monikerDefinition.json
-  docs/v1/TOC.md:
+  docs/v1/toc.md:
   docs/v1/f1/a.md:
-  docs/v2/TOC.md:
+  docs/v2/toc.md:
   docs/v2/f1/a.md:
   monikerDefinition.json: |
     {

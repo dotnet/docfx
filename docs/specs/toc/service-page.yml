@@ -7,7 +7,7 @@ repos:
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
             {
-              "ReferenceTOC": "a/api/TOC.yml",
+              "ReferenceTOC": "a/api/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "OutputFolder": "a/results",
               "ContainerPageMetadata": {"langs": ["csharp"]}
@@ -62,7 +62,7 @@ repos:
           "$schema": "https://raw.githubusercontent.com/dotnet/docfx/v3/schemas/TestData.json",
           "uid": "aa", "name": "test", "fullName": "test.test", "description": "a.description"
         }
-      a/api/TOC.yml: |
+      a/api/toc.yml: |
         name: TOC
         items:
         - name: MS.ServicePage.xxx
@@ -111,7 +111,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -135,7 +135,7 @@ repos:
           }
         }
       a/test/doc.md:
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         name: TOC
         items:
         - name: MS.ServicePage.xxx
@@ -159,9 +159,9 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/toc.yml"]}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -185,7 +185,7 @@ repos:
           }
         }
       a/test/doc.md:
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -210,9 +210,9 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/toc.yml"]}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -236,7 +236,7 @@ repos:
           }
         }
       a/test/doc.md:
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -283,7 +283,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -306,7 +306,7 @@ repos:
             "pageType": { "enum": ["root", "service"], "type": "string" }
           }
         }
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         name: TOC
         items:
         - name: MS.ServicePage.xxx
@@ -328,9 +328,9 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/toc.yml"]}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -354,7 +354,7 @@ repos:
           }
         }
       a/test/doc.md:
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -402,7 +402,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -430,7 +430,7 @@ repos:
         name: a
         uid: test
         ---
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
           items:
@@ -456,7 +456,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
              "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
              "OutputFolder": "a/results"}],
         }
@@ -496,7 +496,7 @@ repos:
         name: a
         uid: test
         ---
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
           items:
@@ -518,9 +518,9 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/toc.yml"]}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}],
         }
       a/docfx.yml:
@@ -548,7 +548,7 @@ repos:
         title: a-content
         uid: a
         ---
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage2.xxx
           uid: a
@@ -575,7 +575,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "OutputFolder": "a/test"
               }]
@@ -602,7 +602,7 @@ repos:
         }
       a/test/Client.md: |
         # hello world
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
       a/docs-ref-toc/top_level_toc.yml: |
@@ -627,9 +627,9 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "a", "SplitTOC": ["api/bot/toc.yml"]}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "ReferenceTOCUrl": "/a/b/toc"}],
         }
@@ -653,7 +653,7 @@ repos:
             "pageType": { "enum": ["root", "service"], "type": "string" }
           }
         }
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage2.xxx
           items:
@@ -674,7 +674,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "OutputFolder": "a/test"
               }]
@@ -701,7 +701,7 @@ repos:
         }
       a/test/index.md: |
         # hello world
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
       a/docs-ref-toc/top_level_toc.yml: |
@@ -728,7 +728,7 @@ repos:
         {
           "docsets_to_publish": [{  "build_source_folder": "a"}],
           "JoinTOCPlugin": [
-            {"ReferenceTOC": "a/api/bot/TOC.yml",
+            {"ReferenceTOC": "a/api/bot/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml",
               "OutputFolder": "a/test"
             }
@@ -771,7 +771,7 @@ repos:
         }
       a/test1/index.md: |
         # hello world
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
       a/docs-ref-toc/top_level_toc.yml: |
@@ -796,7 +796,7 @@ outputs:
         {
           "url": "/api/bot/toc.json",
           "path": "api/bot/toc.json",
-          "source_path": "api/bot/TOC.yml"
+          "source_path": "api/bot/toc.yml"
         },
         {
           "url": "/docs/",
@@ -821,7 +821,7 @@ repos:
               "build_source_folder": "a",
               "JoinTOCPlugin": [
                 {
-                  "ReferenceTOC": "api/bot/TOC.yml",
+                  "ReferenceTOC": "api/bot/toc.yml",
                   "TopLevelTOC": "docs-ref-toc/top_level_toc.yml",
                   "OutputFolder": "result"
                 }
@@ -849,7 +849,7 @@ repos:
             "pageType": { "enum": ["root", "service"], "type": "string" }
           }
         }
-      a/api/bot/TOC.yml: |
+      a/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.xxx
       a/docs-ref-toc/top_level_toc.yml: |

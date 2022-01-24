@@ -11,7 +11,7 @@ inputs:
         "rules": [
           {
             "type": "TocDeprecated",
-            "message": "Markdown TOC files are deprecated. Convert to a YAML TOC.",
+            "message": "Markdown TOC files are deprecated. Convert to a YAML toc.",
             "code": "toc-deprecated",
             "severity": "SUGGESTION",
             "contentTypes": ["toc"]
@@ -19,13 +19,13 @@ inputs:
         ]
       }
     }
-  a/TOC.md:
-  b/TOC.md:
-  c/TOC.yml:
+  a/toc.md:
+  b/toc.md:
+  c/toc.yml:
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML TOC.","file":"a/TOC.md","line":0,"end_line":0,"column":0,"end_column":0}
-    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML TOC.","file":"b/TOC.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML toc.","file":"a/toc.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"toc-deprecated","message":"Markdown TOC files are deprecated. Convert to a YAML toc.","file":"b/toc.md","line":0,"end_line":0,"column":0,"end_column":0}
   a/toc.json:
   b/toc.json:
   c/toc.json:
@@ -42,7 +42,7 @@ inputs:
         "rules": [
           {
             "type": "TocEntryDuplicated",
-            "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
+            "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a toc.",
             "code": "toc-entry-duplicated",
             "severity": "SUGGESTION",
             "contentTypes": ["toc"]
@@ -52,7 +52,7 @@ inputs:
     }
   path/a.md:
   path/b.md:
-  TOC.yml: |
+  toc.yml: |
     - name: a
       href: path/a.md
     - name: b
@@ -61,7 +61,7 @@ inputs:
       href: path/a.md
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md. Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md. Each article can only be referenced once in a toc.","file":"toc.yml","line":0,"end_line":0,"column":0,"end_column":0}
   toc.json:
   path/a.json:
   path/b.json:
@@ -88,7 +88,7 @@ inputs:
         ]
       }
     }
-  bread/TOC.yml: |
+  bread/toc.yml: |
     - name: a
       href: /a
     - name: b
@@ -97,7 +97,7 @@ inputs:
       href: /c
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"toc-breadcrumb-link-external","message":"External link: http://www.msn.com. TOC and breadcrumb links can’t be to pages outside of Docs.","file":"bread/TOC.yml","line":3,"end_line":3,"column":3,"end_column":3}
+    {"message_severity":"suggestion","code":"toc-breadcrumb-link-external","message":"External link: http://www.msn.com. TOC and breadcrumb links can’t be to pages outside of Docs.","file":"bread/toc.yml","line":3,"end_line":3,"column":3,"end_column":3}
   bread/toc.json:
 ---
 #TOC validation - toc-missing
@@ -114,7 +114,7 @@ inputs:
         "rules": [
           {
             "type": "TocMissing",
-            "message": "Article is not referenced from a table of contents. Every article must be in a TOC.",
+            "message": "Article is not referenced from a table of contents. Every article must be in a toc.",
             "code": "toc-missing",
             "severity": "suggestion",
             "contentTypes": ["conceptual", "toc"]
@@ -124,12 +124,12 @@ inputs:
     }
   a.md:
   b.md:
-  TOC.yml: |
+  toc.yml: |
     - name: a
       href: a.md
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","log_item_type":"user","code":"toc-missing","message":"Article is not referenced from a table of contents. Every article must be in a TOC.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
+    {"message_severity":"suggestion","log_item_type":"user","code":"toc-missing","message":"Article is not referenced from a table of contents. Every article must be in a toc.","file":"b.md","line":0,"end_line":0,"column":0,"end_column":0}
   a.json:
   b.json:
   toc.json:
@@ -144,7 +144,7 @@ inputs:
       "rules": [
         {
           "type": "TocEntryDuplicated",
-          "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a TOC.",
+          "message": "Article is referenced in more than one TOC node: {0}. Each article can only be referenced once in a toc.",
           "code": "toc-entry-duplicated",
           "severity": "SUGGESTION",
           "contentTypes": ["toc"]
@@ -152,7 +152,7 @@ inputs:
       ]
     }
     }
-  TOC.yml: |
+  toc.yml: |
     items:
     - name: 1
       href: a.md
@@ -193,4 +193,4 @@ outputs:
   f.json:
   toc.json:
   .errors.log: |
-    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md, b.md, c.md, d.md, e.md, f.md. Each article can only be referenced once in a TOC.","file":"TOC.yml","line":0,"end_line":0,"column":0,"end_column":0,"log_item_type":"user"}
+    {"message_severity":"suggestion","code":"toc-entry-duplicated","message":"Article is referenced in more than one TOC node: a.md, b.md, c.md, d.md, e.md, f.md. Each article can only be referenced once in a toc.","file":"toc.yml","line":0,"end_line":0,"column":0,"end_column":0,"log_item_type":"user"}
