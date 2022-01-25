@@ -24,6 +24,9 @@ jobs:
     name: 1ES-Pool
   steps:
 
+  - checkout: self
+    submodules: true
+
   # Install .NET Core sdk
   - task: UseDotNet@2
     displayName: 'Install .NET Core sdk $(dotnetVersion)'
