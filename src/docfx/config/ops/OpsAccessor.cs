@@ -187,14 +187,15 @@ internal class OpsAccessor : ILearnServiceAccessor
                 if (request.RequestUri!.AbsolutePath.Contains("/metadatarules"))
                 {
                     _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                    Log.Write($"Metadata validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
                 }
                 else if (request.RequestUri!.AbsolutePath.Contains("/contentrules"))
                 {
-                    _errors.Add(Errors.System.ContentValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                    Log.Write($"Content validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
                 }
                 else
                 {
-                    _errors.Add(Errors.System.BuildValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                    Log.Write($"Build validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
                 }
             }
 
