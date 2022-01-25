@@ -386,9 +386,14 @@ public class JsonSchemaTest
         "{'message_severity':'warning','code':'key2-missing','message':'Missing attribute: 'key2'. If you specify 'key1', you must also specify 'key2'.','line':1,'column':1}")]
     [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}", "{'b': 1}",
         "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]
-
+    [InlineData("{'required': ['author'], 'rules': {'author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'addOnly': true}}}}", "{'b': 1}",
+        "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'author'. Add a valid GitHub ID.','line':1,'column':1}")]
     [InlineData(
         "{'properties': {'key':{'required': ['author'],'properties': {'author': {'type': ['string']}}}},'rules': {'key.author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'pullRequestOnly': true}}}}",
+        "{'key': {'b': 1}}",
+        "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'key.author'. Add a valid GitHub ID.','line':1,'column':9}")]
+    [InlineData(
+        "{'properties': {'key':{'required': ['author'],'properties': {'author': {'type': ['string']}}}},'rules': {'key.author': {'missing-attribute': {'severity': 'suggestion', 'code': 'author-missing', 'additionalMessage': 'Add a valid GitHub ID.', 'addOnly': true}}}}",
         "{'key': {'b': 1}}",
         "{'message_severity':'suggestion','code':'author-missing','message':'Missing required attribute: 'key.author'. Add a valid GitHub ID.','line':1,'column':9}")]
 
