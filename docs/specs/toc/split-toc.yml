@@ -7,12 +7,12 @@ repos:
           "docsets_to_publish": [
             {
               "build_source_folder": ".", 
-              "SplitTOC": ["TOC.yml"]
+              "SplitTOC": ["toc.yml"]
             }
           ]
         }
       docfx.yml:
-      TOC.yml: |
+      toc.yml: |
         items:
         - name: 1
           href: a.md
@@ -62,15 +62,15 @@ repos:
           "docsets_to_publish": [
             {
               "build_source_folder": ".", 
-              "SplitTOC": ["TOC.yml"]
+              "SplitTOC": ["toc.yml"]
             }
           ]
         }
       docfx.yml: |
         fileMetadata:
           key:
-            _splitted/**/TOC.yml: value
-      TOC.yml: |
+            _splitted/**/toc.yml: value
+      toc.yml: |
         items:
         - name: 1
           items:
@@ -89,7 +89,7 @@ repos:
           "docsets_to_publish": [
             {
               "build_source_folder": ".", 
-              "SplitTOC": ["TOC.yml"]
+              "SplitTOC": ["toc.yml"]
             }
           ]
         }
@@ -97,14 +97,14 @@ repos:
         {
           "content":[
             {
-              "files": ["**/TOC.yml"],
+              "files": ["**/toc.yml"],
               "src": ".",
               "dest": "toc-dest"
             }
           ]
         }
     
-      TOC.yml: |
+      toc.yml: |
         items:
         - name: 1
           items:
@@ -125,13 +125,13 @@ repos:
           }],
           "JoinTOCPlugin": [
             {
-              "ReferenceTOC": "a/api/TOC.yml",
+              "ReferenceTOC": "a/api/toc.yml",
               "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"
             }
           ],
         }
       a/docfx.yml:
-      a/api/TOC.yml: |
+      a/api/toc.yml: |
         items:
         - name: Microsoft.Identity.xxx
           items:
@@ -201,17 +201,17 @@ repos:
       docfx.yml:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": ".", "SplitTOC": ["a/TOC.yml", "b/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": ".", "SplitTOC": ["a/toc.yml", "b/toc.yml"]}],
           "JoinTOCPlugin": [
             {
-              "ConceptualTOC": "b/TOC.yml",
+              "ConceptualTOC": "b/toc.yml",
               "ReferenceTOCUrl": "/dotnet-test/api/toc.json",
               "ConceptualTOCUrl": "dotnet-test/learn/toc.json",
-              "ReferenceTOC": "a/TOC.yml"
+              "ReferenceTOC": "a/toc.yml"
             }
           ]
         }
-      a/TOC.yml: |
+      a/toc.yml: |
         items:
         - name: a
           items:
@@ -219,7 +219,7 @@ repos:
         - name: b
           items:
           - name: b-b
-      b/TOC.yml: |
+      b/toc.yml: |
         items:
         - name: 1
           items:
@@ -243,17 +243,17 @@ repos:
       test/docfx.yml:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{  "build_source_folder": "test", "SplitTOC": ["a/TOC.yml", "b/TOC.yml"]}],
+          "docsets_to_publish": [{  "build_source_folder": "test", "SplitTOC": ["a/toc.yml", "b/toc.yml"]}],
           "JoinTOCPlugin": [
             {
-              "ConceptualTOC": "test/b/TOC.yml",
+              "ConceptualTOC": "test/b/toc.yml",
               "ReferenceTOCUrl": "/dotnet-test/api/toc.json",
               "ConceptualTOCUrl": "dotnet-test/learn/toc.json",
-              "ReferenceTOC": "test/a/TOC.yml"
+              "ReferenceTOC": "test/a/toc.yml"
             }
           ]
         }
-      test/a/TOC.yml: |
+      test/a/toc.yml: |
         items:
         - name: a
           items:
@@ -261,7 +261,7 @@ repos:
         - name: b
           items:
           - name: b-b
-      test/b/TOC.yml: |
+      test/b/toc.yml: |
         items:
         - name: 1
           items:
@@ -284,7 +284,7 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "SplitTOC": ["a/TOC.yml"],
+          "SplitTOC": ["a/toc.yml"],
           "docsets_to_publish": [
             {
               "build_source_folder": "a"
@@ -294,8 +294,8 @@ repos:
       a/docfx.yml: |
         fileMetadata:
           key:
-            _splitted/**/TOC.yml: value
-      a/TOC.yml: |
+            _splitted/**/toc.yml: value
+      a/toc.yml: |
         items:
         - name: 1
           items:
@@ -313,12 +313,12 @@ repos:
           "docsets_to_publish": [
             {
               "build_source_folder": "a",
-              "SplitTOC": ["a/TOC.yml"]
+              "SplitTOC": ["a/toc.yml"]
             }
           ]
         }
       a/docfx.yml:
-      a/TOC.yml: |
+      a/toc.yml: |
         items:
         - name: 1
           items:
@@ -331,13 +331,13 @@ repos:
   https://github.com/ops/add-monikers-for-the-root-node-of-splitToc:
   - files:
       .openpublishing.publish.config.json: |
-          {"docsets_to_publish": [{"build_source_folder": ".", "SplitTOC": ["TOC.yml"]}]}
+          {"docsets_to_publish": [{"build_source_folder": ".", "SplitTOC": ["toc.yml"]}]}
       docfx.yml: |
         monikerRange:
           '**/*': '>= v-1.1'
         monikerDefinition: 'monikerDefinition.json'
       a.md:
-      TOC.yml: |
+      toc.yml: |
         items:
           - name: 1
             href: ./a.md

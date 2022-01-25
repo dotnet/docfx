@@ -219,26 +219,26 @@ repos:
           }],
           "JoinTOCPlugin": [
             {
-              "ReferenceTOC": "a/api/TOC.yml",
+              "ReferenceTOC": "a/api/toc.yml",
               "ReferenceTOCUrl": "/dotnet/api/azure_ref_toc/toc.json",
               "ConceptualTOCUrl": "/dotnet/azure/sdk/toc.json",
-              "ConceptualTOC": "a/docs-ref-conceptual/TOC.yml"
+              "ConceptualTOC": "a/docs-ref-conceptual/toc.yml"
             },
             {
-              "ReferenceTOC": "a/api-1/TOC.yml",
+              "ReferenceTOC": "a/api-1/toc.yml",
               "ConceptualTOCUrl": "/dotnet-1/azure/sdk/toc.json",
             },
             {
               "ReferenceTOCUrl": "/dotnet-2/api/azure_ref_toc/toc.json",
-              "ConceptualTOC": "a/docs-ref-conceptual-2/TOC.yml"
+              "ConceptualTOC": "a/docs-ref-conceptual-2/toc.yml"
             }
           ],
         }
       a/docfx.yml:
-      a/api/TOC.yml:
-      a/docs-ref-conceptual/TOC.yml:
-      a/api-1/TOC.yml:
-      a/docs-ref-conceptual-2/TOC.yml:
+      a/api/toc.yml:
+      a/docs-ref-conceptual/toc.yml:
+      a/api-1/toc.yml:
+      a/docs-ref-conceptual-2/toc.yml:
 outputs:
   a/api/toc.json: |
     { "metadata": { "universal_conceptual_toc": "/dotnet/azure/sdk/toc.json", "universal_ref_toc": undefined } }

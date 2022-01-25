@@ -98,7 +98,7 @@ internal class BuildScope
             return ContentType.Resource;
         }
 
-        if (name.Equals("TOC", PathUtility.PathComparison))
+        if (name.Equals("toc", PathUtility.PathComparison))
         {
             return ContentType.Toc;
         }

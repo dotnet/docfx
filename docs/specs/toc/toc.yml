@@ -3,7 +3,7 @@
 inputs:
   docfx.yml:
   index.md:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Index Reference](index.md)
     ## Existing File Reference
     ### [Reference Normal File 1](n1.md)
@@ -42,7 +42,7 @@ outputs:
 # TOC can be a json file
 inputs:
   docfx.yml:
-  docs/TOC.json: |
+  docs/toc.json: |
     [{ "name": "title" }]
 outputs:
   docs/toc.json: |
@@ -53,18 +53,18 @@ outputs:
 # TOC json file is invalid
 inputs:
   docfx.yml:
-  docs/TOC.json: |
+  docs/toc.json: |
     [{ "name": "title" ]
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"json-syntax-error","message":"JsonToken EndArray is not valid for closing JsonType Object.","file":"docs/TOC.json","line":1,"column":20}
+    {"message_severity":"error","code":"json-syntax-error","message":"JsonToken EndArray is not valid for closing JsonType Object.","file":"docs/toc.json","line":1,"column":20}
 ---
 # Probe TOC in JSON format
 inputs:
   docfx.yml:
-  docs/TOC.json: |
+  docs/toc.json: |
     [{ "name": "a", "href": "a/?query" }]
-  docs/a/TOC.json: |
+  docs/a/toc.json: |
     [{ "name": "b", "href": "b.md" }]
   docs/a/b.md:
 outputs:
@@ -78,10 +78,10 @@ outputs:
     }
   docs/a/b.json:
 ---
-# TOC.md can contain xml comments
+# toc.md can contain xml comments
 inputs:
   docfx.yml:
-  TOC.md: |
+  toc.md: |
     <!-- this is an xml comment -->
 outputs:
   toc.json:
@@ -90,7 +90,7 @@ outputs:
 inputs:
   docfx.yml:
   docs/index.md:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Index Reference](index.md)
     ## No Existing File Reference
     ### [Reference No-Existing File 1](no-existing.md)
@@ -113,31 +113,31 @@ outputs:
       }]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'no-existing.md'.","file":"docs/TOC.md","line":3,"column":5}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'no-existing.system.md'.","file":"docs/TOC.md","line":4,"column":5}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../no-existing.md'.","file":"docs/TOC.md","line":5,"column":5}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/docs/no-existing.md'.","file":"docs/TOC.md","line":6,"column":5}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'no-existing.md'.","file":"docs/toc.md","line":3,"column":5}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'no-existing.system.md'.","file":"docs/toc.md","line":4,"column":5}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '../no-existing.md'.","file":"docs/toc.md","line":5,"column":5}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: '~/docs/no-existing.md'.","file":"docs/toc.md","line":6,"column":5}
 ---
 # Invalid markdown TOC metadata
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     ---
     pdf_absolute_path: []
     ---
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/TOC.md","line":2,"column":20}
+    {"message_severity":"error","code":"violate-schema","message":"Expected type String, please input String or type compatible with String.","file":"docs/toc.md","line":2,"column":20}
 ---
 # Absolute file reference
 inputs:
   docfx.yml:
   docs/index.md:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Index Reference](index.md)
     ## Absolute File Reference
     ### [Reference Absolute path 1](https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906)
-    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
+    ### [Reference Absolute Path 2](/help/style/style-how-to-accessibility?toc=/help/contribute/toc.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json)
 outputs:
   docs/index.json:
   docs/toc.json: |
@@ -146,7 +146,7 @@ outputs:
         "items":[{
           "items":[
             { "name":"Reference Absolute path 1", "href":"https://worldready.cloudapp.net/Styleguide/Read?id=2700&topicid=26906" },
-            { "name":"Reference Absolute Path 2", "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/TOC.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json" }
+            { "name":"Reference Absolute Path 2", "href":"/help/style/style-how-to-accessibility?toc=/help/contribute/toc.json&bc=toc=%2Fazure%2Fapi-management%2Ftoc.json" }
           ]
         }]
       }]
@@ -156,11 +156,11 @@ outputs:
 # reference toc
 inputs:
   docfx.yml:
-  docs/TOC.md: |
-    # [Reference TOC File 1](f1/TOC.md)
-    # [Reference TOC File 2](../docs/f1/TOC.md)
-    # [Reference TOC File 3](~/docs/f1/TOC.md)
-  docs/f1/TOC.md: |
+  docs/toc.md: |
+    # [Reference TOC File 1](f1/toc.md)
+    # [Reference TOC File 2](../docs/f1/toc.md)
+    # [Reference TOC File 3](~/docs/f1/toc.md)
+  docs/f1/toc.md: |
     # [Index Reference](index.md)
   docs/f1/index.md:
 outputs:
@@ -176,19 +176,19 @@ outputs:
 ---
 # Nested TOC reference 2
 # multiple level
-# docs/TOC.md -> docs/f1/TOC.md  -> docs/f2/TOC.md
-#             -> docs/f2/TOC.md --> docs/f1/f11/TOC.md
+# docs/toc.md -> docs/f1/toc.md  -> docs/f2/toc.md
+#             -> docs/f2/toc.md --> docs/f1/f11/toc.md
 inputs:
   docfx.yml:
-  docs/TOC.md: |
-    # [Reference TOC File 1](f1/TOC.md)
-    # [Reference TOC File 2](~/docs/f2/TOC.yml)
-  docs/f1/TOC.md: |
+  docs/toc.md: |
+    # [Reference TOC File 1](f1/toc.md)
+    # [Reference TOC File 2](~/docs/f2/toc.yml)
+  docs/f1/toc.md: |
     # [Reference TOC Folder](../f2/)
-  docs/f2/TOC.yml: |
+  docs/f2/toc.yml: |
     - name: Toc Reference
-      href: ../f1/f11/TOC.md
-  docs/f1/f11/TOC.md: |
+      href: ../f1/f11/toc.md
+  docs/f1/f11/toc.md: |
     # [Index Reference](index.md)
     # [A File reference](a.md)
   docs/f1/f11/index.md:
@@ -213,20 +213,20 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-        "docs/f1/f11/TOC.md": [
+        "docs/f1/f11/toc.md": [
             { "source": "docs/f1/f11/a.md", "type": "file" },
             { "source": "docs/f1/f11/index.md", "type": "file" }
         ],
-        "docs/f1/TOC.md": [
+        "docs/f1/toc.md": [
             { "source": "docs/f1/f11/index.md", "type": "file" },
-            { "source": "docs/f2/TOC.yml", "type": "include" }
+            { "source": "docs/f2/toc.yml", "type": "include" }
         ],
-        "docs/f2/TOC.yml": [
-            { "source": "docs/f1/f11/TOC.md", "type": "include" }
+        "docs/f2/toc.yml": [
+            { "source": "docs/f1/f11/toc.md", "type": "include" }
         ],
-        "docs/TOC.md": [
-            { "source": "docs/f1/TOC.md", "type": "include" },
-            { "source": "docs/f2/TOC.yml", "type": "include" },
+        "docs/toc.md": [
+            { "source": "docs/f1/toc.md", "type": "include" },
+            { "source": "docs/f2/toc.yml", "type": "include" },
         ]
       }
     }
@@ -234,7 +234,7 @@ outputs:
 # Title with # or End with #
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Topic1](index.md) #
     ## Topic1.1 Language C#
     ### [Topic1.1.1](/href1.1.1) ##
@@ -268,52 +268,52 @@ outputs:
 inputs:
   docfx.yml: |
     files:
-    - docs/TOC.md
+    - docs/toc.md
     - docs/index.md
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Topic1](index.md) #
     ## Reference toc
-    ### [Reference TOC 1.1](f1/TOC.md)
-  docs/f1/TOC.md: |
+    ### [Reference TOC 1.1](f1/toc.md)
+  docs/f1/toc.md: |
     # [Topic1](../index.md)
-    ## [Reference TOC 1.1.1](../f2/TOC.md)
-  docs/f2/TOC.md: |
+    ## [Reference TOC 1.1.1](../f2/toc.md)
+  docs/f2/toc.md: |
     # [Topic1](../index.md)
-    ## [Reference TOC back](../TOC.md)
+    ## [Reference TOC back](../toc.md)
   docs/index.md:
 outputs:
   docs/index.json:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/f1/TOC.md' --> 'docs/f2/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/toc.md' --> 'docs/f1/toc.md' --> 'docs/f2/toc.md' --> 'docs/toc.md'.","file":"docs/toc.md","line":1,"column":1}
 ---
 # Circle toc referencing 2
 inputs:
   docfx.yml: |
     files:
-    - docs/TOC.md
+    - docs/toc.md
     - docs/index.md
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Topic1](index.md) #
-    ## [Reference itself](TOC.md)
+    ## [Reference itself](toc.md)
   docs/index.md:
 outputs:
   docs/index.json:
   .errors.log: |
-    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/TOC.md' --> 'docs/TOC.md'.","file":"docs/TOC.md","line":1,"column":1}
+    {"message_severity":"error","code":"circular-reference","message":"Build has identified file(s) referencing each other: 'docs/toc.md' --> 'docs/toc.md'.","file":"docs/toc.md","line":1,"column":1}
 ---
 # Reference to a folder, basic usages
 # Reference to a folder behavior is not same with reference to a toc file
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Toc Reference
-      href: f1/TOC.md
+      href: f1/toc.md
     - name: Folder Reference1
       href: f1/
     - name: Folder Reference2
       href: f1/
       topicHref: f1/a.md
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [Index Reference](index.md)
   docs/f1/index.md:
   docs/f1/a.md:
@@ -336,9 +336,9 @@ outputs:
 # Folder referenced toc doesn't belong to nested toc
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Folder Reference](f1/)
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [Index Reference](index.md)
   docs/f1/index.md:
 outputs:
@@ -354,13 +354,13 @@ outputs:
 # Horizontal traversal first
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Folder Reference1](f1/)
     # [Folder Reference2](f2/)
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # Title
     # [File Reference](b.md)
-  docs/f2/TOC.md: |
+  docs/f2/toc.md: |
     # Title1
     ## Child Title1
     ## [File Reference](b.md)
@@ -384,18 +384,18 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-        "docs/f1/TOC.md": [
+        "docs/f1/toc.md": [
           { "source": "docs/f1/b.md", "type": "file" }
         ],
-        "docs/f2/TOC.md": [
+        "docs/f2/toc.md": [
           { "source": "docs/f2/a.md", "type": "file" },
           { "source": "docs/f2/b.md", "type": "file" }
         ],
-        "docs/TOC.md": [
-          { "source": "docs/f1/TOC.md", "type": "include" },
+        "docs/toc.md": [
           { "source": "docs/f1/b.md", "type": "file" },
-          { "source": "docs/f2/TOC.md", "type": "include" },
-          { "source": "docs/f2/a.md", "type": "file" }
+          { "source": "docs/f1/toc.md", "type": "include" },
+          { "source": "docs/f2/a.md", "type": "file" },
+          { "source": "docs/f2/toc.md", "type": "include" }
         ]
       }
     }
@@ -403,7 +403,7 @@ outputs:
 # Topic href can replace href
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: File Reference
       topicHref: f1/a.md
   docs/f1/a.md:
@@ -417,7 +417,7 @@ outputs:
 # Homepage only shows when topic href is set and href is not 
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: name1
       href: /f1/a
     - name: name2
@@ -435,7 +435,7 @@ outputs:
 # Toc href takes precedence over topic href
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Azure
       tocHref: /azure/
       topicHref: /azure/index
@@ -450,17 +450,17 @@ outputs:
 # Parent(including) toc doesn't participate in _tocRel resolution
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: parent-a
       tocHref: child-a/
       topicHref: ../a.md
     - name: parent-b
       tocHref: child-b/
       topicHref: ../b.md
-  docs/child-a/TOC.yml: |
+  docs/child-a/toc.yml: |
     - name: child-a
       topicHref: ../../a.md
-  docs/child-b/TOC.yml: |
+  docs/child-b/toc.yml: |
     - name: child-b
       topicHref: ../../b.md
   a.md:
@@ -477,12 +477,12 @@ outputs:
 # Combine toc href, topic href => href + items
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: href + items
       topicHref: f1/a.md
-      tocHref: f1/TOC.md
+      tocHref: f1/toc.md
   docs/f1/a.md:
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
@@ -500,12 +500,12 @@ outputs:
 # Combine toc href, href => href + items
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: href + items
       href: f1/a.md
-      tocHref: f1/TOC.md
+      tocHref: f1/toc.md
   docs/f1/a.md:
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [Reference a](a.md)
 outputs:
   docs/f1/a.json:
@@ -523,13 +523,13 @@ outputs:
 # Combine toc href, href(toc) => toc href > href + items
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: toc href > href + items
-      href: f1/TOC.md
-      tocHref: f2/TOC.md
-  docs/f1/TOC.md:
+      href: f1/toc.md
+      tocHref: f2/toc.md
+  docs/f1/toc.md:
   docs/f2/a.md:
-  docs/f2/TOC.md: |
+  docs/f2/toc.md: |
     # [Reference a](a.md)
 outputs:
   docs/f2/a.json:
@@ -548,10 +548,10 @@ outputs:
 # Combine topic href and href => topic href has higher priority
 inputs:
   docfx.yml: |
-    files: docs/f1/TOC.yml
+    files: docs/f1/toc.yml
   docs/f1/n1.md:
   docs/f1/n2.md:
-  docs/f1/TOC.yml: |
+  docs/f1/toc.yml: |
     - name: topic href has higher priority
       href: ~/docs/f1/n1.md
       topicHref: ~/docs/f1/n2.md
@@ -561,20 +561,20 @@ outputs:
       "items": [{ "name":"topic href has higher priority", "href":"~/docs/f1/n2.md" }]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in build scope.","file":"docs/f1/TOC.yml","line":3,"column":14}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/n2.md' referenced by link '~/docs/f1/n2.md' will not be built because it is not included in build scope.","file":"docs/f1/toc.yml","line":3,"column":14}
 ---
 # Combine topic href and href(toc) => href + items
 # replace href finally
 inputs:
   docfx.yml: |
-    files: docs/f1/TOC.yml
-  docs/f1/TOC.yml: |
+    files: docs/f1/toc.yml
+  docs/f1/toc.yml: |
     - name: Toc Reference 1
-      href: f11/TOC.md
+      href: f11/toc.md
       topicHref: f11/n1.md
     - name: Toc Reference 2
       href: f11/
-  docs/f1/f11/TOC.md: |
+  docs/f1/f11/toc.md: |
     # [Index Reference](n1.md)
   docs/f1/f11/n1.md:
 outputs:
@@ -593,18 +593,18 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in build scope.","file":"docs/f1/TOC.yml","line":3,"column":14}
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in build scope.","file":"docs/f1/f11/TOC.md","line":1,"column":3}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'f11/n1.md' will not be built because it is not included in build scope.","file":"docs/f1/toc.yml","line":3,"column":14}
+    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'docs/f1/f11/n1.md' referenced by link 'n1.md' will not be built because it is not included in build scope.","file":"docs/f1/f11/toc.md","line":1,"column":3}
 ---
 # Combine topic href and toc href(folder) -> topic href > toc href(folder)
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: topic href has higher priority
       topicHref: f1/a.md
       tocHref: f1/
   docs/f1/a.md:
-  docs/f1/TOC.md:
+  docs/f1/toc.md:
 outputs:
   docs/f1/a.json:
   docs/f1/toc.json:
@@ -616,13 +616,13 @@ outputs:
 # Combine toc href(folder), href => href > toc href(folder)
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: href has higher priority than toc href
       href: f1/a.md
       tocHref: f1/
   docs/f1/a.md:
   docs/f1/b.md:
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [Reference b](b.md)
 outputs:
   docs/f1/a.json:
@@ -639,14 +639,14 @@ outputs:
 # href has higher priority than toc href(folder)
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: topic href has highest priority
       topicHref: f1/a.md
       tocHref: f1/
       href: f1/b.md
   docs/f1/a.md:
   docs/f1/b.md:
-  docs/f1/TOC.md:
+  docs/f1/toc.md:
 outputs:
   docs/f1/a.json:
   docs/f1/b.json:
@@ -659,44 +659,44 @@ outputs:
 # Topic href cannot reference a local TOC file or folder
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Invalid Topic Reference1
       topicHref: f1/
     - name: Invalid Topic Reference2
-      topicHref: f1/TOC.md
+      topicHref: f1/toc.md
     - name: Invalid Topic Reference3
-      topicHref: f1/TOC.md
+      topicHref: f1/toc.md
       href: /abc/def
-  docs/f1/TOC.md:
+  docs/f1/toc.md:
 outputs:
   docs/f1/toc.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":2,"column":14}
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":4,"column":14}
-    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/TOC.md' can only reference to a local file or absolute path.","file":"docs/TOC.yml","line":6,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/' can only reference to a local file or absolute path.","file":"docs/toc.yml","line":2,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/toc.md' can only reference to a local file or absolute path.","file":"docs/toc.yml","line":4,"column":14}
+    {"message_severity":"error","code":"invalid-topic-href","message":"The topic href 'f1/toc.md' can only reference to a local file or absolute path.","file":"docs/toc.yml","line":6,"column":14}
 ---
 # Toc href cannot reference a local file
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Invalid Toc Reference1
       tocHref: f1/a.md
     - name: Invalid Toc Reference2
       tocHref: f1/a.md
       href: /abc/def
-  docs/f1/TOC.md:
+  docs/f1/toc.md:
   docs/f1/a.md:
 outputs:
   docs/f1/toc.json:
   docs/f1/a.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":2,"column":12}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":4,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/toc.yml","line":2,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'f1/a.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/toc.yml","line":4,"column":12}
 ---
 # Toc syntax error with duplicated keys
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Duplicated keys
       topicHref: f1/a.md
       topicHref: f1/b.md
@@ -710,16 +710,16 @@ outputs:
   docs/toc.json: |
     {"items":[{"name":"Duplicated keys","href":"f1/b"}]}
   .errors.log: |
-    {"message_severity":"warning","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key.","file":"docs/TOC.yml","line":3,"column":3}
-    {"message_severity":"warning","code":"toc-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/TOC.yml","line":4,"column":12}
+    {"message_severity":"warning","code":"yaml-duplicate-key","message":"Key 'topicHref' is already defined, remove the duplicate key.","file":"docs/toc.yml","line":3,"column":3}
+    {"message_severity":"warning","code":"toc-not-found","message":"Unable to find either toc.yml or toc.md inside f1/ Please make sure the file exists.","file":"docs/toc.yml","line":4,"column":12}
 ---
 # The included TOC's errors/warning should be assigned to itself, not its parent
 inputs:
   docfx.yml: |
-    files: docs/TOC.md
-  docs/TOC.md: |
-    # [Reference TOC File](f1/TOC.yml)
-  docs/f1/TOC.yml: |
+    files: docs/toc.md
+  docs/toc.md: |
+    # [Reference TOC File](f1/toc.yml)
+  docs/f1/toc.yml: |
     - name: Invalid Index Reference
       href: index.md
     - name: Invalid TocHref Reference
@@ -727,13 +727,13 @@ inputs:
 outputs:
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/f1/TOC.yml","line":2,"column":9}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/f1/TOC.yml","line":4,"column":12}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/f1/toc.yml","line":2,"column":9}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/f1/toc.yml","line":4,"column":12}
 ---
 # TOC includes same href at different levels
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: level 1
       tocHref: index.md
       href: index.md
@@ -747,17 +747,17 @@ inputs:
               href: index.md
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":3,"column":9}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":7,"column":13}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/TOC.yml","line":11,"column":17}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":2,"column":12}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":6,"column":16}
-    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/TOC.yml","line":10,"column":20}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/toc.yml","line":3,"column":9}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/toc.yml","line":7,"column":13}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'index.md'.","file":"docs/toc.yml","line":11,"column":17}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/toc.yml","line":2,"column":12}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/toc.yml","line":6,"column":16}
+    {"message_severity":"error","code":"invalid-toc-href","message":"The toc href 'index.md' can only reference to a local TOC file, folder or absolute path.","file":"docs/toc.yml","line":10,"column":20}
 ---
 # Toc with null value
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Null value
       topicHref: f1/a.md
       tocHref: 
@@ -773,9 +773,9 @@ outputs:
 # Toc with violation
 inputs:
   docfx.yml:
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     #
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - topicHref: f1/a.md
       tocHref: 
       href: f1/b.md
@@ -791,14 +791,14 @@ outputs:
   docs/toc.json:
   docs/f1/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.yml","line":5,"column":8}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.yml","line":7,"column":3}
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/f1/TOC.md","line":1,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/toc.yml","line":5,"column":8}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/toc.yml","line":7,"column":3}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/f1/toc.md","line":1,"column":1}
 ---
 # Orphan file(not explicitly referenced in toc file)'s toc, only look up parent folder toc files
 inputs:
   docfx.yml: 
-  docs/dir1/TOC.md:
+  docs/dir1/toc.md:
   docs/file-with-no-toc.md:
   docs/dir1/dir2/file-with-toc.md:
 outputs:
@@ -813,9 +813,9 @@ inputs:
   docfx.yml: |
     routes:
       dir2/path/: .
-  dir1/TOC.md: |
+  dir1/toc.md: |
     # [link](../a.md)
-  dir2/path/TOC.md: |
+  dir2/path/toc.md: |
     # [link](../../a.md)
   a.md:
 outputs:
@@ -830,10 +830,10 @@ outputs:
 inputs:
   docfx.yml:
   dir1/a.md:
-  dir1/TOC.yml: |
+  dir1/toc.yml: |
     - name: Include dir2 toc
       href: dir2/
-  dir1/dir2/TOC.yml: |
+  dir1/dir2/toc.yml: |
     - name: reference a.md
       href: ../a.md
 outputs:
@@ -845,13 +845,13 @@ outputs:
 # File referenced by multiple toc with same relative file path, use order alphabetical. For other tests, reference build/TocTest.
 inputs:
   docfx.yml: 
-  docs/dir1/a/TOC.yml: |
+  docs/dir1/a/toc.yml: |
     - name: TOC Ref
       href: ../c/file1.md
-  docs/dir1/b/TOC.yml: |
+  docs/dir1/b/toc.yml: |
     - name: TOC Ref
       href: ../c/file1.md
-  docs/dir1/aa/TOC.yml: |
+  docs/dir1/aa/toc.yml: |
     - name: TOC Ref
       href: ../c/file1.md
   docs/dir1/c/file1.md:
@@ -865,7 +865,7 @@ outputs:
 # Bad Toc markdown
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [good](test.md)
     # [good with trailing space](test.md)  
     [bad1]()
@@ -876,43 +876,43 @@ inputs:
 outputs:
   docs/test.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":3,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":3,"column":1}
 ---
 # Skip-level Toc markdown
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # level 1
     ### level 3
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/toc.md","line":2,"column":1}
 ---
 # Markdown TOC root can start from any level, but must be aligned
 inputs:
   docfx.yml:
-  TOC.md: |
+  toc.md: |
     ## level 2
     # level 1
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 0 to 1.","file":"TOC.md","line":2,"column":1}
+    {"message_severity":"error","code":"invalid-toc-level","message":"The toc level can't be skipped from 0 to 1.","file":"toc.md","line":2,"column":1}
 ---
 # Missing TOC heading name
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # Title
     ##
 outputs:
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/toc.md","line":2,"column":1}
 ---
 # Multiple leaf inlines in toc title
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Test <X> Y](a.md)
     # [Test <X> Y]
     # [Test **Title2** Title3](a.md)
@@ -933,7 +933,7 @@ outputs:
 # Expanded, MaintainContext and DisplayName
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - href: https://github.com/docfx
       maintainContext: true
       expanded: true
@@ -947,10 +947,10 @@ outputs:
 noSingleFile: true
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - href: a.md
       name: yml reference a
-  docs/TOC.md: |
+  docs/toc.md: |
     # [md reference a](a.md)
   docs/a.md:
 outputs:
@@ -958,7 +958,7 @@ outputs:
     {"_tocRel": "toc.json"}
   docs/toc.json:
   .errors.log: |
-    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/toc.json': 'docs/TOC.md', 'docs/TOC.yml'."}
+    {"message_severity":"warning","code":"output-path-conflict","message":"Two or more files output to the same path 'docs/toc.json': 'docs/toc.md', 'docs/toc.yml'."}
 ---
 # validate bookmarks in toc
 noSingleFile: true
@@ -966,7 +966,7 @@ inputs:
   docfx.yml:
   docs/a.md: |
     # title 1
-  docs/TOC.md: |
+  docs/toc.md: |
     # [link to title 1](a.md#title-1)
     # [link to title 2](a.md#title-2)
 outputs:
@@ -979,7 +979,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","file":"docs/TOC.md","line":2,"column":3}
+    {"message_severity":"warning","code":"bookmark-not-found","message":"Cannot find bookmark '#title-2' in 'docs/a.md', did you mean '#title-1'?","file":"docs/toc.md","line":2,"column":3}
 ---
 # reference uid within link
 inputs:
@@ -989,7 +989,7 @@ inputs:
     title: Title from yaml header a
     uid: a
     ---
-  docs/TOC.md: |
+  docs/toc.md: |
     # [Title](xref:a#bookmark)
 outputs:
   docs/a.json:
@@ -1008,7 +1008,7 @@ inputs:
     title: Title from yaml header a
     uid: a
     ---
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Uid Ref
       uid: a
 outputs:
@@ -1038,7 +1038,7 @@ inputs:
     title: b-frag title
     uid: b#frag
     ---
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Uid Ref
       uid: a
     - name: Uid Ref 1
@@ -1058,7 +1058,7 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.yml","line":6,"column":8}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/toc.yml","line":6,"column":8}
 ---
 # href reference first in yaml toc
 inputs:
@@ -1069,7 +1069,7 @@ inputs:
     uid: a
     ---
   docs/b.md:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Uid Ref
       uid: a
       href: b.md
@@ -1099,8 +1099,8 @@ outputs:
       ]
     }
   .errors.log: |
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/TOC.yml","line":12,"column":9}
-    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/TOC.yml","line":9,"column":9}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/toc.yml","line":12,"column":9}
+    {"message_severity":"warning","code":"file-not-found","message":"Invalid file link: 'c.md'.","file":"docs/toc.yml","line":9,"column":9}
 ---
 # uid reference with monikers in yaml toc
 inputs:
@@ -1122,7 +1122,7 @@ inputs:
     monikerRange: netcore-1.1 || netcore-1.2
     uid: a
     ---
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: Uid Ref
       uid: a
 outputs:
@@ -1137,7 +1137,7 @@ outputs:
 # uid reference in markdown toc
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # @b
   docs/a.md: |
     ---
@@ -1174,7 +1174,7 @@ inputs:
     monikerRange: netcore-1.1 || netcore-1.2
     uid: b
     ---
-  docs/TOC.md: |
+  docs/toc.md: |
     # @b
 outputs:
   cb8e4dad4d4bcb3bdefdfe9f87ccffda/docs/a.json:
@@ -1193,10 +1193,10 @@ inputs:
     title: Title from yaml header a
     uid: a
     ---
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: TOC Ref
-      tocHref: a/TOC.yml
-  docs/a/TOC.yml: |
+      tocHref: a/toc.yml
+  docs/a/toc.yml: |
     - name: Uid Ref
       uid: a
 outputs:
@@ -1213,7 +1213,7 @@ outputs:
 # markdown toc using bad syntax(multiple inlines for one heading block)
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # @b abc
     # @b @a
     # [Title X](a.md) bcd
@@ -1236,19 +1236,19 @@ outputs:
   docs/a.json:
   docs/b.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":1,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":2,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":3,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":4,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":5,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":6,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":7,"column":1}
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":8,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":1,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":2,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":3,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":4,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":5,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":6,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":7,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":8,"column":1}
 ---
 # more than 6 leading count of `#`
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     ################### [19 leading count](a.md)
     #################### [20 leading count](a.md)
   docs/a.md:
@@ -1260,7 +1260,7 @@ outputs:
 # toc with some unknown fields
 inputs:
   docfx.yml:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     items:
       - name: test
         href: a.md
@@ -1275,9 +1275,9 @@ outputs:
 # respects user input _tocRel
 inputs:
   docfx.yml:
-  docs/f1/TOC.md: |
+  docs/f1/toc.md: |
     # [File Reference](../index.md)
-  docs/f2/TOC.md: |
+  docs/f2/toc.md: |
     # Nothing here
   docs/index.md: |
     ---
@@ -1294,14 +1294,14 @@ inputs:
   docfx.yml: |
     rules:
       invalid-toc-level: warning
-  docs/TOC.md: |
+  docs/toc.md: |
     # level 1
     ### level 3
     #### level 4
     ## level 2
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/TOC.md","line":2,"column":1}
+    {"message_severity":"warning","code":"invalid-toc-level","message":"The toc level can't be skipped from 1 to 3.","file":"docs/toc.md","line":2,"column":1}
   docs/toc.json: |
     {
       "items": [{
@@ -1327,7 +1327,7 @@ inputs:
       ]
     }
   docs/b.md:
-  docs/TOC.yml: |
+  docs/toc.yml: |
     - name: item with children
       href: /a
       items:
@@ -1371,7 +1371,7 @@ outputs:
 # Generate metadata dependency for PR comment preview link
 inputs:
   docfx.yml:
-  TOC.yml: |
+  toc.yml: |
     - name: a
       href: a.md
   a.md:
@@ -1381,7 +1381,7 @@ outputs:
   .dependencymap.json: |
     {
       "dependencies": {
-        "a.md": [{ "source": "TOC.yml", "type": "metadata" }]
+        "a.md": [{ "source": "toc.yml", "type": "metadata" }]
       }
     }
 ---
@@ -1392,7 +1392,7 @@ repos:
       docfx.yml: |
         outputType: Json
         template: https://docs.com/theme
-      TOC.yml: |
+      toc.yml: |
         - name: a
           href: a.md
       a.md:
@@ -1417,7 +1417,7 @@ repos:
       docfx.yml: |
         outputType: PageJson
         template: https://docs.com/theme
-      TOC.yml: |
+      toc.yml: |
         - name: a
           href: a.md
       a.md:

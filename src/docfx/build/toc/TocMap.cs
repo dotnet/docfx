@@ -75,7 +75,7 @@ internal class TocMap
     /// Return the nearest toc relative to the current file
     /// "near" means less subdirectory count
     /// when subdirectory counts are same, "near" means less parent directory count
-    /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
+    /// e.g. "../../a/toc.md" is nearer than "b/c/toc.md".
     /// when the file is not referenced, return only toc in the same or higher folder level.
     /// </summary>
     internal FilePath? FindNearestToc(FilePath file)
@@ -282,7 +282,7 @@ internal class TocMap
                 continue;
             }
 
-            var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
+            var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/toc.yml"));
             var newNodeFile = FilePath.Generated(newNodeFilePath);
 
             _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);
