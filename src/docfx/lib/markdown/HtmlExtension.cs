@@ -34,7 +34,7 @@ internal static class HtmlExtension
                     case TabTitleBlock:
                         return true;
                     case HtmlBlock block:
-                        block.Lines = new StringLineGroup(ProcessHtml(block.Lines.ToString(), block, errors, elementCount));
+                        block.Lines = new StringLineGroup(ProcessHtml(string.Join('\n', block.Lines.Lines), block, errors, elementCount));
                         return false;
                     case HtmlInline inline:
                         inline.Tag = ProcessHtml(inline.Tag, inline, errors, elementCount);
