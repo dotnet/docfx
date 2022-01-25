@@ -80,7 +80,7 @@ internal class MonikerProvider
         // User should not define it in moniker zone
         if (configMonikerRange.Value is null && ShouldValidateMoniker(file))
         {
-            errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString, null));
+            errors.Add(Errors.Versioning.MonikerRangeUndefined(rangeString, file));
             return default;
         }
 
@@ -121,7 +121,7 @@ internal class MonikerProvider
             // user should not define it in file metadata
             if (shouldValidateMoniker && configMonikerRange.Value is null)
             {
-                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange.Source, metadata.MonikerRange.Value));
+                errors.Add(Errors.Versioning.MonikerRangeUndefined(metadata.MonikerRange, file));
                 return (errors, default, default);
             }
         }

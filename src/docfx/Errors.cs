@@ -469,10 +469,9 @@ internal static class Errors
         /// which used monikerRange in its yaml header or used moniker-zone syntax.
         /// </summary>
         /// Behavior: ✔️ Message: ❌
-        public static Error MonikerRangeUndefined(SourceInfo? source, string? monikerRange)
+        public static Error MonikerRangeUndefined(SourceInfo<string?> source, FilePath file)
         {
-            var processedMonikerRange = monikerRange != null ? $"'{monikerRange}' " : string.Empty;
-            return new(ErrorLevel.Suggestion, "moniker-range-undefined", $"Moniker range {processedMonikerRange}is missing from the 'groups' setting in docfx.yml/docfx.json. It should not be defined in file metadata or moniker zone.", source);
+            return new(ErrorLevel.Suggestion, "moniker-range-undefined", $"Moniker range '{source}' should not be defined in file metadata of docfx.yml/docfx.json or in moniker zone of file '{file}'. Please check the 'groups' setting in docfx.yml/docfx.json.", source);
         }
 
         /// <summary>

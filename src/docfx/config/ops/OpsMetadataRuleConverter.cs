@@ -192,6 +192,7 @@ internal static class OpsMetadataRuleConverter
                             additionalMessage = ruleInfo.AdditionalErrorMessage,
                             canonicalVersionOnly = ruleInfo.CanonicalVersionOnly,
                             pullRequestOnly = ruleInfo.PullRequestOnly,
+                            addOnly = ruleInfo.AddOnly,
                             contentTypes = ruleInfo.ContentTypes,
                             tags = ruleInfo.Tags,
                         });
