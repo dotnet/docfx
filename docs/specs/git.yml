@@ -379,22 +379,6 @@ outputs:
       "updated_at": "2018-07-18 05:03 AM"
     }
 ---
-# Throw committish-not-found when try to resolve commit id by none-existing branch name
-noDryRun: true
-repos: 
-  https://github.com/git/repo.zh-cn#live:
-    - files:
-        docfx.yml:
-        a.md:
-  https://github.com/git/repo#live:
-    - files:
-  https://github.com/git/repo.zh-cn#live-none-existing:
-    - files:
-        a.md:
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"committish-not-found","message":"Can't find branch, tag, or commit 'live' for repo *"}
----
 # Use current repo's branch when edit branch isn't specified in contribution config,
 # and contribution config's repository equals to current repo's
 repos:
