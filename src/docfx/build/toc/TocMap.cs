@@ -75,7 +75,7 @@ internal class TocMap
     /// Return the nearest toc relative to the current file
     /// "near" means less subdirectory count
     /// when subdirectory counts are same, "near" means less parent directory count
-    /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md".
+    /// e.g. "../../a/toc.md" is nearer than "b/c/toc.md".
     /// when the file is not referenced, return only toc in the same or higher folder level.
     /// </summary>
     internal FilePath? FindNearestToc(FilePath file)
@@ -98,57 +98,76 @@ internal class TocMap
     /// 3. sub-name lexicographical nearest
     /// </summary>
     internal static (T? toc, bool hasReferencedTocs) FindNearestToc<T>(
-        T file, IEnumerable<T> tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
+        T file, T[] tocs, Dictionary<T, T[]> documentsToTocs, Func<T, string> getPath) where T : class, IComparable<T>
     {
-        var hasReferencedTocs = false;
+        bool hasReferencedTocs;
+
         var filteredTocs = (hasReferencedTocs = documentsToTocs.TryGetValue(file, out var referencedTocFiles)) ? referencedTocFiles : tocs;
-
-        var tocCandidates = from toc in filteredTocs
-                            let dirInfo = GetRelativeDirectoryInfo(getPath(file), getPath(toc))
-                            where hasReferencedTocs || dirInfo.subDirectoryCount == 0 /*due breadcrumb toc*/
-                            select (subCount: dirInfo.subDirectoryCount, parentCount: dirInfo.parentDirectoryCount, toc);
-
-        return (tocCandidates.DefaultIfEmpty().Aggregate((minCandidate, nextCandidate) =>
+        if (filteredTocs is null || filteredTocs.Length <= 0)
         {
-            var result = minCandidate.subCount - nextCandidate.subCount;
-            if (result == 0)
+            return (default, false);
+        }
+
+        var minCandidate = default((int subDirectoryCount, int parentDirectoryCount, T toc)?);
+
+        foreach (var toc in filteredTocs)
+        {
+            var (subDirectoryCount, parentDirectoryCount) = GetRelativeDirectoryInfo(getPath(file), getPath(toc));
+
+            // Due to breadcrumb toc
+            if (hasReferencedTocs || subDirectoryCount == 0)
             {
-                result = minCandidate.parentCount - nextCandidate.parentCount;
+                var candidate = (subDirectoryCount, parentDirectoryCount, toc);
+                if (minCandidate == null || candidate.CompareTo(minCandidate.Value) < 0)
+                {
+                    minCandidate = candidate;
+                }
             }
-            if (result == 0)
-            {
-                result = minCandidate.toc.CompareTo(nextCandidate.toc);
-            }
-            return result <= 0 ? minCandidate : nextCandidate;
-        }).toc, hasReferencedTocs);
+        }
+
+        return (minCandidate?.toc, hasReferencedTocs);
     }
 
     private static (int subDirectoryCount, int parentDirectoryCount) GetRelativeDirectoryInfo(string pathA, string pathB)
     {
-        var relativePath = PathUtility.NormalizeFile(Path.GetDirectoryName(PathUtility.GetRelativePathToFile(pathA, pathB)) ?? "");
-        if (string.IsNullOrEmpty(relativePath))
-        {
-            return default;
-        }
+        // Find common directory prefix
+        var commonStartIndex = 0;
+        var minLength = Math.Min(pathA.Length, pathB.Length);
 
-        // todo: perf optimization, don't split '/' here again.
-        var relativePathParts = relativePath.Split('/').Where(path => !string.IsNullOrWhiteSpace(path));
-        var parentDirectoryCount = 0;
-        var subDirectoryCount = 0;
-
-        foreach (var part in relativePathParts)
+        for (var i = 0; i < minLength; i++)
         {
-            switch (part)
+            var chA = pathA[i];
+            var chB = pathB[i];
+            if (chA != chB)
             {
-                case "..":
-                    parentDirectoryCount++;
-                    break;
-                default:
-                    break;
+                break;
+            }
+
+            if (chA == '/')
+            {
+                commonStartIndex = i + 1;
             }
         }
 
-        subDirectoryCount = relativePathParts.Count() - parentDirectoryCount;
+        var subDirectoryCount = 0;
+        var parentDirectoryCount = 0;
+
+        for (var i = commonStartIndex; i < pathA.Length; i++)
+        {
+            if (pathA[i] == '/')
+            {
+                parentDirectoryCount++;
+            }
+        }
+
+        for (var i = commonStartIndex; i < pathB.Length; i++)
+        {
+            if (pathB[i] == '/')
+            {
+                subDirectoryCount++;
+            }
+        }
+
         return (subDirectoryCount, parentDirectoryCount);
     }
 
@@ -263,7 +282,7 @@ internal class TocMap
                 continue;
             }
 
-            var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/TOC.yml"));
+            var newNodeFilePath = new PathString(Path.Combine(Path.GetDirectoryName(file.Path) ?? "", $"_splitted/{name}/toc.yml"));
             var newNodeFile = FilePath.Generated(newNodeFilePath);
 
             _input.AddGeneratedContent(newNodeFile, new JArray { newNodeToken }, null);

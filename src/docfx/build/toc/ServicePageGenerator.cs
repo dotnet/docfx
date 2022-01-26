@@ -170,7 +170,7 @@ internal class ServicePageGenerator
 
     private string? GetUidFromSplitTOC(string childHref, string referenceTOCFullPath)
     {
-        childHref = Path.Combine(childHref, "TOC.yml");
+        childHref = Path.Combine(childHref, "toc.yml");
         var childHrefFullPath = Path.Combine(referenceTOCFullPath, childHref);
         var childHrefRelativeToDocset = Path.GetRelativePath(_docsetPath, childHrefFullPath);
 

@@ -23,7 +23,7 @@ internal class TocLoader
 
     private readonly MemoryCache<FilePath, Watch<(TocNode, List<FilePath>, List<FilePath>, List<FilePath>)>> _cache = new();
 
-    private static readonly string[] s_tocFileNames = new[] { "TOC.md", "TOC.json", "TOC.yml" };
+    private static readonly string[] s_tocFileNames = new[] { "toc.md", "toc.json", "toc.yml" };
 
     private static readonly AsyncLocal<ImmutableStack<FilePath>> s_recursionDetector = new();
 

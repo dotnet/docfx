@@ -350,7 +350,7 @@ inputs:
       author: dotnet-bot
       title: a
       description: a
-  docs/TOC.md:
+  docs/toc.md:
     # [Index](index.md)
   _themes/ContentTemplate/schemas/NetType.schema.json: |
     {

@@ -1612,7 +1612,7 @@ inputs:
     ### YamlMime:TestData
     uid: a
     name: name 1.0
-  docs/v1/TOC.yml: |
+  docs/v1/toc.yml: |
     items:
       - name: node
         uid: a
@@ -1623,7 +1623,7 @@ inputs:
     ### YamlMime:TestData
     uid: a
     name: name 2.0
-  docs/v2/TOC.yml: |
+  docs/v2/toc.yml: |
     items:
       - name: node
         uid: a
@@ -2154,14 +2154,14 @@ outputs:
 # make sure no-loc attribute won't be added to toc (plain text content)
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     # @b
 outputs: 
   docs/toc.json: |
     {"items":[{"uid":"b"}],"metadata":{},"schema":"toc"}
   .errors.log: |
-    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/TOC.md"}
-    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/TOC.md"}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: 'name'.","file":"docs/toc.md"}
+    {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'b'.","file":"docs/toc.md"}
 ---
 # exclude redirected files from xref map
 noSingleFile: true
