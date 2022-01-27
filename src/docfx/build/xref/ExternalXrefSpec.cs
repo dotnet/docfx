@@ -41,5 +41,8 @@ internal record ExternalXrefSpec : IXrefSpec
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => overwriteHref is null ? this : this with { Href = overwriteHref };
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null)
+    {
+        return this with { Href = overwriteHref ?? Href, Monikers = monikerList ?? Monikers };
+    }
 }
