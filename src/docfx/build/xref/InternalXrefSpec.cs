@@ -29,7 +29,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, IEnumerable<string>? monikerGroups = default)
     {
         var spec = new ExternalXrefSpec
         {
@@ -43,6 +43,8 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
         {
             spec.ExtensionData[key] = value.Value;
         }
+
+        spec.MonikerGroups = monikerGroups?.ToArray() ?? Array.Empty<string>();
 
         return spec;
     }

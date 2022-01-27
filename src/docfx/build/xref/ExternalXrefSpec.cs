@@ -19,6 +19,10 @@ internal record ExternalXrefSpec : IXrefSpec
 
     public string? MonikerGroup => Monikers.MonikerGroup;
 
+    // as temp solution to provide all related moniker group for current uid
+    // this field will be removed in the future if the issue is resolved with root-fix.
+    public string[]? MonikerGroups { get; set; }
+
     [JsonIgnore]
     public string? RepositoryUrl { get; set; }
 
@@ -41,5 +45,8 @@ internal record ExternalXrefSpec : IXrefSpec
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null) => overwriteHref is null ? this : this with { Href = overwriteHref };
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, IEnumerable<string>? monikerGroups = default)
+    {
+        return overwriteHref is null ? this : this with { Href = overwriteHref };
+    }
 }

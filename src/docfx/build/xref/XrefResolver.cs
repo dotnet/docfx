@@ -154,23 +154,23 @@ internal class XrefResolver
             .Select(xrefs =>
             {
                 var xref = xrefs.First();
+                var monikerGroups = xrefs.Select(xref => xref.Monikers.MonikerGroup ?? "")
+                .Where(monikerGroup => !string.IsNullOrEmpty(monikerGroup));
 
                 // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
                 // output xref map with URL appending "?branch=master" for master branch
                 var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
                 var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
-                return xref.ToExternalXrefSpec(href);
+                return xref.ToExternalXrefSpec(href, monikerGroups);
             })
             .OrderBy(xref => xref.Uid)
             .ToArray();
 
-        var monikerGroups = new Dictionary<string, MonikerList>(
-            from item in references
-            let monikerGroup = item.MonikerGroup
-            where !string.IsNullOrEmpty(monikerGroup)
-            orderby monikerGroup
-            group item by monikerGroup into g
-            select new KeyValuePair<string, MonikerList>(g.Key, g.First().Monikers));
+        var monikerGroups = _internalXrefMap.Value.Values
+            .Select(xrefs => xrefs.Select(xref => xref.Monikers))
+            .SelectMany(x => x)
+            .GroupBy(ml => ml.MonikerGroup ?? "null")
+            .ToDictionary(g => g.Key, g => g.First());
 
         externalXrefs = _jsonSchemaTransformer().GetValidateExternalXrefs();
 
@@ -245,7 +245,8 @@ internal class XrefResolver
                         xrefGroup.Key,
                         repository: item.ReferencedRepositoryUrl,
                         item.SchemaType,
-                        item.PropertyPath) with { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                        item.PropertyPath) with
+                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
