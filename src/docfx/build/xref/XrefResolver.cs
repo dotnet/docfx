@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Specialized;
-using System.Text;
 using System.Web;
 
 namespace Microsoft.Docs.Build;
@@ -160,8 +159,10 @@ internal class XrefResolver
                 // output xref map with URL appending "?branch=master" for master branch
                 var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
                 var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+
                 // union the moniker lists of current uid into one
-                return xref.ToExternalXrefSpec(href,
+                return xref.ToExternalXrefSpec(
+                    href,
                     xrefs.Length > 0 ? MonikerList.Union(xrefs.Select(xref => xref.Monikers)) : null);
             })
             .OrderBy(xref => xref.Uid)
