@@ -741,7 +741,7 @@ outputs:
           {
               "uid": "a",
               "href": "https://docs.com/docs/a",
-              "monikerGroup": "ed8f7746ec932ae7c9f595c1f2c97d5a",
+              "monikerGroup": "8c48746eea10da67b4b7a541233dd5d9",
               "name": "netcore-2.0, netcore-2.1"
           }
       ],
@@ -754,7 +754,8 @@ outputs:
       "repository_url": "https://docs.com/test-same-uid-overlapping-moniker",
       "docset_name": "",
       "moniker_groups": {
-          "ed8f7746ec932ae7c9f595c1f2c97d5a": [
+          "8c48746eea10da67b4b7a541233dd5d9": [
+              "netcore-1.1",
               "netcore-2.0",
               "netcore-2.1"
           ]
