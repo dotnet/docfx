@@ -27,8 +27,6 @@ internal class BuildOptions
 
     public bool IsLocalizedBuild => FallbackDocsetPath != null;
 
-    public bool EnableSideBySide { get; }
-
     public BuildOptions(
         string docsetPath, string? fallbackDocsetPath, string? outputPath, Repository? repository, PreloadConfig config, Package package)
     {
@@ -41,12 +39,5 @@ internal class BuildOptions
         OutputPath = package.GetFullFilePath(new PathString(outputPath ?? Path.Combine(docsetPath, config.OutputPath)));
         Locale = (LocalizationUtility.GetLocale(repository) ?? config.DefaultLocale).ToLowerInvariant();
         Culture = LocalizationUtility.CreateCultureInfo(Locale);
-
-        if (repository != null && !string.Equals(Locale, config.DefaultLocale, StringComparison.OrdinalIgnoreCase))
-        {
-            EnableSideBySide =
-                LocalizationUtility.TryGetContributionBranch(repository.Branch, out var contributionBranch) &&
-                contributionBranch != repository.Branch;
-        }
     }
 }

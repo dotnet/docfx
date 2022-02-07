@@ -128,7 +128,7 @@ internal class DocsetBuilder
             if (!options.NoRestore)
             {
                 progressReporter.Report("Restoring dependencies...");
-                Restore.RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
+                Restore.RestoreDocset(errorLog, config, packageResolver, fileResolver);
                 if (errorLog.HasError)
                 {
                     return null;
