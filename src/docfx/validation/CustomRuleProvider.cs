@@ -108,6 +108,7 @@ internal class CustomRuleProvider
             Code = string.IsNullOrEmpty(customRule.Code) ? error.Code : customRule.Code,
             Message = message,
             PullRequestOnly = customRule.PullRequestOnly,
+            AddOnly = customRule.AddOnly,
         };
     }
 
@@ -182,20 +183,20 @@ internal class CustomRuleProvider
                     customRules.Remove(validationRule.Code);
                 }
             }
-            foreach (var validationRule in contentValidationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly))
+            foreach (var validationRule in contentValidationRules.SelectMany(rules => rules.Value.Rules).Where(rule => rule.PullRequestOnly || rule.AddOnly))
             {
                 if (customRules.TryGetValue(validationRule.Code, out var customRule))
                 {
                     customRules[validationRule.Code] = new List<CustomRule>
                         {
-                            customRule.First() with { PullRequestOnly = validationRule.PullRequestOnly },
+                            customRule.First() with { PullRequestOnly = validationRule.PullRequestOnly, AddOnly = validationRule.AddOnly },
                         };
                 }
                 else
                 {
                     var list = new List<CustomRule>
                         {
-                            new CustomRule { PullRequestOnly = validationRule.PullRequestOnly },
+                            new CustomRule { PullRequestOnly = validationRule.PullRequestOnly, AddOnly = validationRule.AddOnly },
                         };
 
                     customRules.Add(validationRule.Code, list);
@@ -217,6 +218,7 @@ internal class CustomRuleProvider
                     PropertyPath = validationRule.PropertyPath,
                     CanonicalVersionOnly = validationRule.CanonicalVersionOnly,
                     PullRequestOnly = validationRule.PullRequestOnly,
+                    AddOnly = validationRule.AddOnly,
                     ContentTypes = validationRule.ContentTypes,
                     Disabled = validationRule.Disabled,
                 };

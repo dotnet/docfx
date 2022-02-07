@@ -139,12 +139,12 @@ outputs:
 # yaml&json toc metadata
 inputs:
   docfx.yml:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {
       "metadata": {"a":"b"},
       "items": [{ "name": "title" }]
     }
-  docs/yaml/TOC.yml: |
+  docs/yaml/toc.yml: |
     metadata:
       a: b
     items:
@@ -164,9 +164,9 @@ outputs:
 # yaml&json toc leaf metadata
 inputs:
   docfx.yml:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     [{ "name": "title", "a": "b" }]
-  docs/yaml/TOC.yml: |
+  docs/yaml/toc.yml: |
     - name: title
       a: b
 outputs:
@@ -183,14 +183,14 @@ outputs:
 # child's root metadata will be dropped
 inputs:
   docfx.yml:
-  docs/json/TOC.json: |
+  docs/json/toc.json: |
     {  
       "metadata": {"a": "b"},
       "items":[{"name":"title", "c": "d"}]
     }
-  docs/yaml/TOC.yml: |
+  docs/yaml/toc.yml: |
     - name: toc reference
-      tocHref: ../json/TOC.json
+      tocHref: ../json/toc.json
 outputs:
   docs/yaml/toc.json: |
     {  
@@ -204,12 +204,12 @@ inputs:
       a: b
     fileMetadata:
       area:
-        docs/json/TOC.json: 2
-  docs/json/TOC.json: '{}'
-  docs/yaml/TOC.yml: |
+        docs/json/toc.json: 2
+  docs/json/toc.json: '{}'
+  docs/yaml/toc.yml: |
     metadata:
       c: d
-  docs/md/TOC.md:
+  docs/md/toc.md:
 outputs:
   docs/yaml/toc.json: |
     { "metadata": { "a": "b", "c": "d"} }
@@ -286,9 +286,9 @@ outputs:
 inputs:
   docfx.yml: |
     globalMetadata:
-      breadcrumb_path: ~/breadcrumbs/TOC.json
+      breadcrumb_path: ~/breadcrumbs/toc.json
   a.md:
-  breadcrumbs/TOC.json: '{}'
+  breadcrumbs/toc.json: '{}'
 outputs:
   a.json: |
     { "breadcrumb_path": "breadcrumbs/toc.json" }
@@ -298,9 +298,9 @@ outputs:
 inputs:
   docfx.yml: |
     globalMetadata:
-      breadcrumb_path: breadcrumbs/TOC.json
+      breadcrumb_path: breadcrumbs/toc.json
   a-folder/a.md:
-  breadcrumbs/TOC.json: '{}'
+  breadcrumbs/toc.json: '{}'
 outputs:
   a-folder/a.json: |
     { "breadcrumb_path": "../breadcrumbs/toc.json" }

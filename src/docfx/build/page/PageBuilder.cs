@@ -233,7 +233,6 @@ internal class PageBuilder
         systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
         systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", systemMetadata.Locale, _config.BasePath) + "/";
 
-        systemMetadata.EnableLocSxs = _buildOptions.EnableSideBySide;
         systemMetadata.SiteName = _config.SiteName;
         systemMetadata.DepotName = $"{_config.Product}.{_config.Name}";
 

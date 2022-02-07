@@ -55,12 +55,6 @@ internal class ContributionProvider
         }
 
         var contributionCommits = commits;
-        var contributionBranch = LocalizationUtility.TryGetContributionBranch(repo.Branch, out var cBranch) ? cBranch : null;
-        if (!string.IsNullOrEmpty(contributionBranch))
-        {
-            (_, _, contributionCommits) = _repositoryProvider.GetCommitHistory(fullPath.Value, contributionBranch);
-        }
-
         var excludes = _config.GlobalMetadata.ContributorsToExclude.Count > 0
             ? _config.GlobalMetadata.ContributorsToExclude
             : _config.ExcludeContributors;
@@ -180,11 +174,6 @@ internal class ContributionProvider
         if (!string.IsNullOrEmpty(_config.EditRepositoryBranch))
         {
             committish = _config.EditRepositoryBranch;
-        }
-
-        if (LocalizationUtility.TryGetContributionBranch(committish, out var contributionBranch))
-        {
-            committish = contributionBranch;
         }
 
         var gitUrlTemplate = GetGitUrlTemplate(repo, pathToRepo);

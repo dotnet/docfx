@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -10,9 +9,6 @@ namespace Microsoft.Docs.Build;
 
 internal static class LocalizationUtility
 {
-    // NOTE: This line assumes each build runs in a new process
-    private static readonly ConcurrentHashSet<Repository> s_fetchedLocalizationRepositories = new();
-
     private static readonly HashSet<string> s_locales = new(
         CultureInfo.GetCultures(CultureTypes.AllCultures).Except(
             CultureInfo.GetCultures(CultureTypes.NeutralCultures)).Select(c => c.Name).Concat(
@@ -71,57 +67,6 @@ internal static class LocalizationUtility
         return repository is null ? null : TryRemoveLocale(repository.Url, out _, out var remoteLocale) ? remoteLocale : null;
     }
 
-    public static bool TryGetContributionBranch(string? branch, [NotNullWhen(true)] out string? contributionBranch)
-    {
-        if (branch != null && branch.EndsWith("-sxs"))
-        {
-            contributionBranch = branch[0..^4];
-            return true;
-        }
-
-        contributionBranch = null;
-        return false;
-    }
-
-    public static void EnsureLocalizationContributionBranch(SecretConfig secrets, Repository? repository)
-    {
-        // When building the live-sxs branch of a loc repo, only live-sxs branch is cloned,
-        // this clone process is managed outside of build, so we need to explicitly fetch the history of live branch
-        // here to generate the correct contributor list.
-        if (repository != null && TryGetContributionBranch(repository.Branch, out var contributionBranch))
-        {
-            using (InterProcessMutex.Create(repository.Path))
-            {
-                if (s_fetchedLocalizationRepositories.Contains(repository))
-                {
-                    return;
-                }
-
-                var succeeded = false;
-                InvalidOperationException? exception = null;
-                foreach (var branch in GitUtility.GetFallbackBranch(contributionBranch))
-                {
-                    try
-                    {
-                        GitUtility.Fetch(secrets, repository.Path, repository.Url, $"+{branch}:{branch}", "--update-head-ok");
-                        succeeded = true;
-                        break;
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        exception = ex;
-                    }
-                }
-                if (!succeeded)
-                {
-                    throw Errors.Config.CommittishNotFound(repository.Url, contributionBranch).ToException(exception!);
-                }
-
-                s_fetchedLocalizationRepositories.TryAdd(repository);
-            }
-        }
-    }
-
     public static CultureInfo CreateCultureInfo(string locale)
     {
         try
@@ -147,11 +92,6 @@ internal static class LocalizationUtility
             if (TryRemoveLocale(branch, out var branchWithoutLocale, out _))
             {
                 fallbackBranch = branchWithoutLocale;
-            }
-
-            if (TryGetContributionBranch(fallbackBranch, out var contributionBranch))
-            {
-                fallbackBranch = contributionBranch;
             }
 
             return (fallbackUrl, fallbackBranch);

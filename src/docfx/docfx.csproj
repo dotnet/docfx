@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.4.1" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
-    <PackageReference Include="docs.validation" Version="1.0.1-beta-00091-e73ca1c" />
+    <PackageReference Include="docs.validation" Version="1.0.1-rc-00122-31a09e6" />
     <PackageReference Include="DotLiquid" Version="2.2.595" />
     <PackageReference Include="Glob" Version="1.1.9" />
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
@@ -25,7 +25,7 @@
     <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.2.1744.22" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1719.2" Aliases="maml" />
     <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
-    <PackageReference Include="Microsoft.Graph" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Graph" Version="4.17.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2035" />
@@ -43,7 +43,7 @@
     <!-- This package was transitively referenced by OmniSharp server, stop propagating it to other projects by explicitly marking it as private assets -->
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.0.64" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.255" PrivateAssets="all" />
-    <PackageReference Include="docs.validation.analyzer" Version="1.0.0-beta-00050-4eb746f" PrivateAssets="all" />
+    <PackageReference Include="docs.validation.analyzer" Version="1.0.1-rc-00122-31a09e6" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
