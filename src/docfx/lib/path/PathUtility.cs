@@ -20,7 +20,7 @@ internal static class PathUtility
     public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
     private static readonly HashSet<char> s_invalidPathChars =
-        Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Except(new char[] { '/' }).Distinct().ToHashSet();
+        Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Except(new char[] { '/' }).ToHashSet();
 
     /// <summary>
     /// Create a relative path from one path to another file.
