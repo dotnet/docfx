@@ -25,7 +25,14 @@ internal static class ParallelUtility
             }
             catch
             {
-                Console.WriteLine($"Error processing '{item}'");
+                if (item is string str && UrlUtility.IsHttp(str))
+                {
+                    Console.WriteLine($"Error processing '{UrlUtility.SanitizeUrl(str)}'");
+                }
+                else
+                {
+                    Console.WriteLine($"Error processing '{item}'");
+                }
                 throw;
             }
 
