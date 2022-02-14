@@ -7,6 +7,50 @@ outputs:
   a.json: |
     { "content_git_url": undefined }
 ---
+# Should add the contributors even if they disable their public emails
+repos:
+  https://github.com/testowner/testrepo#master-file-cache:
+    - author: Bob
+      email: 31854362+bob@users.noreply.github.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this. Bob updates this.
+    - author: Charlie
+      email: charlie@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this. Charlie updates this.
+    - author: Alice
+      email: alice@contoso.com
+      files:
+        docs/index.md: |
+          Alice creates this.
+inputs:
+  docfx.yml:
+cache:
+  github-users.json: |
+      { "items": [
+          {"name": "Alice", "login": "alice", "id": 1, "emails": ["alice@contoso.com"]},
+          {"name": "Bob", "login": "bob", "id": 2, "emails": ["bob@contoso.com"]},
+          {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
+        ]
+      }
+outputs:
+  docs/index.json: |
+    {
+      "_op_gitContributorInformation":
+      {
+        "author":
+           { "name": "alice", "profile_url": "https://github.com/alice", "display_name": "Alice", "id": "1" },
+        "contributors": [
+          { "name": "bob", "profile_url": "https://github.com/bob", "display_name": "Bob", "id": ""},
+          { "name": "charlie", "profile_url": "https://github.com/charlie", "display_name": "Charlie", "id": "3" }
+        ]
+      },
+      "github_contributors": ["bob", "charlie","alice"],
+      "updated_at": "2018-10-30 12:00 AM"
+    }
+---
 # Show git contribution info when userProfile is set to relative file path
 repos:
   https://github.com/testowner/testrepo#master-file-cache:

@@ -68,6 +68,15 @@ internal class ContributionProvider
             foreach (var commit in contributionCommits)
             {
                 var (error, githubUser) = _githubAccessor.GetUserByEmail(commit.AuthorEmail, repoOwner, repoName, commit.Sha);
+                var username = GetGitHubUsernameWhenCommitWithNoReplyEmail(commit.AuthorEmail);
+                if (githubUser is null && !string.IsNullOrEmpty(username))
+                {
+                    githubUser = new GitHubUser()
+                    {
+                        Name = commit.AuthorName,
+                        Login = username,
+                    };
+                }
                 errors.AddIfNotNull(error);
                 var contributor = githubUser?.ToContributor();
                 if (!string.IsNullOrEmpty(contributor?.Name))
@@ -209,5 +218,22 @@ internal class ContributionProvider
         return _input.TryGetOriginalPhysicalPath(file) is PathString
             ? _input.GetLastWriteTimeUtc(file)
             : default;
+    }
+
+    private static string GetGitHubUsernameWhenCommitWithNoReplyEmail(string email)
+    {
+        if (!email.EndsWith("@users.noreply.github.com"))
+        {
+            return string.Empty;
+        }
+
+        var start = email.IndexOf('+') + 1;
+        var end = email.IndexOf('@');
+        if (start > end)
+        {
+            return string.Empty;
+        }
+
+        return email[start..end];
     }
 }
