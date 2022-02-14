@@ -965,3 +965,15 @@ outputs:
     {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.a.json' registered in .openpublishing.publish.json is not found in the repo."}
   a/.publish.json: |
     {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+---
+# redirection source path contains invalid path char
+repos:
+  https://github.com/redirection/invalid-redirection-source-path:
+  - files:
+      docfx.yml:
+      .openpublishing.redirection.json: |
+        {"redirections": [{"source_path": "<invalid>/*invalid.md", "redirect_url": "/invalid"}]}
+outputs:
+  .errors.log: |
+    {"message_severity":"warning","code":"path-invalid","message":"Path <invalid>/*invalid.md contains invalid chars '<', '>', '*'."}
+    {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'."}
