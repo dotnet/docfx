@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
 using HtmlReaderWriter;
@@ -16,11 +17,10 @@ internal class TemplateEngine
     private readonly Lazy<TemplateDefinition> _templateDefinition;
     private readonly JObject _global;
     private readonly LiquidTemplate _liquid;
-    private readonly ThreadLocal<JavaScriptEngine> _js;
+    private readonly ConcurrentBag<JavaScriptEngine> _js = new();
     private readonly MustacheTemplate _mustacheTemplate;
     private readonly string _locale;
     private readonly CultureInfo _cultureInfo;
-    private readonly SearchIndexBuilder? _searchIndexBuilder;
     private readonly BookmarkValidator? _bookmarkValidator;
 
     public static TemplateEngine CreateTemplateEngine(
@@ -28,8 +28,7 @@ internal class TemplateEngine
         Config config,
         PackageResolver packageResolver,
         string locale,
-        BookmarkValidator? bookmarkValidator = null,
-        SearchIndexBuilder? searchIndexBuilder = null)
+        BookmarkValidator? bookmarkValidator = null)
     {
         var template = config.Template;
         var templateFetchOptions = PackageFetchOptions.DepthOne;
@@ -40,7 +39,7 @@ internal class TemplateEngine
         }
         var package = packageResolver.ResolveAsPackage(template, templateFetchOptions);
 
-        return new TemplateEngine(errors, config, package, locale, bookmarkValidator, searchIndexBuilder);
+        return new TemplateEngine(errors, config, package, locale, bookmarkValidator);
     }
 
     public static TemplateEngine CreateTemplateEngine(ErrorBuilder errors, Config config, string locale, Package package)
@@ -53,8 +52,7 @@ internal class TemplateEngine
          Config config,
          Package package,
          string locale,
-         BookmarkValidator? bookmarkValidator = null,
-         SearchIndexBuilder? searchIndexBuilder = null)
+         BookmarkValidator? bookmarkValidator = null)
     {
         _errors = errors;
         _config = config;
@@ -64,10 +62,8 @@ internal class TemplateEngine
         _templateDefinition = new(() => _package.TryLoadYamlOrJson<TemplateDefinition>(errors, "template") ?? new());
         _global = LoadGlobalTokens(errors);
         _liquid = new(_package, _config.TemplateBasePath, _global);
-        _js = new(() => JavaScriptEngine.Create(_package, _global));
         _mustacheTemplate = new(_package, "ContentTemplate", _global);
         _bookmarkValidator = bookmarkValidator;
-        _searchIndexBuilder = searchIndexBuilder;
     }
 
     public string RunLiquid(ErrorBuilder errors, SourceInfo<string?> mime, TemplateModel model)
@@ -97,20 +93,37 @@ internal class TemplateEngine
             return model;
         }
 
-        var result = _js.Value!.Run(scriptPath, methodName, model);
-        if (result is JObject obj && obj.TryGetValue("content", out var token) &&
-            token is JValue value && value.Value is string content)
+        var js = _js.TryTake(out var existing) ? existing : JavaScriptEngine.Create(_package, _global);
+
+        try
         {
-            try
+            var result = js.Run(scriptPath, methodName, model);
+            if (result is JObject obj && obj.TryGetValue("content", out var token) &&
+                token is JValue value && value.Value is string content)
             {
-                return JsonUtility.Parse(new ErrorList(), content, new FilePath("file"));
+                try
+                {
+                    return JsonUtility.Parse(new ErrorList(), content, new FilePath("file"));
+                }
+                catch
+                {
+                    return result;
+                }
             }
-            catch
-            {
-                return result;
-            }
+            return result;
         }
-        return result;
+        finally
+        {
+            _js.Add(js);
+        }
+    }
+
+    public void FreeJavaScriptEngineMemory()
+    {
+        while (_js.TryTake(out var js))
+        {
+            js.Dispose();
+        }
     }
 
     public void CopyAssetsToOutput(Output output, bool selfContained = true)
@@ -192,7 +205,6 @@ internal class TemplateEngine
         });
 
         _bookmarkValidator?.AddBookmarks(file, bookmarks);
-        _searchIndexBuilder?.SetBody(file, searchText.ToString());
 
         return LocalizationUtility.AddLeftToRightMarker(_cultureInfo, result);
     }

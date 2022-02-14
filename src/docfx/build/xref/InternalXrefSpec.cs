@@ -29,13 +29,13 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null)
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null)
     {
         var spec = new ExternalXrefSpec
         {
             Uid = Uid,
             Href = overwriteHref ?? Href,
-            Monikers = Monikers,
+            Monikers = monikerList ?? Monikers,
             SchemaType = SchemaType,
         };
 

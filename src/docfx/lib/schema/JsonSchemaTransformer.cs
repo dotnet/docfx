@@ -90,7 +90,7 @@ internal class JsonSchemaTransformer
     {
         var (token, schema, schemaMap, uidCount) = ValidateContent(errors, file);
         var xrefmap = new JObject();
-        var result = TransformContentCore(errors, schemaMap, file, schema, token, uidCount, "", xrefmap);
+        var result = TransformContentCore(errors, schemaMap, file, schema, schema, token, uidCount, "", xrefmap);
         if (xrefmap.Count > 0)
         {
             result["_xrefmap"] = xrefmap;
@@ -102,7 +102,7 @@ internal class JsonSchemaTransformer
     {
         var (token, schema, schemaMap, uidCount) = ValidateContent(errors, file);
         var xrefSpecs = new List<InternalXrefSpec>();
-        LoadXrefSpecsCore(errors, file, schema, schemaMap, token, xrefSpecs, uidCount);
+        LoadXrefSpecsCore(errors, schemaMap, file, schema, schema, token, xrefSpecs, uidCount);
         return xrefSpecs;
     }
 
@@ -121,24 +121,20 @@ internal class JsonSchemaTransformer
         };
         var mime = _documentProvider.GetMime(file);
         var schemaValidator = _jsonSchemaProvider.GetSchemaValidator(mime);
-        var schemaMap = new JsonSchemaMap(IsContentTransform);
+        var schemaMap = new JsonSchemaMap();
         var schemaErrors = schemaValidator.Validate(token, file, schemaMap);
         errors.AddRange(schemaErrors);
 
-        var uidCount = GetFileUidCount(schemaMap, token);
+        var uidCount = GetFileUidCount(schemaMap, token, schemaValidator.Schema);
         return (token, schemaValidator.Schema, schemaMap, uidCount);
-    }
-
-    private static bool IsContentTransform(JsonSchema schema)
-    {
-        return schema.ContentType != null || schema.XrefProperties.Count > 0 || schema.SchemaTypeProperty != null;
     }
 
     private void LoadXrefSpecsCore(
         ErrorBuilder errors,
+        JsonSchemaMap schemaMap,
         FilePath file,
         JsonSchema rootSchema,
-        JsonSchemaMap schemaMap,
+        JsonSchema schema,
         JToken node,
         List<InternalXrefSpec> xrefSpecs,
         int uidCount,
@@ -147,21 +143,22 @@ internal class JsonSchemaTransformer
         switch (node)
         {
             case JObject obj:
-                if (IsXrefSpec(obj, schemaMap, out var uid, out var uidSchema))
+                if (IsXrefSpec(schemaMap, obj, schema, out var uid, out var uidSchema))
                 {
                     xrefSpecs.Add(LoadXrefSpec(
-                        errors, schemaMap, file, rootSchema, uidSchema, uid, obj, uidCount, propertyPath));
+                        errors, schemaMap, file, rootSchema, schema, uidSchema, uid, obj, uidCount, propertyPath));
                 }
 
                 foreach (var (key, value) in obj)
                 {
-                    if (value != null)
+                    if (value != null && schemaMap.GetPropertySchema(schema, obj, key) is var subschema && subschema != null)
                     {
                         LoadXrefSpecsCore(
                             errors,
+                            schemaMap,
                             file,
                             rootSchema,
-                            schemaMap,
+                            subschema,
                             value,
                             xrefSpecs,
                             uidCount,
@@ -170,9 +167,12 @@ internal class JsonSchemaTransformer
                 }
                 break;
             case JArray array:
-                foreach (var item in array)
+                foreach (var (item, subschema) in schemaMap.ForEachJArray(schema, array))
                 {
-                    LoadXrefSpecsCore(errors, file, rootSchema, schemaMap, item, xrefSpecs, uidCount, propertyPath);
+                    if (subschema != null)
+                    {
+                        LoadXrefSpecsCore(errors, schemaMap, file, rootSchema, subschema, item, xrefSpecs, uidCount, propertyPath);
+                    }
                 }
                 break;
         }
@@ -200,16 +200,16 @@ internal class JsonSchemaTransformer
         JsonSchemaMap schemaMap,
         FilePath file,
         JsonSchema rootSchema,
+        JsonSchema schema,
         JsonSchema uidSchema,
         SourceInfo<string> uid,
         JObject obj,
         int uidCount,
         string? propertyPath)
     {
-        schemaMap.TryGetSchema(obj, out var schema);
         var href = GetXrefHref(file, uid, uidCount, string.IsNullOrEmpty(propertyPath));
         var monikers = _monikerProvider.GetFileLevelMonikers(errors, file);
-        var schemaType = GetSchemaType(uidSchema.SchemaType, schema?.SchemaTypeProperty, propertyPath, obj, file);
+        var schemaType = GetSchemaType(uidSchema.SchemaType, schema.SchemaTypeProperty, propertyPath, obj, file);
 
         var xref = new InternalXrefSpec(uid, href, file, monikers)
         {
@@ -218,67 +218,73 @@ internal class JsonSchemaTransformer
             SchemaType = schemaType,
         };
 
-        if (schema != null)
+        foreach (var xrefProperty in schema.XrefProperties)
         {
-            foreach (var xrefProperty in schema.XrefProperties)
+            if (xrefProperty == "uid")
             {
-                if (xrefProperty == "uid")
-                {
-                    continue;
-                }
-
-                if (!obj.TryGetValue(xrefProperty, out var value))
-                {
-                    xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
-                    continue;
-                }
-
-                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
-                    () => LoadXrefProperty(
-                        schemaMap, file, uid, value, rootSchema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
-                    LazyThreadSafetyMode.PublicationOnly);
+                continue;
             }
+
+            if (!obj.TryGetValue(xrefProperty, out var value))
+            {
+                xref.XrefProperties[xrefProperty] = new Lazy<JToken>(() => JValue.CreateNull());
+                continue;
+            }
+
+            var subschema = schemaMap.GetPropertySchema(schema, obj, xrefProperty);
+            xref.XrefProperties[xrefProperty] = new Lazy<JToken>(
+                () => LoadXrefProperty(
+                    schemaMap, file, uid, value, rootSchema, subschema, uidCount, JsonUtility.AddToPropertyPath(propertyPath, xrefProperty)),
+                LazyThreadSafetyMode.PublicationOnly);
         }
+
         return xref;
     }
 
-    private int GetFileUidCount(JsonSchemaMap schemaMap, JToken node)
+    private int GetFileUidCount(JsonSchemaMap schemaMap, JToken node, JsonSchema schema)
     {
         var count = 0;
         switch (node)
         {
             case JObject obj:
-                if (IsXrefSpec(obj, schemaMap, out _, out _))
+                if (IsXrefSpec(schemaMap, obj, schema, out _, out _))
                 {
                     count++;
                 }
 
                 foreach (var (key, value) in obj)
                 {
-                    if (value != null)
+                    if (value != null && schemaMap.GetPropertySchema(schema, obj, key) is var subschema && subschema != null)
                     {
-                        count += GetFileUidCount(schemaMap, value);
+                        count += GetFileUidCount(schemaMap, value, subschema);
                     }
                 }
                 break;
             case JArray array:
-                foreach (var item in array)
+                foreach (var (item, subschema) in schemaMap.ForEachJArray(schema, array))
                 {
-                    count += GetFileUidCount(schemaMap, item);
+                    if (subschema != null)
+                    {
+                        count += GetFileUidCount(schemaMap, item, subschema);
+                    }
                 }
                 break;
         }
         return count;
     }
 
-    private static bool IsXrefSpec(JObject obj, JsonSchemaMap schemaMap, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema uidSchema)
+    private static bool IsXrefSpec(
+        JsonSchemaMap schemaMap, JObject obj, JsonSchema schema, out SourceInfo<string> uid, [MaybeNullWhen(false)] out JsonSchema uidSchema)
     {
         // A xrefspec MUST be named uid, and the schema contentType MUST also be uid
-        if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid &&
-            schemaMap.TryGetSchema(uidValue, out uidSchema) && uidSchema.ContentType == JsonSchemaContentType.Uid)
+        if (obj.TryGetValue<JValue>("uid", out var uidValue) && uidValue.Value is string tempUid)
         {
-            uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
-            return true;
+            uidSchema = schemaMap.GetPropertySchema(schema, obj, "uid");
+            if (uidSchema?.ContentType == JsonSchemaContentType.Uid)
+            {
+                uid = new SourceInfo<string>(tempUid, uidValue.GetSourceInfo());
+                return true;
+            }
         }
 
         uid = default;
@@ -298,6 +304,7 @@ internal class JsonSchemaTransformer
         SourceInfo<string> uid,
         JToken value,
         JsonSchema rootSchema,
+        JsonSchema? schema,
         int uidCount,
         string propertyPath)
     {
@@ -315,6 +322,7 @@ internal class JsonSchemaTransformer
                 schemaMap,
                 file,
                 rootSchema,
+                schema,
                 value,
                 uidCount,
                 propertyPath,
@@ -332,6 +340,7 @@ internal class JsonSchemaTransformer
         JsonSchemaMap schemaMap,
         FilePath file,
         JsonSchema rootSchema,
+        JsonSchema? schema,
         JToken token,
         int uidCount,
         string? propertyPath,
@@ -342,9 +351,10 @@ internal class JsonSchemaTransformer
             // transform array and object is not supported yet
             case JArray array:
                 var newArray = new JArray();
-                foreach (var item in array)
+                foreach (var (item, subschema) in schemaMap.ForEachJArray(schema, array))
                 {
-                    newArray.Add(TransformContentCore(errors, schemaMap, file, rootSchema, item, uidCount, propertyPath, xrefmap));
+                    newArray.Add(TransformContentCore(
+                        errors, schemaMap, file, rootSchema, subschema, item, uidCount, propertyPath, xrefmap));
                 }
 
                 return newArray;
@@ -353,24 +363,23 @@ internal class JsonSchemaTransformer
                 var newObject = new JObject();
                 foreach (var (key, value) in obj)
                 {
-                    if (value is null)
+                    if (value != null)
                     {
-                        continue;
-                    }
-
-                    newObject[key] = TransformContentCore(
+                        newObject[key] = TransformContentCore(
                         errors,
                         schemaMap,
                         file,
                         rootSchema,
+                        schemaMap.GetPropertySchema(schema, obj, key),
                         value,
                         uidCount,
                         JsonUtility.AddToPropertyPath(propertyPath, key),
                         xrefmap);
+                    }
                 }
                 return newObject;
 
-            case JValue value when schemaMap.TryGetSchema(token, out var schema):
+            case JValue value when schema != null:
                 return TransformScalar(
                     errors.With(e => e with { PropertyPath = propertyPath }),
                     rootSchema,

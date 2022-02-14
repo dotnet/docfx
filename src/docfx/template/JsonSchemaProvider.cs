@@ -103,16 +103,24 @@ internal class JsonSchemaProvider
 
     private RenderType GetTocRenderType()
     {
+        // Refer to https://ceapex.visualstudio.com/Engineering/_workitems/edit/537091
+        // There is a toc.schema.json file existing in templates.docs.msft repo whose 'renderType' is set to 'component'
+        // (https://github.com/microsoft/templates.docs.msft/blob/master/ContentTemplate/schemas/Toc.schema.json#L7)
+        // This will break the PDF process because PDF asks it to be 'content' (so that docfx can generate 'toc.html' which is necessary for building PDF)
+        // To avoid unexpected breaking PDF process through sync templates, special logic dealing with PDF cases goes first.
+        if (_template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) ||
+            _template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        {
+            return RenderType.Content;
+        }
+
         try
         {
             return GetSchema(new SourceInfo<string?>("toc")).RenderType;
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var _))
         {
-            // TODO: Remove after schema of toc is support in template
-            var isContentRenderType = _template.Url.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
-                || _template.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
-            return isContentRenderType ? RenderType.Content : RenderType.Component;
+            return RenderType.Component;
         }
     }
 }

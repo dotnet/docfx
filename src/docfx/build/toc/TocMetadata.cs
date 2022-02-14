@@ -19,7 +19,7 @@ internal class TocMetadata
     public string? PdfAbsolutePath { get; set; }
 
     [JsonExtensionData]
-    public JObject ExtensionData { get; } = new JObject();
+    public Dictionary<string, object>? ExtensionData { get; set; }
 
     public static bool ShouldSerializeMonikerRange() => false;
 

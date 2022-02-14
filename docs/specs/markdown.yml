@@ -5,7 +5,13 @@ inputs:
   docs/a.md: Hello `docfx`!
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Hello <code>docfx</code>!</p>", "wordCount": 2, "_op_canonicalUrlPrefix": "https://docs.com/en-us/", "_path": "docs/a.json"}
+    {
+      "conceptual": "<p>Hello <code>docfx</code>!</p>",
+      "wordCount": 2,
+      "_op_canonicalUrlPrefix": "https://docs.com/en-us/",
+      "_path": "docs/a.json",
+      "_rel": "../"
+    }
 ---
 # Basic markdown syntax
 inputs:
@@ -289,13 +295,13 @@ outputs:
 # Errors from one file does not affect another file
 inputs:
   docfx.yml:
-  docs/TOC.md: |
+  docs/toc.md: |
     #[bad](b.md)
   docs/b.md:
 outputs:
   docs/b.json:
   .errors.log: |
-    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/TOC.md","line":1,"column":1}
+    {"message_severity":"error","code":"invalid-toc-syntax","message":"The toc syntax is invalid, *","file":"docs/toc.md","line":1,"column":1}
 ---
 # do not allow custom js, styles and css
 inputs:

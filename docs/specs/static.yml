@@ -44,7 +44,7 @@ noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"component\"}"
 outputs: 
   toc.json:
@@ -54,7 +54,7 @@ noDryRun: true
 inputs: 
   docfx.yml: |
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/schemas/TestData.schema.json: "{\"renderType\": \"content\"}"
 outputs: 
   toc.json:
@@ -64,7 +64,7 @@ inputs:
   docfx.yml: |
     template: _themes
     outputType: html
-  TOC.md:
+  toc.md:
   _themes/ContentTemplate/test:
 outputs: 
   toc.html: 
@@ -75,7 +75,7 @@ inputs:
   docfx.yml: |
     template: _themes.pdf
     outputType: html
-  TOC.md:
+  toc.md:
   _themes.pdf/ContentTemplate/toc.html.js: |
     exports.transform = function (model) {
       return {
@@ -216,7 +216,7 @@ inputs:
     ---
     monikerRange: netcore-1.1
     ---
-  docs/v1/TOC.md: |
+  docs/v1/toc.md: |
     # [A](a.md)
 outputs:
   c83d387e11975a5f5fe51ced25ba46a7/toc.html: |
@@ -246,7 +246,7 @@ outputs:
           "group": "c83d387e11975a5f5fe51ced25ba46a7",
           "version":"< netcore-2.0",
           "is_moniker_range": true,
-          "source_relative_path": "docs/v1/TOC.md"
+          "source_relative_path": "docs/v1/toc.md"
         },
       ]
     }
@@ -365,25 +365,6 @@ outputs:
       ]
     }
 ---
-# Prebuild lunr search index as .lunr.json when searchEngine is lunr
-inputs:
-  docfx.yml: |
-    outputType: html
-    urlType: pretty
-    searchEngine: lunr
-  _themes/Conceptual.html.liquid: |
-    {{page.search_engine}}
-    {{content}}
-  a.md: |
-    # Markdown Title
-
-    Type `javascript` *here*
-outputs:
-  a/index.html: |
-    lunr <p>Type <code>javascript</code><em>here</em>
-  .lunr.json: |
-    { "version": "2.3.8", "fields": ["title", "body"] }
----
 # Liquid with register tag
 inputs:
   docfx.yml: |
@@ -402,15 +383,14 @@ outputs:
     <link rel="stylesheet" href="/dev/test.css">
     <div></div>
 ---
-# TOC with output-type="html"
+# TOC with outputType: html and urlType: docs
 repos:
   https://github.com/toc/toc-output-type-is-html:
   - files:
       docfx.yml: |
         outputType: html
-        renderType: Content
         template: https://docs.com/theme
-      TOC.yml: |
+      toc.yml: |
         - name: link-a
           href: a.md
       a.md:
@@ -455,3 +435,14 @@ outputs:
       <a href="a"> link-a </a>
   toc.json: |
     {"items":[{"name":"link-a","href":"a"}],"_path":"toc.json","schema":"toc", "outputType":"html"}
+---
+# TOC with outputType: html and urlType: pretty
+inputs:
+  docfx.yml: |
+    outputType: html
+    urlType: pretty
+  toc.yml: |
+    - name: a
+outputs:
+  toc.json: |
+    {"items":[{"name":"a"}]}

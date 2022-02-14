@@ -7,7 +7,6 @@ internal static class Restore
 {
     public static bool Run(CommandLineOptions options)
     {
-        var operation = Telemetry.StartOperation("restore");
         using var errors = new ErrorWriter(options.Log);
 
         var package = new LocalPackage(options.WorkingDirectory);
@@ -21,12 +20,8 @@ internal static class Restore
             return errors.HasError;
         }
 
-        Parallel.ForEach(docsets, docset =>
-        {
-            RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest);
-        });
+        Parallel.ForEach(docsets, docset => RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
 
-        operation.Complete();
         errors.PrintSummary();
         return errors.HasError;
     }
@@ -48,7 +43,7 @@ internal static class Restore
             }
 
             errorLog.Config = config;
-            RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
+            RestoreDocset(errorLog, config, packageResolver, fileResolver);
         }
         catch (Exception ex) when (DocfxException.IsDocfxException(ex, out var dex))
         {
@@ -57,12 +52,12 @@ internal static class Restore
     }
 
     public static void RestoreDocset(
-        ErrorBuilder errors, Config config, BuildOptions buildOptions, PackageResolver packageResolver, FileResolver fileResolver)
+        ErrorBuilder errors, Config config, PackageResolver packageResolver, FileResolver fileResolver)
     {
         // download dependencies to disk
         Parallel.Invoke(
             () => RestoreFiles(errors, config, fileResolver),
-            () => RestorePackages(errors, buildOptions, config, packageResolver));
+            () => RestorePackages(errors, config, packageResolver));
     }
 
     private static void RestoreFiles(ErrorBuilder errors, Config config, FileResolver fileResolver)
@@ -71,17 +66,14 @@ internal static class Restore
         ParallelUtility.ForEach(scope, errors, config.GetFileReferences(), fileResolver.Download);
     }
 
-    private static void RestorePackages(ErrorBuilder errors, BuildOptions buildOptions, Config config, PackageResolver packageResolver)
+    private static void RestorePackages(ErrorBuilder errors, Config config, PackageResolver packageResolver)
     {
-        using (var scope = Progress.Start("Restoring packages"))
-        {
-            ParallelUtility.ForEach(
-                scope,
-                errors,
-                GetPackages(config).Distinct(),
-                item => packageResolver.DownloadPackage(item.package, item.flags));
-        }
-        LocalizationUtility.EnsureLocalizationContributionBranch(config.Secrets, buildOptions.Repository);
+        using var scope = Progress.Start("Restoring packages");
+        ParallelUtility.ForEach(
+            scope,
+            errors,
+            GetPackages(config).Distinct(),
+            item => packageResolver.DownloadPackage(item.package, item.flags));
     }
 
     private static IEnumerable<(PackagePath package, PackageFetchOptions flags)> GetPackages(Config config)

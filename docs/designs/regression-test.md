@@ -14,4 +14,4 @@ For each PR build, the output will be compared with checked in baseline, and the
 ## Selected Docs Repos
 Repos are selected for covering different docfx build functionalities. e.g.: the core markdown parser, yml SDP, versioning & xref, reference plugins, etc.
 
-See [source excel ./test-repos.csv](./test-repos.csv) for details
+See [source excel ./regression-test-repos.csv](./regression-test-repos.csv) for details

@@ -53,20 +53,20 @@ outputs:
 # Dependency resolve when includeInBuild is case insensitive on windows and mac
 os: windows, osx
 repos:
-  https://github.com/dep-include-in-build/casing:
+  https://github.com/build-dep/casing:
     - files:
         .openpublishing.publish.config.json: |
           {
             "docsets_to_publish": [{ "build_source_folder": "OfficeUpdates" }],
             "dependent_repositories": [{
                 "path_to_root": "OfficeUpdates/common",
-                "url": "https://github.com/dep-include-in-build/casing-diff",
+                "url": "https://github.com/build-dep/diff",
                 "include_in_build": true
               }]
           }
         OfficeUpdates/docfx.yml:
         OfficeUpdates/a.md:
-  https://github.com/dep-include-in-build/casing-diff:
+  https://github.com/build-dep/diff:
     - files:
         Office/a.md: '[](media/icons/small-business.svg) [](~/a.md)'
         Office/media/icons/Small-business.svg: "SVG"

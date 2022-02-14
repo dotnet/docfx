@@ -44,20 +44,17 @@ internal class SystemMetadata
     public string? Gitcommit { get; set; }
 
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public bool EnableLocSxs { get; set; }
-
-    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
     public MonikerList Monikers { get; set; }
 
     public string? SiteName { get; set; }
 
     public string? DepotName { get; set; }
 
-    [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-    public SearchEngineType SearchEngine { get; set; }
-
     [JsonProperty("_path")]
     public string? Path { get; set; }
+
+    [JsonProperty("_rel")]
+    public string? Rel { get; set; }
 
     [JsonProperty("_op_canonicalUrlPrefix")]
     public string? CanonicalUrlPrefix { get; set; }

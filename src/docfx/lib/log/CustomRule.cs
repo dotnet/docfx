@@ -20,7 +20,10 @@ internal record CustomRule
 
     public bool CanonicalVersionOnly { get; init; }
 
+    // TODO: Retire PullRequestOnly.
     public bool PullRequestOnly { get; init; }
+
+    public bool AddOnly { get; init; }
 
     [JsonConverter(typeof(OneOrManyConverter))]
     public string[] Exclude { get; init; } = Array.Empty<string>();

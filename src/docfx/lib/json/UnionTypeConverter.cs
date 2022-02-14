@@ -32,7 +32,7 @@ internal class UnionTypeConverter : JsonConverter
         // Trying to find an exact match first
         for (var i = 0; i < genericTypes.Length; i++)
         {
-            if (TypeExactlyMatches(reader.TokenType, genericTypes[i]))
+            if (TypeExactlyMatches(reader.TokenType, UnwrapKnownGenericType(genericTypes[i])))
             {
                 args[i] = serializer.Deserialize(reader, genericTypes[i]);
                 return args;
@@ -42,7 +42,7 @@ internal class UnionTypeConverter : JsonConverter
         // Exclude types that never matches
         for (var i = 0; i < genericTypes.Length; i++)
         {
-            if (!TypeNeverMatches(reader.TokenType, genericTypes[i]))
+            if (!TypeNeverMatches(reader.TokenType, UnwrapKnownGenericType(genericTypes[i])))
             {
                 args[i] = serializer.Deserialize(reader, genericTypes[i]);
                 return args;
@@ -65,5 +65,21 @@ internal class UnionTypeConverter : JsonConverter
     private static bool TypeNeverMatches(JsonToken tokenType, Type objectType)
     {
         return objectType.IsArray && tokenType != JsonToken.StartArray;
+    }
+
+    private static Type UnwrapKnownGenericType(Type type)
+    {
+        // Unwrap Nullable<T>
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            type = type.GenericTypeArguments[0];
+        }
+
+        // Unwrap SourceInfo<T>
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SourceInfo<>))
+        {
+            type = type.GenericTypeArguments[0];
+        }
+        return type;
     }
 }

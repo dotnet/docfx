@@ -19,8 +19,6 @@ internal class OpsAccessor : ILearnServiceAccessor
 
     public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
 
-    private static int s_validationRulesetReported;
-
     private readonly CredentialHandler _credentialHandler;
     private readonly ErrorBuilder _errors;
     private readonly HttpClient _http = new(new HttpClientHandler { CheckCertificateRevocationList = true });
@@ -83,7 +81,7 @@ internal class OpsAccessor : ILearnServiceAccessor
     public Task<string> GetAllowlists(DocsEnvironment environment = DocsEnvironment.Prod)
     {
         return Fetch(TaxonomyApi(environment) +
-            "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product");
+            "/taxonomies/simplified?name=ms.author&name=ms.devlang&name=ms.prod&name=ms.service&name=ms.topic&name=devlang&name=product&name=microsoft.domain");
     }
 
     public Task<string> GetTrustedDomain(DocsEnvironment environment = DocsEnvironment.Prod)
@@ -183,11 +181,22 @@ internal class OpsAccessor : ILearnServiceAccessor
 
             var response = await next(request);
 
-            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion) &&
-                Interlocked.Exchange(ref s_validationRulesetReported, 1) == 0)
+            if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
             {
                 var documentUrl = response.Headers.TryGetValues("X-Ruleset-DocumentURL", out var url) ? string.Join(",", url) : "";
-                _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                if (request.RequestUri!.AbsolutePath.Contains("/metadatarules"))
+                {
+                    _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
+                    Log.Write($"Metadata validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                }
+                else if (request.RequestUri!.AbsolutePath.Contains("/contentrules"))
+                {
+                    Log.Write($"Content validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                }
+                else
+                {
+                    Log.Write($"Build validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                }
             }
 
             return response;

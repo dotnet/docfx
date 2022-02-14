@@ -35,7 +35,6 @@ internal class DocsetBuilder
     private readonly IProgress<string> _progressReporter;
     private readonly FileLinkMapBuilder _fileLinkMapBuilder;
     private readonly DependencyMapBuilder _dependencyMapBuilder;
-    private readonly SearchIndexBuilder _searchIndexBuilder;
     private readonly ZonePivotProvider _zonePivotProvider;
     private readonly ContentValidator _contentValidator;
     private readonly XrefResolver _xrefResolver;
@@ -86,11 +85,10 @@ internal class DocsetBuilder
         _bookmarkValidator = new(_errors);
         _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
         _dependencyMapBuilder = new(_sourceMap);
-        _searchIndexBuilder = new(_config, _errors, _documentProvider, _metadataProvider);
-        _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator, _searchIndexBuilder);
+        _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator);
         _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
         _contentValidator = new(_config, _fileResolver, _errors, _documentProvider, _monikerProvider, _zonePivotProvider, _metadataProvider, _publishUrlMap);
-        _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, () => Ensure(_jsonSchemaTransformer));
+        _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, _redirectionProvider, () => Ensure(_jsonSchemaTransformer));
         _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider, _contentValidator);
         _htmlSanitizer = new(_config);
         _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
@@ -130,7 +128,7 @@ internal class DocsetBuilder
             if (!options.NoRestore)
             {
                 progressReporter.Report("Restoring dependencies...");
-                Restore.RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
+                Restore.RestoreDocset(errorLog, config, packageResolver, fileResolver);
                 if (errorLog.HasError)
                 {
                     return null;
@@ -163,7 +161,7 @@ internal class DocsetBuilder
             var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
             var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
             var learnHierarchyBuilder = new LearnHierarchyBuilder(_contentValidator);
-            var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _searchIndexBuilder, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
+            var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);
             var tocBuilder = new TocBuilder(_config, _tocLoader, _contentValidator, _metadataProvider, _metadataValidator, _documentProvider, _monikerProvider, publishModelBuilder, _templateEngine, output);
             var redirectionBuilder = new RedirectionBuilder(publishModelBuilder, _redirectionProvider, _documentProvider);
 
@@ -191,6 +189,8 @@ internal class DocsetBuilder
                 return;
             }
 
+            _templateEngine.FreeJavaScriptEngineMemory();
+
             // TODO: explicitly state that ToXrefMapModel produces errors
             var xrefMapModel = _xrefResolver.ToXrefMapModel();
             var (publishModel, fileManifests) = publishModelBuilder.Build(filesToBuild);
@@ -207,13 +207,7 @@ internal class DocsetBuilder
                 () => output.WriteJson(".publish.json", publishModel),
                 () => output.WriteJson(".dependencymap.json", dependencyMap.ToDependencyMapModel()),
                 () => output.WriteJson(".links.json", _fileLinkMapBuilder.Build(publishModel)),
-                () => output.WriteText(".lunr.json", _searchIndexBuilder.Build()),
                 () => Legacy.ConvertToLegacyModel(_buildOptions.DocsetPath, legacyContext, fileManifests, dependencyMap));
-
-            using (Progress.Start("Waiting for pending outputs"))
-            {
-                output.WaitForCompletion();
-            }
 
             new OpsPostProcessor(_config, _errors, _buildOptions, _opsAccessor, _jsonSchemaTransformer.GetValidateExternalXrefs()).Run();
         }

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="6.0.1" />
-    <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.21340.2" />
+    <PackageReference Include="Microsoft.DocsLearning.Hierarchy.DataContract" Version="1.0.22020.1" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ namespace Microsoft.Docs.Build;
 /// <summary>
 /// Represents a javascript engine for a single thread
 /// </summary>
-internal abstract class JavaScriptEngine
+internal abstract class JavaScriptEngine : IDisposable
 {
     public abstract JToken Run(string scriptPath, string methodName, JToken arg);
 
@@ -21,4 +21,6 @@ internal abstract class JavaScriptEngine
             ? new ChakraCoreJsEngine(package, global)
             : new JintJsEngine(package, global);
     }
+
+    public abstract void Dispose();
 }

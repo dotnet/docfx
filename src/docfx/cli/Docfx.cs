@@ -4,6 +4,7 @@
 using System.Collections;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -21,17 +22,8 @@ public static class Docfx
         {
             return Run(args);
         }
-        catch (Exception ex)
+        catch
         {
-            try
-            {
-                PrintFatalErrorMessage(ex);
-                Telemetry.TrackException(ex);
-            }
-            catch
-            {
-            }
-
             return -99999;
         }
         finally
@@ -53,13 +45,29 @@ public static class Docfx
         var minThreads = Math.Max(32, Environment.ProcessorCount * 4);
         ThreadPool.SetMinThreads(minThreads, minThreads);
 
-        return new RootCommand()
-            {
-                NewCommand(),
-                RestoreCommand(),
-                BuildCommand(package),
-                ServeCommand(package),
-            }.Invoke(args);
+        var rootCommand = new RootCommand()
+        {
+            NewCommand(),
+            RestoreCommand(),
+            BuildCommand(package),
+            ServeCommand(package),
+        };
+
+        var command = rootCommand.Parse(args);
+        var name = command.CommandResult.Command == rootCommand ? "docfx" : $"docfx/{command.CommandResult?.Command.Name}";
+        using var operation = Telemetry.StartOperation(name);
+
+        try
+        {
+            return rootCommand.Invoke(args);
+        }
+        catch (Exception ex)
+        {
+            PrintFatalErrorMessage(ex);
+            Telemetry.TrackException(ex);
+            operation.Telemetry.Success = false;
+            throw;
+        }
     }
 
     private static Command NewCommand()
@@ -111,14 +119,14 @@ public static class Docfx
     {
         var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
         DefineCommonCommands(command);
-        command.AddOption(new Option<bool>(
-            "--language-server", "Starts a language server"));
         command.AddOption(new Option<string>(
-            "--address", () => "0.0.0.0", "The address used to serve"));
+            "--address", () => "127.0.0.1", "Address to use."));
         command.AddOption(new Option<int>(
-            "--port", () => 8080, "The port used to communicate with the client"));
+            "--port", () => 8080, "Port to use. If 0, look for open port."));
         command.AddOption(new Option<bool>(
             "--no-cache", "Always fetch latest dependencies in build."));
+        command.AddOption(new Option<bool>(
+            "--language-server", "Starts a language server."));
         return command;
     }
 

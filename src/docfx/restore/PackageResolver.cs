@@ -82,11 +82,10 @@ internal class PackageResolver
             DownloadGitRepositoryCore(
                 path.Url,
                 path.Branch,
-                path is DependencyConfig dependency && dependency.IncludeInBuild,
                 options))).Value;
     }
 
-    private PathString DownloadGitRepositoryCore(string url, string committish, bool fetchContributionBranch, PackageFetchOptions options)
+    private PathString DownloadGitRepositoryCore(string url, string committish, PackageFetchOptions options)
     {
         var gitPath = GetGitRepositoryPath(url, committish);
         var gitDocfxHead = Path.Combine(gitPath, ".git", "DOCFX_HEAD");
@@ -114,13 +113,6 @@ internal class PackageResolver
             }
             File.WriteAllText(gitDocfxHead, committish);
             Log.Write($"Repository {url}#{committish} at committish: {GitUtility.GetRepoInfo(gitPath).commit}");
-        }
-
-        // Ensure contribution branch for CRR included in build
-        if (fetchContributionBranch)
-        {
-            var crrRepository = Repository.Create(gitPath, committish, url);
-            LocalizationUtility.EnsureLocalizationContributionBranch(_config.Secrets, crrRepository);
         }
 
         return gitPath;

@@ -90,7 +90,8 @@ internal static class Telemetry
             new MetricIdentifier(
                 null,
                 "HtmlElement",
-                "ElementType",
+                "Tag",
+                "Attribute",
                 "IsAllowed",
                 "FileExtension",
                 "DocumentType",
@@ -146,7 +147,12 @@ internal static class Telemetry
         }
     }
 
-    public static DelegatingCompletable StartOperation(string name)
+    public static IOperationHolder<RequestTelemetry> StartOperation(string name)
+    {
+        return s_telemetryClient.StartOperation<RequestTelemetry>(name, s_correlationId);
+    }
+
+    public static DelegatingCompletable StartMetricOperation(string name)
     {
         var stopwatch = Stopwatch.StartNew();
         TrackValueWithEnsurance(
@@ -266,12 +272,12 @@ internal static class Telemetry
             {
                 foreach (var (attributeName, count) in attributeCount)
                 {
-                    var elementType = string.IsNullOrEmpty(attributeName) ? tokenName : $"{tokenName}_{attributeName}";
                     TrackValueWithEnsurance(
                     s_htmlElementCountMetric.Identifier.MetricId,
                     s_htmlElementCountMetric.TrackValue(
                     count,
-                    CoalesceEmpty(elementType),
+                    CoalesceEmpty(tokenName),
+                    CoalesceEmpty(attributeName),
                     isAllowed(tokenName, attributeName).ToString(),
                     fileExtension,
                     documentType,
@@ -351,13 +357,12 @@ internal static class Telemetry
         }
     }
 
-    private static string GetTimeBucket(TimeSpan value)
-        => value.TotalSeconds switch
-        {
-            < 0.5 => "small",
-            < 20 => "middle",
-            _ => "large",
-        };
+    private static string GetTimeBucket(TimeSpan value) => value.TotalSeconds switch
+    {
+        < 0.5 => "small",
+        < 20 => "middle",
+        _ => "large",
+    };
 
     private class DependencyTelemetryInitializer : ITelemetryInitializer
     {

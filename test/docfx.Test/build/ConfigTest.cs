@@ -1,12 +1,25 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Microsoft.Docs.Build;
 
 public static class ConfigTest
 {
+    [Theory]
+    [InlineData("DOCFX_FOO", "bar", "{'foo':'bar'}")]
+    [InlineData("DOCFX_FOO", "a;b;c", "{'foo':['a','b','c']}")]
+    [InlineData("DOCFX__SECRETS__GITHUB_TOKEN", "a", "{'secrets':{'githubToken':'a'}}")]
+    [InlineData("DOCFX_SECRETS", "{\"githubToken\":\"a\"}", "{'secrets':{'githubToken':'a'}}")]
+    public static void LoadConfigFromEnvironmentVariable(string name, string value, string expected)
+    {
+        var actual = ConfigLoader.LoadEnvironmentVariables(new[] { new DictionaryEntry(name, value) });
+        Assert.Equal(expected, actual.ToString(Formatting.None).Replace('\"', '\''));
+    }
+
     [Theory]
     [InlineData("https://github.com/docs", "master", null, null)]
     [InlineData("", "master", null, null)]
@@ -17,7 +30,6 @@ public static class ConfigTest
     [InlineData("https://test.visualstudio.com/_git/abc", "master", null, null)]
     [InlineData("https://test.visualstudio.com/_git/abc.zh-cn", "master", "https://test.visualstudio.com/_git/abc", "master")]
     [InlineData("https://test.visualstudio.com/_git/abc.bs-Cyrl-BA", "master", "https://test.visualstudio.com/_git/abc", "master")]
-    [InlineData("https://github.com/docs.zh-cn", "master-sxs", "https://github.com/docs", "master")]
     public static void LocConfigConventionSourceRepo(string remote, string branch, string expectedSourceRemote, string expectedSourceBranch)
     {
         var (sourceRemote, sourceBranch) = LocalizationUtility.GetFallbackRepository(remote, branch);

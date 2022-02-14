@@ -52,7 +52,10 @@ internal class OpsMetadataRule
 
     public bool? CanonicalVersionOnly { get; set; }
 
+    // TODO: Retire PullRequestOnly.
     public bool? PullRequestOnly { get; set; }
+
+    public bool? AddOnly { get; set; }
 
     public string[]? Tags { get; set; }
 }

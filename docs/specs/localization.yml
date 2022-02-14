@@ -21,33 +21,6 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope.","file":"docs/loc.md","line":1,"column":1}
 ---
-# restore loc repo with dependencies 2
-# [bilingual]
-locale: zh-cn
-repos:
-  https://docs.com/restore2#master:
-    - files:
-        docfx.yml: |
-          dependencies:
-            restore-child: https://docs.com/restore-child2#child
-  https://docs.com/restore2.zh-cn#master-sxs:
-    - files:
-        docfx.yml: |
-          dependencies:
-            restore-child: https://docs.com/restore-child2#child
-        docs/loc.md: |
-          [link to restore-child](~/restore-child/docs/child.md)
-  https://docs.com/restore2.zh-cn#master:
-    - files:
-        docs/loc.md:
-  https://docs.com/restore-child2#child:
-    - files:
-        docs/child.md:
-outputs:
-  docs/loc.json:
-  .errors.log: |
-    {"message_severity":"warning","code":"link-out-of-scope","message":"File 'restore-child/docs/child.md [restore-child]' referenced by link '~/restore-child/docs/child.md' will not be built because it is not included in build scope.","file":"docs/loc.md","line":1,"column":1}
----
 # loc file contributor info 1
 locale: zh-cn
 repos:
@@ -64,28 +37,6 @@ outputs:
       "content_git_url": "https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md",
       "original_content_git_url": "https://github.com/c/contribution1.zh-cn/blob/master/docs/a.md",
       "gitcommit": "https://github.com/c/contribution1.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
-    }
----
-# loc file contributor info 4
-# bilingual
-locale: zh-cn
-repos:
-  https://github.com/c/contribution4#master:
-    - files:
-        docfx.yml:
-  https://github.com/c/contribution4.zh-cn#master-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md:
-  https://github.com/c/contribution4.zh-cn#master:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    {
-      "content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master/docs/a.md",
-      "original_content_git_url":"https://github.com/c/contribution4.zh-cn/blob/master-sxs/docs/a.md",
-      "gitcommit":"https://github.com/c/contribution4.zh-cn/blob/81c533a0b7cc78260c82fb4e3b878f66158a9aca/docs/a.md"
     }
 ---
 # loc page link and content fallback
@@ -143,47 +94,6 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
 ---
-# loc resource fallback bilingual
-locale: zh-cn
-repos:
-  https://docs.com/resource-fallback#master:
-    - files:
-        docs/b.png:
-        docfx.yml:
-  https://docs.com/resource-fallback.zh-cn#master-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          [link to b](b.png)
-  https://docs.com/resource-fallback.zh-cn#master:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
----
-# loc resource fallback bilingual
-# with default branch fallback (dependency-repository-branch-not-match should not be reported for locale fallback repository)
-noCache: true
-noDryRun: true
-locale: zh-cn
-repos:
-  https://docs.com/resource-fallback#main:
-    - files:
-        docs/b.png:
-        docfx.yml:
-  https://docs.com/resource-fallback.zh-cn#master-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          [link to b](b.png)
-  https://docs.com/resource-fallback.zh-cn#main:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    { "conceptual":"<p><a href=\"b.png\">link to b</a></p>"}
----
 # loc page link and content fallback folder
 locale: zh-cn
 repos:
@@ -235,9 +145,9 @@ locale: zh-cn
 repos:
   https://docs.com/toc1#master:
     - files:
-        docs/TOC.md: |
+        docs/toc.md: |
           # [reference a](a.md)
-        docs/b/TOC.md: |
+        docs/b/toc.md: |
           # [reference b](../b.md)
         docfx.yml:
   https://docs.com/toc1.zh-cn#master:
@@ -245,7 +155,7 @@ repos:
         docfx.yml:
         docs/a.md:
         docs/b.md:
-        docs/TOC.md: |
+        docs/toc.md: |
           # [reference a](a.md)
           # [reference b](b.md)
 outputs:
@@ -262,13 +172,13 @@ repos:
   https://docs.com/toc2#master:
     - files:
         docs/a/a.md:
-        docs/b/TOC.md: |
+        docs/b/toc.md: |
           # [reference b](b.md)
         docfx.yml:
   https://docs.com/toc2.zh-cn#master:
     - files:
         docfx.yml:
-        docs/a/TOC.md: |
+        docs/a/toc.md: |
           # [reference a](a.md)
         docs/b/b.md:
 outputs:
@@ -343,53 +253,6 @@ outputs:
   docs/a.json: |
     {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "3862ef10-61c4-6242-7188-36960566ecb6", "document_version_independent_id": "3862ef10-61c4-6242-7188-36960566ecb6",}
 ---
-# bilingual build 1
-locale: zh-cn
-repos:
-  https://github.com/ss/c:
-    - files:
-        docs/b.md: |
-          [link to a](a.md)
-        docs/a.md: a
-        docfx.yml:
-  https://github.com/ss/c.zh-cn#main-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          sxs content
-          [link to b](b.md)
-          [!include[include b](b.md)]
-  https://github.com/ss/c.zh-cn#main:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    {
-      "conceptual": "
-        <p>sxs content\n<a href=\"b\">link to b</a></p>\n<p><a href=\"a\">link to a</a></p>\n",
-      "enable_loc_sxs": true
-    }
----
-# bilingual page's `gitcommit` url follows sxs content's commit history
-locale: zh-cn
-repos:
-  https://github.com/bilingual/a:
-    - files:
-        docs/a.md: a
-        docfx.yml:
-  https://github.com/bilingual/a.zh-cn#main-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          loc sxs content
-  https://github.com/bilingual/a.zh-cn#main:
-    - files:
-        docs/a.md: |
-          loc content
-outputs:
-  docs/a.json: |
-    {"gitcommit":"https://github.com/bilingual/a.zh-cn/blob/6f4caab6b2c06f7a47cdb2d77de54e917f6e80b1/docs/a.md"}
----
 # conflicted toc files(source and loc)
 # 1. should not report warning
 # 2. `_tocRel` should be resolved to loc toc
@@ -397,13 +260,13 @@ locale: zh-cn
 repos:
   https://github.com/conflictedtoc/a:
     - files:
-        docs/a/TOC.md: |
+        docs/a/toc.md: |
           # [md reference a](a.md)
         docfx.yml:
   https://github.com/conflictedtoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: yml reference a
         docs/a/a.md:
@@ -475,14 +338,14 @@ repos:
         docfx.yml:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
   https://github.com/deletedtoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
         docs/a/a.md:
 outputs:
@@ -495,13 +358,13 @@ repos:
   https://github.com/onlyloc/a:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
         docs/a/a.md:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
 outputs:
@@ -536,16 +399,16 @@ repos:
   https://github.com/inclusiontoc/a:
     - files:
         docfx.yml:
-        docs/b/TOC.yml: |
-          - href: ../a/TOC.yml
+        docs/b/toc.yml: |
+          - href: ../a/toc.yml
             name: reference toc a
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: b.md
             name: reference markdown b
   https://github.com/inclusiontoc/a.zh-cn:
     - files:
         docfx.yml:
-        docs/a/TOC.yml: |
+        docs/a/toc.yml: |
           - href: a.md
             name: reference markdown a
         docs/a/a.md:
@@ -555,38 +418,6 @@ outputs:
   docs/a/b.json:
   docs/b/toc.json: |
     {"items":[{"name":"reference toc a","items":[{"name":"reference markdown a","href":"../a/a"}]}]}
----
-# loc build with different dependency git repository 1
-# bilingual
-locale: zh-cn
-repos:
-  https://github.com/locconfig2/c:
-    - files:
-        docfx.yml: |
-          dependencies:
-            child1: https://github.com/locconfig2/d#live
-        docs/a.md:
-  https://github.com/locconfig2/c.zh-cn#main-sxs:
-    - files:
-        docs/a.md: |
-          [!include[include child](~/child1/token.md)]
-        docfx.yml: |
-          dependencies:
-            child1: https://github.com/locconfig2/d#live
-  https://github.com/locconfig2/c.zh-cn:
-    - files:
-        docs/a.md:
-  https://github.com/locconfig2/d#live:
-    - files:
-        token.md: |
-          live branch
-  https://github.com/locconfig2/d#main:
-    - files:
-        token.md: |
-          main branch
-outputs:
-  docs/a.json: |
-    { "conceptual": "<p>live branch</p>\n" }
 ---
 # Apply &lrm; for right to left languages
 locale: ar-sa
@@ -617,27 +448,6 @@ repos:
         docs/a.md: |
           [link in b](b.md)
           [!include[](b.md)]
-outputs:
-  docs/a.json: |
-    { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
----
-# VSTS localized repo with bilingual
-locale: zh-cn
-repos:
-  https://docascode.visualstudio.com/repo/_git/b#live:
-    - files:
-        docfx.yml:
-        docs/b.md: |
-          [link in a](a.md)
-  https://docascode.visualstudio.com/repo/_git/b.zh-cn#live-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          [link in b](b.md)
-          [!include[](b.md)]
-  https://docascode.visualstudio.com/repo/_git/b.zh-cn#live:
-    - files:
-        docs/a.md: "not used"
 outputs:
   docs/a.json: |
     { "conceptual":"<p><a href=\"b\">link in b</a></p>\n<p><a href=\"a\">link in a</a></p>\n"}
@@ -685,32 +495,6 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p>test</p>"}
 ---
-# fallback to corresponding source branch 2
-# [bilingual]
-locale: zh-cn
-repos:
-  https://docs.com/branch-fallback2#test:
-    - files:
-        docfx.yml:
-        docs/b.md: |
-          test
-  https://docs.com/branch-fallback2#master:
-    - files:
-        docfx.yml:
-        docs/b.md: |
-          master
-  https://docs.com/branch-fallback2.zh-cn#test-sxs:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          [!include[](b.md)]
-  https://docs.com/branch-fallback2.zh-cn#test:
-    - files:
-        docs/a.md:
-outputs:
-  docs/a.json: |
-    { "conceptual":"<p>test</p>"}
----
 # Do not validate bookmark for fallback content
 locale: zh-cn
 repos:
@@ -750,7 +534,7 @@ outputs:
   docs/a.json: |
     { "conceptual":"<p>test</p>"}
 ---
-# should fallback to deleted TOC.md not TOC.json
+# should fallback to deleted toc.md not toc.json
 locale: zh-cn
 repos:
   https://github.com/deletedtoc-1/a:
@@ -760,42 +544,42 @@ repos:
         docs/c.md:
     - files:
         docfx.yml:
-        docs/dir/TOC.json: |
+        docs/dir/toc.json: |
           {"items":[{"name":"reference c", "href":"../c.md"}]}
-        docs/dir/TOC.md: |
+        docs/dir/toc.md: |
           # [reference b.md](../b.md)
         docs/b.md:
         docs/c.md:
   https://github.com/deletedtoc-1/a.zh-cn:
     - files:
         docfx.yml:
-        docs/TOC.yml: |
+        docs/toc.yml: |
           - name: name
             href: dir/
 outputs:
   docs/toc.json: |
     {"items":[{"href":"b"}]}
 ---
-# should not fallback to deleted TOC.md if TOC.yml exists
+# should not fallback to deleted toc.md if toc.yml exists
 locale: zh-cn
 repos:
   https://github.com/deletedtoc-2/a:
     - files:
         docfx.yml:
-        docs/dir/TOC.yml: |
+        docs/dir/toc.yml: |
           - name: toc existed
             href: ../a.md
         docs/a.md:
         docs/b.md:
     - files:
         docfx.yml:
-        docs/dir/TOC.md: |
+        docs/dir/toc.md: |
           # [reference b.md](../b.md)
         docs/b.md:
   https://github.com/deletedtoc-2/a.zh-cn:
     - files:
         docfx.yml:
-        docs/TOC.yml: |
+        docs/toc.yml: |
           - name: name
             href: dir/
 outputs:
@@ -870,7 +654,7 @@ repos:
   https://github.com/error-from-fallback#live:
     - files:
         docfx.yml:
-        docs/TOC.md: |
+        docs/toc.md: |
           # a 
           ### b
   https://github.com/error-from-fallback.zh-cn#live:
@@ -888,10 +672,10 @@ repos:
         .openpublishing.publish.config.json: |
           {
             "docsets_to_publish": [{  "build_source_folder": "a"}],
-            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/toc.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
           }
         a/docfx.yml:
-        a/api/bot/TOC.yml: |
+        a/api/bot/toc.yml: |
           items:
           - name: MS.ServicePage2.xxx
             items:
@@ -904,9 +688,9 @@ repos:
         .openpublishing.publish.config.json: |
           {
             "docsets_to_publish": [{  "build_source_folder": "a"}],
-            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/TOC.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
+            "JoinTOCPlugin": [{"ReferenceTOC": "a/api/bot/toc.yml", "TopLevelTOC": "a/docs-ref-toc/top_level_toc.yml"}]
           }
         a/docfx.yml:
-        a/TOC.yml:
+        a/toc.yml:
 outputs:
   a/toc.json:

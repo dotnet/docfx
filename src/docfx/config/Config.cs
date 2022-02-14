@@ -210,9 +210,10 @@ internal class Config : PreloadConfig
 
     /// <summary>
     /// Get the definition of monikers
-    /// It should be absolute url or relative path
+    /// It should be absolute url, relative path, or inline definition
     /// </summary>
-    public SourceInfo<string> MonikerDefinition { get; init; } = new("");
+    [JsonConverter(typeof(UnionTypeConverter))]
+    public (MonikerDefinitionModel? value, SourceInfo<string>? src) MonikerDefinition { get; init; }
 
     /// <summary>
     /// Get a list of trusted domains by tag name.
@@ -266,11 +267,6 @@ internal class Config : PreloadConfig
     /// If not provided, referencing to template resource file will be resolved to physical absolute path.
     /// </summary>
     public string? TemplateBasePath { get; init; }
-
-    /// <summary>
-    /// Gets the search index type like [lunr](https://lunrjs.com/)
-    /// </summary>
-    public SearchEngineType SearchEngine { get; init; }
 
     /// <summary>
     /// When enabled, updated_at for each document will be the last build time
@@ -366,7 +362,12 @@ internal class Config : PreloadConfig
         }
 
         yield return DocumentIdOverride;
-        yield return MonikerDefinition;
+
+        if (MonikerDefinition.src != null)
+        {
+            yield return MonikerDefinition.src.Value;
+        }
+
         yield return MarkdownValidationRules;
         yield return BuildValidationRules;
         yield return Allowlists;
