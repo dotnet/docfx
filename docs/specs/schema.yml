@@ -79,13 +79,13 @@ outputs:
 # Support schema documents with Href content
 inputs:
   docfx.yml:
-  docs/A/TOC.yml:
-  docs/TOC.yml:
+  docs/A/toc.yml:
+  docs/toc.yml:
   docs/a.yml: |
     #YamlMime:ContextObject
     brand: azure
-    breadcrumb_path: TOC.yml
-    toc_rel: A/TOC.yml
+    breadcrumb_path: toc.yml
+    toc_rel: A/toc.yml
   _themes/ContentTemplate/schemas/ContextObject.schema.json: |
     {
       "renderType": "component",
@@ -108,8 +108,8 @@ outputs:
       {
          "dependencies":{
             "docs/a.yml":[
-               { "source": "docs/A/TOC.yml", "type": "file" },
-               { "source": "docs/TOC.yml", "type": "file" }
+               { "source": "docs/A/toc.yml", "type": "file" },
+               { "source": "docs/toc.yml", "type": "file" }
             ]
          }
       }
@@ -117,13 +117,13 @@ outputs:
 # schema documents with Href content but wrong type
 inputs:
   docfx.yml:
-  TOC.yml:
-  docs/TOC.yml:
+  toc.yml:
+  docs/toc.yml:
   docs/a.yml: |
     #YamlMime:ContextObject
     brand: azure
     breadcrumb_path: {}
-    toc_rel: ../TOC.yml
+    toc_rel: ../toc.yml
   _themes/ContentTemplate/schemas/ContextObject.schema.json: |
     {
       "type": "object",

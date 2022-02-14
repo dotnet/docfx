@@ -45,7 +45,7 @@ inputs:
     Moniker: netcore-1.0
   v2/folder1/folder2/a.md: |
     Moniker: netcore-2.0
-  folder0/folder1/folder2/TOC.md:
+  folder0/folder1/folder2/toc.md:
   folder0/b.md: '![](folder1/folder2/image.png)'
   folder0/folder1/folder2/image.png:
 outputs:
@@ -107,7 +107,7 @@ inputs:
     Moniker: netcore-1.0
   v2/duplicatedword/folder1/DuplicatedWord.md: |
     Moniker: netcore-2.0
-  folder0/duplicatedword/duplicatedword/TOC.md:
+  folder0/duplicatedword/duplicatedword/toc.md:
   folder0/duplicatedword/duplicatedword/image.png:
   folder0/duplicated-base-path/docs/a.md:
 outputs:

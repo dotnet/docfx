@@ -101,8 +101,8 @@ inputs:
     this [!include[](b.md)] should cause circular reference
   xref.json: |
     { apparently a syntax error
-  TOC.md: |
-    # [circular reference](TOC.md)
+  toc.md: |
+    # [circular reference](toc.md)
 outputs:
 ---
 # Get canonical version for document without versioning does not touch url map
@@ -232,19 +232,19 @@ languageServer:
 languageServer:
   - openFiles:
       docfx.yml:
-      TOC.yml: |
+      toc.yml: |
         items:
         - href: b.md
       a.md:
   - expectDiagnostics:
-      TOC.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
+      toc.yml: [{ "code": "file-not-found" }, { "code": "missing-attribute" }]
   - editFiles:
-      TOC.yml: |
+      toc.yml: |
         items:
         - href: a.md
           name: a
   - expectDiagnostics:
-      TOC.yml: []
+      toc.yml: []
 ---
 # Isolate metadata validation state between builds
 inputs:
