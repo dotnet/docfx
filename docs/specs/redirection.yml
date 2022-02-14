@@ -967,6 +967,7 @@ outputs:
     {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
 ---
 # redirection source path contains invalid path char
+os: windows
 repos:
   https://github.com/redirection/invalid-redirection-source-path:
   - files:
