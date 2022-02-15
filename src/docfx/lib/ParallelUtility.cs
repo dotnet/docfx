@@ -25,7 +25,7 @@ internal static class ParallelUtility
             }
             catch
             {
-                if (item is string str && UrlUtility.IsHttp(str))
+                if (item is string str)
                 {
                     Console.WriteLine($"Error processing '{UrlUtility.SanitizeUrl(str)}'");
                 }
