@@ -654,6 +654,51 @@ outputs:
         <video src='' poster=''></video>
         </p>"
     }
+  .links.json: |
+    {
+      "links": [
+          {
+              "source_url": "/a",
+              "target_url": "//codepen.io/azuremaps/embed",
+              "source_line": 4
+          },
+          {
+              "source_url": "/a",
+              "target_url": "a.mp4",
+              "source_line": 14
+          },
+          {
+              "source_url": "/a",
+              "target_url": "a.png",
+              "source_line": 14
+          },
+          {
+              "source_url": "/a",
+              "target_url": "data:image/png;base64,aG=",
+              "source_line": 6
+          },
+          {
+              "source_url": "/a",
+              "target_url": "data:image/svg+xml,%3Csvg /svg%3E",
+              "source_line": 11
+          },
+          {
+              "source_url": "/a",
+              "target_url": "http://github.com",
+              "source_line": 1
+          },
+          {
+              "source_url": "/a",
+              "target_url": "https://docs.com/a.png",
+              "source_line": 9
+          },
+          {
+              "source_url": "/a",
+              "target_url": "https://github.com",
+              "source_line": 2
+          }
+      ]
+    }
   .errors.log: |
     { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'ms-windows-store://pdp?productId=9WZDNCRFHVJL' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'file://c/d' *", "file": "a.md" }

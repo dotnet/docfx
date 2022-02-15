@@ -75,7 +75,7 @@ internal class LinkResolver
     }
 
     public (Error? error, string link, FilePath? file) ResolveLink(
-        SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null)
+        SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null, string tagName = "a")
     {
         if (href.Value.StartsWith("xref:"))
         {
@@ -108,7 +108,7 @@ internal class LinkResolver
             }
         }
 
-        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
+        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, tagName, link, href.Source);
 
         if (file != null && !JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
         {

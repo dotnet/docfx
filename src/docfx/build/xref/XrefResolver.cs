@@ -105,7 +105,7 @@ internal class XrefResolver
 
         query = queries.AllKeys.Length == 0 ? "" : "?" + string.Join('&', queries);
         var fileLink = UrlUtility.MergeUrl(xrefSpec.Href, query, fragment);
-        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, fileLink, href.Source);
+        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, "a", fileLink, href.Source);
 
         resolvedHref = UrlUtility.MergeUrl(resolvedHref, query, fragment);
         return (null, new XrefLink(resolvedHref, display, xrefSpec.DeclaringFile, localizable));
@@ -127,7 +127,7 @@ internal class XrefResolver
         }
 
         var localizable = IsNameLocalizable(xrefSpec);
-        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, xrefSpec.Href, uid.Source);
+        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, "a", xrefSpec.Href, uid.Source);
         return (null, new XrefLink(href, xrefSpec.GetName() ?? xrefSpec.Uid, xrefSpec.DeclaringFile, localizable));
     }
 

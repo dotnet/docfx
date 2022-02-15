@@ -453,7 +453,7 @@ internal class JsonSchemaTransformer
                     HtmlUtility.TransformLink(ref token, null, link =>
                     {
                         var source = new SourceInfo<string>(link.Href, content.Source?.WithOffset(link.Href.Source));
-                        var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file);
+                        var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, file, file, tagName: link.TagName);
                         errors.AddIfNotNull(htmlError);
                         return htmlLink;
                     });
