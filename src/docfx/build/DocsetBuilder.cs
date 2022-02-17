@@ -83,7 +83,7 @@ internal class DocsetBuilder
         _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
         _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
         _bookmarkValidator = new(_errors);
-        _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider, _config.TrustedDomains);
+        _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
         _dependencyMapBuilder = new(_sourceMap);
         _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator);
         _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));

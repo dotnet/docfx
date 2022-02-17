@@ -419,24 +419,7 @@ internal static class HtmlUtility
                         token.SetAttributeValue("data-linktype", "relative-path");
                         break;
                     case LinkType.External:
-
-                        // Opt-in to trusted domain check
-                        if (trustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
-                        {
-                            if (tagName == "img")
-                            {
-                                errors.Add(Errors.Content.ExternalImage(new(file), href, tagName, untrustedDomain));
-                            }
-                            else
-                            {
-                                errors.Add(Errors.Content.DisallowedDomain(new(file), href, tagName, untrustedDomain));
-                            }
-                            token.SetAttributeValue(attributeName, "");
-                        }
-                        else
-                        {
-                            token.SetAttributeValue("data-linktype", "external");
-                        }
+                        token.SetAttributeValue("data-linktype", "external");
                         break;
                 }
             }

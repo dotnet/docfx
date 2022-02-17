@@ -441,8 +441,8 @@ internal class TocLoader
             var topicHrefType = GetHrefType(topicHref);
             Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
 
-            var (error, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
-            _errors.AddIfNotNull(error);
+            var (linkErrors, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
+            _errors.AddRange(linkErrors);
 
             if (resolvedFile != null && addToReferencedFiles)
             {

@@ -359,9 +359,9 @@ internal class MarkdownEngine
     private string GetLink(LinkInfo link)
     {
         var status = s_status.Value!.Peek();
-        var (error, result, _) =
+        var (linkErrors, result, _) =
             _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath(), TransformLinkInfo(link), tagName: link.TagName);
-        status.Errors.AddIfNotNull(error);
+        status.Errors.AddRange(linkErrors);
         return result;
     }
 

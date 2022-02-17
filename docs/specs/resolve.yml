@@ -620,7 +620,7 @@ inputs:
   a.md: |
     [link](http://github.com)
     [link](https://github.com)
-    [link](ms-windows-store://pdp?productId=9WZDNCRFHVJL)
+    [!INCLUDE[](b.md)]
     [link](//codepen.io/azuremaps/embed)
     [link](file://c/d)
     ![img](data:image/png;base64,aG=)
@@ -633,13 +633,16 @@ inputs:
     <image src="//office.com/b.png">
     <video src="a.mp4" poster="a.png"></video>
     <video src="https://microsoft.com/a.mp4" poster="https://microsoft.com/a.png"></video>
+  b.md: |
+    [link](ms-windows-store://pdp?productId=9WZDNCRFHVJL)
 outputs:
   a.json: |
     {
       "conceptual": "<p>
         <a href='http://github.com' data-linktype='external'>link</a>
-        <a href='https://github.com' data-linktype='external'>link</a>
-        <a href=''>link</a>
+        <a href='https://github.com' data-linktype='external'>link</a></p>
+        <p><a href=''>link</a></p>
+        <p>
         <a href='//codepen.io/azuremaps/embed' data-linktype='external'>link</a>
         <a href=''>link</a>
         <img src='data:image/png;base64,aG=' alt='img' data-linktype='external'/>
@@ -654,6 +657,7 @@ outputs:
         <video src='' poster=''></video>
         </p>"
     }
+  b.json:
   .links.json: |
     {
       "links": [
@@ -700,7 +704,7 @@ outputs:
       ]
     }
   .errors.log: |
-    { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'ms-windows-store://pdp?productId=9WZDNCRFHVJL' *", "file": "a.md" }
+    { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'ms-windows-store://pdp?productId=9WZDNCRFHVJL' *", "file": "b.md" }
     { "message_severity": "suggestion", "code": "disallowed-domain", "message": "Url 'file://c/d' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "external-image", "message": "Image 'data:text/html;base64,aL=' *", "file": "a.md" }
     { "message_severity": "suggestion", "code": "external-image", "message": "Image 'http://docs.com/a.png' *", "file": "a.md" }

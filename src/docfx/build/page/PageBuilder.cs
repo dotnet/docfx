@@ -199,11 +199,11 @@ internal class PageBuilder
 
         if (!string.IsNullOrEmpty(userMetadata.BreadcrumbPath))
         {
-            var (breadcrumbError, breadcrumbPath, _) = _linkResolver.ResolveLink(
+            var (breadcrumbErrors, breadcrumbPath, _) = _linkResolver.ResolveLink(
                 userMetadata.BreadcrumbPath,
                 userMetadata.BreadcrumbPath.Source is null ? file : userMetadata.BreadcrumbPath.Source.File,
                 file);
-            errors.AddIfNotNull(breadcrumbError);
+            errors.AddRange(breadcrumbErrors);
             systemMetadata.BreadcrumbPath = breadcrumbPath;
         }
 
