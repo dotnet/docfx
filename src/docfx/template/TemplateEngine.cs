@@ -187,7 +187,7 @@ internal class TemplateEngine
         return (model, metadata);
     }
 
-    private string ProcessHtml(ErrorBuilder errors, FilePath file, string html)
+    private string ProcessHtml(FilePath file, string html)
     {
         var bookmarks = new HashSet<string>();
         var searchText = new StringBuilder();
@@ -217,14 +217,14 @@ internal class TemplateEngine
         }
         else if (JsonSchemaProvider.IsLandingData(mime))
         {
-            return ProcessHtml(_errors, file, pageModel.Value<string>("conceptual") ?? "");
+            return ProcessHtml(file, pageModel.Value<string>("conceptual") ?? "");
         }
 
         // Generate SDP content
         var model = RunJavaScript($"{mime}.html.primary.js", pageModel);
         var content = RunMustache(_errors, $"{mime}.html", model);
 
-        return ProcessHtml(_errors, file, content);
+        return ProcessHtml(file, content);
     }
 
     private string ProcessConceptualHtml(string html)
