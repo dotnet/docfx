@@ -273,7 +273,7 @@ internal class PageBuilder
 
         _contentValidator.ValidateTitle(file, conceptual.Title, userMetadata.TitleSuffix);
 
-        ProcessConceptualHtml(errors, file, html, conceptual);
+        ProcessConceptualHtml(file, html, conceptual);
 
         return _config.DryRun ? new JObject() : JsonUtility.ToJObject(conceptual);
     }
@@ -331,7 +331,7 @@ internal class PageBuilder
         return pageModel;
     }
 
-    private void ProcessConceptualHtml(ErrorBuilder errors, FilePath file, string html, ConceptualModel conceptual)
+    private void ProcessConceptualHtml(FilePath file, string html, ConceptualModel conceptual)
     {
         var wordCount = 0L;
 
@@ -340,7 +340,7 @@ internal class PageBuilder
 
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
-            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
+            HtmlUtility.AddLinkType(ref token);
             HtmlUtility.GetBookmarks(ref token, bookmarks);
 
             if (token.Type == HtmlTokenType.Text)

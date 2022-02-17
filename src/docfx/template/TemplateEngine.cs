@@ -195,7 +195,7 @@ internal class TemplateEngine
         var result = HtmlUtility.TransformHtml(html, (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
         {
             HtmlUtility.GetBookmarks(ref token, bookmarks);
-            HtmlUtility.AddLinkType(errors, file, ref token, _config.TrustedDomains);
+            HtmlUtility.AddLinkType(ref token);
             HtmlUtility.AddLocaleIfMissingForAbsolutePath(ref token, _locale);
 
             if (token.Type == HtmlTokenType.Text)

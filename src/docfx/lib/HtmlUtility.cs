@@ -395,15 +395,11 @@ internal static class HtmlUtility
         }
     }
 
-    internal static void AddLinkType(
-        ErrorBuilder errors,
-        FilePath file,
-        ref HtmlToken token,
-        Dictionary<string, TrustedDomains> trustedDomains)
+    internal static void AddLinkType(ref HtmlToken token)
     {
         foreach (ref readonly var attribute in token.Attributes.Span)
         {
-            if (attribute.Value.Length > 0 && IsLink(ref token, attribute, out var tagName, out var attributeName))
+            if (attribute.Value.Length > 0 && IsLink(ref token, attribute, out _, out _))
             {
                 var href = attribute.Value.ToString();
 
