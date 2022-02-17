@@ -423,7 +423,7 @@ internal class JsonSchemaTransformer
         switch (schema.ContentType)
         {
             case JsonSchemaContentType.Href:
-                var (linkErros, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
+                var (linkErrors, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
                 {
                     HyperLinkType = HyperLinkType.Default,
                     IsVisible = true,  // trun around to skip 'link-text-missing' validation
@@ -431,7 +431,7 @@ internal class JsonSchemaTransformer
                     SourceInfo = sourceInfo,
                 });
 
-                errors.AddRange(linkErros);
+                errors.AddRange(linkErrors);
                 return link;
 
             case JsonSchemaContentType.Markdown:
