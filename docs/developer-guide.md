@@ -238,7 +238,7 @@ Convention | Use case | Example
     - A contributor will be deleted if her/his public email is disabled. If the new contributor list becomes empty, the whole contributor list will disappear.
     - Display name of contributors may change when they change their display name.
 - When new validation rules added, they may have the corresponding effects in the diff.
-- If the content of articles changed, there will be diffs about content change as well as "word_count", .publish.json and .depemdencymap.json, etc.
+- If the content of articles changed, there will be diffs about content change as well as "word_count", .publish.json and .dependencymap.json, etc.
 - Some metadata changes such as "update_at" are expected.
     - update_at
     - update_at_date_time
