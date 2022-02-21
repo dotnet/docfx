@@ -92,7 +92,7 @@ internal static class Serve
 
         foreach (var publishFile in publishFiles)
         {
-            var directory = Path.GetDirectoryName(publishFile);
+            var directory = Path.GetDirectoryName(Path.GetFullPath(publishFile));
             PrintServeDirectory(directory);
             app.UseFileServer(new FileServerOptions
             {
