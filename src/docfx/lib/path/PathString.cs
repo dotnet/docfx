@@ -170,7 +170,7 @@ internal struct PathString : IEquatable<PathString>, IComparable<PathString>
         public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var value = serializer.Deserialize<string>(reader);
-            return value is null ? default : new PathString(PathUtility.NormalizeFileWithValidation(value));
+            return value is null ? default : new PathString(PathUtility.CheckInvalidPathString(value));
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)

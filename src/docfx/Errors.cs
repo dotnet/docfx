@@ -131,8 +131,8 @@ internal static class Errors
         /// Path string contains invalid path chars.
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error PathInvalid(SourceInfo? source, string message)
-            => new(ErrorLevel.Warning, "path-invalid", $"{message}", source);
+        public static Error PathInvalid(string path, HashSet<char> invalidPathChars)
+            => new(ErrorLevel.Warning, "path-invalid", $"Path {path} contains invalid chars {string.Join(", ", invalidPathChars.Select(c => $"'{c}'"))}.");
     }
 
     public static class Yaml

@@ -88,7 +88,7 @@ internal static class PathUtility
         return str;
     }
 
-    public static string NormalizeFileWithValidation(string path)
+    public static string CheckInvalidPathString(string path)
     {
         path = NormalizeFile(path);
         var invalidPathChars = new HashSet<char>();
@@ -104,7 +104,7 @@ internal static class PathUtility
         }
         if (invalidPathChars.Count > 0)
         {
-            throw new InvalidDataException($"Path {path} contains invalid chars {string.Join(", ", invalidPathChars.Select(c => $"'{c}'"))}.");
+            throw Errors.Json.PathInvalid(path, invalidPathChars).ToException(null, false);
         }
         return path;
     }
