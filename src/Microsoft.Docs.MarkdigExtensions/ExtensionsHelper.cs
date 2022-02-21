@@ -252,14 +252,6 @@ public static class ExtensionsHelper
             }
             else
             {
-                if (title.Length >= 2 && title.First() == '\'' && title.Last() == '\'')
-                {
-                    title = title[1..^1].Trim();
-                }
-                else if (title.Length >= 2 && title.First() == '\"' && title.Last() == '\"')
-                {
-                    title = title[1..^1].Trim();
-                }
                 path = includedFilePath;
                 slice.NextChar();
                 return true;

@@ -27,7 +27,7 @@ public class HtmlUtilityTest
         var actual = HtmlUtility.TransformHtml(
             input,
             (ref HtmlReader reader, ref HtmlWriter writer, ref HtmlToken token) =>
-                HtmlUtility.AddLinkType(ErrorBuilder.Null, new("a.md"), ref token, new()));
+                HtmlUtility.AddLinkType(ref token));
 
         Assert.Equal(JsonDiff.NormalizeHtml(output), JsonDiff.NormalizeHtml(actual));
     }

@@ -36,7 +36,7 @@ internal static class UrlUtility
     /// <returns>The splitted path, query and fragment</returns>
     public static (string path, string query, string fragment) SplitUrl(string url)
     {
-        var path = "";
+        string path;
         var query = "";
         var fragment = "";
 
