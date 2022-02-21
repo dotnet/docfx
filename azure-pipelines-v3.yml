@@ -229,8 +229,6 @@ parameters:
       params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
     dynamics365smb-devitpro:
       params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
-    DevSandbox:
-      params: https://github.com/MicrosoftDocs/DevSandbox --timeout 30
     test:
       params: https://github.com/MicrosoftDocs/test --branch main --timeout 30 --no-dry-sync
     DocsRoot:

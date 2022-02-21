@@ -74,9 +74,10 @@ internal class LinkResolver
         return (error, file);
     }
 
-    public (Error? error, string link, FilePath? file) ResolveLink(
-        SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null)
+    public (List<Error> errors, string link, FilePath? file) ResolveLink(
+        SourceInfo<string> href, FilePath referencingFile, FilePath inclusionRoot, LinkNode? linkNode = null, string tagName = "a")
     {
+        var errors = new List<Error>();
         if (href.Value.StartsWith("xref:"))
         {
             var (xrefError, xrefLink) = _xrefResolver.ResolveXrefByHref(
@@ -84,14 +85,16 @@ internal class LinkResolver
                 referencingFile,
                 inclusionRoot);
 
-            return (xrefError, xrefLink.Href ?? "", xrefLink.DeclaringFile);
+            errors.AddIfNotNull(xrefError);
+            return (errors, xrefLink.Href ?? "", xrefLink.DeclaringFile);
         }
 
         var (error, link, fragment, linkType, file, isCrossReference) = TryResolveAbsoluteLink(
             href,
             referencingFile,
             inclusionRoot,
-            linkNode);
+            linkNode,
+            tagName);
 
         inclusionRoot ??= referencingFile;
         if (!isCrossReference)
@@ -108,7 +111,10 @@ internal class LinkResolver
             }
         }
 
-        _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
+        if (!string.IsNullOrEmpty(link))
+        {
+            _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
+        }
 
         if (file != null && !JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot)))
         {
@@ -120,28 +126,43 @@ internal class LinkResolver
 
     public IEnumerable<FilePath> GetAdditionalResources() => _additionalResources.Value;
 
-    private (Error? error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
-        SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot, LinkNode? linkNode)
+    private (List<Error> error, string href, string? fragment, LinkType linkType, FilePath? file, bool isCrossReference) TryResolveAbsoluteLink(
+        SourceInfo<string> href, FilePath hrefRelativeTo, FilePath inclusionRoot, LinkNode? linkNode, string tagName)
     {
+        var errors = new List<Error>();
         var decodedHref = new SourceInfo<string>(Uri.UnescapeDataString(href), href);
         var (error, file, query, fragment, linkType) = TryResolveFile(inclusionRoot, hrefRelativeTo, decodedHref);
+        errors.AddIfNotNull(error);
 
         if (linkType == LinkType.WindowsAbsolutePath)
         {
-            return (error, "", fragment, linkType, null, false);
+            return (errors, "", fragment, linkType, null, false);
         }
 
         ValidateLink(inclusionRoot, linkNode);
         if (linkType == LinkType.External)
         {
             var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
-            return (error, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+            if (_config.TrustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
+            {
+                if (tagName == "img")
+                {
+                    errors.Add(Errors.Content.ExternalImage(new(hrefRelativeTo), href, tagName, untrustedDomain));
+                }
+                else
+                {
+                    errors.Add(Errors.Content.DisallowedDomain(new(hrefRelativeTo), href, tagName, untrustedDomain));
+                }
+                return (errors, "", fragment, LinkType.AbsolutePath, null, false);
+            }
+
+            return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
         }
 
         // Cannot resolve the file, leave href as is
         if (file is null)
         {
-            return (error, href, fragment, linkType, null, false);
+            return (errors, href, fragment, linkType, null, false);
         }
 
         var siteUrl = _documentProvider.GetSiteUrl(file);
@@ -151,12 +172,12 @@ internal class LinkResolver
         {
             var selfUrl = linkType == LinkType.SelfBookmark ? "" : Path.GetFileName(siteUrl);
 
-            return (error, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
+            return (errors, UrlUtility.MergeUrl(selfUrl, query, fragment), fragment, LinkType.SelfBookmark, null, false);
         }
 
         if (file.Origin == FileOrigin.Redirection)
         {
-            return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
+            return (errors, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
         }
 
         if (error is null && _buildScope.OutOfScope(file))
@@ -164,9 +185,10 @@ internal class LinkResolver
             if (file.Origin == FileOrigin.Dependency && _buildScope.GetContentType(file) == ContentType.Resource)
             {
                 Watcher.Write(() => _additionalResources.Value.TryAdd(file));
-                return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
+                return (errors, UrlUtility.MergeUrl(siteUrl, query, fragment), null, linkType, file, false);
             }
-            return (Errors.Link.LinkOutOfScope(href, file), href, fragment, linkType, null, false);
+            errors.Add(Errors.Link.LinkOutOfScope(href, file));
+            return (errors, href, fragment, linkType, null, false);
         }
 
         if (file.Origin == FileOrigin.Fallback && _config.UrlType != UrlType.Docs &&
@@ -175,10 +197,10 @@ internal class LinkResolver
 #pragma warning disable CS0618 // Docs pdf build uses static url, but links in fallback repo should be resolved to docs site URL
             var docsSiteUrl = _documentProvider.GetDocsSiteUrl(file);
 #pragma warning restore CS0618
-            return (error, UrlUtility.MergeUrl($"https://{_config.HostName}{docsSiteUrl}", query, fragment), fragment, linkType, file, false);
+            return (errors, UrlUtility.MergeUrl($"https://{_config.HostName}{docsSiteUrl}", query, fragment), fragment, linkType, file, false);
         }
 
-        return (error, UrlUtility.MergeUrl(siteUrl, query, fragment), fragment, linkType, file, false);
+        return (errors, UrlUtility.MergeUrl(siteUrl, query, fragment), fragment, linkType, file, false);
     }
 
     private (Error? error, FilePath? file, string? query, string? fragment, LinkType linkType) TryResolveFile(

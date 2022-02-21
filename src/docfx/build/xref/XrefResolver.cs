@@ -159,7 +159,11 @@ internal class XrefResolver
                 // output xref map with URL appending "?branch=master" for master branch
                 var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
                 var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
-                return xref.ToExternalXrefSpec(href);
+
+                // union the moniker lists of current uid into one
+                return xref.ToExternalXrefSpec(
+                    href,
+                    xrefs.Length > 0 ? MonikerList.Union(xrefs.Select(xref => xref.Monikers)) : null);
             })
             .OrderBy(xref => xref.Uid)
             .ToArray();
@@ -245,7 +249,8 @@ internal class XrefResolver
                         xrefGroup.Key,
                         repository: item.ReferencedRepositoryUrl,
                         item.SchemaType,
-                        item.PropertyPath) with { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
+                        item.PropertyPath) with
+                    { Level = _config.IsLearn ? ErrorLevel.Error : ErrorLevel.Warning });
                 }
             }
         }
