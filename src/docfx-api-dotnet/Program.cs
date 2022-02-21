@@ -29,9 +29,6 @@ rootCommand.Handler = CommandHandler.Create((string output, string directory) =>
         "-L", @"C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies",
         "-L", @"C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1",
         "-L", @"C:\Program Files\dotnet",
-        "-lang", "vb.net",
-        "-lang", "c++/cli",
-        "--ang", "fsharp",
     });
 
     ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory);
