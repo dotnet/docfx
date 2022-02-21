@@ -25,7 +25,7 @@ internal static class ParallelUtility
             }
             catch
             {
-                Console.WriteLine($"Error processing '{item}'");
+                Console.WriteLine($"Error processing '{UrlUtility.SanitizeUrl(item?.ToString())}'");
                 throw;
             }
 

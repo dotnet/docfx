@@ -145,7 +145,7 @@ internal class FileResolver
 
     private string DownloadFromUrl(SourceInfo<string> url)
     {
-        return s_urls.GetOrAdd((AppData.DownloadsRoot, url), _ => new Lazy<string>(() => DownloadFromUrlCore(url))).Value;
+        return s_urls.GetOrAdd((AppData.DownloadsRoot, UrlUtility.SanitizeUrl(url)), _ => new Lazy<string>(() => DownloadFromUrlCore(url))).Value;
     }
 
     private string DownloadFromUrlCore(string url)

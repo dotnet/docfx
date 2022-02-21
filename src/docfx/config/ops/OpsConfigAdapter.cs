@@ -80,7 +80,8 @@ internal class OpsConfigAdapter
         var branch = queries["branch"] ?? "";
         var locale = queries["locale"] ?? "";
         var xrefEndpoint = queries["xref_endpoint"] ?? "";
-        var xrefQueryTags = (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+        var xrefQueryTags =
+            (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository)));
         var docsetInfo = await getDocsetInfo.Value;
