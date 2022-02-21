@@ -80,7 +80,8 @@ internal class OpsConfigAdapter
         var branch = queries["branch"] ?? "";
         var locale = queries["locale"] ?? "";
         var xrefEndpoint = queries["xref_endpoint"] ?? "";
-        var xrefQueryTags = (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+        var xrefQueryTags =
+            (queries["xref_query_tags"] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var getDocsetInfo = s_docsetInfoCache.GetOrAdd(repository, new Lazy<Task<string>>(() => _opsAccessor.GetDocsetInfo(repository)));
         var docsetInfo = await getDocsetInfo.Value;
@@ -224,11 +225,6 @@ internal class OpsConfigAdapter
 
     private static string GetXrefHostName(string siteName, string branch)
     {
-        return !IsLive(branch) && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
-    }
-
-    private static bool IsLive(string branch)
-    {
-        return branch == "live" || branch == "live-sxs";
+        return branch != "live" && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
     }
 }

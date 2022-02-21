@@ -101,33 +101,6 @@ Output:
 
 ## Features
 
-### Bilingual
-To show bilingual page, we need build loc corresponding `sxs content`, below example shows where the `sxs content` are stored(`live-sxs` branch):
-
-```text
-#live(branch):
-    |- articles/
-    |   |- a.md(raw content)
-#live-sxs(branch):
-    |- articles/
-    |   |- a.md(sxs content)
-```
-
-The reason why we keep the `raw content`(under `live` branch) is that the contributors need directly contribute to `raw content` instead of `sxs content`(`sxs content` are not designed for readability).
-
-Then it brings new problem: the `contributor info` need to be extracted from `raw content` but the actual building file is `sxs content`:
-
-```text
-#live(branch):
-    |- articles/
-    |   |- a.md(raw content) -> contributors to extract
-#live-sxs(branch):
-    |- articles/
-    |   |- a.md(sxs content) -> content to build
-```
-
-So, during docfx build, if the current building content is sxs content, docfx will extract the contributors from corresponding raw content.
-
 ### Lookup no-existing source resources(token/code snippet/image)
 
 All localization content is delayed translated, which means that the content version in loc docsets usually fall behind of source content version for one or two weeks:

@@ -120,7 +120,7 @@ internal static class OpsMetadataRuleConverter
 
             if (rulesInfo.TryGetValue("List", out var listRuleInfo) &&
                 listRuleInfo != null &&
-                TryGetTaxonomy(attribute, listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
+                TryGetTaxonomy(listRuleInfo.List, taxonomies, out var enumDependencies, out var enumValues))
             {
                 // if just plain enum, extend property
                 if (enumValues != null && enumValues.Length > 0)
@@ -205,7 +205,6 @@ internal static class OpsMetadataRuleConverter
     }
 
     private static bool TryGetTaxonomy(
-        string attribute,
         string? listId,
         Taxonomies taxonomies,
         out Dictionary<string, EnumDependenciesSchema?> taxonomy,

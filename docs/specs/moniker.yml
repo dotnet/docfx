@@ -741,7 +741,7 @@ outputs:
           {
               "uid": "a",
               "href": "https://docs.com/docs/a",
-              "monikerGroup": "ed8f7746ec932ae7c9f595c1f2c97d5a",
+              "monikerGroup": "8c48746eea10da67b4b7a541233dd5d9",
               "name": "netcore-2.0, netcore-2.1"
           }
       ],
@@ -754,7 +754,8 @@ outputs:
       "repository_url": "https://docs.com/test-same-uid-overlapping-moniker",
       "docset_name": "",
       "moniker_groups": {
-          "ed8f7746ec932ae7c9f595c1f2c97d5a": [
+          "8c48746eea10da67b4b7a541233dd5d9": [
+              "netcore-1.1",
               "netcore-2.0",
               "netcore-2.1"
           ]
@@ -2118,3 +2119,65 @@ inputs:
     }
 outputs: 
   9b52f68bce2b10c7aa018b696f8ca916/a.json:
+
+---
+# Define same uid with multiple monikers
+noSingleFile: true
+repos:
+  https://docs.com/test-same-uid-multiple-moniker#live:
+    - files:
+        docfx.yml: |
+          monikerRange:
+            'docs/v1/**': '< netcore-2.0'
+            'docs/v2/**': '>= netcore-2.0'
+          routes:
+            docs/v1/: docs/
+            docs/v2/: docs/
+          monikerDefinition: monikerDefinition.json
+        docs/v1/a.md: |
+          ---
+          uid: a
+          title: netcore-1.1, netcore-1.0
+          ---
+          Moniker: netcore-1.0, netcore-1.1
+        docs/v2/a.md: |
+          ---
+          uid: a
+          title: netcore-2.0, netcore-2.1
+          ---
+          Moniker: netcore-2.0, netcore-2.1
+        docs/c.md: Link to @a
+        monikerDefinition.json: |
+          {
+            "monikers": [
+              { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-2.0", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-2.1", "product_name": ".NET Core" }
+            ]
+          }
+outputs:
+  ed8f7746ec932ae7c9f595c1f2c97d5a/docs/a.json:
+  docs/c.json: |
+    { "conceptual": "<p>Link to <a href=\"a\">netcore-2.0, netcore-2.1</a></p>" }
+  .xrefmap.json: | 
+    {
+      "references": [
+          {
+              "uid": "a",
+              "href": "https://docs.com/docs/a",
+              "monikerGroup": "d35878194ff560ab4603c8c1a0ada0a9",
+              "name": "netcore-2.0, netcore-2.1"
+          }
+      ],
+      "moniker_groups": {
+          "d35878194ff560ab4603c8c1a0ada0a9": [
+              "netcore-1.0",
+              "netcore-1.1",
+              "netcore-2.0",
+              "netcore-2.1"
+          ]
+      }
+    }
+  .publish.json: 
+  17b9fe681514513cbf7d5c90e32f107a/docs/a.json: 

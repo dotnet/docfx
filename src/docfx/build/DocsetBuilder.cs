@@ -91,7 +91,7 @@ internal class DocsetBuilder
         _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, _redirectionProvider, () => Ensure(_jsonSchemaTransformer));
         _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider, _contentValidator);
         _htmlSanitizer = new(_config);
-        _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
+        _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
         _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
         _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _documentProvider, _jsonSchemaLoader, _jsonSchemaProvider, _jsonSchemaTransformer, _monikerProvider, _customRuleProvider);
         _tocParser = new(_input, _markdownEngine);
@@ -128,7 +128,7 @@ internal class DocsetBuilder
             if (!options.NoRestore)
             {
                 progressReporter.Report("Restoring dependencies...");
-                Restore.RestoreDocset(errorLog, config, buildOptions, packageResolver, fileResolver);
+                Restore.RestoreDocset(errorLog, config, packageResolver, fileResolver);
                 if (errorLog.HasError)
                 {
                     return null;

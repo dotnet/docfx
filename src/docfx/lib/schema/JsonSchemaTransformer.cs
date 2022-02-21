@@ -448,7 +448,7 @@ internal class JsonSchemaTransformer
         switch (schema.ContentType)
         {
             case JsonSchemaContentType.Href:
-                var (error, link, _) = _linkResolver.ResolveLink(content, referencingFile, file, new HyperLinkNode
+                var (linkErrors, link, _) = _linkResolver.ResolveLink(content, referencingFile, file, new HyperLinkNode
                 {
                     HyperLinkType = HyperLinkType.Default,
                     IsVisible = true,  // trun around to skip 'link-text-missing' validation
@@ -456,7 +456,7 @@ internal class JsonSchemaTransformer
                     SourceInfo = sourceInfo,
                 });
 
-                errors.AddIfNotNull(error);
+                errors.AddRange(linkErrors);
                 return link;
 
             case JsonSchemaContentType.Markdown:
@@ -477,8 +477,8 @@ internal class JsonSchemaTransformer
                     HtmlUtility.TransformLink(ref token, null, link =>
                     {
                         var source = new SourceInfo<string>(link.Href, content.Source?.WithOffset(link.Href.Source));
-                        var (htmlError, htmlLink, _) = _linkResolver.ResolveLink(source, referencingFile, file);
-                        errors.AddIfNotNull(htmlError);
+                        var (htmlErrors, htmlLink, _) = _linkResolver.ResolveLink(source, referencingFile, file, tagName: link.TagName);
+                        errors.AddRange(htmlErrors);
                         return htmlLink;
                     }));
 
