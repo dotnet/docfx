@@ -594,8 +594,7 @@ internal static class JsonUtility
             if (args is not null && DocfxException.IsDocfxException(args.ErrorContext.Error, out var dex))
             {
                 var state = s_status.Value!.Peek();
-                state.Errors.AddRange(dex.Select(ex => new Error(
-                    ex.Error.Level, ex.Error.Code, $"{ex.Error.Message}", state.Reader?.CurrentToken?.GetSourceInfo(), ex.Error.PropertyPath, ex.Error.Type)));
+                state.Errors.AddRange(dex.Select(ex => ex.Error with { Source = state.Reader?.CurrentToken?.GetSourceInfo() }));
                 args.ErrorContext.Handled = true;
             }
         }
