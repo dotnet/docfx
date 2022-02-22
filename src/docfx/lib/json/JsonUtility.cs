@@ -591,6 +591,12 @@ internal static class JsonUtility
                 state.Errors.Add(Errors.Json.ViolateSchema(state.Reader?.CurrentToken?.GetSourceInfo(), ParseException(args.ErrorContext.Error).message));
                 args.ErrorContext.Handled = true;
             }
+            if (args is not null && DocfxException.IsDocfxException(args.ErrorContext.Error, out var dex))
+            {
+                var state = s_status.Value!.Peek();
+                state.Errors.AddRange(dex.Select(ex => ex.Error with { Source = state.Reader?.CurrentToken?.GetSourceInfo() }));
+                args.ErrorContext.Handled = true;
+            }
         }
     }
 
