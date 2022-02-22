@@ -470,7 +470,7 @@ internal class JsonSchemaTransformer
 
                 if (xrefSpec != null && schema.XrefType != null && !schema.XrefType.Contains(xrefSpec.SchemaType))
                 {
-                    errors.Add(Errors.Xref.XrefTypeInvalid(content, string.Join(",", schema.XrefType), xrefSpec.SchemaType));
+                    errors.Add(Errors.Xref.XrefTypeInvalid(content, StringUtility.Join(schema.XrefType), xrefSpec.SchemaType));
                 }
 
                 if (xrefSpec != null && !xrefmap.ContainsKey(content))
