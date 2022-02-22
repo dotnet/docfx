@@ -422,7 +422,7 @@ internal static class Errors
             => new(ErrorLevel.Warning, "xref-not-found", $"Cross reference not found: '{source}'.", source);
 
         public static Error XrefTypeInvalid(SourceInfo<string> xref, string expectedXrefType, string? actualXrefType)
-           => new(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type '{expectedXrefType}' but got '{actualXrefType}'.", xref);
+           => new(ErrorLevel.Warning, "xref-type-invalid", $"Invalid cross reference: '{xref}'. Expected type {expectedXrefType} but got '{actualXrefType}'.", xref);
 
         public static Error UidNotFound(string uid, string? repository, string? schemaType, string? propertyPath)
             => new(ErrorLevel.Warning, "uid-not-found", $"UID '{uid}' with type '{schemaType}' not found, which is referenced by repository '{repository}' on property '{propertyPath}'.", null, propertyPath);

@@ -837,6 +837,16 @@ inputs:
     - uid: uid_c
       type: c3_type
     - uid: uid_d
+  docs/f.yml: |
+    ### YamlMime:f_type
+    achieves:
+    - uid: uid_a
+    - uid: uid_e
+  docs/g.yml: |
+    ### YamlMime:f_type
+    achieves:
+    - uid: uid_a
+    - uid: uid_c
   _themes/ContentTemplate/schemas/a_type.schema.json: |
     {
       "properties": {
@@ -863,10 +873,30 @@ inputs:
         }
       }
     }
+  _themes/ContentTemplate/schemas/f_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                 "type": "string",
+                 "contentType": "xref",
+                 "xrefType": ["a_type","e_type"]
+              }
+            }
+          }
+        }
+      }
+    }
 outputs:
   docs/a.json:
   docs/c.json:
   docs/e.json:
+  docs/f.json:
+  docs/g.json:
   .xrefmap.json: | 
     {
       "references":[
@@ -881,6 +911,7 @@ outputs:
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'external_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_d'. Expected type 'b_type' but got ''.","file":"docs/a.yml","line":3}
     {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_e'. Expected type 'b_type' but got 'e_type'.","file":"docs/a.yml","line":3}
+    {"message_severity":"warning","code":"xref-type-invalid","message":"Invalid cross reference: 'uid_c'. Expected type 'a_type', 'e_type' but got 'c3_type'.","file":"docs/g.yml","line":4}
 ---
 # Report file path for empty YAML files
 inputs:

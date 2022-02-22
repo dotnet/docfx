@@ -244,7 +244,8 @@ internal class JsonSchema
     /// <summary>
     /// Property indicate the type of xref
     /// </summary>
-    public string? XrefType { get; init; }
+    [JsonConverter(typeof(OneOrManyConverter))]
+    public string[]? XrefType { get; init; }
 
     /// <summary>
     /// Property indicate which property will fallback to xrefType when SchemaType is null
