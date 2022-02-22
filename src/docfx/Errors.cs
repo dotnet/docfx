@@ -131,7 +131,7 @@ internal static class Errors
         /// Path string contains invalid path chars.
         /// </summary>
         /// Behavior: ❌ Message: ❌
-        public static Error PathInvalid(string path, HashSet<char> invalidPathChars)
+        public static Error PathInvalid(string path, IEnumerable<char> invalidPathChars)
             => new(ErrorLevel.Warning, "path-invalid", $"Path {path} contains invalid chars {string.Join(", ", invalidPathChars.Select(c => $"'{c}'"))}.");
     }
 

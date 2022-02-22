@@ -90,20 +90,21 @@ internal static class PathUtility
 
     public static string CheckInvalidPathString(string path)
     {
-        var invalidPathChars = new HashSet<char>();
+        var length = 0;
+        Span<char> invalidPathChars = stackalloc char[8];
         if (!string.IsNullOrEmpty(path))
         {
             foreach (var c in path)
             {
                 if (s_invalidPathChars.Contains(c))
                 {
-                    invalidPathChars.Add(c);
+                    invalidPathChars[length++] = c;
                 }
             }
         }
-        if (invalidPathChars.Count > 0)
+        if (length > 0)
         {
-            throw Errors.Json.PathInvalid(path, invalidPathChars).ToException(null, false);
+            throw Errors.Json.PathInvalid(path, invalidPathChars[..length].ToArray()).ToException(null, false);
         }
         return path;
     }
