@@ -771,6 +771,11 @@ inputs:
     achieves:
     - uid: uid_c
       type: c3_type
+  docs/d.yml: |
+    ### YamlMime:d_type
+    achieves:
+    - uid: uid_a
+    - uid: uid_b
   _themes/ContentTemplate/schemas/a_type.schema.json: |
     {
       "properties": {
@@ -797,10 +802,29 @@ inputs:
         }
       }
     }
+  _themes/ContentTemplate/schemas/d_type.schema.json: |
+    {
+      "properties": {
+        "achieves": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": {
+                 "type": "string",
+                 "contentType": "xref",
+                 "xrefType": ["a_type","b_type"]
+              }
+            }
+          }
+        }
+      }
+    }
 outputs:
   docs/a.json:
   docs/b.json:
   docs/c.json:
+  docs/d.json:
   .xrefmap.json: | 
     {
       "references":[
