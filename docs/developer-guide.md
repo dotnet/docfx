@@ -233,7 +233,7 @@ Convention | Use case | Example
 
 ## Regression Test Expected Diffs
 
-- Sometimes the contributors list may change.
+- Sometimes the contributors list may change. You may check against corresponding GitHub pages to double confirm whether the changes are expected or not.
     - There will be a new contributor when a new contributor edits the article.
     - A contributor will be deleted if her/his public email is disabled. If the new contributor list becomes empty, the whole contributor list will disappear.
     - Display name of contributors may change when they change their display name.
