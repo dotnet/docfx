@@ -168,7 +168,7 @@ steps:
     pwsh: true
     failOnStderr: true
     filePath: 'tools\Deployment\deploy.ps1'
-    arguments: '-targets pack,release'
+    arguments: '-targets pack'
 
 - task: PublishBuildArtifacts@1
   condition: always()
