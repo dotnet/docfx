@@ -468,9 +468,9 @@ internal class JsonSchemaTransformer
 
                 errors.AddIfNotNull(xrefError);
 
-                if (xrefSpec != null && schema.XrefType != null && !schema.XrefType.Equals(xrefSpec.SchemaType, StringComparison.OrdinalIgnoreCase))
+                if (xrefSpec != null && schema.XrefType != null && !schema.XrefType.Contains(xrefSpec.SchemaType))
                 {
-                    errors.Add(Errors.Xref.XrefTypeInvalid(content, schema.XrefType, xrefSpec.SchemaType));
+                    errors.Add(Errors.Xref.XrefTypeInvalid(content, StringUtility.Join(schema.XrefType), xrefSpec.SchemaType));
                 }
 
                 if (xrefSpec != null && !xrefmap.ContainsKey(content))

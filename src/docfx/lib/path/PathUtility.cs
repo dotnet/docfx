@@ -19,6 +19,9 @@ internal static class PathUtility
 
     public static readonly StringComparison PathComparison = IsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
+    private static readonly HashSet<char> s_invalidPathChars =
+        Path.GetInvalidPathChars().Concat(Path.GetInvalidFileNameChars()).Except(new char[] { '/', '\\' }).ToHashSet();
+
     /// <summary>
     /// Create a relative path from one path to another file.
     /// Use this over <see cref="Path.GetRelativePath(string, string)"/> when
@@ -83,6 +86,27 @@ internal static class PathUtility
             str += '/';
         }
         return str;
+    }
+
+    public static string CheckInvalidPathString(string path)
+    {
+        var length = 0;
+        Span<char> invalidPathChars = stackalloc char[8];
+        if (!string.IsNullOrEmpty(path))
+        {
+            foreach (var c in path)
+            {
+                if (s_invalidPathChars.Contains(c))
+                {
+                    invalidPathChars[length++] = c;
+                }
+            }
+        }
+        if (length > 0)
+        {
+            throw Errors.Json.PathInvalid(path, invalidPathChars[..length].ToArray()).ToException(null, false);
+        }
+        return path;
     }
 
     /// <summary>
