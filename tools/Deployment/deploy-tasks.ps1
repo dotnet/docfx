@@ -63,12 +63,6 @@ function PublishToNuget {
     }
 }
 
-function PublishToAzureDevOps {
-    param($nugetCommand, $sourceName, $sourceUrl, $artifactsFolder, $token)
-    & $nugetCommand sources add -Name $sourceName -Source $sourceUrl -Username anything -Password $token
-    PublishToNuget $nugetCommand $sourceUrl $artifactsFolder
-}
-
 function UpdateChocoConfig {
     param($chocoScriptPath, $chocoNuspecPath, $version, $hash)
     $chocoScript = Get-Content $chocoScriptPath -Encoding UTF8 -Raw

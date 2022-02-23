@@ -11,7 +11,7 @@ on:
 jobs:
   analyze:
     name: CodeQL
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     permissions:
       security-events: write

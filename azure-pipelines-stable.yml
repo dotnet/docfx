@@ -169,8 +169,6 @@ steps:
     failOnStderr: true
     filePath: 'tools\Deployment\deploy.ps1'
     arguments: '-targets pack,release'
-  env:
-    AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
 
 - task: PublishBuildArtifacts@1
   condition: always()
