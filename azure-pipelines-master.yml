@@ -222,6 +222,13 @@ steps:
     AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
     TOKEN: $(ServiceAccountGithubToken)
 
+- task: PublishBuildArtifacts@1
+  condition: always()
+  displayName: 'upload docfx.zip'
+  inputs:
+    pathtoPublish: 'Documentation\tutorial\artifacts'
+    artifactName: docfx-artifacts
+
 - task: ComponentGovernanceComponentDetection@0
   displayName: 'Component Detection'
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
