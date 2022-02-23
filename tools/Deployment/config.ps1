@@ -17,13 +17,6 @@ $docfx = @{
     docfxJson = "$homeDir\Documentation\docfx.json"
 }
 
-$azdevops = @{
-    ppeName = "docs-build-v2-ppe"
-    ppeUrl = "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json"
-    prodName = "docs-build-v2-prod"
-    prodUrl = "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
-}
-
 $choco = @{
     homeDir = "$homeDir\src\nuspec\chocolatey\docfx"
     nuspec = "$homeDir\src\nuspec\chocolatey\docfx\docfx.nuspec"

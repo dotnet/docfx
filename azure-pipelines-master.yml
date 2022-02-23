@@ -219,7 +219,6 @@ steps:
   env:
     NUGETAPIKEY: $(NugetAPIKey)
     CHOCO_TOKEN: $(ChocoleteyPublishToken)
-    AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
     TOKEN: $(ServiceAccountGithubToken)
 
 - task: ComponentGovernanceComponentDetection@0
