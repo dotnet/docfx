@@ -1,4 +1,2 @@
 paths-ignore:
   - '**/docfx.vendor.js'
-
-runs-on: windows-2019
