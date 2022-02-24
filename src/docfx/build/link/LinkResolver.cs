@@ -142,7 +142,6 @@ internal class LinkResolver
         ValidateLink(inclusionRoot, linkNode);
         if (linkType == LinkType.External)
         {
-            var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
             if (_config.TrustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
             {
                 if (tagName == "img")
@@ -156,7 +155,13 @@ internal class LinkResolver
                 return (errors, "", fragment, LinkType.AbsolutePath, null, false);
             }
 
-            return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+            var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
+            if (!string.Equals(href, resolvedHref, StringComparison.Ordinal))
+            {
+                linkType = LinkType.AbsolutePath;
+            }
+
+            return (errors, resolvedHref, fragment, linkType, null, false);
         }
 
         // Cannot resolve the file, leave href as is
