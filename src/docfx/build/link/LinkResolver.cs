@@ -156,7 +156,7 @@ internal class LinkResolver
             }
 
             var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
-            if (!string.Equals(href, resolvedHref, StringComparison.Ordinal))
+            if (href != resolvedHref)
             {
                 linkType = LinkType.AbsolutePath;
             }
