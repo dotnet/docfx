@@ -101,6 +101,20 @@ internal static class Telemetry
                 "CorrelationId"),
             s_metricConfiguration);
 
+    private static readonly Metric s_linkCountMetric =
+        s_telemetryClient.GetMetric(
+            new MetricIdentifier(
+                null,
+                "Link",
+                "LinkType",
+                "RepoUrl",
+                "RepoAccount",
+                "RepoName",
+                "RepoType",
+                "Branch",
+                "CorrelationId"),
+            s_metricConfiguration);
+
     private static readonly string s_version =
         typeof(Telemetry).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "<null>";
 
@@ -255,6 +269,25 @@ internal static class Telemetry
         }
     }
 
+    public static void TrackLink(string linkType)
+    {
+        if (!s_isRealTimeBuild.Value)
+        {
+            (var repoAccount, var repoName, var repoType) = TryGetDetailedRepoInfo(s_repo);
+            TrackValueWithEnsurance(
+                    s_linkCountMetric.Identifier.MetricId,
+                    s_linkCountMetric.TrackValue(
+                        1,
+                        linkType,
+                        s_repo,
+                        CoalesceEmpty(repoAccount),
+                        CoalesceEmpty(repoName),
+                        CoalesceEmpty(repoType),
+                        s_branch,
+                        s_correlationId));
+        }
+    }
+
     public static void TrackHtmlElement(
         FilePath file,
         ContentType contentType,
@@ -355,6 +388,33 @@ internal static class Telemetry
                 }
             }
         }
+    }
+
+    private static (string repoAccount, string repoName, string repoType) TryGetDetailedRepoInfo (string urlString)
+    {
+        var repoUrl = new Uri(urlString);
+
+        if (repoUrl.Host.StartsWith("github"))
+        {
+            if (repoUrl.Segments.Length != 3)
+            {
+                return (string.Empty, string.Empty, string.Empty);
+            }
+
+            return (repoUrl.Segments[1].TrimEnd('/'), repoUrl.Segments[2], "github");
+        }
+
+        if (repoUrl.Host.StartsWith("ceapex"))
+        {
+            if (repoUrl.Segments.Length != 4)
+            {
+                return (string.Empty, string.Empty, string.Empty);
+            }
+
+            return (repoUrl.Segments[1].TrimEnd('/'), repoUrl.Segments[3], "azure devops");
+        }
+
+        return (string.Empty, string.Empty, string.Empty);
     }
 
     private static string GetTimeBucket(TimeSpan value) => value.TotalSeconds switch

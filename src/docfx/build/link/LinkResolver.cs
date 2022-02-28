@@ -113,6 +113,7 @@ internal class LinkResolver
 
         if (!string.IsNullOrEmpty(link))
         {
+            Telemetry.TrackLink(linkType.ToString());
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
         }
 
