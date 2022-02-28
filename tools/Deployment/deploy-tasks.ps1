@@ -77,7 +77,7 @@ function UpdateChocoConfig {
 
 function PublishToChocolatey {
     param($chocoCommand, $releaseNotePath, $assetZipPath, $chocoScript, $chocoNuspecPath, $chocoHomeDir, $token)
-    Write-Host "Start publihsing to Chocolatey.."
+    Write-Host "Start publishing to Chocolatey.."
     $version = GetVersionFromReleaseNote $releaseNotePath
     $nupkgName = "docfx.$version.nupkg"
     $hash = ($assetZipPath | Get-FileHash -Algorithm SHA256).Hash.ToLower()
@@ -173,7 +173,7 @@ function PublishGithubRelease {
         }
     }
     if ($latestRelease.tag_name -eq $description.tag_name) {
-        throw "The release to create '$($description.tag_name)' has already existed on Github: '$($latestRelease.tag_name)' with id '$($latestRelease.id)'"
+        throw "The release to create '$($description.tag_name)' has already been created on Github: '$($latestRelease.tag_name)' with id '$($latestRelease.id)'"
     }
     Write-Host "Latest release is '$($latestRelease.tag_name)', creating new github release '$($description.tag_name)'.."
     $release = CreateGithubRelease $description $userAndRepo $headers
@@ -215,7 +215,7 @@ function PublishToGithub {
     $releaseDescription = GetReleaseDescription $releaseNotePath
     $releaseId = PublishGithubRelease $releaseDescription $userAndRepo $headers
     if ($releaseId) {
-        PublishGithubAssets $assetZipPath $releaseToUploadAsset.id $userAndRepo $headers
+        PublishGithubAssets $assetZipPath $releaseId $userAndRepo $headers
     } else {
         throw "Invalid github release id '$releaseId' for release '$($releaseDescription.tag_name)'"
     }
