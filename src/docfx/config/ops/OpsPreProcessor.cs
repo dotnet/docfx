@@ -4,6 +4,7 @@
 extern alias maml;
 
 using ECMA2Yaml;
+using Newtonsoft.Json.Linq;
 using ECMALogItem = ECMA2Yaml.LogItem;
 using ECMAMessageSeverity = ECMA2Yaml.MessageSeverity;
 using MAML2YamlConverter = maml::MAML2Yaml.Lib.MAML2YamlConverter;
@@ -31,7 +32,7 @@ internal class OpsPreProcessor
 
     public bool Run()
     {
-        return PreProcessMonoDocXml() & PreProcessMAML();
+        return PreProcessMonoDocXml() & PreProcessMAML() && PreProcessDotnet();
     }
 
     private bool PreProcessMonoDocXml()
@@ -42,7 +43,7 @@ internal class OpsPreProcessor
             return result;
         }
 
-        using (Progress.Start("Preprocessing monodoc XML files"))
+        using (Progress.Start("Pre-process monodoc XML files"))
         {
             lock (s_lock)
             {
@@ -91,7 +92,7 @@ internal class OpsPreProcessor
             return result;
         }
 
-        using (Progress.Start("Preprocessing MAML markdown files"))
+        using (Progress.Start("Pre-process MAML markdown files"))
         {
             lock (s_lock)
             {
@@ -108,6 +109,26 @@ internal class OpsPreProcessor
             }
         }
         return result;
+    }
+
+    private bool PreProcessDotnet()
+    {
+        if (_config.Dotnet is null)
+        {
+            return true;
+        }
+
+        using (Progress.Start("Pre-process dotnet files"))
+        {
+            lock (s_lock)
+            {
+                var docfxConfig = new JObject { ["dotnet"] = _config.Dotnet };
+                var env = new Dictionary<string, string> { ["DOCFX_CONFIG"] = docfxConfig.ToString() };
+                var exe = Path.Combine(AppContext.BaseDirectory, OperatingSystem.IsWindows() ? "docfx-api-dotnet.exe" : "docfx-api-dotnet");
+                ProcessUtility.Execute(exe, "", cwd: _buildOptions.DocsetPath, stdout: false, env: env);
+            }
+        }
+        return true;
     }
 
     private void LogError(ECMALogItem item)

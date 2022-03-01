@@ -23,7 +23,8 @@ internal static class ProcessUtility
     /// <summary>
     /// Start a new process and wait for its execution to complete
     /// </summary>
-    public static string Execute(string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null)
+    public static string Execute(
+        string fileName, string commandLineArgs, string? cwd = null, bool stdout = true, string? secret = null, IReadOnlyDictionary<string, string>? env = null)
     {
         var sanitizedCommandLineArgs = MaskUtility.HideSecret(commandLineArgs, secret);
 
@@ -38,6 +39,14 @@ internal static class ProcessUtility
                 RedirectStandardOutput = stdout,
                 RedirectStandardError = true,
             };
+
+            if (env != null)
+            {
+                foreach (var (key, value) in env)
+                {
+                    psi.EnvironmentVariables[key] = value;
+                }
+            }
 
             using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Failed to start {fileName}");
 

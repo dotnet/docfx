@@ -349,6 +349,8 @@ internal class Config : PreloadConfig
     [JsonConverter(typeof(OneOrManyConverter))]
     public string[]? MAMLMonikerPath { get; init; }
 
+    public JToken? Dotnet { get; init; }
+
     public JoinTOCConfig[] JoinTOC { get; init; } = Array.Empty<JoinTOCConfig>();
 
     public HashSet<PathString> SplitTOC { get; init; } = new();

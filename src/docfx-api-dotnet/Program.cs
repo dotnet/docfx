@@ -1,37 +1,63 @@
-using System.CommandLine;
-using System.CommandLine.Invocation;
+using System.Text.Json;
 using ECMA2Yaml;
 using Mono.Documentation;
 
-var rootCommand = new RootCommand("Build DLLs to docfx YAML files")
+var configJson = Environment.GetEnvironmentVariable("DOCFX_CONFIG");
+var config = JsonSerializer.Deserialize<DocfxConfig>(configJson ?? "{}", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+var tempDirectory = Path.GetFullPath("obj/dotnet");
+var dllDirectory = Path.Combine(tempDirectory, "dll");
+var latestDllDirectory = Path.Combine(dllDirectory, "latest");
+var xmlDirectory = Path.Combine(tempDirectory, "xml");
+var ymlDirectory = Path.GetFullPath(config.Dotnet.Dest);
+
+if (Directory.Exists(tempDirectory))
 {
-    new Option<string>(new[] { "-o", "--output" }, "Output directory in which to place YAML files."),
-    new Argument<string>("directory", "DLL directory.") { Arity = ArgumentArity.ZeroOrOne },
-};
+    Directory.Delete(tempDirectory, true);
+}
 
-rootCommand.Handler = CommandHandler.Create((string output, string directory) =>
+Directory.CreateDirectory(latestDllDirectory);
+
+foreach (var assembly in config.Dotnet.Assemblies)
 {
-    var dllDirectory = directory ?? Directory.GetCurrentDirectory();
-    var xmlDirectory = Path.Combine(dllDirectory, "xml");
-    var ymlDirectory = string.IsNullOrEmpty(output) ? Path.Combine(dllDirectory, "api") : output;
+    var src = Path.GetFullPath(assembly);
+    var srcTarget = Path.Combine(latestDllDirectory, Path.GetFileName(assembly));
 
-    new MDocFrameworksBootstrapper().Run(new[] { "fx-bootstrap", dllDirectory });
+    Console.WriteLine($"Copy {src} --> {srcTarget}");
+    File.Copy(src, srcTarget, overwrite: true);
 
-    new MDocUpdater().Run(new[]
+    var xml = Path.ChangeExtension(src, ".xml");
+    if (File.Exists(xml))
     {
-        "update",
-        "-o", xmlDirectory,
-        "-fx", dllDirectory,
-        "-lang", "docid",
-        "-index", "false",
-        "--debug", "--delete",
-        "-L", @"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\PublicAssemblies",
-        "-L", @"C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies",
-        "-L", @"C:\Program Files\WindowsPowerShell\Modules\PackageManagement\1.0.0.1",
-        "-L", @"C:\Program Files\dotnet",
-    });
+        var xmlTarget = Path.Combine(latestDllDirectory, Path.GetFileName(xml));
 
-    ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory);
+        Console.WriteLine($"Copy {xml} --> {xmlTarget}");
+        File.Copy(xml, xmlTarget, overwrite: true);
+    }
+}
+
+new MDocFrameworksBootstrapper().Run(new[] { "fx-bootstrap", dllDirectory });
+
+new MDocUpdater().Run(new[]
+{
+    "update",
+    "-o", xmlDirectory,
+    "-fx", dllDirectory,
+    "-lang", "docid",
+    "-index", "false",
+    "--debug", "--delete",
 });
 
-return rootCommand.Invoke(args);
+ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory);
+
+class DocfxConfig
+{
+    public DotnetConfig Dotnet { get; init; } = new();
+}
+
+class DotnetConfig
+{
+    public string Dest { get; init; } = "api";
+
+    public string[] Assemblies { get; init; } = Array.Empty<string>();
+}
