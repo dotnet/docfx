@@ -9,7 +9,6 @@ $docfx = @{
     targetFolder = "$homeDir\target"
     artifactsFolder = "$homeDir\artifacts"
     exe = "$homeDir\target\Release\docfx\docfx.exe"
-    account = "openpublishbuild"
     releaseNotePath = "$homeDir\RELEASENOTE.md"
     releaseFolder = "$homeDir\target\Release\docfx"
     assetZipPath = "$homeDir\Documentation\tutorial\artifacts\docfx.zip"
@@ -31,9 +30,4 @@ $git = @{
     name = "DocFX CI"
     email = "vscopbld@microsoft.com"
     message = "Update gh-pages"
-}
-
-$sync = @{
-    fromBranch = "dev"
-    targetBranch = "stable"
 }
