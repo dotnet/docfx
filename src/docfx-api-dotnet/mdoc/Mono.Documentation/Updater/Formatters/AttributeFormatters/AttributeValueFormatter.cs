@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,14 @@ namespace Mono.Documentation.Updater
 
         private bool IsEnumType(TypeReference argumentType, object argumentValue)
         {
-            return argumentType.Resolve().IsEnum;
+            try
+            {
+                return argumentType.Resolve().IsEnum;
+            }
+            catch (MDocException)
+            {
+                return false;
+            }
         }
 
         private bool IsTypeType(TypeReference argumentType, object argumentValue)

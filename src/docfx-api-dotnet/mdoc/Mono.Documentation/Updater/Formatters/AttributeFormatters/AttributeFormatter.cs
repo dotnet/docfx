@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+using Mono.Cecil;
 using Mono.Documentation.Util;
 using System;
 using System.Collections.Generic;
@@ -86,33 +86,41 @@ namespace Mono.Documentation.Updater.Formatters
                 return false;
             }
 
-            var fields = new List<string>();
-
-            for (int i = 0; i < attribute.ConstructorArguments.Count; ++i)
+            try
             {
-                CustomAttributeArgument argument = attribute.ConstructorArguments[i];
-                fields.Add(MakeAttributesValueString(
-                        argument.Value,
-                        argument.Type));
+                var fields = new List<string>();
+
+                for (int i = 0; i < attribute.ConstructorArguments.Count; ++i)
+                {
+                    CustomAttributeArgument argument = attribute.ConstructorArguments[i];
+                    fields.Add(MakeAttributesValueString(
+                            argument.Value,
+                            argument.Type));
+                }
+                var namedArgs =
+                    (from namedArg in attribute.Fields
+                     select new { Type = namedArg.Argument.Type, Name = namedArg.Name, Value = namedArg.Argument.Value })
+                    .Concat(
+                            (from namedArg in attribute.Properties
+                             select new { Type = namedArg.Argument.Type, Name = namedArg.Name, Value = namedArg.Argument.Value }))
+                    .OrderBy(v => v.Name);
+                foreach (var d in namedArgs)
+                    fields.Add(MakeNamedArgumentString(d.Name, MakeAttributesValueString(d.Value, d.Type)));
+
+                string a2 = String.Join(", ", fields.ToArray());
+                if (a2 != "") a2 = "(" + a2 + ")";
+
+                string name = attribute.GetDeclaringType();
+                if (name.EndsWith("Attribute")) name = name.Substring(0, name.Length - "Attribute".Length);
+                rval = withBrackets ? PrefixBrackets + prefix + name + a2 + SurfixBrackets
+                    : prefix + name + a2;
+                return true;
             }
-            var namedArgs =
-                (from namedArg in attribute.Fields
-                 select new { Type = namedArg.Argument.Type, Name = namedArg.Name, Value = namedArg.Argument.Value })
-                .Concat(
-                        (from namedArg in attribute.Properties
-                         select new { Type = namedArg.Argument.Type, Name = namedArg.Name, Value = namedArg.Argument.Value }))
-                .OrderBy(v => v.Name);
-            foreach (var d in namedArgs)
-                fields.Add(MakeNamedArgumentString(d.Name, MakeAttributesValueString(d.Value, d.Type)));
-
-            string a2 = String.Join(", ", fields.ToArray());
-            if (a2 != "") a2 = "(" + a2 + ")";
-
-            string name = attribute.GetDeclaringType();
-            if (name.EndsWith("Attribute")) name = name.Substring(0, name.Length - "Attribute".Length);
-            rval = withBrackets ? PrefixBrackets + prefix + name + a2 + SurfixBrackets
-                : prefix + name + a2;
-            return true;
+            catch (MDocException)
+            {
+                rval = null;
+                return false;
+            }
         }
 
         protected virtual string MakeNamedArgumentString(string name, string value)
