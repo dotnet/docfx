@@ -122,10 +122,8 @@ internal class OpsPreProcessor
         {
             lock (s_lock)
             {
-                var docfxConfig = new JObject { ["dotnet"] = _config.Dotnet };
-                var env = new Dictionary<string, string> { ["DOCFX_CONFIG"] = docfxConfig.ToString() };
                 var exe = Path.Combine(AppContext.BaseDirectory, OperatingSystem.IsWindows() ? "docfx-api-dotnet.exe" : "docfx-api-dotnet");
-                ProcessUtility.Execute(exe, "", cwd: _buildOptions.DocsetPath, stdout: false, env: env);
+                ProcessUtility.Execute(exe, "", cwd: _buildOptions.DocsetPath, stdout: false);
             }
         }
         return true;

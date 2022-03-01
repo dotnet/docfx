@@ -2,8 +2,8 @@ using System.Text.Json;
 using ECMA2Yaml;
 using Mono.Documentation;
 
-var configJson = Environment.GetEnvironmentVariable("DOCFX_CONFIG");
-var config = JsonSerializer.Deserialize<DocfxConfig>(configJson ?? "{}", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+var configJson = File.ReadAllText("docfx.json");
+var config = JsonSerializer.Deserialize<DocfxConfig>(configJson, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
 var tempDirectory = Path.GetFullPath("obj/dotnet");
 var dllDirectory = Path.Combine(tempDirectory, "dll");
@@ -17,6 +17,7 @@ if (Directory.Exists(tempDirectory))
 }
 
 Directory.CreateDirectory(latestDllDirectory);
+Directory.CreateDirectory(xmlDirectory);
 
 foreach (var assembly in config.Dotnet.Assemblies)
 {
