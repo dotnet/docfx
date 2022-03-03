@@ -49,7 +49,7 @@ new MDocUpdater().Run(new[]
     "--debug", "--delete",
 });
 
-ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory);
+ECMA2YamlConverter.Run(xmlDirectory, outputDirectory: ymlDirectory, config: new() { NoMonikers = true });
 
 class DocfxConfig
 {

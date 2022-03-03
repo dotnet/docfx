@@ -1,4 +1,4 @@
-﻿using ECMA2Yaml.IO;
+using ECMA2Yaml.IO;
 using ECMA2Yaml.YamlHelpers;
 using Newtonsoft.Json;
 using System;
@@ -68,6 +68,8 @@ namespace ECMA2Yaml
             {
                 return false;
             }
+
+            store.NoMonikers = config?.NoMonikers ?? false;
 
             Console.WriteLine("Building loaded files...");
             Console.WriteLine($"ECMA2YamlRepoConfig:{JsonConvert.SerializeObject(config)}");

@@ -1,4 +1,4 @@
-﻿using ECMA2Yaml.Models;
+using ECMA2Yaml.Models;
 using ECMA2Yaml.Models.SDP;
 using System;
 using System.Collections.Generic;
@@ -303,7 +303,10 @@ namespace ECMA2Yaml
                 || model is EnumSDPModel
                 || model is DelegateSDPModel)
             {
-                model.Metadata[OPSMetadata.Monikers] = model.Monikers;
+                if (!_store.NoMonikers)
+                {
+                    model.Metadata[OPSMetadata.Monikers] = model.Monikers;
+                }
             }
         }
 

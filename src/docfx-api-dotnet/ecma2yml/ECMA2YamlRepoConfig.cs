@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace ECMA2Yaml
 {
@@ -18,5 +18,8 @@ namespace ECMA2Yaml
 
         [JsonProperty("UWP")]
         public bool UWP { get; set; }
+
+        [JsonIgnore]
+        public bool NoMonikers { get; set; }
     }
 }

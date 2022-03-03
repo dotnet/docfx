@@ -30,6 +30,8 @@ namespace ECMA2Yaml.Models
         public bool DemoMode { get; set; }
         public PackageInformationMapping PkgInfoMapping { get; set; }
         public HashSet<string> TotalDevLangs { get; set; }
+        public bool NoMonikers { get; set; }
+
         private static Dictionary<string, EcmaDesc> typeDescriptorCache;
 
         private IEnumerable<Namespace> _nsList;
