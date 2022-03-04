@@ -127,6 +127,7 @@ internal class LanguageServerBuilder
     {
         List<PathString> filesWithDiagnostics = new();
         var diagnosticsGroupByFile = from error in errors.ToArray()
+                                     where error.Level != ErrorLevel.Info
                                      let source = error.Source ?? new SourceInfo(new FilePath(".openpublishing.publish.config.json"), 0, 0)
                                      let diagnostic = ConvertToDiagnostics(error, source)
                                      group diagnostic by source.File;
