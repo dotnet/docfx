@@ -227,3 +227,14 @@ languageServer:
       .openpublishing.publish.config.json: "{}"
   - expectDiagnostics:
      .openpublishing.publish.config.json: [{"code": "config-not-found"}]
+---
+# Info-level errors will be filtered out.
+inputs:
+  docfx.yml:
+  a.md:
+languageServer:
+  - openFiles:
+      a.md: |
+        <br2/>
+  - expectDiagnostics:
+      a.md: []
