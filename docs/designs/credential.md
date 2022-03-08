@@ -34,7 +34,7 @@ We can also put other required headers here. e.g. Azure Blob requires the `x-ms-
 
 ### Auto Renew 
 Sometimes the credential could be expired during DocFx building.   
-The credential handler acts as HTTP request middleware intercepts the failed HTTP response with 403 code and auto renew the credentials with max 3 retries.
+The credential handler acts as HTTP request middleware intercepts the failed HTTP response with 401 code and auto renew the credentials with max 3 retries.
 
 
 ## How to authorize other requests
