@@ -5,6 +5,9 @@ trigger:
     include:
     - v3
     - v3-release
+  paths:
+    exclude:
+    - docs/designs/*
 pr: none
 
 variables:
