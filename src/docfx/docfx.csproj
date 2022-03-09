@@ -32,7 +32,7 @@
     <PackageReference Include="O9d.Json.Formatting" Version="0.1.0" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.1" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
-    <PackageReference Include="Quickenshtein" Version="1.5.0" />
+    <PackageReference Include="Quickenshtein" Version="1.5.1+gdebbc44-appveyor.39281231" />
     <PackageReference Include="Stubble.Core" Version="1.9.3" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
