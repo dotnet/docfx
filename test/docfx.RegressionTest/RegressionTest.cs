@@ -115,6 +115,7 @@ internal static class RegressionTest
                 maxFileSuggestions = 10000,
                 maxFileInfos = 10000,
                 updateTimeAsCommitBuildTime = true,
+                buildTime = "2022-03-10T08:08:08Z",
                 githubUserCacheExpirationInHours = s_isPullRequest ? 24 * 365 : 24 * 30,
                 microsoftGraphClientId = "b799e059-9dd8-4839-a39c-96f7531e55e2",
                 secrets = new
