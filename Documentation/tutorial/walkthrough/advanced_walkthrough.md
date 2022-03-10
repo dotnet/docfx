@@ -84,7 +84,7 @@ To apply your custom PDF template permanently, add the following at the same lev
 
 Now rebuild your project and you'll see your template changes applied to the site or PDF. To apply a template manually for the next build only, append the `-t` switch with the template filepath:
 
-```docfx build docfx.json -t C:\<filepath>\templates\<your custom template folder> --serve```
+```docfx build docfx.json -t default,C:\<filepath>\templates\<your custom template folder> --serve```
 
 > [!NOTE]
 > In order for the local web site to pick up changes to dependent assets, such as .JS and .CSS files, you'll need to do a hard reload/refresh once the site is running. In most browsers you'll use the CTRL+F5 key sequence, and not the standard F5 or CTRL+R "refresh" sequence.
