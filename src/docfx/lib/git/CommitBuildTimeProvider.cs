@@ -9,23 +9,16 @@ internal class CommitBuildTimeProvider
     private readonly Repository _repo;
     private readonly Config _config;
     private readonly string _commitBuildTimePath;
-    private readonly IReadOnlyDictionary<string, DateTime> _buildTimeByCommit;
+    private IReadOnlyDictionary<string, DateTime> _buildTimeByCommit;
 
     public CommitBuildTimeProvider(Config config, Repository repo)
     {
         _repo = repo;
         _config = config;
         _commitBuildTimePath = AppData.BuildHistoryStatePath;
-        _buildTime = config.BuildTime ?? DateTime.UtcNow;
+        _buildTime = config.BuildTime;
 
-        var exists = File.Exists(_commitBuildTimePath);
-        Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
-
-        var commitBuildTime = exists
-            ? ProcessUtility.ReadJsonFile<CommitBuildTime>(_commitBuildTimePath)
-            : new CommitBuildTime();
-
-        _buildTimeByCommit = commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
+        _buildTimeByCommit = ReadLatestCacheIfAny();
     }
 
     public DateTime GetCommitBuildTime(string commitId)
@@ -40,6 +33,7 @@ internal class CommitBuildTimeProvider
 
         using (PerfScope.Start($"Saving commit build time for {_repo.Commit}"))
         {
+            _buildTimeByCommit = ReadLatestCacheIfAny();
             var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
 
             // TODO: retrieve git log from `GitCommitProvider` since it should already be there.
@@ -54,6 +48,22 @@ internal class CommitBuildTimeProvider
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)) ?? ".");
 
             ProcessUtility.WriteJsonFile(_commitBuildTimePath, new CommitBuildTime { Commits = commits });
+        }
+    }
+
+    private IReadOnlyDictionary<string, DateTime> ReadLatestCacheIfAny()
+    {
+        var exists = File.Exists(_commitBuildTimePath);
+        Log.Write($"{(exists ? "Using" : "Missing")} git commit build time cache file: '{_commitBuildTimePath}'");
+
+        if (exists)
+        {
+            var commitBuildTime = ProcessUtility.ReadJsonFile<CommitBuildTime>(_commitBuildTimePath);
+            return commitBuildTime.Commits.ToDictionary(item => item.Sha, item => item.BuiltAt);
+        }
+        else
+        {
+            return _buildTimeByCommit ?? new Dictionary<string, DateTime>();
         }
     }
 }
