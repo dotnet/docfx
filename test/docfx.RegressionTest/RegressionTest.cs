@@ -220,6 +220,7 @@ internal static class RegressionTest
         var submoduleUpdateFlags = s_isPullRequest ? "" : "--remote";
         Exec("git", $"{s_gitCmdAuth} submodule set-branch -b {opts.Branch} {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
         Exec("git", $"{s_gitCmdAuth} submodule sync {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
+        Console.WriteLine("Somehow fail here?");
         Exec("git", $"{s_gitCmdAuth} submodule update {submoduleUpdateFlags} --init --progress --force {s_testName}", cwd: workingFolder, secrets: s_gitCmdAuth);
         Exec("git", $"clean -xdf", cwd: Path.Combine(workingFolder, s_testName));
     }
