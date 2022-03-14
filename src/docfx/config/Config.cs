@@ -282,7 +282,7 @@ internal class Config : PreloadConfig
     /// <summary>
     /// Overwrite current <see cref="CommitBuildTimeProvider._buildTime"/>
     /// </summary>
-    public DateTime BuildTime { get; init; } = DateTime.UtcNow;
+    public DateTime? BuildTime { get; init; }
 
     /// <summary>
     /// Determines how long at most a user remains valid in cache.

@@ -6,6 +6,7 @@ namespace Microsoft.Docs.Build;
 internal class CommitBuildTimeProvider
 {
     private static readonly object s_lock = new();
+    private static readonly DateTime s_now = DateTime.UtcNow;
 
     private readonly DateTime _buildTime;
     private readonly Repository _repo;
@@ -18,7 +19,7 @@ internal class CommitBuildTimeProvider
         _repo = repo;
         _config = config;
         _commitBuildTimePath = AppData.BuildHistoryStatePath;
-        _buildTime = config.BuildTime;
+        _buildTime = config.BuildTime ?? s_now;
 
         _buildTimeByCommit = ReadLatestCacheIfAny();
     }
