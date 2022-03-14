@@ -5,6 +5,8 @@ namespace Microsoft.Docs.Build;
 
 internal class CommitBuildTimeProvider
 {
+    private static readonly object s_lock = new();
+
     private readonly DateTime _buildTime;
     private readonly Repository _repo;
     private readonly Config _config;
@@ -31,23 +33,26 @@ internal class CommitBuildTimeProvider
             return;
         }
 
-        using (PerfScope.Start($"Saving commit build time for {_repo.Commit}"))
+        lock (s_lock)
         {
-            _buildTimeByCommit = ReadLatestCacheIfAny();
-            var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
-
-            // TODO: retrieve git log from `GitCommitProvider` since it should already be there.
-            foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
+            using (PerfScope.Start($"Saving commit build time for {_repo.Commit}"))
             {
-                if (!_buildTimeByCommit.ContainsKey(diffCommit))
+                _buildTimeByCommit = ReadLatestCacheIfAny();
+                var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
+
+                // TODO: retrieve git log from `GitCommitProvider` since it should already be there.
+                foreach (var diffCommit in GitUtility.GetCommits(_repo.Path, _repo.Commit))
                 {
-                    commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = _buildTime });
+                    if (!_buildTimeByCommit.ContainsKey(diffCommit))
+                    {
+                        commits.Add(new CommitBuildTimeItem { Sha = diffCommit, BuiltAt = _buildTime });
+                    }
                 }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)) ?? ".");
+
+                ProcessUtility.WriteJsonFile(_commitBuildTimePath, new CommitBuildTime { Commits = commits });
             }
-
-            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_commitBuildTimePath)) ?? ".");
-
-            ProcessUtility.WriteJsonFile(_commitBuildTimePath, new CommitBuildTime { Commits = commits });
         }
     }
 
