@@ -36,7 +36,7 @@ internal class CommitBuildTimeProvider
 
         lock (s_lock)
         {
-            using (PerfScope.Start($"Saving commit build time for {_repo.Commit}"))
+            using (PerfScope.Start($"Saving commit build time for {_repo.Path} {_repo.Commit}"))
             {
                 _buildTimeByCommit = ReadLatestCacheIfAny();
                 var commits = _buildTimeByCommit.Select(item => new CommitBuildTimeItem { Sha = item.Key, BuiltAt = item.Value }).ToList();
