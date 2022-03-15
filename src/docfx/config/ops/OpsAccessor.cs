@@ -299,7 +299,7 @@ internal class OpsAccessor : ILearnServiceAccessor
 
     private static ValueTask<AccessToken> GetAccessTokenAsync(DocsEnvironment? environment = null)
     {
-        var defaultAzureCredential = new DefaultAzureCredential(new DefaultAzureCredentialOptions());
+        var defaultAzureCredential = new DefaultAzureCredential();
         return defaultAzureCredential.GetTokenAsync(
             new TokenRequestContext(new[] { $"{DocsBuildApiAADClientId(environment)}/.default" }));
     }
