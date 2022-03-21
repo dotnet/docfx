@@ -20,6 +20,14 @@ internal static class ProcessUtility
         PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(),
     };
 
+    private static readonly JsonSerializerOptions s_indentedJsonOptions = new()
+    {
+        AllowTrailingCommas = true,
+        Converters = { new JsonStringEnumConverter() },
+        PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(),
+        WriteIndented = true,
+    };
+
     /// <summary>
     /// Start a new process and wait for its execution to complete
     /// </summary>
@@ -123,12 +131,12 @@ internal static class ProcessUtility
     /// Reads the content of a file.
     /// When used together with <see cref="ReadJsonFile{T}(string)"/>, provides inter-process synchronized access to the file.
     /// </summary>
-    public static void WriteJsonFile<T>(string path, T data)
+    public static void WriteJsonFile<T>(string path, T data, bool withIndent = false)
     {
         using (InterProcessMutex.Create(path))
         using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
         {
-            JsonSerializer.Serialize(fs, data, s_jsonOptions);
+            JsonSerializer.Serialize(fs, data, withIndent ? s_indentedJsonOptions : s_jsonOptions);
         }
     }
 
