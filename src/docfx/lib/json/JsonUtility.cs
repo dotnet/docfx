@@ -59,6 +59,15 @@ internal static class JsonUtility
         ContractResolver = new JsonContractResolver { NamingStrategy = s_namingStrategy },
     });
 
+    private static readonly FileStreamOptions s_fileStreamOptions = new()
+    {
+        Mode = FileMode.Create,
+        Access = FileAccess.Write,
+        Share = FileShare.None,
+        BufferSize = 1024,
+        Options = FileOptions.SequentialScan,
+    };
+
     private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
     internal static JsonSerializer Serializer => s_serializer;
@@ -92,6 +101,15 @@ internal static class JsonUtility
             from prop in ((JsonObjectContract)s_serializer.ContractResolver.ResolveContract(type)).Properties
             where !string.IsNullOrEmpty(prop.PropertyName)
             select prop.PropertyName;
+    }
+
+    /// <summary>
+    /// Serialize an object to file
+    /// </summary>
+    public static void Serialize(string path, object data, bool indent = false)
+    {
+        using var fileWriter = new StreamWriter(path, s_fileStreamOptions);
+        Serialize(fileWriter, data, indent);
     }
 
     /// <summary>
