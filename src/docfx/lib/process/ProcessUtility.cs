@@ -131,12 +131,12 @@ internal static class ProcessUtility
     /// Reads the content of a file.
     /// When used together with <see cref="ReadJsonFile{T}(string)"/>, provides inter-process synchronized access to the file.
     /// </summary>
-    public static void WriteJsonFile<T>(string path, T data, bool withIndent = false)
+    public static void WriteJsonFile<T>(string path, T data, bool indent = false)
     {
         using (InterProcessMutex.Create(path))
         using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.SequentialScan))
         {
-            JsonSerializer.Serialize(fs, data, withIndent ? s_indentedJsonOptions : s_jsonOptions);
+            JsonSerializer.Serialize(fs, data, indent ? s_indentedJsonOptions : s_jsonOptions);
         }
     }
 
