@@ -175,6 +175,8 @@ internal static class RegressionTest
         Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
         Console.BackgroundColor = ConsoleColor.DarkMagenta;
         Console.WriteLine($"Test Pass {workingFolder}");
+        Console.WriteLine("Test Result Summary:");
+        Console.WriteLine(testResult.ToString());
         Console.ResetColor();
 
         PushChanges(testResult, workingFolder);

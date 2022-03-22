@@ -20,4 +20,16 @@ internal class RegressionTestResult
     public string? CrashMessage { get; set; }
 
     public int MoreLines { get; set; }
+
+    public override string ToString()
+    {
+        return $"{{{nameof(Succeeded)}={Succeeded}, " +
+            $"{nameof(BuildTime)}={BuildTime}, " +
+            $"{nameof(PeakMemory)}={PeakMemory}, " +
+            $"{nameof(Timeout)}={Timeout}, " +
+            $"{nameof(Diff)}={Diff}, " +
+            $"{nameof(HotMethods)}={HotMethods}, " +
+            $"{nameof(CrashMessage)}={CrashMessage}, " +
+            $"{nameof(MoreLines)}={MoreLines}}}";
+    }
 }
