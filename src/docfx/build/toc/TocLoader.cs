@@ -445,7 +445,7 @@ internal class TocLoader
             var (linkErrors, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath, new HyperLinkNode
             {
                 HyperLinkType = HyperLinkType.Default,
-                IsVisible = true,  // trun around to skip 'link-text-missing' validation
+                IsVisible = true,  // workaround to skip 'link-text-missing' validation
                 UrlLink = topicHref!.Value!,
                 SourceInfo = topicHref!.Source!,
             });
