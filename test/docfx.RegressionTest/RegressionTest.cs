@@ -174,7 +174,7 @@ internal static class RegressionTest
 
         Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
         Console.BackgroundColor = ConsoleColor.DarkMagenta;
-        Console.WriteLine($"Test Pass {workingFolder}");
+        Console.WriteLine($"Test {(testResult.Succeeded ? "Pass" : "Fail")} {workingFolder}");
         Console.WriteLine("Test Result Summary:");
         Console.WriteLine(testResult.ToString());
         Console.ResetColor();
@@ -318,8 +318,9 @@ internal static class RegressionTest
             Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
             var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
             process.WaitForExit();
+            var successWithoutDiff = process.ExitCode == 0;
 
-            testResult.Succeeded = process.ExitCode == 0;
+            testResult.Succeeded = successWithoutDiff;
             testResult.Timeout = opts.Timeout;
             testResult.Diff = diff;
             testResult.MoreLines = totalLines;
@@ -327,7 +328,7 @@ internal static class RegressionTest
             watch.Stop();
             Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
-            if (process.ExitCode == 0)
+            if (successWithoutDiff)
             {
                 return;
             }
