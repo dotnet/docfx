@@ -431,6 +431,10 @@ inputs:
             "contentTypes": ["conceptual"],
             "linkTypes": [
                "docs"
+            ],
+            "contentTypes": [
+                "conceptual",
+                "toc"
             ]
           }
         ]
