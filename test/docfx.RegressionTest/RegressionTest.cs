@@ -293,12 +293,6 @@ internal static class RegressionTest
         // For temporary normalize: use 'NormalizeJsonFiles' for output files
         Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
 
-        if (testResult.BuildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
-        {
-            Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
-            Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
-        }
-
         if (s_isPullRequest)
         {
             var watch = Stopwatch.StartNew();
@@ -318,9 +312,9 @@ internal static class RegressionTest
             Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
             var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
             process.WaitForExit();
-            var successWithoutDiff = process.ExitCode == 0;
+            var noDiff = process.ExitCode == 0;
 
-            testResult.Succeeded = successWithoutDiff;
+            testResult.Succeeded = noDiff;
             testResult.Timeout = opts.Timeout;
             testResult.Diff = diff;
             testResult.MoreLines = totalLines;
@@ -328,19 +322,29 @@ internal static class RegressionTest
             watch.Stop();
             Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
-            if (successWithoutDiff)
+            if (!noDiff)
             {
-                return;
+                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
+                MarkTaskFailed("Test failed, see the logs under /Summary/Build artifacts for details");
             }
 
-            Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
-            Console.WriteLine($"##vso[task.complete result=Failed]Test failed, see the logs under /Summary/Build artifacts for details");
+            var isTimeout = testResult.BuildTime.TotalSeconds > opts.Timeout;
+            if (isTimeout && s_isPullRequest)
+            {
+                MarkTaskFailed($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+            }
         }
         else
         {
             Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: workingFolder);
             Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
         }
+    }
+
+    private static void MarkTaskFailed(string comment)
+    {
+        Console.WriteLine($"##vso[task.complete result=Failed]{comment}");
     }
 
     private static void PushChanges(RegressionTestResult testResult, string workingFolder)
@@ -485,7 +489,7 @@ internal static class RegressionTest
         body.Append("<details><summary>");
         body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
         body.Append($"<a href='{s_repository}'>{s_testName}</a>");
-        body.Append($"({testResult.BuildTime}");
+        body.Append($"({testResult.BuildTime.TotalSeconds}s");
 
         if (isTimeout)
         {

@@ -22,9 +22,9 @@ internal class RegressionTestResult
     public int MoreLines { get; set; }
 
     public override string ToString() => $"{{{nameof(Succeeded)}={Succeeded}, " +
-            $"{nameof(BuildTime)}={BuildTime}, " +
+            $"{nameof(BuildTime)}={BuildTime.TotalSeconds}s, " +
+            $"{nameof(Timeout)}={Timeout}s, " +
             $"{nameof(PeakMemory)}={PeakMemory}, " +
-            $"{nameof(Timeout)}={Timeout}, " +
             $"{nameof(Diff)}={(Diff?.Length > 0 ? "Yes" : "No")}, " +
             $"{nameof(HotMethods)}={HotMethods}, " +
             $"{nameof(CrashMessage)}={CrashMessage}, " +
