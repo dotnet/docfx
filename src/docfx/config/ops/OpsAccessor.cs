@@ -184,18 +184,19 @@ internal class OpsAccessor : ILearnServiceAccessor
             if (response.Headers.TryGetValues("X-Metadata-Version", out var metadataVersion))
             {
                 var documentUrl = response.Headers.TryGetValues("X-Ruleset-DocumentURL", out var url) ? string.Join(",", url) : "";
+                var rulesetList = string.Join(',', metadataVersion);
                 if (request.RequestUri!.AbsolutePath.Contains("/metadatarules"))
                 {
-                    _errors.Add(Errors.System.MetadataValidationRuleset(string.Join(',', metadataVersion), documentUrl));
-                    Log.Write($"Metadata validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                    _errors.Add(Errors.System.MetadataValidationRuleset(rulesetList, documentUrl));
+                    Log.Write($"Metadata validation ruleset used: {rulesetList}. Document url: {documentUrl}");
                 }
                 else if (request.RequestUri!.AbsolutePath.Contains("/contentrules"))
                 {
-                    Log.Write($"Content validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                    Log.Write($"Content validation ruleset used: {rulesetList}. Document url: {documentUrl}");
                 }
                 else
                 {
-                    Log.Write($"Build validation ruleset used: {metadataVersion}. Document url: {documentUrl}");
+                    Log.Write($"Build validation ruleset used: {rulesetList}. Document url: {documentUrl}");
                 }
             }
 
