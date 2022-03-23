@@ -312,6 +312,8 @@ internal static class RegressionTest
             Directory.CreateDirectory(Path.GetDirectoryName(diffFile) ?? ".");
             var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
             process.WaitForExit();
+
+            // refer to https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---exit-code
             var noDiff = process.ExitCode == 0;
 
             testResult.Timeout = opts.Timeout;

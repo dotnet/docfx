@@ -26,7 +26,6 @@ internal class RegressionTestResult
             $"{nameof(Timeout)}={Timeout}s, " +
             $"{nameof(PeakMemory)}={PeakMemory}, " +
             $"{nameof(Diff)}={(Diff?.Length > 0 ? "Yes" : "No")}, " +
-            $"{nameof(HotMethods)}={HotMethods}, " +
-            $"{nameof(CrashMessage)}={CrashMessage}, " +
-            $"{nameof(MoreLines)}={MoreLines}}}";
+            $"{nameof(MoreLines)}={MoreLines}}}, " +
+            $"{nameof(CrashMessage)}={CrashMessage}";
 }
