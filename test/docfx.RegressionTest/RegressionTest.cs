@@ -314,7 +314,6 @@ internal static class RegressionTest
             process.WaitForExit();
             var noDiff = process.ExitCode == 0;
 
-            testResult.Succeeded = noDiff;
             testResult.Timeout = opts.Timeout;
             testResult.Diff = diff;
             testResult.MoreLines = totalLines;
@@ -329,11 +328,13 @@ internal static class RegressionTest
             }
 
             var isTimeout = testResult.BuildTime.TotalSeconds > opts.Timeout;
-            if (isTimeout && s_isPullRequest)
+            if (isTimeout)
             {
                 MarkTaskFailed($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
                 Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
             }
+
+            testResult.Succeeded = noDiff && !isTimeout;
         }
         else
         {
