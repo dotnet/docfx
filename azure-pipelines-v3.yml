@@ -4,8 +4,16 @@ trigger:
     include:
     - v3
     - v3-release
+  paths:
+    exclude:
+    - docs/designs/*
 pr:
-- v3
+  branches:
+    include:
+    - v3
+  paths:
+    exclude:
+    - docs/designs/*
 
 variables:
 - group: devresourcekeyvault

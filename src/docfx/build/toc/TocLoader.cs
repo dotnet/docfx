@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build;
 
@@ -441,7 +442,13 @@ internal class TocLoader
             var topicHrefType = GetHrefType(topicHref);
             Debug.Assert(topicHrefType == TocHrefType.AbsolutePath || !IsTocIncludeHref(topicHrefType));
 
-            var (linkErrors, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath);
+            var (linkErrors, link, resolvedFile) = _linkResolver.ResolveLink(topicHref!, filePath, rootPath, new HyperLinkNode
+            {
+                HyperLinkType = HyperLinkType.Default,
+                IsVisible = true,  // workaround to skip 'link-text-missing' validation
+                UrlLink = topicHref!.Value!,
+                SourceInfo = topicHref!.Source!,
+            });
             _errors.AddRange(linkErrors);
 
             if (resolvedFile != null && addToReferencedFiles)

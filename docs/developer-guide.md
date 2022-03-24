@@ -229,3 +229,21 @@ Convention | Use case | Example
 `{XXX}Map`, `{XXX}Builder` | Builds an **immutable** `{XXX}Map` from a **mutable** `{XXX}Builder` | `DependencyMap`, `DependencyMapBuilder`
 `{XXX}Provider`   | Groups **instance** helper methods for **Get** or **Resolve** | `MonikerProvider`
 `{XXX}Utility`    | Groups **static** helper methods | `GitUtility`
+
+
+## Regression Test Expected Diffs
+
+- Sometimes the contributors list may change. You may check against corresponding GitHub pages to double confirm whether the changes are expected or not.
+    - There will be a new contributor when a new contributor edits the article.
+    - A contributor will be deleted if her/his public email is disabled. If the new contributor list becomes empty, the whole contributor list will disappear.
+    - Display name of contributors may change when they change their display name.
+- When new validation rules added, they may have the corresponding effects in the diff.
+- If the content of articles changed, there will be diffs about content change as well as "word_count", .publish.json and .dependencymap.json, etc.
+- Some metadata changes such as "update_at" are expected.
+    - update_at
+    - update_at_date_time
+    - _op_article_date_quotedISO8601
+
+If you are confused about some diffs and finally understand they are expected, please add them here.
+
+
