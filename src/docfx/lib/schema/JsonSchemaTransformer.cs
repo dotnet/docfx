@@ -426,7 +426,7 @@ internal class JsonSchemaTransformer
                 var (linkErrors, link, _) = _linkResolver.ResolveLink(content, file, file, new HyperLinkNode
                 {
                     HyperLinkType = HyperLinkType.Default,
-                    IsVisible = true,  // trun around to skip 'link-text-missing' validation
+                    IsVisible = true,  // workaround to skip 'link-text-missing' validation
                     UrlLink = stringValue,
                     SourceInfo = sourceInfo,
                 });
