@@ -174,9 +174,12 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
-        var mime = _documentProvider.GetMime(file);
         var metadata = new JObject();
 
+        (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
+        metadata["source_url"] = originalContentGitUrl;
+
+        var mime = _documentProvider.GetMime(file);
         // TODO: remove after schema exported
         if (string.Equals("Achievements", mime, StringComparison.OrdinalIgnoreCase))
         {
