@@ -109,6 +109,8 @@ jobs:
       codeBaseName: 'Docs_default'
       areaPath: 'One\\DeveloperRelations'
       iterationPath: 'One\\Custom\\_Default'
+      instanceUrlForTsaV2: MSAZURE
+      projectNameMSAZURE: One
       uploadBinSkim: true
       uploadCredScan: true
       uploadAsync: true
