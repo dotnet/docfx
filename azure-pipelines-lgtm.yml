@@ -106,9 +106,9 @@ jobs:
       tsaVersion: 'TsaV2'
       codebase: 'NewOrUpdate'
       tsaEnvironment: 'PROD'
-      codeBaseName: 'Docs_DocFX_v3'
-      areaPath: 'One\DeveloperRelations'
-      iterationPath: 'One\Custom\_Default'
+      codeBaseName: 'Docs_default'
+      areaPath: 'One\\DeveloperRelations'
+      iterationPath: 'One\\Custom\\_Default'
       uploadBinSkim: true
       uploadCredScan: true
       uploadAsync: true
