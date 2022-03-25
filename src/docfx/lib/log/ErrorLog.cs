@@ -9,6 +9,7 @@ internal class ErrorLog : ErrorBuilder
 {
     private readonly ErrorBuilder _errors;
     private readonly PathString _docsetBasePath;
+    private readonly PathString _workingDirectory;
 
     private readonly Scoped<ErrorSink> _errorSink = new();
     private readonly Scoped<ConcurrentDictionary<FilePath, ErrorSink>> _fileSink = new();
@@ -21,6 +22,8 @@ internal class ErrorLog : ErrorBuilder
 
     public CustomRuleProvider? CustomRuleProvider { get; set; }
 
+    public ContributionProvider? ContributionProvider { get; set; }
+
     public override bool HasError => _errorSink.Value.ErrorCount > 0 || _fileSink.Value.Values.Any(file => file.ErrorCount > 0);
 
     public override bool FileHasError(FilePath file) => _fileSink.Value.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
@@ -28,6 +31,7 @@ internal class ErrorLog : ErrorBuilder
     public ErrorLog(ErrorBuilder errors, string workingDirectory, string docsetPath)
     {
         _errors = errors;
+        _workingDirectory = new PathString(workingDirectory);
         _docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
     }
 
@@ -145,7 +149,11 @@ internal class ErrorLog : ErrorBuilder
                 error = error with { OriginalPath = _docsetBasePath.Concat(error.OriginalPath.Value) };
             }
         }
-
+        if (error.getFile() != null)
+        {
+            (_, string? originalContentGitUrl, _) = ContributionProvider.GetGitUrl(new FilePath(_workingDirectory.Concat(new PathString(error.getFile()))));
+            error = error with { SourceUrl = originalContentGitUrl };
+        }
         _errors.Add(error);
     }
 }

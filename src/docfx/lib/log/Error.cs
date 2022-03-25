@@ -19,6 +19,9 @@ internal record Error
 
     public PathString? OriginalPath { get; init; }
 
+    // Git Url
+    public string SourceUrl { get; init; }
+
     public bool PullRequestOnly { get; init; }
 
     public bool AddOnly { get; init; }
@@ -41,9 +44,14 @@ internal record Error
         PropertyPath = propertyPath;
     }
 
+    public string getFile()
+    {
+        return OriginalPath ?? Source?.File?.Path; 
+    }
+
     public override string ToString()
     {
-        var file = OriginalPath ?? Source?.File?.Path;
+        var file = getFile();
         var source = OriginalPath is null ? Source : null;
         var line = source?.Line ?? 0;
         var end_line = source?.EndLine ?? 0;
@@ -56,6 +64,7 @@ internal record Error
             Code,
             message = Message,
             file,
+            file_url = SourceUrl,
             line,
             end_line,
             column,
