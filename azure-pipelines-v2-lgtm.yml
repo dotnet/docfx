@@ -73,6 +73,7 @@ steps:
     areaPath: 'One\\DeveloperRelations'
     iterationPath: 'One\\Custom\\_Default'
     instanceUrlForTsaV2: MSAZURE
+    projectNameMSAZURE: One
     uploadCredScan: true
     uploadBinSkim: true
     uploadSemmle: true
