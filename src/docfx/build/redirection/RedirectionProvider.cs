@@ -15,7 +15,12 @@ internal class RedirectionProvider
     private readonly BuildOptions _buildOptions;
     private readonly Func<PublishUrlMap> _publishUrlMap;
     private readonly Package _docsetPackage;
-    private readonly Watch<(Dictionary<FilePath, string> urls, Dictionary<FilePath, string> configs, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
+    private readonly Watch<(
+        Dictionary<FilePath, string> urls,
+        Dictionary<FilePath, string> configs,
+        HashSet<PathString> paths,
+        RedirectionItem[] items)> _redirects;
+
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
 
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;

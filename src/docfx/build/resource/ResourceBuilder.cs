@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Newtonsoft.Json.Linq;
+
 namespace Microsoft.Docs.Build;
 
 internal class ResourceBuilder
@@ -12,7 +14,13 @@ internal class ResourceBuilder
     private readonly Output _output;
     private readonly PublishModelBuilder _publishModelBuilder;
 
-    public ResourceBuilder(Input input, DocumentProvider documentProvider, ContributionProvider contributionProvider, Config config, Output output, PublishModelBuilder publishModelBuilder)
+    public ResourceBuilder(
+        Input input,
+        DocumentProvider documentProvider,
+        ContributionProvider contributionProvider,
+        Config config,
+        Output output,
+        PublishModelBuilder publishModelBuilder)
     {
         _input = input;
         _documentProvider = documentProvider;
@@ -37,9 +45,6 @@ internal class ResourceBuilder
         }
 
         (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
-        _publishModelBuilder.AddOrUpdate(file, new Newtonsoft.Json.Linq.JObject()
-        {
-            { "source_url", originalContentGitUrl },
-        }, outputPath);
+        _publishModelBuilder.AddOrUpdate(file, new JObject() { { "source_url", originalContentGitUrl } }, outputPath);
     }
 }

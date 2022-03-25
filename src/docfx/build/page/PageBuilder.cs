@@ -180,6 +180,7 @@ internal class PageBuilder
         metadata["source_url"] = originalContentGitUrl;
 
         var mime = _documentProvider.GetMime(file);
+
         // TODO: remove after schema exported
         if (string.Equals("Achievements", mime, StringComparison.OrdinalIgnoreCase))
         {
