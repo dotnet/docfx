@@ -52,9 +52,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static ModuleBuilder CreateModule()
         {
             const string name = "dfm-renderer";
-            var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                new AssemblyName(name),
-                AssemblyBuilderAccess.Run);
+            var dynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(name), AssemblyBuilderAccess.Run);
             return dynamicAssembly.DefineDynamicModule(name);
         }
 
@@ -97,7 +95,7 @@ namespace Microsoft.DocAsCode.Dfm
                 DefineMethod(type, g.Key, g.Items, f, partList);
             }
             OverrideDispose(type, f, partList.Count);
-            return Activator.CreateInstance(type.CreateType(), innerRenderer, partList.ToArray());
+            return Activator.CreateInstance(type.CreateTypeInfo(), innerRenderer, partList.ToArray());
         }
 
         private static bool ValidateKey(Tuple<Type, Type, Type> types)
