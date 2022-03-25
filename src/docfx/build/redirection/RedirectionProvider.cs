@@ -15,7 +15,7 @@ internal class RedirectionProvider
     private readonly BuildOptions _buildOptions;
     private readonly Func<PublishUrlMap> _publishUrlMap;
     private readonly Package _docsetPackage;
-    private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
+    private readonly Watch<(Dictionary<FilePath, string> urls, Dictionary<FilePath, string> configs, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
 
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
@@ -55,11 +55,12 @@ internal class RedirectionProvider
         return false;
     }
 
-    public string GetRedirectUrl(ErrorBuilder errors, FilePath file)
+    public (string, string) GetRedirectUrl(ErrorBuilder errors, FilePath file)
     {
         var redirectionChain = new Stack<FilePath>();
         var redirectionFile = file;
         var redirectUrls = _redirects.Value.urls;
+        var configMap = _redirects.Value.configs;
         while (_history.Value.redirects.TryGetValue(redirectionFile, out var item))
         {
             var (renamedFrom, source) = item;
@@ -67,13 +68,13 @@ internal class RedirectionProvider
             {
                 redirectionChain.Push(redirectionFile);
                 errors.Add(Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()));
-                return redirectUrls[file];
+                return (redirectUrls[file], configMap[file]);
             }
             redirectionChain.Push(redirectionFile);
             redirectionFile = renamedFrom;
         }
 
-        return redirectUrls[file];
+        return (redirectUrls[file], configMap[file]);
     }
 
     public FilePath GetOriginalFile(FilePath file)
@@ -90,21 +91,24 @@ internal class RedirectionProvider
         return file;
     }
 
-    private (Dictionary<FilePath, string>, HashSet<PathString>, RedirectionItem[]) LoadRedirections()
+    private (Dictionary<FilePath, string>, Dictionary<FilePath, string>, HashSet<PathString>, RedirectionItem[]) LoadRedirections()
     {
         using (Progress.Start("Loading redirections"))
         {
             var redirections = LoadRedirectionModel();
-            var redirectUrls = GetRedirectUrls(redirections, _config.HostName);
+            (var redirectUrls, var redirectConfigs) = GetRedirectUrls(redirections, _config.HostName);
             var redirectPaths = redirectUrls.Keys.Select(x => x.Path).ToHashSet();
 
-            return (redirectUrls, redirectPaths, redirections);
+            return (redirectUrls, redirectConfigs, redirectPaths, redirections);
         }
     }
 
-    private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+    private (Dictionary<FilePath, string>, Dictionary<FilePath, string>) GetRedirectUrls(
+        RedirectionItem[] redirections,
+        string hostName)
     {
         var redirectUrls = new Dictionary<FilePath, string>();
+        var redirectConfigMap = new Dictionary<FilePath, string>();
 
         foreach (var item in redirections)
         {
@@ -150,8 +154,9 @@ internal class RedirectionProvider
             {
                 _errors.Add(Errors.Redirection.RedirectionConflict(redirectUrl, path));
             }
+            redirectConfigMap.TryAdd(filePath, item.ConfigPath.Value);
         }
-        return redirectUrls;
+        return (redirectUrls, redirectConfigMap);
     }
 
     private RedirectionItem[] LoadRedirectionModel()
@@ -246,6 +251,7 @@ internal class RedirectionProvider
                     Monikers = item.Monikers,
                     RedirectUrl = item.RedirectUrl,
                     RedirectDocumentId = item.RedirectDocumentId,
+                    ConfigPath = fullPath,
                 });
             }
         }

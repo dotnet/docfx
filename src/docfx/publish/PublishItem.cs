@@ -10,8 +10,16 @@ namespace Microsoft.Docs.Build;
 [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
 internal class PublishItem
 {
+    /// <summary>
+    /// Site URL of this item.
+    /// e.g. /basics/teams-integration
+    /// </summary>
     public string? Url { get; init; }
 
+    /// <summary>
+    /// the output file path after build
+    /// e.g. release-notes/index.raw.page.json
+    /// </summary>
     public string? Path { get; init; }
 
     [JsonIgnore]

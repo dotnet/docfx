@@ -243,7 +243,9 @@ internal class PageBuilder
             = userMetadata.ContentGitUrl != null || userMetadata.OriginalContentGitUrl != null || userMetadata.OriginalContentGitUrlTemplate != null
               ? (userMetadata.ContentGitUrl, userMetadata.OriginalContentGitUrl, userMetadata.OriginalContentGitUrlTemplate)
               : _contributionProvider.GetGitUrl(file);
+
         systemMetadata.Gitcommit = _contributionProvider.GetGitCommitUrl(file);
+        systemMetadata.SourceUrl = systemMetadata.OriginalContentGitUrl;
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");

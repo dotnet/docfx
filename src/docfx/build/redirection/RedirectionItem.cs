@@ -19,4 +19,8 @@ internal class RedirectionItem
     public SourceInfo<string> RedirectUrl { get; set; } = new SourceInfo<string>("");
 
     public bool RedirectDocumentId { get; set; }
+
+    // the path of redirection configuration file
+    [JsonIgnore]
+    public PathString ConfigPath { get; set; }
 }

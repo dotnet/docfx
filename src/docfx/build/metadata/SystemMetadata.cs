@@ -39,6 +39,8 @@ internal class SystemMetadata
 
     public string? OriginalContentGitUrl { get; set; }
 
+    public string? SourceUrl { get; set; }
+
     public string? OriginalContentGitUrlTemplate { get; set; }
 
     public string? Gitcommit { get; set; }

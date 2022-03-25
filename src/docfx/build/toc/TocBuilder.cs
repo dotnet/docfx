@@ -12,6 +12,7 @@ internal class TocBuilder
     private readonly MetadataValidator _metadataValidator;
     private readonly DocumentProvider _documentProvider;
     private readonly MonikerProvider _monikerProvider;
+    private readonly ContributionProvider _contributionProvider;
     private readonly PublishModelBuilder _publishModelBuilder;
     private readonly TemplateEngine _templateEngine;
     private readonly Output _output;
@@ -24,6 +25,7 @@ internal class TocBuilder
         MetadataValidator metadataValidator,
         DocumentProvider documentProvider,
         MonikerProvider monikerProvider,
+        ContributionProvider contributionProvider,
         PublishModelBuilder publishModelBuilder,
         TemplateEngine templateEngine,
         Output output)
@@ -35,6 +37,7 @@ internal class TocBuilder
         _metadataValidator = metadataValidator;
         _documentProvider = documentProvider;
         _monikerProvider = monikerProvider;
+        _contributionProvider = contributionProvider;
         _publishModelBuilder = publishModelBuilder;
         _templateEngine = templateEngine;
         _output = output;
@@ -93,6 +96,10 @@ internal class TocBuilder
             }
         }
 
-        _publishModelBuilder.AddOrUpdate(file, metadata: null, outputPath);
+        (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
+        _publishModelBuilder.AddOrUpdate(file, new Newtonsoft.Json.Linq.JObject()
+        {
+            { "source_url", originalContentGitUrl },
+        }, outputPath);
     }
 }
