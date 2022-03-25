@@ -67,8 +67,13 @@ steps:
 - task: TSAUpload@1
   inputs:
     tsaVersion: 'TsaV2'
+    codebase: 'NewOrUpdate'
     tsaEnvironment: 'PROD'
     codeBaseName: 'Docs_default_v2'
+    areaPath: 'One\\DeveloperRelations'
+    iterationPath: 'One\\Custom\\_Default'
+    instanceUrlForTsaV2: MSAZURE
+    projectNameMSAZURE: One
     uploadCredScan: true
     uploadBinSkim: true
     uploadSemmle: true
