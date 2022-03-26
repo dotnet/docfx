@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static ModuleBuilder CreateModule()
         {
             const string name = "dfm-renderer";
-             var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 new AssemblyName(name),
                 AssemblyBuilderAccess.Run);
             return dynamicAssembly.DefineDynamicModule(name);
