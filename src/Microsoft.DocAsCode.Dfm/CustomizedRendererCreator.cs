@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.Dfm
                 DefineMethod(type, g.Key, g.Items, f, partList);
             }
             OverrideDispose(type, f, partList.Count);
-            return Activator.CreateInstance(type.CreateTypeInfo(), innerRenderer, partList.ToArray());
+            return Activator.CreateInstance(type.CreateType(), innerRenderer, partList.ToArray());
         }
 
         private static bool ValidateKey(Tuple<Type, Type, Type> types)
