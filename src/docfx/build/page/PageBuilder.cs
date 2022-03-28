@@ -175,10 +175,6 @@ internal class PageBuilder
         }
 
         var metadata = new JObject();
-
-        (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
-        metadata["source_url"] = originalContentGitUrl;
-
         var mime = _documentProvider.GetMime(file);
 
         // TODO: remove after schema exported
@@ -249,7 +245,6 @@ internal class PageBuilder
               : _contributionProvider.GetGitUrl(file);
 
         systemMetadata.Gitcommit = _contributionProvider.GetGitCommitUrl(file);
-        systemMetadata.SourceUrl = systemMetadata.OriginalContentGitUrl;
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");

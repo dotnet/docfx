@@ -14,6 +14,7 @@ internal class PublishModelBuilder
     private readonly string _locale;
     private readonly SourceMap _sourceMap;
     private readonly DocumentProvider _documentProvider;
+    private readonly ContributionProvider _contributionProvider;
 
     private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new();
 
@@ -23,7 +24,8 @@ internal class PublishModelBuilder
         MonikerProvider monikerProvider,
         BuildOptions buildOptions,
         SourceMap sourceMap,
-        DocumentProvider documentProvider)
+        DocumentProvider documentProvider,
+        ContributionProvider contributionProvider)
     {
         _config = config;
         _errors = errors;
@@ -31,10 +33,17 @@ internal class PublishModelBuilder
         _locale = buildOptions.Locale;
         _sourceMap = sourceMap;
         _documentProvider = documentProvider;
+        _contributionProvider = contributionProvider;
     }
 
     public void AddOrUpdate(FilePath file, JObject? metadata, string? outputPath)
     {
+        if (metadata != null && file.Origin != FileOrigin.Redirection)
+        {
+
+            (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
+            metadata.Add("source_url", originalContentGitUrl);
+        }
         _buildOutput.TryAdd(file, (metadata, outputPath));
     }
 

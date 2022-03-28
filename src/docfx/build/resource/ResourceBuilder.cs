@@ -9,7 +9,6 @@ internal class ResourceBuilder
 {
     private readonly Input _input;
     private readonly DocumentProvider _documentProvider;
-    private readonly ContributionProvider _contributionProvider;
     private readonly Config _config;
     private readonly Output _output;
     private readonly PublishModelBuilder _publishModelBuilder;
@@ -17,14 +16,12 @@ internal class ResourceBuilder
     public ResourceBuilder(
         Input input,
         DocumentProvider documentProvider,
-        ContributionProvider contributionProvider,
         Config config,
         Output output,
         PublishModelBuilder publishModelBuilder)
     {
         _input = input;
         _documentProvider = documentProvider;
-        _contributionProvider = contributionProvider;
         _config = config;
         _output = output;
         _publishModelBuilder = publishModelBuilder;
@@ -44,7 +41,6 @@ internal class ResourceBuilder
             _output.Copy(outputPath, file);
         }
 
-        (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
-        _publishModelBuilder.AddOrUpdate(file, new JObject() { { "source_url", originalContentGitUrl } }, outputPath);
+        _publishModelBuilder.AddOrUpdate(file, new JObject(), outputPath);
     }
 }
