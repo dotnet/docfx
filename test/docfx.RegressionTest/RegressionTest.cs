@@ -176,7 +176,13 @@ internal static class RegressionTest
         Console.BackgroundColor = ConsoleColor.DarkMagenta;
         Console.WriteLine($"Test {(testResult.Succeeded ? "Pass" : "Fail")} {workingFolder}");
         Console.WriteLine("Test Result Summary:");
-        Console.WriteLine(testResult.ToString());
+        Console.WriteLine($"Succeeded = {testResult.Succeeded}, " +
+            $"BuildTime = {testResult.BuildTime.TotalSeconds}s, " +
+            $"Timeout = {testResult.Timeout}s, " +
+            $"PeakMemory = {testResult.PeakMemory}, " +
+            $"Diff = {(testResult.Diff?.Length > 0 ? "Yes" : "No")}" +
+            $"MoreLines = {testResult.MoreLines}, " +
+            $"CrashMessage = {testResult.CrashMessage}");
         Console.ResetColor();
 
         PushChanges(testResult, workingFolder);

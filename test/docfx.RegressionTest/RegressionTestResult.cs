@@ -20,12 +20,4 @@ internal class RegressionTestResult
     public string? CrashMessage { get; set; }
 
     public int MoreLines { get; set; }
-
-    public override string ToString() => $"{{{nameof(Succeeded)}={Succeeded}, " +
-            $"{nameof(BuildTime)}={BuildTime.TotalSeconds}s, " +
-            $"{nameof(Timeout)}={Timeout}s, " +
-            $"{nameof(PeakMemory)}={PeakMemory}, " +
-            $"{nameof(Diff)}={(Diff?.Length > 0 ? "Yes" : "No")}, " +
-            $"{nameof(MoreLines)}={MoreLines}}}, " +
-            $"{nameof(CrashMessage)}={CrashMessage}";
 }
