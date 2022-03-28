@@ -26,17 +26,16 @@ internal class RedirectionBuilder
 
     internal void Build(ErrorBuilder errors, FilePath file)
     {
-        (var redirectUrl, var configFilePath) = _redirectionProvider.GetRedirectUrl(errors, file);
+        var redirectUrl = _redirectionProvider.GetRedirectUrl(errors, file);
         var (documentId, documentVersionIndependentId) = _documentProvider.GetDocumentId(_redirectionProvider.GetOriginalFile(file));
 
-        (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(new FilePath(configFilePath));
         var publishMetadata = new JObject
         {
             ["redirect_url"] = redirectUrl,
             ["document_id"] = documentId,
             ["document_version_independent_id"] = documentVersionIndependentId,
             ["canonical_url"] = _documentProvider.GetCanonicalUrl(file),
-            ["source_url"] = originalContentGitUrl, // point to redirection config file git url
+            ["source_url"] = null, // redirection file will not have source_url
         };
 
         _publishModelBuilder.AddOrUpdate(file, publishMetadata, outputPath: null);
