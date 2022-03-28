@@ -40,7 +40,6 @@ internal class PublishModelBuilder
     {
         if (metadata != null && file.Origin != FileOrigin.Redirection)
         {
-
             (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
             metadata.Add("source_url", originalContentGitUrl);
         }

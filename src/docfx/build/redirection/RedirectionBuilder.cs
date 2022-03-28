@@ -10,18 +10,15 @@ internal class RedirectionBuilder
     private readonly PublishModelBuilder _publishModelBuilder;
     private readonly RedirectionProvider _redirectionProvider;
     private readonly DocumentProvider _documentProvider;
-    private readonly ContributionProvider _contributionProvider;
 
     public RedirectionBuilder(
         PublishModelBuilder publishModelBuilder,
         RedirectionProvider redirectionProvider,
-        DocumentProvider documentProvider,
-        ContributionProvider contributionProvider)
+        DocumentProvider documentProvider)
     {
         _publishModelBuilder = publishModelBuilder;
         _redirectionProvider = redirectionProvider;
         _documentProvider = documentProvider;
-        _contributionProvider = contributionProvider;
     }
 
     internal void Build(ErrorBuilder errors, FilePath file)
