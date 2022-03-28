@@ -30,6 +30,11 @@ internal class PublishItem
     /// </summary>
     public string? SourcePath { get; init; }
 
+    /// <summary>
+    /// File source url on Git repository
+    /// </summary>
+    public string? SourceUrl { get; init; }
+
     public string? Locale { get; init; }
 
     [JsonIgnore]

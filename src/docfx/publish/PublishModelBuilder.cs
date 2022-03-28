@@ -38,11 +38,6 @@ internal class PublishModelBuilder
 
     public void AddOrUpdate(FilePath file, JObject? metadata, string? outputPath)
     {
-        if (metadata != null && file.Origin != FileOrigin.Redirection)
-        {
-            (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(file);
-            metadata.Add("source_url", originalContentGitUrl);
-        }
         _buildOutput.TryAdd(file, (metadata, outputPath));
     }
 
@@ -55,6 +50,12 @@ internal class PublishModelBuilder
             if (!publishItems.ContainsKey(sourceFile))
             {
                 _buildOutput.TryGetValue(sourceFile, out var buildOutput);
+                string? sourceUrl = null;
+                if (sourceFile.Origin != FileOrigin.Redirection)
+                {
+                    (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(sourceFile);
+                    sourceUrl = originalContentGitUrl;
+                }
 
                 var publishItem = new PublishItem
                 {
@@ -62,6 +63,7 @@ internal class PublishModelBuilder
                     Path = buildOutput.outputPath,
                     SourceFile = sourceFile,
                     SourcePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
+                    SourceUrl = sourceUrl,
                     Locale = _locale,
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
                     ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
