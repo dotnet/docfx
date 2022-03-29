@@ -174,8 +174,8 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
-        var metadata = new JObject();
         var mime = _documentProvider.GetMime(file);
+        var metadata = new JObject();
 
         // TODO: remove after schema exported
         if (string.Equals("Achievements", mime, StringComparison.OrdinalIgnoreCase))
@@ -243,7 +243,6 @@ internal class PageBuilder
             = userMetadata.ContentGitUrl != null || userMetadata.OriginalContentGitUrl != null || userMetadata.OriginalContentGitUrlTemplate != null
               ? (userMetadata.ContentGitUrl, userMetadata.OriginalContentGitUrl, userMetadata.OriginalContentGitUrlTemplate)
               : _contributionProvider.GetGitUrl(file);
-
         systemMetadata.Gitcommit = _contributionProvider.GetGitCommitUrl(file);
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;

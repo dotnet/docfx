@@ -110,7 +110,7 @@ internal class ContributionProvider
         {
             var isAllowlisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
 
-            var fullPath = _input.TryGetOriginalPhysicalPath(file) ?? file?.Path;
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
             if (fullPath is null)
             {
                 return default;

@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json.Linq;
-
 namespace Microsoft.Docs.Build;
 
 internal class TocBuilder
@@ -95,6 +93,6 @@ internal class TocBuilder
             }
         }
 
-        _publishModelBuilder.AddOrUpdate(file, new JObject(), outputPath);
+        _publishModelBuilder.AddOrUpdate(file, metadata: null, outputPath);
     }
 }

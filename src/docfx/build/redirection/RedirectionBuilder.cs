@@ -11,10 +11,7 @@ internal class RedirectionBuilder
     private readonly RedirectionProvider _redirectionProvider;
     private readonly DocumentProvider _documentProvider;
 
-    public RedirectionBuilder(
-        PublishModelBuilder publishModelBuilder,
-        RedirectionProvider redirectionProvider,
-        DocumentProvider documentProvider)
+    public RedirectionBuilder(PublishModelBuilder publishModelBuilder, RedirectionProvider redirectionProvider, DocumentProvider documentProvider)
     {
         _publishModelBuilder = publishModelBuilder;
         _redirectionProvider = redirectionProvider;
@@ -32,7 +29,6 @@ internal class RedirectionBuilder
             ["document_id"] = documentId,
             ["document_version_independent_id"] = documentVersionIndependentId,
             ["canonical_url"] = _documentProvider.GetCanonicalUrl(file),
-            ["source_url"] = null, // redirection file will not have source_url
         };
 
         _publishModelBuilder.AddOrUpdate(file, publishMetadata, outputPath: null);
