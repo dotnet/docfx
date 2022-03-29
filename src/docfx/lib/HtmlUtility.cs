@@ -51,6 +51,7 @@ internal static class HtmlUtility
         "serviceData",
         "github_contributors",
         "is_hidden",
+        "cmProducts",
     };
 
     private static readonly Dictionary<string, string> s_htmlMetaNames = new()
