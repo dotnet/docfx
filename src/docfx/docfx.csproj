@@ -17,7 +17,7 @@
     <PackageReference Include="docs.validation" Version="1.0.1-rc-00140-f8d62d5" />
     <PackageReference Include="DotLiquid" Version="2.2.602" />
     <PackageReference Include="Glob" Version="1.1.9" />
-    <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
+    <PackageReference Include="HtmlReaderWriter" Version="1.0.0" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
