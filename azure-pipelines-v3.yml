@@ -215,6 +215,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
     windowsserverdocs-pr:
       params: https://github.com/MicrosoftDocs/windowsserverdocs-pr --timeout 45 --regression-rules
+    VBA-Docs:
+      params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 80 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
     microsoft-365-docs-pr.zh-CN:
