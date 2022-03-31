@@ -149,9 +149,11 @@ internal class ErrorLog : ErrorBuilder
                 error = error with { OriginalPath = _docsetBasePath.Concat(error.OriginalPath.Value) };
             }
         }
-        if (error.getFile() != null)
+
+        var filePath = error.getFile();
+        if (filePath != null)
         {
-            (_, string? originalContentGitUrl, _) = ContributionProvider.GetGitUrl(new FilePath(_workingDirectory.Concat(new PathString(error.getFile()))));
+            (_, string? originalContentGitUrl, _) = ContributionProvider.GetGitUrl(new FilePath(_workingDirectory.Concat(new PathString(filePath))));
             error = error with { SourceUrl = originalContentGitUrl };
         }
         _errors.Add(error);
