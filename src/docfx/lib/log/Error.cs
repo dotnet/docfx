@@ -64,7 +64,7 @@ internal record Error
             Code,
             message = Message,
             file,
-            file_url = SourceUrl,
+            source_url = SourceUrl,
             line,
             end_line,
             column,
