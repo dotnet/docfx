@@ -5,6 +5,9 @@ trigger:
     include:
     - v3
     - v3-release
+  paths:
+    exclude:
+    - docs/designs/*
 pr: none
 
 variables:
@@ -101,9 +104,13 @@ jobs:
   - task: TSAUpload@1
     inputs:
       tsaVersion: 'TsaV2'
-      codebase: 'Existing'
+      codebase: 'NewOrUpdate'
       tsaEnvironment: 'PROD'
       codeBaseName: 'Docs_default'
+      areaPath: 'One\\DeveloperRelations'
+      iterationPath: 'One\\Custom\\_Default'
+      instanceUrlForTsaV2: MSAZURE
+      projectNameMSAZURE: One
       uploadBinSkim: true
       uploadCredScan: true
       uploadAsync: true

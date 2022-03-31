@@ -174,7 +174,15 @@ internal static class RegressionTest
 
         Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
         Console.BackgroundColor = ConsoleColor.DarkMagenta;
-        Console.WriteLine($"Test Pass {workingFolder}");
+        Console.WriteLine($"Test {(testResult.Succeeded ? "Pass" : "Fail")} {workingFolder}");
+        Console.WriteLine("Test Result Summary:");
+        Console.WriteLine($"Succeeded = {testResult.Succeeded}, " +
+            $"BuildTime = {testResult.BuildTime.TotalSeconds}s, " +
+            $"Timeout = {testResult.Timeout}s, " +
+            $"PeakMemory = {testResult.PeakMemory}, " +
+            $"Diff = {(testResult.Diff?.Length > 0 ? "Yes" : "No")}" +
+            $"MoreLines = {testResult.MoreLines}, " +
+            $"CrashMessage = {testResult.CrashMessage}");
         Console.ResetColor();
 
         PushChanges(testResult, workingFolder);
@@ -291,12 +299,6 @@ internal static class RegressionTest
         // For temporary normalize: use 'NormalizeJsonFiles' for output files
         Normalizer.Normalize(outputPath, NormalizeStage.PrettifyJsonFiles | NormalizeStage.PrettifyLogFiles, errorLevel: opts.ErrorLevel);
 
-        if (testResult.BuildTime.TotalSeconds > opts.Timeout && s_isPullRequest)
-        {
-            Console.WriteLine($"##vso[task.complete result=Failed]Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
-            Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
-        }
-
         if (s_isPullRequest)
         {
             var watch = Stopwatch.StartNew();
@@ -317,7 +319,9 @@ internal static class RegressionTest
             var (diff, totalLines) = PipeOutputToFile(process.StandardOutput, diffFile, maxLines: 100000);
             process.WaitForExit();
 
-            testResult.Succeeded = process.ExitCode == 0;
+            // refer to https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---exit-code
+            var noDiff = process.ExitCode == 0;
+
             testResult.Timeout = opts.Timeout;
             testResult.Diff = diff;
             testResult.MoreLines = totalLines;
@@ -325,19 +329,31 @@ internal static class RegressionTest
             watch.Stop();
             Console.WriteLine($"'git diff' done in '{watch.Elapsed}'");
 
-            if (process.ExitCode == 0)
+            if (!noDiff)
             {
-                return;
+                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
+                MarkTaskFailed("Test failed, see the logs under /Summary/Build artifacts for details");
             }
 
-            Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
-            Console.WriteLine($"##vso[task.complete result=Failed]Test failed, see the logs under /Summary/Build artifacts for details");
+            var isTimeout = testResult.BuildTime.TotalSeconds > opts.Timeout;
+            if (isTimeout)
+            {
+                MarkTaskFailed($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+                Console.WriteLine($"Test failed, build timeout. Repo: {s_testName}; Expected Runtime: {opts.Timeout}s");
+            }
+
+            testResult.Succeeded = noDiff && !isTimeout;
         }
         else
         {
             Exec("git", "-c core.autocrlf=input -c core.safecrlf=false add -A", cwd: workingFolder);
             Exec("git", $"-c user.name=\"docfx-impact-ci\" -c user.email=\"docfx-impact-ci@microsoft.com\" commit -m \"**DISABLE_SECRET_SCANNING** {s_testName}: {s_commitString}\"", cwd: workingFolder, ignoreError: true);
         }
+    }
+
+    private static void MarkTaskFailed(string comment)
+    {
+        Console.WriteLine($"##vso[task.complete result=Failed]{comment}");
     }
 
     private static void PushChanges(RegressionTestResult testResult, string workingFolder)
@@ -482,7 +498,7 @@ internal static class RegressionTest
         body.Append("<details><summary>");
         body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
         body.Append($"<a href='{s_repository}'>{s_testName}</a>");
-        body.Append($"({testResult.BuildTime}");
+        body.Append($"({testResult.BuildTime.TotalSeconds}s");
 
         if (isTimeout)
         {

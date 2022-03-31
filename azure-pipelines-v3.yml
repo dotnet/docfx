@@ -4,8 +4,16 @@ trigger:
     include:
     - v3
     - v3-release
+  paths:
+    exclude:
+    - docs/designs/*
 pr:
-- v3
+  branches:
+    include:
+    - v3
+  paths:
+    exclude:
+    - docs/designs/*
 
 variables:
 - group: devresourcekeyvault
@@ -213,8 +221,6 @@ parameters:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
     microsoft-365-docs-pr.zh-CN:
       params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live --profile --timeout 25
-    powerbi-docs-pr.de-DE:
-      params: https://github.com/MicrosoftDocs/powerbi-docs-pr.de-DE --branch live --timeout 25
     PowerShell-Docs:
       params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch live
     roslyn-api-docs:

@@ -12,19 +12,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.4.1" />
-    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
+    <PackageReference Include="Azure.Identity" Version="1.5.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.3.0" />
     <PackageReference Include="docs.validation" Version="1.0.1-rc-00140-f8d62d5" />
-    <PackageReference Include="DotLiquid" Version="2.2.595" />
+    <PackageReference Include="DotLiquid" Version="2.2.602" />
     <PackageReference Include="Glob" Version="1.1.9" />
-    <PackageReference Include="HtmlReaderWriter" Version="1.0.0-preview-0001-gcf3636c5d9" />
+    <PackageReference Include="HtmlReaderWriter" Version="1.0.0" />
     <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
-    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1719.2" Aliases="maml" />
+    <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.1905.8" Aliases="maml" />
     <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
-    <PackageReference Include="Microsoft.Graph" Version="4.18.0" />
+    <PackageReference Include="Microsoft.Graph" Version="4.22.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Jint" Version="3.0.0-beta-2035" />
@@ -40,7 +40,7 @@
   <ItemGroup>
     <PackageReference Include="Menees.Analyzers.2017" Version="2.0.3" PrivateAssets="all" />
     <!-- This package was transitively referenced by OmniSharp server, stop propagating it to other projects by explicitly marking it as private assets -->
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.0.64" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.1.46" PrivateAssets="all" />
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.4.255" PrivateAssets="all" />
     <PackageReference Include="docs.validation.analyzer" Version="1.0.1-rc-00140-f8d62d5" PrivateAssets="all" />
   </ItemGroup>

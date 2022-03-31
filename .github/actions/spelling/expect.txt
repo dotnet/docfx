@@ -149,6 +149,8 @@ dfn
 dhs
 diagnosics
 dic
+diff
+diffs
 dirname
 disallowlists
 displayname
@@ -344,6 +346,7 @@ Monker
 monodoc
 Mooncake
 mri
+MSAZURE
 msbuild
 msdn
 msft

@@ -18,6 +18,7 @@ internal static class ProcessUtility
         AllowTrailingCommas = true,
         Converters = { new JsonStringEnumConverter() },
         PropertyNamingPolicy = new JsonSnakeCaseNamingPolicy(),
+        WriteIndented = true,
     };
 
     /// <summary>
