@@ -50,12 +50,8 @@ internal class PublishModelBuilder
             if (!publishItems.ContainsKey(sourceFile))
             {
                 _buildOutput.TryGetValue(sourceFile, out var buildOutput);
-                string? sourceUrl = null;
-                if (sourceFile.Origin != FileOrigin.Redirection)
-                {
-                    (_, var originalContentGitUrl, _) = _contributionProvider.GetGitUrl(sourceFile);
-                    sourceUrl = originalContentGitUrl;
-                }
+
+                (_, var sourceUrl, _) = _contributionProvider.GetGitUrl(sourceFile);
 
                 var publishItem = new PublishItem
                 {

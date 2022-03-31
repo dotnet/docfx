@@ -881,3 +881,68 @@ outputs:
           }
       }
     }
+---
+# provide source url in .publish.json for content, toc and resource pages but not redirection pages.
+repos:
+  https://github.com/test/repo:
+  - files:
+      docfx.yml:
+      redirections.yml: |
+        redirections:
+          missing.md: /a
+      a.md:
+      toc.yml:
+      image.png:
+outputs:
+   a.json:
+   image.png:
+   toc.json:
+   .publish.json: |
+      {
+        "files": [
+          {
+              "source_path": "missing.md",
+              "source_url": undefined
+          },
+          {
+              "source_path": "a.md",
+              "source_url": "https://github.com/test/repo/blob/main/a.md"
+          },
+          {
+              "source_path": "image.png",
+              "source_url": "https://github.com/test/repo/blob/main/image.png"
+          },
+          {
+              "source_path": "toc.yml",
+              "source_url": "https://github.com/test/repo/blob/main/toc.yml"
+          }
+        ]
+      }
+---
+# source url also works for CRR
+repos:
+  https://github.com/ops1/repo:
+  - files:
+      docfx.yml: |
+        routes:
+            "crr/": "crr"
+        dependencies:
+              crr:
+                url: https://github.com/ops1/crr
+                branch: live
+                includeInBuild: true
+  https://github.com/ops1/crr#live:
+  - files:
+      a.md:
+outputs:
+  crr/a.json:
+  .publish.json: |
+    {
+      "files": [
+        {
+            "source_path": "crr/a.md",
+            "source_url": "https://github.com/ops1/crr/blob/live/a.md"
+        }
+      ]
+    }
+---

@@ -108,6 +108,11 @@ internal class ContributionProvider
 
         (string?, string?, string?) GetGitUrlsCore(FilePath file)
         {
+            if (file.Origin == FileOrigin.Redirection)
+            {
+                return default;
+            }
+
             var isAllowlisted = file.Origin == FileOrigin.Main || file.Origin == FileOrigin.Fallback;
 
             var fullPath = _input.TryGetOriginalPhysicalPath(file);
