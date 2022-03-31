@@ -10,8 +10,16 @@ namespace Microsoft.Docs.Build;
 [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
 internal class PublishItem
 {
+    /// <summary>
+    /// Site URL of this item.
+    /// e.g. /basics/teams-integration
+    /// </summary>
     public string? Url { get; init; }
 
+    /// <summary>
+    /// the output file path after build
+    /// e.g. release-notes/index.raw.page.json
+    /// </summary>
     public string? Path { get; init; }
 
     [JsonIgnore]
@@ -21,6 +29,11 @@ internal class PublishItem
     /// File source relative path to docset root will be used for PR comment
     /// </summary>
     public string? SourcePath { get; init; }
+
+    /// <summary>
+    /// File source url on Git repository
+    /// </summary>
+    public string? SourceUrl { get; init; }
 
     public string? Locale { get; init; }
 
