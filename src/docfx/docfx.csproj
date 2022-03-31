@@ -18,7 +18,7 @@
     <PackageReference Include="DotLiquid" Version="2.2.602" />
     <PackageReference Include="Glob" Version="1.1.9" />
     <PackageReference Include="HtmlReaderWriter" Version="1.0.0" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.314" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.315-alpha.0.9" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
