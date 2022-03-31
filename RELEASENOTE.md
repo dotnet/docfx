@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.59.0)
+Version Notes (Current Version: v2.59.1)
 =======================================
+
+v2.59.1
+-----------
+1. `Microsoft.DocAsCode.Build.RestApi` and `Microsoft.DocAsCode.Build.TableOfContents` Support .NET Standard.
 
 v2.59.0
 -----------
