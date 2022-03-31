@@ -52,7 +52,7 @@ jobs:
     displayName: dotnet test
     condition: and(succeeded(), ne(variables['warm-up'], 'true'))
     inputs:
-      azureSubscription: 'DevRel - Docs Build Worker (PubDev)'
+      ConnectedServiceNameARM: 'DevRel - Docs Build Worker (PubDev)'
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
@@ -134,7 +134,7 @@ jobs:
     - task: AzureCLI@2
       displayName: Run
       inputs:
-        azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
+        ConnectedServiceNameARM: 'DevRel - Docs.Build Docfx CI Test'
         scriptType: ps
         scriptLocation: inlineScript
         powerShellErrorActionPreference: continue
@@ -177,7 +177,7 @@ jobs:
       - task: AzureCLI@2
         displayName: ${{repo}}
         inputs:
-          azureSubscription: 'DevRel - Docs.Build Docfx CI Test'
+          ConnectedServiceNameARM: 'DevRel - Docs.Build Docfx CI Test'
           scriptType: ps
           scriptLocation: inlineScript
           powerShellErrorActionPreference: continue
