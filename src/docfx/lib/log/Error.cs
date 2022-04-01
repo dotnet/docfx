@@ -44,14 +44,9 @@ internal record Error
         PropertyPath = propertyPath;
     }
 
-    public string? GetFile()
-    {
-        return OriginalPath ?? Source?.File?.Path;
-    }
-
     public override string ToString()
     {
-        var file = GetFile();
+        var file = OriginalPath ?? Source?.File?.Path;
         var source = OriginalPath is null ? Source : null;
         var line = source?.Line ?? 0;
         var end_line = source?.EndLine ?? 0;

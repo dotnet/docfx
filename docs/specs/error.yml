@@ -242,7 +242,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
-# provide source url in error log, CRR page is also supported
+# provide source url in error log, CRR pages are also supported
 noDryRun: true
 repos:
   https://github.com/ops1/repo:
