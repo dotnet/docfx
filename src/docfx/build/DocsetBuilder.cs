@@ -78,7 +78,7 @@ internal class DocsetBuilder
         _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
         _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
         _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _fileResolver, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
-        _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
+        _contributionProvider = _errors.ContributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
         _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
         _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
         _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
