@@ -9,7 +9,6 @@ internal class ErrorLog : ErrorBuilder
 {
     private readonly ErrorBuilder _errors;
     private readonly PathString _docsetBasePath;
-    private readonly PathString _workingDirectory;
 
     private readonly Scoped<ErrorSink> _errorSink = new();
     private readonly Scoped<ConcurrentDictionary<FilePath, ErrorSink>> _fileSink = new();
@@ -31,7 +30,6 @@ internal class ErrorLog : ErrorBuilder
     public ErrorLog(ErrorBuilder errors, string workingDirectory, string docsetPath)
     {
         _errors = errors;
-        _workingDirectory = new PathString(workingDirectory);
         _docsetBasePath = new PathString(Path.GetRelativePath(workingDirectory, docsetPath));
     }
 
@@ -152,11 +150,11 @@ internal class ErrorLog : ErrorBuilder
             }
         }
 
-        if (originalFilePath != null)
+        if (originalFilePath != null && ContributionProvider != null)
         {
             // The original FilePath is used as key to fetch ContributionProvider git url cache
             // and meets the requirement of https://github.com/dotnet/docfx/blob/c8cb790043ae5b93173f3e28dafc28bf7f305d48/src/docfx/build/context/Input.cs#L292
-            (_, string? originalContentGitUrl, _) = ContributionProvider.GetGitUrl(originalFilePath);
+            (_, var originalContentGitUrl, _) = ContributionProvider.GetGitUrl(originalFilePath);
             error = error with { SourceUrl = originalContentGitUrl };
         }
         _errors.Add(error);

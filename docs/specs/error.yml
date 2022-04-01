@@ -241,4 +241,30 @@ outputs:
   a.json:
   .errors.log: |
     {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
-   
+---
+# provide source url in error log, CRR page is also supported
+noDryRun: true
+repos:
+  https://github.com/ops1/repo:
+  - files:
+      docfx.yml: |
+        routes:
+            "crr/": "crr"
+        dependencies:
+              crr:
+                url: https://github.com/ops1/crr
+                branch: live
+                includeInBuild: true
+      a.md: |
+        <br2/>
+  https://github.com/ops1/crr#live:
+  - files:
+      b.md: |
+        <br3/>
+outputs:
+  a.json:
+  crr/b.json:
+  .errors.log: |
+    {"message_severity":"info","code":"disallowed-html-tag","file":"a.md", "source_url":"https://github.com/ops1/repo/blob/main/a.md","message":"HTML tag 'br2' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax."}
+    {"message_severity":"info","code":"disallowed-html-tag","file":"crr/b.md","source_url":"https://github.com/ops1/crr/blob/live/b.md","message":"HTML tag 'br3' isn't allowed. Disallowed HTML poses a security risk and must be replaced with approved Docs Markdown syntax."}
+    
