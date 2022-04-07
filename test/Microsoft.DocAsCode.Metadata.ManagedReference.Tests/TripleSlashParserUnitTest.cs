@@ -240,7 +240,7 @@ This is an example using source reference.
         Class summary <see cref='T:System.AccessViolationException'>Exception type</see>
     </summary>
     <remarks>
-    See <see cref='T:System.Int'><i>an</i> <b><code>Integer</code></b></see>.
+    See <see cref='T:System.Int'>Integer</see>.
     </remarks>
     <returns>Returns an <see cref='T:System.AccessViolationException'>Exception</see>.</returns>
 
@@ -269,7 +269,7 @@ This is an example using source reference.
             Assert.Equal("This is an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", paramInput);
 
             var remarks = commentModel.Remarks;
-            Assert.Equal("\nSee <xref href=\"System.Int?text=%3cem%3ean%3c%2fem%3e+%3cstrong%3e%0d%0a++%3cpre%3e%0d%0a++++%3ccode%3eInteger%3c%2fcode%3e%0d%0a++%3c%2fpre%3e%0d%0a%3c%2fstrong%3e\" data-throw-if-not-resolved=\"false\"></xref>.\n", remarks);
+            Assert.Equal("\nSee <xref href=\"System.Int?text=Integer\" data-throw-if-not-resolved=\"false\"></xref>.\n", remarks);
         }
 
         [Trait("Related", "TripleSlashComments")]

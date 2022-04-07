@@ -565,17 +565,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                 }
                                 else
                                 {
-                                    StringBuilder text = new StringBuilder();
-                                    if(item.HasElements)
-                                    {
-                                        foreach (var textNode in item.Nodes())
-                                            text.Append(textNode.ToString());
-                                    }
-                                    else
-                                    {
-                                        text.Append(item.Value);
-                                    }
-                                    replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(text.ToString())}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                    replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(item.Value)}\" data-throw-if-not-resolved=\"false\"></xref>");
                                 }
                                 item.ReplaceWith(replacement);
                             }
