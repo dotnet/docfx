@@ -227,6 +227,51 @@ This is an example using source reference.
             Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
         }
 
+
+        [Trait("Related", "TripleSlashComments")]
+        [Fact]
+        public void SeeAltText()
+        {
+            string inputFolder = Path.GetRandomFileName();
+            Directory.CreateDirectory(inputFolder);
+            string input = @"
+<member name='T:TestClass1.Partial1'>
+    <summary>
+        Class summary <see cref='T:System.AccessViolationException'>Exception type</see>
+    </summary>
+    <remarks>
+    See <see cref='T:System.Int'><i>an</i> <b><code>Integer</code></b></see>.
+    </remarks>
+    <returns>Returns an <see cref='T:System.AccessViolationException'>Exception</see>.</returns>
+
+        <param name='input'>This is an <see cref='T:System.AccessViolationException'>Exception</see>.</param>
+</member>";
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = null,
+                PreserveRawInlineComments = false,
+                Source = new SourceDetail
+                {
+                    Path = Path.Combine(inputFolder, "Source.cs"),
+                }
+            };
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
+
+            var summary = commentModel.Summary;
+            Assert.Equal("\nClass summary <xref href=\"System.AccessViolationException?text=Exception+type\" data-throw-if-not-resolved=\"false\"></xref>\n", summary);
+
+            var returns = commentModel.Returns;
+            Assert.Equal("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
+
+            var paramInput = commentModel.Parameters["input"];
+            Assert.Equal("This is an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", paramInput);
+
+            var remarks = commentModel.Remarks;
+            Assert.Equal("\nSee <xref href=\"System.Int?text=%3cem%3ean%3c%2fem%3e+%3cstrong%3e%0d%0a++%3cpre%3e%0d%0a++++%3ccode%3eInteger%3c%2fcode%3e%0d%0a++%3c%2fpre%3e%0d%0a%3c%2fstrong%3e\" data-throw-if-not-resolved=\"false\"></xref>.\n", remarks);
+        }
+
         [Trait("Related", "TripleSlashComments")]
         [Fact]
         public void InheritDoc()

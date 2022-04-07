@@ -511,6 +511,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 foreach (var item in nodes)
                 {
                     var cref = item.Attribute("cref").Value;
+                    
                     var success = false;
 
                     if (resolveCRef != null)
@@ -558,7 +559,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                             if (item.Parent?.Parent != null)
                             {
-                                var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                XElement replacement;
+                                if(string.IsNullOrEmpty(item.Value))
+                                {
+                                    replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                }
+                                else
+                                {
+                                    StringBuilder text = new StringBuilder();
+                                    if(item.HasElements)
+                                    {
+                                        foreach (var textNode in item.Nodes())
+                                            text.Append(textNode.ToString());
+                                    }
+                                    else
+                                    {
+                                        text.Append(item.Value);
+                                    }
+                                    replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(text.ToString())}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                }
                                 item.ReplaceWith(replacement);
                             }
 
