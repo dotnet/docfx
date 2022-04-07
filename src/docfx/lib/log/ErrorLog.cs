@@ -21,6 +21,8 @@ internal class ErrorLog : ErrorBuilder
 
     public CustomRuleProvider? CustomRuleProvider { get; set; }
 
+    public ContributionProvider? ContributionProvider { get; set; }
+
     public override bool HasError => _errorSink.Value.ErrorCount > 0 || _fileSink.Value.Values.Any(file => file.ErrorCount > 0);
 
     public override bool FileHasError(FilePath file) => _fileSink.Value.TryGetValue(file, out var sink) && sink.ErrorCount > 0;
@@ -131,6 +133,8 @@ internal class ErrorLog : ErrorBuilder
 
     private void AddError(Error error)
     {
+        var originalFilePath = error.Source?.File;
+
         // Convert from path relative to docset to path relative to working directory
         if (!_docsetBasePath.IsDefault)
         {
@@ -146,6 +150,13 @@ internal class ErrorLog : ErrorBuilder
             }
         }
 
+        if (originalFilePath != null && ContributionProvider != null)
+        {
+            // The original FilePath is used as key to fetch ContributionProvider git url cache
+            // and meets the requirement of https://github.com/dotnet/docfx/blob/c8cb790043ae5b93173f3e28dafc28bf7f305d48/src/docfx/build/context/Input.cs#L292
+            (_, var originalContentGitUrl, _) = ContributionProvider.GetGitUrl(originalFilePath);
+            error = error with { SourceUrl = originalContentGitUrl };
+        }
         _errors.Add(error);
     }
 }

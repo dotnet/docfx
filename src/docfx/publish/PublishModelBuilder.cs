@@ -14,6 +14,7 @@ internal class PublishModelBuilder
     private readonly string _locale;
     private readonly SourceMap _sourceMap;
     private readonly DocumentProvider _documentProvider;
+    private readonly ContributionProvider _contributionProvider;
 
     private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new();
 
@@ -23,7 +24,8 @@ internal class PublishModelBuilder
         MonikerProvider monikerProvider,
         BuildOptions buildOptions,
         SourceMap sourceMap,
-        DocumentProvider documentProvider)
+        DocumentProvider documentProvider,
+        ContributionProvider contributionProvider)
     {
         _config = config;
         _errors = errors;
@@ -31,6 +33,7 @@ internal class PublishModelBuilder
         _locale = buildOptions.Locale;
         _sourceMap = sourceMap;
         _documentProvider = documentProvider;
+        _contributionProvider = contributionProvider;
     }
 
     public void AddOrUpdate(FilePath file, JObject? metadata, string? outputPath)
@@ -48,12 +51,15 @@ internal class PublishModelBuilder
             {
                 _buildOutput.TryGetValue(sourceFile, out var buildOutput);
 
+                (_, var sourceUrl, _) = _contributionProvider.GetGitUrl(sourceFile);
+
                 var publishItem = new PublishItem
                 {
                     Url = _documentProvider.GetSiteUrl(sourceFile),
                     Path = buildOutput.outputPath,
                     SourceFile = sourceFile,
                     SourcePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
+                    SourceUrl = sourceUrl,
                     Locale = _locale,
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
                     ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),

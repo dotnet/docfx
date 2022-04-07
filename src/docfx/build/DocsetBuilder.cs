@@ -78,7 +78,7 @@ internal class DocsetBuilder
         _monikerProvider = new(_config, _buildScope, _metadataProvider, _fileResolver);
         _jsonSchemaProvider = new(_config, _packageResolver, _jsonSchemaLoader);
         _documentProvider = new(_input, _errors, _config, _buildOptions, _buildScope, _fileResolver, _jsonSchemaProvider, _monikerProvider, _metadataProvider);
-        _contributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
+        _contributionProvider = _errors.ContributionProvider = new(_config, _buildOptions, _input, _githubAccessor, _repositoryProvider);
         _redirectionProvider = new(_config, _buildOptions, _errors, _buildScope, package, _documentProvider, _monikerProvider, () => Ensure(_publishUrlMap));
         _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
         _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
@@ -158,7 +158,7 @@ internal class DocsetBuilder
             _progressReporter.Report("Building...");
 
             var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
-            var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider);
+            var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider, _contributionProvider);
             var resourceBuilder = new ResourceBuilder(_input, _documentProvider, _config, output, publishModelBuilder);
             var learnHierarchyBuilder = new LearnHierarchyBuilder(_contentValidator);
             var pageBuilder = new PageBuilder(_config, _buildOptions, _input, output, _documentProvider, _metadataProvider, _monikerProvider, _templateEngine, _tocMap, _linkResolver, _contributionProvider, _bookmarkValidator, publishModelBuilder, _contentValidator, _metadataValidator, _markdownEngine, _redirectionProvider, _jsonSchemaTransformer, learnHierarchyBuilder);

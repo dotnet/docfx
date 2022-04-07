@@ -200,6 +200,7 @@
         "document_version_independent_id",
         "serviceData",
         "is_hidden",
-        "redirect_document_id"
+        "redirect_document_id",
+        "cmProducts"
     ]
 }

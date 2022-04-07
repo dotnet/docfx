@@ -19,6 +19,9 @@ internal record Error
 
     public PathString? OriginalPath { get; init; }
 
+    // Git Url
+    public string? SourceUrl { get; init; }
+
     public bool PullRequestOnly { get; init; }
 
     public bool AddOnly { get; init; }
@@ -56,6 +59,7 @@ internal record Error
             Code,
             message = Message,
             file,
+            source_url = SourceUrl,
             line,
             end_line,
             column,

@@ -346,6 +346,7 @@ Monker
 monodoc
 Mooncake
 mri
+MSAZURE
 msbuild
 msdn
 msft
