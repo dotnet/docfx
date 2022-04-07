@@ -510,7 +510,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
                 foreach (var item in nodes)
                 {
-                    var cref = item.Attribute("cref").Value;                    
+                    var cref = item.Attribute("cref").Value;
                     var success = false;
 
                     if (resolveCRef != null)
