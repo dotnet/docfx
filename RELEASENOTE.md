@@ -1,8 +1,9 @@
-Version Notes (Current Version: v2.60)
+Version Notes (Current Version: v2.59.2)
 =======================================
 
-v2.60(Pre-release)
+v2.59.2
 -----------
+1. Adds support for custom text in cref references. Thanks @dotMorten! (#7978)
 
 v2.59.1
 -----------
