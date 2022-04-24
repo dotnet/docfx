@@ -206,13 +206,13 @@ parameters:
   type: object
   default:
     azure-docs-pr:
-      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 100 --regression-rules
+      params: https://github.com/MicrosoftDocs/azure-docs-pr --profile --timeout 115 --regression-rules
     sql-docs-pr:
       params: https://github.com/MicrosoftDocs/sql-docs-pr --profile --timeout 120 --regression-rules
     docs:
       params: https://github.com/dotnet/docs --timeout 60 --regression-rules
     learn-pr:
-      params: https://github.com/MicrosoftDocs/learn-pr --timeout 100 --no-dry-sync --regression-rules
+      params: https://github.com/MicrosoftDocs/learn-pr --timeout 105 --no-dry-sync --regression-rules
     windowsserverdocs-pr:
       params: https://github.com/MicrosoftDocs/windowsserverdocs-pr --timeout 45 --regression-rules
     VBA-Docs:
@@ -222,15 +222,15 @@ parameters:
     microsoft-365-docs-pr.zh-CN:
       params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live --profile --timeout 25
     PowerShell-Docs:
-      params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 75 --branch live
+      params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 90 --branch live
     roslyn-api-docs:
-      params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 120
+      params: https://github.com/dotnet/roslyn-api-docs --profile --timeout 130
     EntityFramework.ApiDocs:
       params: https://github.com/dotnet/EntityFramework.ApiDocs --timeout 120
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     dynamics365-docs-odata-apis:
-      params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 20
+      params: https://github.com/MicrosoftDocs/dynamics365-docs-odata-apis --timeout 25
     mc-docs-pr:
       params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
     dynamics365smb-devitpro:
