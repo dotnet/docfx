@@ -73,11 +73,9 @@ public static class Docfx
     private static Command NewCommand()
     {
         var command = CreateCommand("new", "Creates a new docset.", New.Run);
-        command.AddOption(new Option<string>(
-            new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
-        command.AddOption(new Option<bool>(
-            "--force", "Forces content to be generated even if it would change existing files."));
-        command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
+        command.AddOption(CommandLineOptions.UI.Output);
+        command.AddOption(CommandLineOptions.UI.Force);
+        command.AddArgument(CommandLineOptions.UI.TemplateName);
         return command;
     }
 
@@ -92,26 +90,16 @@ public static class Docfx
     {
         var command = CreateCommand("build", "Builds a docset.", options => Builder.Run(options, package));
         DefineCommonCommands(command);
-        command.AddOption(new Option<string[]>(
-            new[] { "--file" }, "Build only the specified files."));
-        command.AddOption(new Option<string>(
-            new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
-        command.AddOption(new Option<OutputType>(
-            "--output-type", "Output directory in which to place built artifacts."));
-        command.AddOption(new Option<bool>(
-            "--dry-run", "Do not produce build artifact and only produce validation result."));
-        command.AddOption(new Option<bool>(
-            "--no-dry-sync", "Do not run dry sync for learn validation."));
-        command.AddOption(new Option<bool>(
-            "--no-restore", "Do not restore dependencies before build."));
-        command.AddOption(new Option<bool>(
-            "--no-cache", "Always fetch latest dependencies in build."));
-        command.AddOption(new Option<string>(
-            "--template-base-path", "The base path used for referencing the template resource file when applying liquid."));
-        command.AddOption(new Option<bool>(
-            "--continue", "Continue build based on intermediate json output."));
-        command.AddOption(new Option<string>(
-            "--locale", "Locale info for continue build."));
+        command.AddOption(CommandLineOptions.UI.File);
+        command.AddOption(CommandLineOptions.UI.Output);
+        command.AddOption(CommandLineOptions.UI.OutputType);
+        command.AddOption(CommandLineOptions.UI.DryRun);
+        command.AddOption(CommandLineOptions.UI.NoDrySync);
+        command.AddOption(CommandLineOptions.UI.NoRestore);
+        command.AddOption(CommandLineOptions.UI.NoCache);
+        command.AddOption(CommandLineOptions.UI.TemplateBasePath);
+        command.AddOption(CommandLineOptions.UI.Continue);
+        command.AddOption(CommandLineOptions.UI.Locale);
         return command;
     }
 
@@ -119,51 +107,43 @@ public static class Docfx
     {
         var command = CreateCommand("serve", "Serves content in a docset.", options => Serve.Run(options, package));
         DefineCommonCommands(command);
-        command.AddOption(new Option<string>(
-            "--address", () => "127.0.0.1", "Address to use."));
-        command.AddOption(new Option<int>(
-            "--port", () => 8080, "Port to use. If 0, look for open port."));
-        command.AddOption(new Option<bool>(
-            "--no-cache", "Always fetch latest dependencies in build."));
-        command.AddOption(new Option<bool>(
-            "--language-server", "Starts a language server."));
+        command.AddOption(CommandLineOptions.UI.Address);
+        command.AddOption(CommandLineOptions.UI.Port);
+        command.AddOption(CommandLineOptions.UI.NoCache);
+        command.AddOption(CommandLineOptions.UI.LanguageServer);
         return command;
     }
 
     private static Command CreateCommand(string name, string description, Func<CommandLineOptions, bool> run)
     {
-        return new Command(name, description)
+        var command = new Command(name, description);
+        command.SetHandler((InvocationContext context) =>
         {
-            Handler = CommandHandler.Create<CommandLineOptions>(options =>
+            var options = new CommandLineOptions(context.ParseResult);
+            using (Log.BeginScope(options.Verbose))
             {
-                using (Log.BeginScope(options.Verbose))
+                if (options.Stdin && Console.ReadLine() is string stdin)
                 {
-                    if (options.Stdin && Console.ReadLine() is string stdin)
-                    {
-                        options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
-                    }
-                    Log.Write($"docfx: {GetDocfxVersion()}");
-                    Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
-                    Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
-
-                    return run(options) ? 1 : 0;
+                    options.StdinConfig = JsonUtility.DeserializeData<JObject>(stdin, new FilePath("--stdin"));
                 }
-            }),
-        };
+                Log.Write($"docfx: {GetDocfxVersion()}");
+                Log.Write($"Microsoft.Docs.Validation: {GetVersion(typeof(Validation.IValidator))}");
+                Log.Write($"ECMA2Yaml: {GetVersion(typeof(ECMA2Yaml.ECMA2YamlConverter))}");
+
+                context.ExitCode = run(options) ? 1 : 0;
+            }
+        });
+        return command;
     }
 
     private static void DefineCommonCommands(Command command)
     {
-        command.AddArgument(new Argument<string>("directory", "A directory that contains docfx.yml/docfx.json.") { Arity = ArgumentArity.ZeroOrOne });
+        command.AddArgument(CommandLineOptions.UI.Directory);
 
-        command.AddOption(new Option<bool>(
-            "--stdin", "Enable additional config in JSON one liner using standard input."));
-        command.AddOption(new Option<bool>(
-            new[] { "-v", "--verbose" }, "Enable diagnostics console output."));
-        command.AddOption(new Option<string>(
-            "--log", "Enable logging to the specified file path."));
-        command.AddOption(new Option<string>(
-            "--template", "The directory or git repository that contains website template."));
+        command.AddOption(CommandLineOptions.UI.Stdin);
+        command.AddOption(CommandLineOptions.UI.Verbose);
+        command.AddOption(CommandLineOptions.UI.Log);
+        command.AddOption(CommandLineOptions.UI.Template);
     }
 
     private static void PrintFatalErrorMessage(Exception exception)
