@@ -341,6 +341,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs,
                     OutlineOption = _pdfOptions.OutlineOption,
                     IsReadArgsFromStdin = !_pdfOptions.NoInputStreamArgs,
+                    MaxDegreeOfParallelism = _pdfOptions.PdfConvertParallelism,
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
