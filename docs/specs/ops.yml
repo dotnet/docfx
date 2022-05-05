@@ -126,7 +126,7 @@ repos:
       a/docfx.yml:
 outputs:
   a/.publish.json: |
-    { "files": [{ "source_path": "index.md", "redirect_url": "/a" }] }
+    { "files": [{ "source_path": "../.openpublishing.redirection.json", "redirect_target_path":"index.md", "redirect_url": "/a" }] }
 ---
 # redirect_url is case insensitive
 repos:
@@ -137,7 +137,7 @@ repos:
         { "redirections": [{"source_path": "a.md", "redirect_URL": "/"}] }
 outputs:
   .publish.json: |
-    { "files": [{ "source_path": "a.md", "redirect_url": "/" }] }
+    { "files": [{ "source_path": ".openpublishing.redirection.json", "redirect_target_path": "a.md", "redirect_url": "/" }] }
 ---
 # document_id of files redirected to relative path
 repos:

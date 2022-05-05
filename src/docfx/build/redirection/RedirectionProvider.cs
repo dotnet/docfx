@@ -15,7 +15,12 @@ internal class RedirectionProvider
     private readonly BuildOptions _buildOptions;
     private readonly Func<PublishUrlMap> _publishUrlMap;
     private readonly Package _docsetPackage;
-    private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
+    private readonly Watch<(
+        Dictionary<FilePath, string> urls,
+        Dictionary<PathString, string> configs,
+        HashSet<PathString> paths,
+        RedirectionItem[] items)> _redirects;
+
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
 
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
@@ -55,11 +60,12 @@ internal class RedirectionProvider
         return false;
     }
 
-    public string GetRedirectUrl(ErrorBuilder errors, FilePath file)
+    public (string, string) GetRedirectUrl(ErrorBuilder errors, FilePath file)
     {
         var redirectionChain = new Stack<FilePath>();
         var redirectionFile = file;
         var redirectUrls = _redirects.Value.urls;
+        var configMap = _redirects.Value.configs;
         while (_history.Value.redirects.TryGetValue(redirectionFile, out var item))
         {
             var (renamedFrom, source) = item;
@@ -67,13 +73,13 @@ internal class RedirectionProvider
             {
                 redirectionChain.Push(redirectionFile);
                 errors.Add(Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()));
-                return redirectUrls[file];
+                return (redirectUrls[file], configMap[file.Path]);
             }
             redirectionChain.Push(redirectionFile);
             redirectionFile = renamedFrom;
         }
 
-        return redirectUrls[file];
+        return (redirectUrls[file], configMap[file.Path]);
     }
 
     public FilePath GetOriginalFile(FilePath file)
@@ -90,19 +96,22 @@ internal class RedirectionProvider
         return file;
     }
 
-    private (Dictionary<FilePath, string>, HashSet<PathString>, RedirectionItem[]) LoadRedirections()
+    private (Dictionary<FilePath, string>, Dictionary<PathString, string>, HashSet<PathString>, RedirectionItem[]) LoadRedirections()
     {
         using (Progress.Start("Loading redirections"))
         {
-            var redirections = LoadRedirectionModel();
+            var redirectConfigPaths = new Dictionary<PathString, string>();
+            var redirections = LoadRedirectionModel(redirectConfigPaths);
             var redirectUrls = GetRedirectUrls(redirections, _config.HostName);
             var redirectPaths = redirectUrls.Keys.Select(x => x.Path).ToHashSet();
 
-            return (redirectUrls, redirectPaths, redirections);
+            return (redirectUrls, redirectConfigPaths, redirectPaths, redirections);
         }
     }
 
-    private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+    private Dictionary<FilePath, string> GetRedirectUrls(
+        RedirectionItem[] redirections,
+        string hostName)
     {
         var redirectUrls = new Dictionary<FilePath, string>();
 
@@ -154,7 +163,7 @@ internal class RedirectionProvider
         return redirectUrls;
     }
 
-    private RedirectionItem[] LoadRedirectionModel()
+    private RedirectionItem[] LoadRedirectionModel(Dictionary<PathString, string> redirectConfigPaths)
     {
         var results = new List<RedirectionItem>();
 
@@ -162,26 +171,26 @@ internal class RedirectionProvider
         {
             if (_docsetPackage.Exists(fullPath))
             {
-                GenerateRedirectionRules(fullPath, results);
+                GenerateRedirectionRules(fullPath, results, redirectConfigPaths);
                 break;
             }
         }
 
         foreach (var fullPath in ProbeSubRedirectionFiles())
         {
-            GenerateRedirectionRules(fullPath, results);
+            GenerateRedirectionRules(fullPath, results, redirectConfigPaths);
         }
 
         return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
     }
 
-    private void GenerateRedirectionRules(PathString fullPath, List<RedirectionItem> results)
+    private void GenerateRedirectionRules(PathString fullConfigPath, List<RedirectionItem> results, Dictionary<PathString, string> redirectConfigPaths)
     {
-        var content = _docsetPackage.ReadString(fullPath);
-        var filePath = new FilePath(Path.GetRelativePath(_buildOptions.DocsetPath, fullPath));
-        var model = fullPath.Value.EndsWith(".yml")
-            ? YamlUtility.Deserialize<RedirectionModel>(_errors, content, filePath)
-            : JsonUtility.Deserialize<RedirectionModel>(_errors, content, filePath);
+        var content = _docsetPackage.ReadString(fullConfigPath);
+        var relativeConfigPath = new FilePath(Path.GetRelativePath(_buildOptions.DocsetPath, fullConfigPath));
+        var model = fullConfigPath.Value.EndsWith(".yml")
+            ? YamlUtility.Deserialize<RedirectionModel>(_errors, content, relativeConfigPath)
+            : JsonUtility.Deserialize<RedirectionModel>(_errors, content, relativeConfigPath);
 
         // Expand redirect items array or object form
         var redirections = model.Redirections.arrayForm
@@ -198,7 +207,7 @@ internal class RedirectionProvider
             });
 
         // Rebase source_path based on redirection definition file path
-        var basedir = Path.GetDirectoryName(fullPath) ?? "";
+        var basedir = Path.GetDirectoryName(fullConfigPath) ?? "";
 
         foreach (var item in redirections.Concat(renames))
         {
@@ -240,13 +249,15 @@ internal class RedirectionProvider
 
             if (!sourcePath.StartsWith("."))
             {
+                var sourcePathString = new PathString(sourcePath);
                 results.Add(new RedirectionItem
                 {
-                    SourcePath = new PathString(sourcePath),
+                    SourcePath = sourcePathString,
                     Monikers = item.Monikers,
                     RedirectUrl = item.RedirectUrl,
                     RedirectDocumentId = item.RedirectDocumentId,
                 });
+                redirectConfigPaths.Add(sourcePathString, relativeConfigPath.Path);
             }
         }
     }

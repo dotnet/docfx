@@ -20,7 +20,7 @@ internal class RedirectionBuilder
 
     internal void Build(ErrorBuilder errors, FilePath file)
     {
-        var redirectUrl = _redirectionProvider.GetRedirectUrl(errors, file);
+        var (redirectUrl, redirectConfigPath) = _redirectionProvider.GetRedirectUrl(errors, file);
         var (documentId, documentVersionIndependentId) = _documentProvider.GetDocumentId(_redirectionProvider.GetOriginalFile(file));
 
         var publishMetadata = new JObject
@@ -29,6 +29,8 @@ internal class RedirectionBuilder
             ["document_id"] = documentId,
             ["document_version_independent_id"] = documentVersionIndependentId,
             ["canonical_url"] = _documentProvider.GetCanonicalUrl(file),
+            ["redirect_config_path"] = redirectConfigPath,
+            ["redirect_target_path"] = file.Path.Value,
         };
 
         _publishModelBuilder.AddOrUpdate(file, publishMetadata, outputPath: null);
