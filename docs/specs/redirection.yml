@@ -193,7 +193,8 @@ outputs:
       "files": [
           {
               "url": "/partner-center-sdk/agreement-metadata",
-              "source_path": "agreement-metadata.md",
+              "source_path": "redirections.yml",
+              "redirect_target_path": "agreement-metadata.md",
               "locale": "en-us",
               "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
           },
@@ -263,12 +264,12 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "source_path": "docs/a.md", "redirect_url": "/docs/x" },
-        { "source_path": "docs/b.md", "redirect_url": "http://hostname/test" },
-        { "source_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
-        { "source_path": "docs/d.md", "redirect_url": "/docs/folder0" },
-        { "source_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
-        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/index" }
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/a.md", "redirect_url": "/docs/x" },
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/b.md", "redirect_url": "http://hostname/test" },
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/d.md", "redirect_url": "/docs/folder0" },
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
+        { "source_path": "redirections.yml", "redirect_target_path": "docs/h.md", "redirect_url": "/docs/folder0/index" }
       ]
     }
 ---
@@ -504,8 +505,8 @@ outputs:
   .publish.json: |
     {
       "files": [
-          { "url": "/a", "redirect_url": "/a", "source_path": "a.md" },
-          { "url": "/b", "redirect_url": "/b", "source_path": "b.md" }
+          { "url": "/a", "redirect_url": "/a", "source_path": "redirections.json", "redirect_target_path": "a.md" },
+          { "url": "/b", "redirect_url": "/b", "source_path": "redirections.json", "redirect_target_path": "b.md" }
       ]
     }
   .errors.log: |
@@ -607,8 +608,8 @@ outputs:
     { 
       "files": 
         [
-          { "source_path": "a.md", "redirect_url": "/c", "moniker_group": "21903d6cbe60219e3923dd4fa60a8a63" },
-          { "source_path": "a.md", "redirect_url": "/b", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
+          { "source_path": ".openpublishing.redirection.json", "redirect_target_path": "a.md", "redirect_url": "/c", "moniker_group": "21903d6cbe60219e3923dd4fa60a8a63" },
+          { "source_path": ".openpublishing.redirection.json", "redirect_target_path": "a.md", "redirect_url": "/b", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
         ]
     }
   filemap.json: |
@@ -664,7 +665,8 @@ outputs:
       "files": [
         {
           "url": "/a",
-          "source_path": "a.md",
+          "source_path": ".openpublishing.redirection.json",
+          "redirect_target_path": "a.md",
           "moniker_group": "ecc061f43156f37be077db42abf8301a",
           "locale": "en-us",
           "redirect_url": "/c",
@@ -766,10 +768,10 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b", "source_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
-        {"url": "/b/a", "source_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b/b", "source_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
+        {"url": "/a", "source_path": ".openpublishing.redirection.test.json", "redirect_target_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": ".openpublishing.redirection.test.json", "redirect_target_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
+        {"url": "/b/a", "source_path": "b/.openpublishing.redirection.json", "redirect_target_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b/b", "source_path": "b/.openpublishing.redirection.json", "redirect_target_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
       ]
     }
 ---
@@ -798,8 +800,8 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
+        {"url": "/a", "source_path": "../.openpublishing.redirection.json", "redirect_target_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/c", "source_path": "b/.openpublishing.redirection.json", "redirect_target_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
       ]
     }
 ---
@@ -827,8 +829,8 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b", "source_path": "b.md", "locale": "en-us"},
+        {"url": "/a", "source_path": "../.openpublishing.redirection.json", "redirect_target_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "source_path": "b/.openpublishing.redirection.json", "redirect_target_path": "b.md", "locale": "en-us"},
         {"url": "/aa", "source_path": "aa.md", "locale": "en-us"}
       ]
     }
@@ -942,7 +944,7 @@ repos:
         {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
 outputs:
   a/.publish.json: |
-    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+    {"files": [{"url": "/c", "source_path": "b/.openpublishing.redirection.a.json", "redirect_target_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
 ---
 # case sensitive for redirection_files on linux
 os: linux

@@ -257,7 +257,7 @@ internal class RedirectionProvider
                     RedirectUrl = item.RedirectUrl,
                     RedirectDocumentId = item.RedirectDocumentId,
                 });
-                redirectConfigPaths.Add(sourcePathString, relativeConfigPath.Path);
+                redirectConfigPaths.TryAdd(sourcePathString, relativeConfigPath.Path);
             }
         }
     }
