@@ -61,8 +61,8 @@ outputs:
       "files": [{ "url": "/a", 
           "redirect_url": "/b", 
           "path": undefined, 
-          "source_path": "redirections.yml", 
-          "redirect_target_path": "a.md",
+          "redirect_config_path": "redirections.yml", 
+          "redirect_source_path": "a.md",
           "hash": undefined 
         }]
     }
@@ -888,7 +888,8 @@ outputs:
       }
     }
 ---
-# provide source url in .publish.json for content, toc and resource pages but not redirection pages.
+# provide source url in .publish.json for content, toc and resource pages.
+# for redirection pages, git source url is assigned to redirect_config_source_url
 repos:
   https://github.com/test/repo:
   - files:
@@ -907,9 +908,10 @@ outputs:
       {
         "files": [
           {
-              "redirect_target_path": "missing.md",
-              "source_path": "redirections.yml",
-              "source_url": undefined
+              "redirect_source_path": "missing.md",
+              "redirect_config_path": "redirections.yml",
+              "source_url": undefined,
+              "redirect_config_source_url": "https://github.com/test/repo/blob/main/redirections.yml"
           },
           {
               "source_path": "a.md",

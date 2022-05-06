@@ -208,8 +208,8 @@ outputs:
     {
       "files": [
         { 
-          "source_path": "redirections.yml", 
-          "redirect_target_path": "docs/redirect.md", 
+          "redirect_config_path": "redirections.yml", 
+          "redirect_source_path": "docs/redirect.md", 
           "redirect_url": "/absolute/path"
         },
         { "url": "/docs/a" }
