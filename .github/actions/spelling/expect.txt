@@ -550,6 +550,7 @@ testsnippet
 testtoken
 textarea
 tfoot
+tfs
 thead
 tif
 timespan
