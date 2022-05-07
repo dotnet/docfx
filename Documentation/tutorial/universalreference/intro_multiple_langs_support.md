@@ -23,5 +23,5 @@ The YAML files generated are used as input to DocFX. DocFX will build these YAML
 
 ## 3. Supported Languages
 * [JavaScript](gen_doc_for_js.md)
-* TypeScript (coming soon ...)
+* [TypeScript](gen_doc_for_ts.md)
 * Python (coming soon ...)
