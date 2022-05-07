@@ -40,7 +40,6 @@ public static class GitHubAccessorTest
     [SkippableTheory]
     [InlineData("xinjiang@microsoft.com", "docascode", "docfx-test-dependencies", "c467c848311ccd2550fdb25a77ef26f9d8a33d00", "OsmondJiang", 19990166, "Osmond Jiang", new[] { "xinjiang@microsoft.com" })]
     [InlineData("opse2etestingppe@outlook.com", "OPS-E2E-PPE", "E2E_Contribution_DocfxV3", "e0f6bbdf1c8809562ca7ea1b3749660078143607", "OPSTestPPE", 26447601, "OPSTestPPE", new[] { "opse2etestingppe@outlook.com" })]
-    [InlineData("v-yajlu@microsoft.com", "OPS-E2E-PPE", "E2E_Contribution_DocfxV3", "c2f754e529491f59a7ceaa1376308820ba05f586", "luyajun0205", 15990849, "luyajun0205", new[] { "v-yajlu@microsoft.com" })]
     [InlineData("test1@example.com", "docascode", "docfx-test-dependencies", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
     [InlineData("test2@example.com", "docascode", "contribution-test", "0000000000000000000000000000000000000000", null, null, null, null)]
     [InlineData("error@example.com", "docascode", "this-repo-does-not-exists", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", null, null, null, null)]
