@@ -2181,3 +2181,40 @@ outputs:
     }
   .publish.json: 
   17b9fe681514513cbf7d5c90e32f107a/docs/a.json: 
+---
+# Ignore no intersection between zone and file monikers for archived documents
+repos:
+  https://docs.com/monikers-in-op_aggregated_file_map_info.json:
+    - files:
+        docfx.json: |
+          {
+            "build": {
+              "groups": {"all": {"dest": "all", "moniker_range": "<= netcore-1.2 || tfs-2013"}},
+              "content": [{"files": ["**/*.md"], "group": "all"}],
+              "monikerDefinition": "monikerDefinition.json",
+              "fileMetadata": {
+                "replace_monikers": { "**/a.md": ["tfs-2013"] }
+              },
+              "globalMetadata": {"is_archived": "true"}
+            }
+          }
+        monikerDefinition.json: |
+          {
+            "monikers": [
+              { "moniker_name": "netcore-1.0", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-1.1", "product_name": ".NET Core" },
+              { "moniker_name": "netcore-1.2", "product_name": ".NET Core" },
+              { "moniker_name": "tfs-2013", "product_name": "Azure Devops" }
+            ]
+          }
+        a.md: |
+          ::: moniker range="netcore-1.0"
+          moniker: netcore 1.0
+          ::: moniker-end
+          ::: moniker range="tfs-2013"
+          moniker: tfs-2013
+          ::: moniker-end
+outputs:
+  10b6c9f144d519f0f8a48bc02c54ca34/a.json: |
+    {"conceptual": "\u003Cdiv data-moniker=\u0022tfs-2013\u0022\u003E\n\u003Cp\u003Emoniker: tfs-2013\u003C/p\u003E\n\u003C/div\u003E\n"}
+

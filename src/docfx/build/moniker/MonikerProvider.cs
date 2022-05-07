@@ -74,6 +74,7 @@ internal class MonikerProvider
     {
         var configMonikerRange = GetConfigMonikerRange(file);
         var (fileLevelMonikers, ignoreExclude) = GetFileLevelMonikersAndExclude(errors, file);
+        var isArchived = _metadataProvider.GetMetadata(errors, file).IsArchived;
 
         // For conceptual docset,
         // Moniker range not defined in docfx.yml/docfx.json,
@@ -86,7 +87,7 @@ internal class MonikerProvider
 
         var zoneLevelMonikers = _rangeParser.Parse(errors, rangeString);
         var monikers = fileLevelMonikers.Intersect(zoneLevelMonikers);
-        if (!ignoreExclude.Intersect(zoneLevelMonikers).HasMonikers)
+        if (!ignoreExclude.Intersect(zoneLevelMonikers).HasMonikers && !isArchived)
         {
             errors.Add(Errors.Versioning.MonikerZoneEmpty(rangeString, zoneLevelMonikers, fileLevelMonikers));
         }
