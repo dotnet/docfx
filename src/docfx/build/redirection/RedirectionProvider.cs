@@ -65,7 +65,7 @@ internal class RedirectionProvider
         var redirectionChain = new Stack<FilePath>();
         var redirectionFile = file;
         var redirectUrls = _redirects.Value.urls;
-        var configMap = _redirects.Value.configs;
+        var configPaths = _redirects.Value.configs;
         while (_history.Value.redirects.TryGetValue(redirectionFile, out var item))
         {
             var (renamedFrom, source) = item;
@@ -73,13 +73,13 @@ internal class RedirectionProvider
             {
                 redirectionChain.Push(redirectionFile);
                 errors.Add(Errors.Redirection.CircularRedirection(source, redirectionChain.Reverse()));
-                return (redirectUrls[file], configMap[file.Path]);
+                return (redirectUrls[file], configPaths[file.Path]);
             }
             redirectionChain.Push(redirectionFile);
             redirectionFile = renamedFrom;
         }
 
-        return (redirectUrls[file], configMap[file.Path]);
+        return (redirectUrls[file], configPaths[file.Path]);
     }
 
     public FilePath GetOriginalFile(FilePath file)

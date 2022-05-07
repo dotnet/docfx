@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
@@ -37,9 +36,9 @@ internal class RedirectionBuilder
             ["document_id"] = documentId,
             ["document_version_independent_id"] = documentVersionIndependentId,
             ["canonical_url"] = _documentProvider.GetCanonicalUrl(file),
-            ["redirect_config_path"] = redirectConfigPath,
+            ["redirect_config_path"] = redirectConfigPath, // relative path to docset folder
             ["redirect_config_source_url"] = sourceUrl,
-            ["redirect_source_path"] = file.Path.Value,
+            ["redirect_source_path"] = file.Path.Value, // relative path to docset folder
         };
 
         _publishModelBuilder.AddOrUpdate(file, publishMetadata, outputPath: null);
