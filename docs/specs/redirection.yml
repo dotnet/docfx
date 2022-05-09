@@ -192,8 +192,7 @@ outputs:
     {
       "files": [
           {
-              "url": "/partner-center-sdk/agreement-metadata",
-              "source_path": "agreement-metadata.md",
+              "url": "/partner-center-sdk/agreement-metadata",              
               "locale": "en-us",
               "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
           },
@@ -263,12 +262,12 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "source_path": "docs/a.md", "redirect_url": "/docs/x" },
-        { "source_path": "docs/b.md", "redirect_url": "http://hostname/test" },
-        { "source_path": "docs/c.md", "redirect_url": "/docs/x#bookmark" },
-        { "source_path": "docs/d.md", "redirect_url": "/docs/folder0" },
-        { "source_path": "docs/f.md", "redirect_url": "/docs/folder0/" },
-        { "source_path": "docs/h.md", "redirect_url": "/docs/folder0/index" }
+        { "redirect_url": "/docs/x" },
+        { "redirect_url": "http://hostname/test" },
+        { "redirect_url": "/docs/x#bookmark" },
+        { "redirect_url": "/docs/folder0" },
+        { "redirect_url": "/docs/folder0/" },
+        { "redirect_url": "/docs/folder0/index" }
       ]
     }
 ---
@@ -504,8 +503,8 @@ outputs:
   .publish.json: |
     {
       "files": [
-          { "url": "/a", "redirect_url": "/a", "source_path": "a.md" },
-          { "url": "/b", "redirect_url": "/b", "source_path": "b.md" }
+          { "url": "/a", "redirect_url": "/a" },
+          { "url": "/b", "redirect_url": "/b" }
       ]
     }
   .errors.log: |
@@ -607,8 +606,8 @@ outputs:
     { 
       "files": 
         [
-          { "source_path": "a.md", "redirect_url": "/c", "moniker_group": "21903d6cbe60219e3923dd4fa60a8a63" },
-          { "source_path": "a.md", "redirect_url": "/b", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
+          { "redirect_url": "/c", "moniker_group": "21903d6cbe60219e3923dd4fa60a8a63" },
+          { "redirect_url": "/b", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
         ]
     }
   filemap.json: |
@@ -664,7 +663,6 @@ outputs:
       "files": [
         {
           "url": "/a",
-          "source_path": "a.md",
           "moniker_group": "ecc061f43156f37be077db42abf8301a",
           "locale": "en-us",
           "redirect_url": "/c",
@@ -766,10 +764,10 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b", "source_path": "b.md", "locale": "en-us", "redirect_url": "/bb"},
-        {"url": "/b/a", "source_path": "b/a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b/b", "source_path": "b/b.md", "locale": "en-us", "redirect_url": "/bb"}
+        {"url": "/a", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "locale": "en-us", "redirect_url": "/bb"},
+        {"url": "/b/a", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b/b", "locale": "en-us", "redirect_url": "/bb"}
       ]
     }
 ---
@@ -798,8 +796,8 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}
+        {"url": "/a", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/c", "locale": "en-us", "redirect_url": "/aa"}
       ]
     }
 ---
@@ -827,9 +825,9 @@ outputs:
   a/.publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a.md", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b", "source_path": "b.md", "locale": "en-us"},
-        {"url": "/aa", "source_path": "aa.md", "locale": "en-us"}
+        {"url": "/a", "locale": "en-us", "redirect_url": "/aa"},
+        {"url": "/b", "locale": "en-us"},
+        {"url": "/aa", "locale": "en-us"}
       ]
     }
   .errors.log: |
@@ -942,7 +940,7 @@ repos:
         {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
 outputs:
   a/.publish.json: |
-    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+    {"files": [{"url": "/c", "locale": "en-us", "redirect_url": "/aa"}]}
 ---
 # case sensitive for redirection_files on linux
 os: linux
