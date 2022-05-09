@@ -207,7 +207,7 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "source_path": "docs/redirect.md", "redirect_url": "/absolute/path" },
+        { "redirect_url": "/absolute/path" },
         { "url": "/docs/a" }
       ]
     }
