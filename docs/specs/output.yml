@@ -58,7 +58,7 @@ inputs:
 outputs:
   .publish.json: |
     {
-      "files": [{ "url": "/a", "redirect_url": "/b", "path": undefined, "source_path": "a.md", "hash": undefined }]
+      "files": [{ "url": "/a", "redirect_url": "/b", "path": undefined, "hash": undefined }]
     }
 ---
 # Publish manifest for articles contains custom metadata
@@ -901,8 +901,8 @@ outputs:
       {
         "files": [
           {
-              "source_path": "missing.md",
-              "source_url": undefined
+              "source_path": undefined,
+              "source_url": undefined,             
           },
           {
               "source_path": "a.md",

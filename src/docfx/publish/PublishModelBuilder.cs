@@ -53,12 +53,14 @@ internal class PublishModelBuilder
 
                 (_, var sourceUrl, _) = _contributionProvider.GetGitUrl(sourceFile);
 
+                var sourceFilePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path;
+
                 var publishItem = new PublishItem
                 {
                     Url = _documentProvider.GetSiteUrl(sourceFile),
                     Path = buildOutput.outputPath,
-                    SourceFile = sourceFile,
-                    SourcePath = _sourceMap.GetOriginalFilePath(sourceFile)?.Path ?? sourceFile.Path,
+                    SourceFile = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFile,
+                    SourcePath = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFilePath,
                     SourceUrl = sourceUrl,
                     Locale = _locale,
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),

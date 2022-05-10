@@ -496,7 +496,7 @@ internal static class RegressionTest
 
         var body = new StringBuilder();
         body.Append("<details><summary>");
-        body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "🧭" : "⚠");
+        body.Append(testResult.CrashMessage != null ? "🚗🌳💥🤕🚑" : isTimeout ? "⏲️" : "⚠");
         body.Append($"<a href='{s_repository}'>{s_testName}</a>");
         body.Append($"({testResult.BuildTime.TotalSeconds}s");
 
