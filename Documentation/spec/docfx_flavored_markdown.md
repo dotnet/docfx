@@ -372,7 +372,7 @@ For this Jupyter Notebook cell:
 Use the markup:
 
  ```md
-[!notebook-python[](<codepath>?name={import})]]
+[!notebook-python[](<codepath>?name="import")]]
 ```
 
 to display the lines of code in the `source` part of the cell:
