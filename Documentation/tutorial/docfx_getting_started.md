@@ -27,7 +27,7 @@ For a detailed description about DFM, please refer to [DFM](../spec/docfx_flavor
 * **[Chocolatey](https://chocolatey.org/packages/docfx)**: `choco install docfx -y`.
 * **[Homebrew](https://formulae.brew.sh/formula/docfx)** (owned by community): 
    * Intel chip: `brew install docfx`.
-   * M1 chip: DocFX doesn't support the new mac chips so you will need to use rosetta to run it. Follow these steps:
+   * M1 chip: DocFX doesn't support the new mac M1 chips so you will need to use [Rosetta](https://support.apple.com/en-nz/HT211861) to run it. Follow these steps:
       * [Uninstall Homebrew](https://github.com/homebrew/install#uninstall-homebrew)
       * Re-install brew with the following command: `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
       * Install docfx: `arch -x86_64 brew install docfx`
