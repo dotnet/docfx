@@ -190,7 +190,7 @@ internal class PageBuilder
         sourceModel["schema"] = mime.Value;
         if (_config.OutputType == OutputType.Json)
         {
-            metadata["xrefmap"] = JsonUtility.ToJObject(_xrefResolver.ResolveXrefSpecListInFile(file));
+            metadata["xrefs"] = JsonUtility.ToJArray(_xrefResolver.ResolveXrefSpecListInFile(file));
             return (sourceModel, metadata);
         }
 

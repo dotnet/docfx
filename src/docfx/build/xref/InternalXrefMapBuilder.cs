@@ -43,9 +43,9 @@ internal class InternalXrefMapBuilder
         _redirectionProvider = redirectionProvider;
     }
 
-    public (Dictionary<string, InternalXrefSpec[]> result, Dictionary<FilePath, ExternalXrefSpec[]> fileXrefSpecMap) Build()
+    public (Dictionary<string, InternalXrefSpec[]> result, Dictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) Build()
     {
-        var fileXrefSpecMap = new ConcurrentDictionary<FilePath, ExternalXrefSpec[]>();
+        var fileXrefSpecMap = new ConcurrentDictionary<FilePath, InternalXrefSpec[]>();
         var builder = new ListBuilder<InternalXrefSpec>();
 
         using (var scope = Progress.Start("Building xref map"))
@@ -69,8 +69,10 @@ internal class InternalXrefMapBuilder
             fileXrefSpecMap.Comparer));
     }
 
-    private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file,
-        ConcurrentDictionary<FilePath, ExternalXrefSpec[]> fileXrefSpecMap)
+    private void Load(
+        ErrorBuilder errors,
+        ListBuilder<InternalXrefSpec> xrefs, FilePath file,
+        ConcurrentDictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap)
     {
         // if the file is already redirected, it should be excluded from xref map
         if (_redirectionProvider.TryGetValue(file.Path, out _))
@@ -84,7 +86,7 @@ internal class InternalXrefMapBuilder
                 var spec = LoadMarkdown(errors, fileMetadata, file);
                 if (spec != null)
                 {
-                    fileXrefSpecMap.TryAdd(file, new ExternalXrefSpec[] { spec.ToExternalXrefSpec() });
+                    fileXrefSpecMap.TryAdd(file, new InternalXrefSpec[] { spec });
                     xrefs.Add(spec);
                 }
                 break;
@@ -92,7 +94,7 @@ internal class InternalXrefMapBuilder
             case FileFormat.Yaml:
             case FileFormat.Json:
                 var specs = _jsonSchemaTransformer().LoadXrefSpecs(errors, file);
-                fileXrefSpecMap.TryAdd(file, specs.Select(s => s.ToExternalXrefSpec()).ToArray());
+                fileXrefSpecMap.TryAdd(file, specs.ToArray());
                 xrefs.AddRange(specs);
                 break;
         }

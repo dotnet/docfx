@@ -232,6 +232,14 @@ internal static class JsonUtility
         return JObject.FromObject(model, s_serializer);
     }
 
+    /// <summary>
+    /// Converts a strongly typed C# array to weakly typed json array using the default serialization settings.
+    /// </summary>
+    public static JArray ToJArray(object model)
+    {
+        return JArray.FromObject(model, s_serializer);
+    }
+
     public static T Deserialize<T>(ErrorBuilder errors, string json, FilePath file) where T : class, new()
     {
         using var reader = new StringReader(json);
