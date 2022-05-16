@@ -71,7 +71,8 @@ internal class InternalXrefMapBuilder
 
     private void Load(
         ErrorBuilder errors,
-        ListBuilder<InternalXrefSpec> xrefs, FilePath file,
+        ListBuilder<InternalXrefSpec> xrefs,
+        FilePath file,
         ConcurrentDictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap)
     {
         // if the file is already redirected, it should be excluded from xref map
