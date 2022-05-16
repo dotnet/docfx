@@ -63,7 +63,8 @@ internal class InternalXrefMapBuilder
         var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
         result.TrimExcess();
 
-        return (result, fileXrefSpecMap.ToDictionary(kvp => kvp.Key,
+        return (result, fileXrefSpecMap.ToDictionary(
+            kvp => kvp.Key,
             kvp => kvp.Value,
             fileXrefSpecMap.Comparer));
     }

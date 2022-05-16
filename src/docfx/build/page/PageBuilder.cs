@@ -252,8 +252,7 @@ internal class PageBuilder
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
 
-        systemMetadata.xrefs = _xrefResolver.ResolveXrefSpecListInFile(file);
-
+        systemMetadata.Xrefs = _xrefResolver.ResolveXrefSpecListInFile(file);
 
         if (!_config.IsReferenceRepository && _config.OutputPdf)
         {

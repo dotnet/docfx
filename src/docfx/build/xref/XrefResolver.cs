@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.Web;
 
@@ -216,6 +215,13 @@ internal class XrefResolver
         return model;
     }
 
+    public ExternalXrefSpec[] ResolveXrefSpecListInFile(
+        FilePath file)
+    {
+        var internalXrefSpecs = _internalXrefMap.Value.fileMap.GetValueOrDefault(file, Array.Empty<ExternalXrefSpec>());
+        return internalXrefSpecs;
+    }
+
     private (Dictionary<string, InternalXrefSpec[]> uidXrefSpecMap, Dictionary<FilePath, ExternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()
     {
         var (uidXrefSpecMap, fileXrefSpecMap) = _internalXrefMapBuilder.Build();
@@ -329,13 +335,6 @@ internal class XrefResolver
             return (spec, href);
         }
         return default;
-    }
-
-    public ExternalXrefSpec[] ResolveXrefSpecListInFile(
-        FilePath file)
-    {
-        var internalXrefSpecs = _internalXrefMap.Value.fileMap.GetValueOrDefault(file, new ExternalXrefSpec[]{});
-        return internalXrefSpecs;
     }
 
     private DependencyType GetDependencyType(FilePath referencingFile, InternalXrefSpec xref)
