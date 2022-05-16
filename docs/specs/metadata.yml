@@ -28,7 +28,39 @@ inputs:
     # Title
 outputs:
   docs/a.json: |
-    { "ms.custom-metadata": null, "author":"xxx", "uid": null, "breadcrumb_path": "/breadcrumb_path", "title": "Title"}
+    { 
+      "ms.custom-metadata": null, 
+      "author":"xxx", 
+      "uid": null, 
+      "breadcrumb_path": "/breadcrumb_path", 
+      "title": "Title",    
+    }
+---
+### output xrefs per file to metadata
+inputs:
+  docfx.yml:
+  docs/a.md: |
+    ---
+    uid: abc
+    breadcrumb_path: "/breadcrumb_path"
+    author: xxx
+    ---
+    # Title
+outputs:
+  docs/a.json: |
+    {      
+      "author":"xxx", 
+      "uid": "abc", 
+      "breadcrumb_path": "/breadcrumb_path", 
+      "title": "Title",  
+      "xrefs": [
+          {
+            "href": "/docs/a",
+            "name": "abc",
+            "uid": "abc"
+          }
+      ]
+    }
 ---
 # Overwrite global metadata with null in yaml header
 inputs:

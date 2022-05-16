@@ -1060,3 +1060,29 @@ outputs:
       "foo": "<p><em>markdown</em></p>",
       "bar": "inline <em>markdown</em>"
     }
+---
+# export xrefs to sdp metadata
+inputs:
+  docfx.yml:
+  a.yml: |
+    ### YamlMime:TestData_a
+    uid: a
+  _themes/ContentTemplate/schemas/TestData_a.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"}
+      }
+    }
+outputs:
+  a.json: | 
+    {
+      "metadata": {
+         "xrefs": [{"uid": "a", "schemaType": "TestData_a"}]
+       }
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "a", "schemaType": "TestData_a"},
+      ]
+    }
