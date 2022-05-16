@@ -19,6 +19,7 @@ internal class PageBuilder
     private readonly TemplateEngine _templateEngine;
     private readonly TocMap _tocMap;
     private readonly LinkResolver _linkResolver;
+    private readonly XrefResolver _xrefResolver;
     private readonly ContributionProvider _contributionProvider;
     private readonly BookmarkValidator _bookmarkValidator;
     private readonly PublishModelBuilder _publishModelBuilder;
@@ -40,6 +41,7 @@ internal class PageBuilder
         TemplateEngine templateEngine,
         TocMap tocMap,
         LinkResolver linkResolver,
+        XrefResolver xrefResolver,
         ContributionProvider contributionProvider,
         BookmarkValidator bookmarkValidator,
         PublishModelBuilder publishModelBuilder,
@@ -60,6 +62,7 @@ internal class PageBuilder
         _templateEngine = templateEngine;
         _tocMap = tocMap;
         _linkResolver = linkResolver;
+        _xrefResolver = xrefResolver;
         _contributionProvider = contributionProvider;
         _bookmarkValidator = bookmarkValidator;
         _publishModelBuilder = publishModelBuilder;
@@ -187,6 +190,7 @@ internal class PageBuilder
         sourceModel["schema"] = mime.Value;
         if (_config.OutputType == OutputType.Json)
         {
+            metadata["xrefmap"] = JsonUtility.ToJObject(_xrefResolver.ResolveXrefSpecListInFile(file));
             return (sourceModel, metadata);
         }
 
@@ -247,6 +251,9 @@ internal class PageBuilder
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
+
+        systemMetadata.xrefs = _xrefResolver.ResolveXrefSpecListInFile(file);
+
 
         if (!_config.IsReferenceRepository && _config.OutputPdf)
         {

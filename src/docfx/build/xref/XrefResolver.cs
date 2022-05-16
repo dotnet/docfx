@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.Web;
 
@@ -20,7 +21,7 @@ internal class XrefResolver
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
-    private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+    private readonly Watch<(Dictionary<string, InternalXrefSpec[]> uidMap, Dictionary<FilePath, ExternalXrefSpec[]> fileMap)> _internalXrefMap;
 
     public XrefResolver(
         Config config,
@@ -158,7 +159,7 @@ internal class XrefResolver
         var references = Array.Empty<ExternalXrefSpec>();
         var externalXrefs = Array.Empty<ExternalXref>();
 
-        references = _internalXrefMap.Value.Values
+        references = _internalXrefMap.Value.uidMap.Values
             .Select(xrefs =>
             {
                 var xref = xrefs.First();
@@ -215,12 +216,12 @@ internal class XrefResolver
         return model;
     }
 
-    private IReadOnlyDictionary<string, InternalXrefSpec[]> BuildInternalXrefMap()
+    private (Dictionary<string, InternalXrefSpec[]> uidXrefSpecMap, Dictionary<FilePath, ExternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()
     {
-        var result = _internalXrefMapBuilder.Build();
-        ValidateUidGlobalUnique(result);
-        ValidateExternalXref(result);
-        return result;
+        var (uidXrefSpecMap, fileXrefSpecMap) = _internalXrefMapBuilder.Build();
+        ValidateUidGlobalUnique(uidXrefSpecMap);
+        ValidateExternalXref(uidXrefSpecMap);
+        return (uidXrefSpecMap, fileXrefSpecMap);
     }
 
     private static bool IsNameLocalizable(IXrefSpec xrefSpec)
@@ -311,7 +312,7 @@ internal class XrefResolver
     private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
         string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
     {
-        if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
+        if (_internalXrefMap.Value.uidMap.TryGetValue(uid, out var specs))
         {
             var spec = specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers
                 ? specs[0]
@@ -328,6 +329,13 @@ internal class XrefResolver
             return (spec, href);
         }
         return default;
+    }
+
+    public ExternalXrefSpec[] ResolveXrefSpecListInFile(
+        FilePath file)
+    {
+        var internalXrefSpecs = _internalXrefMap.Value.fileMap.GetValueOrDefault(file, new ExternalXrefSpec[]{});
+        return internalXrefSpecs;
     }
 
     private DependencyType GetDependencyType(FilePath referencingFile, InternalXrefSpec xref)
