@@ -155,7 +155,7 @@ internal class DocsetBuilder
     {
         try
         {
-            _progressReporter.Report("Building...");
+            _progressReporter.Report("Building Start...");
 
             var output = new Output(_buildOptions.OutputPath, _input, _config.DryRun);
             var publishModelBuilder = new PublishModelBuilder(_config, _errors, _monikerProvider, _buildOptions, _sourceMap, _documentProvider, _contributionProvider);
