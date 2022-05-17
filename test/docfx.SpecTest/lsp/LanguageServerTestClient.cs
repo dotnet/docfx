@@ -245,7 +245,8 @@ internal class LanguageServerTestClient : ILanguageServerNotificationListener, I
 
     private async Task SynchronizeNotifications()
     {
-        using (CancelAfterTimeout().Register(() => {
+        using (CancelAfterTimeout().Register(() =>
+        {
             Console.WriteLine("2022517 Timeout");
             var cancelRes = _notificationSync.TrySetCanceled();
             Console.WriteLine("2022517 cancel result: " + cancelRes);
