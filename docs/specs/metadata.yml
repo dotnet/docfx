@@ -53,13 +53,13 @@ outputs:
       "uid": "abc", 
       "breadcrumb_path": "/breadcrumb_path", 
       "title": "Title",  
-      "xrefs": [
-          {
+      "_xrefmap": {
+          "abc":{
             "href": "/docs/a",
             "name": "abc",
             "uid": "abc"
           }
-      ]
+      }
     }
 ---
 # Overwrite global metadata with null in yaml header

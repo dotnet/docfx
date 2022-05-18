@@ -215,11 +215,19 @@ internal class XrefResolver
         return model;
     }
 
-    public ExternalXrefSpec[] ResolveXrefSpecListInFile(
+    public Dictionary<string, ExternalXrefSpec> ResolveXrefMapByFile(
         FilePath file)
     {
         var internalXrefSpecs = _internalXrefMap.Value.fileMap.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>());
-        return internalXrefSpecs.ToList().Select(spec => spec.ToExternalXrefSpec()).ToArray();
+        var xrefMap = new Dictionary<string, ExternalXrefSpec>();
+        internalXrefSpecs.ToList().ForEach(spec =>
+        {
+            var externalXrefSpec = spec.ToExternalXrefSpec();
+            externalXrefSpec.SpecType = SpecType.Uid;
+            xrefMap.TryAdd(spec.Uid, externalXrefSpec);
+        });
+
+        return xrefMap;
     }
 
     private (Dictionary<string, InternalXrefSpec[]> uidXrefSpecMap, Dictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()

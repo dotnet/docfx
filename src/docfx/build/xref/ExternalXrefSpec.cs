@@ -30,6 +30,9 @@ internal record ExternalXrefSpec : IXrefSpec
 
     FilePath? IXrefSpec.DeclaringFile => null;
 
+    // used for localizable xrefmap
+    public SpecType? SpecType { get; set; }
+
     public string? GetXrefPropertyValueAsString(string propertyName)
     {
         if (ExtensionData.TryGetValue<JValue>(propertyName, out var v))

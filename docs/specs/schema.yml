@@ -1076,9 +1076,9 @@ inputs:
 outputs:
   a.json: | 
     {
-      "metadata": {
-         "xrefs": [{"uid": "a", "schemaType": "TestData_a"}]
-       }
+      "_xrefmap": { 
+        "a" : {"uid": "a", "schemaType": "TestData_a"}
+      }
     }
   .xrefmap.json: | 
     {

@@ -128,16 +128,21 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
-        var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
-
         if (JsonSchemaProvider.IsConceptual(mime))
         {
+            if (_config.OutputType == OutputType.Json)
+            {
+                systemMetadata.XrefMap = _xrefResolver.ResolveXrefMapByFile(file);
+            }
+            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
+
             // conceptual raw metadata and raw model
             JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
             JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
         }
         else
         {
+            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
             JsonUtility.Merge(
                 outputMetadata,
                 sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(),
@@ -190,7 +195,6 @@ internal class PageBuilder
         sourceModel["schema"] = mime.Value;
         if (_config.OutputType == OutputType.Json)
         {
-            metadata["xrefs"] = JsonUtility.ToJArray(_xrefResolver.ResolveXrefSpecListInFile(file));
             return (sourceModel, metadata);
         }
 
@@ -251,8 +255,6 @@ internal class PageBuilder
 
         systemMetadata.Author = systemMetadata.ContributionInfo?.Author?.Name;
         systemMetadata.UpdatedAt = systemMetadata.ContributionInfo?.UpdatedAtDateTime.ToString("yyyy-MM-dd hh:mm tt");
-
-        systemMetadata.Xrefs = _xrefResolver.ResolveXrefSpecListInFile(file);
 
         if (!_config.IsReferenceRepository && _config.OutputPdf)
         {

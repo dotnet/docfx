@@ -475,7 +475,9 @@ internal class JsonSchemaTransformer
 
                 if (xrefSpec != null && !xrefmap.ContainsKey(content))
                 {
-                    xrefmap[content] = JsonUtility.ToJObject(xrefSpec.ToExternalXrefSpec(href));
+                    var xref = xrefSpec.ToExternalXrefSpec(href);
+                    xref.SpecType = schema.ContentType == JsonSchemaContentType.Uid ? SpecType.Uid : SpecType.Xref;
+                    xrefmap[content] = JsonUtility.ToJObject(xref);
                 }
 
                 if (schema.ContentType == JsonSchemaContentType.Uid && (schema.MinReferenceCount != null || schema.MaxReferenceCount != null))
