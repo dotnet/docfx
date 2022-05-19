@@ -425,6 +425,7 @@ plugable
 plugin
 png
 postbuild
+powerapps
 powerbi
 powershell
 ppe
@@ -663,4 +664,3 @@ yyyy
 zoneinfo
 zonepivotgroups
 zzz
-powerapps
