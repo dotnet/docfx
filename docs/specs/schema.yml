@@ -1077,12 +1077,70 @@ outputs:
   a.json: | 
     {
       "_xrefmap": { 
-        "a" : {"uid": "a", "schemaType": "TestData_a"}
+        "a" : {"uid": "a", "schemaType": "TestData_a", "specType": "uid"}
       }
     }
   .xrefmap.json: | 
     {
       "references":[
         {"uid": "a", "schemaType": "TestData_a"},
+      ]
+    }
+---
+# display spec type for xrefs in _xrefmap property per file
+inputs:
+  docfx.yml: |
+    xref:
+    - 1.xrefmap.json
+  1.xrefmap.json: |
+    {
+      "references":[
+        {"uid": "external_c", "schemaType": "c2_type"}
+      ]
+    }
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_b']
+    achieve: uid_c
+  docs/b.yml: |
+    ### YamlMime:b_type
+    uid: uid_b
+    achieve: external_c
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+      }
+    }
+  _themes/ContentTemplate/schemas/b_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+      }
+    }
+outputs:
+  docs/a.json: |
+    {
+      "_xrefmap":{
+        "uid_a":{
+          "uid": "uid_a",
+          "schemaType": "a_type",
+          "specType": "uid"
+        },
+        "uid_b":{
+          "uid": "uid_b",
+          "schemaType": "b_type",
+          "specType": "xref"
+        }
+      }
+    }    
+  docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_b", "schemaType": "b_type"},
       ]
     }

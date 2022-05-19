@@ -36,7 +36,7 @@ outputs:
       "title": "Title",    
     }
 ---
-### output xrefs per file to metadata
+### output _xrefmap per file to structure json
 inputs:
   docfx.yml:
   docs/a.md: |
@@ -57,7 +57,8 @@ outputs:
           "abc":{
             "href": "/docs/a",
             "name": "abc",
-            "uid": "abc"
+            "uid": "abc",
+            "specType": "uid",
           }
       }
     }
