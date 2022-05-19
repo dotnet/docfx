@@ -1062,7 +1062,7 @@ outputs:
     }
 ---
 # display spec type for xrefs in _xrefmap property per file
-inputs:
+inputs:I
   docfx.yml: |
     xref:
     - 1.xrefmap.json

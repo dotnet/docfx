@@ -20,7 +20,8 @@ internal class XrefResolver
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
-    private readonly Watch<(Dictionary<string, InternalXrefSpec[]> uidMap, Dictionary<FilePath, InternalXrefSpec[]> fileMap)> _internalXrefMap;
+    private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> uidMap,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> fileMap)> _internalXrefMap;
 
     public XrefResolver(
         Config config,
@@ -230,7 +231,8 @@ internal class XrefResolver
         return xrefMap;
     }
 
-    private (Dictionary<string, InternalXrefSpec[]> uidXrefSpecMap, Dictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()
+    private (IReadOnlyDictionary<string, InternalXrefSpec[]> uidXrefSpecMap,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()
     {
         var (uidXrefSpecMap, fileXrefSpecMap) = _internalXrefMapBuilder.Build();
         ValidateUidGlobalUnique(uidXrefSpecMap);

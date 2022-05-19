@@ -60,13 +60,13 @@ internal class InternalXrefMapBuilder
             let spec = AggregateXrefSpecs(uid, g.ToArray())
             select (uid, spec);
 
-        var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
-        result.TrimExcess();
+        var uidXrefMap = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+        uidXrefMap.TrimExcess();
 
-        return (result, fileXrefSpecMap.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value,
-            fileXrefSpecMap.Comparer));
+        var fileXrefMap = fileXrefSpecMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        fileXrefMap.TrimExcess();
+
+        return (uidXrefMap, fileXrefMap);
     }
 
     private void Load(
