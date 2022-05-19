@@ -425,6 +425,7 @@ plugable
 plugin
 png
 postbuild
+powerapps
 powerbi
 powershell
 ppe
