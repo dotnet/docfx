@@ -1061,32 +1061,6 @@ outputs:
       "bar": "inline <em>markdown</em>"
     }
 ---
-# export xrefs to sdp metadata
-inputs:
-  docfx.yml:
-  a.yml: |
-    ### YamlMime:TestData_a
-    uid: a
-  _themes/ContentTemplate/schemas/TestData_a.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"}
-      }
-    }
-outputs:
-  a.json: | 
-    {
-      "_xrefmap": { 
-        "a" : {"uid": "a", "schemaType": "TestData_a", "specType": "uid"}
-      }
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "a", "schemaType": "TestData_a"},
-      ]
-    }
----
 # display spec type for xrefs in _xrefmap property per file
 inputs:
   docfx.yml: |
