@@ -36,7 +36,7 @@ outputs:
       "title": "Title",    
     }
 ---
-### output _xrefmap per file to structure json
+# output _xrefmap per file to structure json
 inputs:
   docfx.yml:
   docs/a.md: |
