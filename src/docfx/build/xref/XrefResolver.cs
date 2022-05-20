@@ -20,8 +20,8 @@ internal class XrefResolver
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
-    private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> uidMap,
-        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> fileMap)> _internalXrefMap;
+    private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath)> _internalXrefMap;
 
     public XrefResolver(
         Config config,
@@ -159,7 +159,7 @@ internal class XrefResolver
         var references = Array.Empty<ExternalXrefSpec>();
         var externalXrefs = Array.Empty<ExternalXref>();
 
-        references = _internalXrefMap.Value.uidMap.Values
+        references = _internalXrefMap.Value.xrefsByUid.Values
             .Select(xrefs =>
             {
                 var xref = xrefs.First();
@@ -219,7 +219,7 @@ internal class XrefResolver
     public Dictionary<string, ExternalXrefSpec> ResolveXrefMapByFile(
         FilePath file)
     {
-        var internalXrefSpecs = _internalXrefMap.Value.fileMap.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>());
+        var internalXrefSpecs = _internalXrefMap.Value.xrefsByFilePath.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>());
         var xrefMap = new Dictionary<string, ExternalXrefSpec>();
         internalXrefSpecs.ToList().ForEach(spec =>
         {
@@ -328,7 +328,7 @@ internal class XrefResolver
     private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
         string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
     {
-        if (_internalXrefMap.Value.uidMap.TryGetValue(uid, out var specs))
+        if (_internalXrefMap.Value.xrefsByUid.TryGetValue(uid, out var specs))
         {
             var spec = specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers
                 ? specs[0]
