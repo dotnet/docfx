@@ -182,12 +182,27 @@ internal class TemplateEngine
         var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
 
         // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
-        metadata["xrefmap"] = pageModel.Property("_xrefmap")?.Value.ToString();
+        metadata["xrefmap"] = ExtractXrefs(pageModel.Property("_xrefmap")?.Value);
 
         // content for *.raw.page.json
         var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
 
         return (model, metadata);
+    }
+
+    private static string? ExtractXrefs(JToken? token)
+    {
+        if (token == null)
+        {
+            return null;
+        }
+
+        var dictionary = JsonUtility.ToObject<Dictionary<string, ExternalXrefSpec>>(ErrorBuilder.Null, token);
+        if (dictionary != null)
+        {
+            return JsonUtility.Serialize(dictionary.Values.Where(xref => xref.SpecType == SpecType.Uid));
+        }
+        return null;
     }
 
     private string ProcessHtml(FilePath file, string html)
