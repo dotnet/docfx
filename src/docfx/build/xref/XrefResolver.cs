@@ -231,13 +231,13 @@ internal class XrefResolver
         return xrefMap;
     }
 
-    private (IReadOnlyDictionary<string, InternalXrefSpec[]> uidXrefSpecMap,
-        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) BuildInternalXrefMap()
+    private (IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) BuildInternalXrefMap()
     {
-        var (uidXrefSpecMap, fileXrefSpecMap) = _internalXrefMapBuilder.Build();
-        ValidateUidGlobalUnique(uidXrefSpecMap);
-        ValidateExternalXref(uidXrefSpecMap);
-        return (uidXrefSpecMap, fileXrefSpecMap);
+        var (xrefsByUid, xrefsByFilePath) = _internalXrefMapBuilder.Build();
+        ValidateUidGlobalUnique(xrefsByUid);
+        ValidateExternalXref(xrefsByUid);
+        return (xrefsByUid, xrefsByFilePath);
     }
 
     private static bool IsNameLocalizable(IXrefSpec xrefSpec)

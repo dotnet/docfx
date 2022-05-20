@@ -43,7 +43,7 @@ internal class InternalXrefMapBuilder
         _redirectionProvider = redirectionProvider;
     }
 
-    public (Dictionary<string, InternalXrefSpec[]> result, Dictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap) Build()
+    public (Dictionary<string, InternalXrefSpec[]> xrefsByUid, Dictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) Build()
     {
         var fileXrefSpecMap = new ConcurrentDictionary<FilePath, InternalXrefSpec[]>();
         var builder = new ListBuilder<InternalXrefSpec>();
@@ -60,13 +60,13 @@ internal class InternalXrefMapBuilder
             let spec = AggregateXrefSpecs(uid, g.ToArray())
             select (uid, spec);
 
-        var uidXrefMap = xrefmap.ToDictionary(item => item.uid, item => item.spec);
-        uidXrefMap.TrimExcess();
+        var xrefsByUid = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+        xrefsByUid.TrimExcess();
 
-        var fileXrefMap = fileXrefSpecMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        fileXrefMap.TrimExcess();
+        var xrefsByFilePath = fileXrefSpecMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        xrefsByFilePath.TrimExcess();
 
-        return (uidXrefMap, fileXrefMap);
+        return (xrefsByUid, xrefsByFilePath);
     }
 
     private void Load(

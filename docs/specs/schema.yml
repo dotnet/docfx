@@ -1076,11 +1076,9 @@ inputs:
     ### YamlMime:a_type
     uid: uid_a
     bs: ['uid_b']
-    achieve: uid_c
   docs/b.yml: |
     ### YamlMime:b_type
     uid: uid_b
-    achieve: external_c
   _themes/ContentTemplate/schemas/a_type.schema.json: |
     {
       "properties": {
@@ -1110,7 +1108,16 @@ outputs:
         }
       }
     }    
-  docs/b.json:
+  docs/b.json: | 
+    {
+      "_xrefmap":{
+        "uid_b":{
+          "uid": "uid_b",
+          "schemaType": "b_type",
+          "specType": "uid"
+        }
+      }
+    } 
   .xrefmap.json: | 
     {
       "references":[
