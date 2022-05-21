@@ -140,7 +140,7 @@ internal class Config : PreloadConfig
     /// <summary>
     /// Gets whether we are running in continue build mode
     /// </summary>
-    public bool ContinueBuild { get; init; } = false;
+    public bool ContinueBuild { get; init; }
 
     /// <summary>
     /// Gets the file metadata added to each document.
