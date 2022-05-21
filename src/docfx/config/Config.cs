@@ -138,6 +138,11 @@ internal class Config : PreloadConfig
     public bool DryRun { get; init; }
 
     /// <summary>
+    /// Gets whether we are running in continue build mode
+    /// </summary>
+    public bool ContinueBuild { get; init; } = false;
+
+    /// <summary>
     /// Gets the file metadata added to each document.
     /// It is a map of `{metadata-name} -> {glob} -> {metadata-value}`
     /// </summary>

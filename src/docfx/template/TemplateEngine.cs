@@ -181,8 +181,11 @@ internal class TemplateEngine
 
         var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
 
-        // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
-        metadata["xrefmap"] = ExtractXrefs(pageModel.Property("_xrefmap")?.Value);
+        if (_config.ContinueBuild)
+        {
+            // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
+            metadata["xrefmap"] = ExtractXrefs(pageModel.Property("_xrefmap")?.Value);
+        }
 
         // content for *.raw.page.json
         var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");

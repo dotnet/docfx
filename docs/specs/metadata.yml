@@ -63,6 +63,54 @@ outputs:
       }
     }
 ---
+# In continue build, output xrefmap to page metadata but not page data
+continueBuildOnly: true
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+  docs/a.md: |
+    ---
+    uid: abc
+    breadcrumb_path: "/breadcrumb_path"
+    author: xxx
+    ---
+    # Title
+outputs:  
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }
+  docs/a.mta.json: |
+    {       
+      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"/docs/a\",\"specType\":\"uid\",\"name\":\"abc\"}]"
+    }
+---
+# for non-continue build, xrefmap is not output
+noContinueBuild: true
+inputs:
+  docfx.yml: | 
+    outputType: pageJson  
+  docs/a.md: |
+    ---
+    uid: abc
+    breadcrumb_path: "/breadcrumb_path"
+    author: xxx
+    ---
+    # Title
+outputs: 
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }
+  docs/a.mta.json: | 
+    {       
+      "xrefmap": undefined
+    }
+---    
 # Overwrite global metadata with null in yaml header
 inputs:
   docfx.yml: |

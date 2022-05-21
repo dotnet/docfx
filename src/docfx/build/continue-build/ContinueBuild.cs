@@ -29,6 +29,7 @@ internal static class ContinueBuild
         var config = new Config
         {
             DryRun = false,
+            ContinueBuild = true,
             Template = new PackagePath(options.Template),
         };
 

@@ -1125,3 +1125,99 @@ outputs:
         {"uid": "uid_b", "schemaType": "b_type"},
       ]
     }
+---
+# continue build SDP, output xrefmap to page metadata but not page data
+noSingleFile: true
+continueBuildOnly: true
+inputs:
+  docfx.yml: |
+    outputType: pageJson  
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_b']
+  docs/b.yml: |
+    ### YamlMime:b_type
+    uid: uid_b
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+      }
+    }
+  _themes/ContentTemplate/a_type.html.tmpl: |
+    {{{content}}}
+  _themes/ContentTemplate/schemas/b_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+      }
+    }
+  _themes/ContentTemplate/b_type.html.tmpl: |
+    {{{content}}}
+outputs:
+  docs/b.mta.json:
+  docs/b.raw.page.json:
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }  
+  docs/a.mta.json: | 
+    {
+        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"a\",\"schemaType\":\"a_type\",\"specType\":\"uid\"}]"
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type"},
+        {"uid": "uid_b", "schemaType": "b_type"},
+      ]
+    }
+---
+# for non-continue build SDP, do not output xrefmap to either page metadata or page data
+noSingleFile: true
+noContinueBuild: true
+inputs:
+  docfx.yml: |
+    outputType: pageJson  
+  docs/a.yml: |
+    ### YamlMime:a_type
+    uid: uid_a
+    bs: ['uid_b']
+  docs/b.yml: |
+    ### YamlMime:b_type
+    uid: uid_b
+  _themes/ContentTemplate/schemas/a_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+      }
+    }
+  _themes/ContentTemplate/a_type.html.tmpl: |
+    {{{content}}}
+  _themes/ContentTemplate/schemas/b_type.schema.json: |
+    {
+      "properties": {
+        "uid" : {"contentType": "uid"},
+      }
+    }
+  _themes/ContentTemplate/b_type.html.tmpl: |
+    {{{content}}}
+outputs:
+  docs/b.mta.json:
+  docs/b.raw.page.json:
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }  
+  docs/a.mta.json: | 
+    {
+        "xrefmap": undefined
+    }
+---
