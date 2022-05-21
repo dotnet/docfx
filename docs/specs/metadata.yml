@@ -62,6 +62,12 @@ outputs:
           }
       }
     }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"specType": undefined },       
+      ]
+    }
 ---
 # In continue build, output xrefmap to page metadata but not page data
 continueBuildOnly: true
@@ -86,6 +92,12 @@ outputs:
     {       
       "xrefmap": "[{\"uid\":\"abc\",\"href\":\"/docs/a\",\"specType\":\"uid\",\"name\":\"abc\"}]"
     }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"specType": undefined },       
+      ]
+    }
 ---
 # for non-continue build, xrefmap is not output
 noContinueBuild: true
@@ -109,6 +121,12 @@ outputs:
   docs/a.mta.json: | 
     {       
       "xrefmap": undefined
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"specType": undefined },       
+      ]
     }
 ---    
 # Overwrite global metadata with null in yaml header

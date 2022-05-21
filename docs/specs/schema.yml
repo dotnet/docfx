@@ -1121,12 +1121,14 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type"},
-        {"uid": "uid_b", "schemaType": "b_type"},
+        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
       ]
     }
 ---
 # continue build SDP, output xrefmap to page metadata but not page data
+# only xref with uid spec-type will be output
+# spec-type property is not output in .xrefmap.json
 noSingleFile: true
 continueBuildOnly: true
 inputs:
@@ -1172,8 +1174,8 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type"},
-        {"uid": "uid_b", "schemaType": "b_type"},
+        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
       ]
     }
 ---
@@ -1219,5 +1221,12 @@ outputs:
   docs/a.mta.json: | 
     {
         "xrefmap": undefined
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
+      ]
     }
 ---
