@@ -163,11 +163,7 @@ internal class XrefResolver
             .Select(xrefs =>
             {
                 var xref = xrefs.First();
-
-                // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                // output xref map with URL appending "?branch=master" for master branch
-                var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
-                var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+                var href = ConstructAbsoluteHref(xref);
 
                 // union the moniker lists of current uid into one
                 return xref.ToExternalXrefSpec(
@@ -223,12 +219,22 @@ internal class XrefResolver
         var xrefMap = new Dictionary<string, ExternalXrefSpec>();
         internalXrefSpecs.ToList().ForEach(spec =>
         {
-            var externalXrefSpec = spec.ToExternalXrefSpec();
-            externalXrefSpec.SpecType = SpecType.Uid;
+            var externalXrefSpec = spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null, SpecType.Uid);
             xrefMap.TryAdd(spec.Uid, externalXrefSpec);
         });
 
         return xrefMap;
+    }
+
+    private string ConstructAbsoluteHref(InternalXrefSpec xref)
+    {
+        var repositoryBranch = _repository?.Branch;
+
+        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+        // output xref map with URL appending "?branch=master" for master branch
+        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
+        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+        return href;
     }
 
     private (IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,

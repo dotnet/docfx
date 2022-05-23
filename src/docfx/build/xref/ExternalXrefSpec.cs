@@ -31,7 +31,7 @@ internal record ExternalXrefSpec : IXrefSpec
     FilePath? IXrefSpec.DeclaringFile => null;
 
     // used for localizable xrefmap
-    public SpecType? SpecType { get; set; }
+    public SpecType? SpecType { get; init; }
 
     public string? GetXrefPropertyValueAsString(string propertyName)
     {
@@ -44,8 +44,13 @@ internal record ExternalXrefSpec : IXrefSpec
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null)
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null, SpecType? specType = null)
     {
-        return this with { Href = overwriteHref ?? Href, Monikers = monikerList ?? Monikers };
+        return this with
+        {
+            Href = overwriteHref ?? Href,
+            Monikers = monikerList ?? Monikers,
+            SpecType = specType ?? SpecType,
+        };
     }
 }

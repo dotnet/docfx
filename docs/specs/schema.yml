@@ -1062,36 +1062,30 @@ outputs:
     }
 ---
 # display spec type for xrefs in _xrefmap property per file
-inputs:
-  docfx.yml: |
-    xref:
-    - 1.xrefmap.json
-  1.xrefmap.json: |
-    {
-      "references":[
-        {"uid": "external_c", "schemaType": "c2_type"}
-      ]
-    }
-  docs/a.yml: |
-    ### YamlMime:a_type
-    uid: uid_a
-    bs: ['uid_b']
-  docs/b.yml: |
-    ### YamlMime:b_type
-    uid: uid_b
-  _themes/ContentTemplate/schemas/a_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
-      }
-    }
-  _themes/ContentTemplate/schemas/b_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-      }
-    }
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: 
+        docs/a.yml: |
+          ### YamlMime:a_type
+          uid: uid_a
+          bs: ['uid_b']
+        docs/b.yml: |
+          ### YamlMime:b_type
+          uid: uid_b
+        _themes/ContentTemplate/schemas/a_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+            }
+          }
+        _themes/ContentTemplate/schemas/b_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+            }
+          }
 outputs:
   docs/a.json: |
     {
@@ -1099,12 +1093,14 @@ outputs:
         "uid_a":{
           "uid": "uid_a",
           "schemaType": "a_type",
-          "specType": "uid"
+          "specType": "uid",
+          "href": "a",
         },
         "uid_b":{
           "uid": "uid_b",
           "schemaType": "b_type",
-          "specType": "xref"
+          "specType": "xref",
+          "href": "b",
         }
       }
     }    
@@ -1114,15 +1110,16 @@ outputs:
         "uid_b":{
           "uid": "uid_b",
           "schemaType": "b_type",
-          "specType": "uid"
+          "specType": "uid",
+          "href": "b",
         }
       }
     } 
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
       ]
     }
 ---
@@ -1131,33 +1128,35 @@ outputs:
 # spec-type property is not output in .xrefmap.json
 noSingleFile: true
 continueBuildOnly: true
-inputs:
-  docfx.yml: |
-    outputType: pageJson  
-  docs/a.yml: |
-    ### YamlMime:a_type
-    uid: uid_a
-    bs: ['uid_b']
-  docs/b.yml: |
-    ### YamlMime:b_type
-    uid: uid_b
-  _themes/ContentTemplate/schemas/a_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
-      }
-    }
-  _themes/ContentTemplate/a_type.html.tmpl: |
-    {{{content}}}
-  _themes/ContentTemplate/schemas/b_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-      }
-    }
-  _themes/ContentTemplate/b_type.html.tmpl: |
-    {{{content}}}
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson  
+        docs/a.yml: |
+          ### YamlMime:a_type
+          uid: uid_a
+          bs: ['uid_b']
+        docs/b.yml: |
+          ### YamlMime:b_type
+          uid: uid_b
+        _themes/ContentTemplate/schemas/a_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+            }
+          }
+        _themes/ContentTemplate/a_type.html.tmpl: |
+          {{{content}}}
+        _themes/ContentTemplate/schemas/b_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+            }
+          }
+        _themes/ContentTemplate/b_type.html.tmpl: |
+          {{{content}}}
 outputs:
   docs/b.mta.json:
   docs/b.raw.page.json:
@@ -1174,41 +1173,43 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "a", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "href": "b", "specType": undefined },
       ]
     }
 ---
 # for non-continue build SDP, do not output xrefmap to either page metadata or page data
 noSingleFile: true
 noContinueBuild: true
-inputs:
-  docfx.yml: |
-    outputType: pageJson  
-  docs/a.yml: |
-    ### YamlMime:a_type
-    uid: uid_a
-    bs: ['uid_b']
-  docs/b.yml: |
-    ### YamlMime:b_type
-    uid: uid_b
-  _themes/ContentTemplate/schemas/a_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-        "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
-      }
-    }
-  _themes/ContentTemplate/a_type.html.tmpl: |
-    {{{content}}}
-  _themes/ContentTemplate/schemas/b_type.schema.json: |
-    {
-      "properties": {
-        "uid" : {"contentType": "uid"},
-      }
-    }
-  _themes/ContentTemplate/b_type.html.tmpl: |
-    {{{content}}}
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson  
+        docs/a.yml: |
+          ### YamlMime:a_type
+          uid: uid_a
+          bs: ['uid_b']
+        docs/b.yml: |
+          ### YamlMime:b_type
+          uid: uid_b
+        _themes/ContentTemplate/schemas/a_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+            }
+          }
+        _themes/ContentTemplate/a_type.html.tmpl: |
+          {{{content}}}
+        _themes/ContentTemplate/schemas/b_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+            }
+          }
+        _themes/ContentTemplate/b_type.html.tmpl: |
+          {{{content}}}
 outputs:
   docs/b.mta.json:
   docs/b.raw.page.json:
@@ -1225,8 +1226,8 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
       ]
     }
 ---

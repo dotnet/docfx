@@ -19,5 +19,5 @@ internal interface IXrefSpec
 
     string? GetName();
 
-    ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null);
+    ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null, SpecType? specType = null);
 }

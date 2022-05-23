@@ -37,15 +37,17 @@ outputs:
     }
 ---
 # output _xrefmap per file to structure json
-inputs:
-  docfx.yml:
-  docs/a.md: |
-    ---
-    uid: abc
-    breadcrumb_path: "/breadcrumb_path"
-    author: xxx
-    ---
-    # Title
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
 outputs:
   docs/a.json: |
     {      
@@ -55,7 +57,7 @@ outputs:
       "title": "Title",  
       "_xrefmap": {
           "abc":{
-            "href": "/docs/a",
+            "href": "https://docs.com/docs/a?branch=test",
             "name": "abc",
             "uid": "abc",
             "specType": "uid",
@@ -65,22 +67,24 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "abc", "name": "abc" ,"specType": undefined },       
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
       ]
     }
 ---
 # In continue build, output xrefmap to page metadata but not page data
 continueBuildOnly: true
-inputs:
-  docfx.yml: |
-    outputType: pageJson
-  docs/a.md: |
-    ---
-    uid: abc
-    breadcrumb_path: "/breadcrumb_path"
-    author: xxx
-    ---
-    # Title
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
 outputs:  
   docs/a.raw.page.json: | 
     { 
@@ -90,7 +94,7 @@ outputs:
     }
   docs/a.mta.json: |
     {       
-      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"/docs/a\",\"specType\":\"uid\",\"name\":\"abc\"}]"
+      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
     }
   .xrefmap.json: | 
     {
@@ -101,16 +105,18 @@ outputs:
 ---
 # for non-continue build, xrefmap is not output
 noContinueBuild: true
-inputs:
-  docfx.yml: | 
-    outputType: pageJson  
-  docs/a.md: |
-    ---
-    uid: abc
-    breadcrumb_path: "/breadcrumb_path"
-    author: xxx
-    ---
-    # Title
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: | 
+          outputType: pageJson  
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
 outputs: 
   docs/a.raw.page.json: | 
     { 
