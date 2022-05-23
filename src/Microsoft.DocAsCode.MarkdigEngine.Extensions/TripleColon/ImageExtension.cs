@@ -176,7 +176,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 var htmlId = GetHtmlId(obj);
                 renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
                 renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                renderer.WriteChildren(tripleColonObj as ContainerBlock);
+                renderer.WriteLine($"<p>");
+                renderer.Write(tripleColonObj as TripleColonInline);
+                renderer.WriteLine("</p>");
                 renderer.WriteLine("</div>");
             }
             if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
