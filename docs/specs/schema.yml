@@ -1174,7 +1174,7 @@ outputs:
     }  
   docs/a.mta.json: | 
     {
-        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\\"}]"
+        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\"}]"
     }
   .xrefmap.json: | 
     {
