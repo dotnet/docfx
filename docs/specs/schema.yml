@@ -1076,7 +1076,7 @@ repos:
         _themes/ContentTemplate/schemas/a_type.schema.json: |
           {
             "properties": {
-              "uid" : {"contentType": "uid"},
+              "uid" : {"contentType": "uid"},              
               "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
             }
           }
@@ -1136,6 +1136,9 @@ repos:
         docs/a.yml: |
           ### YamlMime:a_type
           uid: uid_a
+          description: testing sdp uid with description
+          summary: |
+            a simple [link](https://microsoft.com)
           bs: ['uid_b']
         docs/b.yml: |
           ### YamlMime:b_type
@@ -1144,8 +1147,11 @@ repos:
           {
             "properties": {
               "uid" : {"contentType": "uid"},
+              "description": { "type": "string" },
+              "summary": { "contentType": "Markdown" },
               "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
-            }
+            },
+            "xrefProperties":["description", "summary"]
           }
         _themes/ContentTemplate/a_type.html.tmpl: |
           {{{content}}}
@@ -1168,13 +1174,13 @@ outputs:
     }  
   docs/a.mta.json: | 
     {
-        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"a\",\"schemaType\":\"a_type\",\"specType\":\"uid\"}]"
+        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\\"}]"
     }
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "href": "a", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "href": "b", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
       ]
     }
 ---

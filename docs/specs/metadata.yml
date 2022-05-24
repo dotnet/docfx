@@ -35,105 +35,6 @@ outputs:
       "breadcrumb_path": "/breadcrumb_path", 
       "title": "Title",    
     }
----
-# output _xrefmap per file to structure json
-repos:
-  https://docs.com/test#test:
-    - files:
-        docfx.yml:
-        docs/a.md: |
-          ---
-          uid: abc
-          breadcrumb_path: "/breadcrumb_path"
-          author: xxx
-          ---
-          # Title
-outputs:
-  docs/a.json: |
-    {      
-      "author":"xxx", 
-      "uid": "abc", 
-      "breadcrumb_path": "/breadcrumb_path", 
-      "title": "Title",  
-      "_xrefmap": {
-          "abc":{
-            "href": "https://docs.com/docs/a?branch=test",
-            "name": "abc",
-            "uid": "abc",
-            "specType": "uid",
-          }
-      }
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
-      ]
-    }
----
-# In continue build, output xrefmap to page metadata but not page data
-continueBuildOnly: true
-repos:
-  https://docs.com/test#test:
-    - files:
-        docfx.yml: |
-          outputType: pageJson
-        docs/a.md: |
-          ---
-          uid: abc
-          breadcrumb_path: "/breadcrumb_path"
-          author: xxx
-          ---
-          # Title
-outputs:  
-  docs/a.raw.page.json: | 
-    { 
-      "rawMetadata": {
-        "xrefmap": undefined
-      }
-    }
-  docs/a.mta.json: |
-    {       
-      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "abc", "name": "abc" ,"specType": undefined },       
-      ]
-    }
----
-# for non-continue build, xrefmap is not output
-noContinueBuild: true
-repos:
-  https://docs.com/test#test:
-    - files:
-        docfx.yml: | 
-          outputType: pageJson  
-        docs/a.md: |
-          ---
-          uid: abc
-          breadcrumb_path: "/breadcrumb_path"
-          author: xxx
-          ---
-          # Title
-outputs: 
-  docs/a.raw.page.json: | 
-    { 
-      "rawMetadata": {
-        "xrefmap": undefined
-      }
-    }
-  docs/a.mta.json: | 
-    {       
-      "xrefmap": undefined
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "abc", "name": "abc" ,"specType": undefined },       
-      ]
-    }
 ---    
 # Overwrite global metadata with null in yaml header
 inputs:
@@ -534,3 +435,103 @@ outputs:
         <meta content=\"8\" name=\"wordCount\" />"
     }
   docs/a.mta.json:
+---
+# output xrefmap per file to structure json for json output
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
+outputs:
+  docs/a.json: |
+    {      
+      "author":"xxx", 
+      "uid": "abc", 
+      "breadcrumb_path": "/breadcrumb_path", 
+      "title": "Title",  
+      "xrefmap": {
+          "abc":{
+            "href": "https://docs.com/docs/a?branch=test",
+            "name": "abc",
+            "uid": "abc",
+            "specType": "uid",
+          }
+      }
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
+      ]
+    }
+---
+# In continue build, output xrefmap to page mta.json but not raw.page.json
+continueBuildOnly: true
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
+outputs:  
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }
+  docs/a.mta.json: |
+    {       
+      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"href": "","specType": undefined },       
+      ]
+    }
+---
+# for non-continue build, xrefmap is NOT output in page.json
+noContinueBuild: true
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: | 
+          outputType: pageJson  
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
+outputs: 
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefmap": undefined
+      }
+    }
+  docs/a.mta.json: | 
+    {       
+      "xrefmap": undefined
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },       
+      ]
+    }
+---

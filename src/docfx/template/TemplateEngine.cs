@@ -174,7 +174,8 @@ internal class TemplateEngine
         }
 
         // content for *.mta.json
-        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
+        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")
+        && p.Name != "xrefmap"))
         {
             ["is_dynamic_rendering"] = true,
         };
@@ -183,12 +184,24 @@ internal class TemplateEngine
 
         if (_config.ContinueBuild)
         {
-            // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
-            metadata["xrefmap"] = ExtractXrefs(pageModel.Property("_xrefmap")?.Value);
+            if (JsonSchemaProvider.IsConceptual(mime))
+            {
+                // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
+                metadata["xrefmap"] = ExtractXrefs(templateMetadata.Property("xrefmap")?.Value);
+                templateMetadata.Remove("xrefmap");
+            }
+            else
+            {
+                if (templateMetadata?["metadata"] != null)
+                {
+                    metadata["xrefmap"] = ExtractXrefs(templateMetadata["metadata"]?["xrefmap"]);
+                    templateMetadata.Value<JObject>("metadata")?.Remove("xrefmap");
+                }
+            }
         }
 
         // content for *.raw.page.json
-        var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
+        var model = new TemplateModel(content, templateMetadata!, pageMetadata, "_themes/");
 
         return (model, metadata);
     }

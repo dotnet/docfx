@@ -128,21 +128,20 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
+        if (_config.OutputType == OutputType.Json)
+        {
+            systemMetadata.XrefMap = _xrefResolver.ResolveXrefMapByFile(file);
+        }
+        var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
+
         if (JsonSchemaProvider.IsConceptual(mime))
         {
-            if (_config.OutputType == OutputType.Json)
-            {
-                systemMetadata.XrefMap = _xrefResolver.ResolveXrefMapByFile(file);
-            }
-            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
-
             // conceptual raw metadata and raw model
             JsonUtility.Merge(outputMetadata, userMetadata.RawJObject, systemMetadataJObject);
             JsonUtility.Merge(outputModel, userMetadata.RawJObject, sourceModel, systemMetadataJObject);
         }
         else
         {
-            var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
             JsonUtility.Merge(
                 outputMetadata,
                 sourceModel.TryGetValue<JObject>("metadata", out var sourceMetadata) ? sourceMetadata : new JObject(),
