@@ -128,7 +128,7 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
-        systemMetadata.Xrefs = _xrefResolver.ResolveXrefMapByFile(file);
+        systemMetadata.Xrefs = JsonUtility.Serialize(_xrefResolver.ResolveXrefMapByFile(file));
         var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
         if (JsonSchemaProvider.IsConceptual(mime))

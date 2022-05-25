@@ -63,5 +63,5 @@ internal class SystemMetadata
     public string? PdfUrlPrefixTemplate { get; set; }
 
     [JsonProperty("xrefs")] // the xrefs defined in this file
-    public List<ExternalXrefSpec>? Xrefs { get; set; }
+    public string? Xrefs { get; set; }
 }

@@ -449,13 +449,7 @@ outputs:
       "uid": "abc", 
       "breadcrumb_path": "/breadcrumb_path", 
       "title": "Title",  
-      "xrefs": [
-          {
-            "href": "https://docs.com/docs/a?branch=test",
-            "name": "abc",
-            "uid": "abc",
-          }
-      ]
+      "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"name\":\"abc\"}]"
     }
   .xrefmap.json: | 
     {
@@ -481,9 +475,7 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefs": [
-          {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test"}
-        ]
+        "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"name\":\"abc\"}]"
       }
     }
   docs/a.mta.json: |

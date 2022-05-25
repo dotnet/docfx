@@ -1102,13 +1102,7 @@ outputs:
           }
       },
       "metadata":{    
-          "xrefs":[
-              {
-                "uid": "uid_a",
-                "schemaType": "a_type",
-                "href": "https://docs.com/docs/a?branch=test",
-              }
-          ]
+          "xrefs": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\"}]"
       }
     }    
   docs/b.json: | 
@@ -1121,13 +1115,7 @@ outputs:
           }
       },
       "metadata": {
-        "xrefs":[
-          {
-            "uid": "uid_b",
-            "schemaType": "b_type",
-            "href": "https://docs.com/docs/b?branch=test",
-          }
-        ]
+        "xrefs": "[{\"uid\":\"uid_b\",\"href\":\"https://docs.com/docs/b?branch=test\",\"schemaType\":\"b_type\"}]"
       }
     } 
   .xrefmap.json: | 
@@ -1182,15 +1170,7 @@ outputs:
     { 
       "rawMetadata": {
         "metadata":{
-          "xrefs": [
-            {
-              "description": "testing sdp uid with description",
-              "href": "https://docs.com/docs/a?branch=test",
-              "schemaType": "a_type",
-              "summary": "<p>a simple <a href=\"https://microsoft.com\">link</a></p>",
-              "uid": "uid_a"
-            }
-          ]
+          "xrefs": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\"}]"
         }
       }
     }  
