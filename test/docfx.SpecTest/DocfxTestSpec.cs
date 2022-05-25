@@ -17,10 +17,6 @@ public class DocfxTestSpec
 
     public bool DryRunOnly { get; set; }
 
-    public bool ContinueBuildOnly { get; set; } = false;
-
-    public bool NoContinueBuild { get; set; } = false;
-
     public bool NoDrySync { get; set; } = true;
 
     public bool NoRestore { get; set; }

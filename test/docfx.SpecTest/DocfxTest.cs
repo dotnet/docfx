@@ -46,10 +46,7 @@ public static class DocfxTest
 
     public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)
     {
-        if (!spec.ContinueBuildOnly)
-        {
-            yield return "";
-        }
+        yield return "";
 
         var hasError = spec.Outputs.ContainsKey(".errors.log");
         if (hasError && !spec.DryRunOnly && !spec.NoDryRun)
@@ -62,7 +59,7 @@ public static class DocfxTest
             yield return "SingleFile";
         }
 
-        if (InputContainsText(spec, "outputType: pageJson") && spec.NoContinueBuild == false)
+        if (InputContainsText(spec, "outputType: pageJson"))
         {
             yield return "ContinueBuild";
         }
