@@ -168,18 +168,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
             else
             {
-                if (currentType == "complex" && tripleColonObj.Count == 0)
+                if (currentType == "complex" && string.IsNullOrWhiteSpace(tripleColonObj.Body))
                 {
                     logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                     return false;
                 }
                 var htmlId = GetHtmlId(obj);
                 renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-                renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-                renderer.WriteLine($"<p>");
-                renderer.Write(tripleColonObj as TripleColonInline);
-                renderer.WriteLine("</p>");
-                renderer.WriteLine("</div>");
+                renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\"><p>");
+                renderer.Write(tripleColonObj.Body);
+                renderer.WriteLine("</p></div>");
             }
             if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
             {

@@ -109,6 +109,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
                 if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
                 {
+                    // create a block for the image long description
+                    ((TripleColonBlock)block).Body = slice.ToString();
                     ExtensionsHelper.ResetLineIndent(processor);
                     return BlockState.Continue;
                 }
@@ -163,7 +165,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         public override bool Close(BlockProcessor processor, Block block)
         {
             var tripleColonBlock = (TripleColonBlock)block;
-            if (tripleColonBlock.Extension.SelfClosing)
+             if (tripleColonBlock.Extension.SelfClosing)
             {
                 block.IsOpen = false;
                 return true;
