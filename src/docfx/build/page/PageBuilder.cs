@@ -130,7 +130,7 @@ internal class PageBuilder
 
         if (_config.OutputType == OutputType.Json)
         {
-            systemMetadata.XrefMap = _xrefResolver.ResolveXrefMapByFile(file);
+            systemMetadata.Xrefs = _xrefResolver.ResolveXrefMapByFile(file);
         }
         var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 

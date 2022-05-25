@@ -212,18 +212,13 @@ internal class XrefResolver
         return model;
     }
 
-    public Dictionary<string, ExternalXrefSpec> ResolveXrefMapByFile(
+    public List<ExternalXrefSpec> ResolveXrefMapByFile(
         FilePath file)
     {
-        var internalXrefSpecs = _internalXrefMap.Value.xrefsByFilePath.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>());
-        var xrefMap = new Dictionary<string, ExternalXrefSpec>();
-        internalXrefSpecs.ToList().ForEach(spec =>
-        {
-            var externalXrefSpec = spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null, SpecType.Uid);
-            xrefMap.TryAdd(spec.Uid, externalXrefSpec);
-        });
-
-        return xrefMap;
+        var internalXrefSpecs = _internalXrefMap.Value.xrefsByFilePath.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>()).ToList();
+        return internalXrefSpecs
+            .Select(spec => spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null, SpecType.Uid))
+            .ToList();
     }
 
     private string ConstructAbsoluteHref(InternalXrefSpec xref)

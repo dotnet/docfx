@@ -1061,7 +1061,7 @@ outputs:
       "bar": "inline <em>markdown</em>"
     }
 ---
-# display spec type for xrefs in _xrefmap property per file
+# add defined xrefs to SDP json metadata per file
 repos:
   https://docs.com/test#test:
     - files:
@@ -1090,29 +1090,49 @@ outputs:
   docs/a.json: |
     {
       "_xrefmap":{
-        "uid_a":{
-          "uid": "uid_a",
-          "schemaType": "a_type",
-          "specType": "uid",
-          "href": "a",
-        },
-        "uid_b":{
-          "uid": "uid_b",
-          "schemaType": "b_type",
-          "specType": "xref",
-          "href": "b",
-        }
+          "uid_a": {
+            "uid": "uid_a",
+            "schemaType": "a_type",
+            "specType": "uid",
+            "href": "a",
+          },
+          "uid_b": {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "specType": "xref",
+            "href": "b",
+          }
+      },
+      "metadata":{    
+          "xrefs":[
+              {
+                "uid": "uid_a",
+                "schemaType": "a_type",
+                "specType": "uid",
+                "href": "https://docs.com/docs/a?branch=test",
+              }
+          ]
       }
     }    
   docs/b.json: | 
     {
       "_xrefmap":{
-        "uid_b":{
-          "uid": "uid_b",
-          "schemaType": "b_type",
-          "specType": "uid",
-          "href": "b",
-        }
+          "uid_b": {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "specType": "uid",
+            "href": "b",
+          }
+      },
+      "metadata": {
+        "xrefs":[
+          {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "specType": "uid",
+            "href": "https://docs.com/docs/b?branch=test",
+          }
+        ]
       }
     } 
   .xrefmap.json: | 
@@ -1123,7 +1143,7 @@ outputs:
       ]
     }
 ---
-# continue build SDP, output xrefmap to page metadata but not page data
+# continue build SDP, output defined xrefs to page metadata but not page data
 # only xref with uid spec-type will be output
 # spec-type property is not output in .xrefmap.json
 noSingleFile: true
@@ -1169,12 +1189,12 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefmap": undefined
+        "xrefs": undefined
       }
     }  
   docs/a.mta.json: | 
     {
-        "xrefmap": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\"}]"
+        "xrefs": "[{\"description\":\"testing sdp uid with description\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\",\"uid\":\"uid_a\"}]"
     }
   .xrefmap.json: | 
     {
@@ -1184,7 +1204,7 @@ outputs:
       ]
     }
 ---
-# for non-continue build SDP, do not output xrefmap to either page metadata or page data
+# for non-continue build SDP, do not output xrefs to either page metadata or page data
 noSingleFile: true
 noContinueBuild: true
 repos:
@@ -1222,12 +1242,12 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefmap": undefined
+        "xrefs": undefined
       }
     }  
   docs/a.mta.json: | 
     {
-        "xrefmap": undefined
+        "xrefs": undefined
     }
   .xrefmap.json: | 
     {

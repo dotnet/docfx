@@ -436,7 +436,7 @@ outputs:
     }
   docs/a.mta.json:
 ---
-# output xrefmap per file to structure json for json output
+# output defined xrefs per file to structure json
 repos:
   https://docs.com/test#test:
     - files:
@@ -455,13 +455,13 @@ outputs:
       "uid": "abc", 
       "breadcrumb_path": "/breadcrumb_path", 
       "title": "Title",  
-      "xrefmap": {
-          "abc":{
+      "xrefs": [
+          {
             "href": "https://docs.com/docs/a?branch=test",
             "name": "abc",
             "uid": "abc",
             "specType": "uid",
-          }
+          ]
       }
     }
   .xrefmap.json: | 
@@ -471,7 +471,7 @@ outputs:
       ]
     }
 ---
-# In continue build, output xrefmap to page mta.json but not raw.page.json
+# In continue build, output defined xrefs to page mta.json but not raw.page.json
 continueBuildOnly: true
 repos:
   https://docs.com/test#test:
@@ -489,12 +489,12 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefmap": undefined
+        "xrefs": undefined
       }
     }
   docs/a.mta.json: |
     {       
-      "xrefmap": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
+      "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
     }
   .xrefmap.json: | 
     {
@@ -503,7 +503,7 @@ outputs:
       ]
     }
 ---
-# for non-continue build, xrefmap is NOT output in page.json
+# for non-continue build, xrefs is NOT output in page.json
 noContinueBuild: true
 repos:
   https://docs.com/test#test:
@@ -521,12 +521,12 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefmap": undefined
+        "xrefs": undefined
       }
     }
   docs/a.mta.json: | 
     {       
-      "xrefmap": undefined
+      "xrefs": undefined
     }
   .xrefmap.json: | 
     {
