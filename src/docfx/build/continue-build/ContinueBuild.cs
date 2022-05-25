@@ -38,10 +38,7 @@ internal static class ContinueBuild
         var jsonSchemaProvider = new JsonSchemaProvider(config, package, jsonSchemaLoader);
         var templateEngine = TemplateEngine.CreateTemplateEngine(errors, config, locale, package);
 
-        if (!Directory.Exists(outputDir))
-        {
-            Directory.CreateDirectory(outputDir);
-        }
+        Directory.CreateDirectory(outputDir);
 
         using var scope = Progress.Start("Apply templates...");
         ParallelUtility.ForEach(

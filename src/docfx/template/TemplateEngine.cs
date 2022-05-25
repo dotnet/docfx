@@ -174,8 +174,7 @@ internal class TemplateEngine
         }
 
         // content for *.mta.json
-        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")
-        && p.Name != "xrefmap"))
+        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
         {
             ["is_dynamic_rendering"] = true,
         };
