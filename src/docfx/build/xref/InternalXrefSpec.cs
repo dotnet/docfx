@@ -29,7 +29,7 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
 
     public string? GetName() => GetXrefPropertyValueAsString("name");
 
-    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null, SpecType? specType = null)
+    public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null)
     {
         var spec = new ExternalXrefSpec
         {
@@ -37,7 +37,6 @@ internal record InternalXrefSpec(SourceInfo<string> Uid, string Href, FilePath D
             Href = overwriteHref ?? Href,
             Monikers = monikerList ?? Monikers,
             SchemaType = SchemaType,
-            SpecType = specType,
         };
 
         foreach (var (key, value) in XrefProperties)

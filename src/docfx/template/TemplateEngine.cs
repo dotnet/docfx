@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
 using HtmlReaderWriter;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
@@ -183,21 +182,19 @@ internal class TemplateEngine
 
         var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
 
-        if (_config.ContinueBuild)
+        if (JsonSchemaProvider.IsConceptual(mime))
         {
-            if (JsonSchemaProvider.IsConceptual(mime))
+            // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
+            if (templateMetadata["xrefs"] != null)
             {
-                // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
-                metadata["xrefs"] = ExtractXrefs(templateMetadata.Property("xrefs")?.Value);
-                templateMetadata.Remove("xrefmap");
+                metadata["xrefs"] = ExtractXrefs(templateMetadata["xrefs"]);
             }
-            else
+        }
+        else
+        {
+            if (templateMetadata["metadata"]?["xrefs"] != null)
             {
-                if (templateMetadata?["metadata"] != null)
-                {
-                    metadata["xrefs"] = ExtractXrefs(templateMetadata["metadata"]?["xrefs"]);
-                    templateMetadata.Value<JObject>("metadata")?.Remove("xrefs");
-                }
+                metadata["xrefs"] = ExtractXrefs(templateMetadata["metadata"]?["xrefs"]);
             }
         }
 
@@ -213,7 +210,8 @@ internal class TemplateEngine
         {
             return null;
         }
-        return token.ToString(Formatting.None);
+        var xrefs = JsonUtility.ToJArray(token).ToObject<List<ExternalXrefSpec>>();
+        return JsonUtility.Serialize(xrefs!);
     }
 
     private string ProcessHtml(FilePath file, string html)

@@ -217,7 +217,7 @@ internal class XrefResolver
     {
         var internalXrefSpecs = _internalXrefMap.Value.xrefsByFilePath.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>()).ToList();
         return internalXrefSpecs
-            .Select(spec => spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null, SpecType.Uid))
+            .Select(spec => spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null))
             .ToList();
     }
 

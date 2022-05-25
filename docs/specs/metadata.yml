@@ -460,9 +460,8 @@ outputs:
             "href": "https://docs.com/docs/a?branch=test",
             "name": "abc",
             "uid": "abc",
-            "specType": "uid",
-          ]
-      }
+          }
+      ]
     }
   .xrefmap.json: | 
     {
@@ -471,8 +470,7 @@ outputs:
       ]
     }
 ---
-# In continue build, output defined xrefs to page mta.json but not raw.page.json
-continueBuildOnly: true
+# build page json, output defined xrefs to page mta.json and raw.page.json
 repos:
   https://docs.com/test#test:
     - files:
@@ -489,49 +487,19 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefs": undefined
+        "xrefs": [
+          {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test"}
+        ]
       }
     }
   docs/a.mta.json: |
     {       
-      "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"specType\":\"uid\",\"name\":\"abc\"}]"
+      "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"name\":\"abc\"}]"
     }
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "abc", "name": "abc" ,"href": "","specType": undefined },       
-      ]
-    }
----
-# for non-continue build, xrefs is NOT output in page.json
-noContinueBuild: true
-repos:
-  https://docs.com/test#test:
-    - files:
-        docfx.yml: | 
-          outputType: pageJson  
-        docs/a.md: |
-          ---
-          uid: abc
-          breadcrumb_path: "/breadcrumb_path"
-          author: xxx
-          ---
-          # Title
-outputs: 
-  docs/a.raw.page.json: | 
-    { 
-      "rawMetadata": {
-        "xrefs": undefined
-      }
-    }
-  docs/a.mta.json: | 
-    {       
-      "xrefs": undefined
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },       
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
       ]
     }
 ---

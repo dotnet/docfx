@@ -1093,13 +1093,11 @@ outputs:
           "uid_a": {
             "uid": "uid_a",
             "schemaType": "a_type",
-            "specType": "uid",
             "href": "a",
           },
           "uid_b": {
             "uid": "uid_b",
             "schemaType": "b_type",
-            "specType": "xref",
             "href": "b",
           }
       },
@@ -1108,7 +1106,6 @@ outputs:
               {
                 "uid": "uid_a",
                 "schemaType": "a_type",
-                "specType": "uid",
                 "href": "https://docs.com/docs/a?branch=test",
               }
           ]
@@ -1120,7 +1117,6 @@ outputs:
           "uid_b": {
             "uid": "uid_b",
             "schemaType": "b_type",
-            "specType": "uid",
             "href": "b",
           }
       },
@@ -1129,7 +1125,6 @@ outputs:
           {
             "uid": "uid_b",
             "schemaType": "b_type",
-            "specType": "uid",
             "href": "https://docs.com/docs/b?branch=test",
           }
         ]
@@ -1138,16 +1133,13 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test"},
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test"},
       ]
     }
 ---
-# continue build SDP, output defined xrefs to page metadata but not page data
-# only xref with uid spec-type will be output
-# spec-type property is not output in .xrefmap.json
+# build SDP page Json, output defined xrefs to page metadata and page raw metadata
 noSingleFile: true
-continueBuildOnly: true
 repos:
   https://docs.com/test#test:
     - files:
@@ -1189,71 +1181,28 @@ outputs:
   docs/a.raw.page.json: | 
     { 
       "rawMetadata": {
-        "xrefs": undefined
+        "metadata":{
+          "xrefs": [
+            {
+              "description": "testing sdp uid with description",
+              "href": "https://docs.com/docs/a?branch=test",
+              "schemaType": "a_type",
+              "summary": "<p>a simple <a href=\"https://microsoft.com\">link</a></p>",
+              "uid": "uid_a"
+            }
+          ]
+        }
       }
     }  
   docs/a.mta.json: | 
     {
-        "xrefs": "[{\"description\":\"testing sdp uid with description\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"specType\":\"uid\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\",\"uid\":\"uid_a\"}]"
+        "xrefs": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\"}]"
     }
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
-      ]
-    }
----
-# for non-continue build SDP, do not output xrefs to either page metadata or page data
-noSingleFile: true
-noContinueBuild: true
-repos:
-  https://docs.com/test#test:
-    - files:
-        docfx.yml: |
-          outputType: pageJson  
-        docs/a.yml: |
-          ### YamlMime:a_type
-          uid: uid_a
-          bs: ['uid_b']
-        docs/b.yml: |
-          ### YamlMime:b_type
-          uid: uid_b
-        _themes/ContentTemplate/schemas/a_type.schema.json: |
-          {
-            "properties": {
-              "uid" : {"contentType": "uid"},
-              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
-            }
-          }
-        _themes/ContentTemplate/a_type.html.tmpl: |
-          {{{content}}}
-        _themes/ContentTemplate/schemas/b_type.schema.json: |
-          {
-            "properties": {
-              "uid" : {"contentType": "uid"},
-            }
-          }
-        _themes/ContentTemplate/b_type.html.tmpl: |
-          {{{content}}}
-outputs:
-  docs/b.mta.json:
-  docs/b.raw.page.json:
-  docs/a.raw.page.json: | 
-    { 
-      "rawMetadata": {
-        "xrefs": undefined
-      }
-    }  
-  docs/a.mta.json: | 
-    {
-        "xrefs": undefined
-    }
-  .xrefmap.json: | 
-    {
-      "references":[
-        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test", "specType": undefined },
-        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test", "specType": undefined },
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test"},
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test"},
       ]
     }
 ---
