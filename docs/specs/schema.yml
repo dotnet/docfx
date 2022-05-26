@@ -1196,7 +1196,17 @@ outputs:
     }  
   docs/a.mta.json: | 
     {
-        "xrefs": "[{\"uid\":\"uid_a\",\"href\":\"https://docs.com/docs/a?branch=test\",\"schemaType\":\"a_type\",\"description\":\"testing sdp uid with description\",\"summary\":\"<p>a simple <a href=\\\"https://microsoft.com\\\">link</a></p>\\n\"}]"
+      "metadata":{
+        "xrefs": [
+          {
+            "description": "testing sdp uid with description",
+            "href": "https://docs.com/docs/a?branch=test",
+            "schemaType": "a_type",
+            "summary": "<p>a simple <a href=\"https://microsoft.com\">link</a></p>",
+            "uid": "uid_a"
+          }
+        ]
+      }
     }
   .xrefmap.json: | 
     {

@@ -181,40 +181,10 @@ internal class TemplateEngine
 
         var pageMetadata = HtmlUtility.CreateHtmlMetaTags(metadata);
 
-        if (JsonSchemaProvider.IsConceptual(mime))
-        {
-            // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
-            if (templateMetadata["xrefs"] != null)
-            {
-                var jsonString = ExtractXrefs(templateMetadata["xrefs"]);
-                metadata["xrefs"] = jsonString;
-                templateMetadata["xrefs"] = jsonString;
-            }
-        }
-        else
-        {
-            if (templateMetadata["metadata"]?["xrefs"] != null)
-            {
-                var jsonString = ExtractXrefs(templateMetadata["metadata"]!["xrefs"]);
-                metadata["xrefs"] = jsonString;
-                templateMetadata["metadata"]!["xrefs"] = jsonString;
-            }
-        }
-
         // content for *.raw.page.json
-        var model = new TemplateModel(content, templateMetadata!, pageMetadata, "_themes/");
+        var model = new TemplateModel(content, templateMetadata, pageMetadata, "_themes/");
 
         return (model, metadata);
-    }
-
-    private static string? ExtractXrefs(JToken? token)
-    {
-        if (token == null)
-        {
-            return null;
-        }
-        var xrefs = JsonUtility.ToJArray(token).ToObject<List<ExternalXrefSpec>>();
-        return JsonUtility.Serialize(xrefs!);
     }
 
     private string ProcessHtml(FilePath file, string html)

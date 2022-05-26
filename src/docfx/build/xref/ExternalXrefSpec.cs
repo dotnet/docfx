@@ -43,10 +43,6 @@ internal record ExternalXrefSpec : IXrefSpec
 
     public ExternalXrefSpec ToExternalXrefSpec(string? overwriteHref = null, MonikerList? monikerList = null)
     {
-        return this with
-        {
-            Href = overwriteHref ?? Href,
-            Monikers = monikerList ?? Monikers,
-        };
+        return this with { Href = overwriteHref ?? Href, Monikers = monikerList ?? Monikers };
     }
 }

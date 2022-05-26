@@ -488,7 +488,9 @@ outputs:
     }
   docs/a.mta.json: |
     {       
-      "xrefs": "[{\"uid\":\"abc\",\"href\":\"https://docs.com/docs/a?branch=test\",\"name\":\"abc\"}]"
+      "xrefs": [
+          {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test"}
+        ]
     }
   .xrefmap.json: | 
     {
