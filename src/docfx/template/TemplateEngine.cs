@@ -174,7 +174,7 @@ internal class TemplateEngine
         }
 
         // content for *.mta.json
-        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_") && p.Name != "xrefs"))
+        var metadata = new JObject(templateMetadata.Properties().Where(p => !p.Name.StartsWith("_")))
         {
             ["is_dynamic_rendering"] = true,
         };
@@ -183,16 +183,17 @@ internal class TemplateEngine
 
         if (JsonSchemaProvider.IsConceptual(mime))
         {
+            // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
             if (templateMetadata["xrefs"] != null)
             {
-                metadata["xrefs"] = templateMetadata["xrefs"];
+                metadata["xrefs"] = ExtractXrefs(templateMetadata["xrefs"]);
             }
         }
         else
         {
             if (templateMetadata["metadata"]?["xrefs"] != null)
             {
-                metadata["xrefs"] = templateMetadata["metadata"]?["xrefs"];
+                metadata["xrefs"] = ExtractXrefs(templateMetadata["metadata"]?["xrefs"]);
             }
         }
 
@@ -200,6 +201,16 @@ internal class TemplateEngine
         var model = new TemplateModel(content, templateMetadata!, pageMetadata, "_themes/");
 
         return (model, metadata);
+    }
+
+    private static string? ExtractXrefs(JToken? token)
+    {
+        if (token == null)
+        {
+            return null;
+        }
+        var xrefs = JsonUtility.ToJArray(token).ToObject<List<ExternalXrefSpec>>();
+        return JsonUtility.Serialize(xrefs!);
     }
 
     private string ProcessHtml(FilePath file, string html)
