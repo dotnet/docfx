@@ -29,7 +29,7 @@ inputs:
 outputs:
   docs/a.json: |
     { "ms.custom-metadata": null, "author":"xxx", "uid": null, "breadcrumb_path": "/breadcrumb_path", "title": "Title"}
----    
+---
 # Overwrite global metadata with null in yaml header
 inputs:
   docfx.yml: |

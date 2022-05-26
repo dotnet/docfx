@@ -168,6 +168,11 @@ internal class TemplateEngine
         var temp = RunJavaScript(jsName, pageModel);
         var templateMetadata = temp as JObject ?? new JObject();
 
+        if (templateMetadata["xrefs"] == null && pageModel["metadata"]?["xrefs"] != null)
+        {
+            templateMetadata["xrefs"] = pageModel["metadata"]!["xrefs"];
+        }
+
         if (JsonSchemaProvider.IsLandingData(mime))
         {
             templateMetadata.Remove("conceptual");

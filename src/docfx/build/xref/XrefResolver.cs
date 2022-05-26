@@ -215,8 +215,8 @@ internal class XrefResolver
     public IEnumerable<ExternalXrefSpec> ResolveXrefMapByFile(
         FilePath file)
     {
-        var internalXrefSpecs = _internalXrefMap.Value.xrefsByFilePath.GetValueOrDefault(file, Array.Empty<InternalXrefSpec>()).ToList();
-        return internalXrefSpecs
+        return _internalXrefMap.Value.xrefsByFilePath
+            .GetValueOrDefault(file, Array.Empty<InternalXrefSpec>())
             .Select(spec => spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null));
     }
 
