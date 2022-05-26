@@ -10,6 +10,8 @@ public class TripleColonInline : Inline, ITripleColon
 
     public ITripleColonExtensionInfo Extension { get; set; }
 
+    public string Body { get; set; }
+
     public TripleColonInline()
         : base() { }
 
