@@ -186,14 +186,18 @@ internal class TemplateEngine
             // put this line after create pageMetadata, as xrefmap not need to put into raw metadata of page model
             if (templateMetadata["xrefs"] != null)
             {
-                metadata["xrefs"] = ExtractXrefs(templateMetadata["xrefs"]);
+                var jsonString = ExtractXrefs(templateMetadata["xrefs"]);
+                metadata["xrefs"] = jsonString;
+                templateMetadata["xrefs"] = jsonString;
             }
         }
         else
         {
             if (templateMetadata["metadata"]?["xrefs"] != null)
             {
-                metadata["xrefs"] = ExtractXrefs(templateMetadata["metadata"]?["xrefs"]);
+                var jsonString = ExtractXrefs(templateMetadata["metadata"]!["xrefs"]);
+                metadata["xrefs"] = jsonString;
+                templateMetadata["metadata"]!["xrefs"] = jsonString;
             }
         }
 
