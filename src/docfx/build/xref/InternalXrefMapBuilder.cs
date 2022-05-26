@@ -43,7 +43,7 @@ internal class InternalXrefMapBuilder
         _redirectionProvider = redirectionProvider;
     }
 
-    public (Dictionary<string, InternalXrefSpec[]> xrefsByUid, Dictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) Build()
+    public (IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid, IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) Build()
     {
         var fileXrefSpecMap = new ConcurrentDictionary<FilePath, InternalXrefSpec[]>();
         var builder = new ListBuilder<InternalXrefSpec>();

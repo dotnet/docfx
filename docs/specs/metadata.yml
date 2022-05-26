@@ -454,7 +454,7 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test"},       
       ]
     }
 ---
@@ -485,7 +485,7 @@ outputs:
   .xrefmap.json: | 
     {
       "references":[
-        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test","specType": undefined },       
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test"},       
       ]
     }
 ---
