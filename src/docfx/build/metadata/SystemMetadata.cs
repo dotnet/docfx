@@ -61,4 +61,7 @@ internal class SystemMetadata
 
     [JsonProperty("_op_pdfUrlPrefixTemplate")]
     public string? PdfUrlPrefixTemplate { get; set; }
+
+    [JsonProperty("xrefs")] // the xrefs defined in this file
+    public List<ExternalXrefSpec>? Xrefs { get; set; }
 }
