@@ -1,0 +1,16 @@
+{
+  "template": "https://github.com/docascode/template",
+  "globalMetadata": {
+    "_appTitle": "My Awesome Website",
+    "_appFooter": "© Microsoft",
+    "menu_path": "menu.yml"
+  },
+  "dotnet": {
+    "assemblies": [
+      "CatLibrary.dll"
+    ]
+  },
+  "xref": [
+    "https://docs.microsoft.com/en-us/dotnet/.xrefmap.json"
+  ]
+}

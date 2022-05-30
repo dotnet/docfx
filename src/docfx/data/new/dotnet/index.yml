@@ -1,0 +1,32 @@
+#YamlMime:Home
+hero:
+  title: Welcome to my awesome site
+  description: |
+    Here is a description of my website.
+  actions:
+  - name: Get Started
+    href: getting-started.md
+  - name: Install
+    href: https://example.com
+
+quickstart:
+- title: Step 1
+  content: |
+    Install my tool using
+    ```bash
+    a bash script
+    ```
+- title: Step 2
+  content: |
+    Use the tool
+
+highlights:
+- title: Feature 1
+  content: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+- title: Feature 2
+  content: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+- title: Feature 3
+  content: |
+    Ac orci phasellus egestas tellus rutrum. In hac habitasse platea dictumst quisque sagittis purus. Lectus mauris ultrices eros in cursus turpis massa. Platea dictumst quisque sagittis purus sit amet. Malesuada fames ac turpis egestas sed tempus urna. Velit dignissim sodales ut eu sem integer vitae justo eget. Pretium lectus quam id leo in vitae. Nunc sed id semper risus in hendrerit gravida rutrum quisque. Ipsum faucibus vitae aliquet nec ullamcorper sit amet risus. Aenean vel elit scelerisque mauris pellentesque. At elementum eu facilisis sed odio morbi quis.
