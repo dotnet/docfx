@@ -66,7 +66,7 @@ internal class PublishModelBuilder
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
                     ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
                     HasError = _errors.FileHasError(sourceFile),
-                    ExtensionData = RemoveComplexValue(buildOutput.metadata),
+                    ExtensionData = buildOutput.metadata,
                 };
 
                 publishItems.Add(sourceFile, publishItem);
@@ -99,55 +99,5 @@ internal class PublishModelBuilder
         var fileManifests = publishItems.ToDictionary(item => item.Key, item => item.Value);
 
         return (model, fileManifests);
-    }
-
-    private static JObject? RemoveComplexValue(JObject? metadata)
-    {
-        if (metadata is null)
-        {
-            return null;
-        }
-
-        var keysToRemove = default(List<string>);
-
-        foreach (var (key, value) in metadata)
-        {
-            if (value is JObject)
-            {
-                keysToRemove ??= new List<string>();
-                keysToRemove.Add(key);
-                continue;
-            }
-
-            if (value is JArray array && !array.All(item => item is JValue))
-            {
-                metadata[key] = JArray.FromObject(Array.ConvertAll(
-                    array.ToArray<object>(),
-                    obj =>
-                    {
-                        if (obj == null)
-                        {
-                            return string.Empty;
-                        }
-
-                        if (obj is JValue)
-                        {
-                            return obj.ToString();
-                        }
-                        return JsonUtility.Serialize(obj);
-                    }));
-                continue;
-            }
-        }
-
-        if (keysToRemove != null)
-        {
-            foreach (var key in keysToRemove)
-            {
-                metadata.Remove(key);
-            }
-        }
-
-        return metadata;
     }
 }
