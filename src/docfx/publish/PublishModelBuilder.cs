@@ -108,30 +108,43 @@ internal class PublishModelBuilder
             return null;
         }
 
-        var complexPropertyKeys = default(List<string>);
+        var keysToRemove = default(List<string>);
 
         foreach (var (key, value) in metadata)
         {
             if (value is JObject)
             {
-                complexPropertyKeys ??= new List<string>();
-                complexPropertyKeys.Add(key);
+                keysToRemove ??= new List<string>();
+                keysToRemove.Add(key);
                 continue;
             }
 
             if (value is JArray array && !array.All(item => item is JValue))
             {
-                complexPropertyKeys ??= new List<string>();
-                complexPropertyKeys.Add(key);
+                metadata[key] = JArray.FromObject(Array.ConvertAll(
+                    array.ToArray<object>(),
+                    obj =>
+                    {
+                        if (obj == null)
+                        {
+                            return string.Empty;
+                        }
+
+                        if (obj is JValue)
+                        {
+                            return obj.ToString();
+                        }
+                        return JsonUtility.Serialize(obj);
+                    }));
                 continue;
             }
         }
 
-        if (complexPropertyKeys != null)
+        if (keysToRemove != null)
         {
-            foreach (var key in complexPropertyKeys)
+            foreach (var key in keysToRemove)
             {
-                metadata[key] = metadata[key]?.ToString(Newtonsoft.Json.Formatting.None);
+                metadata.Remove(key);
             }
         }
 
