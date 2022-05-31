@@ -1,4 +1,4 @@
-# Remove object form metadata from publish.json
+# keep object form metadata from publish.json
 inputs:
   docfx.yml: |
     globalMetadata:
@@ -7,13 +7,15 @@ inputs:
       key2:
         '**/*':
           - a: 1
+          - hello
+          - 3
   a.md:
 outputs:
   a.json: |
-    { "key1": {}, "key2": [{ "a": 1 }] }
+    { "key1": {}, "key2": [{ "a": 1 }, "hello", 3 ] }
   .publish.json: |
     {
-      "files": [{ "url": "/a", "key1": undefined, "key2": undefined }]
+      "files": [{ "url": "/a", "key1": {}, "key2": [{ "a": 1 }, "hello", 3 ] }]
     }
 ---
 # Additional metadata validation from external JSON schema
