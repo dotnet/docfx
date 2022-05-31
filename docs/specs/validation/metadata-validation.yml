@@ -2,7 +2,7 @@
 inputs:
   docfx.yml: |
     globalMetadata:
-      key1: {}
+      key1: {"a":"val-a"}
     fileMetadata:
       key2:
         '**/*':
@@ -10,10 +10,10 @@ inputs:
   a.md:
 outputs:
   a.json: |
-    { "key1": {}, "key2": [{ "a": 1 }] }
+    { "key1": {"a":"val-a"}, "key2": [{ "a": 1 }] }
   .publish.json: |
     {
-      "files": [{ "url": "/a", "key1": undefined, "key2": undefined }]
+      "files": [{ "url": "/a", "key1": "{\"a\":\"val-a\"}" , "key2": "[{\"a\":1}]" }]
     }
 ---
 # Additional metadata validation from external JSON schema
