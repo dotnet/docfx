@@ -11,6 +11,16 @@ public class VideoExtension : ITripleColonExtensionInfo
 {
     public string Name => "video";
 
+    private readonly string _learnVideoUrl = "https://learn-video.azurefd.net/vod/player?id=";
+
+    private readonly string[] _allowedVideoDomains = new[]
+    {
+        "channel9.msdn.com",
+        "youtube.com/embed",
+        "microsoft.com/en-us/videoplayer/embed",
+        "learn-video.azurefd.net",
+    };
+
     public bool SelfClosing => true;
 
     public bool IsInline => true;
@@ -79,11 +89,21 @@ public class VideoExtension : ITripleColonExtensionInfo
         {
             logError("upload-date is a required attribute. Please ensure you have specified a upload-date attribute.");
         }
-        if (!src.Contains("channel9.msdn.com") &&
-            !src.Contains("youtube.com/embed") &&
-            !src.Contains("microsoft.com/en-us/videoplayer/embed"))
+
+        var isValidGuid = Guid.TryParse(src.Trim(']'), out var guidOutput);
+        if (isValidGuid)
         {
-            logWarning($"Video source, '{src}', should be from https://channel9.msdn.com, https://www.youtube.com/embed, or https://www.microsoft.com/en-us/videoplayer/embed");
+            // check if the video Id is a valid GUID format
+            // if it is a valid video id then generate the full URL
+            src = $"{_learnVideoUrl}{guidOutput}";
+        }
+        else
+        {
+            var invalidVideoDomain = _allowedVideoDomains.All(x => !src.Contains(x));
+            if (invalidVideoDomain)
+            {
+                logWarning($"Video source, '{src}', should be from https://channel9.msdn.com, https://www.youtube.com/embed, https://learn-video.azurefd.net/vod/player, or https://www.microsoft.com/en-us/videoplayer/embed");
+            }
         }
         if (src.Contains("channel9.msdn.com") && !src.Contains("/player"))
         {
