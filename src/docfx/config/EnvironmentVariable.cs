@@ -13,6 +13,8 @@ public static class EnvironmentVariable
 
     public static string? RepositoryUrl => GetValue("DOCFX_REPOSITORY_URL");
 
+    public static string? PublishRepositoryUrl => GetValue("DOCFX_PUBLISH_REPOSITORY_URL");
+
     public static string? RepositoryBranch => GetValue("DOCFX_REPOSITORY_BRANCH");
 
     public static string? CorrelationId => GetValue("DOCFX_CORRELATION_ID");
