@@ -1060,3 +1060,159 @@ outputs:
       "foo": "<p><em>markdown</em></p>",
       "bar": "inline <em>markdown</em>"
     }
+---
+# add defined xrefs to SDP json metadata per file
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: 
+        docs/a.yml: |
+          ### YamlMime:a_type
+          uid: uid_a
+          bs: ['uid_b']
+        docs/b.yml: |
+          ### YamlMime:b_type
+          uid: uid_b
+        _themes/ContentTemplate/schemas/a_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},              
+              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+            }
+          }
+        _themes/ContentTemplate/schemas/b_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+            }
+          }
+outputs:
+  docs/a.json: |
+    {
+      "_xrefmap":{
+          "uid_a": {
+            "uid": "uid_a",
+            "schemaType": "a_type",
+            "href": "a",
+          },
+          "uid_b": {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "href": "b",
+          }
+      },
+      "metadata":{    
+          "xrefs":[
+              {
+                "uid": "uid_a",
+                "schemaType": "a_type",
+                "href": "https://docs.com/docs/a?branch=test",
+              }
+          ]
+      }
+    }    
+  docs/b.json: | 
+    {
+      "_xrefmap":{
+          "uid_b": {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "href": "b",
+          }
+      },
+      "metadata": {
+        "xrefs":[
+          {
+            "uid": "uid_b",
+            "schemaType": "b_type",
+            "href": "https://docs.com/docs/b?branch=test",
+          }
+        ]
+      }
+    } 
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test"},
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test"},
+      ]
+    }
+---
+# build SDP page Json, output defined xrefs to page metadata and page raw metadata
+noSingleFile: true
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson  
+        docs/a.yml: |
+          ### YamlMime:a_type
+          uid: uid_a
+          description: testing sdp uid with description
+          summary: |
+            a simple [link](https://microsoft.com)
+          bs: ['uid_b']
+        docs/b.yml: |
+          ### YamlMime:b_type
+          uid: uid_b
+        _themes/ContentTemplate/schemas/a_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+              "description": { "type": "string" },
+              "summary": { "contentType": "Markdown" },
+              "bs": {"items": {"contentType": "xref", "xrefType": "b_type"}},
+            },
+            "xrefProperties":["description", "summary"]
+          }
+        _themes/ContentTemplate/a_type.html.tmpl: |
+          {{{content}}}
+        _themes/ContentTemplate/schemas/b_type.schema.json: |
+          {
+            "properties": {
+              "uid" : {"contentType": "uid"},
+            }
+          }
+        _themes/ContentTemplate/b_type.html.tmpl: |
+          {{{content}}}
+outputs:
+  docs/b.mta.json:
+  docs/b.raw.page.json:
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "metadata":{
+          "xrefs": [
+            {
+              "description": "testing sdp uid with description",
+              "href": "https://docs.com/docs/a?branch=test",
+              "schemaType": "a_type",
+              "summary": "<p>a simple <a href=\"https://microsoft.com\">link</a></p>",
+              "uid": "uid_a"
+            }
+          ]
+        }
+      }
+    }  
+  docs/a.mta.json: | 
+    {
+      "metadata":{
+        "xrefs": [
+          {
+            "description": "testing sdp uid with description",
+            "href": "https://docs.com/docs/a?branch=test",
+            "schemaType": "a_type",
+            "summary": "<p>a simple <a href=\"https://microsoft.com\">link</a></p>",
+            "uid": "uid_a"
+          }
+        ]
+      }
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "uid_a", "schemaType": "a_type", "href": "https://docs.com/docs/a?branch=test"},
+        {"uid": "uid_b", "schemaType": "b_type", "href": "https://docs.com/docs/b?branch=test"},
+      ]
+    }
+---

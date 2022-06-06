@@ -429,3 +429,73 @@ outputs:
         <meta content=\"8\" name=\"wordCount\" />"
     }
   docs/a.mta.json:
+---
+# output defined xrefs per file to structure json
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml:
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
+outputs:
+  docs/a.json: |
+    {      
+      "author":"xxx", 
+      "uid": "abc", 
+      "breadcrumb_path": "/breadcrumb_path", 
+      "title": "Title",  
+      "xrefs": [
+          {
+            "href": "https://docs.com/docs/a?branch=test",
+            "name": "abc",
+            "uid": "abc",
+          }
+      ]
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test"},       
+      ]
+    }
+---
+# build page json, output defined xrefs to page mta.json and raw.page.json
+repos:
+  https://docs.com/test#test:
+    - files:
+        docfx.yml: |
+          outputType: pageJson
+        docs/a.md: |
+          ---
+          uid: abc
+          breadcrumb_path: "/breadcrumb_path"
+          author: xxx
+          ---
+          # Title
+outputs:  
+  docs/a.raw.page.json: | 
+    { 
+      "rawMetadata": {
+        "xrefs": [
+          {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test"}
+        ]
+      }
+    }
+  docs/a.mta.json: |
+    {       
+      "xrefs": [
+          {"uid": "abc", "name": "abc", "href": "https://docs.com/docs/a?branch=test"}
+        ]
+    }
+  .xrefmap.json: | 
+    {
+      "references":[
+        {"uid": "abc", "name": "abc" ,"href": "https://docs.com/docs/a?branch=test"},       
+      ]
+    }
+---

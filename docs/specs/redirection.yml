@@ -962,7 +962,7 @@ outputs:
   .errors.log: |
     {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.a.json' registered in .openpublishing.publish.json is not found in the repo."}
   a/.publish.json: |
-    {"files": [{"url": "/c", "source_path": "c.md", "locale": "en-us", "redirect_url": "/aa"}]}
+    {"files": [{"url": "/c", "locale": "en-us", "redirect_url": "/aa"}]}
 ---
 # redirection source path contains invalid path char
 os: windows

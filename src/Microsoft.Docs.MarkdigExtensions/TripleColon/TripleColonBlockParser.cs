@@ -118,6 +118,8 @@ public class TripleColonBlockParser : BlockParser
 
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
+                // create a block for the image long description
+                ((TripleColonBlock)block).Body = slice.ToString();
                 ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }

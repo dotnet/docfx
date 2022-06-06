@@ -20,7 +20,8 @@ internal class XrefResolver
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
-    private readonly Watch<IReadOnlyDictionary<string, InternalXrefSpec[]>> _internalXrefMap;
+    private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath)> _internalXrefMap;
 
     public XrefResolver(
         Config config,
@@ -158,15 +159,11 @@ internal class XrefResolver
         var references = Array.Empty<ExternalXrefSpec>();
         var externalXrefs = Array.Empty<ExternalXref>();
 
-        references = _internalXrefMap.Value.Values
+        references = _internalXrefMap.Value.xrefsByUid.Values
             .Select(xrefs =>
             {
                 var xref = xrefs.First();
-
-                // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
-                // output xref map with URL appending "?branch=master" for master branch
-                var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
-                var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+                var href = ConstructAbsoluteHref(xref);
 
                 // union the moniker lists of current uid into one
                 return xref.ToExternalXrefSpec(
@@ -215,12 +212,32 @@ internal class XrefResolver
         return model;
     }
 
-    private IReadOnlyDictionary<string, InternalXrefSpec[]> BuildInternalXrefMap()
+    public IEnumerable<ExternalXrefSpec> ResolveXrefMapByFile(
+        FilePath file)
     {
-        var result = _internalXrefMapBuilder.Build();
-        ValidateUidGlobalUnique(result);
-        ValidateExternalXref(result);
-        return result;
+        return _internalXrefMap.Value.xrefsByFilePath
+            .GetValueOrDefault(file, Array.Empty<InternalXrefSpec>())
+            .Select(spec => spec.ToExternalXrefSpec(ConstructAbsoluteHref(spec), null));
+    }
+
+    private string ConstructAbsoluteHref(InternalXrefSpec xref)
+    {
+        var repositoryBranch = _repository?.Branch;
+
+        // DHS appends branch information from cookie cache to URL, which is wrong for UID resolved URL
+        // output xref map with URL appending "?branch=master" for master branch
+        var query = _config.UrlType == UrlType.Docs && repositoryBranch != "live" ? $"?branch={repositoryBranch}" : "";
+        var href = UrlUtility.MergeUrl($"https://{_xrefHostName}{xref.Href}", query);
+        return href;
+    }
+
+    private (IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
+        IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) BuildInternalXrefMap()
+    {
+        var (xrefsByUid, xrefsByFilePath) = _internalXrefMapBuilder.Build();
+        ValidateUidGlobalUnique(xrefsByUid);
+        ValidateExternalXref(xrefsByUid);
+        return (xrefsByUid, xrefsByFilePath);
     }
 
     private static bool IsNameLocalizable(IXrefSpec xrefSpec)
@@ -311,7 +328,7 @@ internal class XrefResolver
     private (IXrefSpec?, string? href) ResolveInternalXrefSpec(
         string uid, FilePath referencingFile, FilePath inclusionRoot, MonikerList? monikers)
     {
-        if (_internalXrefMap.Value.TryGetValue(uid, out var specs))
+        if (_internalXrefMap.Value.xrefsByUid.TryGetValue(uid, out var specs))
         {
             var spec = specs.Length == 1 || !monikers.HasValue || !monikers.Value.HasMonikers
                 ? specs[0]

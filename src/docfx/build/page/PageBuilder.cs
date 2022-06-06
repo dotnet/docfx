@@ -19,6 +19,7 @@ internal class PageBuilder
     private readonly TemplateEngine _templateEngine;
     private readonly TocMap _tocMap;
     private readonly LinkResolver _linkResolver;
+    private readonly XrefResolver _xrefResolver;
     private readonly ContributionProvider _contributionProvider;
     private readonly BookmarkValidator _bookmarkValidator;
     private readonly PublishModelBuilder _publishModelBuilder;
@@ -40,6 +41,7 @@ internal class PageBuilder
         TemplateEngine templateEngine,
         TocMap tocMap,
         LinkResolver linkResolver,
+        XrefResolver xrefResolver,
         ContributionProvider contributionProvider,
         BookmarkValidator bookmarkValidator,
         PublishModelBuilder publishModelBuilder,
@@ -60,6 +62,7 @@ internal class PageBuilder
         _templateEngine = templateEngine;
         _tocMap = tocMap;
         _linkResolver = linkResolver;
+        _xrefResolver = xrefResolver;
         _contributionProvider = contributionProvider;
         _bookmarkValidator = bookmarkValidator;
         _publishModelBuilder = publishModelBuilder;
@@ -125,6 +128,7 @@ internal class PageBuilder
             return (new JObject(), new JObject());
         }
 
+        systemMetadata.Xrefs = _xrefResolver.ResolveXrefMapByFile(file).ToList();
         var systemMetadataJObject = JsonUtility.ToJObject(systemMetadata);
 
         if (JsonSchemaProvider.IsConceptual(mime))

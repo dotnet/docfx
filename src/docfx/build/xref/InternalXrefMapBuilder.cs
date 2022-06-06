@@ -43,13 +43,14 @@ internal class InternalXrefMapBuilder
         _redirectionProvider = redirectionProvider;
     }
 
-    public IReadOnlyDictionary<string, InternalXrefSpec[]> Build()
+    public (IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid, IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath) Build()
     {
+        var fileXrefSpecMap = new ConcurrentDictionary<FilePath, InternalXrefSpec[]>();
         var builder = new ListBuilder<InternalXrefSpec>();
 
         using (var scope = Progress.Start("Building xref map"))
         {
-            ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Page), file => Load(_errors, builder, file));
+            ParallelUtility.ForEach(scope, _errors, _buildScope.GetFiles(ContentType.Page), file => Load(_errors, builder, file, fileXrefSpecMap));
         }
 
         var xrefmap =
@@ -59,13 +60,20 @@ internal class InternalXrefMapBuilder
             let spec = AggregateXrefSpecs(uid, g.ToArray())
             select (uid, spec);
 
-        var result = xrefmap.ToDictionary(item => item.uid, item => item.spec);
-        result.TrimExcess();
+        var xrefsByUid = xrefmap.ToDictionary(item => item.uid, item => item.spec);
+        xrefsByUid.TrimExcess();
 
-        return result;
+        var xrefsByFilePath = fileXrefSpecMap.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        xrefsByFilePath.TrimExcess();
+
+        return (xrefsByUid, xrefsByFilePath);
     }
 
-    private void Load(ErrorBuilder errors, ListBuilder<InternalXrefSpec> xrefs, FilePath file)
+    private void Load(
+        ErrorBuilder errors,
+        ListBuilder<InternalXrefSpec> xrefs,
+        FilePath file,
+        ConcurrentDictionary<FilePath, InternalXrefSpec[]> fileXrefSpecMap)
     {
         // if the file is already redirected, it should be excluded from xref map
         if (_redirectionProvider.TryGetValue(file.Path, out _))
@@ -79,6 +87,7 @@ internal class InternalXrefMapBuilder
                 var spec = LoadMarkdown(errors, fileMetadata, file);
                 if (spec != null)
                 {
+                    fileXrefSpecMap.TryAdd(file, new InternalXrefSpec[] { spec });
                     xrefs.Add(spec);
                 }
                 break;
@@ -86,6 +95,7 @@ internal class InternalXrefMapBuilder
             case FileFormat.Yaml:
             case FileFormat.Json:
                 var specs = _jsonSchemaTransformer().LoadXrefSpecs(errors, file);
+                fileXrefSpecMap.TryAdd(file, specs.ToArray());
                 xrefs.AddRange(specs);
                 break;
         }

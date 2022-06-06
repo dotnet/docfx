@@ -173,9 +173,9 @@ public class ImageExtension : ITripleColonExtensionInfo
                 return false;
             }
             renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
-            renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-            renderer.WriteChildren(tripleColonObj as ContainerBlock);
-            renderer.WriteLine("</div>");
+            renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\"><p>");
+            renderer.Write(tripleColonObj.Body);
+            renderer.WriteLine("</p></div>");
         }
         if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
         {
