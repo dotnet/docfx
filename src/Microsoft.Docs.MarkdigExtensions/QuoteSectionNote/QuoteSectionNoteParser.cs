@@ -192,7 +192,7 @@ public class QuoteSectionNoteParser : BlockParser
             if (isValidGuid)
             {
                 block.QuoteType = QuoteSectionNoteType.DFMVideo;
-                block.VideoLink = $"{_learnVideoUrl}{link.Trim()}";
+                block.VideoLink = $"{_learnVideoUrl}{guidOutput}";
                 return true;
             }
         }
