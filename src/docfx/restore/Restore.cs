@@ -13,14 +13,6 @@ internal static class Restore
         var repository = Repository.Create(package.BasePath);
         Telemetry.SetRepository(repository?.Url, repository?.Branch);
 
-        var publishRepositoryUrl = repository?.Url ?? string.Empty;
-        var publishRepositoryBranch = repository?.Branch ?? string.Empty;
-        if (!string.IsNullOrEmpty(EnvironmentVariable.PublishRepositoryUrl))
-        {
-            publishRepositoryUrl = EnvironmentVariable.PublishRepositoryUrl;
-            publishRepositoryBranch = "main";
-        }
-
         var docsets = ConfigLoader.FindDocsets(errors, package, options, repository);
         if (docsets.Length == 0)
         {
@@ -31,7 +23,7 @@ internal static class Restore
         Parallel.ForEach(
             docsets,
             docset => RestoreDocset(
-                errors, repository, publishRepositoryUrl, publishRepositoryBranch, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
+                errors, repository, EnvironmentVariable.PublishRepositoryUrl, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
 
         errors.PrintSummary();
         return errors.HasError;
@@ -40,8 +32,7 @@ internal static class Restore
     public static void RestoreDocset(
         ErrorBuilder errors,
         Repository? repository,
-        string publishRepositoryUrl,
-        string publishRepositoryBranch,
+        string? publishRepositoryUrl,
         string docsetPath,
         string? outputPath,
         CommandLineOptions options,
@@ -54,7 +45,7 @@ internal static class Restore
             // load configuration from current entry or fallback repository
             var localPackage = new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath));
             var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                errorLog, repository, publishRepositoryUrl, publishRepositoryBranch, docsetPath, outputPath, options, fetchOptions, localPackage);
+                errorLog, repository, publishRepositoryUrl, docsetPath, outputPath, options, fetchOptions, localPackage);
 
             if (errorLog.HasError)
             {

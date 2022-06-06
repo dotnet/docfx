@@ -77,14 +77,6 @@ internal class Builder
         var repository = Repository.Create(_package.BasePath);
         Telemetry.SetRepository(repository?.Url, repository?.Branch);
 
-        var publishRepositoryUrl = repository?.Url ?? string.Empty;
-        var publishRepositoryBranch = repository?.Branch ?? string.Empty;
-        if (!string.IsNullOrEmpty(EnvironmentVariable.PublishRepositoryUrl))
-        {
-            publishRepositoryUrl = EnvironmentVariable.PublishRepositoryUrl;
-            publishRepositoryBranch = "main";
-        }
-
         var docsets = ConfigLoader.FindDocsets(_errors, _package, _options, repository);
         if (docsets.Length == 0)
         {
@@ -95,8 +87,7 @@ internal class Builder
                 let item = DocsetBuilder.Create(
                     _errors,
                     repository,
-                    publishRepositoryUrl,
-                    publishRepositoryBranch,
+                    EnvironmentVariable.PublishRepositoryUrl,
                     docset.docsetPath,
                     docset.outputPath,
                     _package.CreateSubPackage(docset.docsetPath),
