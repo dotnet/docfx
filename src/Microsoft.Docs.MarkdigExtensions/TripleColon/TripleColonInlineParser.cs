@@ -45,14 +45,13 @@ public class TripleColonInlineParser : InlineParser
         var logWarning = new Action<string>(message => _context.LogWarning($"invalid-{extensionName}", message, inline));
 
         if (!TripleColonBlockParser.TryMatchAttributes(ref slice, out var attributes, extension.SelfClosing, logError) ||
-            !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, inline))
+            !extension.TryProcessAttributes(attributes, out var htmlAttributes, logError, logWarning, inline))
         {
             return false;
         }
 
         inline.Extension = extension;
         inline.Attributes = attributes;
-        inline.RenderProperties = renderProperties;
         inline.Span = new SourceSpan(startPosition, processor.GetSourcePosition(slice.Start - 1));
 
         if (htmlAttributes != null)
