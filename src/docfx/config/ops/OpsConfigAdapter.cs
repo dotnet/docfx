@@ -77,6 +77,10 @@ internal class OpsConfigAdapter
         var queries = HttpUtility.ParseQueryString(url.Query);
         var name = queries["name"] ?? "";
         var repository = queries["publish_repository_url"] ?? "";
+        if (string.IsNullOrEmpty(repository))
+        {
+            repository = queries["repository_url"] ?? "";
+        }
         var branch = (queries["publish_repository_url"] != queries["repository_url"]) ? "main" : queries["repository_branch"] ?? "";
         var locale = queries["locale"] ?? "";
         var xrefEndpoint = queries["xref_endpoint"] ?? "";
