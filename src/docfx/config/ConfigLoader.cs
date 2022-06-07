@@ -36,6 +36,7 @@ internal static class ConfigLoader
     public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
         ErrorBuilder errors,
         Repository? repository,
+        string? publishRepositoryUrl,
         string docsetPath,
         string? outputPath,
         CommandLineOptions options,
@@ -94,7 +95,8 @@ internal static class ConfigLoader
         packageResolver = new PackageResolver(errors, docsetPath, preloadConfig, fetchOptions, fileResolver, repository);
 
         var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
-        var extendConfig = DownloadExtendConfig(errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, fileResolver);
+        var extendConfig = DownloadExtendConfig(
+            errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, publishRepositoryUrl, fileResolver);
 
         // Create full config
         var configObject = new JObject();
@@ -203,6 +205,7 @@ internal static class ConfigLoader
         string? xrefEndpoint,
         string[]? xrefQueryTags,
         Repository? repository,
+        string? publishRepositoryUrl,
         FileResolver fileResolver)
     {
         var result = new JObject();
@@ -210,10 +213,12 @@ internal static class ConfigLoader
             $"name={WebUtility.UrlEncode(config.Name)}" +
             $"&locale={WebUtility.UrlEncode(locale)}" +
             $"&repository_url={WebUtility.UrlEncode(repository?.Url)}" +
+            $"&publish_repository_url={WebUtility.UrlEncode(publishRepositoryUrl)}" +
             $"&branch={WebUtility.UrlEncode(repository?.Branch ?? "main")}" +
             $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
             $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 
+        Console.WriteLine($"publish_repository_url: {WebUtility.UrlEncode(publishRepositoryUrl)}, repositoryUrl: {WebUtility.UrlEncode(publishRepositoryUrl)}");
         foreach (var extend in config.Extend)
         {
             var extendWithQuery = extend;
