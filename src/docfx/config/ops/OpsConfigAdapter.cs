@@ -82,6 +82,7 @@ internal class OpsConfigAdapter
             repository = queries["repository_url"] ?? "";
         }
         var branch = (queries["publish_repository_url"] != queries["repository_url"]) ? "main" : queries["repository_branch"] ?? "";
+        Console.WriteLine($"repository: {repository}, branch: {branch}");
         var locale = queries["locale"] ?? "";
         var xrefEndpoint = queries["xref_endpoint"] ?? "";
         var xrefQueryTags =
