@@ -474,4 +474,16 @@ We should support that.</p>
 ";
         TestUtility.VerifyMarkup(source, expected);
     }
+
+    [Fact]
+    [Trait("Related", "DfmMarkdown")]
+    public void TestVideoBlock_PreventsUnTrustedSourceUrl()
+    {
+        var source = @"# Article 2
+> [!VIDEO https://twitter.com/i/status/1532332451854536705]
+";
+        var expected = @"<h1 id=""article-2"">Article 2</h1>
+";
+        TestUtility.VerifyMarkup(source, expected);
+    }
 }

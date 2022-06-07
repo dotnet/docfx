@@ -241,6 +241,8 @@ internal static class MarkdigUtility
                 LeafBlock leafBlock when leafBlock.Inline is null || !leafBlock.Inline.Any() => false,
                 LinkInline linkInline when linkInline.IsImage => true,
                 TripleColonInline tripleColonInline when tripleColonInline.Extension is ImageExtension => true,
+                TripleColonBlock tripleColonBlock when tripleColonBlock.Extension is ImageExtension => true,
+                QuoteSectionNoteBlock quoteSectionNoteBlock when quoteSectionNoteBlock.QuoteType is QuoteSectionNoteType.DFMVideo => true,
                 LiteralInline literal when literal.Content.IsEmptyOrWhitespace() => false,
                 LeafInline => true,
                 _ => false,

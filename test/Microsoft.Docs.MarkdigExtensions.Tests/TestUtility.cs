@@ -33,6 +33,7 @@ public static class TestUtility
             logWarning: Log(),
             logError: Log(),
             readFile: ReadFile);
+            //getLink: GetLink);
 
         var pipelineBuilder = new MarkdownPipelineBuilder()
             .UseDocfxExtensions(markdownContext)
@@ -82,5 +83,24 @@ public static class TestUtility
             actualDependencies.Add(path);
             return files.TryGetValue(key, out var value) ? (value, key) : default;
         }
+
+        //string GetLink(LinkInfo link)
+        //{
+        //    var status = s_status.Value!.Peek();
+        //    var (linkErrors, result, _) =
+        //        _linkResolver.ResolveLink(link.Href, GetFilePath(link.Href), GetRootFilePath(), TransformLinkInfo(link), tagName: link.TagName);
+        //    status.Errors.AddRange(linkErrors);
+        //    return result;
+        //}
+
+        //string GetLink(string path, MarkdownObject origin)
+        //{
+        //    return GetLink(new()
+        //    {
+        //        Href = new(path, origin.GetSourceInfo()),
+        //        MarkdownObject = origin,
+        //    });
+        //}
+
     }
 }

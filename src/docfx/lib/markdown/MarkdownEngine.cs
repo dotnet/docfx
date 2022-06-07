@@ -302,7 +302,7 @@ internal class MarkdownEngine
             HyperLinkType = link.MarkdownObject switch
             {
                 AutolinkInline => HyperLinkType.AutoLink,
-                HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock => HyperLinkType.HtmlAnchor,
+                HtmlBlock or HtmlInline or TripleColonInline or TripleColonBlock or QuoteSectionNoteBlock => HyperLinkType.HtmlAnchor,
                 _ => HyperLinkType.Default,
             },
         };

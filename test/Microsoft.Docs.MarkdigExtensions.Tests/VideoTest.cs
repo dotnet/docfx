@@ -34,6 +34,8 @@ public class VideoTest
     [InlineData(@":::video source=""b63c2133-714a-48d7-9689-2120553664d4"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::", @"<p><div class=""embeddedvideo"">
 <iframe src=""https://learn-video.azurefd.net/vod/player?id=b63c2133-714a-48d7-9689-2120553664d4"" allowFullScreen=""true"" frameBorder=""0"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020""></iframe>
 </div></p>")]
+    // This case is an untrusted domain (twitter), so we want to strip the output
+    [InlineData(@":::video source=""https://twitter.com/i/status/1532332451854536705"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::", "")]
     public void VideoTestBlockGeneral(string source, string expected)
     {
         TestUtility.VerifyMarkup(source, expected);

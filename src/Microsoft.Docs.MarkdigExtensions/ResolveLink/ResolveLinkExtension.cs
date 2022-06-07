@@ -47,6 +47,33 @@ public class ResolveLinkExtension : IMarkdownExtension
                 autolinkInline.Url = _context.GetLink(autolinkInline.Url, autolinkInline);
                 break;
 
+            case QuoteSectionNoteBlock quoteSectionNoteBlock:
+                if (quoteSectionNoteBlock.QuoteType == QuoteSectionNoteType.DFMVideo)
+                {
+                    quoteSectionNoteBlock.VideoLink = _context.GetLink(quoteSectionNoteBlock.VideoLink, quoteSectionNoteBlock);
+                }
+                break;
+
+            case TripleColonBlock tripleColonBlock:
+                if (tripleColonBlock.GetType() == typeof(VideoExtension))
+                {
+                    foreach (var subBlock in tripleColonBlock)
+                    {
+                        UpdateLinks(subBlock);
+                    }
+                }
+                break;
+
+            case TripleColonInline tripleColonInline:
+                if (tripleColonInline.GetType() == typeof(VideoExtension))
+                {
+                    if (tripleColonInline.Attributes.TryGetValue("src", out var src))
+                    {
+                        tripleColonInline.Attributes["src"] = _context.GetLink(src, tripleColonInline);
+                    }
+                }
+                break;
+
             case ContainerBlock containerBlock:
                 foreach (var subBlock in containerBlock)
                 {
