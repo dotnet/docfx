@@ -80,8 +80,8 @@ public class VideoExtension : ITripleColonExtensionInfo
             logError("upload-date is a required attribute. Please ensure you have specified a upload-date attribute.");
         }
         if (!src.Contains("channel9.msdn.com") &&
-                        !src.Contains("youtube.com/embed") &&
-                        !src.Contains("microsoft.com/en-us/videoplayer/embed"))
+            !src.Contains("youtube.com/embed") &&
+            !src.Contains("microsoft.com/en-us/videoplayer/embed"))
         {
             logWarning($"Video source, '{src}', should be from https://channel9.msdn.com, https://www.youtube.com/embed, or https://www.microsoft.com/en-us/videoplayer/embed");
         }
