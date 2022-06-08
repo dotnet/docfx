@@ -31,9 +31,6 @@ public class VideoTest
     [InlineData(@":::video source=""https://www.microsoft.com/en-us/videoplayer/embed/RE1XVQS"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::", @"<p><div class=""embeddedvideo"">
 <iframe src=""https://www.microsoft.com/en-us/videoplayer/embed/RE1XVQS"" allowFullScreen=""true"" frameBorder=""0"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020""></iframe>
 </div></p>")]
-    [InlineData(@":::video source=""b63c2133-714a-48d7-9689-2120553664d4"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020"":::", @"<p><div class=""embeddedvideo"">
-<iframe src=""https://learn-video.azurefd.net/vod/player?id=b63c2133-714a-48d7-9689-2120553664d4"" allowFullScreen=""true"" frameBorder=""0"" title=""Introduction to Custom Vision Service"" thumbnail=""media/3-eclipse-install-button.png"" upload-date=""07/27/2020""></iframe>
-</div></p>")]
     public void VideoTestBlockGeneral(string source, string expected)
     {
         TestUtility.VerifyMarkup(source, expected);
