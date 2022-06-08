@@ -6,8 +6,6 @@ namespace Microsoft.Docs.MarkdigExtensions;
 
 public class TripleColonInline : Inline, ITripleColon
 {
-    public IDictionary<string, string> RenderProperties { get; set; }
-
     public ITripleColonExtensionInfo Extension { get; set; }
 
     public string Body { get; set; }
