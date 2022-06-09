@@ -1,5 +1,8 @@
 # Repository URLs
 
+Explain the 3 types of repository urls used in DocFX and their design purposes and use scenarios.   
+
+*******
 
 ## Definitions
 
@@ -7,7 +10,7 @@
 |------|------------|
 | Repository Url | The url of current build repo, i.e. the argument of `git clone`  |
 | Publish Repository Url | The url of OPS provisioned repository |
-| Report Repository Url |  Specally used for reporting, it is the forked repo url for PR build case |
+| Report Repository Url |  Specally used for reporting, it is the forked repo url for pull request build case |
 | Contribution Repository | Public repositories assoicated with the private provisioned repositories |
 
 	
@@ -50,7 +53,7 @@ Output:
 	
 *******
 
-### Scenario 2: PR build
+### Scenario 2: Pull Request build (PR build)
 The **Repository Url** is the same with **Publish Repository Url** which is also the PR target repository url.
 
 The **Report Repository Url** is the PR source repository url which may be the same repository as **Repository Url** or its **forked** repository url.
