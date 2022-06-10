@@ -65,22 +65,22 @@ Output:
 Example:    
 DocFX build repo https://github.com/MicrosoftDocs/sql-docs-pr  for branch _main_
 
-|            Name             |                   Value                         |  Comment  | 
-|-----------------------------|-------------------------------------------------|-----------|
-| **Publish Repository Url**  |  https://github.com/MicrosoftDocs/sql-docs-pr   |  It is provisioned on OPS. | 
-| **Publish Repository Branch**  |  main   |     | 
-| **Repository Url**          |   https://github.com/MicrosoftDocs/sql-docs-pr  |  |
-| **Repository Branch**          |   main  |  |
-|**Pull Request Repository Url** |  Not present                                 |    Not triggered by a pull request
-|**Pull Request Repository Branch** |  Not present                                 |    Not triggered by a pull request
+|            Name                   |                   Value                         |  Comment                            | 
+|-----------------------------------|-------------------------------------------------|-------------------------------------|
+| **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  It is provisioned on OPS.          | 
+| **Publish Repository Branch**     |  main                                           |                                     | 
+| **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs-pr   |                                     |
+| **Repository Branch**             |  main                                           |                                     |
+|**Pull Request Repository Url**    |  Not present                                    |  not triggered by a pull request    |
+|**Pull Request Repository Branch** |  Not present                                    |  not triggered by a pull request    |
 
 
 Output   
-|  Type     |              Related Url                     |
-|-----------|----------------------------------------------|
-| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr |
+|  Type     |              Related Url                                              |
+|-----------|-----------------------------------------------------------------------|
+| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                          |
 | Report    | https://github.com/MicrosoftDocs/sql-docs-pr/blob/main/docs/index.yml |
-| Telemetry | https://github.com/MicrosoftDocs/sql-docs-pr  +  main |
+| Telemetry | https://github.com/MicrosoftDocs/sql-docs-pr  +  main                 |
 
 
 	
@@ -101,22 +101,22 @@ Output:
 Example:    
 DocFX build pull request from https://github.com/SomeAuthor/sql-docs-pr branch _patch-1_ to https://github.com/MicrosoftDocs/sql-docs-pr  branch _main_
 
-|            Name             |                   Value                         |  Comment  | 
-|-----------------------------|-------------------------------------------------|-----------|
-| **Publish Repository Url**  |  https://github.com/MicrosoftDocs/sql-docs-pr   |  provisioned on OPS. | 
-| **Publish Repository Branch**  |  main   |     | 
-| **Repository Url**          |   https://github.com/MicrosoftDocs/sql-docs-pr  |  |
-| **Repository Branch**          |   pr-en-us-1  | auto generated locally  |
-|**Pull Request Repository Url** |  https://github.com/SomeAuthor/sql-docs-pr   |    Triggered by a pull request
-|**Pull Request Repository Branch** |  patch-1                                  |    Triggered by a pull request
+|            Name                   |                   Value                         |  Comment                      | 
+|-----------------------------------|-------------------------------------------------|-------------------------------|
+| **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  provisioned on OPS.          | 
+| **Publish Repository Branch**     |  main                                           |                               | 
+| **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs-pr   |                               |
+| **Repository Branch**             |  pr-en-us-1                                     | auto generated locally        |
+|**Pull Request Repository Url**    |  https://github.com/SomeAuthor/sql-docs-pr      | triggered by a pull request   |
+|**Pull Request Repository Branch** |  patch-1                                        | triggered by a pull request   |
 
 
 Output   
-|  Type     |              Related Url                     |
-|-----------|----------------------------------------------|
-| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr |
+|  Type     |              Related Url                                              |
+|-----------|-----------------------------------------------------------------------|
+| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                          |
 | Report    | https://github.com/SomeAuthor/sql-docs-pr/blob/patch-1/docs/index.yml |
-| Telemetry | https://github.com/MicrosoftDocs/sql-docs-pr  +  pr-en-us-1 |
+| Telemetry | https://github.com/MicrosoftDocs/sql-docs-pr  +  pr-en-us-1           |
 
 
 
@@ -139,22 +139,22 @@ DocFX build repo https://github.com/MicrosoftDocs/sql-docs for branch _main_
 
 Note: https://github.com/MicrosoftDocs/sql-docs is the public contribution repository of https://github.com/MicrosoftDocs/sql-docs-pr which is private.  
 
-|            Name             |                   Value                         |  Comment  | 
-|-----------------------------|-------------------------------------------------|-----------|
-| **Publish Repository Url**  |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS. | 
-| **Publish Repository Branch**  |  main   |     | 
-| **Repository Url**          |   https://github.com/MicrosoftDocs/sql-docs     |  public contribution repository  |
-| **Repository Branch**          |   main  |  |
-|**Pull Request Repository Url** |  Not present                                 |    Not triggered by a pull request
-|**Pull Request Repository Branch** |  Not present                                 |    Not triggered by a pull request
+|            Name                   |                   Value                         |  Comment                          | 
+|-----------------------------------|-------------------------------------------------|-----------------------------------|
+| **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS.      | 
+| **Publish Repository Branch**     |  main                                           |                                   | 
+| **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs      |  public contribution repository   |
+| **Repository Branch**             |  main                                           |                                   |
+|**Pull Request Repository Url**    |  Not present                                    |  not triggered by a pull request  |
+|**Pull Request Repository Branch** |  Not present                                    |  not triggered by a pull request  |
 
 
 Output   
-|  Type     |              Related Url                     |
-|-----------|----------------------------------------------|
-| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr |
+|  Type     |              Related Url                                           |
+|-----------|--------------------------------------------------------------------|
+| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                       |
 | Report    | https://github.com/MicrosoftDocs/sql-docs/blob/main/docs/index.yml |
-| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  main |
+| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  main                 |
 
 
 *******
@@ -180,22 +180,22 @@ DocFX build pull request from https://github.com/SomeAuthor/sql-docs branch _pat
 
 Note: https://github.com/MicrosoftDocs/sql-docs is the public contribution repository of https://github.com/MicrosoftDocs/sql-docs-pr which is private.   
 
-|            Name             |                   Value                         |  Comment  | 
-|-----------------------------|-------------------------------------------------|-----------|
-| **Publish Repository Url**  |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS. | 
-| **Publish Repository Branch**  |  main            |     | 
-| **Repository Url**          |   https://github.com/MicrosoftDocs/sql-docs     |  public contribution repository |
-| **Repository Branch**          |   pr-en-us-2     | auto generated locally  |
-|**Pull Request Repository Url** |  https://github.com/SomeAuthor/sql-docs      |    Triggered by a pull request
-|**Pull Request Repository Branch** |  patch-2                                  |    Triggered by a pull request
+|            Name                   |                   Value                         |  Comment                        | 
+|-----------------------------------|-------------------------------------------------|---------------------------------|
+| **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS.    | 
+| **Publish Repository Branch**     |  main                                           |                                 | 
+| **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs      |  public contribution repository |
+| **Repository Branch**             |  pr-en-us-2                                     |  auto generated locally         |
+|**Pull Request Repository Url**    |  https://github.com/SomeAuthor/sql-docs         |  triggered by a pull request    |
+|**Pull Request Repository Branch** |  patch-2                                        |  triggered by a pull request    |
 
 
 Output   
-|  Type     |              Related Url                     |
-|-----------|----------------------------------------------|
-| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr |
+|  Type     |              Related Url                                           |
+|-----------|--------------------------------------------------------------------|
+| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                       |
 | Report    | https://github.com/SomeAuthor/sql-docs/blob/patch-2/docs/index.yml |
-| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  pr-en-us-2 |
+| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  pr-en-us-2           |
 
 
 
