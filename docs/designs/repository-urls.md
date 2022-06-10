@@ -6,15 +6,15 @@ Explain the 3 types of repository urls used in DocFX and their design purposes a
 
 ## Definitions
 
-| Name | Definition |
-|------|------------|
-| Repository Url    | The url of current build repo, i.e. the argument of `git clone`  |
-| Repository Branch | The branch of current build repo    |
-| Publish Repository Url | The url of OPS provisioned repository |
-| Publish Repository Branch | The branch of OPS provisioned repository |
-| Pull Request Repository Url |  Present optionally, it will only present for builds triggered by pull requests |
-| Pull Request Repository Branch  | Present optionally, it will only present for builds triggered by pull requests  | 
-| Contribution Repository | Public repositories associated with the private provisioned repositories |
+| Name                            | Definition                                                                |
+|---------------------------------|---------------------------------------------------------------------------|
+| Repository Url                  | The url of current build repo, i.e. the argument of `git clone`           |
+| Repository Branch               | The branch of current build repo                                          |
+| Publish Repository Url          | Optional, the url of OPS provisioned repository                           |
+| Publish Repository Branch       | Optional, the branch of OPS provisioned repository                        |
+| Pull Request Repository Url     | Optional, it will only present for builds triggered by pull requests      |
+| Pull Request Repository Branch  | Optional, it will only present for builds triggered by pull requests      | 
+| Contribution Repository         | Public repositories associated with the private provisioned repositories  |
 
 
 	
@@ -26,11 +26,11 @@ The values of **Repository Url**, **Repository Branch**, **Publish Repository Ur
 2. environment variables
 3. config 
 
-For all DocFX build scenarios, it will always fetch build information via ****Publish Repository Url****.
+For all DocFX build scenarios, it will always fetch build information via **Publish Repository Url** + **Publish Repository Branch** (then fallback to  **Repository Url** + **Repository Branch**).
 
 **Build Outputs:** 
  1. DHS data   
-    Related DHS metadatas include _GitCommit_, _ContentGitUrl_, _OriginalContentGitUrl_ and _OriginalContentGitUrlTemplate_  which should be linked to the **Publish Repository Url** because their values will be calculated into file content hash which is used in **incremental publish**.
+    Related DHS metadatas include _GitCommit_, _ContentGitUrl_, _OriginalContentGitUrl_ and _OriginalContentGitUrlTemplate_  which should be linked to the **Publish Repository Url** (then fallback to  **Repository Url**) because their values will be calculated into file content hash which is used in **incremental publish**.
 
  2. Report    
     Including html report pages, report emails and PR comments.
@@ -59,7 +59,7 @@ But **Pull Request Repository Url** is not present.
 Output: 
 1. DHS data  -> **Publish Repository Url**
 2. Report    -> **Repository Url**
-3. Telemetry -> **Repository Url**
+3. Telemetry -> **Repository Url** + **Repository Branch** 
 
 
 Example:    
@@ -94,7 +94,7 @@ The **Pull Request Repository Url** is the PR source repository url which may be
 Output: 
 1. DHS data  -> **Publish Repository Url**
 2. Report    -> **Pull Request Repository Url**
-3. Telemetry -> **Repository Url**
+3. Telemetry -> **Repository Url** + **Repository Branch** 
 
 
 
@@ -106,7 +106,7 @@ DocFX build pull request from https://github.com/SomeAuthor/sql-docs-pr branch _
 | **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  provisioned on OPS.          | 
 | **Publish Repository Branch**     |  main                                           |                               | 
 | **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs-pr   |                               |
-| **Repository Branch**             |  pr-en-us-1                                     | auto generated locally        |
+| **Repository Branch**             |  pr-en-us-1                                     | passed by Docs.Build          |
 |**Pull Request Repository Url**    |  https://github.com/SomeAuthor/sql-docs-pr      | triggered by a pull request   |
 |**Pull Request Repository Branch** |  patch-1                                        | triggered by a pull request   |
 
@@ -126,12 +126,14 @@ Output
 
 The **Repository Url** is the different from **Publish Repository Url**.
 
+**Publish Repository Branch** is possibly **diffferent** from **Repository Branch**.
+
 The **Pull Request Repository Url** is not present.
 
 Output: 
 1. DHS data  -> **Publish Repository Url**
 2. Report    -> **Repository Url**
-3. Telemetry -> **Repository Url**
+3. Telemetry -> **Repository Url** + **Repository Branch** 
 
 
 Example:    
@@ -142,19 +144,19 @@ Note: https://github.com/MicrosoftDocs/sql-docs is the public contribution repos
 |            Name                   |                   Value                         |  Comment                          | 
 |-----------------------------------|-------------------------------------------------|-----------------------------------|
 | **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS.      | 
-| **Publish Repository Branch**     |  main                                           |                                   | 
+| **Publish Repository Branch**     |  branch1                                        |                                   | 
 | **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs      |  public contribution repository   |
-| **Repository Branch**             |  main                                           |                                   |
+| **Repository Branch**             |  branch2                                        |                                   |
 |**Pull Request Repository Url**    |  Not present                                    |  not triggered by a pull request  |
 |**Pull Request Repository Branch** |  Not present                                    |  not triggered by a pull request  |
 
 
 Output   
-|  Type     |              Related Url                                           |
-|-----------|--------------------------------------------------------------------|
-| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                       |
-| Report    | https://github.com/MicrosoftDocs/sql-docs/blob/main/docs/index.yml |
-| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  main                 |
+|  Type     |              Related Url                                              |
+|-----------|-----------------------------------------------------------------------|
+| DHS data  | https://github.com/MicrosoftDocs/sql-docs-pr                          |
+| Report    | https://github.com/MicrosoftDocs/sql-docs/blob/branch2/docs/index.yml |
+| Telemetry | https://github.com/MicrosoftDocs/sql-docs  +  branch2                 |
 
 
 *******
@@ -171,7 +173,7 @@ The **Pull Request Repository Url** is the PR source repository url which may be
 Output: 
 1. DHS data  -> **Publish Repository Url**
 2. Report    -> **Pull Request Repository Url**
-3. Telemetry -> **Repository Url**
+3. Telemetry -> **Repository Url** + **Repository Branch** 
 
 
 
@@ -185,7 +187,7 @@ Note: https://github.com/MicrosoftDocs/sql-docs is the public contribution repos
 | **Publish Repository Url**        |  https://github.com/MicrosoftDocs/sql-docs-pr   |  private provisioned on OPS.    | 
 | **Publish Repository Branch**     |  main                                           |                                 | 
 | **Repository Url**                |  https://github.com/MicrosoftDocs/sql-docs      |  public contribution repository |
-| **Repository Branch**             |  pr-en-us-2                                     |  auto generated locally         |
+| **Repository Branch**             |  pr-en-us-2                                     |  passed by Docs.Build           |
 |**Pull Request Repository Url**    |  https://github.com/SomeAuthor/sql-docs         |  triggered by a pull request    |
 |**Pull Request Repository Branch** |  patch-2                                        |  triggered by a pull request    |
 
