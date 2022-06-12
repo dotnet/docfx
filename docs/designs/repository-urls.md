@@ -30,7 +30,7 @@ For all DocFX build scenarios, it will always fetch build information via **Publ
 
 **Build Outputs:** 
  1. DHS data   
-    Related DHS metadatas include _GitCommit_, _ContentGitUrl_, _OriginalContentGitUrl_ and _OriginalContentGitUrlTemplate_  which should be linked to the **Publish Repository Url** (then fallback to  **Repository Url**) because their values will be calculated into file content hash which is used in **incremental publish**.
+    Related DHS metadata include _GitCommit_, _ContentGitUrl_, _OriginalContentGitUrl_ and _OriginalContentGitUrlTemplate_  which should be linked to the **Publish Repository Url** (then fallback to  **Repository Url**) because their values will be calculated into file content hash which is used in **incremental publish**.
 
  2. Report    
     Including html report pages, report emails and PR comments.
@@ -126,7 +126,7 @@ Output
 
 The **Repository Url** is the different from **Publish Repository Url**.
 
-**Publish Repository Branch** is possibly **diffferent** from **Repository Branch**.
+**Publish Repository Branch** is possibly **different** from **Repository Branch**.
 
 The **Pull Request Repository Url** is not present.
 
