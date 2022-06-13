@@ -102,7 +102,6 @@ internal class DocsetBuilder
     public static DocsetBuilder? Create(
         ErrorBuilder errors,
         Repository? repository,
-        string? publishRepositoryUrl,
         string docsetPath,
         string? outputPath,
         Package package,
@@ -117,7 +116,7 @@ internal class DocsetBuilder
             progressReporter.Report("Loading config...");
             var fetchOptions = options.NoRestore ? FetchOptions.NoFetch : (options.NoCache ? FetchOptions.Latest : FetchOptions.UseCache);
             var (config, buildOptions, packageResolver, fileResolver, opsAccessor) = ConfigLoader.Load(
-               errorLog, repository, publishRepositoryUrl, docsetPath, outputPath, options, fetchOptions, package, getCredential);
+               errorLog, repository, docsetPath, outputPath, options, fetchOptions, package, getCredential);
 
             if (errorLog.HasError)
             {

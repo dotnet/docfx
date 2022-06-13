@@ -36,7 +36,6 @@ internal static class ConfigLoader
     public static (Config, BuildOptions, PackageResolver, FileResolver, OpsAccessor) Load(
         ErrorBuilder errors,
         Repository? repository,
-        string? publishRepositoryUrl,
         string docsetPath,
         string? outputPath,
         CommandLineOptions options,
@@ -96,7 +95,7 @@ internal static class ConfigLoader
 
         var buildOptions = new BuildOptions(docsetPath, fallbackDocsetPath.Value, outputPath, repository, preloadConfig, package);
         var extendConfig = DownloadExtendConfig(
-            errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, publishRepositoryUrl, fileResolver);
+            errors, buildOptions.Locale, preloadConfig, xrefEndpoint, xrefQueryTags, repository, preloadConfig.PublishRepositoryUrl, fileResolver);
 
         // Create full config
         var configObject = new JObject();
