@@ -242,7 +242,7 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","code":"altText-equal-filename","message":"AltText 'pig3' is the same as the image file name.","file":"a.md","line":1,"end_line":1,"column":1,"end_column":1}
 ---
-# for non-pullrequest build, source urls in error log point to repo url, CRR pages are also supported
+# for non pull request build, source urls in error log point to repo url, CRR pages are also supported
 repos:
   https://github.com/ops1/repo:
   - files:
