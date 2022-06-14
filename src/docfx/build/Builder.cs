@@ -87,7 +87,6 @@ internal class Builder
                 let item = DocsetBuilder.Create(
                     _errors,
                     repository,
-                    EnvironmentVariable.PublishRepositoryUrl,
                     docset.docsetPath,
                     docset.outputPath,
                     _package.CreateSubPackage(docset.docsetPath),

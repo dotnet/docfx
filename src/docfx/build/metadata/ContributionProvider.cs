@@ -17,6 +17,8 @@ internal class ContributionProvider
 
     private readonly ConcurrentDictionary<FilePath, (string?, string?, string?)> _gitUrls = new();
 
+    private readonly ConcurrentDictionary<FilePath, string?> _reportGitUrls = new();
+
     public ContributionProvider(
         Config config, BuildOptions buildOptions, Input input, GitHubAccessor githubAccessor, RepositoryProvider repositoryProvider)
     {
@@ -159,6 +161,44 @@ internal class ContributionProvider
             : UrlUtility.TryParseAzureReposUrl(repo.Url, out _, out _, out _)
             ? $"{repo.Url}/commit/{commit}?path=/{pathToRepo}&_a=contents"
             : null;
+    }
+
+    /// <summary>
+    /// Get the source git url of specific file for report use.
+    /// Note that the file may come from pull request source repository
+    /// </summary>
+    /// <returns>source git url for report use</returns>
+    public string? GetReportGitUrl(FilePath file)
+    {
+        return _reportGitUrls.GetOrAdd(file, GetReportGitUrlCore);
+
+        string? GetReportGitUrlCore(FilePath file)
+        {
+            if (file.Origin == FileOrigin.Redirection)
+            {
+                return default;
+            }
+
+            var fullPath = _input.TryGetOriginalPhysicalPath(file);
+            if (fullPath is null)
+            {
+                return default;
+            }
+
+            var (repo, pathToRepo) = _repositoryProvider.GetRepository(fullPath.Value);
+
+            var repoUrl = file.Origin == FileOrigin.Dependency ? repo?.Url : (_config.PullRequestRepositoryUrl ?? repo?.Url);
+            var repoBranch = file.Origin == FileOrigin.Dependency ? repo?.Branch : (_config.PullRequestRepositoryBranch ?? repo?.Branch);
+            if (repoUrl is null || pathToRepo is null)
+            {
+                return default;
+            }
+
+            var gitUrlTemplate = GetGitUrlTemplate(repoUrl, pathToRepo);
+            var reportGitUrl = gitUrlTemplate?.Replace("{repo}", repoUrl).Replace("{branch}", repoBranch);
+
+            return reportGitUrl;
+        }
     }
 
     public void Save()
