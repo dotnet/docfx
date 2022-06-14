@@ -946,7 +946,7 @@ outputs:
       ]
     }
 ---
-# for pull request builds, source urls point to pull request source repo, but crr files are not affected
+# for pull request builds, source urls in .publish.json point to pull request source repo, but crr files are not affected
 repos:
   https://github.com/ops1/repo:
   - files:
