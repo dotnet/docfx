@@ -36,6 +36,7 @@ It is not possible to distinguish published files via the source_path value due 
 **Design**:    
 Add complement for source_path, i.e. add new property in .publish.json named `source_path_complement` for those entries containing the same `source_path` values.
 
+
 ```json
   .publish.json: |
     {
@@ -55,4 +56,8 @@ Add complement for source_path, i.e. add new property in .publish.json named `so
 
 The values of `source_path_complement` are actually the values of the source file's file path (the generated standard yaml files in MonoDocXML case)
 
-**Note**: For those files not in **SourceMap**, the `source_path_complement` is null (i.e. not exist in .publish.json) because they don't need the complement.
+**Note**: For those files not in **SourceMap**, the `source_path_complement` is null (i.e. not exist in .publish.json) because they don't need the complement.  
+It is consistent and safe to construct a unique id by author code like  
+```csharp
+var uid = item.SourcePath + item.SourcePathComplement ?? "";
+```
