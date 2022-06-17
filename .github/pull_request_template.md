@@ -21,8 +21,8 @@ Briefly describe why this change is needed and what has been changed
 Please consider whether there is other dependent PRs, and whether the deployment order matters.
 
 * [ ] Yes, and deployment order matters!
-      The dependent PR/deployment: __________________________    
-      Explain how is the deployment order: __________________
+      The dependent PR/deployment: _____________________________    
+      Explain how deployment order should be: __________________
 * [ ] Yes, but deployment order does not matter.
-      (Optional) The dependent PR/deployment: __________
+      (Optional) The dependent PR/deployment: __________________
 * [ ] No
