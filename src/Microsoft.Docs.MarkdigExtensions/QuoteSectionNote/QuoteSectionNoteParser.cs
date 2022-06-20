@@ -10,6 +10,7 @@ namespace Microsoft.Docs.MarkdigExtensions;
 public class QuoteSectionNoteParser : BlockParser
 {
     private readonly List<string> _noteTypes = new() { "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
+    private readonly string _learnVideoUrl = "https://learn-video.azurefd.net/vod/player?id=";
     private readonly MarkdownContext _context;
 
     public QuoteSectionNoteParser(MarkdownContext context)
@@ -182,6 +183,16 @@ public class QuoteSectionNoteParser : BlockParser
             {
                 block.QuoteType = QuoteSectionNoteType.DFMVideo;
                 block.VideoLink = link.Trim();
+                return true;
+            }
+
+            // check if the video Id is a valid GUID format
+            // if it is a valid video id then generate the full URL
+            var isValidGuid = Guid.TryParse(link.Trim(']'), out var guidOutput);
+            if (isValidGuid)
+            {
+                block.QuoteType = QuoteSectionNoteType.DFMVideo;
+                block.VideoLink = $"{_learnVideoUrl}{guidOutput}";
                 return true;
             }
         }

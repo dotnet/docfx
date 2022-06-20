@@ -65,10 +65,9 @@ public class CodeExtension : ITripleColonExtensionInfo
         return true;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = new Dictionary<string, string>();
         var source = "";
         var range = "";
         var id = "";

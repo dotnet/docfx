@@ -32,6 +32,26 @@ internal class PreloadConfig
     public PackagePath? FallbackRepository { get; init; }
 
     /// <summary>
+    /// Specify the publish repository url
+    /// </summary>
+    public string? PublishRepositoryUrl { get; init; }
+
+    /// <summary>
+    /// Specify the publish branch
+    /// </summary>
+    public string? PublishRepositoryBranch { get; init; }
+
+    /// <summary>
+    /// Specify the pull request source repo url
+    /// </summary>
+    public string? PullRequestRepositoryUrl { get; init; }
+
+    /// <summary>
+    /// Specify the pull request source repo branch
+    /// </summary>
+    public string? PullRequestRepositoryBranch { get; init; }
+
+    /// <summary>
     /// The extend file addresses
     /// The addresses can be absolute url or relative path
     /// </summary>

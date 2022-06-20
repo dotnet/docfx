@@ -20,22 +20,31 @@ internal static class Restore
             return errors.HasError;
         }
 
-        Parallel.ForEach(docsets, docset => RestoreDocset(errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
+        Parallel.ForEach(
+            docsets,
+            docset => RestoreDocset(
+                errors, repository, docset.docsetPath, docset.outputPath, options, FetchOptions.Latest));
 
         errors.PrintSummary();
         return errors.HasError;
     }
 
     public static void RestoreDocset(
-        ErrorBuilder errors, Repository? repository, string docsetPath, string? outputPath, CommandLineOptions options, FetchOptions fetchOptions)
+        ErrorBuilder errors,
+        Repository? repository,
+        string docsetPath,
+        string? outputPath,
+        CommandLineOptions options,
+        FetchOptions fetchOptions)
     {
         var errorLog = new ErrorLog(errors, options.WorkingDirectory, docsetPath);
 
         try
         {
             // load configuration from current entry or fallback repository
+            var localPackage = new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath));
             var (config, buildOptions, packageResolver, fileResolver, _) = ConfigLoader.Load(
-                errorLog, repository, docsetPath, outputPath, options, fetchOptions, new LocalPackage(Path.Combine(options.WorkingDirectory, docsetPath)));
+                errorLog, repository, docsetPath, outputPath, options, fetchOptions, localPackage);
 
             if (errorLog.HasError)
             {

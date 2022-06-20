@@ -69,7 +69,7 @@ public interface ITripleColonExtensionInfo
 
     bool SelfClosing { get; }
 
-    bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject);
+    bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject);
 
     bool TryValidateAncestry(ContainerBlock container, Action<string> logError);
 

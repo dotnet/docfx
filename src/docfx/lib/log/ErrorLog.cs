@@ -154,8 +154,7 @@ internal class ErrorLog : ErrorBuilder
         {
             // The original FilePath is used as key to fetch ContributionProvider git url cache
             // and meets the requirement of https://github.com/dotnet/docfx/blob/c8cb790043ae5b93173f3e28dafc28bf7f305d48/src/docfx/build/context/Input.cs#L292
-            (_, var originalContentGitUrl, _) = ContributionProvider.GetGitUrl(originalFilePath);
-            error = error with { SourceUrl = originalContentGitUrl };
+            error = error with { SourceUrl = ContributionProvider.GetReportGitUrl(originalFilePath) };
         }
         _errors.Add(error);
     }

@@ -25,10 +25,9 @@ public class ZoneExtension : ITripleColonExtensionInfo
         return false;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = null;
         var target = "";
         var pivot = "";
         foreach (var attribute in attributes)

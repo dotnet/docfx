@@ -24,10 +24,9 @@ public class ImageExtension : ITripleColonExtensionInfo
         _context = context;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = new Dictionary<string, string>();
         var src = "";
         var alt = "";
         var type = "";

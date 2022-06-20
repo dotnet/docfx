@@ -461,4 +461,17 @@ We should support that.</p>
 ";
         TestUtility.VerifyMarkup(source, expected);
     }
+
+    [Fact]
+    [Trait("Related", "DfmMarkdown")]
+    public void TestVideoBlockWithGuid()
+    {
+        var source = @"# Article 2
+> [!VIDEO 0add8ade-e746-4bf3-932a-94413928d098]
+";
+        var expected = @"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://learn-video.azurefd.net/vod/player?id=0add8ade-e746-4bf3-932a-94413928d098"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+        TestUtility.VerifyMarkup(source, expected);
+    }
 }
