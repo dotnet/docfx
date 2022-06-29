@@ -211,8 +211,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/sql-docs-pr --profile --timeout 120 --regression-rules
     docs:
       params: https://github.com/dotnet/docs --timeout 60 --regression-rules
-    learn-pr:
-      params: https://github.com/MicrosoftDocs/learn-pr --timeout 105 --no-dry-sync --regression-rules
+    # learn-pr:
+    #   params: https://github.com/MicrosoftDocs/learn-pr --timeout 105 --no-dry-sync --regression-rules
     windowsserverdocs-pr:
       params: https://github.com/MicrosoftDocs/windowsserverdocs-pr --timeout 45 --regression-rules
     VBA-Docs:
