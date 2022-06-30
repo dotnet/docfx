@@ -1,8 +1,12 @@
-Version Notes (Current Version: v2.60)
+Version Notes (Current Version: v2.59.3)
 =======================================
 
-v2.60(Pre-release)
+v2.59.3
 -----------
+1. Document update. Thanks @jmswisher, @sdgilley, @sethreidnz
+2. Use PdfConvertParallelism to control number of WkHtmlToPdf processes. Thanks @AustinWise!
+3. Fix tag typo in default template. Thanks @DiCaver!
+4. Upgrade Newtonsoft.Json to 13.0.1.
 
 v2.59.2
 -----------
