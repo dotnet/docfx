@@ -91,6 +91,7 @@ cobertura
 codebase
 codeblock
 codepen
+Codeql
 Coderange
 codesnippet
 colgroup
