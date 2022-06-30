@@ -20,7 +20,7 @@ outputs:
   docs/a.json: |
     {"conceptual":"<p><a href=\"%7E/docfx-test-dependencies1/docs/a.md\">link to 1</a></p>\n<p>a1</p>\n"}
 ---
-# Restore dependencies azure repos with their children
+# Restore dependencies azure repos with their children a
 repos:
   https://docascode.visualstudio.com/project/_git/a:
     - files:
