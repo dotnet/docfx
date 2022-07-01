@@ -116,7 +116,7 @@ private void UpdateAbstract()
                         <table class="dataMatrix">
                             @if (item.Columns != null && item.Columns is JArray array)
                             {
-                                var columns = array.ToObject<LandingDataColumn[]>();
+                                var columns = array.ToObject<LandingDataColumn[]>()!;
                                 <tr>
                                     <th></th>
                                     @for (var i = 0; i < columns.Length; i++)
