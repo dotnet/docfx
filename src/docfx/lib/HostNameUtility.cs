@@ -4,7 +4,7 @@
 namespace Microsoft.Docs.Build;
 internal class HostNameUtility
 {
-    public static string RebrandHostName(string hostName, Dictionary<string, string>? hostNameMapping)
+    public static string MigrateHostName(string hostName, Dictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(hostName))
         {
@@ -18,7 +18,7 @@ internal class HostNameUtility
         return hostName;
     }
 
-    public static string? RebrandUrl(string? url, Dictionary<string, string>? hostNameMapping)
+    public static string? MigrateHostForUrl(string? url, Dictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(url))
         {
@@ -32,7 +32,7 @@ internal class HostNameUtility
             {
                 return new UriBuilder(uri)
                 {
-                    Host = RebrandHostName(uri.Host, hostNameMapping),
+                    Host = MigrateHostName(uri.Host, hostNameMapping),
                 }.Uri.AbsoluteUri;
             }
         }

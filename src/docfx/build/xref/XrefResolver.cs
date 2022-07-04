@@ -18,6 +18,8 @@ internal class XrefResolver
     private readonly string _xrefHostName;
     private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
+    private readonly Dictionary<string, string> _hostNameMap; // key: legacy hostname -> value: new hostname
+    private readonly Dictionary<string, string> _reverseHostNameMap; // key: new hostname -> value: legacy hostname
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
@@ -47,8 +49,10 @@ internal class XrefResolver
         _redirectionProvider = redirectionProvider;
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
-        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? HostNameUtility.RebrandHostName(config.HostName, config.HostNameMapping)
-            : HostNameUtility.RebrandHostName(config.XrefHostName, config.HostNameMapping);
+        _hostNameMap = config.HostNameMapping ?? new Dictionary<string, string>();
+        _reverseHostNameMap = _hostNameMap.ToDictionary(x => x.Value, x => x.Key);
+        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? HostNameUtility.MigrateHostName(config.HostName, _hostNameMap)
+            : HostNameUtility.MigrateHostName(config.XrefHostName, _hostNameMap);
         _internalXrefMapBuilder = new(
             config,
             errorLog,
@@ -314,7 +318,15 @@ internal class XrefResolver
         if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
         {
             var href = RemoveSharingHost(spec!.Href, _config.HostName);
-            return (spec, HostNameUtility.RebrandUrl(href, _config.HostNameMapping));
+            if (_hostNameMap.ContainsKey(_config.HostName))
+            {
+                href = RemoveSharingHost(href, _hostNameMap[_config.HostName]);
+            }
+            if (_reverseHostNameMap.ContainsKey(_config.HostName))
+            {
+                href = RemoveSharingHost(href, _reverseHostNameMap[_config.HostName]);
+            }
+            return (spec, HostNameUtility.MigrateHostForUrl(href, _hostNameMap));
         }
         return default;
     }
@@ -336,7 +348,7 @@ internal class XrefResolver
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 
-            return (spec, HostNameUtility.RebrandUrl(href, _config.HostNameMapping));
+            return (spec, HostNameUtility.MigrateHostForUrl(href, _hostNameMap));
         }
         return default;
     }
