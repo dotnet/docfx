@@ -23,6 +23,17 @@ steps:
     packageType: sdk
     version: '5.0.100'
 
+- task: NodeTool@0
+  displayName: "Use Node 16.x"
+  inputs:
+    versionSpec: 16.x
+
+- powershell: |
+    npm install -g npm-windows-upgrade
+    npm-windows-upgrade -v 8.13.2
+    npm -v
+  displayName: Upgrade npm to latest version
+
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
   inputs:
