@@ -27,6 +27,8 @@ public static class EnvironmentVariable
 
     public static string? SessionId => GetValue("DOCFX_SESSION_ID");
 
+    public static string? HostName => GetValue("DOCFX_HOST_NAME");
+
     private static string? GetValue(string name)
     {
         var value = Environment.GetEnvironmentVariable(name);
