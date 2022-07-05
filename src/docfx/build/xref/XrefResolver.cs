@@ -23,8 +23,8 @@ internal class XrefResolver
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
     // XrefResolver is able to handle both new hostname and legacy hostname in xref urls.
-    private readonly Dictionary<string, string> _hostNameMap; // key: legacy hostname -> value: new hostname
-    private readonly Dictionary<string, string> _reversedHostNameMap; // key: new hostname -> value: legacy hostname
+    private readonly IReadOnlyDictionary<string, string> _hostNameMap; // key: legacy hostname -> value: new hostname
+    private readonly IReadOnlyDictionary<string, string> _reversedHostNameMap; // key: new hostname -> value: legacy hostname
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,

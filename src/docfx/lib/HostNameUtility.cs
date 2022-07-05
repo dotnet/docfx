@@ -7,7 +7,7 @@ internal class HostNameUtility
     /// <summary>
     /// check if the hostname is in mapping, if yes, replace with corresponding value
     /// </summary>
-    public static string ReplaceHostName(string hostName, Dictionary<string, string>? hostNameMapping)
+    public static string ReplaceHostName(string hostName, IReadOnlyDictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(hostName))
         {
@@ -20,7 +20,7 @@ internal class HostNameUtility
     /// <summary>
     /// check if the hostname of the url is in mapping, if yes, replace with corresponding value
     /// </summary>
-    public static string? ReplaceHostForUrl(string? url, Dictionary<string, string>? hostNameMapping)
+    public static string? ReplaceHostForUrl(string? url, IReadOnlyDictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(url))
         {
@@ -34,7 +34,7 @@ internal class HostNameUtility
             {
                 return new UriBuilder(uri)
                 {
-                    Host = ReplaceHostName(uri.Host, hostNameMapping),
+                    Host = hostNameMapping[uri.Host],
                 }.Uri.AbsoluteUri;
             }
         }
