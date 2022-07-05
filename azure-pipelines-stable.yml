@@ -28,6 +28,17 @@ steps:
   inputs:
     versionSpec: 5.9.1
 
+- task: NodeTool@0
+  displayName: "Use Node 16.x"
+  inputs:
+    versionSpec: 16.x
+
+- powershell: |
+    npm install -g npm-windows-upgrade
+    npm-windows-upgrade -v 8.13.2
+    npm -v
+  displayName: Upgrade npm to latest version
+
 - task: PowerShell@2
   displayName: 'dev build'
   inputs:
