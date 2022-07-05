@@ -15,11 +15,16 @@ internal class XrefResolver
     private readonly DependencyMapBuilder _dependencyMapBuilder;
     private readonly FileLinkMapBuilder _fileLinkMapBuilder;
     private readonly Repository? _repository;
+
+    // the hostname used in output xrefmap
     private readonly string _xrefHostName;
+
     private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
+
+    // XrefResolver is able to handle both new hostname and legacy hostname in xref urls.
     private readonly Dictionary<string, string> _hostNameMap; // key: legacy hostname -> value: new hostname
-    private readonly Dictionary<string, string> _reverseHostNameMap; // key: new hostname -> value: legacy hostname
+    private readonly Dictionary<string, string> _reversedHostNameMap; // key: new hostname -> value: legacy hostname
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
@@ -50,9 +55,13 @@ internal class XrefResolver
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
         _hostNameMap = config.HostNameMapping ?? new Dictionary<string, string>();
-        _reverseHostNameMap = _hostNameMap.ToDictionary(x => x.Value, x => x.Key);
-        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? HostNameUtility.MigrateHostName(config.HostName, _hostNameMap)
-            : HostNameUtility.MigrateHostName(config.XrefHostName, _hostNameMap);
+        _reversedHostNameMap = _hostNameMap.ToDictionary(x => x.Value, x => x.Key);
+
+        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+
+        // always output legacy hostname to xrefmap if matched
+        _xrefHostName = HostNameUtility.ReplaceHostName(_xrefHostName, _reversedHostNameMap);
+
         _internalXrefMapBuilder = new(
             config,
             errorLog,
@@ -286,14 +295,33 @@ internal class XrefResolver
         }
     }
 
-    private static string RemoveSharingHost(string url, string hostName)
+    // legacy hostname and new hostname are treated as the same hostname
+    private string RemoveSharingHost(string url, string hostName)
     {
-        if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
+        url = RemoveHostIfMatch(url, hostName);
+
+        if (_hostNameMap.ContainsKey(hostName))
         {
-            return url[$"https://{hostName}".Length..];
+            // handle the case: hostname is legacy one, but url's hostname is new one
+            url = RemoveHostIfMatch(url, _hostNameMap[hostName]);
+        }
+        if (_reversedHostNameMap.ContainsKey(hostName))
+        {
+            // handle the case: hostname is new one, but url's hostname is legacy one
+            url = RemoveHostIfMatch(url, _reversedHostNameMap[hostName]);
         }
 
         return url;
+
+        static string RemoveHostIfMatch(string url, string hostName)
+        {
+            if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
+            {
+                return url[$"https://{hostName}".Length..];
+            }
+
+            return url;
+        }
     }
 
     private (Error?, IXrefSpec?, string? href) Resolve(
@@ -318,15 +346,8 @@ internal class XrefResolver
         if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
         {
             var href = RemoveSharingHost(spec!.Href, _config.HostName);
-            if (_hostNameMap.ContainsKey(_config.HostName))
-            {
-                href = RemoveSharingHost(href, _hostNameMap[_config.HostName]);
-            }
-            if (_reverseHostNameMap.ContainsKey(_config.HostName))
-            {
-                href = RemoveSharingHost(href, _reverseHostNameMap[_config.HostName]);
-            }
-            return (spec, HostNameUtility.MigrateHostForUrl(href, _hostNameMap));
+
+            return (spec, HostNameUtility.ReplaceHostForUrl(href, _reversedHostNameMap));
         }
         return default;
     }
@@ -348,7 +369,7 @@ internal class XrefResolver
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 
-            return (spec, HostNameUtility.MigrateHostForUrl(href, _hostNameMap));
+            return (spec, HostNameUtility.ReplaceHostForUrl(href, _reversedHostNameMap));
         }
         return default;
     }

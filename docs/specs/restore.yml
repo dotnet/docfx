@@ -74,7 +74,7 @@ outputs:
   a.json: |
     { "conceptual": "<p><a class=\"no-loc\"' href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
-# host name migration config works when restore urls
+# restore xref to url with legacy hostname as new hostname may be not available
 inputs:
   docfx.yml: |
     xref: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/xrefmap.json
@@ -83,9 +83,10 @@ inputs:
   a.md: "@System.String"
 outputs:
   a.json: |
-    { "conceptual": "<p><a class=\"no-loc\" href=\"https://new-docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
+    { "conceptual": "<p><a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
-# host name migration config works when restore urls with extends
+# restore xref to url with legacy hostname as new hostname may be not available 
+# with extends config
 inputs:
   docfx.yml: |
     extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/extend.yml
@@ -94,7 +95,7 @@ inputs:
   a.md: "@System.String"
 outputs:
   a.json: |
-    { "conceptual": "<p><a class=\"no-loc\"' href=\"https://new-docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
+    { "conceptual": "<p><a class=\"no-loc\"' href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
 # Restore empty files
 inputs:

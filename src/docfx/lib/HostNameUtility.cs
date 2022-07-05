@@ -4,21 +4,23 @@
 namespace Microsoft.Docs.Build;
 internal class HostNameUtility
 {
-    public static string MigrateHostName(string hostName, Dictionary<string, string>? hostNameMapping)
+    /// <summary>
+    /// check if the hostname is in mapping, if yes, replace with corresponding value
+    /// </summary>
+    public static string ReplaceHostName(string hostName, Dictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(hostName))
         {
             return hostName;
         }
 
-        if (hostNameMapping.ContainsKey(hostName))
-        {
-            return hostNameMapping[hostName];
-        }
-        return hostName;
+        return hostNameMapping.GetValueOrDefault(hostName, hostName);
     }
 
-    public static string? MigrateHostForUrl(string? url, Dictionary<string, string>? hostNameMapping)
+    /// <summary>
+    /// check if the hostname of the url is in mapping, if yes, replace with corresponding value
+    /// </summary>
+    public static string? ReplaceHostForUrl(string? url, Dictionary<string, string>? hostNameMapping)
     {
         if (hostNameMapping is null || string.IsNullOrEmpty(url))
         {
@@ -32,7 +34,7 @@ internal class HostNameUtility
             {
                 return new UriBuilder(uri)
                 {
-                    Host = MigrateHostName(uri.Host, hostNameMapping),
+                    Host = ReplaceHostName(uri.Host, hostNameMapping),
                 }.Uri.AbsoluteUri;
             }
         }

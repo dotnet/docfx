@@ -2224,7 +2224,8 @@ outputs:
   c.json: |
     { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\"> &lt;xref:a&gt;</span></p>" }
 ---
-# host name migration config works when no xrefHostName and output expected hostname in xrefmap
+# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
+# in despite of config: hostname is legacy value
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
@@ -2254,23 +2255,66 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://new-docs.microsoft.com/base_path/docs/a",
+          "href": "https://docs.microsoft.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://new-docs.microsoft.com/base_path/docs/b",
+          "href": "https://docs.microsoft.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ]
     }
 ---
-# host name migration config works when xrefhostName exists and output migrated hostname in xrefmap
+# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
+# in despite of config: hostname is new value
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
         docfx.yml: |
-          hostName: other.docs.com
+          hostName: new-docs.microsoft.com
+          basePath: /base_path
+          hostNameMapping: 
+            docs.microsoft.com: new-docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.microsoft.com/base_path/docs/a",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://docs.microsoft.com/base_path/docs/b",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
+# in despite of config: xrefhostName is legacy value
+repos:
+  https://docs.com/test-uid-conceptual#live:
+    - files:
+        docfx.yml: |
+          hostName: other-docs.microsoft.com
           basePath: /base_path
           xrefhostName: docs.microsoft.com
           hostNameMapping: 
@@ -2296,18 +2340,61 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://new-docs.microsoft.com/base_path/docs/a",
+          "href": "https://docs.microsoft.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://new-docs.microsoft.com/base_path/docs/b",
+          "href": "https://docs.microsoft.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ]
     }
 ---
-# host name migration config works for external xref href url
+# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
+# in despite of config: xrefhostName is new value
+repos:
+  https://docs.com/test-uid-conceptual#live:
+    - files:
+        docfx.yml: |
+          hostName: docs.microsoft.com
+          basePath: /base_path
+          xrefhostName: new-docs.microsoft.com
+          hostNameMapping: 
+            docs.microsoft.com: new-docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.microsoft.com/base_path/docs/a",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://docs.microsoft.com/base_path/docs/b",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [hostNameMapping][resolve] resolve external xref href url and replaced with legacy hostname as new hostname may be not available
 inputs:
   docfx.yml: |
     hostNameMapping: 
@@ -2316,6 +2403,7 @@ inputs:
     xref: 
       - 1.xrefmap.json
   docs/a.md: Link to @System.String
+  docs/a.legacy.md: Link to @System.String.legacy
   docs/b.md: Link to @System.String2
   docs/c.md: Link to @System.String3
   1.xrefmap.json: |
@@ -2324,25 +2412,32 @@ inputs:
         {
           "uid": "System.String",
           "name": "String",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string"
+          "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
+        },
+        {
+          "uid": "System.String.legacy",
+          "name": "String.legacy",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string.legacy"
         },
         {
           "uid": "System.String2",
           "name": "String2",
-          "href": "https://docs-2.microsoft.com/dotnet/api/system.string2"
+          "href": "https://new-docs-2.microsoft.com/dotnet/api/system.string2"
         },
         {
           "uid": "System.String3",
           "name": "String3",
-          "href": "https://docs-3.microsoft.com/dotnet/api/system.string3"
+          "href": "https://unknown-docs-3.microsoft.com/dotnet/api/system.string3"
         }
       ]
     }
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://new-docs.microsoft.com/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">String</a></p>\n"}
+  docs/a.legacy.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string.legacy\">String.legacy</a></p>\n"}
   docs/b.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://new-docs-2.microsoft.com/dotnet/api/system.string2\">String2</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs-2.microsoft.com/dotnet/api/system.string2\">String2</a></p>\n"}
   docs/c.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs-3.microsoft.com/dotnet/api/system.string3\">String3</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://unknown-docs-3.microsoft.com/dotnet/api/system.string3\">String3</a></p>\n"}
 ---

@@ -223,7 +223,7 @@ internal class OpsConfigAdapter
             _ => OpsAccessor.DocsEnvironment switch
             {
                 DocsEnvironment.Prod => "docs.microsoft.com",
-                _ => "ppe.docs.microsoft.com",
+                _ => "ppe.docs.microsoft.com", // accept input config to overwrite this value ?
             },
         };
     }
