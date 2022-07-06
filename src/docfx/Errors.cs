@@ -863,4 +863,10 @@ internal static class Errors
         public static Error DuplicateSourceMapItem(string key, IEnumerable<PathString> originalFiles)
             => new(ErrorLevel.Warning, "duplicate-source-map-item", $"'{key}' is duplicated from {StringUtility.Join(originalFiles)}");
     }
+
+    public static class HostNameMapping
+    {
+        public static Error InvalidHostNameConfig(string hostname)
+            => new(ErrorLevel.Warning, "dulicated-hostname-config", $"The main xref hostname {hostname} is the same as alternative hostname");
+    }
 }

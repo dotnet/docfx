@@ -21,11 +21,6 @@ internal class XrefResolver
 
     private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
-
-    // XrefResolver is able to handle both alternative hostname and main hostname in xref urls.
-    private readonly IReadOnlyDictionary<string, string> _hostNameMap; // key: main hostname -> value: alternative hostname
-    private readonly IReadOnlyDictionary<string, string> _reversedHostNameMap; // key: alternative hostname -> value: main hostname
-
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
         IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath)> _internalXrefMap;
@@ -54,13 +49,13 @@ internal class XrefResolver
         _redirectionProvider = redirectionProvider;
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
-        _hostNameMap = config.HostNameMapping ?? new Dictionary<string, string>();
-        _reversedHostNameMap = _hostNameMap.ToDictionary(x => x.Value, x => x.Key);
 
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
 
-        // always output main hostname to xrefmap if matched
-        _xrefHostName = HostNameUtility.ReplaceHostName(_xrefHostName, _reversedHostNameMap);
+        if (_xrefHostName == config.AlternativeHostName)
+        {
+            _errorLog.Add(Errors.HostNameMapping.InvalidHostNameConfig(_xrefHostName));
+        }
 
         _internalXrefMapBuilder = new(
             config,
@@ -296,19 +291,17 @@ internal class XrefResolver
     }
 
     // main hostname and alternative hostname are treated as the same hostname
-    private string RemoveSharingHost(string url, string hostName)
+    private string RemoveSharingHost(string url)
     {
-        url = RemoveHostIfMatch(url, hostName);
+        url = RemoveHostIfMatch(url, _config.HostName);
+        url = RemoveHostIfMatch(url, _config.AlternativeHostName);
 
-        if (_hostNameMap.ContainsKey(hostName))
+        if (_config.XrefHostName != _config.HostName)
         {
-            // handle the case: hostname is main hostname, but url's hostname is alternative one
-            url = RemoveHostIfMatch(url, _hostNameMap[hostName]);
-        }
-        if (_reversedHostNameMap.ContainsKey(hostName))
-        {
-            // handle the case: hostname is alternative hostname, but url's hostname is main hostname
-            url = RemoveHostIfMatch(url, _reversedHostNameMap[hostName]);
+            // remove all review.xxx.com hostname if match
+            // the hostname format is based on OpsConfigAdapter.GetXrefHostName function
+            url = RemoveHostIfMatch(url, $"review.{_config.HostName}");
+            url = RemoveHostIfMatch(url, $"review.{_config.AlternativeHostName}");
         }
 
         return url;
@@ -345,9 +338,9 @@ internal class XrefResolver
     {
         if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
         {
-            var href = RemoveSharingHost(spec!.Href, _config.HostName);
+            var href = RemoveSharingHost(spec!.Href);
 
-            return (spec, HostNameUtility.ReplaceHostForUrl(href, _reversedHostNameMap));
+            return (spec, href);
         }
         return default;
     }
@@ -368,8 +361,7 @@ internal class XrefResolver
             var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
-
-            return (spec, HostNameUtility.ReplaceHostForUrl(href, _reversedHostNameMap));
+            return (spec, href);
         }
         return default;
     }

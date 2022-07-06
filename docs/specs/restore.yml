@@ -74,29 +74,6 @@ outputs:
   a.json: |
     { "conceptual": "<p><a class=\"no-loc\"' href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
 ---
-# restore xref to url with main hostname as alternative hostname may be not available
-inputs:
-  docfx.yml: |
-    xref: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/xrefmap.json
-    hostNameMapping: 
-      docs.microsoft.com: new-docs.microsoft.com
-  a.md: "@System.String"
-outputs:
-  a.json: |
-    { "conceptual": "<p><a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
----
-# restore xref to url with main hostname as alternative hostname may be not available 
-# with extends config
-inputs:
-  docfx.yml: |
-    extend: https://raw.githubusercontent.com/docascode/docfx-test-dependencies/xref/extend.yml
-    hostNameMapping: 
-      docs.microsoft.com: new-docs.microsoft.com
-  a.md: "@System.String"
-outputs:
-  a.json: |
-    { "conceptual": "<p><a class=\"no-loc\"' href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>" }
----
 # Restore empty files
 inputs:
   docfx.yml: |
