@@ -49,13 +49,7 @@ internal class XrefResolver
         _redirectionProvider = redirectionProvider;
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
-
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
-
-        if (_xrefHostName == config.AlternativeHostName)
-        {
-            _errorLog.Add(Errors.HostNameMapping.InvalidHostNameConfig(_xrefHostName));
-        }
 
         _internalXrefMapBuilder = new(
             config,
