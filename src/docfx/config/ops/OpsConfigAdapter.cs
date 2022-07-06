@@ -202,10 +202,6 @@ internal class OpsConfigAdapter
 
     private static string GetHostName(string siteName)
     {
-        if (!string.IsNullOrEmpty(EnvironmentVariable.HostName))
-        {
-            return EnvironmentVariable.HostName!;
-        }
         return siteName switch
         {
             "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
@@ -227,7 +223,7 @@ internal class OpsConfigAdapter
             _ => OpsAccessor.DocsEnvironment switch
             {
                 DocsEnvironment.Prod => "docs.microsoft.com",
-                _ => "ppe.docs.microsoft.com",
+                _ => EnvironmentVariable.PPEDefaultDomainHostName ?? "ppe.docs.microsoft.com",
             },
         };
     }
