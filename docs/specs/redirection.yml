@@ -977,7 +977,7 @@ outputs:
     {"message_severity":"warning","code":"path-invalid","message":"Path <invalid>/*invalid.md contains invalid chars '<', '>', '*'."}
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'."}
 ---
-# Remvoe redirect_url hostname when it is the same as current build in despite of redirect_document_id
+# Remove redirect_url hostname when it is the same as current build in despite of redirect_document_id
 repos:
   https://docs.com/ops/redirect:
   - files:
