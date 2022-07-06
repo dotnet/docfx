@@ -127,23 +127,23 @@ internal class RedirectionProvider
             var monikers = item.Monikers is null ? default : _monikerProvider.Validate(_errors, item.Monikers);
             var filePath = FilePath.Redirection(path, monikers);
 
-            if (item.RedirectDocumentId)
+            switch (UrlUtility.GetLinkType(absoluteRedirectUrl))
             {
-                switch (UrlUtility.GetLinkType(absoluteRedirectUrl))
-                {
-                    case LinkType.RelativePath:
+                case LinkType.RelativePath:
+                    if (item.RedirectDocumentId)
+                    {
                         var siteUrl = _documentProvider.GetSiteUrl(filePath);
                         absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
-                        break;
-                    case LinkType.AbsolutePath:
-                        break;
-                    case LinkType.External:
-                        absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
-                        break;
-                    default:
-                        _errors.Add(Errors.Redirection.RedirectUrlInvalid(path, redirectUrl));
-                        break;
-                }
+                    }
+                    break;
+                case LinkType.AbsolutePath:
+                    break;
+                case LinkType.External:
+                    absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
+                    break;
+                default:
+                    _errors.Add(Errors.Redirection.RedirectUrlInvalid(path, redirectUrl));
+                    break;
             }
 
             if (!redirectUrls.TryAdd(filePath, absoluteRedirectUrl))

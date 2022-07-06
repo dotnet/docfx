@@ -976,3 +976,96 @@ outputs:
   .errors.log: |
     {"message_severity":"warning","code":"path-invalid","message":"Path <invalid>/*invalid.md contains invalid chars '<', '>', '*'."}
     {"message_severity":"warning","code":"missing-attribute","message":"Missing required attribute: '(source_path or source_path_from_root) or redirect_url'."}
+---
+# Remvoe redirect_url hostname when it is the same as current build in despite of redirect_document_id
+repos:
+  https://docs.com/ops/redirect:
+  - files:
+      redirections.json: |
+        {
+          "redirections": [
+            {
+              "source_path": "original.md",
+              "redirect_url": "https://docs.com/folder/a",
+              "redirect_document_id": "true"
+            },
+            {
+              "source_path": "original2.md",
+              "redirect_url": "https://docs.com/folder/b",
+              "redirect_document_id": "false"
+            },
+            {
+              "source_path": "original3.md",
+              "redirect_url": "https://docs-diff.com/folder/c",
+              "redirect_document_id": "true"
+            },
+            {
+              "source_path": "original4.md",
+              "redirect_url": "https://docs-diff.com/folder/d",
+              "redirect_document_id": "false"
+            },
+          ]
+        }
+      docfx.yml: |
+        hostname: docs.com
+        name: docset
+        product: product
+      folder/index.md:
+outputs:
+  folder/index.json: 
+  .publish.json: |
+    {
+        "name": "docset",
+        "product": "product",
+        "base_path": "/",
+        "files": [
+            {
+                "url": "/original",
+                "locale": "en-us",
+                "redirect_url": "/folder/a",
+                "document_id": "6172869a-1d42-80e4-5d0c-707167a0d4c1",
+                "document_version_independent_id": "6172869a-1d42-80e4-5d0c-707167a0d4c1",
+                "canonical_url": "https://docs.com/en-us/original"
+            },
+            {
+                "url": "/original2",
+                "locale": "en-us",
+                "redirect_url": "/folder/b",
+                "document_id": "0e929cdb-46ae-915a-031f-4c6f8e8f6a1a",
+                "document_version_independent_id": "0e929cdb-46ae-915a-031f-4c6f8e8f6a1a",
+                "canonical_url": "https://docs.com/en-us/original2"
+            },
+            {
+                "url": "/original3",
+                "locale": "en-us",
+                "redirect_url": "https://docs-diff.com/folder/c",
+                "document_id": "01bf1826-aa28-49c6-d258-4c3837762c95",
+                "document_version_independent_id": "01bf1826-aa28-49c6-d258-4c3837762c95",
+                "canonical_url": "https://docs.com/en-us/original3"
+            },
+            {
+                "url": "/original4",
+                "locale": "en-us",
+                "redirect_url": "https://docs-diff.com/folder/d",
+                "document_id": "168b8137-5da2-ede9-224a-b295bb82ee6a",
+                "document_version_independent_id": "168b8137-5da2-ede9-224a-b295bb82ee6a",
+                "canonical_url": "https://docs.com/en-us/original4"
+            },
+            {
+                "url": "/folder/",
+                "path": "folder/index.json",
+                "source_path": "folder/index.md",
+                "locale": "en-us",
+                "canonical_url": "https://docs.com/en-us/folder/",
+                "document_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                "document_version_independent_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                "site_name": "Docs",
+                "depot_name": "product.docset",
+            }
+        ]
+    }
+  .errors.log: |
+    {"message_severity":"suggestion","code":"redirect-url-invalid","message":"Can't redirect document ID for redirected file 'original.md' because redirect URL 'https://docs.com/folder/a' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.json"}
+    {"message_severity":"suggestion","code":"redirect-url-invalid","message":"Can't redirect document ID for redirected file 'original3.md' because redirect URL 'https://docs-diff.com/folder/c' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.json"}
+
+---
