@@ -349,6 +349,8 @@ internal class Config : PreloadConfig
 
     public HashSet<string> RedirectionFiles { get; init; } = new();
 
+    public string AlternativeHostName { get; init; } = string.Empty;
+
     public IEnumerable<SourceInfo<string>> GetFileReferences()
     {
         foreach (var url in Xref)
