@@ -113,6 +113,8 @@ internal static partial class YamlUtility
     {
         try
         {
+            var disableLineInfo = ShouldDisableLineInfo(input);
+
             JToken? result = null;
 
             var parser = new Parser(input);
@@ -120,7 +122,7 @@ internal static partial class YamlUtility
             if (!parser.TryConsume<StreamEnd>(out _))
             {
                 parser.Consume<DocumentStart>();
-                result = ToJToken(errors, parser, file);
+                result = ToJToken(errors, parser, file, disableLineInfo);
                 parser.Consume<DocumentEnd>();
             }
 
@@ -135,24 +137,36 @@ internal static partial class YamlUtility
         }
     }
 
-    private static JToken ToJToken(ErrorBuilder errors, IParser parser, FilePath? file, SourceInfo? keySourceInfo = null)
+    private static bool ShouldDisableLineInfo(TextReader reader)
+    {
+        // Disable accurate line info for .NET reference to reduce memory usage.
+        if (reader.Peek() != '#')
+        {
+            return false;
+        }
+
+        var mime = ReadMime(reader.ReadLine() ?? "");
+        return mime != null && mime.StartsWith("Net");
+    }
+
+    private static JToken ToJToken(ErrorBuilder errors, IParser parser, FilePath? file, bool disableLineInfo, SourceInfo? keySourceInfo = null)
     {
         switch (parser.Consume<NodeEvent>())
         {
             case Scalar scalar:
                 if (scalar.Style == ScalarStyle.Plain)
                 {
-                    return SetSourceInfo(ParseScalar(scalar.Value), scalar, file, keySourceInfo);
+                    return SetSourceInfo(ParseScalar(scalar.Value), scalar);
                 }
-                return SetSourceInfo(new JValue(scalar.Value), scalar, file, keySourceInfo);
+                return SetSourceInfo(new JValue(scalar.Value), scalar);
 
             case SequenceStart seq:
                 var array = new JArray();
                 while (!parser.TryConsume<SequenceEnd>(out _))
                 {
-                    array.Add(ToJToken(errors, parser, file));
+                    array.Add(ToJToken(errors, parser, file, disableLineInfo));
                 }
-                return SetSourceInfo(array, seq, file, keySourceInfo);
+                return SetSourceInfo(array, seq);
 
             case MappingStart map:
                 var obj = new JObject();
@@ -165,19 +179,19 @@ internal static partial class YamlUtility
                         errors.Add(Errors.Yaml.YamlDuplicateKey(ToSourceInfo(key, file), key.Value));
                     }
 
-                    var value = ToJToken(errors, parser, file, ToSourceInfo(key, file));
+                    var value = ToJToken(errors, parser, file, disableLineInfo, ToSourceInfo(key, file));
                     obj[key.Value] = value;
                 }
-                return SetSourceInfo(obj, map, file, keySourceInfo);
+                return SetSourceInfo(obj, map);
 
             default:
                 throw new NotSupportedException($"Yaml node '{parser.Current?.GetType().Name}' is not supported");
         }
-    }
 
-    private static JToken SetSourceInfo(JToken token, ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo)
-    {
-        return JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file, keySourceInfo));
+        JToken SetSourceInfo(JToken token, ParsingEvent node)
+        {
+            return disableLineInfo ? token : JsonUtility.SetSourceInfo(token, ToSourceInfo(node, file, keySourceInfo));
+        }
     }
 
     private static SourceInfo? ToSourceInfo(ParsingEvent node, FilePath? file, SourceInfo? keySourceInfo = null)
