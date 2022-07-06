@@ -22,9 +22,9 @@ internal class XrefResolver
     private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
 
-    // XrefResolver is able to handle both new hostname and legacy hostname in xref urls.
-    private readonly IReadOnlyDictionary<string, string> _hostNameMap; // key: legacy hostname -> value: new hostname
-    private readonly IReadOnlyDictionary<string, string> _reversedHostNameMap; // key: new hostname -> value: legacy hostname
+    // XrefResolver is able to handle both alternative hostname and main hostname in xref urls.
+    private readonly IReadOnlyDictionary<string, string> _hostNameMap; // key: main hostname -> value: alternative hostname
+    private readonly IReadOnlyDictionary<string, string> _reversedHostNameMap; // key: alternative hostname -> value: main hostname
 
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
@@ -59,7 +59,7 @@ internal class XrefResolver
 
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
 
-        // always output legacy hostname to xrefmap if matched
+        // always output main hostname to xrefmap if matched
         _xrefHostName = HostNameUtility.ReplaceHostName(_xrefHostName, _reversedHostNameMap);
 
         _internalXrefMapBuilder = new(
@@ -295,19 +295,19 @@ internal class XrefResolver
         }
     }
 
-    // legacy hostname and new hostname are treated as the same hostname
+    // main hostname and alternative hostname are treated as the same hostname
     private string RemoveSharingHost(string url, string hostName)
     {
         url = RemoveHostIfMatch(url, hostName);
 
         if (_hostNameMap.ContainsKey(hostName))
         {
-            // handle the case: hostname is legacy one, but url's hostname is new one
+            // handle the case: hostname is main hostname, but url's hostname is alternative one
             url = RemoveHostIfMatch(url, _hostNameMap[hostName]);
         }
         if (_reversedHostNameMap.ContainsKey(hostName))
         {
-            // handle the case: hostname is new one, but url's hostname is legacy one
+            // handle the case: hostname is alternative hostname, but url's hostname is main hostname
             url = RemoveHostIfMatch(url, _reversedHostNameMap[hostName]);
         }
 

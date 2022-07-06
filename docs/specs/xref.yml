@@ -2224,8 +2224,8 @@ outputs:
   c.json: |
     { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\"> &lt;xref:a&gt;</span></p>" }
 ---
-# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
-# in despite of config: hostname is legacy value
+# [xrefmap][hostNameMapping] output xrefmap with main hostname as alternative hostname may be not available
+# in despite of config: hostname is the main hostname
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
@@ -2266,8 +2266,8 @@ outputs:
       ]
     }
 ---
-# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
-# in despite of config: hostname is new value
+# [xrefmap][hostNameMapping] output xrefmap with main hostname as alternative hostname may be not available
+# in despite of config: hostname is alternative value
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
@@ -2308,8 +2308,8 @@ outputs:
       ]
     }
 ---
-# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
-# in despite of config: xrefhostName is legacy value
+# [xrefmap][hostNameMapping] output xrefmap with main hostname as alternative hostname may be not available
+# in despite of config: xrefhostName is main hostname
 repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
@@ -2351,7 +2351,7 @@ outputs:
       ]
     }
 ---
-# [xrefmap][hostNameMapping] output xrefmap with legacy hostname as new hostname may be not available
+# [xrefmap][hostNameMapping] output xrefmap with main hostname as alternative hostname may be not available
 # in despite of config: xrefhostName is new value
 repos:
   https://docs.com/test-uid-conceptual#live:
@@ -2394,7 +2394,7 @@ outputs:
       ]
     }
 ---
-# [hostNameMapping][resolve] resolve external xref href url and replaced with legacy hostname as new hostname may be not available
+# [hostNameMapping][resolve] resolve external xref href url and replaced with main hostname as alternative hostname may be not available
 inputs:
   docfx.yml: |
     hostNameMapping: 
@@ -2403,7 +2403,7 @@ inputs:
     xref: 
       - 1.xrefmap.json
   docs/a.md: Link to @System.String
-  docs/a.legacy.md: Link to @System.String.legacy
+  docs/a.main.md: Link to @System.String.main
   docs/b.md: Link to @System.String2
   docs/c.md: Link to @System.String3
   1.xrefmap.json: |
@@ -2415,9 +2415,9 @@ inputs:
           "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
         },
         {
-          "uid": "System.String.legacy",
-          "name": "String.legacy",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string.legacy"
+          "uid": "System.String.main",
+          "name": "String.main",
+          "href": "https://docs.microsoft.com/dotnet/api/system.string.main"
         },
         {
           "uid": "System.String2",
@@ -2434,8 +2434,8 @@ inputs:
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">String</a></p>\n"}
-  docs/a.legacy.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string.legacy\">String.legacy</a></p>\n"}
+  docs/a.main.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string.main\">String.main</a></p>\n"}
   docs/b.json: |
     { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs-2.microsoft.com/dotnet/api/system.string2\">String2</a></p>\n"}
   docs/c.json: |
