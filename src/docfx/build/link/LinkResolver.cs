@@ -155,6 +155,10 @@ internal class LinkResolver
                 }
                 return (errors, "", fragment, LinkType.AbsolutePath, null, false);
             }
+            if (resolvedHref.Contains(_config.AlternativeHostName, StringComparison.OrdinalIgnoreCase))
+            {
+                resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName, true);
+            }
 
             return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
         }
