@@ -47,7 +47,8 @@ internal class XrefResolver
         _redirectionProvider = redirectionProvider;
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
-        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+        _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? HostNameUtility.RebrandHostName(config.HostName, config.HostNameMapping)
+            : HostNameUtility.RebrandHostName(config.XrefHostName, config.HostNameMapping);
         _internalXrefMapBuilder = new(
             config,
             errorLog,
@@ -283,13 +284,6 @@ internal class XrefResolver
 
     private static string RemoveSharingHost(string url, string hostName)
     {
-        // TODO: this workaround can be removed when all xref related repos migrated to v3
-        if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
-            && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
-        {
-            return url["https://review.docs.microsoft.com".Length..];
-        }
-
         if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
         {
             return url[$"https://{hostName}".Length..];
@@ -320,7 +314,7 @@ internal class XrefResolver
         if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
         {
             var href = RemoveSharingHost(spec!.Href, _config.HostName);
-            return (spec, href);
+            return (spec, HostNameUtility.RebrandUrl(href, _config.HostNameMapping));
         }
         return default;
     }
@@ -342,7 +336,7 @@ internal class XrefResolver
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
 
-            return (spec, href);
+            return (spec, HostNameUtility.RebrandUrl(href, _config.HostNameMapping));
         }
         return default;
     }
