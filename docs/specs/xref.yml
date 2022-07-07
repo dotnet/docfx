@@ -186,13 +186,13 @@ outputs:
     }
 ---
 # Remove host from review site
-# This can be removed when xref related repo migrated to v3
 BuildEnvironment: Prod
 repos:
   https://docs.com/test-uid-conceptual#main:
     - files:
         docfx.yml: |
           hostName: docs.microsoft.com
+          xrefHostName: review.docs.microsoft.com
           basePath: /base_path
           xref: 
             - 1.xrefmap.json
@@ -2243,8 +2243,9 @@ outputs:
 ---
 # [alternativeHostName][xrefmap][before] output xrefmap with xrefhostName if xrefhostName presents
 # as alternative hostname may be not available
+BuildEnvironment: Prod
 repos:
-  https://docs.com/test-uid-conceptual#live:
+  https://docs.com/test-uid-conceptual#main:
     - files:
         docfx.yml: |
           hostName: docs.microsoft.com
@@ -2272,12 +2273,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://review.docs.microsoft.com/base_path/docs/a",
+          "href": "https://review.docs.microsoft.com/base_path/docs/a?branch=main",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://review.docs.microsoft.com/base_path/docs/b",
+          "href": "https://review.docs.microsoft.com/base_path/docs/b?branch=main",
           "name": "Title from yaml header b"
         }
       ]
@@ -2287,48 +2288,49 @@ outputs:
 # as alternative hostname may be not available
 # remove url hostname if it matches hostname/alternativeHostname/xrefHostname/'alternativeXrefHostname'
 BuildEnvironment: Prod
-inputs:
-  docfx.yml: |
-    hostName: docs.microsoft.com    
-    xrefHostName: review.docs.microsoft.com    
-    alternativeHostName: new-docs.microsoft.com    
-    xref: 
-      - 1.xrefmap.json
-  docs/a.md: Link to @System.String
-  docs/a.old.md: Link to @System.String.old
-  docs/b.md: Link to @System.String2
-  docs/b.old.md: Link to @System.String2.old
-  docs/c.md: Link to @System.String3
-  1.xrefmap.json: |
-    {
-      "references":[
-        {
-          "uid": "System.String",
-          "name": "String",
-          "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
-        },
-        {
-          "uid": "System.String.old",
-          "name": "String.old",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
-        },
-        {
-          "uid": "System.String2",
-          "name": "String2",
-          "href": "https://review.new-docs.microsoft.com/dotnet/api/system.string2"
-        },
-        {
-          "uid": "System.String2.old",
-          "name": "String2.old",
-          "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
-        },
-        {
-          "uid": "System.String3",
-          "name": "String3",
-          "href": "https://unknown-docs-3.microsoft.com/dotnet/api/system.string3"
-        }
-      ]
-    }
+repos:
+  https://docs.com/test-uid-conceptual#main:
+    docfx.yml: |
+      hostName: docs.microsoft.com    
+      xrefHostName: review.docs.microsoft.com    
+      alternativeHostName: new-docs.microsoft.com    
+      xref: 
+        - 1.xrefmap.json
+    docs/a.md: Link to @System.String
+    docs/a.old.md: Link to @System.String.old
+    docs/b.md: Link to @System.String2
+    docs/b.old.md: Link to @System.String2.old
+    docs/c.md: Link to @System.String3
+    1.xrefmap.json: |
+      {
+        "references":[
+          {
+            "uid": "System.String",
+            "name": "String",
+            "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
+          },
+          {
+            "uid": "System.String.old",
+            "name": "String.old",
+            "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
+          },
+          {
+            "uid": "System.String2",
+            "name": "String2",
+            "href": "https://review.new-docs.microsoft.com/dotnet/api/system.string2"
+          },
+          {
+            "uid": "System.String2.old",
+            "name": "String2.old",
+            "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
+          },
+          {
+            "uid": "System.String3",
+            "name": "String3",
+            "href": "https://unknown-docs-3.microsoft.com/dotnet/api/system.string3"
+          }
+        ]
+      }
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">String</a></p>\n"}
@@ -2385,8 +2387,9 @@ outputs:
 ---
 # [alternativeHostName][xrefmap][after] output xrefmap with xrefhostName if xrefhostName presents
 # as alternative hostname may be not available
+BuildEnvironment: Prod
 repos:
-  https://docs.com/test-uid-conceptual#live:
+  https://docs.com/test-uid-conceptual#main:
     - files:
         docfx.yml: |
           hostName: new-docs.microsoft.com

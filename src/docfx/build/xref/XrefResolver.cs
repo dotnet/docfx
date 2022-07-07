@@ -290,8 +290,8 @@ internal class XrefResolver
         url = RemoveHostIfMatch(url, _config.HostName);
         url = RemoveHostIfMatch(url, _config.AlternativeHostName);
 
-        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostName(_config.HostName, _repository?.Branch));
-        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostName(_config.AlternativeHostName, _repository?.Branch));
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(_config.HostName, _repository?.Branch));
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(_config.AlternativeHostName, _repository?.Branch));
 
         return url;
 
