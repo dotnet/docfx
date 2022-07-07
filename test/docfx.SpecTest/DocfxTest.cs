@@ -187,6 +187,8 @@ public static class DocfxTest
         var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun") || singleFile;
         var isContinue = test.Matrix.Contains("ContinueBuild");
 
+        Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", spec.BuildEnvironment);
+
         if (spec.LanguageServer.Count != 0)
         {
             RunLanguageServer(docsetPath, spec, package).GetAwaiter().GetResult();

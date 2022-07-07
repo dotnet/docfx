@@ -290,13 +290,8 @@ internal class XrefResolver
         url = RemoveHostIfMatch(url, _config.HostName);
         url = RemoveHostIfMatch(url, _config.AlternativeHostName);
 
-        if (_config.XrefHostName != _config.HostName)
-        {
-            // remove all review.xxx.com hostname if match
-            // the hostname format is based on OpsConfigAdapter.GetXrefHostName function
-            url = RemoveHostIfMatch(url, $"review.{_config.HostName}");
-            url = RemoveHostIfMatch(url, $"review.{_config.AlternativeHostName}");
-        }
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostName(_config.HostName, _repository?.Branch));
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostName(_config.AlternativeHostName, _repository?.Branch));
 
         return url;
 
