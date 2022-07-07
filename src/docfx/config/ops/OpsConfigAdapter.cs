@@ -72,9 +72,11 @@ internal class OpsConfigAdapter
         return null;
     }
 
-    public static string GetXrefHostNameByHostName(string hostName, string? branch)
+    public static string GetXrefHostNameByHostName(string hostName, string? branch = null, DocsEnvironment? env = null)
     {
-        return branch != "live" && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{hostName}" : hostName;
+        return (branch != "live" && (env ?? OpsAccessor.DocsEnvironment) == DocsEnvironment.Prod)
+            ? $"review.{hostName}"
+            : hostName;
     }
 
     private async Task<string> GetBuildConfig(Uri url)

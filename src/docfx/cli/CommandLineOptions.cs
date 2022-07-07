@@ -49,6 +49,8 @@ internal class CommandLineOptions
 
     public string WorkingDirectory => Directory ?? ".";
 
+    public string? TestBuildEnvironment { get; init; }
+
     public JObject? StdinConfig { get; set; }
 
     public JObject ToJObject()
@@ -81,6 +83,11 @@ internal class CommandLineOptions
         if (TemplateBasePath != null)
         {
             config["templateBasePath"] = TemplateBasePath;
+        }
+
+        if (TestBuildEnvironment != null)
+        {
+            config["testBuildEnvironment"] = TestBuildEnvironment;
         }
 
         return config;

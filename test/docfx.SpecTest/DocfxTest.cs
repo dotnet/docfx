@@ -187,8 +187,6 @@ public static class DocfxTest
         var dryRun = spec.DryRunOnly || test.Matrix.Contains("DryRun") || singleFile;
         var isContinue = test.Matrix.Contains("ContinueBuild");
 
-        Environment.SetEnvironmentVariable("DOCS_ENVIRONMENT", spec.BuildEnvironment);
-
         if (spec.LanguageServer.Count != 0)
         {
             RunLanguageServer(docsetPath, spec, package).GetAwaiter().GetResult();
@@ -245,6 +243,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
+                    "--test-build-environment", spec.BuildEnvironment,
                 };
 
                 Docfx.Run(jsonCommandLine.Where(arg => arg != null).ToArray(), package);
@@ -261,6 +260,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
+                    "--test-build-environment", spec.BuildEnvironment,
                 };
                 RemoveUnnecessaryFilesForContinue(randomJsonOutputPath);
                 Docfx.Run(continueCommandLine.Where(arg => arg != null).ToArray(), package);
@@ -281,6 +281,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
+                    "--test-build-environment", spec.BuildEnvironment,
                 }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);
