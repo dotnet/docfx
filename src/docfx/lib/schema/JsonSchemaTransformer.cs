@@ -21,8 +21,6 @@ internal class JsonSchemaTransformer
     private readonly JsonSchemaProvider _jsonSchemaProvider;
     private readonly Input _input;
 
-    private readonly MemoryCache<FilePath, Watch<(JToken, JsonSchema, JsonSchemaMap, int)>> _schemaDocumentsCache = new();
-
     private readonly Scoped<ConcurrentBag<(SourceInfo<string> uid, string? propertyPath, JsonSchema, int? min, int? max)>> _uidReferenceCountList = new();
     private readonly Scoped<ConcurrentBag<(SourceInfo<string> xref, string? docsetName, string? schemaType, string? propertyPath)>> _xrefList = new();
 
@@ -107,11 +105,6 @@ internal class JsonSchemaTransformer
     }
 
     private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap, int uidCount) ValidateContent(ErrorBuilder errors, FilePath file)
-    {
-        return _schemaDocumentsCache.GetOrAdd(file, file => new(() => ValidateContentCore(errors, file))).Value;
-    }
-
-    private (JToken token, JsonSchema schema, JsonSchemaMap schemaMap, int uidCount) ValidateContentCore(ErrorBuilder errors, FilePath file)
     {
         var token = file.Format switch
         {

@@ -20,8 +20,6 @@ internal class Input
     private readonly PackageResolver _packageResolver;
     private readonly RepositoryProvider _repositoryProvider;
 
-    private readonly MemoryCache<FilePath, Watch<JToken>> _jsonTokenCache = new();
-    private readonly MemoryCache<FilePath, Watch<JToken>> _yamlTokenCache = new();
     private readonly MemoryCache<PathString, Watch<byte[]?>> _gitBlobCache = new();
     private readonly ConcurrentDictionary<FilePath, Watch<SourceInfo<string?>>> _mimeTypeCache = new();
 
@@ -147,11 +145,8 @@ internal class Input
             return _generatedContents.Value[file].generatedContent;
         }
 
-        return _jsonTokenCache.GetOrAdd(file, path => new(() =>
-        {
-            using var reader = ReadText(path);
-            return JsonUtility.Parse(errors, reader, path);
-        })).Value;
+        using var reader = ReadText(file);
+        return JsonUtility.Parse(errors, reader, file);
     }
 
     /// <summary>
@@ -164,11 +159,8 @@ internal class Input
             return _generatedContents.Value[file].generatedContent;
         }
 
-        return _yamlTokenCache.GetOrAdd(file, path => new(() =>
-        {
-            using var reader = ReadText(path);
-            return YamlUtility.Parse(errors, reader, path);
-        })).Value;
+        using var reader = ReadText(file);
+        return YamlUtility.Parse(errors, reader, file);
     }
 
     /// <summary>
