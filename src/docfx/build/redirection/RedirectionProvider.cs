@@ -130,11 +130,8 @@ internal class RedirectionProvider
             switch (UrlUtility.GetLinkType(absoluteRedirectUrl))
             {
                 case LinkType.RelativePath:
-                    if (item.RedirectDocumentId)
-                    {
-                        var siteUrl = _documentProvider.GetSiteUrl(filePath);
-                        absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
-                    }
+                    var siteUrl = _documentProvider.GetSiteUrl(filePath);
+                    absoluteRedirectUrl = PathUtility.Normalize(Path.Combine(Path.GetDirectoryName(siteUrl) ?? "", absoluteRedirectUrl));
                     break;
                 case LinkType.AbsolutePath:
                     break;
