@@ -95,14 +95,14 @@ internal class RedirectionProvider
         using (Progress.Start("Loading redirections"))
         {
             var redirections = LoadRedirectionModel();
-            var redirectUrls = GetRedirectUrls(redirections, _config.HostName);
+            var redirectUrls = GetRedirectUrls(redirections);
             var redirectPaths = redirectUrls.Keys.Select(x => x.Path).ToHashSet();
 
             return (redirectUrls, redirectPaths, redirections);
         }
     }
 
-    private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections, string hostName)
+    private Dictionary<FilePath, string> GetRedirectUrls(RedirectionItem[] redirections)
     {
         var redirectUrls = new Dictionary<FilePath, string>();
 
@@ -136,7 +136,8 @@ internal class RedirectionProvider
                 case LinkType.AbsolutePath:
                     break;
                 case LinkType.External:
-                    absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, hostName, removeLocale: true);
+                    absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, _config.HostName, removeLocale: true);
+                    absoluteRedirectUrl = UrlUtility.RemoveLeadingHostName(absoluteRedirectUrl, _config.AlternativeHostName, removeLocale: true);
                     break;
                 default:
                     _errors.Add(Errors.Redirection.RedirectUrlInvalid(path, redirectUrl));
