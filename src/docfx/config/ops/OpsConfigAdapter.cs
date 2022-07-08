@@ -72,6 +72,13 @@ internal class OpsConfigAdapter
         return null;
     }
 
+    public static string GetXrefHostNameByHostName(string hostName, string? branch = null, DocsEnvironment? env = null)
+    {
+        return (branch != "live" && (env ?? OpsAccessor.DocsEnvironment) == DocsEnvironment.Prod)
+            ? $"review.{hostName}"
+            : hostName;
+    }
+
     private async Task<string> GetBuildConfig(Uri url)
     {
         var queries = HttpUtility.ParseQueryString(url.Query);
@@ -119,7 +126,7 @@ internal class OpsConfigAdapter
             xrefMaps.AddRange(links);
         }
 
-        var xrefHostName = GetXrefHostName(docset.site_name, branch);
+        var xrefHostName = GetXrefHostNameBySiteName(docset.site_name, branch);
         var documentUrls = JsonConvert.DeserializeAnonymousType(
                 await _opsAccessor.GetDocumentUrls(), new[] { new { log_code = "", document_url = "" } })
             ?.ToDictionary(item => item.log_code, item => item.document_url);
@@ -228,8 +235,8 @@ internal class OpsConfigAdapter
         };
     }
 
-    private static string GetXrefHostName(string siteName, string branch)
+    private static string GetXrefHostNameBySiteName(string siteName, string branch)
     {
-        return branch != "live" && OpsAccessor.DocsEnvironment == DocsEnvironment.Prod ? $"review.{GetHostName(siteName)}" : GetHostName(siteName);
+        return GetXrefHostNameByHostName(GetHostName(siteName), branch);
     }
 }
