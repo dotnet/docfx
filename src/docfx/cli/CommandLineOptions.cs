@@ -49,8 +49,6 @@ internal class CommandLineOptions
 
     public string WorkingDirectory => Directory ?? ".";
 
-    public string? DocsEnvironment { get; init; }
-
     public JObject? StdinConfig { get; set; }
 
     public JObject ToJObject()
@@ -83,11 +81,6 @@ internal class CommandLineOptions
         if (TemplateBasePath != null)
         {
             config["templateBasePath"] = TemplateBasePath;
-        }
-
-        if (DocsEnvironment != null)
-        {
-            config["docsEnvironment"] = DocsEnvironment;
         }
 
         return config;

@@ -112,8 +112,6 @@ public static class Docfx
             "--continue", "Continue build based on intermediate json output."));
         command.AddOption(new Option<string>(
             "--locale", "Locale info for continue build."));
-        command.AddOption(new Option<string>(
-            "--docs-environment", "The build environment"));
         return command;
     }
 
