@@ -185,31 +185,6 @@ outputs:
       }
     }
 ---
-# Remove host from review site
-# This can be removed when xref related repo migrated to v3
-repos:
-  https://docs.com/test-uid-conceptual#live:
-    - files:
-        docfx.yml: |
-          hostName: docs.microsoft.com
-          basePath: /base_path
-          xref: 
-            - 1.xrefmap.json
-        docs/a.md: Link to @System.String
-        1.xrefmap.json: |
-          {
-            "references":[{
-                "uid": "System.String",
-                "name": "String",
-                "fullName": "System.String",
-                "href": "https://review.docs.microsoft.com/dotnet/api/system.string",
-                "nameWithType": "System.String"
-            }]
-          }
-outputs:
-  base_path/docs/a.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">String</a></p>\n"}
----
 # The same uid in internal and external
 # should resolve it from the internal one
 inputs:
@@ -2198,3 +2173,293 @@ outputs:
     {"message_severity":"warning","code":"xref-not-found","message":"Cross reference not found: 'a'.","file":"c.md"}
   c.json: |
     { "conceptual": "<p>Link to <span class=\"no-loc\" dir=\"ltr\" lang=\"en-us\"> &lt;xref:a&gt;</span></p>" }
+---
+# [alternativeHostName][xrefmap][before] output xrefmap with main hostname 
+# as alternative hostname may be not available
+repos:
+  https://docs.com/test-uid-conceptual#live:
+    - files:
+        docfx.yml: |
+          hostName: docs.microsoft.com
+          basePath: /base_path
+          alternativeHostName: new-docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://docs.microsoft.com/base_path/docs/a",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://docs.microsoft.com/base_path/docs/b",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [alternativeHostName][xrefmap][before] output xrefmap with xrefhostName if xrefhostName presents
+# as alternative hostname may be not available
+BuildEnvironment: Prod
+repos:
+  https://docs.com/test-uid-conceptual#main:
+    - files:
+        docfx.yml: |
+          hostName: docs.microsoft.com
+          xrefhostName: review.docs.microsoft.com
+          basePath: /base_path
+          alternativeHostName: new-docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://review.docs.microsoft.com/base_path/docs/a?branch=main",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://review.docs.microsoft.com/base_path/docs/b?branch=main",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [alternativeHostName][resolve][before] resolve external xref href url and replaced with main hostname 
+# as alternative hostname may be not available
+# remove url hostname if it matches hostname/alternativeHostname/xrefHostname/'alternativeXrefHostname'
+BuildEnvironment: Prod
+repos:
+  https://docs.com/test-alternativeHostName-before-resolve#main:
+   - files:
+        docfx.yml: |
+          hostName: docs.microsoft.com    
+          xrefHostName: review.docs.microsoft.com    
+          alternativeHostName: new-docs.microsoft.com    
+          xref: 
+            - 1.xrefmap.json
+        docs/a.md: Link to @System.String
+        docs/a.old.md: Link to @System.String.old
+        docs/b.md: Link to @System.String2
+        docs/b.old.md: Link to @System.String2.old
+        docs/c.md: Link to @System.String3
+        1.xrefmap.json: |
+          {
+            "references":[
+              {
+                "uid": "System.String",
+                "name": "String",
+                "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
+              },
+              {
+                "uid": "System.String.old",
+                "name": "String.old",
+                "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
+              },
+              {
+                "uid": "System.String2",
+                "name": "String2",
+                "href": "https://review.new-docs.microsoft.com/dotnet/api/system.string2"
+              },
+              {
+                "uid": "System.String2.old",
+                "name": "String2.old",
+                "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
+              },
+              {
+                "uid": "System.String3",
+                "name": "String3",
+                "href": "https://unknown-docs-3.microsoft.com/dotnet/api/system.string3"
+              }
+            ]
+          }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">String</a></p>\n"}
+  docs/a.old.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string.old\">String.old</a></p>\n"}
+  docs/b.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string2\">String2</a></p>\n"}
+  docs/b.old.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string2.old\">String2.old</a></p>\n"}
+  docs/c.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://unknown-docs-3.microsoft.com/dotnet/api/system.string3\">String3</a></p>\n"}
+---
+
+# [alternativeHostName][xrefmap][after] output xrefmap with main hostname 
+# as alternative hostname may be not available
+repos:
+  https://docs.com/test-alternativeHostName-xrefmap-after#live:
+    - files:
+        docfx.yml: |
+          hostName: new-docs.microsoft.com
+          basePath: /base_path
+          alternativeHostName: docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://new-docs.microsoft.com/base_path/docs/a",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://new-docs.microsoft.com/base_path/docs/b",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [alternativeHostName][xrefmap][after] output xrefmap with xrefhostName if xrefhostName presents
+# as alternative hostname may be not available
+BuildEnvironment: Prod
+repos:
+  https://docs.com/test-alternativeHostName-after0#main:
+    - files:
+        docfx.yml: |
+          hostName: new-docs.microsoft.com
+          xrefhostName: review.new-docs.microsoft.com
+          basePath: /base_path
+          alternativeHostName: docs.microsoft.com
+        docs/a.md: |
+          ---
+          title: Title from yaml header a
+          uid: a
+          ---
+        docs/b.md: |
+          ---
+          title: Title from yaml header b
+          uid: b
+          ---
+        docs/c.md: Link to @a
+outputs:
+  base_path/docs/c.json: | 
+    {"conceptual":"<p>Link to <a href=\"a\">Title from yaml header a</a></p>\n"}
+  base_path/docs/a.json:
+  base_path/docs/b.json:
+  .xrefmap.json: | 
+    {
+      "references":[
+        {
+          "uid": "a",
+          "href": "https://review.new-docs.microsoft.com/base_path/docs/a?branch=main",
+          "name": "Title from yaml header a"
+        },
+        {
+          "uid": "b",
+          "href": "https://review.new-docs.microsoft.com/base_path/docs/b?branch=main",
+          "name": "Title from yaml header b"
+        }
+      ]
+    }
+---
+# [alternativeHostName][resolve][after] resolve external xref href url and replaced with main hostname 
+# as alternative hostname may be not available
+# remove url hostname if it matches hostname/alternativeHostname/xrefHostname/'alternativeXrefHostname'
+BuildEnvironment: Prod
+repos:
+  https://docs.com/test-alternativeHostName-after2#main:
+    - files:
+        docfx.yml: |
+          hostName: new-docs.microsoft.com    
+          xrefHostName: review.new-docs.microsoft.com    
+          alternativeHostName: docs.microsoft.com    
+          xref: 
+            - 1.xrefmap.json
+        docs/a.md: Link to @System.String
+        docs/a.old.md: Link to @System.String.old
+        docs/b.md: Link to @System.String2
+        docs/b.old.md: Link to @System.String2.old
+        docs/c.md: Link to @System.String3
+        1.xrefmap.json: |
+          {
+            "references":[
+              {
+                "uid": "System.String",
+                "name": "String",
+                "href": "https://new-docs.microsoft.com/dotnet/api/system.string"
+              },
+              {
+                "uid": "System.String.old",
+                "name": "String.old",
+                "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
+              },
+              {
+                "uid": "System.String2",
+                "name": "String2",
+                "href": "https://review.new-docs.microsoft.com/dotnet/api/system.string2"
+              },
+              {
+                "uid": "System.String2.old",
+                "name": "String2.old",
+                "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
+              },
+              {
+                "uid": "System.String3",
+                "name": "String3",
+                "href": "https://unknown-docs-3.microsoft.com/dotnet/api/system.string3"
+              }
+            ]
+          }
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">String</a></p>\n"}
+  docs/a.old.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string.old\">String.old</a></p>\n"}
+  docs/b.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string2\">String2</a></p>\n"}
+  docs/b.old.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string2.old\">String2.old</a></p>\n"}
+  docs/c.json: |
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://unknown-docs-3.microsoft.com/dotnet/api/system.string3\">String3</a></p>\n"}
+---

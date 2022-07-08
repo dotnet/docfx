@@ -142,7 +142,6 @@ internal class LinkResolver
         ValidateLink(inclusionRoot, linkNode);
         if (linkType == LinkType.External)
         {
-            var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
             if (_config.TrustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
             {
                 if (tagName == "img")
@@ -155,6 +154,8 @@ internal class LinkResolver
                 }
                 return (errors, "", fragment, LinkType.AbsolutePath, null, false);
             }
+            var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
+            resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName, true);
 
             return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
         }

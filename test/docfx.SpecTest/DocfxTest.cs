@@ -18,9 +18,12 @@ public static class DocfxTest
     private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> s_repos = new();
     private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> s_remoteFiles = new();
     private static readonly AsyncLocal<string> s_appDataPath = new();
+    private static readonly AsyncLocal<DocsEnvironment?> s_buildEnvironment = new();
 
     static DocfxTest()
     {
+        TestQuirks.BuildEnvironment = () => s_buildEnvironment.Value;
+
         TestQuirks.AppDataPath = () => s_appDataPath.Value;
 
         TestQuirks.GitRemoteProxy = remote =>
@@ -80,6 +83,7 @@ public static class DocfxTest
 
             try
             {
+                s_buildEnvironment.Value = Enum.TryParse(spec.BuildEnvironment, out DocsEnvironment env) ? env : DocsEnvironment.PPE;
                 s_repos.Value = repos;
                 s_remoteFiles.Value = spec.Http;
                 s_appDataPath.Value = appDataPath;
@@ -95,6 +99,7 @@ public static class DocfxTest
             }
             finally
             {
+                s_buildEnvironment.Value = null;
                 s_repos.Value = null;
                 s_remoteFiles.Value = null;
                 s_appDataPath.Value = null;

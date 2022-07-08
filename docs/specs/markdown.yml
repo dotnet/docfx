@@ -857,3 +857,15 @@ outputs:
       "conceptual": "<p>Check <span class=\"no-loc\"  dir=\"ltr\" lang=\"en-us\">Find</span> for more details.\nThis method can be ran on Windows, and you can also used it in Azure SDK.</p>\n",
       "no-loc": ["method", "SDK"]
     }
+---
+# remove domain for alternative hostname for absolute links
+inputs:
+  docfx.yml: |
+    alternativeHostname: new-docs.microsoft.com
+  docs/a.md: |
+    [A link](https://new-docs.microsoft.com/en-us/azure)
+outputs:
+  docs/a.json: |
+    {
+       "conceptual": "<p><a href=\"/azure\" data-linktype=\"absolute-path\">A link</a></p>",
+    }
