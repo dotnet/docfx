@@ -113,7 +113,7 @@ public static class Docfx
         command.AddOption(new Option<string>(
             "--locale", "Locale info for continue build."));
         command.AddOption(new Option<string>(
-            "--test-build-environment", "The build environment in test case."));
+            "--docs-environment", "The build environment"));
         return command;
     }
 

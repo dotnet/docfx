@@ -293,11 +293,11 @@ internal class XrefResolver
         url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(
             _config.HostName,
             _repository?.Branch,
-            _config.TestBuildEnvironment));
+            _config.DocsEnvironment));
         url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(
             _config.AlternativeHostName,
             _repository?.Branch,
-            _config.TestBuildEnvironment));
+            _config.DocsEnvironment));
 
         return url;
 

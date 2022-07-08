@@ -243,7 +243,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
-                    "--test-build-environment", spec.BuildEnvironment,
+                    "--docs-environment", spec.BuildEnvironment,
                 };
 
                 Docfx.Run(jsonCommandLine.Where(arg => arg != null).ToArray(), package);
@@ -260,7 +260,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
-                    "--test-build-environment", spec.BuildEnvironment,
+                    "--docs-environment", spec.BuildEnvironment,
                 };
                 RemoveUnnecessaryFilesForContinue(randomJsonOutputPath);
                 Docfx.Run(continueCommandLine.Where(arg => arg != null).ToArray(), package);
@@ -281,7 +281,7 @@ public static class DocfxTest
                     spec.NoRestore ? "--no-restore" : null,
                     spec.NoCache ? "--no-cache" : null,
                     spec.NoDrySync ? "--no-dry-sync" : null,
-                    "--test-build-environment", spec.BuildEnvironment,
+                    "--docs-environment", spec.BuildEnvironment,
                 }.Concat(spec.BuildFiles.SelectMany(file => new[] { "--file", Path.Combine(docsetPath, file) }));
 
                 Docfx.Run(commandLine.Where(arg => arg != null).ToArray(), package);

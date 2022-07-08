@@ -351,7 +351,7 @@ internal class Config : PreloadConfig
 
     public string AlternativeHostName { get; init; } = string.Empty;
 
-    public DocsEnvironment? TestBuildEnvironment { get; init; }
+    public DocsEnvironment? DocsEnvironment { get; init; }
 
     public IEnumerable<SourceInfo<string>> GetFileReferences()
     {
