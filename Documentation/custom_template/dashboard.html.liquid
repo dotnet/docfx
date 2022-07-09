@@ -21,6 +21,8 @@
     padding: 16px;
   }
   .template-screenshot {
+    display: flex;
+    justify-content: center;
     position: relative;
     margin-bottom: 16px;
     padding-top: 60%;
@@ -29,8 +31,10 @@
   .template-screenshot-img {
     position: absolute;
     top: 0;
-    width: 100%;
+    width: auto;
     height: auto;
+    max-height: 100%;
+    max-width: 100%;
   }
   .template-title {
     font-weight: 600;
