@@ -31,6 +31,8 @@ public class DocfxTestSpec
 
     public string Locale { get; set; }
 
+    public string BuildEnvironment { get; set; } = "PPE";
+
     [JsonConverter(typeof(OneOrManyConverter))]
     public string[] BuildFiles { get; set; } = Array.Empty<string>();
 

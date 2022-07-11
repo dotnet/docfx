@@ -15,10 +15,12 @@ internal class XrefResolver
     private readonly DependencyMapBuilder _dependencyMapBuilder;
     private readonly FileLinkMapBuilder _fileLinkMapBuilder;
     private readonly Repository? _repository;
+
+    // the hostname used in output xrefmap
     private readonly string _xrefHostName;
+
     private readonly InternalXrefMapBuilder _internalXrefMapBuilder;
     private readonly Func<JsonSchemaTransformer> _jsonSchemaTransformer;
-
     private readonly Watch<ExternalXrefMap> _externalXrefMap;
     private readonly Watch<(IReadOnlyDictionary<string, InternalXrefSpec[]> xrefsByUid,
         IReadOnlyDictionary<FilePath, InternalXrefSpec[]> xrefsByFilePath)> _internalXrefMap;
@@ -48,6 +50,7 @@ internal class XrefResolver
         _dependencyMapBuilder = dependencyMapBuilder;
         _fileLinkMapBuilder = fileLinkMapBuilder;
         _xrefHostName = string.IsNullOrEmpty(config.XrefHostName) ? config.HostName : config.XrefHostName;
+
         _internalXrefMapBuilder = new(
             config,
             errorLog,
@@ -281,21 +284,32 @@ internal class XrefResolver
         }
     }
 
-    private static string RemoveSharingHost(string url, string hostName)
+    // main hostname and alternative hostname are treated as the same hostname
+    private string RemoveSharingHost(string url)
     {
-        // TODO: this workaround can be removed when all xref related repos migrated to v3
-        if (hostName.Equals("docs.microsoft.com", StringComparison.OrdinalIgnoreCase)
-            && url.StartsWith($"https://review.docs.microsoft.com/", StringComparison.OrdinalIgnoreCase))
-        {
-            return url["https://review.docs.microsoft.com".Length..];
-        }
+        url = RemoveHostIfMatch(url, _config.HostName);
+        url = RemoveHostIfMatch(url, _config.AlternativeHostName);
 
-        if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
-        {
-            return url[$"https://{hostName}".Length..];
-        }
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(
+            _config.HostName,
+            _repository?.Branch,
+            TestQuirks.BuildEnvironment?.Invoke()));
+        url = RemoveHostIfMatch(url, OpsConfigAdapter.GetXrefHostNameByHostName(
+            _config.AlternativeHostName,
+            _repository?.Branch,
+            TestQuirks.BuildEnvironment?.Invoke()));
 
         return url;
+
+        static string RemoveHostIfMatch(string url, string hostName)
+        {
+            if (url.StartsWith($"https://{hostName}/", StringComparison.OrdinalIgnoreCase))
+            {
+                return url[$"https://{hostName}".Length..];
+            }
+
+            return url;
+        }
     }
 
     private (Error?, IXrefSpec?, string? href) Resolve(
@@ -319,7 +333,8 @@ internal class XrefResolver
     {
         if (_externalXrefMap.Value.TryGetValue(uid, out var spec))
         {
-            var href = RemoveSharingHost(spec!.Href, _config.HostName);
+            var href = RemoveSharingHost(spec!.Href);
+
             return (spec, href);
         }
         return default;
@@ -341,7 +356,6 @@ internal class XrefResolver
             var href = JsonSchemaProvider.OutputAbsoluteUrl(_documentProvider.GetMime(inclusionRoot))
                 ? spec.Href
                 : UrlUtility.GetRelativeUrl(_documentProvider.GetSiteUrl(inclusionRoot), spec.Href);
-
             return (spec, href);
         }
         return default;
