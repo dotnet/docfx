@@ -231,8 +231,8 @@ parameters:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     powerapps-docs-web-api-ref-pr:
       params: https://github.com/MicrosoftDocs/powerapps-docs-web-api-ref-pr --timeout 25
-    # mc-docs-pr:
-    #   params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
+    mc-docs-pr:
+      params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
     dynamics365smb-devitpro:
       params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
     test:
