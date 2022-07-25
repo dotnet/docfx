@@ -19,5 +19,7 @@ internal class OpsJoinTocConfig
 
     public string? OutputFolder { get; init; }
 
+    public string? OriginalReferenceTOC { get; init; }
+
     public JObject? ContainerPageMetadata { get; init; }
 }

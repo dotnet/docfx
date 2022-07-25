@@ -227,6 +227,10 @@ internal static class OpsConfigLoader
             {
                 item["topLevelToc"] = baseDir.GetRelativePath(new PathString(config.TopLevelTOC));
             }
+            if (!string.IsNullOrEmpty(config.OriginalReferenceTOC))
+            {
+                item["originalReferenceToc"] = baseDir.GetRelativePath(new PathString(config.OriginalReferenceTOC));
+            }
 
             joinTocConfig.Add(item);
         }

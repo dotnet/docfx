@@ -14,4 +14,6 @@ internal class JoinTOCConfig
     public string? ReferenceToc { get; init; }
 
     public string? TopLevelToc { get; init; }
+
+    public string? OriginalReferenceToc { get; init; }
 }

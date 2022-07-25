@@ -11,6 +11,7 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal class TocMap
 {
+    private readonly BuildOptions _buildOptions;
     private readonly Config _config;
     private readonly Input _input;
     private readonly ErrorBuilder _errors;
@@ -25,6 +26,7 @@ internal class TocMap
     private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
     public TocMap(
+        BuildOptions buildOptions,
         Config config,
         ErrorBuilder errors,
         Input input,
@@ -36,6 +38,7 @@ internal class TocMap
         ContentValidator contentValidator,
         PublishUrlMap publishUrlMap)
     {
+        _buildOptions = buildOptions;
         _config = config;
         _errors = errors;
         _input = input;
@@ -179,13 +182,33 @@ internal class TocMap
         var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
+        var tocFilesFromBuildScope = _buildScope.GetFiles(ContentType.Toc);
+        var (originalReferenceTOCs, targetReferenceTOCs) = GetOriginalReferenceTocWithTargetReferenceToc(tocFilesFromBuildScope);
 
         // Parse and split TOC
         ParallelUtility.ForEach(
             scope,
             _errors,
-            _buildScope.GetFiles(ContentType.Toc),
-            file => SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles));
+            tocFilesFromBuildScope,
+            file =>
+            {
+                if (!originalReferenceTOCs.Contains(file))
+                {
+                    SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles);
+                }
+            });
+        ParallelUtility.ForEach(
+            scope,
+            _errors,
+            targetReferenceTOCs.Keys,
+            originalFile =>
+            {
+                var tocNode = _tocParser.Parse(originalFile, _errors);
+                foreach (var file in targetReferenceTOCs[originalFile])
+                {
+                    SplitToc(file, tocNode, allTocFiles);
+                }
+            });
 
         // Load TOC
         ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
@@ -252,6 +275,43 @@ internal class TocMap
                 }
             }
         }
+    }
+
+    private (HashSet<FilePath> originalReferenceTOCs, Dictionary<FilePath, List<FilePath>> targetReferenceTOCs)
+        GetOriginalReferenceTocWithTargetReferenceToc(IEnumerable<FilePath> tocFilesFromBuildScope)
+    {
+        var originalReferenceTOCs = new HashSet<FilePath>();
+        var originalReferenceTocFilePathMap = new Dictionary<string, FilePath>(StringComparer.OrdinalIgnoreCase);
+        var targetReferenceTOCs = new Dictionary<FilePath, List<FilePath>>();
+
+        foreach (var joinTOCConfig in _config.JoinTOC)
+        {
+            if (!string.IsNullOrEmpty(joinTOCConfig.OriginalReferenceToc))
+            {
+                var relativePathForOriRefToc = Path.GetRelativePath(_buildOptions.DocsetPath, joinTOCConfig.OriginalReferenceToc!);
+                if (!originalReferenceTocFilePathMap.ContainsKey(joinTOCConfig.OriginalReferenceToc))
+                {
+                    foreach (var tocFilePath in tocFilesFromBuildScope)
+                    {
+                        var relativePathOfTocFilePath = Path.GetRelativePath(_buildOptions.DocsetPath, tocFilePath.Path.Value);
+                        if (relativePathOfTocFilePath?.Equals(relativePathForOriRefToc, StringComparison.OrdinalIgnoreCase) ?? false)
+                        {
+                            originalReferenceTocFilePathMap[joinTOCConfig.OriginalReferenceToc] = tocFilePath;
+                            break;
+                        }
+                    }
+                }
+
+                var filePathForOriginalTOC = originalReferenceTocFilePathMap[joinTOCConfig.OriginalReferenceToc];
+                originalReferenceTOCs.Add(filePathForOriginalTOC);
+                if (!targetReferenceTOCs.ContainsKey(filePathForOriginalTOC))
+                {
+                    targetReferenceTOCs[filePathForOriginalTOC] = new List<FilePath>();
+                }
+                targetReferenceTOCs[filePathForOriginalTOC].Add(new FilePath(joinTOCConfig.ReferenceToc!));
+            }
+        }
+        return (originalReferenceTOCs, targetReferenceTOCs);
     }
 
     private void SplitToc(FilePath file, TocNode toc, ConcurrentHashSet<FilePath> result)
