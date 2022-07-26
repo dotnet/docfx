@@ -17,6 +17,7 @@ internal static class RegressionTest
     private const string TestDiskRoot = "D:/";
 
     private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
+    private static readonly bool s_outputDetailedPrComment = bool.TryParse(Environment.GetEnvironmentVariable("OUTPUT_DETAILED_PR_COMMENT"), out var flag) && flag;
     private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
     private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
     private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
@@ -512,19 +513,24 @@ internal static class RegressionTest
         body.Append($", {testResult.PeakMemory / 1000 / 1000}MB");
         body.Append(")</summary>\n\n");
 
-        if (!string.IsNullOrEmpty(testResult.CrashMessage))
+        if (s_outputDetailedPrComment && !string.IsNullOrEmpty(testResult.CrashMessage))
         {
             body.Append($"```\n{testResult.CrashMessage}\n\n```");
         }
 
-        if (!string.IsNullOrEmpty(testResult.Diff))
+        if (s_outputDetailedPrComment && !string.IsNullOrEmpty(testResult.Diff))
         {
             body.Append($"```diff\n{testResult.Diff}\n\n```");
         }
 
-        if (isTimeout && !string.IsNullOrEmpty(testResult.HotMethods))
+        if (s_outputDetailedPrComment && isTimeout && !string.IsNullOrEmpty(testResult.HotMethods))
         {
             body.Append($"```csharp\n{testResult.HotMethods}\n\n```");
+        }
+
+        if (!s_outputDetailedPrComment)
+        {
+            body.Append($"```\nView more details on Azure Pipelines.\n\n```");
         }
 
         body.Append("\n\n</details>");
