@@ -177,7 +177,7 @@ public static class DocfxTest
             TestUtility.CreateFiles(statePath, spec.State, variables);
             if (package is LocalPackage)
             {
-                if (spec.Repos.Count == 0)
+                if (spec.Repos.Count == 0 && !GitUtility.IsGitRepository(docsetPath))
                 {
                     GitUtility.Init(docsetPath);
                 }
