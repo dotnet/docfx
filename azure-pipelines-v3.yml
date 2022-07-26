@@ -189,6 +189,7 @@ jobs:
           AZURE_DEVOPS_TOKEN: $(vsoTestToken)
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
           PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+          OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 parameters:
 - name: agents
