@@ -161,13 +161,7 @@ internal class RedirectionProvider
             if (_docsetPackage.Exists(fullPath))
             {
                 GenerateRedirectionRules(fullPath, results);
-                break;
             }
-        }
-
-        foreach (var fullPath in ProbeSubRedirectionFiles())
-        {
-            GenerateRedirectionRules(fullPath, results);
         }
 
         return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
@@ -256,31 +250,10 @@ internal class RedirectionProvider
 
         if (_buildOptions.Repository != null)
         {
-            yield return new PathString(Path.Combine(_buildOptions.Repository.Path, ".openpublishing.redirection.json"));
-        }
-    }
-
-    private IEnumerable<PathString> ProbeSubRedirectionFiles()
-    {
-        if (_buildOptions.Repository != null)
-        {
-            foreach (var item in _config.RedirectionFiles)
+            var files = Directory.EnumerateFiles(_buildOptions.Repository.Path, "*.openpublishing.redirection*.json", SearchOption.AllDirectories);
+            foreach (var file in files)
             {
-                if (item.Equals(".openpublishing.redirection.json", PathUtility.PathComparison))
-                {
-                    continue;
-                }
-
-                var fullPath = Path.Combine(_buildOptions.Repository.Path, item);
-
-                if (!File.Exists(fullPath))
-                {
-                    _errors.Add(Errors.Redirection.RedirectionFileNotFound(item));
-                }
-                else
-                {
-                    yield return new PathString(fullPath);
-                }
+                yield return new PathString(file);
             }
         }
     }

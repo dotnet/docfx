@@ -777,11 +777,7 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            ".openpublishing.redirection.json",
-            "a/b/.openpublishing.redirection.json"
-          ],
+          "docsets_to_publish": [{"build_source_folder":"a"}]
         }
       .openpublishing.redirection.json: |
         {
@@ -807,11 +803,7 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            ".openpublishing.redirection.json",
-            "a/b/.openpublishing.redirection.json"
-          ],
+          "docsets_to_publish": [{"build_source_folder":"a"}]
         }
       .openpublishing.redirection.json: |
         {
@@ -834,32 +826,13 @@ outputs:
     {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '/aa' with redirect_document_id set to true: 'a.md', 'b.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): '../.openpublishing.redirection.json', 'b/.openpublishing.redirection.json'.","file":".openpublishing.redirection.json","line":2,"column":66}
   a/aa.json:
 ---
-# File not found for a registered redirection file.
-repos:
-  https://github.com/redirection/multiple-redirection-files-file-not-found:
-  - files:
-      .openpublishing.publish.config.json: |
-        {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            "a/b/.openpublishing.redirection.json"
-          ],
-        }
-      a/docfx.yml:
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.json' registered in .openpublishing.publish.json is not found in the repo."}
----
 # source_path and source_path_from_root exist at the same time
 repos:
   https://github.com/redirection/two-path-at-the-same-time:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            "a/b/.openpublishing.redirection.json"
-          ],
+          "docsets_to_publish": [{"build_source_folder":"a"}]
         }
       a/docfx.yml:
       a/b/.openpublishing.redirection.json: |
@@ -875,11 +848,7 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            ".openpublishing.redirection.json",
-            "a/b/.openpublishing.redirection.json"
-          ],
+          "docsets_to_publish": [{"build_source_folder":"a"}]
         }
       .openpublishing.redirection.json: |
         {
@@ -901,11 +870,7 @@ repos:
   - files:
       .openpublishing.publish.config.json: |
         {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": [
-            ".openpublishing.redirection.json",
-            "a/b/.openpublishing.redirection.json"
-          ],
+          "docsets_to_publish": [{"build_source_folder":"a"}]
         }
       .openpublishing.redirection.json: |
         {
@@ -959,8 +924,6 @@ repos:
       a/b/.openpublishing.redirection.A.json: |
         {"redirections": [{"source_path_from_root": "/a/c.md", "redirect_url": "/aa"}]}
 outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"redirection-file-not-found","message":"Redirection file 'a/b/.openpublishing.redirection.a.json' registered in .openpublishing.publish.json is not found in the repo."}
   a/.publish.json: |
     {"files": [{"url": "/c", "locale": "en-us", "redirect_url": "/aa"}]}
 ---

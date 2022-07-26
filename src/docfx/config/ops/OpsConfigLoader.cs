@@ -68,7 +68,6 @@ internal static class OpsConfigLoader
         result["editRepositoryBranch"] = opsConfig.GitRepositoryBranchOpenToPublicContributors;
         result["fallbackRepository"] = dependencies.FirstOrDefault(
             dep => dep.name.Equals("_repo.en-us", StringComparison.OrdinalIgnoreCase)).obj;
-        result["redirectionFiles"] = JToken.FromObject(opsConfig.RedirectionFiles);
 
         var docsetConfig = opsConfig.DocsetsToPublish.FirstOrDefault(
             config => config.BuildSourceFolder.FolderEquals(buildSourceFolder));
