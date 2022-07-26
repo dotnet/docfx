@@ -83,7 +83,15 @@ internal static class New
             }
             else
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFullPath) ?? ".");
+                var directory = Path.GetDirectoryName(targetFullPath) ?? ".";
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                    if (TestQuirks.Verbose ?? false)
+                    {
+                        GitUtility.Init(directory);
+                    }
+                }
                 File.Copy(file, targetFullPath, overwrite: options.Force);
             }
         }

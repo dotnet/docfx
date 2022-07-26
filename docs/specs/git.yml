@@ -62,13 +62,14 @@ outputs:
 # Specify invalid author in YAML header should log warning
 noDryRun: true
 usePhysicalInput: true
-inputs:
-  docs/index.md: |
-    ---
-    author: invalid_user
-    ---
-    # git-test
-  docfx.yml:
+repos:
+  https://github.com/testowner/testrepo-with-invalid-user#master-file-cache:
+    docs/index.md: |
+      ---
+      author: invalid_user
+      ---
+      # git-test
+    docfx.yml:
 cache:
   github-users.json: |
     {
