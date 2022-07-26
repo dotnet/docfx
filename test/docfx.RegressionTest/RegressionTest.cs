@@ -361,6 +361,7 @@ internal static class RegressionTest
     {
         if (s_isPullRequest)
         {
+            Console.WriteLine($"Post detailed PR comments: {s_outputDetailedPrComment}");
             SendPullRequestComments(testResult);
         }
         else
