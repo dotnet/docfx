@@ -63,13 +63,18 @@ outputs:
 noDryRun: true
 usePhysicalInput: true
 repos:
-  https://github.com/testowner/testrepo-with-invalid-user#master-file-cache:
-    docs/index.md: |
-      ---
-      author: invalid_user
-      ---
-      # git-test
-    docfx.yml:
+  https://github.com/testowner/testrepo-with-invalid-user#main:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [ { "build_source_folder": "." } ]
+        }
+      docs/index.md: |
+        ---
+        author: invalid_user
+        ---
+        # git-test
+      docfx.yml:
 cache:
   github-users.json: |
     {
