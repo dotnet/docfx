@@ -530,7 +530,7 @@ internal static class RegressionTest
 
         if (!s_outputDetailedPrComment)
         {
-            body.Append($"```View more details on Azure Pipelines.\n```");
+            body.Append($"```\nView more details on Azure Pipelines.\n\n```");
         }
 
         body.Append("\n\n</details>");
