@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
@@ -115,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return new XElement
                  (Namespace + "url",
                  new XElement(Namespace + "loc", uri.AbsoluteUri),
-                 new XElement(Namespace + "lastmod", (options.LastModified ?? DateTime.Now).ToString("yyyy-MM-ddThh:mm:ssK")),
+                 new XElement(Namespace + "lastmod", (options.LastModified ?? DateTime.Now).ToString("yyyy-MM-ddThh:mm:ssK", CultureInfo.InvariantCulture)),
                  new XElement(Namespace + "changefreq", (options.ChangeFrequency ?? PageChangeFrequency.Daily).ToString().ToLowerInvariant()),
                  new XElement(Namespace + "priority", options.Priority ?? 0.5)
                  );
