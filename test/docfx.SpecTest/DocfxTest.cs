@@ -175,12 +175,12 @@ public static class DocfxTest
 
             TestUtility.CreateFiles(cachePath, spec.Cache, variables);
             TestUtility.CreateFiles(statePath, spec.State, variables);
+            if (spec.Repos.Count == 0 && !GitUtility.IsGitRepository(docsetPath))
+            {
+                GitUtility.Init(docsetPath);
+            }
             if (package is LocalPackage)
             {
-                if (spec.Repos.Count == 0 && !GitUtility.IsGitRepository(docsetPath))
-                {
-                    GitUtility.Init(docsetPath);
-                }
                 TestUtility.CreateFiles(docsetPath, spec.Inputs, variables);
             }
 
