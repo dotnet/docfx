@@ -17,6 +17,7 @@ internal static class RegressionTest
     private const string TestDiskRoot = "D:/";
 
     private static readonly string s_testDataRoot = Path.Join(TestDiskRoot, "docfx.TestData");
+    private static readonly string? s_sensitiveContent = Environment.GetEnvironmentVariable("SENSITIVE_CONTENT");
     private static readonly string? s_githubToken = Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
     private static readonly string? s_azureDevopsToken = Environment.GetEnvironmentVariable("AZURE_DEVOPS_TOKEN");
     private static readonly string? s_buildReason = Environment.GetEnvironmentVariable("BUILD_REASON");
@@ -514,16 +515,28 @@ internal static class RegressionTest
 
         if (!string.IsNullOrEmpty(testResult.CrashMessage))
         {
+            if (!string.IsNullOrEmpty(s_sensitiveContent))
+            {
+                testResult.CrashMessage = testResult.CrashMessage.Replace(s_sensitiveContent, "*****");
+            }
             body.Append($"```\n{testResult.CrashMessage}\n\n```");
         }
 
         if (!string.IsNullOrEmpty(testResult.Diff))
         {
+            if (!string.IsNullOrEmpty(s_sensitiveContent))
+            {
+                testResult.Diff = testResult.Diff.Replace(s_sensitiveContent, "*****");
+            }
             body.Append($"```diff\n{testResult.Diff}\n\n```");
         }
 
         if (isTimeout && !string.IsNullOrEmpty(testResult.HotMethods))
         {
+            if (!string.IsNullOrEmpty(s_sensitiveContent))
+            {
+                testResult.HotMethods = testResult.HotMethods.Replace(s_sensitiveContent, "*****");
+            }
             body.Append($"```csharp\n{testResult.HotMethods}\n\n```");
         }
 
