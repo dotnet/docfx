@@ -223,7 +223,7 @@ outputs:
 ---
 # Author can NOT be excluded if explicitly specified in YAML header, it's case insensitive
 repos:
-  https://github.com/testowner/testrepo#master-exclude-author-from-yaml-heaer:
+  https://github.com/testowner/testrepo#master-exclude-author-from-yaml-header:
     - author: Charlie
       email: charlie@contoso.com
       files:
