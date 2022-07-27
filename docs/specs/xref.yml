@@ -319,7 +319,7 @@ outputs:
 # should output error and uid cannot be resolved
 noSingleFile: true
 repos:
-  https://docs.com/define-duplciate-uid#master:
+  https://docs.com/define-duplicate-uid#master:
     - files:
         docfx.yml: |
           hostName: docs.com
@@ -1307,7 +1307,7 @@ outputs:
 ---
 # resolve UID with unknown query
 repos:
-  https://docs.com/unkown-query#live:
+  https://docs.com/unknown-query#live:
     - files:
         docfx.yml:
         docs/a.md: |
@@ -1817,7 +1817,7 @@ outputs:
 # support SDP validation validateExternalXrefs
 noSingleFile: true
 repos:
-  https://docs.com/test-valdiate-external-xref:
+  https://docs.com/test-validate-external-xref:
     - files:
         docfx.yml: |
           name: docset_a
