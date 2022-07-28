@@ -49,6 +49,12 @@ internal record FilePath : IComparable<FilePath>
         Origin = FileOrigin.External;
     }
 
+    public FilePath(string path, FileOrigin origin)
+    {
+        Path = new PathString(path);
+        Origin = origin;
+    }
+
     private FilePath(FileOrigin origin, PathString path, PathString dependencyName, bool isGitCommit, MonikerList monikers)
     {
         Path = path;

@@ -908,9 +908,9 @@ repos:
           content:
             files: "**/*"
             exclude:
-            - docs-ref-toc/top_level_toc-legacy.yml
-            - docs-ref-toc/top_level_toc-latest.yml
-            - docs-ref-toc/top_level_toc-preview.yml
+            - docs-ref-toc/top-level-toc-legacy.yml
+            - docs-ref-toc/top-level-toc-latest.yml
+            - docs-ref-toc/top-level-toc-preview.yml
       docs/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
         {
           "type": "object",
@@ -948,6 +948,9 @@ repos:
         name: preview-doc
         uid: preview
         ---
+      docs/toc.yml: |
+        items:
+        - name: a
       docs/api/bot/toc.yml: |
         items:
         - name: MS.ServicePage.legacy.test
@@ -992,6 +995,7 @@ repos:
               children:
               - 'MS.ServicePage.preview*'
 outputs:
+  docs/toc.json:
   docs/overview/legacy.json:
   docs/overview/latest.json:
   docs/overview/preview.json:

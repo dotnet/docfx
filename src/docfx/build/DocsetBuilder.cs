@@ -96,7 +96,7 @@ internal class DocsetBuilder
         _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
         _tocParser = new(_input, _markdownEngine);
         _tocLoader = new(_buildOptions, _input, _linkResolver, _xrefResolver, _tocParser, _monikerProvider, _dependencyMapBuilder, _contentValidator, _config, _errors, _buildScope);
-        _tocMap = new(_buildOptions, _config, _errors, _input, _buildScope, _dependencyMapBuilder, _tocParser, _tocLoader, _documentProvider, _contentValidator, _publishUrlMap);
+        _tocMap = new(_buildOptions, _sourceMap, _config, _errors, _input, _buildScope, _dependencyMapBuilder, _tocParser, _tocLoader, _documentProvider, _contentValidator, _publishUrlMap);
     }
 
     public static DocsetBuilder? Create(

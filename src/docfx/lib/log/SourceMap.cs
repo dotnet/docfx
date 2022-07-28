@@ -6,9 +6,11 @@ namespace Microsoft.Docs.Build;
 internal class SourceMap
 {
     private readonly Dictionary<PathString, PathString> _map = new();
+    private readonly ErrorBuilder _errors;
 
     public SourceMap(ErrorBuilder errors, PathString docsetPath, Config config, FileResolver fileResolver)
     {
+        _errors = errors;
         foreach (var sourceMap in config.SourceMap)
         {
             if (!string.IsNullOrEmpty(sourceMap))
@@ -35,6 +37,14 @@ internal class SourceMap
                     }
                 }
             }
+        }
+    }
+
+    public void AddOriginalPath(PathString targetPath, PathString sourcePath)
+    {
+        if (!_map.TryAdd(targetPath, sourcePath))
+        {
+            _errors.Add(Errors.SourceMap.DuplicateSourceMapItem(targetPath, new List<PathString> { _map[targetPath], sourcePath }));
         }
     }
 
