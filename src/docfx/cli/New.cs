@@ -87,7 +87,7 @@ internal static class New
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
-                    if (TestQuirks.Verbose ?? false)
+                    if (TestQuirks.Initializable ?? false)
                     {
                         GitUtility.Init(directory);
                     }
