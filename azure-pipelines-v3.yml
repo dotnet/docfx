@@ -147,6 +147,7 @@ jobs:
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
         MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
+        OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 - job: WarmUp
   timeoutInMinutes: 180
