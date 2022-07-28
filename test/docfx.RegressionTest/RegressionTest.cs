@@ -361,7 +361,6 @@ internal static class RegressionTest
     {
         if (s_isPullRequest)
         {
-            Console.WriteLine($"Post detailed PR comments: {s_outputDetailedPrComment}");
             SendPullRequestComments(testResult);
         }
         else
@@ -490,6 +489,7 @@ internal static class RegressionTest
 
     private static void SendPullRequestComments(RegressionTestResult testResult)
     {
+        Console.WriteLine($"Post detailed PR comments: {s_outputDetailedPrComment}");
         var isTimeout = testResult.BuildTime.TotalSeconds > testResult.Timeout;
         if (testResult.Succeeded && !isTimeout && testResult.CrashMessage == null)
         {
