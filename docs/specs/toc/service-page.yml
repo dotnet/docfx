@@ -865,3 +865,244 @@ outputs:
   a/api/bot/toc.json:
   a/result/index.json:
   a/result/client.json:
+---
+# Generate a TOC for each moniker
+repos:
+  https://github.com/ops/join-toc-with-monikers-in-reference-toc:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [
+            {
+              "build_source_folder": "docs",
+              "SplitTOC": [
+                "api/bot/legacy/toc.yml",
+                "api/bot/latest/toc.yml",
+                "api/bot/preview/toc.yml"
+              ],
+              "JoinTOCPlugin": [
+                {
+                  "ReferenceTOC": "api/bot/legacy/toc.yml",
+                  "TopLevelTOC": "docs-ref-toc/top-level-toc-legacy.yml",
+                  "OutputFolder": "result-legacy",
+                  "OriginalReferenceTOC": "api/bot/toc.yml"
+                },
+                {
+                  "ReferenceTOC": "api/bot/latest/toc.yml",
+                  "TopLevelTOC": "docs-ref-toc/top-level-toc-latest.yml",
+                  "OutputFolder": "result-latest",
+                  "OriginalReferenceTOC": "api/bot/toc.yml"
+                },
+                {
+                  "ReferenceTOC": "api/bot/preview/toc.yml",
+                  "TopLevelTOC": "docs-ref-toc/top-level-toc-preview.yml",
+                  "OutputFolder": "result-preview",
+                  "OriginalReferenceTOC": "api/bot/toc.yml"
+                }
+              ]
+            }
+          ]
+        }
+      docs/docfx.yml: |
+        build:
+          content:
+            files: "**/*"
+            exclude:
+            - docs-ref-toc/top-level-toc-legacy.yml
+            - docs-ref-toc/top-level-toc-latest.yml
+            - docs-ref-toc/top-level-toc-preview.yml
+      docs/_themes/ContentTemplate/schemas/ReferenceContainer.schema.json: |
+        {
+          "type": "object",
+          "required": ["name", "pageType"],
+          "properties": {
+            "uid": {"contentType": "uid", "type": "string"},
+            "name": {"type": "string"}, "fullName": {"type": "string"},
+            "children": {
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "href": {"contentType": "href", "type": "string"},
+                  "uid": {"contentType": "xref", "type": "string"},
+                  "name": {"type": "string"}
+                }
+              }, "type": "array", "minItems": 1},
+            "pageType": { "enum": ["root", "service"], "type": "string" }
+          }
+        }
+      docs/overview/legacy.md:
+      docs/overview/latest.md:
+      docs/overview/preview.md:
+      docs/docs-auto-gen/legacy.md: |
+        ---
+        name: legacy-doc
+        uid: legacy
+        ---
+      docs/docs-auto-gen/latest.md: |
+        ---
+        name: latest-doc
+        uid: latest
+        ---
+      docs/docs-auto-gen/preview.md: |
+        ---
+        name: preview-doc
+        uid: preview
+        ---
+      docs/toc.yml: |
+        items:
+        - name: a
+      docs/api/bot/toc.yml: |
+        items:
+        - name: MS.ServicePage.legacy.test
+          items:
+          - name: legacy
+            uid: legacy
+          monikers:
+          - legacy
+        - name: MS.ServicePage.latest.test
+          items:
+          - name: latest
+            uid: latest
+          monikers:
+          - latest
+        - name: MS.ServicePage.preview.test
+          items:
+          - name: preview
+            uid: preview
+          monikers:
+          - preview
+      docs/docs-ref-toc/top-level-toc-legacy.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - 'MS.ServicePage.legacy*'
+      docs/docs-ref-toc/top-level-toc-latest.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          children:
+          - 'MS.ServicePage.latest*'
+      docs/docs-ref-toc/top-level-toc-preview.yml: |
+        items:
+        - name: API Reference
+          landingPageType: Root
+          items:
+          - name: App Service
+            landingPageType: Service
+            items:
+            - name: preview docs
+              children:
+              - 'MS.ServicePage.preview*'
+outputs:
+  docs/toc.json:
+  docs/overview/legacy.json:
+  docs/overview/latest.json:
+  docs/overview/preview.json:
+  docs/docs-auto-gen/legacy.json:
+  docs/docs-auto-gen/latest.json:
+  docs/docs-auto-gen/preview.json:
+  docs/result-legacy/index.json: |
+    {
+        "children": [ { "name": "MS.ServicePage.legacy.test", "uid": "legacy" } ],
+        "fullName": "API Reference",
+        "metadata": {
+            "_path": "result-legacy/index.json",
+            "_tocRel": "../api/bot/legacy/toc.json"
+        },
+        "name": "API Reference",
+        "pageType": "root",
+        "schema": "ReferenceContainer"
+    }
+  docs/result-latest/index.json: |
+    {
+        "children": [ { "name": "MS.ServicePage.latest.test", "uid": "latest" } ],
+        "fullName": "API Reference",
+        "metadata": {
+            "_path": "result-latest/index.json",
+            "_tocRel": "../api/bot/latest/toc.json",
+        },
+        "name": "API Reference",
+        "pageType": "root",
+        "schema": "ReferenceContainer"
+    }
+  docs/result-preview/index.json: |
+    {
+        "children": [ { "href": "appservice", "name": "App Service" } ],
+        "fullName": "API Reference",
+        "metadata": {
+            "_path": "result-preview/index.json",
+            "_tocRel": "../api/bot/preview/toc.json"
+        },
+        "name": "API Reference",
+        "pageType": "root",
+        "schema": "ReferenceContainer"
+    }
+  docs/result-preview/appservice.json: |
+    {
+        "children": [ { "name": "preview docs" } ],
+        "fullName": "App Service",
+        "metadata": {
+            "_path": "result-preview/appservice.json",
+            "_tocRel": "../api/bot/preview/toc.json"
+        },
+        "name": "App Service",
+        "pageType": "service",
+        "schema": "ReferenceContainer"
+    }
+  docs/api/bot/legacy/toc.json: |
+    {
+      "items": [
+        {
+          "items": [
+            { "href": "../../../result-legacy/", "name": "Overview" },
+            { "href": "../../../docs-auto-gen/legacy", "name": "MS.ServicePage.legacy.test" }
+          ],
+          "name": "API Reference"
+        }
+      ]
+    }
+  docs/api/bot/legacy/_splitted/ms.servicepage.legacy.test/toc.json:
+  docs/api/bot/legacy/_splitted/ms.servicepage.latest.test/toc.json:
+  docs/api/bot/legacy/_splitted/ms.servicepage.preview.test/toc.json:
+  docs/api/bot/latest/toc.json: |
+    {
+      "items": [
+        {
+          "items": [
+            { "href": "../../../result-latest/", "name": "Overview" },
+            { "href": "../../../docs-auto-gen/latest", "name": "MS.ServicePage.latest.test"}
+          ],
+          "name": "API Reference"
+        }
+      ]
+    }
+  docs/api/bot/latest/_splitted/ms.servicepage.legacy.test/toc.json:
+  docs/api/bot/latest/_splitted/ms.servicepage.latest.test/toc.json:
+  docs/api/bot/latest/_splitted/ms.servicepage.preview.test/toc.json:
+  docs/api/bot/preview/toc.json: |
+    {
+      "items": [
+        {
+          "items": [
+            { "href": "../../../result-preview/", "name": "Overview" },
+            {
+              "items": [
+                { "href": "../../../result-preview/appservice", "name": "Overview" },
+                {
+                  "items": [ { "href": "../../../docs-auto-gen/preview", "name": "MS.ServicePage.preview.test" } ],
+                  "name": "preview docs"
+                }
+              ],
+              "name": "App Service"
+            }
+          ],
+          "name": "API Reference"
+        }
+      ]
+    }
+  docs/api/bot/preview/_splitted/ms.servicepage.legacy.test/toc.json:
+  docs/api/bot/preview/_splitted/ms.servicepage.latest.test/toc.json:
+  docs/api/bot/preview/_splitted/ms.servicepage.preview.test/toc.json:
+  docs/.xrefmap.json:
+  docs/filemap.json:
