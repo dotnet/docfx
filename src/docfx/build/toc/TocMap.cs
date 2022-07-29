@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal class TocMap
 {
-    private readonly BuildOptions _buildOptions;
     private readonly SourceMap _sourceMap;
     private readonly Config _config;
     private readonly Input _input;
@@ -27,7 +26,6 @@ internal class TocMap
     private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
     public TocMap(
-        BuildOptions buildOptions,
         SourceMap sourceMap,
         Config config,
         ErrorBuilder errors,
@@ -40,7 +38,6 @@ internal class TocMap
         ContentValidator contentValidator,
         PublishUrlMap publishUrlMap)
     {
-        _buildOptions = buildOptions;
         _sourceMap = sourceMap;
         _config = config;
         _errors = errors;
@@ -185,27 +182,23 @@ internal class TocMap
         var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
-        var tocFilesFromBuildScope = _buildScope.GetFiles(ContentType.Toc);
-        var (originalReferenceTOCs, targetReferenceTOCs) = GetOriginalReferenceTocWithTargetReferenceToc(tocFilesFromBuildScope);
+        var (originalReferenceTOCs, targetReferenceTOCs) = GetOriginalReferenceTocWithTargetReferenceToc();
 
         // Parse and split TOC
         ParallelUtility.ForEach(
             scope,
             _errors,
-            tocFilesFromBuildScope.Concat(targetReferenceTOCs),
+            _buildScope.GetFiles(ContentType.Toc).Concat(targetReferenceTOCs).Except(originalReferenceTOCs),
             file =>
             {
-                if (!originalReferenceTOCs.Contains(file))
+                if (_input.Exists(file))
                 {
-                    if (_input.Exists(file))
-                    {
-                        SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles);
-                    }
-                    else
-                    {
-                        var node = _tocParser.Parse(_sourceMap.GetOriginalFilePath(file)!, _errors);
-                        SplitToc(file, node, allTocFiles);
-                    }
+                    SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles);
+                }
+                else
+                {
+                    var node = _tocParser.Parse(_sourceMap.GetOriginalFilePath(file)!, _errors);
+                    SplitToc(file, node, allTocFiles);
                 }
             });
 
@@ -276,32 +269,16 @@ internal class TocMap
         }
     }
 
-    private (HashSet<FilePath> originalReferenceTOCs, List<FilePath> targetReferenceTOCs)
-        GetOriginalReferenceTocWithTargetReferenceToc(IEnumerable<FilePath> tocFilesFromBuildScope)
+    private (HashSet<FilePath> originalReferenceTOCs, List<FilePath> targetReferenceTOCs) GetOriginalReferenceTocWithTargetReferenceToc()
     {
         var originalReferenceTOCs = new HashSet<FilePath>();
-        var originalReferenceTocFilePathMap = new Dictionary<string, FilePath>(StringComparer.OrdinalIgnoreCase);
         var targetReferenceTOCs = new List<FilePath>();
 
         foreach (var joinTOCConfig in _config.JoinTOC)
         {
             if (!string.IsNullOrEmpty(joinTOCConfig.OriginalReferenceToc))
             {
-                var relativePathForOriRefToc = Path.GetRelativePath(_buildOptions.DocsetPath, joinTOCConfig.OriginalReferenceToc!);
-                if (!originalReferenceTocFilePathMap.ContainsKey(joinTOCConfig.OriginalReferenceToc))
-                {
-                    foreach (var tocFilePath in tocFilesFromBuildScope)
-                    {
-                        var relativePathOfTocFilePath = Path.GetRelativePath(_buildOptions.DocsetPath, tocFilePath.Path.Value);
-                        if (relativePathOfTocFilePath?.Equals(relativePathForOriRefToc, StringComparison.OrdinalIgnoreCase) ?? false)
-                        {
-                            originalReferenceTocFilePathMap[joinTOCConfig.OriginalReferenceToc] = tocFilePath;
-                            break;
-                        }
-                    }
-                }
-
-                var filePathForOriginalTOC = originalReferenceTocFilePathMap[joinTOCConfig.OriginalReferenceToc];
+                var filePathForOriginalTOC = FilePath.Content(new PathString(joinTOCConfig.OriginalReferenceToc));
                 originalReferenceTOCs.Add(filePathForOriginalTOC);
                 var referenceTocFilePath = new FilePath(joinTOCConfig.ReferenceToc!, FileOrigin.Main);
                 targetReferenceTOCs.Add(referenceTocFilePath);
