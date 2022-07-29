@@ -280,7 +280,7 @@ internal class TocMap
             {
                 var filePathForOriginalTOC = FilePath.Content(new PathString(joinTOCConfig.OriginalReferenceToc));
                 originalReferenceTOCs.Add(filePathForOriginalTOC);
-                var referenceTocFilePath = new FilePath(joinTOCConfig.ReferenceToc!, FileOrigin.Main);
+                var referenceTocFilePath = FilePath.Content(new PathString(joinTOCConfig.ReferenceToc!));
                 targetReferenceTOCs.Add(referenceTocFilePath);
                 _sourceMap.AddOriginalPath(referenceTocFilePath.Path, filePathForOriginalTOC.Path);
             }
