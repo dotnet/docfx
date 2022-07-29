@@ -178,6 +178,24 @@ internal static class RegressionTest
         Build(testResult, repositoryPath, outputPath, opts, docfxConfig);
 
         Compare(testResult, opts, workingFolder, outputPath, baseLinePath);
+
+        if (!s_outputDetailedPrComment)
+        {
+            if (testResult.Diff?.Length > 0)
+            {
+                Console.WriteLine("Diff: \n");
+                Console.WriteLine(testResult.Diff);
+                Console.WriteLine("\n");
+            }
+
+            if (testResult.CrashMessage?.Length > 0)
+            {
+                Console.WriteLine("CrashMessage: \n");
+                Console.WriteLine(testResult.CrashMessage);
+                Console.WriteLine("\n");
+            }
+        }
+
         Console.BackgroundColor = ConsoleColor.DarkMagenta;
         Console.WriteLine($"Test {(testResult.Succeeded ? "Pass" : "Fail")} {workingFolder}");
         Console.WriteLine("Test Result Summary:");
@@ -185,7 +203,7 @@ internal static class RegressionTest
             $"BuildTime = {testResult.BuildTime.TotalSeconds}s, " +
             $"Timeout = {testResult.Timeout}s, " +
             $"PeakMemory = {testResult.PeakMemory}, " +
-            $"Diff = {(testResult.Diff?.Length > 0 ? "Yes" : "No")}" +
+            $"Diff = {(testResult.Diff?.Length > 0 ? "Yes" : "No")}, " +
             $"MoreLines = {testResult.MoreLines}, " +
             $"CrashMessage = {testResult.CrashMessage}");
         Console.ResetColor();
