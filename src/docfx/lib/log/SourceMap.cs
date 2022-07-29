@@ -40,11 +40,11 @@ internal class SourceMap
         }
     }
 
-    public void AddOriginalPath(PathString targetPath, PathString sourcePath)
+    public void AddOriginalPath(PathString path, PathString originalPath)
     {
-        if (!_map.TryAdd(targetPath, sourcePath))
+        if (!_map.TryAdd(path, originalPath))
         {
-            _errors.Add(Errors.SourceMap.DuplicateSourceMapItem(targetPath, new List<PathString> { _map[targetPath], sourcePath }));
+            _errors.Add(Errors.SourceMap.DuplicateSourceMapItem(path, new List<PathString> { _map[path], originalPath }));
         }
     }
 
