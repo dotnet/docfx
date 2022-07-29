@@ -148,6 +148,7 @@ jobs:
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
         MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
         OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
+        DOCFX_PPE_DEFAULT_DOMAIN_HOST_NAME: $(ppe-default-domain-host-name)
 
 - job: WarmUp
   timeoutInMinutes: 180
@@ -191,6 +192,7 @@ jobs:
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
           PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
           OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
+          DOCFX_PPE_DEFAULT_DOMAIN_HOST_NAME: $(ppe-default-domain-host-name)
 
 parameters:
 - name: agents
