@@ -14,4 +14,6 @@ internal static class TestQuirks
     public static Func<string, string?>? HttpProxy { get; set; }
 
     public static bool? Verbose { get; set; }
+
+    public static bool? Initializable { get; set; }
 }

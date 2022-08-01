@@ -12,6 +12,7 @@ public static class NewTest
 
     static NewTest()
     {
+        TestQuirks.Initializable = true;
         var basePath = Path.Combine(AppContext.BaseDirectory, "data", "new");
         foreach (var path in Directory.GetDirectories(basePath))
         {

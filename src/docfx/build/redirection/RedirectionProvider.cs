@@ -17,6 +17,7 @@ internal class RedirectionProvider
     private readonly Package _docsetPackage;
     private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
+    private HashSet<PathString> _autoScannedRedirectionFiles;
 
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
 
@@ -41,6 +42,7 @@ internal class RedirectionProvider
 
         _redirects = new(LoadRedirections);
         _history = new(LoadHistory);
+        _autoScannedRedirectionFiles = AutoScanRedirectionFiles();
     }
 
     public bool TryGetValue(PathString file, [NotNullWhen(true)] out FilePath? actualPath)
@@ -158,6 +160,11 @@ internal class RedirectionProvider
 
         foreach (var fullPath in ProbeRedirectionFiles())
         {
+            if (_autoScannedRedirectionFiles.Contains(fullPath))
+            {
+                _autoScannedRedirectionFiles.Remove(fullPath);
+            }
+
             if (_docsetPackage.Exists(fullPath))
             {
                 GenerateRedirectionRules(fullPath, results);
@@ -167,7 +174,18 @@ internal class RedirectionProvider
 
         foreach (var fullPath in ProbeSubRedirectionFiles())
         {
+            if (_autoScannedRedirectionFiles.Contains(fullPath))
+            {
+                _autoScannedRedirectionFiles.Remove(fullPath);
+            }
+
             GenerateRedirectionRules(fullPath, results);
+        }
+
+        if (_autoScannedRedirectionFiles.Count != 0)
+        {
+            _errors.Add(Errors.Redirection.DanglingRedirectionFiles(
+                _autoScannedRedirectionFiles.Select(file => Path.GetRelativePath(_buildOptions.Repository?.Path ?? ".", file))));
         }
 
         return results.OrderBy(item => item.RedirectUrl.Source).ToArray();
@@ -283,6 +301,17 @@ internal class RedirectionProvider
                 }
             }
         }
+    }
+
+    private HashSet<PathString> AutoScanRedirectionFiles()
+    {
+        var redirectionFilesSet = new HashSet<PathString>();
+        if (_buildOptions.Repository is not null)
+        {
+            var files = Directory.EnumerateFiles(_buildOptions.Repository.Path, "*.openpublishing.redirection*.json", SearchOption.AllDirectories);
+            redirectionFilesSet = files.Select(file => new PathString(file)).ToHashSet();
+        }
+        return redirectionFilesSet;
     }
 
     private (Dictionary<FilePath, FilePath>, Dictionary<FilePath, (FilePath, SourceInfo?)>) LoadHistory()
