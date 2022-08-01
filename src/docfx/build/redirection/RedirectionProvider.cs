@@ -17,7 +17,7 @@ internal class RedirectionProvider
     private readonly Package _docsetPackage;
     private readonly Watch<(Dictionary<FilePath, string> urls, HashSet<PathString> paths, RedirectionItem[] items)> _redirects;
     private readonly Watch<(Dictionary<FilePath, FilePath> renames, Dictionary<FilePath, (FilePath, SourceInfo?)> redirects)> _history;
-    private HashSet<PathString> _autoScannedRedirectionFiles;
+    private readonly HashSet<PathString> _autoScannedRedirectionFiles;
 
     public IEnumerable<FilePath> Files => _redirects.Value.urls.Keys;
 
@@ -160,11 +160,7 @@ internal class RedirectionProvider
 
         foreach (var fullPath in ProbeRedirectionFiles())
         {
-            if (_autoScannedRedirectionFiles.Contains(fullPath))
-            {
-                _autoScannedRedirectionFiles.Remove(fullPath);
-            }
-
+            _autoScannedRedirectionFiles.Remove(fullPath);
             if (_docsetPackage.Exists(fullPath))
             {
                 GenerateRedirectionRules(fullPath, results);
@@ -174,11 +170,7 @@ internal class RedirectionProvider
 
         foreach (var fullPath in ProbeSubRedirectionFiles())
         {
-            if (_autoScannedRedirectionFiles.Contains(fullPath))
-            {
-                _autoScannedRedirectionFiles.Remove(fullPath);
-            }
-
+            _autoScannedRedirectionFiles.Remove(fullPath);
             GenerateRedirectionRules(fullPath, results);
         }
 

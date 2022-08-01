@@ -1196,4 +1196,4 @@ repos:
         }
 outputs:
   .errors.log: |
-    {"message_severity":"warning","code":"dangling-redirection-files","message":"There are some dangling redirection files: a\\b\\.openpublishing.redirection.json, a\\b\\.openpublishing.redirection.test.json"}
+    {"message_severity":"info","code":"dangling-redirection-files","message":"There are some dangling redirection files: a\\b\\.openpublishing.redirection.json, a\\b\\.openpublishing.redirection.test.json"}

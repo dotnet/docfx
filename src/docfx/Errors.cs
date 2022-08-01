@@ -372,7 +372,7 @@ internal static class Errors
         /// Check whether there are any dangling redirection files in a repository.
         /// </summary>
         public static Error DanglingRedirectionFiles(IEnumerable<string> danglingRedirectionFiles)
-            => new(ErrorLevel.Warning, "dangling-redirection-files", $"There are some dangling redirection files: {string.Join(", ", danglingRedirectionFiles)}");
+            => new(ErrorLevel.Info, "dangling-redirection-files", $"There are some dangling redirection files: {string.Join(", ", danglingRedirectionFiles)}");
     }
 
     public static class Toc
