@@ -367,6 +367,12 @@ internal static class Errors
         /// Behavior: ✔️ Message: ✔️
         public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
             => new(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
+
+        /// <summary>
+        /// Check whether there are any dangling redirection files in a repository.
+        /// </summary>
+        public static Error DanglingRedirectionFiles(IEnumerable<string> danglingRedirectionFiles)
+            => new(ErrorLevel.Info, "dangling-redirection-files", $"There are some dangling redirection files: {string.Join(", ", danglingRedirectionFiles)}");
     }
 
     public static class Toc

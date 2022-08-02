@@ -1153,3 +1153,48 @@ outputs:
   .errors.log: |
       {"message_severity":"suggestion","code":"redirect-url-invalid","message":"Can't redirect document ID for redirected file 'original.md' because redirect URL 'folder/a' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.json"}
 ---
+# dangling redirection files
+os: windows
+repos:
+  https://github.com/redirection/multiple-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.test.json",
+            "a/.openpublishing.redirection.test.json"
+          ],
+        }
+      a/docfx.yml:
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      .openpublishing.redirection.test.json: |
+        {
+          "redirections": [{"source_path": "c.md", "redirect_url": "/cc"}]
+        }
+      a/.openpublishing.redirection.test.json: |
+        {
+           "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.test.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+outputs:
+  .errors.log: |
+    {"message_severity":"info","code":"dangling-redirection-files","message":"There are some dangling redirection files: a\\b\\.openpublishing.redirection.json, a\\b\\.openpublishing.redirection.test.json"}

@@ -27,6 +27,8 @@ internal class CommandLineOptions
 
     public bool Force { get; init; }
 
+    public bool GitInit { get; init; }
+
     public bool NoCache { get; init; }
 
     public bool NoRestore { get; init; }
