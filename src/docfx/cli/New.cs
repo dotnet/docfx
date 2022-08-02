@@ -92,7 +92,6 @@ internal static class New
                         GitUtility.Init(directory);
                     }
                 }
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFullPath) ?? ".");
                 File.Copy(file, targetFullPath, overwrite: options.Force);
             }
         }
