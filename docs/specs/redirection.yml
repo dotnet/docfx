@@ -1154,6 +1154,7 @@ outputs:
       {"message_severity":"suggestion","code":"redirect-url-invalid","message":"Can't redirect document ID for redirected file 'original.md' because redirect URL 'folder/a' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.json"}
 ---
 # dangling redirection files
+os: windows
 repos:
   https://github.com/redirection/multiple-redirection-files:
   - files:

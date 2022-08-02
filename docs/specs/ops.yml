@@ -140,6 +140,7 @@ outputs:
     { "files": [{ "redirect_url": "/" }] }
 ---
 # document_id of files redirected to relative path
+os: windows
 repos:
   https://github.com/ops/redirect-2:
   - files:
