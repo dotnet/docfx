@@ -11,7 +11,6 @@ namespace Microsoft.Docs.Build;
 /// </summary>
 internal class TocMap
 {
-    private readonly SourceMap _sourceMap;
     private readonly Config _config;
     private readonly Input _input;
     private readonly ErrorBuilder _errors;
@@ -26,7 +25,6 @@ internal class TocMap
     private readonly Watch<(FilePath[] tocs, Dictionary<FilePath, FilePath[]> docToTocs, List<FilePath> servicePages)> _tocs;
 
     public TocMap(
-        SourceMap sourceMap,
         Config config,
         ErrorBuilder errors,
         Input input,
@@ -38,7 +36,6 @@ internal class TocMap
         ContentValidator contentValidator,
         PublishUrlMap publishUrlMap)
     {
-        _sourceMap = sourceMap;
         _config = config;
         _errors = errors;
         _input = input;
@@ -182,25 +179,13 @@ internal class TocMap
         var allTocs = new List<(FilePath file, HashSet<FilePath> docs, HashSet<FilePath> tocs, bool shouldBuildFile)>();
         var includedTocs = new HashSet<FilePath>();
         var allServicePages = new List<FilePath>();
-        var (originalReferenceTOCs, targetReferenceTOCs) = GetOriginalReferenceTocWithTargetReferenceToc();
 
         // Parse and split TOC
         ParallelUtility.ForEach(
             scope,
             _errors,
-            _buildScope.GetFiles(ContentType.Toc).Concat(targetReferenceTOCs).Except(originalReferenceTOCs),
-            file =>
-            {
-                if (_input.Exists(file))
-                {
-                    SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles);
-                }
-                else
-                {
-                    var node = _tocParser.Parse(_sourceMap.GetOriginalFilePath(file)!, _errors);
-                    SplitToc(file, node, allTocFiles);
-                }
-            });
+            _buildScope.GetFiles(ContentType.Toc),
+            file => SplitToc(file, _tocParser.Parse(file, _errors), allTocFiles));
 
         // Load TOC
         ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
@@ -267,26 +252,6 @@ internal class TocMap
                 }
             }
         }
-    }
-
-    private (HashSet<FilePath> originalReferenceTOCs, List<FilePath> targetReferenceTOCs) GetOriginalReferenceTocWithTargetReferenceToc()
-    {
-        var originalReferenceTOCs = new HashSet<FilePath>();
-        var targetReferenceTOCs = new List<FilePath>();
-
-        foreach (var joinTOCConfig in _config.JoinTOC)
-        {
-            if (!string.IsNullOrEmpty(joinTOCConfig.OriginalReferenceToc))
-            {
-                var filePathForOriginalTOC = FilePath.Content(new PathString(joinTOCConfig.OriginalReferenceToc));
-                originalReferenceTOCs.Add(filePathForOriginalTOC);
-                var referenceTocFilePath = FilePath.Content(new PathString(joinTOCConfig.ReferenceToc!));
-                targetReferenceTOCs.Add(referenceTocFilePath);
-                _sourceMap.AddOriginalPath(referenceTocFilePath.Path, filePathForOriginalTOC.Path);
-            }
-        }
-
-        return (originalReferenceTOCs, targetReferenceTOCs);
     }
 
     private void SplitToc(FilePath file, TocNode toc, ConcurrentHashSet<FilePath> result)
