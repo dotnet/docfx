@@ -77,6 +77,7 @@ public static class Docfx
             new[] { "-o", "--output" }, "Output directory in which to place built artifacts."));
         command.AddOption(new Option<bool>(
             "--force", "Forces content to be generated even if it would change existing files."));
+        command.AddOption(new Option<bool>("--git-init", "Initialize the docset as a git directory."));
         command.AddArgument(new Argument<string>("templateName", "Docset template name") { Arity = ArgumentArity.ZeroOrOne });
         return command;
     }

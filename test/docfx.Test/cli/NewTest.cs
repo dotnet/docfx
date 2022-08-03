@@ -25,7 +25,7 @@ public static class NewTest
     {
         var path = Path.Combine("new-test", Guid.NewGuid().ToString("N"));
 
-        Assert.Equal(0, Docfx.Run(new[] { "new", templateName, "-o", path }));
+        Assert.Equal(0, Docfx.Run(new[] { "new", templateName, "--git-init", "-o", path }));
         Assert.Equal(0, Docfx.Run(new[] { "build", path }));
     }
 
@@ -35,7 +35,7 @@ public static class NewTest
     {
         var path = Path.Combine("new-test", Guid.NewGuid().ToString("N"));
 
-        Assert.Equal(0, Docfx.Run(new[] { "new", templateName, "-o", path }));
+        Assert.Equal(0, Docfx.Run(new[] { "new", templateName, "--git-init", "-o", path }));
         Assert.Equal(0, Docfx.Run(new[] { "build", path }));
 
         var exception = new Exception();

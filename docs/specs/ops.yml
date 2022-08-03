@@ -140,6 +140,7 @@ outputs:
     { "files": [{ "redirect_url": "/" }] }
 ---
 # document_id of files redirected to relative path
+os: windows
 repos:
   https://github.com/ops/redirect-2:
   - files:
@@ -165,6 +166,8 @@ repos:
 outputs:
   ce/basics/teams-integration.json: |
     { "document_id": "b1c6c9d3-40a8-a21d-98e8-a3cbf54eaeb4" }
+  .errors.log: |
+    { "message_severity":"info","code":"dangling-redirection-files","message":"There are some dangling redirection files: .openpublishing.redirection.json, ce\\.openpublishing.redirection.json"}
 ---
 # redirect_document_id is false
 # document_id should be different

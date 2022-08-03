@@ -147,6 +147,7 @@ jobs:
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
         MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
+        OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 - job: WarmUp
   timeoutInMinutes: 180
@@ -189,6 +190,7 @@ jobs:
           AZURE_DEVOPS_TOKEN: $(vsoTestToken)
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
           PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+          OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 parameters:
 - name: agents
@@ -231,8 +233,8 @@ parameters:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
     powerapps-docs-web-api-ref-pr:
       params: https://github.com/MicrosoftDocs/powerapps-docs-web-api-ref-pr --timeout 25
-    # mc-docs-pr:
-    #   params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
+    mc-docs-pr:
+      params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
     dynamics365smb-devitpro:
       params: https://github.com/MicrosoftDocs/dynamics365smb-devitpro --timeout 15
     test:
