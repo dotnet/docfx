@@ -205,6 +205,10 @@ internal class TocMap
         // Load TOC
         ParallelUtility.ForEach(scope, _errors, allTocFiles, file =>
         {
+            if (!_input.Exists(file))
+            {
+                file = _sourceMap.GetOriginalFilePath(file)!;
+            }
             var (_, docsList, tocsList, servicePages) = _tocLoader.Load(file);
             var docs = docsList.ToHashSet();
             var tocs = tocsList.ToHashSet();
