@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
