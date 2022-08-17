@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -140,7 +141,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
                                 using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
                                 {
-                                    buildStep.Build(m, hostService);
+                                    try
+                                    {
+                                        buildStep.Build(m, hostService);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
+                                        throw;
+                                    }
                                 }
                             });
                     }
