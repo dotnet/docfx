@@ -1,3 +1,4 @@
+#Requires -Version 7.0
 $ErrorActionPreference = "Stop"
 
 # Check if node exists globally
