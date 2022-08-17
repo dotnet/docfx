@@ -39,7 +39,7 @@ outputs:
     }
   'a b.json': |
     {
-      "canonical_url": "https://docs.com/en-us/a b",
+      "canonical_url": "https://docs.com/en-us/a%20b",
       "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",

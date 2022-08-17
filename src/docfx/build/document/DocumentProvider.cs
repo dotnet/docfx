@@ -196,7 +196,7 @@ internal class DocumentProvider
         var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
         var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
         var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
-        var canonicalUrl = GetCanonicalUrl(siteUrl);
+        var canonicalUrl = GetCanonicalUrl(sitePath, path);
         var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
         return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
@@ -264,12 +264,57 @@ internal class DocumentProvider
     }
 
     /// <summary>
-    /// In docs, canonical URL is later overwritten by template JINT code.
-    /// TODO: need to handle the logic difference when template code is removed.
+    /// The logic is copied from template JINT code
     /// </summary>
-    private string GetCanonicalUrl(string siteUrl)
+    private string GetCanonicalUrl(string? sitePath, FilePath file)
     {
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
+        var canonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", _buildOptions.Locale, _config.BasePath);
+
+        var layout = _metadataProvider.GetMetadata(_errors, file).Layout ?? "Conceptual";
+
+        if (sitePath == null)
+        {
+            return "";
+        }
+
+        var encodedPath = EncodePath(sitePath);
+
+        var canonicalUrl = canonicalUrlPrefix + '/' + RemoveExtension(encodedPath);
+        canonicalUrl = canonicalUrl.ToLowerInvariant();
+
+        if (layout != null && canonicalUrl.EndsWith("/index"))
+        {
+            canonicalUrl = canonicalUrl[..^5];
+        }
+
+        return canonicalUrl;
+    }
+
+    private static string EncodePath(string path)
+    {
+        var splitPaths = path.Split(new char[] { '\\', '/' });
+        for (var i = 0; i < splitPaths.Length; i++)
+        {
+            // ensure all the allowed chars in RFC3986 path-absolute are not encoded
+            // including: ALPHA / DIGIT / "-" / "." / "_" / "~" / "%" HEXDIG HEXDIG
+            // "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "=" / ":" / "@"
+            // reference link: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
+#pragma warning disable SYSLIB0013 // Type or member is obsolete
+            // The logic is copied from template JINT, Uri.EscapeUriString is the only method working same as JS encodeURI function
+            splitPaths[i] = Uri.EscapeUriString(splitPaths[i]).Replace("#", "%23").Replace("%25", "%");
+#pragma warning restore SYSLIB0013 // Type or member is obsolete
+        }
+        return string.Join('/', splitPaths);
+    }
+
+    private static string RemoveExtension(string path)
+    {
+        var index = path.LastIndexOf('.');
+        if (index > 0)
+        {
+            return path[..index];
+        }
+        return path;
     }
 
     private PathString ApplyRoutes(PathString path)

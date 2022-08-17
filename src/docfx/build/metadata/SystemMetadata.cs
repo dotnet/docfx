@@ -59,6 +59,9 @@ internal class SystemMetadata
     [JsonProperty("_op_canonicalUrlPrefix")]
     public string? CanonicalUrlPrefix { get; set; }
 
+    [JsonProperty("_op_canonicalUrl")]
+    public string? OpCanonicalUrl { get; set; }
+
     [JsonProperty("_op_pdfUrlPrefixTemplate")]
     public string? PdfUrlPrefixTemplate { get; set; }
 

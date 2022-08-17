@@ -63,6 +63,7 @@ internal class PublishUrlMap
         return CreateUrlMap(scope, files).files;
     }
 
+
     private string? GetCanonicalVersionCore(FilePath file)
     {
         var url = _documentProvider.GetSiteUrl(file);
