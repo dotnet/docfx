@@ -275,7 +275,7 @@ internal class PageBuilder
 
         var canonicalUrl = _documentProvider.GetCanonicalUrl(file);
 
-        if (_config.CanonicalUrlWithMoniker)
+        if (_config.IsCanonicalUrlWithMoniker)
         {
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
             if (!string.IsNullOrEmpty(canonicalVersion))
