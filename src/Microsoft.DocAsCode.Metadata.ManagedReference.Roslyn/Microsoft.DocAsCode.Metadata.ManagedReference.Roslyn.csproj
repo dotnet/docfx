@@ -19,27 +19,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="3.9.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
+    <PackageReference Include="System.Composition" Version="6.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="6.0.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.VisualStudio.RemoteControl" Version="14.0.262-masterA5CACE98" />
-    <PackageReference Include="NuGet.Common" Version="5.7.0" />
-    <PackageReference Include="NuGet.ProjectModel" Version="5.7.0" />
-    <PackageReference Include="NuGet.Packaging.Core" Version="5.7.0" />
-    <PackageReference Include="SQLitePCLRaw.core" Version="1.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.RemoteControl" Version="16.3.44" />
+    <PackageReference Include="NuGet.Common" Version="6.3.0" />
+    <PackageReference Include="NuGet.ProjectModel" Version="6.3.0" />
+    <PackageReference Include="NuGet.Packaging.Core" Version="6.3.0" />
+    <PackageReference Include="SQLitePCLRaw.core" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
