@@ -2,7 +2,7 @@
   <Import Project="../Shared/base.netstandard.props" />
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.26.0" />
+    <PackageReference Include="Markdig" Version="0.30.3" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
   </ItemGroup>
 
