@@ -69,8 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             TestGfmRendererInGeneral(expected, expected);
         }
 
-        [Fact]
-        [Trait("Disable", "Because in GFM the mail will be encrypt. Disable this case as it will fail.")]
+        [Fact(Skip = "Disable this case as it will fail.")]
         public void TestGfmRenderer_AutoLinkWithMail()
         {
             var source = @"This is Auto Link: <user@microsoft.com>";
