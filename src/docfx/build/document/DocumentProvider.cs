@@ -196,7 +196,7 @@ internal class DocumentProvider
         var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
         var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
         var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
-        var canonicalUrl = GetCanonicalUrl(sitePath, path);
+        var canonicalUrl = GetCanonicalUrl(sitePath);
         var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
         return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
@@ -266,23 +266,19 @@ internal class DocumentProvider
     /// <summary>
     /// The logic is copied from template JINT code
     /// </summary>
-    private string GetCanonicalUrl(string? sitePath, FilePath file)
+    private string GetCanonicalUrl(string? sitePath)
     {
-        var canonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", _buildOptions.Locale, _config.BasePath);
-
-        var layout = _metadataProvider.GetMetadata(_errors, file).Layout ?? "Conceptual";
-
         if (sitePath == null)
         {
             return "";
         }
 
-        var encodedPath = EncodePath(sitePath);
+        var canonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", _buildOptions.Locale, _config.BasePath);
 
-        var canonicalUrl = canonicalUrlPrefix + '/' + RemoveExtension(encodedPath);
+        var canonicalUrl = canonicalUrlPrefix + "/" + RemoveExtension(EncodePath(sitePath));
         canonicalUrl = canonicalUrl.ToLowerInvariant();
 
-        if (layout != null && canonicalUrl.EndsWith("/index"))
+        if (canonicalUrl.EndsWith("/index"))
         {
             canonicalUrl = canonicalUrl[..^5];
         }
