@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="NuGet.Common" Version="5.7.0" />
     <PackageReference Include="Owin" Version="1.0.0" />
     <PackageReference Include="Microsoft.Owin" Version="4.1.1" />
     <PackageReference Include="Microsoft.Owin.FileSystems" Version="4.1.1" />
@@ -42,7 +41,6 @@
     <PackageReference Include="Microsoft.Owin.Hosting" Version="4.1.1" />
     <PackageReference Include="Microsoft.Owin.SelfHost" Version="4.1.1" />
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.1.1" />
-    <PackageReference Include="SQLitePCLRaw.core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
