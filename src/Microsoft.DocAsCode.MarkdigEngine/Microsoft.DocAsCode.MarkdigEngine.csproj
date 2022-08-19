@@ -5,7 +5,7 @@
     <PackageReference Include="Markdig" Version="0.26.0" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="YamlDotNet.Signed" Version="5.1.0" />
   </ItemGroup>
 
