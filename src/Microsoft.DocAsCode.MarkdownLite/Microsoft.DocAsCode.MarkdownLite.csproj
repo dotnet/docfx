@@ -3,7 +3,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
 </Project>
