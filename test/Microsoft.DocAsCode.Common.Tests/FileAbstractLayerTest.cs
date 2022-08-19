@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal("😁", fal2.ReadAllText("copy.txt"));
             Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
             Assert.False(File.Exists(Path.Combine(output, "copy.txt")));
-            Assert.Equal(File.ReadAllText(Path.Combine(input, "temp.txt")), "😄");
+            Assert.Equal("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
         }
 
         [Fact]
@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal("😁", fal2.ReadAllText("copy.txt"));
             Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
             Assert.True(File.Exists(Path.Combine(output, "copy.txt")));
-            Assert.Equal(File.ReadAllText(Path.Combine(input, "temp.txt")), "😄");
+            Assert.Equal("😄", File.ReadAllText(Path.Combine(input, "temp.txt")));
         }
 
         [Fact]

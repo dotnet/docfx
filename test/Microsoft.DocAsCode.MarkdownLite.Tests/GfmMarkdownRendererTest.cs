@@ -69,6 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             TestGfmRendererInGeneral(expected, expected);
         }
 
+        [Fact]
         public void TestGfmRenderer_AutoLinkWithMail()
         {
             var source = @"This is Auto Link: <user@microsoft.com>";

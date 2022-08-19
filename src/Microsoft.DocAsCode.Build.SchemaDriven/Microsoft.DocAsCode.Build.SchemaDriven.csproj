@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../Shared/base.netstandard.props" />
+
   <ItemGroup>
     <EmbeddedResource Include="..\..\schemas\v1.0\schema.json" Link="schemas\v1.0\schema.json" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
@@ -19,7 +21,7 @@
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
