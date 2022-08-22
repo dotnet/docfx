@@ -236,7 +236,7 @@ internal class PageBuilder
 
         systemMetadata.Locale = _buildOptions.Locale;
 
-        systemMetadata.CanonicalUrl = systemMetadata.OpCanonicalUrl = GetCanonicalUrlWithMoniker(userMetadata.PageType, file);
+        systemMetadata.CanonicalUrl = systemMetadata.OpCanonicalUrl = GetCanonicalUrlWithMonikerIfNecessary(userMetadata.PageType, file);
 
         systemMetadata.Path = _documentProvider.GetSitePath(file);
         systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
@@ -266,7 +266,7 @@ internal class PageBuilder
         return systemMetadata;
     }
 
-    private string? GetCanonicalUrlWithMoniker(string? pageType, FilePath file)
+    private string? GetCanonicalUrlWithMonikerIfNecessary(string? pageType, FilePath file)
     {
         if (pageType == "profile")
         {
