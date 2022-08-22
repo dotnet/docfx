@@ -196,7 +196,7 @@ internal class DocumentProvider
         var renderType = _jsonSchemaProvider.GetRenderType(contentType, mime);
         var sitePath = FilePathToSitePath(path, contentType, _config.UrlType, renderType);
         var siteUrl = PathToAbsoluteUrl(Path.Combine(_config.BasePath, sitePath), contentType, _config.UrlType, renderType);
-        var canonicalUrl = GetCanonicalUrl(sitePath);
+        var canonicalUrl = GetCanonicalUrl(siteUrl);
         var outputPath = GetOutputPath(path, sitePath, contentType, renderType);
 
         return new Document(sitePath, siteUrl, outputPath, canonicalUrl, contentType, mime, renderType);
@@ -256,6 +256,7 @@ internal class DocumentProvider
             }
             if (urlType == UrlType.Docs && contentType != ContentType.Toc)
             {
+                // remove extension
                 var i = url.LastIndexOf('.');
                 return i >= 0 ? url[..i] : url;
             }
@@ -263,29 +264,19 @@ internal class DocumentProvider
         return url;
     }
 
-    /// <summary>
-    /// The logic is copied from template JINT code
-    /// </summary>
-    private string GetCanonicalUrl(string? sitePath)
+    private string GetCanonicalUrl(string? siteUrl)
     {
-        if (sitePath == null)
+        if (siteUrl == null)
         {
             return "";
         }
 
-        var canonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", _buildOptions.Locale, _config.BasePath);
-
-        var canonicalUrl = canonicalUrlPrefix + "/" + RemoveExtension(EncodePath(sitePath));
-        canonicalUrl = canonicalUrl.ToLowerInvariant();
-
-        if (canonicalUrl.EndsWith("/index"))
-        {
-            canonicalUrl = canonicalUrl[..^5];
-        }
-
-        return canonicalUrl;
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{EncodePath(siteUrl)}";
     }
 
+    /// <summary>
+    /// The logic is copied from template JINT code
+    /// </summary>
     private static string EncodePath(string path)
     {
         var splitPaths = path.Split(new char[] { '\\', '/' });
@@ -301,16 +292,6 @@ internal class DocumentProvider
 #pragma warning restore SYSLIB0013 // Type or member is obsolete
         }
         return string.Join('/', splitPaths);
-    }
-
-    private static string RemoveExtension(string path)
-    {
-        var index = path.LastIndexOf('.');
-        if (index > 0)
-        {
-            return path[..index];
-        }
-        return path;
     }
 
     private PathString ApplyRoutes(PathString path)
