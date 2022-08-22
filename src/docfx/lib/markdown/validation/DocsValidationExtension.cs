@@ -273,11 +273,11 @@ internal static class DocsValidationExtension
         var columnHeaders = new List<TableCellNode>();
         var rowHeaders = new List<TableCellNode>();
         var columnHeaderRow = (TableRow)table.First();
-        foreach (TableCell cell in columnHeaderRow)
+        foreach (var cell in columnHeaderRow.Cast<TableCell>())
         {
             columnHeaders.Add(ParseCell(cell));
         }
-        foreach (TableRow row in table)
+        foreach (var row in table.Cast<TableRow>())
         {
             rowHeaders.Add(ParseCell((TableCell)row.First()));
         }
