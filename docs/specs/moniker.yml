@@ -2217,4 +2217,52 @@ repos:
 outputs:
   10b6c9f144d519f0f8a48bc02c54ca34/a.json: |
     {"conceptual": "<div data-moniker=\"tfs-2013\">\n<p>moniker: tfs-2013</p>\n</div>\n"}
-
+---
+# Append latest moniker to canonical url if configured
+inputs:
+  docfx.yml: |
+    isCanonicalUrlWithMoniker: true
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition:
+      monikers:
+      - { moniker_name: netcore-1.0, product_name: .NET Core }
+      - { moniker_name: netcore-1.1, product_name: .NET Core }
+      - { moniker_name: netcore-2.0, product_name: .NET Core }
+      - { moniker_name: netcore-2.1, product_name: .NET Core }
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+  docs/v2/b.md: |
+    Moniker: netcore-2.0, netcore-2.1
+outputs:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.json: 
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/b.json:
+  .publish.json: |
+    {
+      "files":[
+        {
+          "url":"/docs/a",
+          "moniker_group":"17b9fe681514513cbf7d5c90e32f107a", 
+          "config_moniker_range": "< netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1"
+        },
+        {
+          "url":"/docs/b",
+          "moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a", 
+          "config_moniker_range": ">= netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/b?view=netcore-2.1"
+        }
+      ],
+      "moniker_groups": {
+        "ed8f7746ec932ae7c9f595c1f2c97d5a": ["netcore-2.0","netcore-2.1"],
+        "17b9fe681514513cbf7d5c90e32f107a": ["netcore-1.0","netcore-1.1"]
+      }
+    }
+---
