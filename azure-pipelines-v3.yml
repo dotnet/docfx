@@ -221,8 +221,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/VBA-Docs --timeout 80 --regression-rules
     azure-devops-docs-pr:
       params: https://github.com/MicrosoftDocs/azure-devops-docs-pr --timeout 30 --regression-rules
-#    microsoft-365-docs-pr.zh-CN:
-#      params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live --profile --timeout 25
+    microsoft-365-docs-pr.zh-CN:
+      params: https://github.com/MicrosoftDocs/microsoft-365-docs-pr.zh-CN --branch live --profile --timeout 25
     PowerShell-Docs:
       params: https://github.com/MicrosoftDocs/PowerShell-Docs --timeout 90 --branch live
     roslyn-api-docs:
