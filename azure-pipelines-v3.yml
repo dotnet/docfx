@@ -231,8 +231,8 @@ parameters:
       params: https://github.com/dotnet/EntityFramework.ApiDocs --timeout 120
     azure-docs-rest-apis:
       params: https://github.com/Azure/azure-docs-rest-apis --timeout 130 --error-level Warning
-#    powerapps-docs-web-api-ref-pr:
-#      params: https://github.com/MicrosoftDocs/powerapps-docs-web-api-ref-pr --timeout 25
+    powerapps-docs-web-api-ref-pr:
+      params: https://github.com/MicrosoftDocs/powerapps-docs-web-api-ref-pr --timeout 25
     mc-docs-pr:
       params: https://github.com/MicrosoftDocs/mc-docs-pr --timeout 70
     dynamics365smb-devitpro:
