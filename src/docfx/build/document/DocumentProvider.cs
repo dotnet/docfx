@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
-using static Microsoft.Graph.Constants;
 
 namespace Microsoft.Docs.Build;
 
@@ -272,22 +271,7 @@ internal class DocumentProvider
             return "";
         }
 
-        var path = EncodePath(siteUrl);
-
-        // remove extension
-        var i = path.LastIndexOf('.');
-        if (i >= 0)
-        {
-            path = path[..i];
-        }
-
-        // remove index ending
-        if (path.EndsWith("index"))
-        {
-            path = path[..path.LastIndexOf("index")];
-        }
-
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{path}";
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{EncodePath(siteUrl)}";
     }
 
     /// <summary>
