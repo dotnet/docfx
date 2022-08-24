@@ -256,7 +256,6 @@ internal class DocumentProvider
             }
             if (urlType == UrlType.Docs && contentType != ContentType.Toc)
             {
-                // remove extension
                 var i = url.LastIndexOf('.');
                 return i >= 0 ? url[..i] : url;
             }
@@ -264,34 +263,13 @@ internal class DocumentProvider
         return url;
     }
 
-    private string GetCanonicalUrl(string? siteUrl)
-    {
-        if (siteUrl == null)
-        {
-            return "";
-        }
-
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{EncodePath(siteUrl)}";
-    }
-
     /// <summary>
-    /// The logic is copied from template JINT code
+    /// In docs, canonical URL is later overwritten by template JINT code.
+    /// TODO: need to handle the logic difference when template code is removed.
     /// </summary>
-    private static string EncodePath(string path)
+    private string GetCanonicalUrl(string siteUrl)
     {
-        var splitPaths = path.Split(new char[] { '\\', '/' });
-        for (var i = 0; i < splitPaths.Length; i++)
-        {
-            // ensure all the allowed chars in RFC3986 path-absolute are not encoded
-            // including: ALPHA / DIGIT / "-" / "." / "_" / "~" / "%" HEXDIG HEXDIG
-            // "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "=" / ":" / "@"
-            // reference link: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
-#pragma warning disable SYSLIB0013 // Type or member is obsolete
-            // The logic is copied from template JINT, Uri.EscapeUriString is the only method working same as JS encodeURI function
-            splitPaths[i] = Uri.EscapeUriString(splitPaths[i]).Replace("#", "%23").Replace("%25", "%");
-#pragma warning restore SYSLIB0013 // Type or member is obsolete
-        }
-        return string.Join('/', splitPaths);
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
     }
 
     private PathString ApplyRoutes(PathString path)

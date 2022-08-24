@@ -173,11 +173,6 @@ internal class TemplateEngine
             templateMetadata["xrefs"] = pageModel["metadata"]!["xrefs"];
         }
 
-        // overwrite canonical_url
-        // remove the following code after docs.ui remove canonical_url generation logic
-        templateMetadata["canonical_url"] = pageModel["canonical_url"];
-        templateMetadata["_op_canonicalUrl"] = pageModel["_op_canonicalUrl"];
-
         if (JsonSchemaProvider.IsLandingData(mime))
         {
             templateMetadata.Remove("conceptual");

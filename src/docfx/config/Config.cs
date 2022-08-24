@@ -351,8 +351,6 @@ internal class Config : PreloadConfig
 
     public string AlternativeHostName { get; init; } = string.Empty;
 
-    public bool IsCanonicalUrlWithMoniker { get; init; }
-
     public IEnumerable<SourceInfo<string>> GetFileReferences()
     {
         foreach (var url in Xref)
