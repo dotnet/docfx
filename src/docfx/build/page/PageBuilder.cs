@@ -236,7 +236,7 @@ internal class PageBuilder
 
         systemMetadata.Locale = _buildOptions.Locale;
 
-        systemMetadata.CanonicalUrl = systemMetadata.OpCanonicalUrl = GetCanonicalUrlWithMonikerIfNecessary(userMetadata.PageType, file);
+        systemMetadata.CanonicalUrl = GetCanonicalUrlWithMonikerIfNecessary(userMetadata.PageType, file);
 
         systemMetadata.Path = _documentProvider.GetSitePath(file);
         systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
