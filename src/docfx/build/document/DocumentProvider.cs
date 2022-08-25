@@ -271,22 +271,7 @@ internal class DocumentProvider
             return "";
         }
 
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{RemoveExtension(EncodePath(siteUrl))}";
-    }
-
-    private static string RemoveExtension(string path)
-    {
-        if (path.EndsWith(".html"))
-        {
-            path = path[..path.LastIndexOf(".html")];
-        }
-
-        if (path.EndsWith("/index"))
-        {
-            path = path[..path.LastIndexOf("/")];
-        }
-
-        return path;
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{EncodePath(siteUrl)}";
     }
 
     /// <summary>
@@ -294,15 +279,7 @@ internal class DocumentProvider
     /// </summary>
     private static string EncodePath(string path)
     {
-        var target = path;
-        var prefix = "";
-        if (path.LastIndexOf('/') > -1)
-        {
-            target = path[path.LastIndexOf('/')..];
-            prefix = path[.. path.LastIndexOf('/')];
-        }
-
-        var splitPaths = target.Split(new char[] { '\\', '/' });
+        var splitPaths = path.Split(new char[] { '\\', '/' });
         for (var i = 0; i < splitPaths.Length; i++)
         {
             // ensure all the allowed chars in RFC3986 path-absolute are not encoded
@@ -316,7 +293,7 @@ internal class DocumentProvider
                 .Replace("%25", "%");
 #pragma warning restore SYSLIB0013 // Type or member is obsolete
         }
-        return prefix + string.Join('/', splitPaths);
+        return string.Join('/', splitPaths);
     }
 
     private PathString ApplyRoutes(PathString path)

@@ -65,7 +65,7 @@ outputs:
     }
   a – b c/ab.json: | 
     {
-      "canonical_url": "https://docs.com/en-us/a – b c/ab"
+      "canonical_url": "https://docs.com/en-us/a%20%E2%80%93%20b%20c/ab"
     }
   a++.png:
   .errors.log: |
@@ -193,16 +193,17 @@ outputs:
 ---
 # Canonical url for ugly url
 inputs:
-  docfx.yml:
+  docfx.yml: |
+    urlType: Ugly
   a/index.md: |
   a/main.md: |
 outputs:
   a/index.json: |
     {
-      "canonical_url": "https://docs.com/en-us/a/",
+      "canonical_url": "https://docs.com/en-us/a/index.html",
     }
   a/main.json: |
     {
-      "canonical_url": "https://docs.com/en-us/a/main",
+      "canonical_url": "https://docs.com/en-us/a/main.html",
     }
 ---
