@@ -13,8 +13,6 @@ repos:
       'a b.md':
       a&b.md:
       a&amp;b.md:
-      a[b].md:
-      a-b.md:
       a – b c/ab.md:
       a++.png:
 outputs:
@@ -33,11 +31,8 @@ outputs:
   .publish.json: |
     {
       "files": [
-
         { "url": "/a – b c/ab", "path": "a – b c/ab.json" },
         { "url": "/a b", "path": "a b.json" },
-        { "url": "/a-b", "path": "a-b.json" },
-        { "url": "/a[b]", "path": "a[b].json" },
         { "url": "/a&amp;b", "path": "a&amp;b.json" },
         { "url": "/a&b", "path": "a&b.json" },
         { "url": "/a++.png", "path": "a++.png" },
@@ -47,7 +42,7 @@ outputs:
   'a b.json': |
     {
       "canonical_url": "https://docs.com/en-us/a%20b",
-      "gitcommit": "https://github.com/escape/markdown/blob/667390f6463b3b7dd025ecff93094f354a6544cb/a b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a b.md"
@@ -55,7 +50,7 @@ outputs:
   a&b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&b",
-      "gitcommit": "https://github.com/escape/markdown/blob/667390f6463b3b7dd025ecff93094f354a6544cb/a&b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&b.md"
@@ -63,18 +58,10 @@ outputs:
   a&amp;b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&amp;b",
-      "gitcommit": "https://github.com/escape/markdown/blob/667390f6463b3b7dd025ecff93094f354a6544cb/a&amp;b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&amp;b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
-    }
-  a[b].json: | 
-    {
-      "canonical_url": "https://docs.com/en-us/a[b]"
-    }
-  a-b.json: | 
-    {
-      "canonical_url": "https://docs.com/en-us/a-b"
     }
   a – b c/ab.json: | 
     {
