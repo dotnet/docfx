@@ -2357,15 +2357,14 @@ outputs:
       "rawMetadata": {
           "metadata": {
               "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1",
-              "_op_canonicalUrl": "https://docs.com/en-us/docs/c?view=netcore-2.1"
-            }
+            },
+          "_op_canonicalUrl": "https://docs.com/en-us/docs/c?view=netcore-2.1"
       }
     }
   docs/ed8f7746ec932ae7c9f595c1f2c97d5a/c.mta.json: |
     {
       "metadata": {
         "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1",
-        "_op_canonicalUrl": "https://docs.com/en-us/docs/c?view=netcore-2.1"
       }
     }
   .publish.json: |
