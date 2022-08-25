@@ -332,14 +332,12 @@ internal static class RegressionTest
 
             if (!noDiff)
             {
-                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
-                MarkTaskFailed("Test failed, see the logs under /Summary/Build artifacts for details");
-            }
-            else
-            {
                 Console.WriteLine("========== Diff Start==================\n");
                 Console.WriteLine(diff);
                 Console.WriteLine("\n========== Diff End =================");
+
+                Console.WriteLine($"##vso[artifact.upload artifactname=diff;]{diffFile}");
+                MarkTaskFailed("Test failed, see the logs under /Summary/Build artifacts for details");
             }
 
             var isTimeout = testResult.BuildTime.TotalSeconds > opts.Timeout;
