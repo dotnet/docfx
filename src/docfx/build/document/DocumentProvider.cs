@@ -288,7 +288,10 @@ internal class DocumentProvider
             // reference link: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
 #pragma warning disable SYSLIB0013 // Type or member is obsolete
             // The logic is copied from template JINT, Uri.EscapeUriString is the only method working same as JS encodeURI function
-            splitPaths[i] = Uri.EscapeUriString(splitPaths[i]).Replace("#", "%23").Replace("%25", "%");
+            splitPaths[i] = Uri.EscapeUriString(splitPaths[i])
+                .Replace("#", "%23")
+                .Replace("%25", "%")
+                .Replace("%20", " ");
 #pragma warning restore SYSLIB0013 // Type or member is obsolete
         }
         return string.Join('/', splitPaths);

@@ -199,9 +199,11 @@ internal class TemplateEngine
     private static void OverWriteCanonicalUrl(JObject pageModel, JObject templateMetadata)
     {
         var canonicalUrlByDocFx = pageModel["canonical_url"] ?? pageModel["metadata"]?["canonical_url"];
-
-        templateMetadata["canonical_url"] = canonicalUrlByDocFx;
-        templateMetadata["_op_canonicalUrl"] = canonicalUrlByDocFx;
+        if (canonicalUrlByDocFx != null)
+        {
+            templateMetadata["canonical_url"] = canonicalUrlByDocFx;
+            templateMetadata["_op_canonicalUrl"] = canonicalUrlByDocFx;
+        }
     }
 
     private string ProcessHtml(FilePath file, string html)
