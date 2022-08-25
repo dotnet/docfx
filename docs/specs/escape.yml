@@ -46,7 +46,7 @@ outputs:
     }
   'a b.json': |
     {
-      "canonical_url": "https://docs.com/en-us/a b",
+      "canonical_url": "https://docs.com/en-us/a%20b",
       "gitcommit": "https://github.com/escape/markdown/blob/667390f6463b3b7dd025ecff93094f354a6544cb/a b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
@@ -78,7 +78,7 @@ outputs:
     }
   a – b c/ab.json: | 
     {
-      "canonical_url": "https://docs.com/en-us/a %E2%80%93 b c/ab"
+      "canonical_url": "https://docs.com/en-us/a – b c/ab"
     }
   a++.png:
   .errors.log: |
@@ -203,3 +203,19 @@ outputs:
     {
       "conceptual": "<p>the <span class=\"no-loc xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
     }
+---
+# Canonical url for ugly url
+inputs:
+  docfx.yml:
+  a/index.md: |
+  a/main.md: |
+outputs:
+  a/index.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/",
+    }
+  a/main.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/main",
+    }
+---
