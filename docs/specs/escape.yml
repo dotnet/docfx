@@ -49,7 +49,7 @@ outputs:
     }
   a&b.json: |
     {
-      "canonical_url": "https://docs.com/en-us/a&b",
+      "canonical_url": "https://docs.com/en-us/a%26b",
       "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
@@ -57,7 +57,7 @@ outputs:
     }
   a&amp;b.json: |
     {
-      "canonical_url": "https://docs.com/en-us/a&amp;b",
+      "canonical_url": "https://docs.com/en-us/a%26amp%3bb",
       "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&amp;b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
@@ -205,5 +205,25 @@ outputs:
   a/main.json: |
     {
       "canonical_url": "https://docs.com/en-us/a/main.html",
+    }
+---
+# Escape Reserved Characters and Do not escape Unreserved Characters in Canonical url 
+inputs:
+  docfx.yml: 
+  a/reserved-#[]@.md: |
+  a/reserved2-!$&'()+,;=.md: |
+  a/unreserved-._~%.md: |
+outputs:
+  a/reserved-#[]@.json : | 
+    {
+      "canonical_url": "https://docs.com/en-us/a/reserved-%23%5b%5d%40",
+    }
+  a/reserved2-!$&'()+,;=.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/reserved2-%21%24%26%27%28%29%2b%2c%3b%3d",
+    }
+  a/unreserved-._~%.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/unreserved-._~%",
     }
 ---

@@ -286,12 +286,8 @@ internal class DocumentProvider
             // including: ALPHA / DIGIT / "-" / "." / "_" / "~" / "%" HEXDIG HEXDIG
             // "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "=" / ":" / "@"
             // reference link: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
-#pragma warning disable SYSLIB0013 // Type or member is obsolete
-            // The logic is copied from template JINT, Uri.EscapeUriString is the only method working similar with JS encodeURI function
-            splitPaths[i] = Uri.EscapeUriString(splitPaths[i])
-                .Replace("#", "%23")
+            splitPaths[i] = Uri.EscapeDataString(splitPaths[i])
                 .Replace("%25", "%");
-#pragma warning restore SYSLIB0013 // Type or member is obsolete
         }
         return string.Join('/', splitPaths).ToLowerInvariant();
     }
