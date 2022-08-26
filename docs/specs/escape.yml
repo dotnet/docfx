@@ -65,7 +65,7 @@ outputs:
     }
   a – b c/ab.json: | 
     {
-      "canonical_url": "https://docs.com/en-us/a%20%E2%80%93%20b%20c/ab"
+      "canonical_url": "https://docs.com/en-us/a%20%e2%80%93%20b%20c/ab"
     }
   a++.png:
   .errors.log: |
