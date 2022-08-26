@@ -8,7 +8,7 @@ items:
   - name: DocFxTocGenerator
     description: Generate a Table of Contents (TOC) in YAML format for DocFX. It has features like the ability to configure the order of files and the names of documents and folders. This tool is part of the DocFx Companion Tools set that can be installed using Chocolatey.
     type: External
-    thumbnail: ~/templates-and-plugins/images/docfstocgenerator.screenshot.png
+    thumbnail: ~/templates-and-plugins/images/docfxtocgenerator.screenshot.png
     homepage: https://github.com/Ellerbach/docfx-companion-tools
     repository:
       type: git
