@@ -293,7 +293,7 @@ internal class DocumentProvider
                 .Replace("%25", "%");
 #pragma warning restore SYSLIB0013 // Type or member is obsolete
         }
-        return string.Join('/', splitPaths);
+        return string.Join('/', splitPaths).ToLowerInvariant();
     }
 
     private PathString ApplyRoutes(PathString path)
