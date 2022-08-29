@@ -280,7 +280,7 @@ internal class PageBuilder
             var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
             if (!string.IsNullOrEmpty(canonicalVersion))
             {
-                return $"{canonicalUrl}?view={Uri.EscapeDataString(canonicalVersion).Replace("%25", "%")}";
+                return $"{canonicalUrl}?view={UrlUtility.EscapeUrlQueryOrFragment(canonicalVersion)}";
             }
         }
 

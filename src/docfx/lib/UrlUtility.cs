@@ -30,6 +30,68 @@ internal static class UrlUtility
     }
 
     /// <summary>
+    /// Escapse the characters of URL path and keep the most of allowable characters unescaped.
+    /// refer to https://www.rfc-editor.org/rfc/rfc3986.html#section-3.3
+    /// refer to workitem: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
+    /// The following reserved characters are allowed in path:
+    ///    %21 %24 %26  %27  %28 %29 %2A %2B  %2C  %3B %3D %3A %40
+    ///    !   $   &    '    (   )   *   +    ,    ;   =   :   @   
+    /// </summary>
+    /// <param name="urlPath">path of URL</param>
+    /// <returns>escapsed path</returns>
+    public static string EscapeUrlPath(string urlPath)
+    {
+        var segments = urlPath.Split(new char[] { '\\', '/' });
+        for (var i = 0; i < segments.Length; i++)
+        {
+            segments[i] = Uri.EscapeDataString(segments[i])
+                .Replace("%21", "!")
+                .Replace("%24", "$")
+                .Replace("%26", "&")
+                .Replace("%27", "'")
+                .Replace("%28", "(")
+                .Replace("%29", ")")
+                .Replace("%2A", "*")
+                .Replace("%2B", "+")
+                .Replace("%2C", ",")
+                .Replace("%3B", ";")
+                .Replace("%3D", "=")
+                .Replace("%3A", ":")
+                .Replace("%40", "@");
+        }
+        return string.Join('/', segments);
+    }
+
+    /// <summary>
+    /// Escapse the characters of URL query or fragment and keep the most of allowable characters unescaped.
+    /// refer to https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4
+    /// The following reserved characters are allowed in query: 
+    ///    %21 %24 %26  %27  %28 %29 %2A %2B  %2C  %3B %3D %3A %40 %2F %3F
+    ///    !   $   &    '    (   )   *   +    ,    ;   =   :   @   /   ?
+    /// </summary>
+    /// <param name="urlPath">query or fragment of URL without ? and #</param>
+    /// <returns>escapsed path</returns>
+    public static string EscapeUrlQueryOrFragment(string urlQuery)
+    {
+        return Uri.EscapeDataString(urlQuery)
+                .Replace("%21", "!")
+                .Replace("%24", "$")
+                .Replace("%26", "&")
+                .Replace("%27", "'")
+                .Replace("%28", "(")
+                .Replace("%29", ")")
+                .Replace("%2A", "*")
+                .Replace("%2B", "+")
+                .Replace("%2C", ",")
+                .Replace("%3B", ";")
+                .Replace("%3D", "=")
+                .Replace("%3A", ":")
+                .Replace("%40", "@")
+                .Replace("%2F", "/")
+                .Replace("%3F", "?");
+    }
+
+    /// <summary>
     /// Split href to path, fragment and query
     /// </summary>
     /// <param name="url">The href</param>
@@ -352,9 +414,9 @@ internal static class UrlUtility
             var ch = char.ToLowerInvariant(uid[i]);
             switch (ch)
             {
-                case '"'or '\'' or '%' or '^' or '\\':
+                case '"' or '\'' or '%' or '^' or '\\':
                     continue;
-                case '<'or '[':
+                case '<' or '[':
                     sb.Append('(');
                     break;
                 case '>' or ']':

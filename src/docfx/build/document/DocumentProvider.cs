@@ -271,25 +271,7 @@ internal class DocumentProvider
             return "";
         }
 
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{EncodePath(siteUrl)}";
-    }
-
-    /// <summary>
-    /// The logic is copied from template JINT code
-    /// </summary>
-    private static string EncodePath(string path)
-    {
-        var splitPaths = path.Split(new char[] { '\\', '/' });
-        for (var i = 0; i < splitPaths.Length; i++)
-        {
-            // ensure all the allowed chars in RFC3986 path-absolute are not encoded
-            // including: ALPHA / DIGIT / "-" / "." / "_" / "~" / "%" HEXDIG HEXDIG
-            // "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "=" / ":" / "@"
-            // reference link: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
-            splitPaths[i] = Uri.EscapeDataString(splitPaths[i])
-                .Replace("%25", "%");
-        }
-        return string.Join('/', splitPaths).ToLowerInvariant();
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{UrlUtility.EscapeUrlPath(siteUrl).ToLowerInvariant()}";
     }
 
     private PathString ApplyRoutes(PathString path)
