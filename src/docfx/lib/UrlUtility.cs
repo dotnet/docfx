@@ -35,7 +35,7 @@ internal static class UrlUtility
     /// refer to workitem: https://dev.azure.com/ceapex/Engineering/_workitems/edit/126389
     /// The following reserved characters are allowed in path:
     ///    %21 %24 %26  %27  %28 %29 %2A %2B  %2C  %3B %3D %3A %40
-    ///    !   $   &    '    (   )   *   +    ,    ;   =   :   @   
+    ///    !   $   &    '    (   )   *   +    ,    ;   =   :   @
     /// </summary>
     /// <param name="urlPath">path of URL</param>
     /// <returns>escapsed path</returns>
@@ -65,11 +65,11 @@ internal static class UrlUtility
     /// <summary>
     /// Escapse the characters of URL query or fragment and keep the most of allowable characters unescaped.
     /// refer to https://www.rfc-editor.org/rfc/rfc3986.html#section-3.4
-    /// The following reserved characters are allowed in query: 
+    /// The following reserved characters are allowed in query:
     ///    %21 %24 %26  %27  %28 %29 %2A %2B  %2C  %3B %3D %3A %40 %2F %3F
     ///    !   $   &    '    (   )   *   +    ,    ;   =   :   @   /   ?
     /// </summary>
-    /// <param name="urlPath">query or fragment of URL without ? and #</param>
+    /// <param name="urlQuery">query or fragment of URL without ? and #</param>
     /// <returns>escapsed path</returns>
     public static string EscapeUrlQueryOrFragment(string urlQuery)
     {
