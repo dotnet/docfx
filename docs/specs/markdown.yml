@@ -862,10 +862,11 @@ outputs:
 inputs:
   docfx.yml: |
     alternativeHostname: new-docs.microsoft.com
+    removeHostName: true
   docs/a.md: |
     [A link](https://new-docs.microsoft.com/en-us/azure)
 outputs:
   docs/a.json: |
     {
-       "conceptual": "<p><a href=\"/azure\" data-linktype=\"absolute-path\">A link</a></p>",
+       "conceptual": "<p><a href=\"/en-us/azure\" data-linktype=\"absolute-path\">A link</a></p>",
     }
