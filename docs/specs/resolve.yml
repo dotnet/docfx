@@ -724,15 +724,36 @@ inputs:
     basePath: docs
   a.md: |
     Link to [b](/docs/b.md)
+    Link to [crossrepo](/cross/b.md)
   b.md: |
     Link to [c](/docs/c.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">b</a>Link to <a href=\"/cross/b.md\">crossrepo</a></p>" }
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"/docs/c.md\">c</a></p>" }
   .errors.log: |
     { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: '/docs/c.md'.", "file": "b.md" }
+  .links.json: |
+    {
+      "links": [
+          {
+              "source_url": "/docs/a",
+              "target_url": "/cross/b.md",
+              "source_line": 2
+          },
+          {
+              "source_url": "/docs/a",
+              "target_url": "/docs/b",
+              "source_line": 1
+          },
+          {
+              "source_url": "/docs/b",
+              "target_url": "/docs/c.md",
+              "source_line": 1
+          }
+      ]
+    }
 ---
 # Shan test - external to relative
 inputs:
@@ -742,13 +763,34 @@ inputs:
     basePath: docs
   a.md: |
     Link to [link](https://docs.microsoft.com/docs/b.md)
+    Link to [link](https://youtube.com)
   b.md: |
     Link to [link](https://docs.microsoft.com/docs/c.md)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"b\">link</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"b\">link</a>Link to <a href='https://youtube.com'>link</a></p>" }
   docs/b.json: |
     { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/docs/c.md\">link</a></p>" }
   .errors.log: |
     { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'https://docs.microsoft.com/docs/c.md'.", "file": "b.md" }
+  .links.json: |
+    {
+      "links": [
+          {
+              "source_url": "/docs/a",
+              "target_url": "/docs/b",
+              "source_line": 1
+          },
+          {
+              "source_url": "/docs/a",
+              "target_url": "https://youtube.com",
+              "source_line": 2
+          },
+          {
+              "source_url": "/docs/b",
+              "target_url": "https://docs.microsoft.com/docs/c.md",
+              "source_line": 1
+          }
+      ]
+    }
 ---
