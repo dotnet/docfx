@@ -217,4 +217,24 @@ public static class UrlUtilityTest
         var result = UrlUtility.RemoveLeadingHostName(url, hostName, removeLocale);
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData("/abc123-._~/def", "/abc123-._~/def")]
+    [InlineData("/en-us/-._~!$&'()*+,;=:@", "/en-us/-._~!$&'()*+,;=:@")]
+    [InlineData("/en-us/%[]", "/en-us/%25%5B%5D")]
+    public static void EscapeUrlPathTest(string path, string expected)
+    {
+        var result = UrlUtility.EscapeUrlPath(path);
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("abc123-._~def", "abc123-._~def")]
+    [InlineData("-._~!$&'()*+,;=:@/?", "-._~!$&'()*+,;=:@/?")]
+    [InlineData("%[]", "%25%5B%5D")]
+    public static void EscapeUrlQueryTest(string queryOrFragment, string expected)
+    {
+        var result = UrlUtility.EscapeUrlQueryOrFragment(queryOrFragment);
+        Assert.Equal(expected, result);
+    }
 }

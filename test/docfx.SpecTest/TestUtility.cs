@@ -204,7 +204,7 @@ internal partial class TestUtility
             using var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
-                foreach (JProperty child in obj.Children())
+                foreach (var child in obj.Children().Cast<JProperty>())
                 {
                     var entry = archive.CreateEntry(child.Name);
 

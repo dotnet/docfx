@@ -235,11 +235,7 @@ internal class LinkResolver
                 // which needs to be removed once the user input is correct
                 if (_templateEngine != null && JsonSchemaProvider.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
                 {
-                    if (file is null)
-                    {
-                        // try to resolve with .md for landing page
-                        file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
-                    }
+                    file ??= TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
 
                     // Do not report error for landing page
                     return (null, file, query, fragment, linkType);

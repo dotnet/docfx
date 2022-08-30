@@ -256,6 +256,7 @@ internal class DocumentProvider
             }
             if (urlType == UrlType.Docs && contentType != ContentType.Toc)
             {
+                // remove extension
                 var i = url.LastIndexOf('.');
                 return i >= 0 ? url[..i] : url;
             }
@@ -263,13 +264,14 @@ internal class DocumentProvider
         return url;
     }
 
-    /// <summary>
-    /// In docs, canonical URL is later overwritten by template JINT code.
-    /// TODO: need to handle the logic difference when template code is removed.
-    /// </summary>
-    private string GetCanonicalUrl(string siteUrl)
+    private string GetCanonicalUrl(string? siteUrl)
     {
-        return $"https://{_config.HostName}/{_buildOptions.Locale}{siteUrl}";
+        if (siteUrl == null)
+        {
+            return "";
+        }
+
+        return $"https://{_config.HostName}/{_buildOptions.Locale}{UrlUtility.EscapeUrlPath(siteUrl).ToLowerInvariant()}";
     }
 
     private PathString ApplyRoutes(PathString path)
