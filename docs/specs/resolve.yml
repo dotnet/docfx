@@ -716,3 +716,39 @@ outputs:
     { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'a.mp4'.", "file": "a.md" }
     { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'a.png'.", "file": "a.md" }
 ---
+# Shan test - abs to relative
+inputs:
+  docfx.yml: |
+    hostName: docs.microsoft.com
+    removeHostName: true
+    basePath: docs
+  a.md: |
+    Link to [b](/docs/b.md)
+  b.md: |
+    Link to [c](/docs/c.md)
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"b\">b</a></p>" }
+  docs/b.json: |
+    { "conceptual": "<p>Link to <a href=\"/docs/c.md\">c</a></p>" }
+  .errors.log: |
+    { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: '/docs/c.md'.", "file": "b.md" }
+---
+# Shan test - external to relative
+inputs:
+  docfx.yml: |
+    hostName: docs.microsoft.com
+    removeHostName: true
+    basePath: docs
+  a.md: |
+    Link to [link](https://docs.microsoft.com/docs/b.md)
+  b.md: |
+    Link to [link](https://docs.microsoft.com/docs/c.md)
+outputs:
+  docs/a.json: |
+    { "conceptual": "<p>Link to <a href=\"b\">link</a></p>" }
+  docs/b.json: |
+    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com/docs/c.md\">link</a></p>" }
+  .errors.log: |
+    { "message_severity": "warning", "code": "file-not-found", "message": "Invalid file link: 'https://docs.microsoft.com/docs/c.md'.", "file": "b.md" }
+---

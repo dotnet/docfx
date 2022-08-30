@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
 using Microsoft.Docs.Validation;
 
 namespace Microsoft.Docs.Build;
@@ -95,7 +97,6 @@ internal class LinkResolver
             inclusionRoot,
             linkNode,
             tagName);
-
         inclusionRoot ??= referencingFile;
         if (!isCrossReference)
         {
@@ -113,6 +114,7 @@ internal class LinkResolver
 
         if (!string.IsNullOrEmpty(link))
         {
+            Telemetry.TrackLink(linkType.ToString());
             _fileLinkMapBuilder.AddFileLink(inclusionRoot, referencingFile, link, href.Source);
         }
 
@@ -157,7 +159,48 @@ internal class LinkResolver
             var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
             resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName, true);
 
-            return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+            if (href != resolvedHref)
+            {
+                if (TryResolveAbsolutePathAsRelativePath(resolvedHref, hrefRelativeTo, _buildScope.GetContentType(resolvedHref) == ContentType.Resource, true, out var relativePath))
+                {
+                    if (relativePath == null)
+                    {
+                        errors.Add(Errors.Link.FileNotFound(new SourceInfo<string>(href, href)));
+                    }
+                    else
+                    {
+                        href = new SourceInfo<string>(resolvedHref.TrimStart(new char[] { '/', '\\' }).Remove(_config.BasePath.ToString().Length));
+                        file = relativePath;
+                        linkType = LinkType.RelativePath;
+                    }
+                }
+                else
+                {
+                    return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+                }
+            }
+            else
+            {
+                return (errors, resolvedHref, fragment, LinkType.External, null, false);
+            }
+        }
+
+        // try to transfer absolute path to relative path if the path is under current docset
+        if (linkType == LinkType.AbsolutePath)
+        {
+            if (TryResolveAbsolutePathAsRelativePath(href, hrefRelativeTo, _buildScope.GetContentType(href) == ContentType.Resource, true, out var relativePath))
+            {
+                if (relativePath == null)
+                {
+                    errors.Add(Errors.Link.FileNotFound(new SourceInfo<string>(href, href)));
+                }
+                else
+                {
+                    href = new SourceInfo<string>(href.Value.TrimStart(new char[] { '/', '\\' }).Remove(_config.BasePath.ToString().Length));
+                    file = relativePath;
+                    linkType = LinkType.RelativePath;
+                }
+            }
         }
 
         // Cannot resolve the file, leave href as is
@@ -349,5 +392,24 @@ internal class LinkResolver
         }
 
         _contentValidator.ValidateLink(file, node);
+    }
+
+    private bool TryResolveAbsolutePathAsRelativePath(string absolutePath, FilePath referencingFile, bool lookupFallbackCommits, bool contentFallback, out FilePath? relativePath)
+    {
+        var absolutePathReplaceSlash = absolutePath.TrimStart(new char[] { '\\', '/' }).Replace('\\', '/');
+        var basePath = absolutePathReplaceSlash.Split('/')[0];
+        if (string.Equals(_config.BasePath, basePath, StringComparison.Ordinal))
+        {
+            var path = TryResolveRelativePath(
+                referencingFile,
+                string.Join('/', absolutePathReplaceSlash.Split('/')[1..]),
+                lookupFallbackCommits,
+                contentFallback);
+            relativePath = path;
+            return true;
+        }
+
+        relativePath = null;
+        return false;
     }
 }
