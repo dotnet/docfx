@@ -17,9 +17,16 @@ internal class PackageResolver
     private readonly FetchOptions _fetchOptions;
     private readonly Repository? _repository;
     private readonly FileResolver _fileResolver;
+    private readonly OpsAccessor _opsAccessor;
 
     public PackageResolver(
-        ErrorBuilder errors, string docsetPath, PreloadConfig config, FetchOptions fetchOptions, FileResolver fileResolver, Repository? repository)
+        ErrorBuilder errors,
+        string docsetPath,
+        PreloadConfig config,
+        FetchOptions fetchOptions,
+        FileResolver fileResolver,
+        Repository? repository,
+        OpsAccessor opsAccessor)
     {
         _errors = errors;
         _docsetPath = docsetPath;
@@ -27,6 +34,7 @@ internal class PackageResolver
         _fetchOptions = fetchOptions;
         _fileResolver = fileResolver;
         _repository = repository;
+        _opsAccessor = opsAccessor;
     }
 
     public bool TryResolvePackage(PackagePath package, PackageFetchOptions options, [NotNullWhen(true)] out string? path)
@@ -140,7 +148,7 @@ internal class PackageResolver
                 {
                     Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {branch} branch");
                 }
-                GitUtility.Fetch(_config.Secrets, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
+                GitUtility.Fetch(_opsAccessor, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
                 succeeded = true;
                 branchUsed = branch;
                 break;
@@ -155,7 +163,7 @@ internal class PackageResolver
             try
             {
                 // Fallback to fetch all branches if the input committish is not supported by fetch
-                GitUtility.Fetch(_config.Secrets, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
+                GitUtility.Fetch(_opsAccessor, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
             }
             catch (InvalidOperationException ex)
             {

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using static Microsoft.Docs.Build.LibGit2;
@@ -148,12 +147,12 @@ internal static partial class GitUtility
         ExecuteNonQuery(path, $"-c core.longpaths=true checkout --progress {options} {committish}");
     }
 
-    public static void Fetch(SecretConfig secrets, string path, string url, string refspecs, string? options = null)
+    public static void Fetch(OpsAccessor opsAccessor, string path, string url, string refspecs, string? options = null)
     {
         // Allow test to proxy remotes to local folder
         url = TestQuirks.GitRemoteProxy?.Invoke(url) ?? url;
 
-        var (http, secret) = GetGitCommandLineConfig(url, secrets);
+        var (http, secret) = GetGitCommandLineConfig(url, opsAccessor);
 
         ExecuteNonQuery(path, $"{http} -c core.longpaths=true fetch --progress {options} \"{url}\" {refspecs}", secret);
     }
@@ -241,33 +240,18 @@ internal static partial class GitUtility
         }
     }
 
-    private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, SecretConfig secrets)
+    private static (string? cmd, string? secret) GetGitCommandLineConfig(string url, OpsAccessor opsAccessor)
     {
-        if (secrets is null)
+        string secret;
+        try
+        {
+            secret = opsAccessor.GetAccessTokenForRepository(url).GetAwaiter().GetResult();
+        }
+        catch
         {
             return default;
         }
-
-        var httpConfig = secrets.GetHttpConfig(url);
-        if (httpConfig is null)
-        {
-            return default;
-        }
-
-        var (cmd, secret) = (
-            from header in httpConfig.Headers
-            select (cmd: $"-c http.extraheader=\"{header.Key}: {header.Value}\"", secret: GetSecretFromHeader(header))).FirstOrDefault();
+        var cmd = $"-c http.extraheader=\"Authorization: token {secret}\"";
         return (cmd, secret);
-
-        static string GetSecretFromHeader(KeyValuePair<string, string> header)
-        {
-            if (header.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase) &&
-                AuthenticationHeaderValue.TryParse(header.Value, out var value) &&
-                value.Parameter is string parameter)
-            {
-                return parameter;
-            }
-            return header.Value;
-        }
     }
 }
