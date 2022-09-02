@@ -45,6 +45,8 @@ public static class DocfxTest
             }
             return null;
         };
+
+        TestQuirks.GitCloneToken = () => Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
     }
 
     public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)

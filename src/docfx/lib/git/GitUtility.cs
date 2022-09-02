@@ -245,7 +245,7 @@ internal static partial class GitUtility
         string secret;
         try
         {
-            secret = opsAccessor.GetAccessTokenOfRepository(url).GetAwaiter().GetResult();
+            secret = TestQuirks.GitCloneToken?.Invoke() ?? opsAccessor.GetAccessTokenForRepository(url).GetAwaiter().GetResult();
         }
         catch
         {
