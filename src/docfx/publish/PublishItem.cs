@@ -30,6 +30,8 @@ internal class PublishItem
     /// </summary>
     public string? SourcePath { get; init; }
 
+    public string? ContentType { get; init; }
+
     /// <summary>
     /// File source url on Git repository
     /// </summary>
