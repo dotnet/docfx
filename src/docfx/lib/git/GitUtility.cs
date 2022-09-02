@@ -245,9 +245,13 @@ internal static partial class GitUtility
         string secret;
         try
         {
-            secret = opsAccessor.GetAccessTokenForRepository(url).GetAwaiter().GetResult();
+            secret = opsAccessor.GetAccessTokenOfRepository(url).GetAwaiter().GetResult();
         }
         catch
+        {
+            return default;
+        }
+        if (string.IsNullOrEmpty(secret))
         {
             return default;
         }
