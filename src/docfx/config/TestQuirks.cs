@@ -11,7 +11,7 @@ internal static class TestQuirks
 
     public static Func<string, string>? GitRemoteProxy { get; set; }
 
-    public static Func<string>? GitCloneToken { get; set; }
+    public static Func<string?, string?>? OpsGetAccessTokenProxy { get; set; }
 
     public static Func<string, string?>? HttpProxy { get; set; }
 

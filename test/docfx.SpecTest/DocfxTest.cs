@@ -46,7 +46,19 @@ public static class DocfxTest
             return null;
         };
 
-        TestQuirks.GitCloneToken = () => Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN");
+        TestQuirks.OpsGetAccessTokenProxy = url =>
+        {
+            if (url == null)
+            {
+                return string.Empty;
+            }
+            var mockedRemoteFiles = s_remoteFiles.Value;
+            if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
+            {
+                return string.Empty;
+            }
+            return null;
+        };
     }
 
     public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)
