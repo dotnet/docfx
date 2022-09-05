@@ -30,7 +30,7 @@ internal sealed class GitHubAccessor
             TimeSpan.FromHours(config.GithubUserCacheExpirationInHours),
             StringComparer.OrdinalIgnoreCase,
             ResolveGitHubUserConflict);
-        if (string.IsNullOrEmpty(githubToken))
+        if (!string.IsNullOrEmpty(githubToken))
         {
             _httpClient = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
