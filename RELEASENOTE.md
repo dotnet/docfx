@@ -1,7 +1,7 @@
-Version Notes (Current Version: v2.60)
+Version Notes (Current Version: v2.59.4)
 =======================================
 
-v2.60
+v2.59.4
 -----------
 1. Fix "lastmod" had erroneous datetimes in some locales for "Sitemap.xml". Thanks @tagcode! (#8105)
 2. Add try catch and needed logging for a actionable message to the user. Thanks @saipramod! (#8131)
