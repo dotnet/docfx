@@ -167,7 +167,7 @@ internal class OpsAccessor : ILearnServiceAccessor
 
     public async Task<string> GetAccessTokenForRepository(string repoUrl)
     {
-        var response = await FetchBuild($"/v1/authentication/profile/token?gitRepoUrl={repoUrl}&permission=Read&forGitHubUserProfile=true");
+        var response = await FetchBuild($"/v1/authentication/profile/token?gitRepoUrl={repoUrl}&permission=Read");
         return JsonConvert.DeserializeAnonymousType(response, new { access_token = "" })?.access_token ?? string.Empty;
     }
 
