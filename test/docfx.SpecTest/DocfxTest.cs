@@ -50,7 +50,7 @@ public static class DocfxTest
         {
             if (url == null)
             {
-                return string.Empty;
+                return Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") ?? string.Empty;
             }
             var mockedRemoteFiles = s_remoteFiles.Value;
             if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
