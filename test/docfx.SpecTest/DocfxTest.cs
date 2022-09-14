@@ -45,20 +45,6 @@ public static class DocfxTest
             }
             return null;
         };
-
-        TestQuirks.OpsGetAccessTokenProxy = url =>
-        {
-            if (url == null)
-            {
-                return Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") ?? string.Empty;
-            }
-            var mockedRemoteFiles = s_remoteFiles.Value;
-            if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
-            {
-                return string.Empty;
-            }
-            return null;
-        };
     }
 
     public static IEnumerable<string> ExpandTest(DocfxTestSpec spec)
@@ -176,6 +162,20 @@ public static class DocfxTest
         {
             throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
         }
+
+        TestQuirks.OpsGetAccessTokenProxy = url =>
+        {
+            if (url == null)
+            {
+                return spec.UseDocsGitHubToken ? Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") ?? string.Empty : string.Empty;
+            }
+            var mockedRemoteFiles = s_remoteFiles.Value;
+            if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
+            {
+                return string.Empty;
+            }
+            return null;
+        };
 
         var package = TestUtility.CreateInputDirectoryPackage(docsetPath, spec, variables);
 

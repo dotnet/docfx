@@ -459,8 +459,6 @@ repos:
           Osmond creates this
 inputs:
   docfx.yml: |
-    secrets:
-      githubToken: {DOCS_GITHUB_TOKEN}
     editRepositoryUrl: https://github.com/is/github-repo
 cache:
   github-users.json: |
@@ -469,8 +467,7 @@ cache:
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
         ]
       }
-environments:
-  - DOCS_GITHUB_TOKEN
+useDocsGitHubToken: true
 outputs:
   docs/index.json: |
     {
