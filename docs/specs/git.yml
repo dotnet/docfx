@@ -426,8 +426,6 @@ repos:
         docs/index.md:
 inputs:
   docfx.yml: |
-    secrets:
-      githubToken: {DOCS_GITHUB_TOKEN}
     editRepositoryUrl: https://github.com/docascode/a
 outputs:
   docs/index.json: |

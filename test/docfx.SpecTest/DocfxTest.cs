@@ -19,6 +19,7 @@ public static class DocfxTest
     private static readonly AsyncLocal<IReadOnlyDictionary<string, string>> s_remoteFiles = new();
     private static readonly AsyncLocal<string> s_appDataPath = new();
     private static readonly AsyncLocal<DocsEnvironment?> s_buildEnvironment = new();
+    private static readonly AsyncLocal<bool> s_useGitHubToken = new();
 
     static DocfxTest()
     {
@@ -42,6 +43,22 @@ public static class DocfxTest
             if (mockedRemoteFiles != null && mockedRemoteFiles.TryGetValue(remote, out var mockedContent))
             {
                 return mockedContent;
+            }
+            return null;
+        };
+
+        TestQuirks.OpsGetAccessTokenProxy = url =>
+        {
+            if (url == null)
+            {
+                return s_useGitHubToken.Value
+                    ? Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") ?? string.Empty
+                    : string.Empty;
+            }
+            var mockedRemoteFiles = s_remoteFiles.Value;
+            if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
+            {
+                return string.Empty;
             }
             return null;
         };
@@ -87,6 +104,7 @@ public static class DocfxTest
                 s_repos.Value = repos;
                 s_remoteFiles.Value = spec.Http;
                 s_appDataPath.Value = appDataPath;
+                s_useGitHubToken.Value = spec.Environments.Contains("DOCS_GITHUB_TOKEN");
                 RunCore(docsetPath, outputPath, test, spec, package);
             }
             catch (Exception exception)
@@ -162,22 +180,6 @@ public static class DocfxTest
         {
             throw new TestSkippedException($"Missing variable {string.Join(',', missingVariables)}");
         }
-
-        TestQuirks.OpsGetAccessTokenProxy = url =>
-        {
-            if (url == null)
-            {
-                return spec.Environments.Contains("DOCS_GITHUB_TOKEN")
-                ? Environment.GetEnvironmentVariable("DOCS_GITHUB_TOKEN") ?? string.Empty
-                : string.Empty;
-            }
-            var mockedRemoteFiles = s_remoteFiles.Value;
-            if (mockedRemoteFiles != null && mockedRemoteFiles.Values.Contains(url))
-            {
-                return string.Empty;
-            }
-            return null;
-        };
 
         var package = TestUtility.CreateInputDirectoryPackage(docsetPath, spec, variables);
 
