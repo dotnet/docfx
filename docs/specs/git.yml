@@ -467,7 +467,8 @@ cache:
           {"name": "Charlie", "login": "charlie", "id": 3, "emails": ["charlie@contoso.com"]}
         ]
       }
-useDocsGitHubToken: true
+environments:
+  - DOCS_GITHUB_TOKEN
 outputs:
   docs/index.json: |
     {

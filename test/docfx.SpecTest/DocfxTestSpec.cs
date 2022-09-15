@@ -29,8 +29,6 @@ public class DocfxTestSpec
 
     public bool NoCache { get; set; }
 
-    public bool UseDocsGitHubToken { get; set; }
-
     public string Locale { get; set; }
 
     public string BuildEnvironment { get; set; } = "PPE";
