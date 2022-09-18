@@ -155,7 +155,13 @@ internal class LinkResolver
                 return (errors, "", fragment, LinkType.AbsolutePath, null, false);
             }
             var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
-            resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName);
+            if (!string.IsNullOrEmpty(_config.AlternativeHostName) && !_config.RemoveHostName)
+            {
+                var removedAlternativeHostNameHref = UrlUtility.RemoveLeadingHostName(href, _config.AlternativeHostName);
+                resolvedHref = _config.RemoveHostName
+                    ? removedAlternativeHostNameHref
+                    : UrlUtility.Combine($"https://{_config.HostName}", removedAlternativeHostNameHref);
+            }
 
             return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
         }
