@@ -410,6 +410,7 @@ outputs:
 inputs:
   docfx.yml: |
     removeHostName: true
+    hostName: docs.com
   docs/a.md: |
     [external link](https://docs.com/c)
 outputs:
@@ -699,6 +700,7 @@ outputs:
 inputs:
   docfx.yml: |
     removeHostName: true
+    hostName: docs.com
   a.md: |
     > [!TIP]
     > [![](./b.png)](https://docs.com)
@@ -870,10 +872,10 @@ inputs:
 outputs:
   docs/a.json: |
     {
-       "conceptual": "<p><a href=\"/en-us/azure#bookmark\" data-linktype=\"absolute-path\">A link</a></p><p><a href=\"/zh-cn/azure?view=moniker-1\" data-linktype=\"absolute-path\">A link</a></p>",
+       "conceptual": "<p><a href=\"/en-us/azure#bookmark\" data-linktype=\"absolute-path\">A link</a></p><p><a href=\"/zh-cn/azure?view=moniker-1\" data-linktype=\"absolute-path\">Another link</a></p>",
     }
 ---
-# replace domain for alternative hostname for absolute links when removeHostName is false
+# keep domain for alternative hostname for absolute links when removeHostName is false
 inputs:
   docfx.yml: |
     hostName: docs.microsoft.com
@@ -885,5 +887,5 @@ inputs:
 outputs:
   docs/a.json: |
     {
-       "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/azure#bookmark\" data-linktype=\"absolute-path\">A link</a></p><p><a href=\"https://docs.microsoft.com/zh-cn/azure?view=moniker-1\" data-linktype=\"absolute-path\">A link</a></p>",
+       "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/azure#bookmark\" data-linktype=\"external\">A link</a></p><p><a href=\"https://docs.microsoft.com/zh-cn/azure?view=moniker-1\" data-linktype=\"external\">A link</a></p>",
     }
