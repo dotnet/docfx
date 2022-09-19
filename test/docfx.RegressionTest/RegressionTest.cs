@@ -153,6 +153,10 @@ internal static class RegressionTest
                 docfxConfig["allowlists"] = "https://ops/regressionalltaxonomy-allowlists/";
             }
 
+            // Temp code for rebranding
+            // backward compatible to old hostname
+            docfxConfig["AlternativeHostName"] = "docs.microsoft.com";
+
             return JsonConvert.SerializeObject(docfxConfig);
         }
 
