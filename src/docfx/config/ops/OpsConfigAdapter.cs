@@ -132,12 +132,14 @@ internal class OpsConfigAdapter
             ?.ToDictionary(item => item.log_code, item => item.document_url);
         var trustedDomains = ConvertTrustedDomain(await _opsAccessor.GetTrustedDomain());
         var allowedHTML = ConvertAllowedHtml(await _opsAccessor.GetAllowedHtml());
+        (var hostName, var alternativeHostName) = GetHostNames(docset.site_name);
 
         return JsonConvert.SerializeObject(new
         {
             product = docset.product_name,
             siteName = docset.site_name,
-            hostName = GetHostName(docset.site_name),
+            hostName,
+            alternativeHostName = alternativeHostName ?? string.Empty,
             basePath = docset.base_path.ValueWithLeadingSlash,
             xrefHostName,
             monikerDefinition = MonikerDefinitionApi,
@@ -207,36 +209,36 @@ internal class OpsConfigAdapter
         return (queries["repository_url"] ?? "", queries["branch"] ?? "");
     }
 
-    private static string GetHostName(string siteName)
+    private static (string hostName, string? alternativeHostName) GetHostNames(string siteName)
     {
         return siteName switch
         {
             "DocsAzureCN" => OpsAccessor.DocsEnvironment switch
             {
-                DocsEnvironment.Prod => "docs.azure.cn",
-                _ => "ppe.docs.azure.cn",
+                DocsEnvironment.Prod => ("docs.azure.cn", null),
+                _ => ("ppe.docs.azure.cn", null),
             },
             "dev.microsoft.com" => OpsAccessor.DocsEnvironment switch
             {
-                DocsEnvironment.Prod => "developer.microsoft.com",
-                _ => "devmsft-sandbox.azurewebsites.net",
+                DocsEnvironment.Prod => ("developer.microsoft.com", null),
+                _ => ("devmsft-sandbox.azurewebsites.net", null),
             },
-            "rd.microsoft.com" => "rd.microsoft.com",
+            "rd.microsoft.com" => ("rd.microsoft.com", null),
             "Startups" => OpsAccessor.DocsEnvironment switch
             {
-                DocsEnvironment.Prod => "startups.microsoft.com",
-                _ => "ppe.startups.microsoft.com",
+                DocsEnvironment.Prod => ("startups.microsoft.com", null),
+                _ => ("ppe.startups.microsoft.com", null),
             },
             _ => OpsAccessor.DocsEnvironment switch
             {
-                DocsEnvironment.Prod => "docs.microsoft.com",
-                _ => EnvironmentVariable.PPEDefaultDomainHostName ?? "ppe.docs.microsoft.com",
+                DocsEnvironment.Prod => ("learn.microsoft.com", "docs.microsoft.com"),
+                _ => ("dev.learn.microsoft.com", "ppe.docs.microsoft.com"),
             },
         };
     }
 
     private static string GetXrefHostNameBySiteName(string siteName, string branch)
     {
-        return GetXrefHostNameByHostName(GetHostName(siteName), branch);
+        return GetXrefHostNameByHostName(GetHostNames(siteName).hostName, branch);
     }
 }
