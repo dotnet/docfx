@@ -30,6 +30,13 @@ public static class EnvironmentVariable
     // TODO: remove after switch complete
     public static string? PPEDefaultDomainHostName => GetValue("DOCFX_PPE_DEFAULT_DOMAIN_HOST_NAME");
 
+    public static DocsEnvironment GetDocsEnvironment()
+    {
+        return Enum.TryParse(GetValue("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
+            ? docsEnvironment
+            : DocsEnvironment.Prod;
+    }
+
     private static string? GetValue(string name)
     {
         var value = Environment.GetEnvironmentVariable(name);

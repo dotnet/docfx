@@ -11,16 +11,18 @@ internal class FileLinkMapBuilder
     private readonly DocumentProvider _documentProvider;
     private readonly MonikerProvider _monikerProvider;
     private readonly ContributionProvider _contributionProvider;
+    private readonly string _hostName;
 
     private readonly Scoped<ConcurrentHashSet<FileLinkItem>> _links = new();
 
     public FileLinkMapBuilder(
-        ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider)
+        ErrorBuilder errors, DocumentProvider documentProvider, MonikerProvider monikerProvider, ContributionProvider contributionProvider, string hostName)
     {
         _errors = errors;
         _documentProvider = documentProvider;
         _monikerProvider = monikerProvider;
         _contributionProvider = contributionProvider;
+        _hostName = hostName;
     }
 
     public void AddFileLink(FilePath inclusionRoot, FilePath referencingFile, string targetUrl, SourceInfo? source)
@@ -52,6 +54,6 @@ internal class FileLinkMapBuilder
         var publishFiles = publishModel.Files.Where(item => !item.HasError && item.SourceFile != null).Select(item => item.SourceFile).ToHashSet();
         var links = _links.Value.Where(x => publishFiles.Contains(x.InclusionRoot)).OrderBy(x => x).ToArray();
 
-        return new { links };
+        return new { _hostName, links };
     }
 }

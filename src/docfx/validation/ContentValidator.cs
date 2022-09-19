@@ -9,6 +9,8 @@ namespace Microsoft.Docs.Build;
 
 internal class ContentValidator : ICollectionFactory
 {
+    private const string SecureScheme = "https://";
+
     // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
     // Learn content: "learningpath", "module", "moduleunit"
     private static readonly string[] s_supportedPageTypes =
@@ -49,7 +51,10 @@ internal class ContentValidator : ICollectionFactory
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                this);
+                this,
+                EnvironmentVariable.GetDocsEnvironment().ToString(),
+                SecureScheme + _config.HostName,
+                GetRepositoryId());
         }
         catch (Exception ex)
         {
@@ -58,9 +63,9 @@ internal class ContentValidator : ICollectionFactory
         }
     }
 
-    public void ValidateLink(FilePath file, LinkNode node)
+    public void ValidateLink(FilePath file, LinkNode node, bool validate404)
     {
-        if (TryCreateValidationContext(file, out var validationContext))
+        if (TryCreateValidationContext(file, out var validationContext, validate404))
         {
             Write(_validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult());
         }
@@ -305,12 +310,12 @@ internal class ContentValidator : ICollectionFactory
         return documentType != null && s_supportedPageTypes.Contains(documentType);
     }
 
-    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context)
+    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = true)
     {
-        return TryCreateValidationContext(file, true, out context);
+        return TryCreateValidationContext(file, true, out context, validate404);
     }
 
-    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context)
+    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = true)
     {
         if (TryGetValidationDocumentType(file, out var documentType))
         {
@@ -320,6 +325,7 @@ internal class ContentValidator : ICollectionFactory
                 FileSourceInfo = new SourceInfo(file),
                 Monikers = GetMonikers(file, needMonikers),
                 NoIndex = _metadataProvider.GetMetadata(ErrorBuilder.Null, file).NoIndex(),
+                Validate404 = validate404,
             };
             return true;
         }
@@ -340,5 +346,10 @@ internal class ContentValidator : ICollectionFactory
                 return null;
             }
         }
+    }
+
+    private static string GetRepositoryId()
+    {
+        return Environment.GetEnvironmentVariable("DOCS_REPOSITORY_ID") ?? string.Empty;
     }
 }
