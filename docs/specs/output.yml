@@ -14,10 +14,10 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a", "path": "docs/a.json", "source_path": "docs/a.md" },
-        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json", "source_path": "docs/folder/b~$.md" },
-        { "url": "/docs/", "path": "docs/index.json", "source_path": "docs/index.md" },
-        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/toc.md" }
+        { "url": "/docs/a", "path": "docs/a.json", "source_path": "docs/a.md", "content_type": "Page" },
+        { "url": "/docs/folder/b~$", "path": "docs/folder/b~$.json", "source_path": "docs/folder/b~$.md", "content_type": "Page"  },
+        { "url": "/docs/", "path": "docs/index.json", "source_path": "docs/index.md", "content_type": "Page"  },
+        { "url": "/docs/toc.json", "path": "docs/toc.json", "source_path": "docs/toc.md", "content_type": "Toc" }
       ]
     }
 ---
