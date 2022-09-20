@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using static Microsoft.Docs.Build.LibGit2;
 
@@ -255,7 +256,8 @@ internal static partial class GitUtility
         {
             return default;
         }
-        var cmd = $"-c http.extraheader=\"Authorization: token {secret}\"";
+        var token = Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{secret}"));
+        var cmd = $"-c http.extraheader=\"Authorization: basic {token}\"";
         return (cmd, secret);
     }
 }
