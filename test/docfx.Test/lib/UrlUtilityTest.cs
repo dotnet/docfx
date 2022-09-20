@@ -212,6 +212,10 @@ public static class UrlUtilityTest
     [InlineData("https://docs.com/c", "docs.com", false, "/c")]
     [InlineData("https://docs.com/en-us/c", "docs1.com", true, "https://docs.com/en-us/c")]
     [InlineData("https://docs.com/", "docs.com", true, "/")]
+    [InlineData("https://docs.com/#bookmark", "docs.com", true, "/#bookmark")]
+    [InlineData("https://docs.com/?query=value", "docs1.com", true, "https://docs.com/?query=value")]
+    [InlineData("https://docs.com/c#bookmark", "docs1.com", true, "https://docs.com/c#bookmark")]
+    [InlineData("https://docs.com/c?query=value", "docs.com", true, "/c?query=value")]
     public static void RemoveHostName(string url, string hostName, bool removeLocale, string expected)
     {
         var result = UrlUtility.RemoveLeadingHostName(url, hostName, removeLocale);
