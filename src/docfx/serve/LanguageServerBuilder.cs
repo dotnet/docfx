@@ -148,7 +148,7 @@ internal class LanguageServerBuilder
 
     private static Diagnostic ConvertToDiagnostics(Error error, SourceInfo source)
     {
-        var documentUrl = error.DocumentUrl ?? "https://review.docs.microsoft.com/en-us/help/contribute/validation-ref/doc-not-available?branch=main";
+        var documentUrl = error.DocumentUrl ?? "https://review.learn.microsoft.com/en-us/help/contribute/validation-ref/doc-not-available?branch=main";
         return new Diagnostic
         {
             Range = new(
