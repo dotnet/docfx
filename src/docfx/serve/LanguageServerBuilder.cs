@@ -158,7 +158,7 @@ internal class LanguageServerBuilder
             CodeDescription = Uri.TryCreate(documentUrl, UriKind.Absolute, out var href)
                 ? new() { Href = href }
                 : null,
-            Source = "Docs Validation",
+            Source = "Learn Validation",
             Severity = error.Level switch
             {
                 ErrorLevel.Error => DiagnosticSeverity.Error,
