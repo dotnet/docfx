@@ -217,7 +217,6 @@ internal static class ConfigLoader
             $"&xref_endpoint={WebUtility.UrlEncode(xrefEndpoint)}" +
             $"&xref_query_tags={WebUtility.UrlEncode(xrefQueryTags is null ? null : string.Join(',', xrefQueryTags))}";
 
-        Console.WriteLine($"publish_repository_url: {WebUtility.UrlEncode(publishRepositoryUrl)}, repositoryUrl: {WebUtility.UrlEncode(publishRepositoryUrl)}");
         foreach (var extend in config.Extend)
         {
             var extendWithQuery = extend;
