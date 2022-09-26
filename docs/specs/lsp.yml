@@ -18,7 +18,7 @@ languageServer:
           code: file-not-found
           codeDescription:
             href: https://docs.com
-          source: Docs Validation
+          source: Learn Validation
           message: "Invalid file link: 'b.md'."
       toc.md: [{ "code": "file-not-found" }]
   - editFiles:
