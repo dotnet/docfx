@@ -148,7 +148,7 @@ internal class PackageResolver
                 {
                     Log.Write($"{committish} branch doesn't exist on repository {url}, fallback to {branch} branch");
                 }
-                GitUtility.Fetch(_opsAccessor, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
+                GitUtility.Fetch(_config.Secrets, _opsAccessor, cwd, url, $"+{branch}:{branch}", $"{fetchOption} {depthOneOption}");
                 succeeded = true;
                 branchUsed = branch;
                 break;
@@ -163,7 +163,7 @@ internal class PackageResolver
             try
             {
                 // Fallback to fetch all branches if the input committish is not supported by fetch
-                GitUtility.Fetch(_opsAccessor, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
+                GitUtility.Fetch(_config.Secrets, _opsAccessor, cwd, url, "+refs/heads/*:refs/heads/*", $"{fetchOption} --depth 99999999");
             }
             catch (InvalidOperationException ex)
             {
