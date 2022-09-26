@@ -23,7 +23,7 @@ internal sealed class GitHubAccessor
 
     private volatile Error? _fatalError;
 
-    public GitHubAccessor(Config config)
+    public GitHubAccessor(Config config, string githubToken)
     {
         _userCache = new(
             AppData.GitHubUserCachePath,
@@ -31,11 +31,11 @@ internal sealed class GitHubAccessor
             StringComparer.OrdinalIgnoreCase,
             ResolveGitHubUserConflict);
 
-        if (!string.IsNullOrEmpty(config.Secrets.GithubToken))
+        if (!string.IsNullOrEmpty(githubToken))
         {
             _httpClient = new HttpClient(new HttpClientHandler { CheckCertificateRevocationList = true });
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "DocFX");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", config.Secrets.GithubToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", githubToken);
         }
     }
 

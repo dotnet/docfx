@@ -152,6 +152,25 @@ internal class OpsAccessor : ILearnServiceAccessor
             retry: 0);
     }
 
+    public async Task<string> GetAccessTokenForUserProfile()
+    {
+        try
+        {
+            var response = await FetchBuild("/v1/authentication/profile/token?permission=Read&forGitHubUserProfile=true");
+            return JsonConvert.DeserializeAnonymousType(response, new { access_token = "" })?.access_token ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    public async Task<string> GetAccessTokenForRepository(string repoUrl)
+    {
+        var response = await FetchBuild($"/v1/authentication/profile/token?gitRepoUrl={repoUrl}&permission=Write");
+        return JsonConvert.DeserializeAnonymousType(response, new { access_token = "" })?.access_token ?? string.Empty;
+    }
+
     private async Task<string> FetchValidationRules(
         string urlPath,
         bool fetchFullRules,
