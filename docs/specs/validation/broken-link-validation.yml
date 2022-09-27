@@ -1,0 +1,28 @@
+# Validate broken link
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "name": "BrokenLinks",
+        "description": "Validates code block content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "BrokenLinks",
+            "message": "Link '{0}' points to a page that doesn’t exist. Check the path or URL and update the link.",
+            "code": "link-broken",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    Link to [fake](https://fakelink.com)
+    Link to [real](https://reallink.com)
+outputs:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":1,"end_line":1,"column":9,"end_column":9}
+---

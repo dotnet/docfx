@@ -32,6 +32,8 @@ internal class MarkdownEngine
     private readonly PublishUrlMap _publishUrlMap;
     private readonly HtmlSanitizer _htmlSanitizer;
 
+    private readonly string _hostName;
+
     private static readonly ThreadLocal<Stack<Status>> s_status = new(() => new());
 
     public MarkdownEngine(
@@ -43,7 +45,8 @@ internal class MarkdownEngine
         TemplateEngine templateEngine,
         ContentValidator contentValidator,
         PublishUrlMap publishUrlMap,
-        HtmlSanitizer htmlSanitizer)
+        HtmlSanitizer htmlSanitizer,
+        string hostName)
     {
         _input = input;
         _linkResolver = linkResolver;
@@ -54,6 +57,7 @@ internal class MarkdownEngine
         _contentValidator = contentValidator;
         _publishUrlMap = publishUrlMap;
         _htmlSanitizer = htmlSanitizer;
+        _hostName = hostName;
 
         _markdownContext = new(GetToken, LogInfo, LogSuggestion, LogWarning, LogError, ReadFile, GetLink, GetImageLink);
         _pipelines = new[]
@@ -282,7 +286,7 @@ internal class MarkdownEngine
         return s_status.Value!.Peek().Conceptual;
     }
 
-    private static LinkNode? TransformLinkInfo(LinkInfo link)
+    private LinkNode? TransformLinkInfo(LinkInfo link)
     {
         if (link.MarkdownObject is null)
         {
@@ -315,6 +319,7 @@ internal class MarkdownEngine
             Monikers = link.MarkdownObject.GetZoneLevelMonikers(),
             ZonePivots = link.MarkdownObject.GetZonePivots(),
             TabbedConceptualHeader = link.MarkdownObject.GetTabId(),
+            HostName = _hostName,
         };
     }
 

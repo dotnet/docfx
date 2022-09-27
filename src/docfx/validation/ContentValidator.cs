@@ -4,13 +4,13 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Docs.Validation;
+using Microsoft.Docs.Validation.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Docs.Build;
 
 internal class ContentValidator : ICollectionFactory
 {
-    private const string SecureScheme = "https://";
-
     // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
     // Learn content: "learningpath", "module", "moduleunit"
     private static readonly string[] s_supportedPageTypes =
@@ -52,9 +52,7 @@ internal class ContentValidator : ICollectionFactory
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
                 this,
-                EnvironmentVariable.GetDocsEnvironment().ToString(),
-                SecureScheme + _config.HostName,
-                GetRepositoryId());
+                GetUserSetting(EnvironmentVariable.GetDocsEnvironment()));
         }
         catch (Exception ex)
         {
@@ -310,12 +308,12 @@ internal class ContentValidator : ICollectionFactory
         return documentType != null && s_supportedPageTypes.Contains(documentType);
     }
 
-    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = true)
+    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = false)
     {
         return TryCreateValidationContext(file, true, out context, validate404);
     }
 
-    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = true)
+    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = false)
     {
         if (TryGetValidationDocumentType(file, out var documentType))
         {
@@ -348,8 +346,17 @@ internal class ContentValidator : ICollectionFactory
         }
     }
 
-    private static string GetRepositoryId()
+    private static UserSetting GetUserSetting(DocsEnvironment environment)
     {
-        return Environment.GetEnvironmentVariable("DOCS_REPOSITORY_ID") ?? string.Empty;
+        var configurationBuilder = new ConfigurationBuilder();
+        var configPath = "validation/brokenLinkValidationUserSetting/";
+        configurationBuilder.AddJsonFile(configPath + "config.json");
+
+        if (environment == DocsEnvironment.Prod || environment == DocsEnvironment.PPE)
+        {
+            configurationBuilder.AddJsonFile(configPath + $"config.{environment.ToString().ToLowerInvariant()}.json");
+        }
+
+        return configurationBuilder.Build().Get<UserSetting>();
     }
 }

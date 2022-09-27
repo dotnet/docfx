@@ -139,7 +139,11 @@ internal class LinkResolver
             return (errors, "", fragment, linkType, null, false);
         }
 
-        ValidateLink(inclusionRoot, linkNode, linkType == LinkType.External || linkType == LinkType.AbsolutePath);
+        ValidateLink(
+            inclusionRoot,
+            linkNode,
+            !IsPublicContributor() && (linkType == LinkType.External || linkType == LinkType.AbsolutePath));
+
         if (linkType == LinkType.External)
         {
             if (_config.TrustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
@@ -355,4 +359,7 @@ internal class LinkResolver
 
         _contentValidator.ValidateLink(file, node, validate404);
     }
+
+    private static bool IsPublicContributor()
+        => EnvironmentVariable.RepositoryUrl != EnvironmentVariable.PublishRepositoryUrl;
 }

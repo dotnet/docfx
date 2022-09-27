@@ -1,0 +1,57 @@
+{
+  "RequestTimeoutInSeconds": 5,
+  "SkipTooManyRequests": true,
+  "RetryOptions": {
+    "RetryUserAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
+    "GithubEntityRetryCodes": [ 404, 429, 502 ],
+    "ExternalLinkRetryCodes": [ 429, 403, 408 ],
+    "InternalLinkRetryCodes": [ 408 ]
+  },
+  "RequestThrottlers": [
+    {
+      "Prefix": "go.microsoft.com",
+      "Limit": 2,
+      "Period": "1s"
+    },
+    {
+      "Prefix": "www.microsoft.com/download",
+      "Limit": 5,
+      "Period": "5s"
+    },
+    {
+      "Prefix": "msdn.microsoft.com",
+      "Limit": 5,
+      "Period": "1s"
+    },
+    {
+      "Prefix": "github.com",
+      "Limit": 1,
+      "Period": "1.5s"
+    },
+    {
+      "Prefix": "www.nuget.org",
+      "Limit": 4,
+      "Period": "2.5s"
+    },
+    {
+      "Prefix": "docs.microsoft.com/dotnet/api",
+      "Limit": 45,
+      "Period": "1s"
+    },
+    {
+      "Prefix": "learn.microsoft.com/dotnet/api",
+      "Limit": 45,
+      "Period": "1s"
+    },
+    {
+      "Prefix": "www.linkedin.com",
+      "Limit": 1,
+      "Period": "1s"
+    },
+    {
+      "Prefix": "www.youtube.com",
+      "Limit": 1,
+      "Period": "1s"
+    }
+  ]
+}
