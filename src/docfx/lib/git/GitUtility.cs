@@ -294,6 +294,6 @@ internal static partial class GitUtility
         }
         var token = Convert.ToBase64String(Encoding.UTF8.GetBytes($"user:{secret}"));
         var cmd = $"-c http.extraheader=\"Authorization: basic {token}\"";
-        return (cmd, secret);
+        return (cmd, token);
     }
 }
