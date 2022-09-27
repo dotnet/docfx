@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
     <PackageReference Include="Microsoft.ChakraCore" Version="1.11.24" />
-    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.2.2091.80" />
+    <PackageReference Include="Microsoft.DocAsCode.ECMAHelper" Version="1.2.2095.82" />
     <PackageReference Include="Microsoft.DocAsCode.MAML2Yaml.Lib" Version="1.1.2004.11" Aliases="maml" />
     <PackageReference Include="Microsoft.Docs.MetadataService.Models" Version="0.3.6" />
     <PackageReference Include="Microsoft.Graph" Version="4.25.0" />
