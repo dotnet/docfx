@@ -54,6 +54,6 @@ internal class FileLinkMapBuilder
         var publishFiles = publishModel.Files.Where(item => !item.HasError && item.SourceFile != null).Select(item => item.SourceFile).ToHashSet();
         var links = _links.Value.Where(x => publishFiles.Contains(x.InclusionRoot)).OrderBy(x => x).ToArray();
 
-        return new { _hostName, links };
+        return new { hostName = _hostName, links };
     }
 }
