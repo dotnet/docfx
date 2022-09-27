@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "batchfile", new string[] {"bat", "cmd" } },
             { "css", Array.Empty<string>() },
             { "cpp", new string[] {"c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
-            { "csharp", new string[] {"cs"} },
+            { "csharp", new string[] {"cs", "asax", "fx"} },
             { "cuda", new string[] {"cu", "cuh" } },
             { "d", new string[] {"dlang"} },
             { "everything", new string[] {"example" } }, //this is the catch all to try and process unforseen languages
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "go", new string[] {"golang" } },
             { "handlebars", new string[] {"hbs" } },
             { "haskell", new string[] {"hs" } },
-            { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
+            { "html", new string[] { "jsp", "asp", "aspx", "ascx", "master" } },
             { "cshtml", new string[] {"aspx-cs", "aspx-csharp" } },
             { "vbhtml", new string[] {"aspx-vb" } },
             { "java", new string[] {"gradle" } },
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "swift", Array.Empty<string>() },
             { "typescript", new string[] {"ts" } },
             { "xaml", Array.Empty<string>() },
-            { "xml", new string[] {"xsl", "xslt", "xsd", "wsdl", "csdl", "edmx", "config", "vsixmanifest" } },
+            { "xml", new string[] {"xsl", "xslt", "xsd", "wsdl", "csdl", "edmx", "config", "vsixmanifest", "dtd" } },
             { "vb", new string[] {"vbnet", "vbscript", "bas", "vbs", "vba" } }
         };
 
