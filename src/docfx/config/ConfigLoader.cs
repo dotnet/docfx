@@ -102,6 +102,11 @@ internal static class ConfigLoader
         JsonUtility.Merge(unionProperties, configObject, envConfig, globalConfig, extendConfig, opsConfig, docfxConfig, cliConfig);
         var config = JsonUtility.ToObject<Config>(errors, configObject);
 
+        if (config.ValidateTemplateBranch)
+        {
+            ValidateTemplateBranch(config.Template);
+        }
+
         Telemetry.TrackDocfxConfig(config.Name, docfxConfig);
         return (config, buildOptions, packageResolver, fileResolver, opsAccessor);
     }
@@ -260,5 +265,13 @@ internal static class ConfigLoader
         }
 
         return null;
+    }
+
+    private static void ValidateTemplateBranch(PackagePath template)
+    {
+        if (!template.IsMainOrMasterOrDefault)
+        {
+            throw Errors.Config.TemplateBranchInvalid(template.Branch).ToException();
+        }
     }
 }

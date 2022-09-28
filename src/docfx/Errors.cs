@@ -229,6 +229,13 @@ internal static class Errors
         /// Behavior: ❌ Message: ✔️
         public static Error CommittishNotFound(string repo, string committish)
             => new(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
+
+        /// <summary>
+        /// Must use `main` or `master` or default for template branch.
+        /// </summary>
+        /// Behavior: ❌ Message: ❌
+        public static Error TemplateBranchInvalid(string templateBranch)
+            => new(ErrorLevel.Error, "template-branch-invalid", $"Invalid template branch: '{templateBranch}'. Template branch must be `main` or `master` or default.");
     }
 
     public static class Link

@@ -547,3 +547,12 @@ outputs:
     {"document_id":"c871e0da-be84-d8ce-ce09-6d935e69b172","document_version_independent_id":"2c52aff4-0602-cfcd-e12f-269c5629bdd8"}
   src/dir1/a.json: |
     {"document_id":"b998d1b1-aaed-698d-7b82-0bc93b0b7ba5","document_version_independent_id":"2db8730f-5266-6c4f-6a6b-7db32fcff3b3"}
+---
+# template branch must be main or master or default when validation is enabled
+inputs:
+  docfx.yml: |
+    validateTemplateBranch: true
+    template: https://docs.com/template#test
+outputs:
+  .errors.log: |
+    {"message_severity":"error","code":"template-branch-invalid"}
