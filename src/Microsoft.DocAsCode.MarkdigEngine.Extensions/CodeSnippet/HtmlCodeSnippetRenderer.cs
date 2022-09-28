@@ -76,7 +76,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             { "batchfile", new string[] {"bat", "cmd" } },
             { "css", Array.Empty<string>() },
             { "cpp", new string[] {"c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
-            { "csharp", new string[] {"cs", "asax", "fx"} },
+            { "hlsl", new string[] {"fx" } },
+            { "csharp", new string[] {"cs", "asax"} },
             { "cuda", new string[] {"cu", "cuh" } },
             { "d", new string[] {"dlang"} },
             { "everything", new string[] {"example" } }, //this is the catch all to try and process unforseen languages
@@ -134,7 +135,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             AddExtractorItems(new[] { "vb", "vbhtml" },
                 new CodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineTemplate, BasicFamilyCodeSnippetCommentEndLineTemplate));
-            AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript" },
+            AddExtractorItems(new[] { "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript", "hlsl" },
                 new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
             AddExtractorItems(new[] { "xml", "xaml", "handlebars", "html", "cshtml", "php", "react", "ruby", "vbhtml" },
                 new CodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineTemplate, MarkupLanguageFamilyCodeSnippetCommentEndLineTemplate));
