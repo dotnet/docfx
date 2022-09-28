@@ -9,11 +9,6 @@ namespace Microsoft.Docs.Build;
 internal class SecretConfig
 {
     /// <summary>
-    /// Token that can be used to access the GitHub API.
-    /// </summary>
-    public string GithubToken { get; init; } = "";
-
-    /// <summary>
     /// The base64 encoded client cert that can be used to access the Microsoft Graph API.
     /// </summary>
     public string MicrosoftGraphClientCertificate { get; init; } = "";
