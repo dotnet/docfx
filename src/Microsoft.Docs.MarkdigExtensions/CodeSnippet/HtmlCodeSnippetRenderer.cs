@@ -73,8 +73,8 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "batchfile", new string[] { "bat", "cmd" } },
         { "css", Array.Empty<string>() },
         { "cpp", new string[] { "c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
-        { "hlsl", new string[] {"fx" } },
-        { "csharp", new string[] {"cs", "asax"} },
+        { "hlsl", new string[] { "fx" } },
+        { "csharp", new string[] { "cs", "asax" } },
         { "cuda", new string[] { "cu", "cuh" } },
         { "d", new string[] { "dlang" } },
         { "everything", new string[] { "example" } }, // this is the catch all to try and process unforseen languages

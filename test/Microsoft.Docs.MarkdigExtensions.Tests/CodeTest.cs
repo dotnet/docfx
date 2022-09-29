@@ -1141,7 +1141,7 @@ div {
 /*</Snippet1>*/
 ";
 
-    private const string contentXML = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+    private const string ContentXML = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <!-- <Snippet5> -->
 <configuration>
   <appSettings>
@@ -1972,12 +1972,12 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         else if (source.Contains(".config"))
         {
             filename = "file.config";
-            content = contentXML;
+            content = ContentXML;
         }
         else if (source.Contains(".vsixmanifest"))
         {
             filename = "source.extension.vsixmanifest";
-            content = contentXML;
+            content = ContentXML;
         }
 
         // act
