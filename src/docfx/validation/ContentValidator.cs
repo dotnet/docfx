@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Docs.Validation;
+using Microsoft.Docs.Validation.Common;
 
 namespace Microsoft.Docs.Build;
 
@@ -49,7 +50,8 @@ internal class ContentValidator : ICollectionFactory
                 fileResolver.ResolveFilePath(_config.MarkdownValidationRules),
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
-                this);
+                this,
+                new UserSetting());
         }
         catch (Exception ex)
         {
