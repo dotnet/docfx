@@ -35,8 +35,8 @@ outputs:
         { "url": "/a b", "path": "a b.json" },
         { "url": "/a&amp;b", "path": "a&amp;b.json" },
         { "url": "/a&b", "path": "a&b.json" },
-        { "url": "/a++.png", "path": "a++.png" },
-        { "url": "/links", "path": "links.json" }
+        { "url": "/links", "path": "links.json" },
+        { "url": "/a++.png", "path": "a++.png" }
       ]
     }
   'a b.json': |
