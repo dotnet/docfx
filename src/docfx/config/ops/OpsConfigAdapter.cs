@@ -110,7 +110,7 @@ internal class OpsConfigAdapter
 
         var metadataServiceQueryParams = $"?repository_url={HttpUtility.UrlEncode(repository)}&branch={HttpUtility.UrlEncode(branch)}";
 
-        var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}";
+        var xrefMapQueryParams = $"?site_name={docset.site_name}&branch_name={branch}&exclude_depot_name={docset.product_name}.{name}&locale={locale}";
         if (!string.IsNullOrEmpty(docset.base_path))
         {
             xrefQueryTags.Add(docset.base_path.ValueWithLeadingSlash);

@@ -18,7 +18,7 @@ languageServer:
           code: file-not-found
           codeDescription:
             href: https://docs.com
-          source: Docs Validation
+          source: Learn Validation
           message: "Invalid file link: 'b.md'."
       toc.md: [{ "code": "file-not-found" }]
   - editFiles:
@@ -36,7 +36,7 @@ languageServer:
       a.md: "[Test](non-existed.md)"
   - expectDiagnostics:
       a.md: []
-      docfx.yml: [{ "code": "yaml-syntax-error" }]
+      docfx.yml: [{ "code": "yaml-syntax-error", "codeDescription": { "href": "https://review.learn.microsoft.com/en-us/help/contribute/validation-ref/doc-not-available?branch=main" } }]
   - editFiles:
       docfx.yml:
   - expectDiagnostics:

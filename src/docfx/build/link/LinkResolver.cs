@@ -166,7 +166,7 @@ internal class LinkResolver
                 resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName);
             }
 
-            return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+            return (errors, resolvedHref, fragment, resolvedHref != href ? LinkType.AbsolutePath : LinkType.External, null, false);
         }
 
         // Cannot resolve the file, leave href as is

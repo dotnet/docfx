@@ -3,13 +3,17 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 using Azure.Core;
 using Azure.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Docs.LearnValidation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Polly;
 using Polly.Extensions.Http;
+using static Microsoft.Graph.Constants;
 
 namespace Microsoft.Docs.Build;
 
@@ -150,6 +154,37 @@ internal class OpsAccessor : ILearnServiceAccessor
             middleware: BuildMiddleware(),
             httpClient: _longHttp,
             retry: 0);
+    }
+
+    public async Task<string> GetAccessTokenForUserProfile()
+    {
+        try
+        {
+            var response = await Fetch(
+                () => new HttpRequestMessage(HttpMethod.Post, BuildApi() + "/v2/authentication/GitHubUserProfileToken"),
+                null,
+                BuildMiddleware());
+            return JsonConvert.DeserializeAnonymousType(response, new { access_token = "" })?.access_token ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    public async Task<string> GetAccessTokenForRepository(string repoUrl)
+    {
+        var response = await Fetch(
+                () => new HttpRequestMessage(HttpMethod.Post, BuildApi() + "/v2/authentication/profile/token")
+                {
+                    Content = new StringContent(
+                        JsonUtility.Serialize(new { repoUrl, permissions = new { contents = "Read" } }),
+                        Encoding.UTF8,
+                        MediaTypeNames.Application.Json),
+                },
+                null,
+                BuildMiddleware());
+        return JsonConvert.DeserializeAnonymousType(response, new { access_token = "" })?.access_token ?? string.Empty;
     }
 
     private async Task<string> FetchValidationRules(
