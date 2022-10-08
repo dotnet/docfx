@@ -51,4 +51,16 @@
     <ProjectReference Include="../Microsoft.Docs.Build.Specialized/Microsoft.Docs.Build.Specialized.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="validation\brokenLinkValidationUserSetting\config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="validation\brokenLinkValidationUserSetting\config.ppe.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="validation\brokenLinkValidationUserSetting\config.prod.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

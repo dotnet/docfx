@@ -21,7 +21,7 @@ internal class OpsAccessor : ILearnServiceAccessor
 {
     private delegate Task<HttpResponseMessage> HttpMiddleware(HttpRequestMessage request, Func<HttpRequestMessage, Task<HttpResponseMessage>> next);
 
-    public static readonly DocsEnvironment DocsEnvironment = GetDocsEnvironment();
+    public static readonly DocsEnvironment DocsEnvironment = EnvironmentVariable.GetDocsEnvironment();
 
     private readonly CredentialHandler _credentialHandler;
     private readonly ErrorBuilder _errors;
@@ -380,12 +380,5 @@ internal class OpsAccessor : ILearnServiceAccessor
             DocsEnvironment.Prod => "https://taxonomy.docs.microsoft.com",
             _ => "https://taxonomy.ppe.docs.microsoft.com",
         };
-    }
-
-    private static DocsEnvironment GetDocsEnvironment()
-    {
-        return Enum.TryParse(Environment.GetEnvironmentVariable("DOCS_ENVIRONMENT"), true, out DocsEnvironment docsEnvironment)
-            ? docsEnvironment
-            : DocsEnvironment.Prod;
     }
 }
