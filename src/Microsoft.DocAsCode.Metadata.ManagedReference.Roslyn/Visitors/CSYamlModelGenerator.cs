@@ -1127,6 +1127,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((float)value));
                 case SpecialType.System_Double:
+                    if (value is int @int)
+                    {
+                        return SyntaxFactory.LiteralExpression(
+                            SyntaxKind.NumericLiteralExpression,
+                            SyntaxFactory.Literal((double)@int));
+                    }
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
                         SyntaxFactory.Literal((double)value));
