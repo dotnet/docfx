@@ -27,3 +27,51 @@ outputs:
   .errors.log: |
     {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":1,"end_line":1,"column":9,"end_column":9}
 ---
+# Validate broken link incomplete
+inputs:
+  docfx.yml: |
+    markdownValidationRules: rules.json
+  rules.json: |
+    {
+      "links": {
+        "name": "BrokenLinks",
+        "description": "Validates code block content",
+        "aliases": null,
+        "rules": [
+          {
+            "type": "BrokenLinks",
+            "message": "Link '{0}' points to a page that doesn’t exist. Check the path or URL and update the link.",
+            "code": "link-broken",
+            "severity": "SUGGESTION",
+            "contentTypes": ["conceptual"]
+          }
+        ]
+      }
+    }
+  a.md: |
+    Link to [fake1](https://fakelink.com)
+    Link to [fake2](https://fakelink.com)
+    Link to [fake3](https://fakelink.com)
+    Link to [fake4](https://fakelink.com)
+    Link to [fake5](https://fakelink.com)
+    Link to [fake6](https://fakelink.com)
+    Link to [fake7](https://fakelink.com)
+    Link to [fake8](https://fakelink.com)
+    Link to [fake9](https://fakelink.com)
+    Link to [fake10](https://fakelink.com)
+    Link to [fake11WillBeSkipped](https://fakelink.com)
+outputs:
+  a.json:
+  .errors.log: |
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":1,"end_line":1,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":2,"end_line":2,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":3,"end_line":3,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":4,"end_line":4,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":5,"end_line":5,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":6,"end_line":6,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":7,"end_line":7,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":8,"end_line":8,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":9,"end_line":9,"column":9,"end_column":9}
+    {"message_severity":"suggestion","log_item_type":"user","code":"link-broken","message":"Link 'https://fakelink.com' points to a page that doesn’t exist. Check the path or URL and update the link.","file":"a.md","line":10,"end_line":10,"column":9,"end_column":9}
+    {"message_severity":"warning","log_item_type":"user","code":"broken-link-validation-incomplete","message":"Broken link checking timed out. Results may be incomplete.","line":0,"end_line":0,"column":0,"end_column":0}
+---

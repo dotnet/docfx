@@ -11,6 +11,8 @@ namespace Microsoft.Docs.Build;
 
 internal class ContentValidator : ICollectionFactory
 {
+    private const int BrokenLinkValidationMaxFailureCount = 10;
+
     // Now Docs.Validation only support conceptual page, redirection page and toc file. Other type will be supported later.
     // Learn content: "learningpath", "module", "moduleunit"
     private static readonly string[] s_supportedPageTypes =
@@ -26,6 +28,9 @@ internal class ContentValidator : ICollectionFactory
     private readonly ZonePivotProvider _zonePivotProvider;
     private readonly MetadataProvider _metadataProvider;
     private readonly PublishUrlMap _publishUrlMap;
+
+    private static bool s_skipBrokenLinkValidation;
+    private static int s_currBrokenLinkValidationFailureCount;
 
     public ContentValidator(
         Config config,
@@ -63,8 +68,28 @@ internal class ContentValidator : ICollectionFactory
 
     public void ValidateLink(FilePath file, LinkNode node, bool validate404)
     {
-        if (TryCreateValidationContext(file, out var validationContext, validate404))
+        if (TryCreateValidationContext(file, out var validationContext, !s_skipBrokenLinkValidation && validate404))
         {
+            var validationErrors = _validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult();
+
+            if (!s_skipBrokenLinkValidation && validationErrors != null && validationErrors.Select(e => e.Code == "link-broken").Any())
+            {
+                s_currBrokenLinkValidationFailureCount++;
+                if (s_currBrokenLinkValidationFailureCount == BrokenLinkValidationMaxFailureCount)
+                {
+                    s_skipBrokenLinkValidation = true;
+                    Write(new List<ValidationError>()
+                    {
+                        new ValidationError()
+                        {
+                            Code = "broken-link-validation-incomplete",
+                            Severity = ValidationSeverity.WARNING,
+                            Message = $"Broken link checking timed out. Results may be incomplete.",
+                        },
+                    });
+                }
+            }
+
             Write(_validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult());
         }
     }
