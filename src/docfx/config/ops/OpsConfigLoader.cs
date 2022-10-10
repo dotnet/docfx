@@ -59,16 +59,8 @@ internal static class OpsConfigLoader
                   !dep.name.StartsWith("_dependentPackages", StringComparison.OrdinalIgnoreCase)
             select new JProperty(dep.path, dep.obj));
 
-        var template = dependencies.FirstOrDefault(
+        result["template"] = dependencies.FirstOrDefault(
             dep => dep.name.Equals("_themes", StringComparison.OrdinalIgnoreCase)).obj;
-
-        // override template branch to main for live branch build
-        if (template != null && branch == "live")
-        {
-            template["branch"] = "main";
-        }
-
-        result["template"] = template;
 
         result["outputPdf"] = opsConfig.NeedGeneratePdfUrlTemplate;
 
