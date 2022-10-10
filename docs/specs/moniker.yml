@@ -184,10 +184,10 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/c","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
-        {"url":"/docs/c","moniker_group":"ecc061f43156f37be077db42abf8301a"},
         {"url":"/docs/a","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
-        {"url":"/docs/b","moniker_group":"ecc061f43156f37be077db42abf8301a"}
+        {"url":"/docs/b","moniker_group":"ecc061f43156f37be077db42abf8301a"},
+        {"url":"/docs/c","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"url":"/docs/c","moniker_group":"ecc061f43156f37be077db42abf8301a"}
       ],
       "moniker_groups":{
         "ecc061f43156f37be077db42abf8301a":["netcore-2.0"],
@@ -238,12 +238,12 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/b-old", "redirect_url": "/docs/b" },
         { "url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
         { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/b" }
+        { "url": "/docs/b" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/b-old", "redirect_url": "/docs/b" }
       ],
       "moniker_groups": {
         "55a4a18f941221e4d8924d8ebc96dd6c": ["netcore-1.1"],
@@ -289,9 +289,9 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" },
         { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/a", "moniker_group": "ecc061f43156f37be077db42abf8301a" }
+        { "url": "/docs/a", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
       ],
       "moniker_groups": {
         "ecc061f43156f37be077db42abf8301a": ["netcore-2.0"],
@@ -337,9 +337,9 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/a", "moniker_group": "17b9fe681514513cbf7d5c90e32f107a" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" }
       ],
       "moniker_groups": {
         "9b52f68bce2b10c7aa018b696f8ca916": [ "netcore-1.0" ],
@@ -393,9 +393,9 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a-old", "moniker_group": "cb8e4dad4d4bcb3bdefdfe9f87ccffda", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"},
         {"url": "/docs/a", "path": "17b9fe681514513cbf7d5c90e32f107a/docs/a.json"},
         {"url": "/docs/a", "path": "98db214cbec40e19feee113edb10edb0/docs/a.json"},
+        {"url": "/docs/a-old", "moniker_group": "cb8e4dad4d4bcb3bdefdfe9f87ccffda", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"}
       ]
     }
   .errors.log: |
@@ -1300,8 +1300,8 @@ outputs:
     {
       "files": [
         { "url": "/docs/a", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/a.json", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/c.png", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/c.png", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/a", "path": "ecc061f43156f37be077db42abf8301a/docs/a.json", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
+        { "url": "/docs/c.png", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/c.png", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/c.png", "path": "ecc061f43156f37be077db42abf8301a/docs/c.png", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
       ],
       "moniker_groups": {

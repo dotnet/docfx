@@ -141,10 +141,6 @@ outputs:
   .publish.json: |
     {"files": [
       {
-        "url": "/rawmetadata/a",
-        "redirect_url": "/b"
-      }, 
-      {
         "url": "/rawmetadata/c",
         "path": "rawmetadata/c.json",
         "source_path": "c.md",
@@ -169,13 +165,17 @@ outputs:
         "_op_canonicalUrlPrefix": "https://docs.com/en-us/rawmetadata/"
       },
       {
-        "url": "/rawmetadata/d.png"
-      },
-      {
         "url": "/rawmetadata/",
         "document_id": "c115ee68-f136-8518-0a52-d614ddd68b18",
         "_path": "index.json",
           "contributors": undefined
+      },
+      {
+        "url": "/rawmetadata/a",
+        "redirect_url": "/b"
+      },
+      {
+        "url": "/rawmetadata/d.png"
       },
       {
         "url": "/rawmetadata/toc.json"
