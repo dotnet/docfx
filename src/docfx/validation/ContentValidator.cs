@@ -90,7 +90,7 @@ internal class ContentValidator : ICollectionFactory
                 }
             }
 
-            Write(_validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult());
+            Write(validationErrors);
         }
     }
 
