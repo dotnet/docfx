@@ -235,7 +235,7 @@ internal static class Errors
         /// </summary>
         /// Behavior: ❌ Message: ❌
         public static Error TemplateBranchInvalid(string templateBranch)
-            => new(ErrorLevel.Error, "template-branch-invalid", $"Invalid template branch: '{templateBranch}'. Template branch must be `main` or `master` or default.");
+            => new(ErrorLevel.Error, "template-branch-invalid", $"Invalid template branch: '{templateBranch}'. Template branch must be 'main' or 'master' or default.");
     }
 
     public static class Link

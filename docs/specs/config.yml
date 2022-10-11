@@ -552,7 +552,23 @@ outputs:
 inputs:
   docfx.yml: |
     validateTemplateBranch: true
-    template: https://docs.com/template#test
+    template: https://docs.com/theme#test
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"template-branch-invalid"}
+    {"message_severity":"error","code":"template-branch-invalid","message":"Invalid template branch: 'test'. Template branch must be 'main' or 'master' or default."}
+---
+# template branch must be main or master or default when validation is enabled
+inputs:
+  docfx.yml: |
+    validateTemplateBranch: true
+    template: https://docs.com/template#main
+outputs:
+  .errors.log:
+---
+# template branch must be main or master or default when validation is enabled
+inputs:
+  docfx.yml: |
+    validateTemplateBranch: true
+    template: https://docs.com/template
+outputs:
+  .errors.log:
