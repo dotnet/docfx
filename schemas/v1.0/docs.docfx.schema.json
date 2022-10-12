@@ -1,0 +1,131 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "description": "JSON schema for docfx.json used for Microsoft Learn",
+    "type": "object",
+    "properties": {
+        "build": {
+            "type": "object",
+            "description": "Build configuration",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "description": "Specifies buildable content like markdown, YAML and TOC files",
+                    "items": {
+                        "$ref": "#/definitions/FileMapping"
+                    }
+                },
+                "resource": {
+                    "type": "array",
+                    "description": "Specifies resources copied to output as is like images",
+                    "items": {
+                        "$ref": "#/definitions/FileMapping"
+                    }
+                },
+                "groups": {
+                    "type": "object",
+                    "description": "Specifies groups to configure files using moniker range",
+                    "examples": [
+                        "https://github.com/MicrosoftDocs/azure-docs-pr/blob/7f9257ed2768a60687cdd668595aed6d5cd5e08e/docfx.json#L129"
+                    ],
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "moniker_range": {
+                                "type": "string",
+                                "description": "Specifies the moniker range for this group"
+                            }
+                        }
+                    }
+                },
+                "globalMetadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "fileMetadata": {
+                    "type": "object",
+                    "description": "Specifies metadata for files using glob patterns"
+                },
+                "xref": {
+                    "type":"array",
+                    "description": "Specifies additional xref map files to lookup in the repository",
+                    "examples": [
+                        "https://github.com/dotnet/dotnet-api-docs/blob/main/docfx.json#L142"
+                    ],
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "FileMapping": {
+            "type": "object",
+            "properties": {
+                "src": {
+                    "type": ["string", "null"],
+                    "description": "Source directory of files included in build"
+                },
+                "dest": {
+                    "type": ["string", "null"],
+                    "description": "Destination base URL of files in this section"
+                },
+                "files": {
+                    "type": "array",
+                    "description": "List of file glob patterns to include in build",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "exclude": {
+                    "type": "array",
+                    "description": "List of file glob patterns to exclude in build",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "group": {
+                    "type": "string",
+                    "description": "An optional group name to lookup against in groups config to determine the version of files in this section"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "An optional moniker name that determine the version of files in this section"
+                }
+            }
+        },
+        "Metadata": {
+            "type": "object",
+            "description": "A free-form key value pairs set on files, a mixture of content metadata and site features knobs. Due to the open nature of metadata, it has become a kitchen sink with no centralized governance, this is a non-comprehensive list of site feature knobs",
+            "additionalProperties": {
+                "contributors_to_exclude": {
+                    "type": "array",
+                    "description": "Specifies a list of GitHub aliases to exclude from the contributor list",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "_op_documentIdPathDepotMapping": {
+                    "type": "object",
+                    "description": "Specifies the mapping to ensure document ID stay the same for files moved to a different repository",
+                    "examples": [
+                        "https://github.com/MicrosoftDocs/azure-docs-pr/blob/7f9257ed2768a60687cdd668595aed6d5cd5e08e/docfx.json#L138"
+                    ],
+                    "additionalProperties": {
+                        "depot_name": {
+                            "type": "string",
+                            "description": "The original depot name found in OPS portal"
+                        },
+                        "folder_relative_path_in_docset": {
+                            "type": "string",
+                            "description": "The original docfx.json directory path relative to repository root"
+                        }
+                    }
+                },
+                "breadcrumb_path": {
+                    "type": "string",
+                    "description": "Specifies the breadcrumb source file or breadcrumb URL for this file"
+                }
+            }
+        }
+    }
+}
