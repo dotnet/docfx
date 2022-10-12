@@ -353,6 +353,8 @@ internal class Config : PreloadConfig
 
     public bool IsCanonicalUrlWithMoniker { get; init; }
 
+    public bool ValidateTemplateBranch { get; init; }
+
     public IEnumerable<SourceInfo<string>> GetFileReferences()
     {
         foreach (var url in Xref)

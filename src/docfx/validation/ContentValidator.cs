@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Docs.Validation;
 using Microsoft.Docs.Validation.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Docs.Build;
 
@@ -51,7 +52,7 @@ internal class ContentValidator : ICollectionFactory
                 fileResolver.ResolveFilePath(_config.Allowlists),
                 fileResolver.ResolveFilePath(_config.SandboxEnabledModuleList),
                 this,
-                new UserSetting());
+                GetUserSetting(EnvironmentVariable.GetDocsEnvironment()));
         }
         catch (Exception ex)
         {
@@ -60,9 +61,9 @@ internal class ContentValidator : ICollectionFactory
         }
     }
 
-    public void ValidateLink(FilePath file, LinkNode node)
+    public void ValidateLink(FilePath file, LinkNode node, bool validate404)
     {
-        if (TryCreateValidationContext(file, out var validationContext))
+        if (TryCreateValidationContext(file, out var validationContext, validate404))
         {
             Write(_validator?.ValidateLink(node, validationContext).GetAwaiter().GetResult());
         }
@@ -307,12 +308,12 @@ internal class ContentValidator : ICollectionFactory
         return documentType != null && s_supportedPageTypes.Contains(documentType);
     }
 
-    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context)
+    private bool TryCreateValidationContext(FilePath file, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = false)
     {
-        return TryCreateValidationContext(file, true, out context);
+        return TryCreateValidationContext(file, true, out context, validate404);
     }
 
-    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context)
+    private bool TryCreateValidationContext(FilePath file, bool needMonikers, [NotNullWhen(true)] out ValidationContext? context, bool validate404 = false)
     {
         if (TryGetValidationDocumentType(file, out var documentType))
         {
@@ -322,6 +323,7 @@ internal class ContentValidator : ICollectionFactory
                 FileSourceInfo = new SourceInfo(file),
                 Monikers = GetMonikers(file, needMonikers),
                 NoIndex = _metadataProvider.GetMetadata(ErrorBuilder.Null, file).NoIndex(),
+                Validate404 = validate404,
             };
             return true;
         }
@@ -342,5 +344,19 @@ internal class ContentValidator : ICollectionFactory
                 return null;
             }
         }
+    }
+
+    private static UserSetting GetUserSetting(DocsEnvironment environment)
+    {
+        var configurationBuilder = new ConfigurationBuilder();
+        var configPath = "validation/brokenLinkValidationUserSetting/";
+        configurationBuilder.AddJsonFile(configPath + "config.json");
+
+        if (environment == DocsEnvironment.Prod || environment == DocsEnvironment.PPE)
+        {
+            configurationBuilder.AddJsonFile(configPath + $"config.{environment.ToString().ToLowerInvariant()}.json");
+        }
+
+        return configurationBuilder.Build().Get<UserSetting>();
     }
 }

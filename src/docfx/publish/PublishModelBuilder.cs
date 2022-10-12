@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using DotLiquid.Util;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
@@ -63,7 +65,7 @@ internal class PublishModelBuilder
                     SourceFile = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFile,
                     SourcePath = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFilePath,
                     SourceUrl = _contributionProvider.GetReportGitUrl(sourceFile),
-                    Locale = _locale,
+                    Locale = buildOutput.metadata != null && buildOutput.metadata.ContainsKey("locale") ? null : _locale,
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
                     ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
                     HasError = _errors.FileHasError(sourceFile),

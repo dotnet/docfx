@@ -459,8 +459,6 @@ repos:
           Osmond creates this
 inputs:
   docfx.yml: |
-    secrets:
-      githubToken: {DOCS_GITHUB_TOKEN}
     editRepositoryUrl: https://github.com/is/github-repo
 cache:
   github-users.json: |
