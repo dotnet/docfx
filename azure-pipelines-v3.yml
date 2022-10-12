@@ -241,8 +241,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/test --branch main --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
-    windows-compatibility:
-      params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
+    # windows-compatibility:
+    #   params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
     azure-docs-cli:
       params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
     dataprep-dotnet-pr:
