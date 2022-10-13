@@ -117,7 +117,7 @@
                         },
                         "folder_relative_path_in_docset": {
                             "type": "string",
-                            "description": "The original docfx.json directory path relative to repository root"
+                            "description": "The original source directory relative to docfx.json directory"
                         }
                     }
                 },
