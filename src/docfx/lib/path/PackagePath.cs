@@ -28,6 +28,8 @@ internal record PackagePath
 
     public bool IsMainOrMaster => Branch == "main" || Branch == "master";
 
+    public bool IsMainOrMasterOrDefault => Branch == "main" || Branch == "master" || string.IsNullOrEmpty(Branch);
+
     public PackagePath()
     {
     }

@@ -730,9 +730,9 @@ outputs:
   .publish.json: |
     {
       "files": [
-        {"url": "/a", "source_path": "a/original.xml", "has_error": true },
         {"url": "/b", "source_path": "a/b.original.xml"},
         {"url": "/c", "source_path": "a/original.xml"},
+        {"url": "/a", "source_path": "a/original.xml", "has_error": true }
       ]
     }
 ---
@@ -901,12 +901,12 @@ outputs:
       {
         "files": [
           {
-              "source_path": undefined,
-              "source_url": undefined,             
-          },
-          {
               "source_path": "a.md",
               "source_url": "https://github.com/test/repo/blob/main/a.md"
+          },
+          {
+              "source_path": undefined,
+              "source_url": undefined,             
           },
           {
               "source_path": "image.png",

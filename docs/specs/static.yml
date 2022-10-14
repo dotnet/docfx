@@ -129,8 +129,8 @@ outputs:
     {
       "files": [
         {"url": "/a/", "additional": "additional"},
-        {"url": "/b.png"},
-        {"url": "/"}
+        {"url": "/"},
+        {"url": "/b.png"}
       ]
     }
 ---
@@ -168,8 +168,8 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/a.html", "redirect_url": "/b.html" },
-        { "url": "/b.html"}
+        { "url": "/b.html"},
+        { "url": "/a.html", "redirect_url": "/b.html" }
       ]
     }
 ---

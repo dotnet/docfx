@@ -794,11 +794,6 @@ outputs:
     {
       "files": [
         {
-          "url": "/api/bot/toc.json",
-          "path": "api/bot/toc.json",
-          "source_path": "api/bot/toc.yml"
-        },
-        {
           "url": "/docs/",
           "path": "cfcd556ac4916a1bf6fe758453d01e39/docs/index.json",
           "source_path": "test1/index.md",
@@ -806,6 +801,11 @@ outputs:
           "moniker_group": "cfcd556ac4916a1bf6fe758453d01e39",
           "_path": "docs/index.json",
           "monikers": ["v-0.1", "v-0.2"]
+        },
+        {
+          "url": "/api/bot/toc.json",
+          "path": "api/bot/toc.json",
+          "source_path": "api/bot/toc.yml"
         }
       ]
     }

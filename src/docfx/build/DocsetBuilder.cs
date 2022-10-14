@@ -71,7 +71,7 @@ internal class DocsetBuilder
         _sourceMap = _errors.SourceMap = new(_errors, new(_buildOptions.DocsetPath), _config, _fileResolver);
         _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
         _buildScope = new(_config, _input, _buildOptions);
-        _githubAccessor = new(_config);
+        _githubAccessor = new(_config, TestQuirks.OpsGetAccessTokenProxy?.Invoke(null) ?? opsAccessor.GetAccessTokenForUserProfile().GetAwaiter().GetResult());
         _microsoftGraphAccessor = new(_config);
         _jsonSchemaLoader = new(_fileResolver);
         _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
@@ -83,7 +83,7 @@ internal class DocsetBuilder
         _publishUrlMap = new(_config, _errors, _buildScope, _redirectionProvider, _documentProvider, _monikerProvider);
         _customRuleProvider = _errors.CustomRuleProvider = new(_config, _errors, _fileResolver, _documentProvider, _publishUrlMap, _monikerProvider, _metadataProvider);
         _bookmarkValidator = new(_errors);
-        _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider);
+        _fileLinkMapBuilder = new(_errors, _documentProvider, _monikerProvider, _contributionProvider, _config.HostName);
         _dependencyMapBuilder = new(_sourceMap);
         _templateEngine = TemplateEngine.CreateTemplateEngine(_errors, _config, _packageResolver, _buildOptions.Locale, _bookmarkValidator);
         _zonePivotProvider = new(_errors, _documentProvider, _metadataProvider, _input, _publishUrlMap, () => Ensure(_contentValidator));
@@ -91,7 +91,7 @@ internal class DocsetBuilder
         _xrefResolver = new(_config, _fileResolver, _buildOptions.Repository, _dependencyMapBuilder, _fileLinkMapBuilder, _errors, _documentProvider, _metadataProvider, _monikerProvider, _buildScope, _repositoryProvider, _input, _redirectionProvider, () => Ensure(_jsonSchemaTransformer));
         _linkResolver = new(_config, _buildOptions, _buildScope, _redirectionProvider, _documentProvider, _bookmarkValidator, _dependencyMapBuilder, _xrefResolver, _templateEngine, _fileLinkMapBuilder, _metadataProvider, _contentValidator);
         _htmlSanitizer = new(_config);
-        _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer);
+        _markdownEngine = new(_input, _linkResolver, _xrefResolver, _documentProvider, _monikerProvider, _templateEngine, _contentValidator, _publishUrlMap, _htmlSanitizer, _config.HostName);
         _jsonSchemaTransformer = new(_documentProvider, _markdownEngine, _linkResolver, _xrefResolver, _errors, _monikerProvider, _jsonSchemaProvider, _input);
         _metadataValidator = new MetadataValidator(_config, _microsoftGraphAccessor, _jsonSchemaLoader, _monikerProvider, _customRuleProvider);
         _tocParser = new(_input, _markdownEngine);
