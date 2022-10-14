@@ -1,0 +1,156 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "description": "JSON schema for .openpublishing.publish.config.json used for Microsoft Learn",
+    "type": "object",
+    "required": [
+        "docsets_to_publish"
+    ],
+    "properties": {
+        "docsets_to_publish": {
+            "type": "array",
+            "description": "Specifies a list of docsets to publish",
+            "minLength": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "docset_name",
+                    "build_source_folder"
+                ],
+                "properties": {
+                    "docset_name": {
+                        "type": "string",
+                        "description": "Specifies the name of the docset to publish"
+                    },
+                    "build_source_folder": {
+                        "type": "string",
+                        "description": "Directory path to docfx.json relative to the root of the repository"
+                    },
+                    "open_to_public_contributors": {
+                        "type":["boolean","string"],
+                        "description": "Whether or not to show the edit button to accept public contributions"
+                    },
+                    "xref_query_tags": {
+                        "type": "array",
+                        "description": "Specifies additional base path to include for xref resolution",
+                        "examples": [
+                            "https://github.com/MicrosoftDocs/azure-docs-pr/blob/7f9257ed2768a60687cdd668595aed6d5cd5e08e/.openpublishing.publish.config.json#L11"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "customized_tasks": {
+                        "type": "object",
+                        "description": "Determines if it is a learn repository by checking if docset_postbuild contains TripleCrownValidation.ps1",
+                        "examples": [
+                            "https://github.com/MicrosoftDocs/learn-pr/blob/main/.openpublishing.publish.config.json#L23"
+                        ],
+                        "properties": {
+                            "docset_postbuild": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "split_toc": {
+                        "type": "array",
+                        "description": "Specifies a set of TOCs to split into a set of smaller TOCs in build",
+                        "examples": [
+                            "https://github.com/dotnet/dotnet-api-docs/blob/main/.openpublishing.publish.config.json#L44"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "JoinTOCPlugin": {
+                        "type": "array",
+                        "description": "Configures fusion TOC and auto-generated service pages",
+                        "examples": [
+                            "https://github.com/MicrosoftDocs/azure-docs-sdk-node/blob/main/.openpublishing.publish.config.json#L93"
+                        ]
+                    },
+                    "ECMA2Yaml": {
+                        "type": "object",
+                        "description": "Configures the ECMA2Yaml tool to generate .NET API reference docs from XML files",
+                        "examples": [
+                            "https://github.com/dotnet/dotnet-api-docs/blob/main/.openpublishing.publish.config.json#L38"
+                        ]
+                    },
+                    "monikerPath": {
+                        "type": "array",
+                        "description": "Specifies the moniker definition file for PowerShell API reference docs",
+                        "examples": [
+                            "https://github.com/MicrosoftDocs/PowerShell-Docs/blob/main/.openpublishing.publish.config.json#L48"
+                        ],
+                        "items": {
+                            "type":"string"
+                        }
+                    }
+                }
+            }
+        },
+        "redirection_files": {
+            "type": "array",
+            "description": "Specifies a list of redirection files to include in build",
+            "examples": [
+                "https://github.com/MicrosoftDocs/azure-docs-pr/blob/7f9257ed2768a60687cdd668595aed6d5cd5e08e/.openpublishing.publish.config.json#L973"
+            ],
+            "items": {
+                "type": "string"
+            }
+        },
+        "dependent_repositories": {
+            "type": "array",
+            "description": "Specifies a list of dependency repositories with additional files to include in build",
+            "examples": [
+                "https://github.com/MicrosoftDocs/azure-docs-pr/blob/7f9257ed2768a60687cdd668595aed6d5cd5e08e/.openpublishing.publish.config.json#L34"
+            ],
+            "items": {
+                "type": "object",
+                "required": [
+                    "path_to_root",
+                    "url"
+                ],
+                "properties": {
+                    "path_to_root": {
+                        "type": "string",
+                        "description": "Path relative to repository root where the dependency repository is cloned"
+                    },
+                    "url":{
+                        "type": "string",
+                        "description": "Repository URL"
+                    },
+                    "branch":{
+                        "type": "string",
+                        "description": "Repository branch"
+                    },
+                    "branch_mapping": {
+                        "type": "object",
+                        "description": "Specifies a mapping from the branch name of the main repository to the dependency repository branch to check out",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "include_in_build": {
+                        "type": "boolean",
+                        "description": "When true, files in dependency repository that matches docfx.json content config are build and published to the site. When false, files in this dependency repository can only be included as markdown fragment or code snippet. The default is false."
+                    }
+                }
+            }
+        },
+        "git_repository_url_open_to_public_contributors": {
+            "type": "string",
+            "description": "Specifies the edit repository URL for private repositories"
+        },
+        "git_repository_branch_open_to_public_contributors": {
+            "type": "string",
+            "description": "Specifies the edit repository branch"
+        },
+        "need_generate_pdf_url_template": {
+            "type": "boolean",
+            "description": "Whether PDF is enabled for this repository"
+        }
+    }
+}
