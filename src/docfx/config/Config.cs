@@ -347,8 +347,6 @@ internal class Config : PreloadConfig
 
     public HashSet<PathString> SplitTOC { get; init; } = new();
 
-    public HashSet<string> RedirectionFiles { get; init; } = new();
-
     public string AlternativeHostName { get; init; } = string.Empty;
 
     public bool IsCanonicalUrlWithMoniker { get; init; }

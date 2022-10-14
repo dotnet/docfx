@@ -12,8 +12,6 @@ internal class OpsConfig
 {
     public OpsDocsetConfig[] DocsetsToPublish { get; init; } = Array.Empty<OpsDocsetConfig>();
 
-    public HashSet<PathString> RedirectionFiles { get; init; } = new HashSet<PathString>();
-
     public OpsDependencyConfig[] DependentRepositories { get; init; } = Array.Empty<OpsDependencyConfig>();
 
     public string? GitRepositoryBranchOpenToPublicContributors { get; init; }
