@@ -147,6 +147,7 @@ jobs:
         PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
         APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
         MICROSOFT_GRAPH_CLIENT_CERTIFICATE: $(Docfx-MS-Graph-Client-Cert-PubDev)
+        OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 - job: WarmUp
   timeoutInMinutes: 180
@@ -189,6 +190,7 @@ jobs:
           AZURE_DEVOPS_TOKEN: $(vsoTestToken)
           APPINSIGHTS_INSTRUMENTATIONKEY: 5226e0d0-086f-4cab-a491-1d00fde9eb09
           PULL_REQUEST_NUMBER : $(System.PullRequest.PullRequestNumber)
+          OUTPUT_DETAILED_PR_COMMENT: $(output-detailed-pr-comment)
 
 parameters:
 - name: agents
@@ -239,8 +241,8 @@ parameters:
       params: https://github.com/MicrosoftDocs/test --branch main --timeout 30 --no-dry-sync
     DocsRoot:
       params: https://github.com/MicrosoftDocs/DocsRoot --timeout 20
-    windows-compatibility:
-      params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
+    # windows-compatibility:
+    #   params: https://dev.azure.com/cpubwin/windows-compatibility/_git/windows-compatibility --timeout 20
     azure-docs-cli:
       params: https://github.com/MicrosoftDocs/azure-docs-cli --timeout 50
     dataprep-dotnet-pr:

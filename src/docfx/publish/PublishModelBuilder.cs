@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using DotLiquid.Util;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Docs.Build;
@@ -15,6 +17,7 @@ internal class PublishModelBuilder
     private readonly SourceMap _sourceMap;
     private readonly DocumentProvider _documentProvider;
     private readonly ContributionProvider _contributionProvider;
+    private readonly BuildScope _buildScope;
 
     private readonly ConcurrentDictionary<FilePath, (JObject? metadata, string? outputPath)> _buildOutput = new();
 
@@ -25,7 +28,8 @@ internal class PublishModelBuilder
         BuildOptions buildOptions,
         SourceMap sourceMap,
         DocumentProvider documentProvider,
-        ContributionProvider contributionProvider)
+        ContributionProvider contributionProvider,
+        BuildScope buildScope)
     {
         _config = config;
         _errors = errors;
@@ -34,6 +38,7 @@ internal class PublishModelBuilder
         _sourceMap = sourceMap;
         _documentProvider = documentProvider;
         _contributionProvider = contributionProvider;
+        _buildScope = buildScope;
     }
 
     public void AddOrUpdate(FilePath file, JObject? metadata, string? outputPath)
@@ -60,11 +65,12 @@ internal class PublishModelBuilder
                     SourceFile = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFile,
                     SourcePath = sourceFile.Origin == FileOrigin.Redirection ? null : sourceFilePath,
                     SourceUrl = _contributionProvider.GetReportGitUrl(sourceFile),
-                    Locale = _locale,
+                    Locale = buildOutput.metadata != null && buildOutput.metadata.ContainsKey("locale") ? null : _locale,
                     Monikers = _monikerProvider.GetFileLevelMonikers(_errors, sourceFile),
                     ConfigMonikerRange = _monikerProvider.GetConfigMonikerRange(sourceFile),
                     HasError = _errors.FileHasError(sourceFile),
                     ExtensionData = buildOutput.metadata,
+                    ContentType = _buildScope.GetContentType(sourceFile).ToString(),
                 };
 
                 publishItems.Add(sourceFile, publishItem);

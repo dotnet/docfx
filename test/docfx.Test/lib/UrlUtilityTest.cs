@@ -212,9 +212,33 @@ public static class UrlUtilityTest
     [InlineData("https://docs.com/c", "docs.com", false, "/c")]
     [InlineData("https://docs.com/en-us/c", "docs1.com", true, "https://docs.com/en-us/c")]
     [InlineData("https://docs.com/", "docs.com", true, "/")]
+    [InlineData("https://docs.com/#bookmark", "docs.com", true, "/#bookmark")]
+    [InlineData("https://docs.com/?query=value", "docs1.com", true, "https://docs.com/?query=value")]
+    [InlineData("https://docs.com/c#bookmark", "docs1.com", true, "https://docs.com/c#bookmark")]
+    [InlineData("https://docs.com/c?query=value", "docs.com", true, "/c?query=value")]
     public static void RemoveHostName(string url, string hostName, bool removeLocale, string expected)
     {
         var result = UrlUtility.RemoveLeadingHostName(url, hostName, removeLocale);
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("/abc123-._~/def", "/abc123-._~/def")]
+    [InlineData("/en-us/-._~!$&'()*+,;=:@", "/en-us/-._~!$&'()*+,;=:@")]
+    [InlineData("/en-us/%[]", "/en-us/%25%5B%5D")]
+    public static void EscapeUrlPathTest(string path, string expected)
+    {
+        var result = UrlUtility.EscapeUrlPath(path);
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("abc123-._~def", "abc123-._~def")]
+    [InlineData("-._~!$&'()*+,;=:@/?", "-._~!$&'()*+,;=:@/?")]
+    [InlineData("%[]", "%25%5B%5D")]
+    public static void EscapeUrlQueryTest(string queryOrFragment, string expected)
+    {
+        var result = UrlUtility.EscapeUrlQueryOrFragment(queryOrFragment);
         Assert.Equal(expected, result);
     }
 }

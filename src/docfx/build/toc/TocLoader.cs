@@ -498,9 +498,9 @@ internal class TocLoader
                         {
                             return subToc;
                         }
-                        else if (result is null)
+                        else
                         {
-                            result = subToc;
+                            result ??= subToc;
                         }
                     }
                 }

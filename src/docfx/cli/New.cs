@@ -84,13 +84,10 @@ internal static class New
             else
             {
                 var directory = Path.GetDirectoryName(targetFullPath) ?? ".";
-                if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+                if (options.GitInit)
                 {
-                    Directory.CreateDirectory(directory);
-                    if (TestQuirks.Initializable ?? false)
-                    {
-                        GitUtility.Init(directory);
-                    }
+                    GitUtility.Init(directory);
                 }
                 File.Copy(file, targetFullPath, overwrite: options.Force);
             }

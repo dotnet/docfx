@@ -73,7 +73,8 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "batchfile", new string[] { "bat", "cmd" } },
         { "css", Array.Empty<string>() },
         { "cpp", new string[] { "c", "c++", "objective-c", "obj-c", "objc", "objectivec", "h", "hpp", "cc", "m" } },
-        { "csharp", new string[] { "cs" } },
+        { "hlsl", new string[] { "fx" } },
+        { "csharp", new string[] { "cs", "asax" } },
         { "cuda", new string[] { "cu", "cuh" } },
         { "d", new string[] { "dlang" } },
         { "everything", new string[] { "example" } }, // this is the catch all to try and process unforseen languages
@@ -82,7 +83,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "go", new string[] { "golang" } },
         { "handlebars", new string[] { "hbs" } },
         { "haskell", new string[] { "hs" } },
-        { "html", new string[] { "jsp", "asp", "aspx", "ascx" } },
+        { "html", new string[] { "jsp", "asp", "aspx", "ascx", "master" } },
         { "cshtml", new string[] { "aspx-cs", "aspx-csharp", "razor" } },
         { "vbhtml", new string[] { "aspx-vb" } },
         { "java", new string[] { "gradle" } },
@@ -107,7 +108,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "swift", Array.Empty<string>() },
         { "typescript", new string[] { "ts" } },
         { "xaml", Array.Empty<string>() },
-        { "xml", new string[] { "xsl", "xslt", "xsd", "wsdl", "csdl", "edmx", "vsixmanifest" } },
+        { "xml", new string[] { "xsl", "xslt", "xsd", "wsdl", "csdl", "edmx", "vsixmanifest", "config", "dtd" } },
         { "vb", new string[] { "vbnet", "vbscript", "bas", "vbs", "vba" } },
     };
 
@@ -137,7 +138,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
             new[]
             {
                     "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript",
-                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript", "scss",
+                    "objectivec", "pascal", "php", "processing", "react", "rust", "scala", "smalltalk", "swift", "typescript", "scss", "hlsl",
             },
             new CodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineTemplate, CFamilyCodeSnippetCommentEndLineTemplate));
         AddExtractorItems(
@@ -468,10 +469,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 return false;
             }
 
-            if (codeRanges == null)
-            {
-                codeRanges = new();
-            }
+            codeRanges ??= new();
 
             codeRanges.Add(codeRange);
         }

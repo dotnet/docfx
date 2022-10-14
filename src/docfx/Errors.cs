@@ -229,6 +229,13 @@ internal static class Errors
         /// Behavior: ❌ Message: ✔️
         public static Error CommittishNotFound(string repo, string committish)
             => new(ErrorLevel.Error, "committish-not-found", $"Can't find branch, tag, or commit '{committish}' for repo {repo}.");
+
+        /// <summary>
+        /// Must use `main` or `master` or default for template branch.
+        /// </summary>
+        /// Behavior: ❌ Message: ❌
+        public static Error TemplateBranchInvalid(string templateBranch)
+            => new(ErrorLevel.Error, "template-branch-invalid", $"Invalid template branch: '{templateBranch}'. Template branch must be 'main' or 'master' or default.");
     }
 
     public static class Link
@@ -360,6 +367,12 @@ internal static class Errors
         /// Behavior: ✔️ Message: ✔️
         public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
             => new(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
+
+        /// <summary>
+        /// Check whether there are any dangling redirection files in a repository.
+        /// </summary>
+        public static Error DanglingRedirectionFiles(IEnumerable<string> danglingRedirectionFiles)
+            => new(ErrorLevel.Info, "dangling-redirection-files", $"There are some dangling redirection files: {string.Join(", ", danglingRedirectionFiles)}");
     }
 
     public static class Toc

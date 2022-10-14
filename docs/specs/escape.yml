@@ -13,6 +13,7 @@ repos:
       'a b.md':
       a&b.md:
       a&amp;b.md:
+      a – b c/ab.md:
       a++.png:
 outputs:
   links.json: |
@@ -30,17 +31,18 @@ outputs:
   .publish.json: |
     {
       "files": [
+        { "url": "/a – b c/ab", "path": "a – b c/ab.json" },
         { "url": "/a b", "path": "a b.json" },
         { "url": "/a&amp;b", "path": "a&amp;b.json" },
         { "url": "/a&b", "path": "a&b.json" },
-        { "url": "/a++.png", "path": "a++.png" },
-        { "url": "/links", "path": "links.json" }
+        { "url": "/links", "path": "links.json" },
+        { "url": "/a++.png", "path": "a++.png" }
       ]
     }
   'a b.json': |
     {
-      "canonical_url": "https://docs.com/en-us/a b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a b.md",
+      "canonical_url": "https://docs.com/en-us/a%20b",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a b.md"
@@ -48,7 +50,7 @@ outputs:
   a&b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&b.md"
@@ -56,10 +58,14 @@ outputs:
   a&amp;b.json: |
     {
       "canonical_url": "https://docs.com/en-us/a&amp;b",
-      "gitcommit": "https://github.com/escape/markdown/blob/c4c07cb69d114fa9ba16e55763d47f2344083dad/a&amp;b.md",
+      "gitcommit": "https://github.com/escape/markdown/blob/03cb6e2fa19c69303dd589df63df0c40448b241b/a&amp;b.md",
       "content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url": "https://github.com/escape/markdown/blob/main/a&amp;b.md",
       "original_content_git_url_template": "{repo}/blob/{branch}/a&amp;b.md"
+    }
+  a – b c/ab.json: | 
+    {
+      "canonical_url": "https://docs.com/en-us/a%20%e2%80%93%20b%20c/ab"
     }
   a++.png:
   .errors.log: |
@@ -184,3 +190,40 @@ outputs:
     {
       "conceptual": "<p>the <span class=\"no-loc xref\">ServiceFuture&lt;String&gt;</span> object\n<span class=\"xref\">Observable&lt;Void&gt;</span></p>\n",
     }
+---
+# Canonical url for ugly url
+inputs:
+  docfx.yml: |
+    urlType: Ugly
+  a/index.md: |
+  a/main.md: |
+outputs:
+  a/index.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/index.html",
+    }
+  a/main.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/main.html",
+    }
+---
+# Escape Reserved Characters and Do not escape Unreserved Characters in Canonical url 
+inputs:
+  docfx.yml: 
+  a/reserved-#[]@.md: |
+  a/reserved2-!$&'()+,;=.md: |
+  a/unreserved-._~%.md: |
+outputs:
+  a/reserved-#[]@.json : | 
+    {
+      "canonical_url": "https://docs.com/en-us/a/reserved-%23%5b%5d@",
+    }
+  a/reserved2-!$&'()+,;=.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/reserved2-!$&'()+,;=",
+    }
+  a/unreserved-._~%.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/a/unreserved-._~%25",
+    }
+---

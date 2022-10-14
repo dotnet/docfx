@@ -16,6 +16,7 @@ internal class PageBuilder
     private readonly DocumentProvider _documentProvider;
     private readonly MetadataProvider _metadataProvider;
     private readonly MonikerProvider _monikerProvider;
+    private readonly PublishUrlMap _publishUrlMap;
     private readonly TemplateEngine _templateEngine;
     private readonly TocMap _tocMap;
     private readonly LinkResolver _linkResolver;
@@ -38,6 +39,7 @@ internal class PageBuilder
         DocumentProvider documentProvider,
         MetadataProvider metadataProvider,
         MonikerProvider monikerProvider,
+        PublishUrlMap publishUrlMap,
         TemplateEngine templateEngine,
         TocMap tocMap,
         LinkResolver linkResolver,
@@ -59,6 +61,7 @@ internal class PageBuilder
         _documentProvider = documentProvider;
         _metadataProvider = metadataProvider;
         _monikerProvider = monikerProvider;
+        _publishUrlMap = publishUrlMap;
         _templateEngine = templateEngine;
         _tocMap = tocMap;
         _linkResolver = linkResolver;
@@ -232,7 +235,9 @@ internal class PageBuilder
             _contributionProvider.GetContributionInfo(errors, file, userMetadata.Author);
 
         systemMetadata.Locale = _buildOptions.Locale;
-        systemMetadata.CanonicalUrl = userMetadata.PageType != "profile" ? _documentProvider.GetCanonicalUrl(file) : null;
+
+        systemMetadata.CanonicalUrl = GetCanonicalUrlWithMonikerIfNecessary(userMetadata.PageType, file);
+
         systemMetadata.Path = _documentProvider.GetSitePath(file);
         systemMetadata.Rel = PathUtility.GetRelativePathToRoot(systemMetadata.Path);
         systemMetadata.CanonicalUrlPrefix = UrlUtility.Combine($"https://{_config.HostName}", systemMetadata.Locale, _config.BasePath) + "/";
@@ -259,6 +264,27 @@ internal class PageBuilder
         }
 
         return systemMetadata;
+    }
+
+    private string? GetCanonicalUrlWithMonikerIfNecessary(string? pageType, FilePath file)
+    {
+        if (pageType == "profile")
+        {
+            return null;
+        }
+
+        var canonicalUrl = _documentProvider.GetCanonicalUrl(file);
+
+        if (_config.IsCanonicalUrlWithMoniker)
+        {
+            var canonicalVersion = _publishUrlMap.GetCanonicalVersion(file);
+            if (!string.IsNullOrEmpty(canonicalVersion))
+            {
+                return $"{canonicalUrl}?view={UrlUtility.EscapeUrlQueryOrFragment(canonicalVersion)}";
+            }
+        }
+
+        return canonicalUrl;
     }
 
     private JObject LoadMarkdown(ErrorBuilder errors, FilePath file)

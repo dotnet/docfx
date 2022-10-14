@@ -139,7 +139,11 @@ internal class LinkResolver
             return (errors, "", fragment, linkType, null, false);
         }
 
-        ValidateLink(inclusionRoot, linkNode);
+        ValidateLink(
+            inclusionRoot,
+            linkNode,
+            !IsPublicContributor() && (linkType == LinkType.External || linkType == LinkType.AbsolutePath));
+
         if (linkType == LinkType.External)
         {
             if (_config.TrustedDomains.TryGetValue(tagName, out var domains) && !domains.IsTrusted(href, out var untrustedDomain))
@@ -154,10 +158,15 @@ internal class LinkResolver
                 }
                 return (errors, "", fragment, LinkType.AbsolutePath, null, false);
             }
-            var resolvedHref = _config.RemoveHostName ? UrlUtility.RemoveLeadingHostName(href, _config.HostName) : href;
-            resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName, true);
 
-            return (errors, resolvedHref, fragment, LinkType.AbsolutePath, null, false);
+            string resolvedHref = href;
+            if (_config.RemoveHostName)
+            {
+                resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.HostName);
+                resolvedHref = UrlUtility.RemoveLeadingHostName(resolvedHref, _config.AlternativeHostName);
+            }
+
+            return (errors, resolvedHref, fragment, resolvedHref != href ? LinkType.AbsolutePath : LinkType.External, null, false);
         }
 
         // Cannot resolve the file, leave href as is
@@ -235,11 +244,7 @@ internal class LinkResolver
                 // which needs to be removed once the user input is correct
                 if (_templateEngine != null && JsonSchemaProvider.IsLandingData(_documentProvider.GetMime(inclusionRoot)))
                 {
-                    if (file is null)
-                    {
-                        // try to resolve with .md for landing page
-                        file = TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
-                    }
+                    file ??= TryResolveRelativePath(referencingFile, $"{path}.md", lookupGitCommits, contentFallback);
 
                     // Do not report error for landing page
                     return (null, file, query, fragment, linkType);
@@ -345,13 +350,16 @@ internal class LinkResolver
         return default;
     }
 
-    private void ValidateLink(FilePath file, LinkNode? node)
+    private void ValidateLink(FilePath file, LinkNode? node, bool validate404)
     {
         if (node is null)
         {
             return;
         }
 
-        _contentValidator.ValidateLink(file, node);
+        _contentValidator.ValidateLink(file, node, validate404);
     }
+
+    private static bool IsPublicContributor()
+        => EnvironmentVariable.RepositoryUrl != EnvironmentVariable.PublishRepositoryUrl;
 }

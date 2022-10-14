@@ -184,10 +184,10 @@ outputs:
   .publish.json: |
     {
       "files":[
-        {"url":"/docs/c","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
-        {"url":"/docs/c","moniker_group":"ecc061f43156f37be077db42abf8301a"},
         {"url":"/docs/a","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
-        {"url":"/docs/b","moniker_group":"ecc061f43156f37be077db42abf8301a"}
+        {"url":"/docs/b","moniker_group":"ecc061f43156f37be077db42abf8301a"},
+        {"url":"/docs/c","moniker_group":"17b9fe681514513cbf7d5c90e32f107a"},
+        {"url":"/docs/c","moniker_group":"ecc061f43156f37be077db42abf8301a"}
       ],
       "moniker_groups":{
         "ecc061f43156f37be077db42abf8301a":["netcore-2.0"],
@@ -238,12 +238,12 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/b-old", "redirect_url": "/docs/b" },
         { "url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
         { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/b" }
+        { "url": "/docs/b" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
+        { "url": "/docs/b-old", "redirect_url": "/docs/b" }
       ],
       "moniker_groups": {
         "55a4a18f941221e4d8924d8ebc96dd6c": ["netcore-1.1"],
@@ -289,9 +289,9 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" },
         { "url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/a", "moniker_group": "ecc061f43156f37be077db42abf8301a" }
+        { "url": "/docs/a", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "78a0a559ed7f8a30d90c683a57012297" }
       ],
       "moniker_groups": {
         "ecc061f43156f37be077db42abf8301a": ["netcore-2.0"],
@@ -337,9 +337,9 @@ outputs:
   .publish.json: |
     {
       "files": [
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
-        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/a", "moniker_group": "17b9fe681514513cbf7d5c90e32f107a" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "55a4a18f941221e4d8924d8ebc96dd6c" },
+        { "url": "/docs/a-old", "redirect_url": "/docs/a", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" }
       ],
       "moniker_groups": {
         "9b52f68bce2b10c7aa018b696f8ca916": [ "netcore-1.0" ],
@@ -393,9 +393,9 @@ outputs:
     {
       "files": 
       [
-        {"url": "/docs/a-old", "moniker_group": "cb8e4dad4d4bcb3bdefdfe9f87ccffda", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"},
         {"url": "/docs/a", "path": "17b9fe681514513cbf7d5c90e32f107a/docs/a.json"},
         {"url": "/docs/a", "path": "98db214cbec40e19feee113edb10edb0/docs/a.json"},
+        {"url": "/docs/a-old", "moniker_group": "cb8e4dad4d4bcb3bdefdfe9f87ccffda", "config_moniker_range": ">= netcore-1.1 <= netcore-1.2", "redirect_url": "/docs/a"}
       ]
     }
   .errors.log: |
@@ -1300,8 +1300,8 @@ outputs:
     {
       "files": [
         { "url": "/docs/a", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/a.json", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
-        { "url": "/docs/c.png", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/c.png", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/a", "path": "ecc061f43156f37be077db42abf8301a/docs/a.json", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
+        { "url": "/docs/c.png", "path": "9b52f68bce2b10c7aa018b696f8ca916/docs/c.png", "moniker_group": "9b52f68bce2b10c7aa018b696f8ca916" },
         { "url": "/docs/c.png", "path": "ecc061f43156f37be077db42abf8301a/docs/c.png", "moniker_group": "ecc061f43156f37be077db42abf8301a" },
       ],
       "moniker_groups": {
@@ -2217,4 +2217,175 @@ repos:
 outputs:
   10b6c9f144d519f0f8a48bc02c54ca34/a.json: |
     {"conceptual": "<div data-moniker=\"tfs-2013\">\n<p>moniker: tfs-2013</p>\n</div>\n"}
-
+---
+# Append latest moniker to canonical url if configured
+inputs:
+  docfx.yml: |
+    isCanonicalUrlWithMoniker: true
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition:
+      monikers:
+      - { moniker_name: netcore-1.0, product_name: .NET Core }
+      - { moniker_name: netcore-1.1, product_name: .NET Core }
+      - { moniker_name: netcore-2.0, product_name: .NET Core }
+      - { moniker_name: netcore-2.1, product_name: .NET Core }
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+  docs/v2/b.md: |
+    Moniker: netcore-2.0, netcore-2.1
+  docs/v2/c.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-2.0
+      - netcore-2.1
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        }
+      }
+    }  
+  _themes/ContentTemplate/TestData.html.primary.tmpl:
+outputs:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.json: |
+   {
+      "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1"
+   }
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/b.json: |
+    {
+       "canonical_url": "https://docs.com/en-us/docs/b?view=netcore-2.1"
+    }
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/c.json: |
+    {
+      "metadata": {
+        "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1"
+      }
+    }
+  .publish.json: |
+    {
+      "files":[
+        {
+          "url":"/docs/a",
+          "moniker_group":"17b9fe681514513cbf7d5c90e32f107a", 
+          "config_moniker_range": "< netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1"
+        },
+        {
+          "url":"/docs/b",
+          "moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a", 
+          "config_moniker_range": ">= netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/b?view=netcore-2.1"
+        },
+        {
+          "url":"/docs/c",
+          "moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a", 
+          "config_moniker_range": ">= netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1"
+        }
+      ],
+      "moniker_groups": {
+        "ed8f7746ec932ae7c9f595c1f2c97d5a": ["netcore-2.0","netcore-2.1"],
+        "17b9fe681514513cbf7d5c90e32f107a": ["netcore-1.0","netcore-1.1"]
+      }
+    }
+---
+# Overwrite canonical url for page json output
+inputs:
+  docfx.yml: |
+    outputType: pageJson
+    isCanonicalUrlWithMoniker: true
+    monikerRange:
+      'docs/v1/**': '< netcore-2.0'
+      'docs/v2/**': '>= netcore-2.0'
+    hostName: docs.com
+    basePath: /docs
+    routes:
+      docs/: .
+      docs/v1/: .
+      docs/v2/: .
+    monikerDefinition:
+      monikers:
+      - { moniker_name: netcore-1.0, product_name: .NET Core }
+      - { moniker_name: netcore-1.1, product_name: .NET Core }
+      - { moniker_name: netcore-2.0, product_name: .NET Core }
+      - { moniker_name: netcore-2.1, product_name: .NET Core }
+  docs/v1/a.md: |
+    Moniker: netcore-1.0, netcore-1.1
+  docs/v2/c.yml: |
+    ### YamlMime:TestData
+    metadata:
+      monikers: 
+      - netcore-2.0
+      - netcore-2.1
+  _themes/ContentTemplate/schemas/TestData.schema.json: |
+    {
+      "properties": {
+        "metadata": {
+          "properties": {
+            "monikers": { "type": "array" }
+          }
+        }
+      }
+    }  
+  _themes/ContentTemplate/TestData.html.primary.tmpl:
+outputs:
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.raw.page.json: | 
+    {
+      "rawMetadata": {
+          "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1",
+          "_op_canonicalUrl": "https://docs.com/en-us/docs/a?view=netcore-1.1",
+      }
+    }
+  docs/17b9fe681514513cbf7d5c90e32f107a/a.mta.json: |
+    {
+      "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1",
+    }
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/c.raw.page.json: | 
+    {
+      "rawMetadata": {
+          "metadata": {
+              "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1",
+            },
+          "_op_canonicalUrl": "https://docs.com/en-us/docs/c?view=netcore-2.1"
+      }
+    }
+  docs/ed8f7746ec932ae7c9f595c1f2c97d5a/c.mta.json: |
+    {
+      "metadata": {
+        "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1",
+      }
+    }
+  .publish.json: |
+    {
+      "files":[
+        {
+          "url":"/docs/a",
+          "moniker_group":"17b9fe681514513cbf7d5c90e32f107a", 
+          "config_moniker_range": "< netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/a?view=netcore-1.1"
+        },
+        {
+          "url":"/docs/c",
+          "moniker_group":"ed8f7746ec932ae7c9f595c1f2c97d5a", 
+          "config_moniker_range": ">= netcore-2.0",
+          "canonical_url": "https://docs.com/en-us/docs/c?view=netcore-2.1"
+        }
+      ],
+      "moniker_groups": {
+        "ed8f7746ec932ae7c9f595c1f2c97d5a": ["netcore-2.0","netcore-2.1"],
+        "17b9fe681514513cbf7d5c90e32f107a": ["netcore-1.0","netcore-1.1"]
+      }
+    }
+---

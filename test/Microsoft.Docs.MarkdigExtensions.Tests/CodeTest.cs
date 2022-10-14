@@ -1141,6 +1141,39 @@ div {
 /*</Snippet1>*/
 ";
 
+    private const string ContentXML = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+<!-- <Snippet5> -->
+<configuration>
+  <appSettings>
+    <!-- use appSetting to configure MSMQ queue name -->
+    <add key=""queueName"" value="".\private$\ServiceModelSamplesPoison"" />
+    <add key=""baseAddress"" value=""http://localhost:8000/orderProcessor/poisonSample""/>
+  </appSettings>
+  <system.serviceModel>
+    <services>
+      <service 
+              name=""Microsoft.ServiceModel.Samples.OrderProcessorService"">
+        <!-- Define NetMsmqEndpoint -->
+        <endpoint address=""net.msmq://localhost/private/ServiceModelSamplesPoison""
+                  binding=""netMsmqBinding""
+                  bindingConfiguration=""PoisonBinding"" 
+                  contract=""Microsoft.ServiceModel.Samples.IOrderProcessor"" />
+      </service>
+    </services>
+    <bindings>
+      <netMsmqBinding>
+        <binding name=""PoisonBinding"" 
+                 receiveRetryCount=""0""
+                 maxRetryCycles=""1""
+                 retryCycleDelay=""00:00:05"" 					 
+                 receiveErrorHandling=""Fault""
+				        />
+      </netMsmqBinding>
+    </bindings>
+  </system.serviceModel>
+</configuration>
+<!-- </Snippet5> -->";
+
     [Theory]
     [InlineData(@":::code source=""source.cs"" range=""9"" language=""csharp"":::", @"<pre>
 <code class=""lang-csharp"">namespace TableSnippets
@@ -1796,6 +1829,70 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
 }
 </code></pre>
 ")]
+    [InlineData(@":::code source=""file.config"" id=""Snippet5"" language=""xml"":::", @"<pre>
+<code class=""lang-xml"">&lt;configuration&gt;
+  &lt;appSettings&gt;
+    &lt;!-- use appSetting to configure MSMQ queue name --&gt;
+    &lt;add key=&quot;queueName&quot; value=&quot;.\private$\ServiceModelSamplesPoison&quot; /&gt;
+    &lt;add key=&quot;baseAddress&quot; value=&quot;http://localhost:8000/orderProcessor/poisonSample&quot;/&gt;
+  &lt;/appSettings&gt;
+  &lt;system.serviceModel&gt;
+    &lt;services&gt;
+      &lt;service 
+              name=&quot;Microsoft.ServiceModel.Samples.OrderProcessorService&quot;&gt;
+        &lt;!-- Define NetMsmqEndpoint --&gt;
+        &lt;endpoint address=&quot;net.msmq://localhost/private/ServiceModelSamplesPoison&quot;
+                  binding=&quot;netMsmqBinding&quot;
+                  bindingConfiguration=&quot;PoisonBinding&quot; 
+                  contract=&quot;Microsoft.ServiceModel.Samples.IOrderProcessor&quot; /&gt;
+      &lt;/service&gt;
+    &lt;/services&gt;
+    &lt;bindings&gt;
+      &lt;netMsmqBinding&gt;
+        &lt;binding name=&quot;PoisonBinding&quot; 
+                 receiveRetryCount=&quot;0&quot;
+                 maxRetryCycles=&quot;1&quot;
+                 retryCycleDelay=&quot;00:00:05&quot; 					 
+                 receiveErrorHandling=&quot;Fault&quot;
+                        /&gt;
+      &lt;/netMsmqBinding&gt;
+    &lt;/bindings&gt;
+  &lt;/system.serviceModel&gt;
+&lt;/configuration&gt;
+</code></pre>
+")]
+    [InlineData(@":::code source=""source.extension.vsixmanifest"" id=""Snippet5"" language=""xml"":::", @"<pre>
+<code class=""lang-xml"">&lt;configuration&gt;
+  &lt;appSettings&gt;
+    &lt;!-- use appSetting to configure MSMQ queue name --&gt;
+    &lt;add key=&quot;queueName&quot; value=&quot;.\private$\ServiceModelSamplesPoison&quot; /&gt;
+    &lt;add key=&quot;baseAddress&quot; value=&quot;http://localhost:8000/orderProcessor/poisonSample&quot;/&gt;
+  &lt;/appSettings&gt;
+  &lt;system.serviceModel&gt;
+    &lt;services&gt;
+      &lt;service 
+              name=&quot;Microsoft.ServiceModel.Samples.OrderProcessorService&quot;&gt;
+        &lt;!-- Define NetMsmqEndpoint --&gt;
+        &lt;endpoint address=&quot;net.msmq://localhost/private/ServiceModelSamplesPoison&quot;
+                  binding=&quot;netMsmqBinding&quot;
+                  bindingConfiguration=&quot;PoisonBinding&quot; 
+                  contract=&quot;Microsoft.ServiceModel.Samples.IOrderProcessor&quot; /&gt;
+      &lt;/service&gt;
+    &lt;/services&gt;
+    &lt;bindings&gt;
+      &lt;netMsmqBinding&gt;
+        &lt;binding name=&quot;PoisonBinding&quot; 
+                 receiveRetryCount=&quot;0&quot;
+                 maxRetryCycles=&quot;1&quot;
+                 retryCycleDelay=&quot;00:00:05&quot; 					 
+                 receiveErrorHandling=&quot;Fault&quot;
+                        /&gt;
+      &lt;/netMsmqBinding&gt;
+    &lt;/bindings&gt;
+  &lt;/system.serviceModel&gt;
+&lt;/configuration&gt;
+</code></pre>
+")]
     public void CodeTestBlockGeneral(string source, string expected)
     {
         var filename = "";
@@ -1871,6 +1968,16 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         {
             filename = "styles.css";
             content = ContentCSS;
+        }
+        else if (source.Contains(".config"))
+        {
+            filename = "file.config";
+            content = ContentXML;
+        }
+        else if (source.Contains(".vsixmanifest"))
+        {
+            filename = "source.extension.vsixmanifest";
+            content = ContentXML;
         }
 
         // act

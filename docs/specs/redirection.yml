@@ -91,8 +91,8 @@ inputs:
 outputs:
   .publish.json: |
     {"files":[
-      {"url":"/a", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "canonical_url": "https://docs.com/en-us/a", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}, 
-      {"url":"/b", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
+      {"url":"/b", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"},
+      {"url":"/a", "document_id":"65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "canonical_url": "https://docs.com/en-us/a", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
     ]}
   b.json: |
    {"document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}
@@ -113,9 +113,9 @@ outputs:
   .publish.json: |
     {
         "files": [
+            { "url": "/docs/path1" },
             { "url": "/a" },
-            { "url": "/b" },
-            { "url": "/docs/path1" }
+            { "url": "/b" }
         ]
     }
   docs/path1.json: |
@@ -192,15 +192,15 @@ outputs:
     {
       "files": [
           {
-              "url": "/partner-center-sdk/agreement-metadata",              
-              "locale": "en-us",
-              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
-          },
-          {
               "url": "/partner-center-sdk/agreement-metadata-resources",
               "path": "partner-center-sdk/agreement-metadata-resources.json",
               "source_path": "agreement-metadata-resources.md",
               "locale": "en-us"
+          },
+          {
+              "url": "/partner-center-sdk/agreement-metadata",              
+              "locale": "en-us",
+              "redirect_url": "/partner-center-sdk/agreement-metadata-resources"
           }
       ]
     }
@@ -817,9 +817,9 @@ outputs:
   a/.publish.json: |
     {
       "files": [
+        {"url": "/aa", "locale": "en-us"},
         {"url": "/a", "locale": "en-us", "redirect_url": "/aa"},
-        {"url": "/b", "locale": "en-us"},
-        {"url": "/aa", "locale": "en-us"}
+        {"url": "/b", "locale": "en-us"}
       ]
     }
   .errors.log: |
@@ -994,6 +994,16 @@ outputs:
           "base_path": "/",
           "files": [
               {
+                  "url": "/folder/",
+                  "path": "folder/index.json",
+                  "source_path": "folder/index.md",
+                  "canonical_url": "https://docs.com/en-us/folder/",
+                  "document_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                  "document_version_independent_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                  "site_name": "Docs",
+                  "depot_name": "product.docset",
+              },
+              {
                   "url": "/original",
                   "redirect_url": "/folder/a",
                   "document_id": "6172869a-1d42-80e4-5d0c-707167a0d4c1",
@@ -1034,16 +1044,6 @@ outputs:
                   "document_id": "3c570421-59fc-1dc7-d86a-43dbdf5d391b",
                   "document_version_independent_id": "3c570421-59fc-1dc7-d86a-43dbdf5d391b",
                   "canonical_url": "https://docs.com/en-us/original6"
-              },
-              {
-                  "url": "/folder/",
-                  "path": "folder/index.json",
-                  "source_path": "folder/index.md",
-                  "canonical_url": "https://docs.com/en-us/folder/",
-                  "document_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
-                  "document_version_independent_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
-                  "site_name": "Docs",
-                  "depot_name": "product.docset",
               }
           ]
       }
@@ -1083,7 +1083,18 @@ outputs:
         "name": "docset",
         "product": "product",
         "base_path": "/",
-        "files": [
+        "files": [           
+            {
+                "url": "/folder/",
+                "path": "folder/index.json",
+                "source_path": "folder/index.md",
+                "locale": "en-us",
+                "canonical_url": "https://docs.com/en-us/folder/",
+                "document_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                "document_version_independent_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
+                "site_name": "Docs",
+                "depot_name": "product.docset",
+            },
             {
                 "url": "/original",
                 "locale": "en-us",
@@ -1099,20 +1110,54 @@ outputs:
                 "document_id": "0e929cdb-46ae-915a-031f-4c6f8e8f6a1a",
                 "document_version_independent_id": "0e929cdb-46ae-915a-031f-4c6f8e8f6a1a",
                 "canonical_url": "https://docs.com/en-us/original2"
-            },           
-            {
-                "url": "/folder/",
-                "path": "folder/index.json",
-                "source_path": "folder/index.md",
-                "locale": "en-us",
-                "canonical_url": "https://docs.com/en-us/folder/",
-                "document_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
-                "document_version_independent_id": "87407f22-7c8e-317e-430d-96980c2fd1a6",
-                "site_name": "Docs",
-                "depot_name": "product.docset",
             }
         ]
     }
   .errors.log: |
       {"message_severity":"suggestion","code":"redirect-url-invalid","message":"Can't redirect document ID for redirected file 'original.md' because redirect URL 'folder/a' is invalid or is in a different docset. Specify a redirect_url in the same docset, or set redirect_document_id to false in .openpublishing.redirection.json.","file":"redirections.json"}
 ---
+# dangling redirection files
+os: windows
+repos:
+  https://github.com/redirection/multiple-redirection-files:
+  - files:
+      .openpublishing.publish.config.json: |
+        {
+          "docsets_to_publish": [{"build_source_folder":"a"}],
+          "redirection_files": [
+            ".openpublishing.redirection.test.json",
+            "a/.openpublishing.redirection.test.json"
+          ],
+        }
+      a/docfx.yml:
+      .openpublishing.redirection.json: |
+        { 
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      .openpublishing.redirection.test.json: |
+        {
+          "redirections": [{"source_path": "c.md", "redirect_url": "/cc"}]
+        }
+      a/.openpublishing.redirection.test.json: |
+        {
+           "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+      a/b/.openpublishing.redirection.test.json: |
+        {
+          "redirections": [
+            {"source_path": "a.md", "redirect_url": "/aa"}, 
+            {"source_path": "b.md", "redirect_url": "/bb"}]
+        }
+outputs:
+  .errors.log: |
+    {"message_severity":"info","code":"dangling-redirection-files","message":"There are some dangling redirection files: a\\b\\.openpublishing.redirection.json, a\\b\\.openpublishing.redirection.test.json"}
