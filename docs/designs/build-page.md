@@ -57,7 +57,7 @@
       "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
       "git_content_url": "https://github.com/dotnet/docfx/docs/build-page.md",
       "locale": "en-us",
-      "canonical_url": "https://docs.microsoft.com/docfx/build-page"
+      "canonical_url": "https://learn.microsoft.com/docfx/build-page"
       ...
   }
   ```
@@ -75,7 +75,7 @@
     "document_id": "58f52203-474e-4b6e-bb85-13cedd56575e",
     "git_content_url": "https://github.com/dotnet/docfx/docs/build-page.md",
     "locale": "en-us",
-    "canonical_url": "https://docs.microsoft.com/docfx/build-page"
+    "canonical_url": "https://learn.microsoft.com/docfx/build-page"
     ...
   }
   ```

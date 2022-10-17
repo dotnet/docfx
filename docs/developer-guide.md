@@ -62,7 +62,7 @@ There are some common scenarios for reference. And you can combine these options
     ```shell
     docfx build --dry-run {docset-path}
     ```
-- Debug [https://docs.microsoft.com](https://docs.microsoft.com) internal publishing build output format:
+- Debug [https://learn.microsoft.com](https://learn.microsoft.com) internal publishing build output format:
     ```shell
     docfx build --output-type pagejson {docset-path}
     ```
@@ -77,7 +77,7 @@ There are some common scenarios for reference. And you can combine these options
 
 ## Release Process
 
-We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://docs.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
+We continuously deploy `v3` branch to [Production Azure DevOps Feed](https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v3-prod/nuget/v3/index.json). It is then deployed to [docs](https://learn.microsoft.com) on a regular cadence. For this to work, `v3` branch **MUST** always be in [Ready to Ship](#definition-of-ready-to-ship) state.
 
 Large feature work happens in feature branches. Feature branch name starts with `feature/`.
 

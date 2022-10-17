@@ -28,10 +28,10 @@ outputs:
 # Links to URLs are preserved as is
 inputs:
   docfx.yml:
-  docs/a.md: Link to [docs](https://docs.microsoft.com)
+  docs/a.md: Link to [docs](https://learn.microsoft.com)
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a href=\"https://docs.microsoft.com\">docs</a></p>" }
+    { "conceptual": "<p>Link to <a href=\"https://learn.microsoft.com\">docs</a></p>" }
 ---
 # Links to bookmarks in the same article
 inputs:
@@ -181,13 +181,13 @@ outputs:
 # Should not append locale for absolute path starting with api, _themes
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     removeHostName: true
   a.md: |
     Link to [absolute path](/api/search/rss?search=SDK%20release%20notes)
     Link to [absolute path](/API/search/rss?search=SDK%20release%20notes)
     Link to [absolute path](/api-management/search/rss?search=SDK%20release%20notes)
-    <iframe src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/global/video-embed.html"></iframe>
+    <iframe src="https://learn.microsoft.com/_themes/docs.theme/master/en-us/_themes/global/video-embed.html"></iframe>
 outputs:
   a.json: |
     { "conceptual": 

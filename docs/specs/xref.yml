@@ -22,7 +22,7 @@ outputs:
 # xref should be unironed from different sources
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     xref:
     - 2.xrefmap.json
     extend: _shared/extend.json
@@ -35,12 +35,12 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://learn.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
   2.xrefmap.json: |
-    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/a", "nameWithType": "a"}]}
+    { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://learn.microsoft.com/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/dotnet/api/system.string\">System.String</a></p>\n"}
@@ -48,7 +48,7 @@ outputs:
 # original config should have higher priority than extend config
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     xref:
     - high.xrefmap.json
     extend: _shared/extend.json
@@ -61,7 +61,7 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String.Higher",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://learn.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
@@ -71,7 +71,7 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://learn.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
@@ -92,13 +92,13 @@ inputs:
           "uid": "System.String",
           "name": "String",
           "fullName": "System.String",
-          "href": "https://docs.microsoft.com/dotnet/api/system.string",
+          "href": "https://learn.microsoft.com/dotnet/api/system.string",
           "nameWithType": "System.String"
       }]
     }
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">System.String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the YAML file for resolving
 inputs:
@@ -111,11 +111,11 @@ inputs:
       - uid: System.String
         name: String
         fullName: System.String
-        href: https://docs.microsoft.com/en-us/dotnet/api/system.string
+        href: https://learn.microsoft.com/en-us/dotnet/api/system.string
         nameWithType: System.String
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://learn.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Restore xref map from configured url and use the zip file for resolving
 inputs:
@@ -129,13 +129,13 @@ inputs:
         - uid: System.String
           name: String
           fullName: System.String
-          href: https://docs.microsoft.com/en-us/dotnet/api/system.string
+          href: https://learn.microsoft.com/en-us/dotnet/api/system.string
           nameWithType: System.String
     a.json: |
-      { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://docs.microsoft.com/en-us/a", "nameWithType": "a"}]}
+      { "references":[{"uid": "a", "name": "a", "fullName": "a", "href": "https://learn.microsoft.com/en-us/a", "nameWithType": "a"}]}
 outputs:
   docs/a.json: |
-    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
+    { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"https://learn.microsoft.com/en-us/dotnet/api/system.string\">String</a></p>\n"}
 ---
 # Define uid in conceptual, resolve it
 repos:
@@ -1153,7 +1153,7 @@ outputs:
 # uid resolving should respect the order of xref settings
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     xref: 
       - 1.xrefmap.json
       - 2.xrefmap.json
@@ -1162,11 +1162,11 @@ inputs:
     {
       "references":[{
           "uid": "System.String",
-          "href": "https://docs.microsoft.com/en-us/dotnet/api/system.string"
+          "href": "https://learn.microsoft.com/en-us/dotnet/api/system.string"
       }]
     }
   2.xrefmap.json: |
-    { "references":[{"uid": "System.String", "href": "https://2.docs.microsoft.com/en-us/system.string"}]}
+    { "references":[{"uid": "System.String", "href": "https://2.learn.microsoft.com/en-us/system.string"}]}
 outputs:
   docs/a.json: |
     { "conceptual": "<p>Link to <a class=\"no-loc\" href=\"/en-us/dotnet/api/system.string\">System.String</a></p>\n"}
@@ -1416,7 +1416,7 @@ repos:
                 "uid": "System.String",
                 "name": "String",
                 "fullName": "System.String",
-                "href": "https://docs.microsoft.com/dotnet/api/system.string",
+                "href": "https://learn.microsoft.com/dotnet/api/system.string",
                 "nameWithType": "System.String"
             }]
           }
@@ -1425,15 +1425,15 @@ repos:
             - uid: System.String.1
               name: String.1
               fullName: System.String.1
-              href: https://docs.microsoft.com/dotnet/api/system.string.1
+              href: https://learn.microsoft.com/dotnet/api/system.string.1
               nameWithType: System.String.1
 outputs:
   docs/a.json: |
     { 
       "conceptual": 
       "<p>
-          Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string\">System.String</a>
-          Link to <a class=\"no-loc\" href=\"https://docs.microsoft.com/dotnet/api/system.string.1\">System.String.1</a>
+          Link to <a class=\"no-loc\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">System.String</a>
+          Link to <a class=\"no-loc\" href=\"https://learn.microsoft.com/dotnet/api/system.string.1\">System.String.1</a>
       </p>"
     }
 ---
@@ -2180,7 +2180,7 @@ repos:
   https://docs.com/test-uid-conceptual#live:
     - files:
         docfx.yml: |
-          hostName: docs.microsoft.com
+          hostName: learn.microsoft.com
           basePath: /base_path
           alternativeHostName: new-docs.microsoft.com
         docs/a.md: |
@@ -2204,12 +2204,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://docs.microsoft.com/base_path/docs/a",
+          "href": "https://learn.microsoft.com/base_path/docs/a",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://docs.microsoft.com/base_path/docs/b",
+          "href": "https://learn.microsoft.com/base_path/docs/b",
           "name": "Title from yaml header b"
         }
       ]
@@ -2222,8 +2222,8 @@ repos:
   https://docs.com/test-uid-conceptual#main:
     - files:
         docfx.yml: |
-          hostName: docs.microsoft.com
-          xrefhostName: review.docs.microsoft.com
+          hostName: learn.microsoft.com
+          xrefhostName: review.learn.microsoft.com
           basePath: /base_path
           alternativeHostName: new-docs.microsoft.com
         docs/a.md: |
@@ -2247,12 +2247,12 @@ outputs:
       "references":[
         {
           "uid": "a",
-          "href": "https://review.docs.microsoft.com/base_path/docs/a?branch=main",
+          "href": "https://review.learn.microsoft.com/base_path/docs/a?branch=main",
           "name": "Title from yaml header a"
         },
         {
           "uid": "b",
-          "href": "https://review.docs.microsoft.com/base_path/docs/b?branch=main",
+          "href": "https://review.learn.microsoft.com/base_path/docs/b?branch=main",
           "name": "Title from yaml header b"
         }
       ]
@@ -2266,8 +2266,8 @@ repos:
   https://docs.com/test-alternativeHostName-before-resolve#main:
    - files:
         docfx.yml: |
-          hostName: docs.microsoft.com    
-          xrefHostName: review.docs.microsoft.com    
+          hostName: learn.microsoft.com    
+          xrefHostName: review.learn.microsoft.com    
           alternativeHostName: new-docs.microsoft.com    
           xref: 
             - 1.xrefmap.json
@@ -2287,7 +2287,7 @@ repos:
               {
                 "uid": "System.String.old",
                 "name": "String.old",
-                "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
+                "href": "https://learn.microsoft.com/dotnet/api/system.string.old"
               },
               {
                 "uid": "System.String2",
@@ -2297,7 +2297,7 @@ repos:
               {
                 "uid": "System.String2.old",
                 "name": "String2.old",
-                "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
+                "href": "https://review.learn.microsoft.com/dotnet/api/system.string2.old"
               },
               {
                 "uid": "System.String3",
@@ -2327,7 +2327,7 @@ repos:
         docfx.yml: |
           hostName: new-docs.microsoft.com
           basePath: /base_path
-          alternativeHostName: docs.microsoft.com
+          alternativeHostName: learn.microsoft.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -2370,7 +2370,7 @@ repos:
           hostName: new-docs.microsoft.com
           xrefhostName: review.new-docs.microsoft.com
           basePath: /base_path
-          alternativeHostName: docs.microsoft.com
+          alternativeHostName: learn.microsoft.com
         docs/a.md: |
           ---
           title: Title from yaml header a
@@ -2413,7 +2413,7 @@ repos:
         docfx.yml: |
           hostName: new-docs.microsoft.com    
           xrefHostName: review.new-docs.microsoft.com    
-          alternativeHostName: docs.microsoft.com    
+          alternativeHostName: learn.microsoft.com    
           xref: 
             - 1.xrefmap.json
         docs/a.md: Link to @System.String
@@ -2432,7 +2432,7 @@ repos:
               {
                 "uid": "System.String.old",
                 "name": "String.old",
-                "href": "https://docs.microsoft.com/dotnet/api/system.string.old"
+                "href": "https://learn.microsoft.com/dotnet/api/system.string.old"
               },
               {
                 "uid": "System.String2",
@@ -2442,7 +2442,7 @@ repos:
               {
                 "uid": "System.String2.old",
                 "name": "String2.old",
-                "href": "https://review.docs.microsoft.com/dotnet/api/system.string2.old"
+                "href": "https://review.learn.microsoft.com/dotnet/api/system.string2.old"
               },
               {
                 "uid": "System.String3",

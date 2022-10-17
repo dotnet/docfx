@@ -134,10 +134,10 @@ outputs:
 noRestore: true
 inputs:
   docfx.yml: |
-    monikerDefinition: https://docs.microsoft.com/bad-url
+    monikerDefinition: https://learn.microsoft.com/bad-url
 outputs:
   .errors.log: |
-    {"message_severity":"error","code":"need-restore","message":"Cannot find dependency 'https://docs.microsoft.com/bad-url', did you forget to run `docfx restore`?"}
+    {"message_severity":"error","code":"need-restore","message":"Cannot find dependency 'https://learn.microsoft.com/bad-url', did you forget to run `docfx restore`?"}
 ---
 # Show error when dependent file can't be found
 inputs:

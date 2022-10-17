@@ -863,11 +863,11 @@ outputs:
 # remove domain for alternative hostname for absolute links when removeHostName is true
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     alternativeHostname: new-docs.microsoft.com
     removeHostName: true
   docs/a.md: |
-    [A link](https://docs.microsoft.com/en-us/azure#bookmark)
+    [A link](https://learn.microsoft.com/en-us/azure#bookmark)
     [Another link](https://new-docs.microsoft.com/zh-cn/azure?view=moniker-1)
 outputs:
   docs/a.json: |
@@ -878,14 +878,14 @@ outputs:
 # keep domain for alternative hostname for absolute links when removeHostName is false
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     alternativeHostname: new-docs.microsoft.com
     removeHostName: false
   docs/a.md: |
-    [A link](https://docs.microsoft.com/en-us/azure#bookmark)
+    [A link](https://learn.microsoft.com/en-us/azure#bookmark)
     [Another link](https://new-docs.microsoft.com/zh-cn/azure?view=moniker-1)
 outputs:
   docs/a.json: |
     {
-       "conceptual": "<p><a href=\"https://docs.microsoft.com/en-us/azure#bookmark\" data-linktype=\"external\">A link</a><a href=\"https://new-docs.microsoft.com/zh-cn/azure?view=moniker-1\" data-linktype=\"external\">Another link</a></p>",
+       "conceptual": "<p><a href=\"https://learn.microsoft.com/en-us/azure#bookmark\" data-linktype=\"external\">A link</a><a href=\"https://new-docs.microsoft.com/zh-cn/azure?view=moniker-1\" data-linktype=\"external\">Another link</a></p>",
     }

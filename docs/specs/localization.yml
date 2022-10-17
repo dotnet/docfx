@@ -243,15 +243,15 @@ repos:
   https://docs.com/metadata1#master:
     - files:
         docfx.yml: |
-          hostName: docs.microsoft.com
+          hostName: learn.microsoft.com
   https://docs.com/metadata1.zh-cn#master:
     - files:
         docfx.yml: |
-          hostName: docs.microsoft.com
+          hostName: learn.microsoft.com
         docs/a.md:
 outputs:
   docs/a.json: |
-    {"locale": "zh-cn", "canonical_url": "https://docs.microsoft.com/zh-cn/docs/a", "document_id": "3862ef10-61c4-6242-7188-36960566ecb6", "document_version_independent_id": "3862ef10-61c4-6242-7188-36960566ecb6",}
+    {"locale": "zh-cn", "canonical_url": "https://learn.microsoft.com/zh-cn/docs/a", "document_id": "3862ef10-61c4-6242-7188-36960566ecb6", "document_version_independent_id": "3862ef10-61c4-6242-7188-36960566ecb6",}
 ---
 # conflicted toc files(source and loc)
 # 1. should not report warning

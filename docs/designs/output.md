@@ -5,7 +5,7 @@ This document specifies docfx output file layout. It is designed to satisfy thes
 - **Dynamic build output maps directly to hosting server**: the build output for dynamic rendering should map directly to what the hosting layer expects, without permutation.
   > *Hosting server* here is a fictional server using `documentdb`
 
-- **Efficient url lookup**: with an URL like `https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#Instantiation`, it is efficient to lookup the content with proper locale fallback and moniker fallback.
+- **Efficient url lookup**: with an URL like `https://learn.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#Instantiation`, it is efficient to lookup the content with proper locale fallback and moniker fallback.
 
 - **Static build output xcopy deployable**: should just xcopy static build output to any static hosting server.
 
@@ -33,7 +33,7 @@ An **URL** is an universal identifier that confirms to [URL Standard](https://ur
 ```
              host          locale      site-url                    moniker
         |------^---------| |-^-||----------^------------|      |------^------|
-https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#Instantiation
+https://learn.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#Instantiation
 ```
 
 ### Static hosting URL schema
@@ -45,7 +45,7 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0#I
 ```
              host          locale        site-url
         |------^---------| |-^-| |----------^-------------|
-https://docs.microsoft.com/en-us/dotnet/api/system.string/#Instantiation
+https://learn.microsoft.com/en-us/dotnet/api/system.string/#Instantiation
 ```
 
 #### Static hosting with ugly URL
@@ -55,7 +55,7 @@ https://docs.microsoft.com/en-us/dotnet/api/system.string/#Instantiation
 ```
              host          locale               site-url
         |------^---------| |-^-| |----------^-----------------|
-https://docs.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
+https://learn.microsoft.com/en-us/dotnet/api/system.string.html#Instantiation
 ```
 
 > `?` means optional.
@@ -95,7 +95,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0 |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/api/system.string?view=netstandard-2.0 |
     | `site-url` | /dotnet/api/system.string |
     | `base-path` | dotnet |
     | `site-path` | api/system.string.json |
@@ -125,7 +125,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/api/TOC.json?view=netstandard-2.0 |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/api/TOC.json?view=netstandard-2.0 |
     | `site-url` | /dotnet/api/TOC.json |
     | `base-path` | dotnet |
     | `site-path` | api/TOC.json |
@@ -135,7 +135,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/01ddf122/api/TOC/ |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/01ddf122/api/TOC/ |
     | `site-url` | /dotnet/01ddf122/api/TOC/ |
     | `base-path` | dotnet |
     | `site-path` | 01ddf122/api/TOC/index.html |
@@ -145,7 +145,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/01ddf122/api/TOC.html |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/01ddf122/api/TOC.html |
     | `site-url` | /dotnet/01ddf122/api/TOC.html |
     | `base-path` | dotnet |
     | `site-path` | 01ddf122/api/TOC.html |
@@ -155,7 +155,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/api/thumbnail.png?view=netstandard-2.0 |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/api/thumbnail.png?view=netstandard-2.0 |
     | `site-url` | /dotnet/api/thumbnail.png |
     | `site-path` | dotnet/api/thumbnail.png |
     | `output-path` | dotnet/01ddf122/api/thumbnail.png |
@@ -164,7 +164,7 @@ Different files can share the same `{site-url}` or `{site-path}` due to versioni
 
     | | |
     |------ |----|
-    | `url` | https://docs.microsoft.com/en-us/dotnet/01ddf122/api/thumbnail.png |
+    | `url` | https://learn.microsoft.com/en-us/dotnet/01ddf122/api/thumbnail.png |
     | `site-url` | /dotnet/01ddf122/api/thumbnail.png |
     | `site-path` | dotnet/01ddf122/api/thumbnail.png |
     | `output-path` | dotnet/01ddf122/api/thumbnail.png |

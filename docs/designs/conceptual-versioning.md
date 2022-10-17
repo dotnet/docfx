@@ -207,7 +207,7 @@ monikerRange: >=netcore-1.0
 
 ##### 2.2.2 Moniker zone
 
-Inside the file, with help of [versioned zone syntax](https://review.docs.microsoft.com/en-us/new-hope/resources/conceptual-versioning?branch=master#configuring-markdown-files-with-versioned-zones), the file has ability to wrap versioned content into different zones.
+Inside the file, with help of [versioned zone syntax](https://review.learn.microsoft.com/en-us/new-hope/resources/conceptual-versioning?branch=master#configuring-markdown-files-with-versioned-zones), the file has ability to wrap versioned content into different zones.
 
 ```markdown
 ---
