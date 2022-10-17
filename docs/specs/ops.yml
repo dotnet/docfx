@@ -158,7 +158,6 @@ repos:
       ce/docfx.yml: |
         name: customer-engagement-ppe
         product: MSDN
-      ce/.openpublishing.redirection.json: '{'
       ce/redirections.yml: |
         renames:
           admin/integrate-with-microsoft-teams.md: '../basics/teams-integration'
@@ -167,7 +166,8 @@ outputs:
   ce/basics/teams-integration.json: |
     { "document_id": "b1c6c9d3-40a8-a21d-98e8-a3cbf54eaeb4" }
   .errors.log: |
-    { "message_severity":"info","code":"dangling-redirection-files","message":"There are some dangling redirection files: .openpublishing.redirection.json, ce\\.openpublishing.redirection.json"}
+    {"message_severity":"error","code":"redirection-conflict","message":"The 'admin/integrate-with-microsoft-teams.md' appears twice or more in the redirection mappings.","file":"ce/redirections.yml","line":2,"column":44}
+    {"message_severity":"warning","code":"redirection-url-conflict","message":"The following files are redirected to '../basics/teams-integration' with redirect_document_id set to true: 'admin/integrate-with-microsoft-teams.md', 'admin/integrate-with-microsoft-teams.md'. Only one file can have its document ID redirected to each redirect_url. Change all but one instance to false in redirection file(s): '../.openpublishing.redirection.json', 'redirections.yml'.","file":".openpublishing.redirection.json","source_url":"https://github.com/ops/redirect-2/blob/main/.openpublishing.redirection.json","line":5,"column":51}
 ---
 # redirect_document_id is false
 # document_id should be different
@@ -270,18 +270,3 @@ repos:
   - files:
       ContentTemplate/schemas/TestData.schema.json: "{}"
 outputs:
----
-# SourceInfo of incorrect opConfig
-repos:
-  https://github.com/redirection/SourceInfoOfIncorrectOpConfig:
-  - files:
-      .openpublishing.publish.config.json: |
-        {
-          "docsets_to_publish": [{"build_source_folder":"a"}],
-          "redirection_files": "a/b/.openpublishing.redirection.test.json",
-        }
-      a/docfx.yml:
-outputs:
-  .errors.log: |
-    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}
-    {"message_severity":"error","code":"violate-schema","message":"Error converting value \"a/b/.openpublishing.redirection.test.json\" to type 'System.Collections.Generic.HashSet`1[Microsoft.Docs.Build.PathString]'.","file":".openpublishing.publish.config.json","line":3,"column":66}

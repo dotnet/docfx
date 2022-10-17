@@ -355,13 +355,6 @@ internal static class Errors
             => new(ErrorLevel.Warning, "redirected-file-not-removed", $"Redirected file '{string.Join(", ", pathList)}' are still in the repo. After adding a file to the redirection JSON file, you must delete the original file from the repo.");
 
         /// <summary>
-        /// A redirection file registered in .openpublishing.publish.json is not found in the repo.
-        /// </summary>
-        /// Behavior: ✔️ Message: ✔️
-        public static Error RedirectionFileNotFound(string path)
-            => new(ErrorLevel.Error, "redirection-file-not-found", $"Redirection file '{path}' registered in .openpublishing.publish.json is not found in the repo.");
-
-        /// <summary>
         /// A redirection item cannot contain ‘source_path’ and ‘source_path_from_root’ at the same time.
         /// </summary>
         /// /// Behavior: ✔️ Message: ✔️
@@ -374,12 +367,6 @@ internal static class Errors
         /// Behavior: ✔️ Message: ✔️
         public static Error RedirectionPathSyntaxError(SourceInfo<string> source)
             => new(ErrorLevel.Warning, "redirection-path-syntax-error", $"Redirection path syntax is incorrect. 'source_path' should start without '/' and 'source_path_from_root' should start with '/'.", source);
-
-        /// <summary>
-        /// Check whether there are any dangling redirection files in a repository.
-        /// </summary>
-        public static Error DanglingRedirectionFiles(IEnumerable<string> danglingRedirectionFiles)
-            => new(ErrorLevel.Info, "dangling-redirection-files", $"There are some dangling redirection files: {string.Join(", ", danglingRedirectionFiles)}");
     }
 
     public static class Toc
