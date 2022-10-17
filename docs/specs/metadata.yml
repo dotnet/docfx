@@ -224,13 +224,13 @@ outputs:
 inputs:
   docfx.yml: |
     files: "**/*"
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
     routes:
       articles/: azure/
   articles/app-service/index.md:
 outputs:
   azure/app-service/index.json: |
-    { "canonical_url": "https://docs.microsoft.com/en-us/azure/app-service/" }
+    { "canonical_url": "https://learn.microsoft.com/en-us/azure/app-service/" }
 ---
 # No canonical URL for profile page
 inputs:

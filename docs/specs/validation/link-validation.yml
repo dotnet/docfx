@@ -430,7 +430,8 @@ inputs:
             "severity": "SUGGESTION",
             "contentTypes": ["conceptual"],
             "linkTypes": [
-               "docs"
+               "docs",
+               "learn"
             ],
             "contentTypes": [
                 "conceptual",
@@ -441,14 +442,14 @@ inputs:
       }
     }
   file1.md: |
-    [https://docs.microsoft.com/en-us/admin/](https://docs.microsoft.com/en-us/admin/)
+    [https://learn.microsoft.com/en-us/admin/](https://learn.microsoft.com/en-us/admin/)
   toc.yml: |
     - name: a
-      href: https://docs.microsoft.com/en-us/admin/
+      href: https://learn.microsoft.com/en-us/admin/
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"docs-link-absolute","message":"Absolute link 'https://docs.microsoft.com/en-us/admin/' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"docs-link-absolute","message":"Absolute link 'https://docs.microsoft.com/en-us/admin/' will be broken in isolated environments. Replace with a relative link.","file":"toc.yml","line":2,"end_line":2,"column":9,"end_column":48}
+    {"message_severity":"suggestion","code":"docs-link-absolute","message":"Absolute link 'https://learn.microsoft.com/en-us/admin/' will be broken in isolated environments. Replace with a relative link.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"docs-link-absolute","message":"Absolute link 'https://learn.microsoft.com/en-us/admin/' will be broken in isolated environments. Replace with a relative link.","file":"toc.yml","line":2,"end_line":2,"column":9,"end_column":49}
   file1.json:
   toc.json:
 ---
@@ -480,14 +481,14 @@ inputs:
       }
     }
   file1.md: |
-    [external link](http://docs.microsoft.com/test)
-    <a href="http://docs.microsoft.com/test">inline html link</a>
+    [external link](http://learn.microsoft.com/test)
+    <a href="http://learn.microsoft.com/test">inline html link</a>
     [external link](http://www.google.com)
     ![image link](http://technet.com/index-hero.jpg)
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://docs.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
+    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://learn.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://learn.microsoft.com/test' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":41}
     {"message_severity":"suggestion","code":"insecure-link","message":"Link 'http://technet.com/index-hero.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":4,"end_line":4,"column":1,"end_column":1}
   file1.json:
 ---
@@ -531,15 +532,15 @@ inputs:
         }
     }
   file1.md: |
-    [external link](http://docs.microsoft.com/should-report)
-    <a href="http://docs.microsoft.com/should-report">inline html link</a>
-    <a href="https://docs.microsoft.com/should-not-report">inline html link</a>
+    [external link](http://learn.microsoft.com/should-report)
+    <a href="http://learn.microsoft.com/should-report">inline html link</a>
+    <a href="https://learn.microsoft.com/should-not-report">inline html link</a>
     [external link](http://www.google.com/should-not-report)
     ![image link](http://image.channel9.com/should-report.jpg)
 outputs:
   .errors.log: |
-    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://docs.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":49}
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://learn.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://learn.microsoft.com/should-report' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":50}
     {"message_severity":"info","code":"insecure-link-2","message":"Link 'http://image.channel9.com/should-report.jpg' is insecure. Links to Microsoft sites must use 'https' instead of 'http'.","file":"file1.md","line":5,"end_line":5,"column":1,"end_column":1}
   file1.json:
 ---
@@ -563,11 +564,11 @@ inputs:
     }
   file1.md: |
     [external link](https://aka.ms/az-learn)
-    <a href="http://docs.microsoft.com/test">inline html link</a>
+    <a href="http://learn.microsoft.com/test">inline html link</a>
     ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"html-link","message":"HTML link http://docs.microsoft.com/test is not allowed. Use a Markdown link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":40}
+    {"message_severity":"suggestion","code":"html-link","message":"HTML link http://learn.microsoft.com/test is not allowed. Use a Markdown link.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":41}
 
   file1.json:
 ---
@@ -586,7 +587,7 @@ inputs:
             "severity": "SUGGESTION",
             "contentTypes": ["conceptual"],
             "domains": [
-              "docs.microsoft.com",
+              "learn.microsoft.com",
               "msdn.microsoft.com",
               "technet.microsoft.com",
               "partner.microsoft.com"
@@ -596,13 +597,13 @@ inputs:
       }
     }
   file1.md: |
-    [external link](http://docs.microsoft.com/tr-tr)
-    <a href="http://docs.microsoft.com/tr-tr">inline html link</a>
-    [external link](http://docs.microsoft.com/nolocale)
+    [external link](http://learn.microsoft.com/tr-tr)
+    <a href="http://learn.microsoft.com/tr-tr">inline html link</a>
+    [external link](http://learn.microsoft.com/nolocale)
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://docs.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://docs.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":41}
+    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://learn.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"hard-coded-locale","message":"Link 'http://learn.microsoft.com/tr-tr' contains locale code 'tr-tr'. For localizability, remove 'tr-tr' from links to most Microsoft sites.","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":42}
 
   file1.json:
 ---
@@ -625,13 +626,13 @@ inputs:
       }
     }
   file1.md: |
-    [external link](https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15)
-    <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
+    [external link](https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15)
+    <a href="https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
     [relative link](/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15)
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
-    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":114}
+    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":1,"end_line":1,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":2,"end_line":2,"column":10,"end_column":115}
     {"message_severity":"suggestion","code":"preserve-view-not-set","message":"Did you mean to link to a specific version? If so, add &preserve-view=true to the url: /en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
 
   file1.json:
@@ -655,12 +656,12 @@ inputs:
       }
     }
   file1.md: |
-    [external link](http://docs.microsoft.com/tr-tr)
-    <a href="https://docs.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
-    [](http://docs.microsoft.com/tr-tr)
+    [external link](http://learn.microsoft.com/tr-tr)
+    <a href="https://learn.microsoft.com/en-us/sql/t-sql/functions/cast-and-convert-transact-sql?view=sql-server-ver15">inline html link</a>
+    [](http://learn.microsoft.com/tr-tr)
     ![Illustration to use for new users](https://azurecomcdn.azureedge.net/cvt-779fa2985e70b1ef1c34d319b505f7b4417add09948df4c5b81db2a9bad966e5/images/page/services/devops/hero-images/index-hero.jpg)
     [![](https://google.com/media/4-metrics-data.png "Screenshot of Storage Explorer displaying the minute metrics data for blobs")](/media/4-metrics-data.png#lightbox)
 outputs:
   .errors.log: |
-    {"message_severity":"suggestion","code":"link-text-missing","message":"Missing link text for link 'http://docs.microsoft.com/tr-tr'. Add appropriate text. ","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
+    {"message_severity":"suggestion","code":"link-text-missing","message":"Missing link text for link 'http://learn.microsoft.com/tr-tr'. Add appropriate text. ","file":"file1.md","line":3,"end_line":3,"column":1,"end_column":1}
   file1.json:

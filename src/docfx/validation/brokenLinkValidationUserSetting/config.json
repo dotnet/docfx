@@ -34,7 +34,7 @@
       "Period": "2.5s"
     },
     {
-      "Prefix": "docs.microsoft.com/dotnet/api",
+      "Prefix": "learn.microsoft.com/dotnet/api",
       "Limit": 45,
       "Period": "1s"
     },

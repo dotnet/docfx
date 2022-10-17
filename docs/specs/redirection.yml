@@ -63,18 +63,18 @@ inputs:
   docfx.yml:
   redirections.yml: |
     redirections:
-      a.md: https://docs.microsoft.com/docfx/a
+      a.md: https://learn.microsoft.com/docfx/a
       b.md: a
 outputs:
 ---
 # redirect to can start with https and hostname
 inputs:
   docfx.yml: |
-    hostName: docs.microsoft.com
+    hostName: learn.microsoft.com
   b.md:
   redirections.yml: |
     renames:
-      a.md: https://docs.microsoft.com/b
+      a.md: https://learn.microsoft.com/b
 outputs:
   b.json: |
    {"document_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895", "document_version_independent_id": "65b4ee15-e7e4-88ee-72ec-7be7d0bcd895"}

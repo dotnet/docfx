@@ -5,7 +5,7 @@
 Build your docs website with [DocFX](https://github.com/dotnet/docfx), with landing pages, markdown documents, API references for .NET, REST and more.
 
 We are still at an early develop phase, see our [roadmap](https://github.com/dotnet/docfx/blob/v3/docs/roadmap.md) for detailed planing.
-Our current focus is conceptual document parity with https://docs.microsoft.com, template system is currently not available so the output is currently raw JSON files.
+Our current focus is conceptual document parity with https://learn.microsoft.com, template system is currently not available so the output is currently raw JSON files.
 
 ## Getting Started
 

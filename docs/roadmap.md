@@ -2,7 +2,7 @@
 
 ## The Present State
 
-Docfx is the core compiler to power the content pipeline of [Microsoft Docs](https://docs.microsoft.com). Docfx v3 has gained enough features and is stable enough to support the need for Microsoft Docs. We have completely retired docfx v2 internally for Microsoft Docs and are willing to make docfx v3 publicly consumable by the open source community.
+Docfx is the core compiler to power the content pipeline of [Microsoft Docs](https://learn.microsoft.com). Docfx v3 has gained enough features and is stable enough to support the need for Microsoft Docs. We have completely retired docfx v2 internally for Microsoft Docs and are willing to make docfx v3 publicly consumable by the open source community.
 
 However, there are a few architectural differences between Microsoft Docs and an open-source community release. We still have a bit of work to do before it is publicly consumable. Until then, we recommend users to keep using docfx v2.
 

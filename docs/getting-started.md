@@ -10,7 +10,7 @@ You'll learn how to:
 
 ## Installation
 
-The easiest way to install docfx is to use [.NET Tools](https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools). Install the latest version of [.NET SDK](https://dotnet.microsoft.com/en-us/download/visual-studio-sdks) and run:
+The easiest way to install docfx is to use [.NET Tools](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools). Install the latest version of [.NET SDK](https://dotnet.microsoft.com/en-us/download/visual-studio-sdks) and run:
 
 ```
 dotnet tool install -g docfx

@@ -39,7 +39,7 @@ We would like to address these pain points in v3 aiming to make v3 to be a world
 - A component should focus on **one** aspect
 - **Cross platform**
 - Keep it **simple**, **ease of use**, don’t let developers and users make hard decisions
-- Provide **one** single tool, do not separate the features for docs.microsoft.com features or community users
+- Provide **one** single tool, do not separate the features for learn.microsoft.com features or community users
 - The **same** pipeline for every programming language
 
 <h2 class="accented">Scope</h2>

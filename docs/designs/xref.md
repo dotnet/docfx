@@ -78,15 +78,15 @@ Besides using file path to link to another file, DocFX also allows you to give a
     | yes | PR | master -> test | master | yes | yes | review.xxx.com |
     | yes | PR | test -> live | live(go-live) | no | yes(append with `?branch=live`, `branch` info is set on OPS service and it could not tell cross-site or not) | review.xxx.com |
     | yes | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | review.xxx.com |
-    | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) | review.docs.microsoft.com |
-    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
-    | no | commit | live | live(go-live) | no(`live` branch exists) | no | docs.microsoft.com |
-    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | docs.microsoft.com |
-    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
-    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.docs.microsoft.com |
-    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) | review.docs.microsoft.com |
-    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | review.docs.microsoft.com |
-    > For the second last scenario, the output url would be `review.docs.microsoft.com` and the resolved uid url would be `docs.microsoft.com`, while clicking to this url, the user will go to another site `docs.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
+    | no | commit | master | master | yes(append `?branch=master` to avoid redirecting) | yes(append `?branch=master`) | review.learn.microsoft.com |
+    | no | commit | test | master | yes(`test` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.learn.microsoft.com |
+    | no | commit | live | live(go-live) | no(`live` branch exists) | no | learn.microsoft.com |
+    | no | commit | live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | learn.microsoft.com |
+    | no | PR | test -> master | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.learn.microsoft.com |
+    | no | PR | master -> test | master | yes(`PR` branch may not exist in xref definition repo) | yes(append `?branch=master`) | review.learn.microsoft.com |
+    | no | PR | test -> live | live(go-live) | no | yes(url appending with `?branch=live`) | review.learn.microsoft.com |
+    | no | PR | test -> live | live(not-go-live) | no(uid-not-found) | no(uid-not-found) | review.learn.microsoft.com |
+    > For the second last scenario, the output url would be `review.learn.microsoft.com` and the resolved uid url would be `learn.microsoft.com`, while clicking to this url, the user will go to another site `learn.microsoft.com` instead. Confirmed with PM, this is not an legitimate concern.
     - The href of UID is from the same host name as the referencing repository.
         - If the current branch is `live`, and the UID href is also from `live`, everything is OK
         - If the current branch is `master`, then the output site is `review.docs`, but the resolved url is `docs` which is `live`, while browsing the UID href, the user should not jump to another site(`docs`)
