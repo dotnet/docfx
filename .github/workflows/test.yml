@@ -8,22 +8,25 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.x'
+        dotnet-version: 6
+
+    - run: ./UpdateTemplate.ps1
+
     - run: dotnet build -c Release
-    - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v1
       if: ${{ matrix.os == 'windows-latest' }}
 
-    - run: dotnet publish -c Release -o ${{ runner.temp }}/publish
+    - run: dotnet publish -c Release --no-build -o ${{ runner.temp }}/publish
     - uses: actions/upload-artifact@v2
       with:
-        name: docfx-${{ matrix.os }}
+        name: docfx
         path: ${{ runner.temp }}/publish
