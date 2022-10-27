@@ -56,10 +56,10 @@ namespace Microsoft.DocAsCode.Common.Tests
                                select line.FromJsonString<ReportLogListener.ReportItem>()).ToList();
             var item1 = reportItems.SingleOrDefault(r => r.Message == "Test file path1");
             Assert.NotNull(item1);
-            Assert.Equal(item1.File, "B/Root/C.cs");
+            Assert.Equal("B/Root/C.cs", item1.File);
             var item2 = reportItems.SingleOrDefault(r => r.Message == "Test file path2");
             Assert.NotNull(item2);
-            Assert.Equal(item2.File, "B/Root/D/E.md");
+            Assert.Equal("B/Root/D/E.md", item2.File);
         }
 
         private static void CreateFilesOrFolders(string cwd, params string[] items)

@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotLiquid" Version="2.0.145" />
+    <PackageReference Include="DotLiquid" Version="2.2.656" />
     <PackageReference Include="Jint" Version="2.11.58" />
-    <PackageReference Include="Nustache" Version="1.15.3.5" />
+    <PackageReference Include="Nustache" Version="1.16.0.10" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">

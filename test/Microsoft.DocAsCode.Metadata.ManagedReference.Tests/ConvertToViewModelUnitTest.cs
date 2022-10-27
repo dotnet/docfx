@@ -526,7 +526,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             Assert.Null(reference.IsExternal);
             Assert.Null(reference.Href);
 
-            Assert.True(vm.References.Any(x => x.Uid == "System.Collections.Generic.List`1"));
+            Assert.Contains(vm.References, x => x.Uid == "System.Collections.Generic.List`1");
         }
 
     }
