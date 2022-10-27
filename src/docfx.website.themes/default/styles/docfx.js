@@ -1143,7 +1143,7 @@ $(function () {
      * If the jQuery element contains tags, this function will not change the element.
      */
     $.fn.breakWord = function () {
-      if (this.html() == this.text()) {
+      if (!this.html().match(/(<\w*)((\s\/>)|(.*<\/\w*>))/g)) {
         this.html(function (index, text) {
           return breakPlainText(text);
         })

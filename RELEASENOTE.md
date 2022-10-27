@@ -1,8 +1,16 @@
-Version Notes (Current Version: v2.60)
+Version Notes (Current Version: v2.59.4)
 =======================================
 
-v2.60(Pre-release)
+v2.59.4
 -----------
+1. Fix "lastmod" had erroneous datetimes in some locales for "Sitemap.xml". Thanks @tagcode! (#8105)
+2. Add try catch and needed logging for a actionable message to the user. Thanks @saipramod! (#8131)
+3. Fix metadata generation. Thanks @tibel (#8135)
+4. Add Require Powershell 7 directive to UpdateTemplate.ps1. Thanks @eugeneogongo (#8133)
+5. Using NuGet v3 feed. Thanks @tibel (#8138)
+6. Fix broken tool page layout. Thanks @MikeHingley22 (#8094)
+7. Handle list items without either <term> or <description>. Thanks @mstefarov (#8132)
+8. Improve documentation. Thanks @formalatist (#8086) @mode777 (#8099)
 
 v2.59.3
 -----------

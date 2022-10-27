@@ -77,6 +77,9 @@ namespace Example
         <item>
             <description>item2 in bullet list</description>
         </item>
+        <item>
+            loose text <i>not</i> wrapped in description
+        </item>
     </list>
     </remarks>
     <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
@@ -163,7 +166,9 @@ Classes in assemblies are by definition complete.
             word inside list->listItem->list->listItem->para.>
             the second line.
 </li><li>item2 in numbered list</li></ol>
-</li><li>item2 in bullet list</li></ul>
+</li><li>item2 in bullet list</li><li>
+loose text <em>not</em> wrapped in description
+</li></ul>
 ".Replace("\r\n", "\n"),
 remarks);
 
