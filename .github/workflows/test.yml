@@ -1,0 +1,29 @@
+name: Test
+on:
+  pull_request:
+    branches: [ dev, main ]
+  push:
+    branches: [ dev ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.x'
+    - run: dotnet build -c Release
+    - run: dotnet test -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - uses: codecov/codecov-action@v1
+      if: ${{ matrix.os == 'windows-latest' }}
+
+    - run: dotnet publish -c Release -o ${{ runner.temp }}/publish
+    - uses: actions/upload-artifact@v2
+      with:
+        name: docfx-${{ matrix.os }}
+        path: ${{ runner.temp }}/publish
