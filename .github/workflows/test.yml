@@ -1,0 +1,26 @@
+name: Test
+on:
+  pull_request:
+    branches: [ dev, main ]
+  push:
+    branches: [ dev ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x
+
+    - run: ./UpdateTemplate.ps1
+    - run: dotnet build -c Release
+
+    - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - uses: codecov/codecov-action@v1

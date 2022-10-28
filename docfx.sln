@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalPackageGenerators", "ExternalPackageGenerators", "{416A17AC-FFD4-4722-A990-598EF44F8D90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{718078B4-D34C-4697-AAD1-5844CBF60997}"
 	ProjectSection(SolutionItems) = preProject
@@ -980,7 +978,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{416A17AC-FFD4-4722-A990-598EF44F8D90} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{66205F25-858E-4399-B331-0316D37B9A48} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{54945137-EB1C-4944-AACE-72AF532FBAFB} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{8E89892D-32B8-4745-8F41-7AB73F90E0EB} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
