@@ -6,9 +6,6 @@ trigger:
     include:
     - dev
     - main
-pr:
-- dev
-- main
 
 pool:
   name: Hosted Windows 2019 with VS2019

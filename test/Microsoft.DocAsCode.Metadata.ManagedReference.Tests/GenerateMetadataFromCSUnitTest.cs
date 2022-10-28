@@ -3595,19 +3595,19 @@ namespace Test1
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate*<void>> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate*<void> > a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged<void>> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged<void> > b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall]<void>> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall]<void> > c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void>> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void> > d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
 

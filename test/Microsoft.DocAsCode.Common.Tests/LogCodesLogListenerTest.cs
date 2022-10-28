@@ -22,10 +22,10 @@ namespace Microsoft.DocAsCode.Common.Tests
 
 
             Assert.True(logCodesLogListener.Codes.TryGetValue("file.md", out var fileCodes));
-            Assert.True(fileCodes.Contains(WarningCodes.Build.InvalidFileLink));
-            Assert.True(fileCodes.Contains(WarningCodes.Build.InvalidBookmark));
+            Assert.Contains(WarningCodes.Build.InvalidFileLink, fileCodes);
+            Assert.Contains(WarningCodes.Build.InvalidBookmark, fileCodes);
             Assert.True(logCodesLogListener.Codes.TryGetValue("anotherFile.md", out var anotherFileCodes));
-            Assert.True(anotherFileCodes.Contains(WarningCodes.Build.InvalidFileLink));
+            Assert.Contains(WarningCodes.Build.InvalidFileLink, anotherFileCodes);
 
             Logger.UnregisterAllListeners();
         }

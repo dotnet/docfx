@@ -30,7 +30,7 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
