@@ -2870,6 +2870,37 @@ namespace Test1
             Assert.Equal(@"public void FlagsUndefinedValue(AttributeTargets? targets = (AttributeTargets)65536)", flagsUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
         }
 
+
+        [Fact]
+        public void TestGenerateMetadataWithDefaultParameterValueAttribute()
+        {
+            string code = @"
+using System;
+using System.Runtime.InteropServices;
+
+namespace Test1
+{
+    public class Test
+    {
+        public void Double([Optional][DefaultParameterValue(0)]double i) { }
+        public void Float([Optional][DefaultParameterValue(0)]float i) { }
+        public void Decimal([Optional][DefaultParameterValue(0)]decimal i) { }
+        public void Long([Optional][DefaultParameterValue(0)]long i) { }
+        public void Uint([Optional][DefaultParameterValue(0)]uint i) { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+
+            Assert.Collection(
+                output.Items[0].Items[0].Items,
+                item => Assert.Equal(@"public void Double(double i = 0)", item.Syntax.Content[SyntaxLanguage.CSharp]),
+                item => Assert.Equal(@"public void Float(float i = 0F)", item.Syntax.Content[SyntaxLanguage.CSharp]),
+                item => Assert.Equal(@"public void Decimal(decimal i = 0M)", item.Syntax.Content[SyntaxLanguage.CSharp]),
+                item => Assert.Equal(@"public void Long(long i = 0L)", item.Syntax.Content[SyntaxLanguage.CSharp]),
+                item => Assert.Equal(@"public void Uint(uint i = default(uint))", item.Syntax.Content[SyntaxLanguage.CSharp]));
+        }
+
         [Fact]
         public void TestGenerateMetadataWithFieldHasDefaultValue()
         {
