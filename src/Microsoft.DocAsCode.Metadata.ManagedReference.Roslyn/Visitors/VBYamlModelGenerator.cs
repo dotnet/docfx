@@ -1463,59 +1463,59 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case SpecialType.System_SByte:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((sbyte)value));
+                        SyntaxFactory.Literal(Convert.ToSByte(value)));
                 case SpecialType.System_Byte:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((byte)value));
+                        SyntaxFactory.Literal(Convert.ToByte(value)));
                 case SpecialType.System_Int16:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((short)value));
+                        SyntaxFactory.Literal(Convert.ToInt16(value)));
                 case SpecialType.System_UInt16:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((ushort)value));
+                        SyntaxFactory.Literal(Convert.ToUInt16(value)));
                 case SpecialType.System_Int32:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((int)value));
+                        SyntaxFactory.Literal(Convert.ToInt32(value)));
                 case SpecialType.System_UInt32:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((uint)value));
+                        SyntaxFactory.Literal(Convert.ToUInt32(value)));
                 case SpecialType.System_Int64:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((long)value));
+                        SyntaxFactory.Literal(Convert.ToInt64(value)));
                 case SpecialType.System_UInt64:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((ulong)value));
+                        SyntaxFactory.Literal(Convert.ToUInt64(value)));
                 case SpecialType.System_IntPtr:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((int)value));
+                        SyntaxFactory.Literal(Convert.ToInt32(value)));
                 case SpecialType.System_UIntPtr:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((uint)value));
+                        SyntaxFactory.Literal(Convert.ToUInt32(value)));
                 case SpecialType.System_Decimal:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((decimal)value));
+                        SyntaxFactory.Literal(Convert.ToDecimal(value)));
                 case SpecialType.System_Single:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((float)value));
+                        SyntaxFactory.Literal(Convert.ToSingle(value)));
                 case SpecialType.System_Double:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal((double)value));
+                        SyntaxFactory.Literal(Convert.ToDouble(value)));
                 case SpecialType.System_String:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.StringLiteralExpression,
-                        SyntaxFactory.Literal((string)value));
+                        SyntaxFactory.Literal(Convert.ToString(value)));
                 default:
                     return null;
             }
