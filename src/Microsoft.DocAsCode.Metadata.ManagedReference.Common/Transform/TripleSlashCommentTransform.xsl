@@ -195,8 +195,15 @@
             <ul>
               <xsl:for-each select="item">
                 <li>
-                  <xsl:apply-templates select="term" />
-                  <xsl:apply-templates select="description" />
+                  <xsl:choose>
+                    <xsl:when test="self::node()[description|term]">
+                      <xsl:apply-templates select="term" />
+                      <xsl:apply-templates select="description" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:apply-templates />
+                    </xsl:otherwise>
+                  </xsl:choose>
                 </li>
               </xsl:for-each>
             </ul>
@@ -205,8 +212,15 @@
             <ol>
               <xsl:for-each select="item">
                 <li>
-                  <xsl:apply-templates select="term" />
-                  <xsl:apply-templates select="description" />
+                  <xsl:choose>
+                    <xsl:when test="self::node()[description|term]">
+                      <xsl:apply-templates select="term" />
+                      <xsl:apply-templates select="description" />
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:apply-templates />
+                    </xsl:otherwise>
+                  </xsl:choose>
                 </li>
               </xsl:for-each>
             </ol>

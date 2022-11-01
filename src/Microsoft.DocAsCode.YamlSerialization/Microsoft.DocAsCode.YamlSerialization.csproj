@@ -2,8 +2,9 @@
   <Import Project="../Shared/base.netstandard.props" />
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="YamlDotNet.Signed" Version="5.1.0" />
   </ItemGroup>

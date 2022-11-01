@@ -23,6 +23,17 @@ steps:
     packageType: sdk
     version: '5.0.100'
 
+- task: NodeTool@0
+  displayName: "Use Node 16.x"
+  inputs:
+    versionSpec: 16.x
+
+- powershell: |
+    npm install -g npm-windows-upgrade
+    npm-windows-upgrade -v 8.13.2
+    npm -v
+  displayName: Upgrade npm to latest version
+
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'
   inputs:
@@ -219,8 +230,14 @@ steps:
   env:
     NUGETAPIKEY: $(NugetAPIKey)
     CHOCO_TOKEN: $(ChocoleteyPublishToken)
-    AZDEVOPSPAT: $(AzureDevOpsFeedPAT)
     TOKEN: $(ServiceAccountGithubToken)
+
+- task: PublishBuildArtifacts@1
+  condition: always()
+  displayName: 'upload docfx.zip'
+  inputs:
+    pathtoPublish: 'Documentation\tutorial\artifacts'
+    artifactName: docfx-artifacts
 
 - task: ComponentGovernanceComponentDetection@0
   displayName: 'Component Detection'

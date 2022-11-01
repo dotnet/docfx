@@ -9,19 +9,11 @@ $docfx = @{
     targetFolder = "$homeDir\target"
     artifactsFolder = "$homeDir\artifacts"
     exe = "$homeDir\target\Release\docfx\docfx.exe"
-    account = "openpublishbuild"
     releaseNotePath = "$homeDir\RELEASENOTE.md"
     releaseFolder = "$homeDir\target\Release\docfx"
     assetZipPath = "$homeDir\Documentation\tutorial\artifacts\docfx.zip"
     siteFolder = "$homeDir\Documentation\_site"
     docfxJson = "$homeDir\Documentation\docfx.json"
-}
-
-$azdevops = @{
-    ppeName = "docs-build-v2-ppe"
-    ppeUrl = "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-ppe/nuget/v3/index.json"
-    prodName = "docs-build-v2-prod"
-    prodUrl = "https://docfx.pkgs.visualstudio.com/docfx/_packaging/docs-build-v2-prod/nuget/v3/index.json"
 }
 
 $choco = @{
@@ -38,9 +30,4 @@ $git = @{
     name = "DocFX CI"
     email = "vscopbld@microsoft.com"
     message = "Update gh-pages"
-}
-
-$sync = @{
-    fromBranch = "dev"
-    targetBranch = "stable"
 }

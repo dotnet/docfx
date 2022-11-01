@@ -9,9 +9,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class TabContentBlock : ContainerBlock
     {
-        public TabContentBlock(List<Block> blocks) : base(null)
+        public TabContentBlock(List<Block> blocks)
+            : base(null)
         {
-            foreach(var item in blocks)
+            foreach (var item in blocks)
             {
                 Add(item);
             }

@@ -8,3 +8,8 @@ updates:
   ignore:
   - dependency-name: docs.validation
   - dependency-name: docs.validation.analyzer
+- package-ecosystem: "github-actions"
+    directory: "/"
+    schedule: 
+      interval: weekly
+    target-branch: v3

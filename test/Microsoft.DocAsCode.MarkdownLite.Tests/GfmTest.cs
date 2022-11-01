@@ -532,10 +532,6 @@ aaa",
             @"<p>__aaa_aa __aaa a _a aaa __a</p>
 ")]
         [InlineData(
-            @"***A*B*C*D**",
-            @"<p><strong><em>A</em>B<em>C</em>D</strong></p>
-")]
-        [InlineData(
             @"* [a]: a
 
 * [b]: b
@@ -694,7 +690,7 @@ B", @"<p>A<br>B</p>
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
-        public void TestLegacyGfmInGeneral(string source, string expected)
+        internal void TestLegacyGfmInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options { LegacyMode = true });
             var engine = builder.CreateEngine(new HtmlRenderer());

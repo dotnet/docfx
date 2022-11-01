@@ -956,13 +956,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private SyntaxList<ImplementsStatementSyntax> GetImplementsList(INamedTypeSymbol symbol)
         {
-            if (symbol.AllInterfaces.Any())
+            if (symbol.AllInterfaces.Where(t => IsSymbolAccessible(t)).Any())
             {
                 return SyntaxFactory.SingletonList(SyntaxFactory.ImplementsStatement(
                     (from t in symbol.AllInterfaces
+                     where IsSymbolAccessible(t)
                      select GetTypeSyntax(t)).ToArray()));
             }
             return new SyntaxList<ImplementsStatementSyntax>();
+        }
+
+        private static bool IsSymbolAccessible(ISymbol symbol)
+        {
+            if (symbol.DeclaredAccessibility != Accessibility.Public && symbol.DeclaredAccessibility != Accessibility.Protected && symbol.DeclaredAccessibility != Accessibility.ProtectedOrInternal)
+                return false;
+            if (symbol.ContainingSymbol != null && symbol.Kind == SymbolKind.NamedType)
+                return IsSymbolAccessible(symbol.ContainingSymbol);
+            return true;
         }
 
         private AsClauseSyntax GetEnumUnderlyingType(INamedTypeSymbol symbol)

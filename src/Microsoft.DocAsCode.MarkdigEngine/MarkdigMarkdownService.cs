@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using Markdig.Syntax;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
+    using System.Collections.Generic;
 
     public class MarkdigMarkdownService : IMarkdownService
     {
@@ -136,7 +137,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool enableValidation)
         {
             object enableSourceInfoObj = null;
-            _parameters?.Extensions?.TryGetValue("EnableSourceInfo", out enableSourceInfoObj);
+            _parameters?.Extensions?.TryGetValue(Constants.EngineProperties.EnableSourceInfo, out enableSourceInfoObj);
 
             var enableSourceInfo = !(enableSourceInfoObj is bool enabled) || enabled;
 
@@ -158,6 +159,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             if (isInline)
             {
                 builder.UseInlineOnly();
+            }
+
+            object optionalExtensionsObj = null;
+            if ((_parameters?.Extensions?.TryGetValue(Constants.EngineProperties.MarkdigExtensions, out optionalExtensionsObj) ?? false)
+                && optionalExtensionsObj is IEnumerable<object> optionalExtensions)
+            {
+                builder.UseOptionalExtensions(optionalExtensions.Select(e => e as string).Where(e => e != null));
             }
 
             return builder.Build();

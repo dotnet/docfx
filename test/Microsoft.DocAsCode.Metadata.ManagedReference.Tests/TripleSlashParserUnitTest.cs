@@ -77,6 +77,9 @@ namespace Example
         <item>
             <description>item2 in bullet list</description>
         </item>
+        <item>
+            loose text <i>not</i> wrapped in description
+        </item>
     </list>
     </remarks>
     <returns>Task<see cref='T:System.AccessViolationException'/> returns</returns>
@@ -163,7 +166,9 @@ Classes in assemblies are by definition complete.
             word inside list->listItem->list->listItem->para.>
             the second line.
 </li><li>item2 in numbered list</li></ol>
-</li><li>item2 in bullet list</li></ul>
+</li><li>item2 in bullet list</li><li>
+loose text <em>not</em> wrapped in description
+</li></ul>
 ".Replace("\r\n", "\n"),
 remarks);
 
@@ -225,6 +230,51 @@ This is an example using source reference.
             Assert.Equal("Hello Bing", seeAlsos[1].AltText);
             Assert.Equal("http://www.bing.com", seeAlsos[2].AltText);
             Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
+        }
+
+
+        [Trait("Related", "TripleSlashComments")]
+        [Fact]
+        public void SeeAltText()
+        {
+            string inputFolder = Path.GetRandomFileName();
+            Directory.CreateDirectory(inputFolder);
+            string input = @"
+<member name='T:TestClass1.Partial1'>
+    <summary>
+        Class summary <see cref='T:System.AccessViolationException'>Exception type</see>
+    </summary>
+    <remarks>
+    See <see cref='T:System.Int'>Integer</see>.
+    </remarks>
+    <returns>Returns an <see cref='T:System.AccessViolationException'>Exception</see>.</returns>
+
+        <param name='input'>This is an <see cref='T:System.AccessViolationException'>Exception</see>.</param>
+</member>";
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = null,
+                PreserveRawInlineComments = false,
+                Source = new SourceDetail
+                {
+                    Path = Path.Combine(inputFolder, "Source.cs"),
+                }
+            };
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
+
+            var summary = commentModel.Summary;
+            Assert.Equal("\nClass summary <xref href=\"System.AccessViolationException?text=Exception+type\" data-throw-if-not-resolved=\"false\"></xref>\n", summary);
+
+            var returns = commentModel.Returns;
+            Assert.Equal("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
+
+            var paramInput = commentModel.Parameters["input"];
+            Assert.Equal("This is an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", paramInput);
+
+            var remarks = commentModel.Remarks;
+            Assert.Equal("\nSee <xref href=\"System.Int?text=Integer\" data-throw-if-not-resolved=\"false\"></xref>.\n", remarks);
         }
 
         [Trait("Related", "TripleSlashComments")]

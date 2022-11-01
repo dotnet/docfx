@@ -462,7 +462,7 @@ tagRules : [
                         var errorLog = logs.First(s => s.LogLevel == LogLevel.Warning);
                         Assert.NotNull(errorLog);
                         Assert.Equal(mrefFile1, errorLog.File.Replace('\\', '/'));
-                        Assert.True(errorLog.Message.StartsWith("Unable to resolve"));
+                        Assert.StartsWith("Unable to resolve", errorLog.Message);
                     }
                 }
             }
@@ -1541,7 +1541,7 @@ tagRules : [
                     Assert.True(conceptualDocumentProcessorStatus.CanIncremental);
                     Assert.Equal(1, conceptualDocumentProcessorStatus.TotalFileCount);
                     Assert.Equal(1, conceptualDocumentProcessorStatus.SkippedFileCount);
-                    Assert.False(manifest.Files.Any(f => f.IsIncremental));
+                    Assert.DoesNotContain(manifest.Files, f => f.IsIncremental);
                 }
                 {
                     // check xrefmap
@@ -2544,7 +2544,7 @@ tagRules : [
 
                     // check tocrel
                     string content = File.ReadAllText(Path.Combine(outputFolderForCompare, "subfolder/b.html"));
-                    Assert.True(content.Contains("<meta property=\"docfx:tocrel\" content=\"../toc.html\">"));
+                    Assert.Contains("<meta property=\"docfx:tocrel\" content=\"../toc.html\">", content);
                     Assert.Equal(
                         GetLogMessages("IncrementalBuild.TestTocAddItemWithAnchor-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestTocAddItemWithAnchor-second", "IncrementalBuild.TestTocAddItemWithAnchor-first" }));

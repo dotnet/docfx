@@ -101,6 +101,19 @@ items:
     usage:
       command: "-t default,templates/discordfx"
       config: '"template":["default","templates/discordfx"]'
+  - name: SingulinkFX
+    description: Customizable responsive DocFX template designed with memberpage plugin compatibility to produce docs similar to Microsoft .NET docs.
+    author: Singulink
+    version: 1.0
+    type: External
+    thumbnail: ~/templates-and-plugins/images/singulinkfx.screenshot.png
+    homepage: https://github.com/Singulink/SingulinkFX
+    repository:
+      type: git
+      url: "https://github.com/Singulink/SingulinkFX"
+    usage:
+      command: "-t default,templates/singulinkfx"
+      config: '"template":["default","templates/singulinkfx"]'
 description: |
   # Dashboard for Templates
   The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!

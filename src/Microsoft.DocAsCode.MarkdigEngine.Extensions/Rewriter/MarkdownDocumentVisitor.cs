@@ -57,10 +57,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 }
 
                 var rewrittenToken = _rewriter.Rewrite(block);
-                if (rewrittenToken != null && rewrittenToken is Block rewrittenBlock)
+                if (rewrittenToken != null && rewrittenToken != blocks[i] && rewrittenToken is Block rewrittenBlock)
                 {
                     blocks[i] = rewrittenBlock;
-                    block = rewrittenBlock;
                 }
             }
         }

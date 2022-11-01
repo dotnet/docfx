@@ -358,6 +358,81 @@ namespace Test1
             Assert.Equal(new[] { "public", "interface" }, ifoobar.Modifiers[SyntaxLanguage.CSharp]);
         }
 
+        [Fact]
+        public void TestGenerateMetadataWithInternalInterfaceAndInherits()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo : IFoo { }
+    internal interface IFoo { }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+
+            var foo = output.Items[0].Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Foo", foo.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
+            Assert.Null(foo.Implements);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithProtectedInterfaceAndInherits()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo {
+       protected interface IFoo { }
+       public class SubFoo : IFoo { }
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+
+            var subFoo = output.Items[0].Items[2];
+            Assert.NotNull(subFoo);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo.SubFoo", subFoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo.SubFoo", subFoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("public class SubFoo : Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[] { "public", "class" }, subFoo.Modifiers[SyntaxLanguage.CSharp]);
+            Assert.NotNull(subFoo.Implements);
+            Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithPublicInterfaceNestedInternal()
+        {
+            string code = @"
+namespace Test1
+{
+    internal class FooInternal
+    {
+        public interface IFoo { }
+    }
+    public class Foo : FooInternal.IFoo { }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Single(output.Items);
+
+            var foo = output.Items[0].Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Foo", foo.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
+            Assert.Null(foo.Implements);
+        }
+
         [Trait("Related", "Generic")]
         [Trait("Related", "Inheritance")]
         [Trait("Related", "Reference")]
@@ -3520,19 +3595,19 @@ namespace Test1
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate*<void>> a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate*<void> > a", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged<void>> b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged<void> > b", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall]<void>> c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall]<void> > c", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
 
                 fnptr = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(fnptr);
-                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void>> d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"public delegate*<delegate* unmanaged[Stdcall, Thiscall]<void> > d", fnptr.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
 

@@ -69,16 +69,12 @@ try {
                 if (IsReleaseNoteVersionChanged $gitCommand $docfx.releaseNotePath) 
                 {
                     PackAssetZip $docfx.releaseFolder $docfx.assetZipPath
-                    PublishToAzureDevOps $nugetCommand $azdevops.prodName $azdevops.prodUrl $docfx.artifactsFolder $env:AZDEVOPSPAT
                     PublishToNuget $nugetCommand $nuget."nuget.org" $docfx.artifactsFolder $env:NUGETAPIKEY
                     PublishToGithub $docfx.assetZipPath $docfx.releaseNotePath $docfx.sshRepoUrl $env:TOKEN
                     PublishToChocolatey $chocoCommand $docfx.releaseNotePath $docfx.assetZipPath $choco.chocoScript $choco.nuspec $choco.homeDir $env:CHOCO_TOKEN
                 } else {
                     Write-Host "`$releaseNotePath $($docfx.releaseNotePath) hasn't been changed. Ignore to publish package." -ForegroundColor Yellow
                 }
-            } else {
-                # Always do publish for dev release
-                PublishToAzureDevOps $nugetCommand $azdevops.ppeName $azdevops.ppeUrl $docfx.artifactsFolder $env:AZDEVOPSPAT
             }
         }
     }

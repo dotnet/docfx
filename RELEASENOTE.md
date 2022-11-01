@@ -1,5 +1,37 @@
-Version Notes (Current Version: v2.58.9)
+Version Notes (Current Version: v2.59.4)
 =======================================
+
+v2.59.4
+-----------
+1. Fix "lastmod" had erroneous datetimes in some locales for "Sitemap.xml". Thanks @tagcode! (#8105)
+2. Add try catch and needed logging for a actionable message to the user. Thanks @saipramod! (#8131)
+3. Fix metadata generation. Thanks @tibel (#8135)
+4. Add Require Powershell 7 directive to UpdateTemplate.ps1. Thanks @eugeneogongo (#8133)
+5. Using NuGet v3 feed. Thanks @tibel (#8138)
+6. Fix broken tool page layout. Thanks @MikeHingley22 (#8094)
+7. Handle list items without either <term> or <description>. Thanks @mstefarov (#8132)
+8. Improve documentation. Thanks @formalatist (#8086) @mode777 (#8099)
+
+v2.59.3
+-----------
+1. Document update. Thanks @jmswisher, @sdgilley, @sethreidnz
+2. Use PdfConvertParallelism to control number of WkHtmlToPdf processes. Thanks @AustinWise!
+3. Fix tag typo in default template. Thanks @DiCaver!
+4. Upgrade Newtonsoft.Json to 13.0.1.
+
+v2.59.2
+-----------
+1. Adds support for custom text in cref references. Thanks @dotMorten! (#7978)
+
+v2.59.1
+-----------
+1. `Microsoft.DocAsCode.Build.RestApi` and `Microsoft.DocAsCode.Build.TableOfContents` Support .NET Standard.
+
+v2.59.0
+-----------
+1. Upgrade markdig to 2.26.0. (#7701)
+2. Allow custom markdig extensions. (#3387)
+3. Only show public interfaces in generated syntax. (#3154)
 
 v2.58.9
 -----------

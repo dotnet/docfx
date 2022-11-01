@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection.Metadata;
     using System.Text;
     using Microsoft.CodeAnalysis;
-    using NuGet.Protocol.Plugins;
 
     public abstract class NameVisitorCreator
     {

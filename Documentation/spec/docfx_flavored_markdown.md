@@ -372,7 +372,7 @@ For this Jupyter Notebook cell:
 Use the markup:
 
  ```md
-[!notebook-python[](<codepath>?name={import})]]
+[!notebook-python[](<codepath>?name="import")]]
 ```
 
 to display the lines of code in the `source` part of the cell:
@@ -463,11 +463,11 @@ Tab group 3:
 
 # [Tab Text 1](#tab/tabid-1)
 
-Tab content-1-1.
+Tab content-1-2.
 
 # [Tab Text 2](#tab/tabid-2)
 
-Tab content-2-1.
+Tab content-2-2.
 
 ***
 
@@ -513,11 +513,11 @@ Tab group 3:
 
 # [Tab Text 1](#tab/tabid-1)
 
-Tab content-1-1.
+Tab content-1-2.
 
 # [Tab Text 2](#tab/tabid-2)
 
-Tab content-2-1.
+Tab content-2-2.
 
 ***
 

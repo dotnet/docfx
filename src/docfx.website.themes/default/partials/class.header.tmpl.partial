@@ -16,7 +16,7 @@
 </div>
 {{/inClass}}
 {{#implements.0}}
-<div classs="implements">
+<div class="implements">
   <h5>{{__global.implements}}</h5>
 {{/implements.0}}
 {{#implements}}

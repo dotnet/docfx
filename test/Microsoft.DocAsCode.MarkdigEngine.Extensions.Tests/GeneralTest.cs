@@ -23,15 +23,57 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        public void TestDfm_TaskList()
+        public void TestDfm_TaskList_ExtensionDisabledByDefault()
         {
-            // Confirm that the [ ] and { } in the middle of list should not be parsed.
+            // Confirm that the [ ] and { } in the middle of list should not be parsed by default.
             var source = @"* Not contain a special character: &#92; ! # $ % & * + / = ? ^ &#96; { } | ~ < > ( ) ' ; : , [ ] "" @ _";
             var expected = @"<ul>
 <li>Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , [ ] &quot; @ _</li>
 </ul>
 ";
             TestUtility.VerifyMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_TaskList_ExtensionEnabled()
+        {
+            // Confirm that the [ ] and { } in the middle of list should be parsed if the Task List extension is enabled.
+            var source = @"* Not contain a special character: &#92; ! # $ % & * + / = ? ^ &#96; { } | ~ < > ( ) ' ; : , [ ] "" @ _";
+            var expected = @"<ul class=""contains-task-list"">
+<li class=""task-list-item"">Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , <input disabled=""disabled"" type=""checkbox"" /> &quot; @ _</li>
+</ul>
+";
+            TestUtility.VerifyMarkup(source, expected, optionalExtensions: new List<string>
+            {
+                "tasklists"
+            });
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfm_MultipleOptionalExtensionsEnabled()
+        {
+            // Confirm that multiple optional extensions can be enabled at once
+            var source = @"* Not contain a special character: &#92; ! # $ % & * + / = ? ^ &#96; { } | ~ < > ( ) ' ; : , [ ] "" @ _
+
+Term 1
+:   Definition 1";
+            var expected = @"<ul class=""contains-task-list"">
+<li class=""task-list-item"">Not contain a special character: \ ! # $ % &amp; * + / = ? ^ ` { } | ~ &lt; &gt; ( ) ' ; : , <input disabled=""disabled"" type=""checkbox"" /> &quot; @ _</li>
+</ul>
+
+<dl>
+<dt>Term 1</dt>
+<dd>Definition 1</dd>
+</dl>
+";
+
+            TestUtility.VerifyMarkup(source, expected, optionalExtensions: new List<string>
+            {
+                "tasklists",
+                "definitionlists"
+            });
         }
 
         [Fact]

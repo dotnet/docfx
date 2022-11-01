@@ -995,7 +995,7 @@ exports.getOptions = function (){
                 Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
             });
 
-            var httpClient = new HttpClient(fakeResponseHandler);
+            var httpClient = new HttpClient(fakeResponseHandler);  // lgtm[cs/httpclient-checkcertrevlist-disabled]
             var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1"), 1).ResolveAsync("xx");
             Assert.Null(result);
             result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2|> removeHost |> addQueryString x y"), 1).ResolveAsync("xx");
@@ -1007,7 +1007,7 @@ exports.getOptions = function (){
         public async Task TestBuildWithXrefServiceRemoveHostWithParameters()
         {
             var fakeResponseHandler = new FakeResponseHandler();
-            var httpClient = new HttpClient(fakeResponseHandler);
+            var httpClient = new HttpClient(fakeResponseHandler);  // lgtm[cs/httpclient-checkcertrevlist-disabled]
 
             fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
             {

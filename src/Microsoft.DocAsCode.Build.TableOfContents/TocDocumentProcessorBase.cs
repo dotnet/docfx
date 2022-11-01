@@ -23,7 +23,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var filePath = file.FullPath;
             var toc = TocHelper.LoadSingleToc(filePath);
 
-            var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // Apply metadata to TOC

@@ -425,7 +425,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 var result = m.Match("abc");
                 Assert.NotNull(result);
                 Assert.Equal(3, result.Length);
-                Assert.NotNull(result["g"]);
                 Assert.Equal(0, result["g"].StartIndex);
                 Assert.Equal(3, result["g"].Count);
                 Assert.Equal("abc", result["g"].GetValue());
@@ -438,7 +437,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 var result = m.Match("abcabc");
                 Assert.NotNull(result);
                 Assert.Equal(6, result.Length);
-                Assert.NotNull(result["g"]);
                 Assert.Equal(0, result["g"].StartIndex);
                 Assert.Equal(6, result["g"].Count);
                 Assert.Equal("abcabc", result["g"].GetValue());
@@ -447,7 +445,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 var result = m.Match("abc\nd");
                 Assert.NotNull(result);
                 Assert.Equal(3, result.Length);
-                Assert.NotNull(result["g"]);
                 Assert.Equal(0, result["g"].StartIndex);
                 Assert.Equal(3, result["g"].Count);
                 Assert.Equal("abc", result["g"].GetValue());
@@ -460,7 +457,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 var result = m.Match("abc\nabcabc");
                 Assert.NotNull(result);
                 Assert.Equal(3, result.Length);
-                Assert.NotNull(result["g"]);
                 Assert.Equal(0, result["g"].StartIndex);
                 Assert.Equal(3, result["g"].Count);
                 Assert.Equal("abc", result["g"].GetValue());
