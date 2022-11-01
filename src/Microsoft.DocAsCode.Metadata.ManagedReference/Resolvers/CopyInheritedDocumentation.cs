@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Debug.Assert(dest.Parent.Type == MemberType.Class);
 
                     //try to find the base class
-                    if (dest.Parent.Inheritance?.Count == 0)
+                    if (dest.Parent.Inheritance == null || dest.Parent.Inheritance.Count == 0)
                     {
                         return;
                     }
@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             MetadataItem src = null;
 
             // An explicit <inheritdoc/> (i.e. cref) overrides the default behavior
-            if (!string.IsNullOrEmpty(dest.InheritDoc) && context.Members.TryGetValue(dest.InheritDoc, out src))
+            if (!string.IsNullOrEmpty(dest.InheritDoc) && context.Members.TryGetValue(dest.InheritDoc, out src) && dest != src)
             {
                 srcName = dest.InheritDoc;
             }
