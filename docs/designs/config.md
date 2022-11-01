@@ -32,4 +32,4 @@ To build [Microsoft Docs repos](https://github.com/MicrosoftDocs) directly, docf
 
 ## Examples
 
-See [specs](./specs) for latest examples
+See [specs](../specs) for latest examples
