@@ -1,5 +1,11 @@
-Version Notes (Current Version: v2.59.4)
+Version Notes (Current Version: v2.59.5)
 =======================================
+
+v2.59.5
+-----------
+1. Fix: TOC word-break not being inserted in generic types. Thanks @julesabr! (#8217)
+2. Crash fixes for CopyInherited. Thanks @Sorpirit (#7709)
+3. Fix on DocFX crashes on method parameter [Optional][DefaultParameterValue(0)]. Thanks @harriev9 (#8208)
 
 v2.59.4
 -----------
