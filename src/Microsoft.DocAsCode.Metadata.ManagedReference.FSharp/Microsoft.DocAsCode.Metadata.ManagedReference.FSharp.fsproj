@@ -26,10 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dotnet.ProjInfo" version="0.9.0" />
-    <PackageReference Include="FSharp.Compiler.Service" version="17.0.1" />
-    <PackageReference Include="FSharp.Compiler.Service.MSBuild.v12" version="17.0.1" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Dotnet.ProjInfo" Version="0.9.0" />
+    <PackageReference Include="FSharp.Compiler.Service" Version="28.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
