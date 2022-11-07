@@ -6,8 +6,8 @@ open System
 open System.IO
 open System.Collections.Generic
 open System.Text.RegularExpressions
-open Microsoft.FSharp.Compiler
-open Microsoft.FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler
+open FSharp.Compiler.SourceCodeServices
 open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.DataContracts.ManagedReference
 open Microsoft.DocAsCode.DataContracts.Common
@@ -337,7 +337,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             }
         | :? FSharpMemberOrFunctionOrValue as mem ->
             let logicalName = 
-                mem.LogicalEnclosingEntity.AccessPath + "." + (entityNames mem.LogicalEnclosingEntity).DisplayName
+                mem.ApparentEnclosingEntity.AccessPath + "." + (entityNames mem.ApparentEnclosingEntity).DisplayName
             let iasName =
                 if mem.IsOverrideOrExplicitInterfaceImplementation then 
                     match Seq.tryHead mem.ImplementedAbstractSignatures with
@@ -602,7 +602,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                                     not mem.IsConstructor && not mem.IsPropertyGetterMethod && 
                                     not mem.IsPropertySetterMethod &&
                                     (mem.IsProperty || mem.IsMember))
-        |> Seq.map (fun mem -> symbolRef (symbolNames mem mem.EnclosingEntity.Value))
+        |> Seq.map (fun mem -> symbolRef (symbolNames mem mem.DeclaringEntity.Value))
 
     /// All members (transitively) inherited by the specified F# type returned as references.
     let rec inheritedMembers filter (t: FSharpType option) = seq {
@@ -753,7 +753,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             // F# member of module, class or interface 
             // (module function, module value, constructor, method, property, event)
             let logicalName = 
-                mem.LogicalEnclosingEntity.AccessPath + "." + (entityNames mem.LogicalEnclosingEntity).DisplayName
+                mem.ApparentEnclosingEntity.AccessPath + "." + (entityNames mem.ApparentEnclosingEntity).DisplayName
             let baseName = 
                 encMd.Name + "." + 
                 (if mem.IsExtensionMember then "___" + logicalName + "." else "") +
@@ -805,11 +805,11 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 match Seq.tryHead bestMatchingCount with
                 | Some (_, bestMatching) when Seq.length bestMatching = 1 ->
                     let overridden = Seq.exactlyOne bestMatching
-                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.EnclosingEntity.Value)
+                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.DeclaringEntity.Value)
                 | Some (_, bestMatching) ->
                     Log.verbose "Cannot uniquely determine what member is overriden by %s" symMd.Name
                     let overridden = Seq.head bestMatching
-                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.EnclosingEntity.Value)
+                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.DeclaringEntity.Value)
                 | None ->
                     Log.verbose "Cannot determine what member is overridden by %s" symMd.Name
             | None -> ()          

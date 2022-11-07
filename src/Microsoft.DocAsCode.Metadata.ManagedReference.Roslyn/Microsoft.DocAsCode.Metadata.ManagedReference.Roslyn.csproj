@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.props" />
+  <Import Project="../Shared/base.net.props" />
   <PropertyGroup>
     <!-- TODO: is MSLocator reliable?-->
     <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
