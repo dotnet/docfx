@@ -127,6 +127,7 @@ module internal FSharpProjectInfo =
             | MSBuildSkippedTarget -> failwithf "MSBuild skipped target" 
             | MSBuildFailed (_, scr) -> failwithf "Compilation failed:\n%s%s" scr.StdOut scr.StdErr
 
+#if NET472
         // all F# compiler arguments
         let allFscArgs = 
             match exec getFscArgsBySdk globalArgs with
@@ -140,6 +141,25 @@ module internal FSharpProjectInfo =
             | Choice1Of2 (P2PRefs refs) -> refs
             | Choice2Of2 err -> handleErr err
             | _ -> failwith "unexpected result"
+#else
+        // all F# compiler arguments
+        let allFscArgs = 
+            match exec getFscArgsBySdk globalArgs with
+            | Ok result ->
+                match result with
+                | FscArgs args -> args
+                | _ -> failwith "unexpected result"
+            | Error err -> handleErr err
+
+        // project references
+        let projectRefs =
+            match exec getP2PRefs globalArgs with
+            | Ok result ->
+                match result with
+                | P2PRefs refs -> refs
+                | _ -> failwith "unexpected result"
+            | Error err -> handleErr err
+#endif
 
         // split compiler arguments into sources and options
         let fscArgs, srcs =

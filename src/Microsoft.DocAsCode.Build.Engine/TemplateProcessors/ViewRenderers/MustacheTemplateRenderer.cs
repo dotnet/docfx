@@ -3,13 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using Stubble.Core.Builders;
+    using Stubble.Core.Interfaces;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
-
-    using Microsoft.DocAsCode.Exceptions;
 
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
@@ -19,9 +18,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static readonly Regex MasterPageRegex = new Regex(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex MasterPageBodyRegex = new Regex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private readonly ResourceTemplateLocator _resourceTemplateLocator;
         private readonly IResourceFileReader _reader;
-        private readonly Nustache.Core.Template _template;
+        private readonly IStubbleRenderer _renderer;
+        private readonly string _template;
 
         public MustacheTemplateRenderer(IResourceFileReader reader, ResourceInfo info, string name = null)
         {
@@ -43,21 +42,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             Path = info.Path;
             Name = name ?? System.IO.Path.GetFileNameWithoutExtension(Path);
             _reader = reader;
-            _resourceTemplateLocator = new ResourceTemplateLocator(reader);
 
-            _template = new Nustache.Core.Template();
+            _renderer = new StubbleBuilder()
+                .Configure(c =>
+                {
+                    c.SetPartialTemplateLoader(new ResourceTemplateLoader(reader));
+                    c.AddSectionBlacklistType(typeof(System.Dynamic.IDynamicMetaObjectProvider));
+                })
+                .Build();
+
             var processedTemplate = ParseTemplateHelper.ExpandMasterPage(reader, info, MasterPageRegex, MasterPageBodyRegex);
-            using (var sr = new StringReader(processedTemplate))
-            {
-                try
-                {
-                    _template.Load(sr);
-                }
-                catch (Nustache.Core.NustacheException e)
-                {
-                    throw new DocfxException($"Error in mustache template {info.Path}: {e.Message}", e);
-                }
-            }
+
+            _template = processedTemplate;
 
             Dependencies = ExtractDependencyResourceNames(processedTemplate).ToList();
         }
@@ -72,9 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string Render(object model)
         {
-            using var writer = new StringWriter();
-            _template.Render(model, writer, _resourceTemplateLocator.GetTemplate);
-            return writer.ToString();
+            return _renderer.Render(_template, model);
         }
 
         /// <summary>

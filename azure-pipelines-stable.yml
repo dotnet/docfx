@@ -21,7 +21,7 @@ steps:
   displayName: 'Install .NET Core SDK required for docfx'
   inputs:
     packageType: sdk
-    version: '5.0.100'
+    version: '6.x'
 
 - task: NuGetToolInstaller@1
   displayName: 'Use NuGet'

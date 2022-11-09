@@ -21,7 +21,7 @@ steps:
   displayName: 'Install .NET Core sdk required for docfx'
   inputs:
     packageType: sdk
-    version: '5.0.100'
+    version: '6.x'
 
 - task: NodeTool@0
   displayName: "Use Node 16.x"
