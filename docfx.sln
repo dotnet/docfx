@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}"
 EndProject
@@ -25,13 +28,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManagedReference", "ManagedReference", "{3A6BE380-986B-40E9-A048-C9A9AE424D90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{926A0726-B806-4215-82EF-AF8E22D0FACF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{94B87FB5-632A-4C6F-A2C6-5058C84ADEBB}"
 	ProjectSection(SolutionItems) = preProject
-		test\Shared\test.base.props = test\Shared\test.base.props
+		test\Directory.Build.props = test\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{DF2BA00B-1742-4F84-A469-08D7F019498E}"
+	ProjectSection(SolutionItems) = preProject
+		plugins\Directory.Build.props = plugins\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MemberLevelManagedReference", "MemberLevelManagedReference", "{1D6213AE-4FD9-4155-987B-29FE16F56E18}"
 EndProject
@@ -182,6 +186,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDF", "PDF", "{15381BB2-762E-4841-8E5B-ACE727A3F2DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{4C9CF944-2489-4AC2-9B18-497D12B53769}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4A39EEF0-0517-4E95-ACE3-12836F91A0C6}"
+	ProjectSection(SolutionItems) = preProject
+		src\Shared\base.net.props = src\Shared\base.net.props
+		src\Shared\base.netstandard.props = src\Shared\base.netstandard.props
+		src\Shared\base.props = src\Shared\base.props
+		src\Shared\common.props = src\Shared\common.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -984,7 +996,6 @@ Global
 		{F922E543-9AD4-4031-8BD1-8A7AA9771D1E} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{C3023E7B-AA8B-469E-8333-5737093A9D60} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{3A6BE380-986B-40E9-A048-C9A9AE424D90} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
-		{94B87FB5-632A-4C6F-A2C6-5058C84ADEBB} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{1D6213AE-4FD9-4155-987B-29FE16F56E18} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{1C46FAD9-9D99-4102-8E57-82AF959A4B40} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{2EBDC7B1-6C85-4E32-A059-27370C240CBE} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
@@ -1060,6 +1071,7 @@ Global
 		{C533106C-5699-450C-A18C-249364CBF58B} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{15381BB2-762E-4841-8E5B-ACE727A3F2DA} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{4C9CF944-2489-4AC2-9B18-497D12B53769} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{4A39EEF0-0517-4E95-ACE3-12836F91A0C6} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

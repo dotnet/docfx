@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Shared\test.base.props" />
+	<Import Project="..\..\src\Shared\base.net.props" />
 
   <ItemGroup>
     <None Update="TestData\CatLibrary2.dll">
