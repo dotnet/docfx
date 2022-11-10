@@ -14,7 +14,7 @@
     <ItemGroup>
       <TestProjects Include="TestData/**/*.fsproj" />
     </ItemGroup>
-    <MSBuild Projects="@(TestProjects)" Targets="Restore" />
+    <MSBuild Projects="@(TestProjects)" Targets="Restore" RemoveProperties="TargetFrameworks;TargetFramework" />
   </Target>
 
   <Target Name="CopyTestProjects" BeforeTargets="Build" AfterTargets="RestoreTestProjects">
