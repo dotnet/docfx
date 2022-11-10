@@ -4,8 +4,4 @@
   <PropertyGroup>
     <TargetFrameworks>net6.0;net472</TargetFrameworks>
   </PropertyGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <!-- Common references -->
-  </ItemGroup>
 </Project>
