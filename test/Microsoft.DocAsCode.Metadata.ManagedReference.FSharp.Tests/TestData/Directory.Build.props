@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup>
+    <!-- prevent include of test package dependencies -->
+  </ItemGroup>
+</Project>

@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/test.base.props" />
+	<Import Project="..\..\src\Shared\base.net.props" />
   <PropertyGroup>
     <Deterministic>false</Deterministic>
   </PropertyGroup>
@@ -14,7 +14,7 @@
     <ItemGroup>
       <TestProjects Include="TestData/**/*.fsproj" />
     </ItemGroup>
-    <MSBuild Projects="@(TestProjects)" Targets="Restore" />
+    <MSBuild Projects="@(TestProjects)" Targets="Restore" RemoveProperties="TargetFrameworks;TargetFramework" />
   </Target>
 
   <Target Name="CopyTestProjects" BeforeTargets="Build" AfterTargets="RestoreTestProjects">

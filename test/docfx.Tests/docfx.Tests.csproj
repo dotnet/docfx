@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Shared\test.base.props" />
+	<Import Project="..\..\src\Shared\base.props" />
 
   <ItemGroup>
     <None Update="Assets\**">

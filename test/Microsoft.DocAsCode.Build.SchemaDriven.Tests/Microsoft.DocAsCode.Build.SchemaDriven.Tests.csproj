@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Shared\test.base.props" />
+	<Import Project="..\..\src\Shared\base.net.props" />
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System" />
     <Reference Include="System.Web" />
   </ItemGroup>
 
