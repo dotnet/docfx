@@ -71,7 +71,7 @@ internal class DocsetBuilder
         _sourceMap = _errors.SourceMap = new(_errors, new(_buildOptions.DocsetPath), _config, _fileResolver);
         _input = new(_buildOptions, _config, _packageResolver, _repositoryProvider, _sourceMap, package);
         _buildScope = new(_config, _input, _buildOptions);
-        _githubAccessor = new(_config, TestQuirks.OpsGetAccessTokenProxy?.Invoke(null) ?? opsAccessor.GetAccessTokenForUserProfile().GetAwaiter().GetResult());
+        _githubAccessor = new(_config, TestQuirks.OpsGetAccessTokenProxy?.Invoke(null) ?? GetGitHubTokenAsync(opsAccessor, EnvironmentVariable.RepositoryUrl).GetAwaiter().GetResult());
         _microsoftGraphAccessor = new(_config);
         _jsonSchemaLoader = new(_fileResolver);
         _metadataProvider = _errors.MetadataProvider = new(_config, _input, _buildScope);
@@ -281,6 +281,22 @@ internal class DocsetBuilder
             case ContentType.Redirection:
                 redirectionBuilder.Build(_errors, file);
                 break;
+        }
+    }
+
+    private static async Task<string> GetGitHubTokenAsync(OpsAccessor opsAccessor, string? repoUrl)
+    {
+        if (string.IsNullOrEmpty(repoUrl))
+        {
+            return string.Empty;
+        }
+        try
+        {
+            return await opsAccessor.GetAccessTokenForRepository(repoUrl);
+        }
+        catch
+        {
+            return string.Empty;
         }
     }
 
