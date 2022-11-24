@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\src\Shared\base.net.props" />
   <ItemGroup>
     <Compile Remove="TestData\snippets\dataflowdegreeofparallelism.cs" />
   </ItemGroup>
@@ -28,14 +27,6 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
   <ItemGroup>

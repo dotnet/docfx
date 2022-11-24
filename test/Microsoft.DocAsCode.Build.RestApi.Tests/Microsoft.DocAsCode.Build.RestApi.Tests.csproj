@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\src\Shared\base.net.props" />
-
   <ItemGroup>
     <None Update="TestData\overwrite\rest.overwrite.tags.md;TestData\overwrite\rest.overwrite.unmergable.md;TestData\overwrite\rest.overwrite.multi.uid.md;TestData\overwrite\rest.overwrite.not.predefined.md;TestData\overwrite\rest.overwrite.parameters.md;TestData\overwrite\rest.overwrite.simple.md;TestData\overwrite\rest.overwrite.default.md;TestData\overwrite\rest.overwrite.invalid.md;TestData\overwrite\rest.overwrite.invalid.links.first.md;TestData\overwrite\rest.overwrite.invalid.links.second.md;TestData\overwrite\rest.overwrite.remarks.md;TestData\contacts-operations.md;TestData\swagger\contacts.json;TestData\swagger\contactsForExternalRef.json;TestData\swagger\externalLoopRef_A.json;TestData\swagger\externalLoopRef_B.json;TestData\swagger\externalRefNotExist.json;TestData\swagger\externalRefWithDefinition.json;TestData\swagger\externalRefWithRefInside.json;TestData\swagger\refWithRefInside.json;TestData\swagger\ref.json;TestData\swagger\loopref_swagger2.json;TestData\swagger\ref_swagger2.json;TestData\swagger\pathParameters_swagger2.json;TestData\swagger\tag_swagger2.json;TestData\swagger\simple_swagger2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -21,9 +19,5 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 </Project>

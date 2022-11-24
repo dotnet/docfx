@@ -22,5 +22,5 @@ jobs:
     - run: ./UpdateTemplate.ps1
     - run: dotnet build -c Release
 
-    - run: dotnet test -c Release -f net472 --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v1
