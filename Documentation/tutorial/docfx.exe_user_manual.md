@@ -239,7 +239,7 @@ maxParallelism           | Set the max parallelism, 0 (default) is same as the c
 markdownEngineName       | Set the name of markdown engine, default is `dfm`, other available engines are `gfm` and `markdig`.
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
-keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.
+keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resource file.
 sitemap                  | In format [SitemapOptions](#325-sitemapoptions) Specifies the options for the sitemap.xml file.
 disableGitFeatures       | Disable fetching Git related information for articles. Set to `true` if fetching git related information is slow for huge Git repositories. Default value is `false`.
 
