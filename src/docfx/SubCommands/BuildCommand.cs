@@ -503,6 +503,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
+#if NET472
         private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
         {
             AppDomain builderDomain = null;
@@ -531,6 +532,13 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
         }
+#else
+        private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
+        {
+            var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
+            wrapper.BuildDocument();
+        }
+#endif
 
         #endregion
     }

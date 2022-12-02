@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.props" />
+  <Import Project="../Shared/base.net.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Description>Generates documentation directly from source code and MarkDown files</Description>
