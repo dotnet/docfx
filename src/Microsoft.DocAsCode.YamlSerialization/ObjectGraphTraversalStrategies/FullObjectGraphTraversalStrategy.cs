@@ -7,9 +7,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-#if !NetCore
     using System.Globalization;
-#endif
     using System.Reflection;
     using System.Reflection.Emit;
 

@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Common
         private static readonly Regex EscapeWithEncode = new Regex("&", RegexOptions.Compiled);
         private static readonly Regex EscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptions.Compiled);
 
-#if !NetCore
         public HtmlLogListener(string reportPath)
         {
             var dir = Path.GetDirectoryName(reportPath);
@@ -29,7 +28,6 @@ namespace Microsoft.DocAsCode.Common
             _writer = new StreamWriter(reportPath, true);
             WriteCommonHeader();
         }
-#endif
 
         public HtmlLogListener(StreamWriter writer)
         {
