@@ -6,11 +6,7 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
-#if NetCore
-    using AggregatedList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
-#else
-    using AggregatedList = System.Collections.Generic.SortedList<LogLevel, System.Collections.Generic.List<ILogItem>>;
-#endif
+
     /// <summary>
     /// Replay aggregated log on flushing
     /// </summary>
@@ -18,7 +14,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly LogLevel _threshold;
         private readonly ILoggerListener _innerListener;
-        private readonly AggregatedList _aggregatedList;
+        private readonly SortedList<LogLevel, List<ILogItem>> _aggregatedList;
 
         public AggregatedLogListener(AggregatedLogListener other) : this(other._threshold)
         {
@@ -28,7 +24,7 @@ namespace Microsoft.DocAsCode.Common
         public AggregatedLogListener(LogLevel threshold = LogLevel.Warning)
         {
             _threshold = threshold;
-            _aggregatedList = new AggregatedList();
+            _aggregatedList = new SortedList<LogLevel, List<ILogItem>>();
             _innerListener = new ConsoleLogListener();
             for (LogLevel level = _threshold; level <= LogLevel.Error; level++)
             {
@@ -87,17 +83,14 @@ namespace Microsoft.DocAsCode.Common
                 default:
                     break;
             }
-#if !NetCore
+
             WriteToConsole(message, status);
-#endif
         }
 
         private void WriteFooter(BuildStatus status)
         {
             var footer = string.Join(Environment.NewLine, _aggregatedList.Select(s => $"\t{s.Value.Count} {s.Key}(s)"));
-#if !NetCore
             WriteToConsole(footer, status);
-#endif
         }
 
         private void WriteLineCore(ILogItem item)
@@ -105,7 +98,6 @@ namespace Microsoft.DocAsCode.Common
             _innerListener.WriteLine(item);
         }
 
-#if !NetCore
         private static void WriteToConsole(string message, BuildStatus status)
         {
             switch (status)
@@ -128,7 +120,6 @@ namespace Microsoft.DocAsCode.Common
         {
             ConsoleUtility.WriteLine(message, color);
         }
-#endif
 
         private static BuildStatus GetBuildStatusFromLogLevel(LogLevel level)
         {

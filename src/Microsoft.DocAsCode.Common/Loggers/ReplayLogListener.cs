@@ -7,11 +7,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-#if NetCore
-    using ReplayList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
-#else
-    using ReplayList = System.Collections.Generic.SortedList<LogLevel, System.Collections.Generic.List<ILogItem>>;
-#endif
+
     /// <summary>
     /// Replay log on flushing.
     /// </summary>
@@ -19,7 +15,7 @@ namespace Microsoft.DocAsCode.Common
     public class ReplayLogListener : ILoggerListener
     {
         private readonly LogLevel _replayLevel;
-        private readonly ReplayList _replayList;
+        private readonly SortedList<LogLevel, List<ILogItem>> _replayList;
         private ImmutableArray<ILoggerListener> _listeners =
             ImmutableArray<ILoggerListener>.Empty;
 
@@ -28,7 +24,7 @@ namespace Microsoft.DocAsCode.Common
         public ReplayLogListener(LogLevel replayLevel = LogLevel.Warning)
         {
             _replayLevel = replayLevel;
-            _replayList = new ReplayList();
+            _replayList = new SortedList<LogLevel, List<ILogItem>>();
             for (LogLevel level = replayLevel; level <= LogLevel.Error; level++)
             {
                 _replayList.Add(level, new List<ILogItem>());
@@ -102,17 +98,14 @@ namespace Microsoft.DocAsCode.Common
                 default:
                     break;
             }
-#if !NetCore
+
             WriteToConsole(message, status);
-#endif
         }
 
         private void WriteFooter(BuildStatus status)
         {
             var footer = string.Join(Environment.NewLine, _replayList.Select(s => $"\t{s.Value.Count} {s.Key}(s)"));
-#if !NetCore
             WriteToConsole(footer, status);
-#endif
         }
 
         private void WriteLineCore(ILogItem item)
@@ -123,7 +116,6 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-#if !NetCore
         private static void WriteToConsole(string message, BuildStatus status)
         {
             switch (status)
@@ -144,7 +136,6 @@ namespace Microsoft.DocAsCode.Common
         {
             ConsoleUtility.WriteLine(message, color);
         }
-#endif
 
         private static BuildStatus GetBuildStatusFromLogLevel(LogLevel level)
         {

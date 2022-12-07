@@ -135,20 +135,12 @@ namespace Microsoft.DocAsCode.Common
         {
             Log(new LogItem
             {
-#if NetCore
-                File = file,
-#else
                 File = file ?? LoggerFileScope.GetFileName(),
-#endif
                 Line = line,
                 LogLevel = level,
                 Message = message,
                 Code = code,
-#if NetCore
-                Phase = phase,
-#else
                 Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
-#endif
             });
         }
 
@@ -156,20 +148,12 @@ namespace Microsoft.DocAsCode.Common
         {
             return new LogItem
             {
-#if NetCore
-                File = file,
-#else
                 File = file ?? LoggerFileScope.GetFileName(),
-#endif
                 Line = line,
                 LogLevel = level,
                 Message = message,
                 Code = code,
-#if NetCore
-                Phase = phase,
-#else
                 Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
-#endif
             };
         }
 
@@ -248,9 +232,7 @@ namespace Microsoft.DocAsCode.Common
             _asyncListener.Flush();
         }
 
-#if !NetCore
         [Serializable]
-#endif
         private class LogItem : ILogItem
         {
             public string File { get; set; }

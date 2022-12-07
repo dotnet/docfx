@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
     using System.Threading;
 
@@ -67,7 +66,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void BuildDocument()
         {
-            var sponsor = new ClientSponsor();
+#if NET472
+            var sponsor = new System.Runtime.Remoting.Lifetime.ClientSponsor();
+#endif
             EnvironmentContext.SetBaseDirectory(_baseDirectory);
             EnvironmentContext.SetGitFeaturesDisabled(_disableGitFeatures);
             EnvironmentContext.SetVersion(_version);
@@ -75,7 +76,9 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 Logger.LogLevelThreshold = _logLevel;
                 Logger.RegisterListener(_listener);
+#if NET472
                 sponsor.Register(_listener);
+#endif
             }
             try
             {
@@ -106,7 +109,9 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             finally
             {
+#if NET472
                 sponsor.Close();
+#endif
             }
         }
 
