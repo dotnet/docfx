@@ -35,6 +35,7 @@ target/
 *.cache
 *.sln.metaproj
 .settings
+.DS_Store
 log.txt
 debugSettings.json
 launchSettings.json
