@@ -409,8 +409,8 @@ namespace Microsoft.DocAsCode.Common.Tests
         [InlineData("../a%2Bb/c/d", "../a+b/c/d")]
         [InlineData("a%253fb", "a%3fb")]
         [InlineData("a%2fb", "a%2fb")]
-        [InlineData("%2A%2F%3A%3C%3E%3F%5C%7C", "%2A%2F%3A%3C%3E%3F%5C%7C")] //*/:<>?\|
-        [InlineData("%2a%2f%3a%3c%3e%3f%5c%7c", "%2a%2f%3a%3c%3e%3f%5c%7c")]
+        [InlineData("%2A%2F%3A%3F%5C%7C", "%2A%2F%3A%3F%5C%7C")] //*/:?\|
+        [InlineData("%2a%2f%3a%3f%5c%7c", "%2a%2f%3a%3f%5c%7c")]
         public void TestUrlDecode(string path, string expected)
         {
             Assert.Equal(expected, ((RelativePath)path).UrlDecode());
