@@ -1021,7 +1021,7 @@ div.embeddedvideo iframe {
 /* Color theme */
 
 /* These are not important, tune down **/
-.decalaration, .fieldValue, .parameters, .returns {
+.declaration, .fieldValue, .parameters, .returns {
   color: #a2a2a2;
 }
 
