@@ -1,13 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.netstandard.props" />
-  <PropertyGroup>
-      <Description>Implements glob utility</Description>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.Runtime" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
   </ItemGroup>

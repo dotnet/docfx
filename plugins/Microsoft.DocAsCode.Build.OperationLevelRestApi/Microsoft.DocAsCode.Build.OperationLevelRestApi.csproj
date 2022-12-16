@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\src\Shared\base.netstandard.props" />
-
   <ItemGroup>
     <None Update="resources\**">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

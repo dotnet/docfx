@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.netstandard.props" />
-
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.30.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />

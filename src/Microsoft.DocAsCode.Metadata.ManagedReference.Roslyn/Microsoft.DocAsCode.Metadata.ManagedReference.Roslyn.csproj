@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.net.props" />
   <PropertyGroup>
-    <!-- TODO: is MSLocator reliable?-->
-    <DisableMSBuildAssemblyCopyCheck>true</DisableMSBuildAssemblyCopyCheck>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -39,13 +36,5 @@
     <PackageReference Include="NuGet.ProjectModel" Version="6.3.1" />
     <PackageReference Include="NuGet.Packaging.Core" Version="6.3.0" />
     <PackageReference Include="SQLitePCLRaw.core" Version="2.1.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Runtime" />
   </ItemGroup>
 </Project>
