@@ -4,22 +4,18 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
-    using System.ComponentModel;
-
+    using System.IO;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
-
     using Microsoft.DocAsCode.Common;
-
+    using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.Win32;
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 
     internal static class CompilationUtility
     {
-        private static readonly Lazy<MetadataReference> MscorlibMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
-        private static readonly Lazy<MetadataReference> SystemMetadataReference = new Lazy<MetadataReference>(() => MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location));
-
         public static Compilation CreateCompilationFromCsharpCode(string code)
         {
             try
@@ -29,7 +25,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     "cs.temp.dll",
                     options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: new[] { MscorlibMetadataReference.Value, SystemMetadataReference.Value });
+                    references: GetNetFrameworkMetadataReferences());
                 return compilation;
             }
             catch (Exception e)
@@ -48,7 +44,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     "vb.temp.dll",
                     options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: new[] { MscorlibMetadataReference.Value });
+                    references: GetNetFrameworkMetadataReferences());
                 return compilation;
             }
             catch (Exception e)
@@ -63,13 +59,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             try
             {
-                var paths = assemblyPaths.ToList();
-                //TODO: "mscorlib" should be ignored while extracting metadata from .NET Core/.NET Framework
-                paths.Add(typeof(object).Assembly.Location);
-                var assemblies = (from path in paths
-                                  select MetadataReference.CreateFromFile(path)).ToList();
                 var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
-                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies, options);
+                var references = GetNetFrameworkMetadataReferences().Concat(assemblyPaths.Select(path => MetadataReference.CreateFromFile(path))).ToArray();
+                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, references, options);
                 return complilation;
             }
             catch (Exception e)
@@ -111,6 +103,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (string.IsNullOrEmpty(input) || input.Length <= 20) return input;
             return input.Substring(0, length) + "...";
+        }
+
+        private static MetadataReference[] GetNetFrameworkMetadataReferences()
+        {
+            using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full");
+            var installPath = key?.GetValue("InstallPath")?.ToString() ?? throw new DocfxException("Cannot compile project, make sure .NET Framework is installed.");
+
+            return new[]
+            {
+                MetadataReference.CreateFromFile(Path.Combine(installPath, "mscorlib.dll")),
+                MetadataReference.CreateFromFile(Path.Combine(installPath, "System.dll")),
+            };
         }
     }
 }
