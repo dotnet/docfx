@@ -36,27 +36,10 @@ namespace A {
 
 ";
             // act
-            MetadataItem output = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, "test.dll"));
+            MetadataItem output = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(CompilationUtility.CreateCompilationFromCsharpCode(code, "test.dll"));
 
             // assert
             Assert.NotNull(output);
-        }
-
-        private static Compilation CreateCompilationFromCSharpCode(string code, string assemblyName, params MetadataReference[] references)
-        {
-            var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location), MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location) };
-            if (references != null)
-            {
-                defaultReferences.AddRange(references);
-            }
-
-            var compilation = CSharpCompilation.Create(
-                assemblyName,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: new[] { tree },
-                references: defaultReferences);
-            return compilation;
         }
     }
 }
