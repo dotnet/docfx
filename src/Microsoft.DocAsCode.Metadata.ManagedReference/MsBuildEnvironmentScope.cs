@@ -83,7 +83,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else
                 {
-                    Logger.LogWarning("Fail to find MSBuild >= 15.0 on machine. Please install Visual Studio 2017 or above with MSBuild >= 15.0: https://visualstudio.microsoft.com/vs/");
+                    MSBuildLocator.RegisterDefaults();
+                    return null;
                 }
             }
             catch (Exception e)
