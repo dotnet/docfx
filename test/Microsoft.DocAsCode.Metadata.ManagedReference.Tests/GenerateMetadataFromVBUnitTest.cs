@@ -1462,7 +1462,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
             Assert.Single(output.Items);
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
@@ -1727,39 +1727,7 @@ End Namespace
 
         private static Compilation CreateCompilationFromVBCode(string code, params MetadataReference[] references)
         {
-            return CreateCompilationFromVBCode(code, "test.dll", references);
+            return CompilationUtility.CreateCompilationFromVBCode(code, "test.dll", references);
         }
-
-        private static Compilation CreateCompilationFromVBCode(string code, string assemblyName, params MetadataReference[] references)
-        {
-            var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
-            if (references != null)
-            {
-                defaultReferences.AddRange(references);
-            }
-
-            var compilation = VisualBasicCompilation.Create(
-                assemblyName,
-                options: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: new[] { tree },
-                references: defaultReferences);
-            return compilation;
-        }
-
-        private static Assembly CreateAssemblyFromVBCode(string code, string assemblyName)
-        {
-            // MemoryStream fails when MetadataReference.CreateFromAssembly with error: Empty path name is not legal
-            var compilation = CreateCompilationFromVBCode(code);
-            EmitResult result;
-            using (FileStream stream = new FileStream(assemblyName, FileMode.Create))
-            {
-                result = compilation.Emit(stream);
-            }
-
-            Assert.True(result.Success, string.Join(",", result.Diagnostics.Select(s => s.GetMessage())));
-            return Assembly.LoadFile(Path.GetFullPath(assemblyName));
-        }
-
     }
 }

@@ -2622,7 +2622,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(typeof(System.ComponentModel.TypeConverterAttribute).Assembly.Location)));
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("TestAttribute", @class.DisplayNames[SyntaxLanguage.CSharp]);
@@ -3284,24 +3284,7 @@ namespace Test1
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
-            return CreateCompilationFromCSharpCode(code, "test.dll", references);
-        }
-
-        private static Compilation CreateCompilationFromCSharpCode(string code, string assemblyName, params MetadataReference[] references)
-        {
-            var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location), MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location) };
-            if (references != null)
-            {
-                defaultReferences.AddRange(references);
-            }
-
-            var compilation = CSharpCompilation.Create(
-                assemblyName,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: new[] { tree },
-                references: defaultReferences);
-            return compilation;
+            return CompilationUtility.CreateCompilationFromCsharpCode(code, "test.dll", references);
         }
 
         private static Assembly CreateAssemblyFromCSharpCode(string code, string assemblyName)

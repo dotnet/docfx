@@ -260,24 +260,7 @@ namespace Test1
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
-            return CreateCompilationFromCSharpCode(code, "test.dll", references);
-        }
-
-        private static Compilation CreateCompilationFromCSharpCode(string code, string assemblyName, params MetadataReference[] references)
-        {
-            var tree = SyntaxFactory.ParseSyntaxTree(code);
-            var defaultReferences = new List<MetadataReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location), MetadataReference.CreateFromFile(typeof(EditorBrowsableAttribute).Assembly.Location) };
-            if (references != null)
-            {
-                defaultReferences.AddRange(references);
-            }
-
-            var compilation = CSharpCompilation.Create(
-                assemblyName,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: new[] { tree },
-                references: defaultReferences);
-            return compilation;
+            return CompilationUtility.CreateCompilationFromCsharpCode(code, "test.dll", references);
         }
     }
 }

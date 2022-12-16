@@ -150,7 +150,7 @@ This is unit test!";
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
             Assert.Equal(2, results[0].LinkToFiles.Count);
-            Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
+            Assert.True(results[0].LinkToFiles.OrderBy(f => f).SequenceEqual(new[] { "~/link.md", "~/link2.md", }));
             Assert.Single(results[0].LinkToUids);
             Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
             Assert.Equal(2, results[0].FileLinkSources.Count);
