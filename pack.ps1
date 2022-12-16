@@ -71,34 +71,10 @@ $packages = @{
         "proj" = $null;
         "nuspecs" = @("src/nuspec/docfx.console/docfx.console.nuspec");
     };
-    "MergeDeveloperComments" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/MergeDeveloperComments/MergeDeveloperComments.nuspec");
-    };
-    "MergeSourceInfo" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/MergeSourceInfo/MergeSourceInfo.nuspec");
-    };
-    "TocConverter" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/TocConverter/TocConverter.nuspec");
-    };
-    "MarkdownMigrateTool" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/MarkdownMigrateTool/MarkdownMigrateTool.nuspec");
-    };
-    "YamlSplitter" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/YamlSplitter/YamlSplitter.nuspec");
-    };
-    "SandcastleRefMapper" = @{
-        "proj" = $null;
-        "nuspecs" = @("src/nuspec/SandcastleRefMapper/SandcastleRefMapper.nuspec")
-    };
 }
 
-# Pack plugins and tools
-foreach ($proj in (Get-ChildItem -Path ("src", "plugins", "tools") -Include *.csproj -Recurse)) {
+# Pack plugins
+foreach ($proj in (Get-ChildItem -Path ("src", "plugins") -Include *.csproj -Recurse)) {
     $name = $proj.BaseName
     if ($packages.ContainsKey($name)) {
         $packages[$name].proj = $proj
