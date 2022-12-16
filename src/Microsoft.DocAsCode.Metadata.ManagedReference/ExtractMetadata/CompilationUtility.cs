@@ -34,13 +34,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public static Compilation CreateCompilationFromVBCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
+        public static Compilation CreateCompilationFromVBCode(string code, string name = "vb.temp.dll", params MetadataReference[] references)
         {
             try
             {
                 var tree = VB.SyntaxFactory.ParseSyntaxTree(code);
                 return VB.VisualBasicCompilation.Create(
-                    "vb.temp.dll",
+                    name,
                     options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
                     references: GetNetFrameworkMetadataReferences().Concat(references));
