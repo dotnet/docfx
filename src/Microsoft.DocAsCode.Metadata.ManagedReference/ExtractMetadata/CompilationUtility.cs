@@ -16,17 +16,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     internal static class CompilationUtility
     {
-        public static Compilation CreateCompilationFromCsharpCode(string code)
+        public static Compilation CreateCompilationFromCsharpCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
         {
             try
             {
                 var tree = CS.SyntaxFactory.ParseSyntaxTree(code);
-                var compilation = CS.CSharpCompilation.Create(
-                    "cs.temp.dll",
+                return CS.CSharpCompilation.Create(
+                    name,
                     options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: GetNetFrameworkMetadataReferences());
-                return compilation;
+                    references: GetNetFrameworkMetadataReferences().Concat(references));
             }
             catch (Exception e)
             {
@@ -35,17 +34,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public static Compilation CreateCompilationFromVBCode(string code)
+        public static Compilation CreateCompilationFromVBCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
         {
             try
             {
                 var tree = VB.SyntaxFactory.ParseSyntaxTree(code);
-                var compilation = VB.VisualBasicCompilation.Create(
+                return VB.VisualBasicCompilation.Create(
                     "vb.temp.dll",
                     options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: GetNetFrameworkMetadataReferences());
-                return compilation;
+                    references: GetNetFrameworkMetadataReferences().Concat(references));
             }
             catch (Exception e)
             {
@@ -60,9 +58,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
-                var references = GetNetFrameworkMetadataReferences().Concat(assemblyPaths.Select(path => MetadataReference.CreateFromFile(path))).ToArray();
-                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, references, options);
-                return complilation;
+                var references = GetNetFrameworkMetadataReferences().Concat(assemblyPaths.Select(path => MetadataReference.CreateFromFile(path)));
+                return CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, references, options);
             }
             catch (Exception e)
             {
