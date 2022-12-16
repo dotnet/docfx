@@ -1,0 +1,42 @@
+name: release
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.x
+
+    - run: ./UpdateTemplate.ps1
+    - run: dotnet pack -c Release -o drop /p:Version=${{ github.ref_name }}
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: docfx
+        path: drop
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+    - uses: actions/download-artifact@v3
+      with:
+        name: docfx
+        path: drop
+    - run: |
+        for filename in ./drop/*.nupkg; do
+          dotnet nuget push "$filename" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+        done
