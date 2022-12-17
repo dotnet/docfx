@@ -12,6 +12,10 @@
 
 Build your technical documentation site with docfx, with landing pages, markdown, API reference docs for .NET, REST API and more.
 
+> ⚠️⚠️⚠️ NOTICE ⚠️⚠️⚠️:
+>
+> For [Microsoft Learn](https://learn.microsoft.com/) users, the open source version of docfx [_will NOT_ be maintained to support Microsoft Learn content](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645). For Microsoft Learn feature requests, bug reports and other support ticks, use internal channels such as the [Learn Platform Support Channel](https://teams.microsoft.com/l/team/19%3a7ecffca1166a4a3986fed528cf0870ee%40thread.skype/conversations?groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47).
+
 ## Getting Started
 
 1. Install docfx using [`choco`](https://chocolatey.org/):
