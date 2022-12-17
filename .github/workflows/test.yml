@@ -24,3 +24,25 @@ jobs:
     - uses: codecov/codecov-action@v3
 
     - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: site
+        path: docs/_site
+
+  publish-docs:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: site
+        path: site
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./site
