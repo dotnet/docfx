@@ -18,7 +18,10 @@ jobs:
         dotnet-version: 6.x
 
     - run: ./UpdateTemplate.ps1
-    - run: dotnet pack -c Release -o drop /p:Version=$env:GITHUB_REF_NAME.TrimStart('v')
+    - name: dotnet pack
+      run: |
+        $version = $env:GITHUB_REF_NAME.TrimStart('v')
+        dotnet pack -c Release -o drop /p:Version=$version
 
     - uses: actions/upload-artifact@v3
       with:
