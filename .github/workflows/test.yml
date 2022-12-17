@@ -1,9 +1,9 @@
 name: test
 on:
   pull_request:
-    branches: [ dev, main, feature/* ]
+    branches: [ main, feature/* ]
   push:
-    branches: [ dev, feature/* ]
+    branches: [ main, feature/* ]
 
 jobs:
   test:

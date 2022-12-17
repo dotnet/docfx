@@ -1,7 +1,7 @@
 name: codeql
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
   schedule:
     - cron: '0 0 * * 0'
 jobs:

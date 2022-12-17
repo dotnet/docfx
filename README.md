@@ -1,76 +1,79 @@
-# Generate your documentation with DocFX
+# Build your docs with docfx
 
-[![devstatus](https://docfx.visualstudio.com/docfx/_apis/build/status/docfx-gated-checkin-CI)](https://docfx.visualstudio.com/docfx/_build/latest?definitionId=2)
-[![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
+[![NuGet](https://img.shields.io/nuget/v/docfx)](https://www.nuget.org/packages/docfx)
+[![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
+[![Gitter](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-DocFX makes it extremely easy to generate your developer hub with a landing page, API reference, and conceptual documentation, from a variety of sources.
+* [Getting Started](#getting-started)
+* [Contributing](#contributing)
+* [Roadmap](#roadmap)
+* [.NET Foundation](#net-foundation)
+* [License](#license)
 
-## Quickstart
+Build your technical documentation site with docfx, with landing pages, markdown, API reference docs for .NET, REST API and more.
 
-Install DocFX and deploy a sample documentation web site:
+## Getting Started
 
-1. Open a console.
-2. Enter the following commands to install DocFX and build/deploy a sample site:
+1. Install docfx using [`choco`](https://chocolatey.org/):
+
+    ```bash
+    choco install docfx
+    ```
+
+2. Create and start a website locally:
 
    ```
-   choco install docfx
    docfx init -q
    docfx docfx_project\docfx.json --serve
    ```
 
-3. Go to https://localhost:8080 to view the sample DocFX site.
+3. Go to https://localhost:8080 to see the sample site.
 
 For more information, refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
-## DocFX project
+## Contributing
 
-### Build the DocFX solution
+Use [Discussions](https://github.com/dotnet/docfx/discussions) for questions and general discussions. 
+Use [Issues](https://github.com/dotnet/docfx/issues) to report bugs and proposing features.
 
-To build the DocFX binaries from the Visual Studio solution:
+We welcome code contributions through pull requests, issues tagged as **[`help-wanted`](https://github.com/dotnet/docfx/labels/help-wanted)** are good candidate to start contributing code.
 
-1. Install [Visual Studio 2019](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
-2. Install [Node.js](https://nodejs.org)
-3. Build the solution using one of the following options:
+### Prerequisites
 
-   - Option 1: Console 
-      - Open a DOS console and navigate to your DocFX clone subdirectory.
-      - Run `build.cmd`.
-   - Option 2: Visual Studio
-      - Open a PowerShell console and navigate to your DocFX clone subdirectory.
-      - Run `./UpdateTemplate.ps1` to generate the template files required by the Visual Studio solution.
-      - Open the `docfx.sln` solution in your DocFX clone subdirectory from Visual Studio and build it.
+- Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
+  - Need [.NET Core 6.x SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0), .NET Framework 4.7.2 and F# development tools
+- Install NodeJS (16.x.x).
 
-### Build Status
+### Build and Test
 
-`dev` is the default branch accepting Pull Requests. It releases a package daily. `main` branch is the release branch.
+- Run `./UpdateTemplate.ps1` to build the default site templates.
+- Run `dotnet build` to build the project or use Visual Studio to build `docfx.sln`.
+- Run `dotnet test` to test the project or use Visual Studio test explorer.
 
-| main | dev
-| - | -
-| [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-master-release?branchName=master)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1503&branchName=master) | [![Build Status](https://ceapex.visualstudio.com/Engineering/_apis/build/status/Docs.Build/docfx-v2-dev-release?branchName=dev)](https://ceapex.visualstudio.com/Engineering/_build/latest?definitionId=1743&branchName=dev)
+### Branch and Release
 
-### Install packages
+The `main` branch is the default branch for pull requests and most other development activities. We occationally use `feature/*` branches for epic feature development.
 
-| Chocolatey | Nuget
-| - | -
-| [![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx) | [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)
+Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Release versioning follows [Semantic Versioning](https://semver.org/). 
+Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
 
-### Running Status
+Docfx is _not_ released under a regular cadence, new versions arrive when maintainers see enough changes that warrant a new releases. Sometimes we use prereleases to dogfood breaking changes and get feedbacks from the community.
 
-| Windows with VS2017 | Ubuntu Linux with Mono
-| ------------- |----------
-| [![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://travis-ci.org/docascode/docfx.test.svg?branch=master)](https://travis-ci.org/docascode/docfx.test)
+## Roadmap
 
-## How to Contribute
+We use [Milestones](https://github.com/dotnet/docfx/milestones) to communicate upcoming changes docfx:
 
-For new comers, you can start with issues with **[`help-wanted`](https://github.com/dotnet/docfx/labels/help-wanted)**. Check out the [contributing](.github/CONTRIBUTING.md) page to see the best places to log issues and start discussions.
+- [Working Set](https://github.com/dotnet/docfx/milestone/48) are features being actively worked on. Not every features in this bucket will be committed in the next release but they reflect top of minds of maintainers in the upcoming period.
+
+- [Backlog](https://github.com/dotnet/docfx/milestone/49) is a set of feature candidates for some future releases, but are not being actively worked on.
+
+## .NET Foundation
+
+This project is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## License
 
-DocFX is licensed under the [MIT license](LICENSE).
-
-DocFX is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
-
+This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE.txt) License.

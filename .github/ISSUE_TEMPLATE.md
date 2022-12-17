@@ -1,8 +1,8 @@
 **Operating System**: (`Windows` or `Linux` or `MacOS`)
 
-**DocFX Version Used**: 
+**Version**: 
 
-**Template used**: (`default` or `statictoc` or contain custom template)
+**Template**: (`default` or `statictoc` or contain custom template)
 
 **Steps to Reproduce**:
 
