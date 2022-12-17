@@ -25,7 +25,6 @@ jobs:
         name: docfx
         path: drop
 
-jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
