@@ -8,11 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC
 		src\Directory.Build.props = src\Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{718078B4-D34C-4697-AAD1-5844CBF60997}"
-	ProjectSection(SolutionItems) = preProject
-		NuGet.Config = NuGet.Config
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{F922E543-9AD4-4031-8BD1-8A7AA9771D1E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataContracts", "DataContracts", "{C3023E7B-AA8B-469E-8333-5737093A9D60}"
@@ -156,14 +151,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDF", "PDF", "{15381BB2-762E-4841-8E5B-ACE727A3F2DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{4C9CF944-2489-4AC2-9B18-497D12B53769}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4A39EEF0-0517-4E95-ACE3-12836F91A0C6}"
-	ProjectSection(SolutionItems) = preProject
-		src\Shared\base.net.props = src\Shared\base.net.props
-		src\Shared\base.netstandard.props = src\Shared\base.netstandard.props
-		src\Shared\base.props = src\Shared\base.props
-		src\Shared\common.props = src\Shared\common.props
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -943,7 +930,6 @@ Global
 		{C533106C-5699-450C-A18C-249364CBF58B} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{15381BB2-762E-4841-8E5B-ACE727A3F2DA} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{4C9CF944-2489-4AC2-9B18-497D12B53769} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{4A39EEF0-0517-4E95-ACE3-12836F91A0C6} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

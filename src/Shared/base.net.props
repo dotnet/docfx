@@ -1,7 +1,0 @@
-<Project>
-  <Import Project="$(MSBuildThisFileDirectory)common.props" />
-
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net472</TargetFrameworks>
-  </PropertyGroup>
-</Project>

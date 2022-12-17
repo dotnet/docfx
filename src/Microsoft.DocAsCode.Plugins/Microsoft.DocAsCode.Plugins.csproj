@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.netstandard.props" />
-
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
