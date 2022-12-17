@@ -1,0 +1,25 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - dependabot
+  categories:
+    - title: 💥 Breaking Changes
+      labels:
+        - breaking-change
+    - title: 🎉 New Features
+      labels:
+        - new-feature
+    - title: 🐞 Bug Fixes
+      labels:
+        - bug-fix
+    - title: 🔧 Engineering
+      labels:
+        - engineering
+    - title: 📄 Documentation
+      labels:
+        - documentation
+    - title: 💪 Other Changes
+      labels:
+        - "*"
