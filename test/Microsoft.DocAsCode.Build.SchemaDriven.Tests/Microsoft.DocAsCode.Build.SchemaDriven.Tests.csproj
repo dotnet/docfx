@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Documentation\spec\docfx_document_schema.md" Link="TestData\specs\docfx_document_schema.md">
+    <None Include="..\..\docs\spec\docfx_document_schema.md" Link="TestData\specs\docfx_document_schema.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
