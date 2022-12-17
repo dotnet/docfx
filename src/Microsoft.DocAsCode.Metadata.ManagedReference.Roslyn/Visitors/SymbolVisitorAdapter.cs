@@ -720,6 +720,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                 }
             }
+            extensions.Sort();
             item.ExtensionMethods = extensions.Count > 0 ? extensions : null;
         }
 
