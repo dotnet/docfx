@@ -21,4 +21,4 @@ jobs:
     - run: dotnet build -c Release
 
     - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    - uses: codecov/codecov-action@v1
+    - uses: codecov/codecov-action@v3
