@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using System;
     using System.Net;
-
+    using System.Reflection;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode
 
         internal static int ExecSubCommand(string[] args)
         {
-            EnvironmentContext.SetVersion(typeof(Program).Assembly.GetName().Version.ToString());
+            EnvironmentContext.SetVersion(typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
 
             var consoleLogListener = new ConsoleLogListener();
             var aggregatedLogListener = new AggregatedLogListener();

@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode
         static HelpTextGenerator()
         {
             var assembly = Assembly.GetAssembly(typeof(HelpTextGenerator));
-            var version = assembly.GetName()?.Version?.ToString();
+            var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
             var name = assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product ?? "docfx";
             if (version != null) HelpText.Heading = new HeadingInfo(name, version);
             var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
