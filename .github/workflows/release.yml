@@ -4,7 +4,7 @@ on:
     types: [published]
 
 jobs:
-  build:
+  release:
     runs-on: windows-latest
     permissions:
       contents: write
@@ -21,25 +21,17 @@ jobs:
     - name: dotnet pack
       run: |
         $version = $env:GITHUB_REF_NAME.TrimStart('v')
-        dotnet pack -c Release -o drop /p:Version=$version
+        dotnet pack -c Release -o drop /p:Version=$version /p:InformationalVersion=$version
 
     - uses: actions/upload-artifact@v3
       with:
-        name: docfx
+        name: nuget
         path: drop
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/setup-dotnet@v1
+    - name: publish
+      uses: Azure/pipelines@v1.2
       with:
-        dotnet-version: '6.0.x'
-    - uses: actions/download-artifact@v3
-      with:
-        name: docfx
-        path: drop
-    - run: |
-        for filename in ./drop/*.nupkg; do
-          dotnet nuget push "$filename" --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
-        done
+        azure-devops-project-url: https://dev.azure.com/ceapex/Engineering
+        azure-pipeline-name: 'dotnet.docfx'
+        azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+        azure-pipeline-variables: '{"GH_RUNID": "${{github.run_id}}"}'
