@@ -23,7 +23,7 @@ jobs:
     - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v3
 
-    - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build --project src/docfx -- ../../docs/docfx.json
 
     - uses: actions/upload-artifact@v3
       with:
