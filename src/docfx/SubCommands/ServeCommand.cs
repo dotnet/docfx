@@ -5,14 +5,14 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
     using System.IO;
-
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Owin.StaticFiles;
-    using Owin.FileSystems;
-    using Owin.Hosting;
-    using global::Owin;
+    using Microsoft.Extensions.FileProviders;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     internal sealed class ServeCommand : ISubCommand
     {
@@ -44,10 +44,11 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));
             }
+            
             var fileServerOptions = new FileServerOptions
             {
                 EnableDirectoryBrowsing = true,
-                FileSystem = new PhysicalFileSystem(folder),
+                FileProvider = new PhysicalFileProvider(folder),
             };
 
             // Fix the issue that .JSON file is 404 when running docfx serve
@@ -60,8 +61,15 @@ namespace Microsoft.DocAsCode.SubCommands
 
             try
             {
-                WebApp.Start(url, builder => builder.UseFileServer(fileServerOptions));
+                var builder = WebApplication.CreateBuilder();
+                builder.WebHost
+                    .ConfigureLogging(options => options.ClearProviders())
+                    .UseUrls(url);
 
+                using var app = builder.Build();
+                app.UseFileServer(fileServerOptions);
+                app.Start();
+                
                 Console.WriteLine($"Serving \"{folder}\" on {url}");
                 Console.ReadLine();
             }

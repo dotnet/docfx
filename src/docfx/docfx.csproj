@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -33,12 +33,5 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="Owin" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Owin" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.FileSystems" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.SelfHost" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.2" />
   </ItemGroup>
 </Project>
