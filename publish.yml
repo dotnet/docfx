@@ -1,0 +1,86 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+
+trigger: none
+
+pool:
+  vmImage: windows-latest
+
+variables:
+- name: GH_RUNID
+
+jobs:
+- job: sign
+  pool:
+    vmImage: windows-latest
+  steps:
+  - checkout: none
+
+  - powershell: gh run download $env:GH_RUNID --repo dotnet/docfx -n nuget
+    displayName: Download GitHub artifact
+    env:
+      GH_TOKEN: $(GH_TOKEN)
+      GH_RUNID: $(GH_RUNID)
+
+  - task: AntiMalware@4
+    displayName: 'Run MpCmdRun.exe - CLI Executable'
+    inputs:
+      FileDirPath: '$(Build.SourcesDirectory)'
+
+  - task: EsrpCodeSigning@1
+    displayName: 'Sign NuGet packages'
+    inputs:
+      ConnectedServiceName: 'CodeSigning-APEX'
+      FolderPath: '$(Build.SourcesDirectory)'
+      Pattern: '*.nupkg'
+      signConfigType: inlineSignParams
+      SessionTimeout: 20
+      inlineOperation: |
+        [
+          {
+            "KeyCode" : "CP-401405",
+            "OperationSetCode" : "NuGetSign",
+            "Parameters" : [
+                {
+                  "parameterName": "TimeStamp",
+                  "parameterValue": "/tr \"http://rfc3161.gtm.corp.microsoft.com/TSS/HttpTspServer\" /td sha256"
+                },
+                {
+                  "parameterName": "FileDigest",
+                  "parameterValue": "/fd \"SHA256\""
+                }
+            ],
+            "ToolName" : "sign",
+            "ToolVersion" : "1.0"
+          },
+          {
+            "KeyCode" : "CP-401405",
+            "OperationSetCode" : "NuGetVerify",
+            "Parameters" : [],
+            "ToolName" : "sign",
+            "ToolVersion" : "1.0"
+          }
+        ]
+
+  - publish: $(Build.SourcesDirectory)
+    artifact: nuget
+
+- job: publish
+  dependsOn: sign
+  pool:
+    vmImage: windows-latest
+  steps:
+  - checkout: none
+
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 6.x
+
+  - download: current
+    artifact: nuget
+
+  - powershell: dotnet nuget push $(Build.SourcesDirectory)\nuget\*.nupkg --api-key $env:NUGET_KEY --source https://nuget.org
+    displayName: dotnet nuget push
+    env:
+      NUGET_KEY: $(NUGET_KEY)
