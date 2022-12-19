@@ -1,0 +1,566 @@
+﻿{
+  "uid": "VBTestClass1.BaseClass1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "VBTestClass1",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\" alt=\"VBTestClass1\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\" alt=\"VBTestClass1\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "VBTestClass1.BaseClass1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "WithDeclarationKeyword(CounterSampleCalculator)"
+        },
+        {
+          "lang": "vb",
+          "value": "WithDeclarationKeyword(CounterSampleCalculator)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+        },
+        {
+          "lang": "vb",
+          "value": "BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+        },
+        {
+          "lang": "vb",
+          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\" text=\"WithDeclarationKeyword(CounterSampleCalculator)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\" text=\"WithDeclarationKeyword(CounterSampleCalculator)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public abstract DateTime WithDeclarationKeyword(CounterSampleCalculator keyword)"
+          },
+          {
+            "lang": "vb",
+            "value": "Public MustOverride Function WithDeclarationKeyword(keyword As CounterSampleCalculator) As DateTime"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "keyword",
+            "type": {
+              "uid": "CounterSampleCalculator",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "CounterSampleCalculator"
+                },
+                {
+                  "lang": "vb",
+                  "value": "CounterSampleCalculator"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "CounterSampleCalculator"
+                },
+                {
+                  "lang": "vb",
+                  "value": "CounterSampleCalculator"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "CounterSampleCalculator"
+                },
+                {
+                  "lang": "vb",
+                  "value": "CounterSampleCalculator"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"CounterSampleCalculator\" text=\"CounterSampleCalculator\" alt=\"CounterSampleCalculator\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"CounterSampleCalculator\" text=\"CounterSampleCalculator\" alt=\"CounterSampleCalculator\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "DateTime",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "DateTime"
+              },
+              {
+                "lang": "vb",
+                "value": "DateTime"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "DateTime"
+              },
+              {
+                "lang": "vb",
+                "value": "DateTime"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "DateTime"
+              },
+              {
+                "lang": "vb",
+                "value": "DateTime"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"DateTime\" text=\"DateTime\" alt=\"DateTime\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"DateTime\" text=\"DateTime\" alt=\"DateTime\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/SampleClass1/SomeVbClass/Class1.vb",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "WithDeclarationKeyword",
+        "path": "src/SampleClass1/SomeVbClass/Class1.vb",
+        "startLine": 43,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "VBTestClass1"
+      ],
+      "namespace": "VBTestClass1",
+      "overload": {
+        "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "WithDeclarationKeyword"
+          },
+          {
+            "lang": "vb",
+            "value": "WithDeclarationKeyword"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "BaseClass1.WithDeclarationKeyword"
+          },
+          {
+            "lang": "vb",
+            "value": "BaseClass1.WithDeclarationKeyword"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword"
+          },
+          {
+            "lang": "vb",
+            "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword*\" text=\"WithDeclarationKeyword\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword*\" text=\"WithDeclarationKeyword\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "abstract"
+      ],
+      "modifiers.vb": [
+        "Public",
+        "MustOverride"
+      ],
+      "type": "method",
+      "summary": null,
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "BaseClass1"
+    },
+    {
+      "lang": "vb",
+      "value": "BaseClass1"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "BaseClass1"
+    },
+    {
+      "lang": "vb",
+      "value": "BaseClass1"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "VBTestClass1.BaseClass1"
+    },
+    {
+      "lang": "vb",
+      "value": "VBTestClass1.BaseClass1"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/SomeVbClass/Class1.vb",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "BaseClass1",
+    "path": "src/SampleClass1/SomeVbClass/Class1.vb",
+    "startLine": 42,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "VBTestClass1"
+  ],
+  "namespace": {
+    "uid": "VBTestClass1",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "VBTestClass1"
+      },
+      {
+        "lang": "vb",
+        "value": "VBTestClass1"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\" alt=\"VBTestClass1\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\" alt=\"VBTestClass1\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/VBTestClass1.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public abstract class BaseClass1 : object"
+      },
+      {
+        "lang": "vb",
+        "value": "Public MustInherit Class BaseClass1\n    Inherits Object"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"VBTestClass1.Class1\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"VBTestClass1.Class1\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 2
+    }
+  ],
+  "level": 1,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/VBTestClass1.BaseClass1.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/VBTestClass1.BaseClass1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

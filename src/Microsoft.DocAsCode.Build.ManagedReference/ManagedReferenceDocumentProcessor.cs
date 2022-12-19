@@ -99,12 +99,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             else
             {
-                foreach (var item in metadata)
+                foreach (var (key, value) in metadata.OrderBy(item => item.Key))
                 {
-                    if (!page.Metadata.ContainsKey(item.Key))
-                    {
-                        page.Metadata[item.Key] = item.Value;
-                    }
+                    page.Metadata[key] = value;
                 }
             }
             page.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;

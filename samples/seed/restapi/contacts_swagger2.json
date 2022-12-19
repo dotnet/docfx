@@ -1,0 +1,691 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.6"
+  },
+  "paths": {
+    "/contacts": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. The results are returned in the response body.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "https://graph.windows.net/myorganization/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact",
+                "value": [
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact",
+                    "objectId": "31944231-fd52-4a7f-b32e-7902a01fddf9",
+                    "deletionTimestamp": null,
+                    "city": null,
+                    "companyName": null,
+                    "country": null,
+                    "department": null,
+                    "dirSyncEnabled": null,
+                    "displayName": "Marcus Breyer",
+                    "facsimileTelephoneNumber": null,
+                    "givenName": "Marcus",
+                    "jobTitle": null,
+                    "lastDirSyncTime": null,
+                    "mail": "Marcus@contoso.com",
+                    "mailNickname": "MarcusBreyer",
+                    "mobile": null,
+                    "physicalDeliveryOfficeName": null,
+                    "postalCode": null,
+                    "provisioningErrors": [],
+                    "proxyAddresses": [
+                      "SMTP:Marcus@contoso.com"
+                    ],
+                    "sipProxyAddress": null,
+                    "state": null,
+                    "streetAddress": null,
+                    "surname": "Breyer",
+                    "telephoneNumber": null
+                  },
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact",
+                    "objectId": "35110b16-360c-4c4a-93b2-03f065fabd93",
+                    "deletionTimestamp": null,
+                    "city": null,
+                    "companyName": null,
+                    "country": null,
+                    "department": null,
+                    "dirSyncEnabled": null,
+                    "displayName": "Yossi Ran",
+                    "facsimileTelephoneNumber": null,
+                    "givenName": "Yossi",
+                    "jobTitle": null,
+                    "lastDirSyncTime": null,
+                    "mail": "Yossi@contoso.com",
+                    "mailNickname": "YossiRan",
+                    "mobile": null,
+                    "physicalDeliveryOfficeName": null,
+                    "postalCode": null,
+                    "provisioningErrors": [],
+                    "proxyAddresses": [
+                      "SMTP:Yossi@contoso.com"
+                    ],
+                    "sipProxyAddress": null,
+                    "state": null,
+                    "streetAddress": null,
+                    "surname": "Ran",
+                    "telephoneNumber": null
+                  },
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact",
+                    "objectId": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a",
+                    "deletionTimestamp": null,
+                    "city": null,
+                    "companyName": null,
+                    "country": null,
+                    "department": null,
+                    "dirSyncEnabled": null,
+                    "displayName": "Jeremy Nelson",
+                    "facsimileTelephoneNumber": null,
+                    "givenName": "Jeremy",
+                    "jobTitle": null,
+                    "lastDirSyncTime": null,
+                    "mail": "Jeremy@contoso.com",
+                    "mailNickname": "JeremyNelson",
+                    "mobile": null,
+                    "physicalDeliveryOfficeName": null,
+                    "postalCode": null,
+                    "provisioningErrors": [],
+                    "proxyAddresses": [
+                      "SMTP:Jeremy@contoso.com"
+                    ],
+                    "sipProxyAddress": null,
+                    "state": null,
+                    "streetAddress": null,
+                    "surname": "Nelson",
+                    "telephoneNumber": null
+                  },
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact",
+                    "objectId": "83234b5c-3a10-4108-8f36-39b1addadfdb",
+                    "deletionTimestamp": null,
+                    "city": null,
+                    "companyName": null,
+                    "country": null,
+                    "department": null,
+                    "dirSyncEnabled": null,
+                    "displayName": "David Strome",
+                    "facsimileTelephoneNumber": null,
+                    "givenName": "David",
+                    "jobTitle": null,
+                    "lastDirSyncTime": null,
+                    "mail": "David@contoso.com",
+                    "mailNickname": "DavidStrome",
+                    "mobile": null,
+                    "physicalDeliveryOfficeName": null,
+                    "postalCode": null,
+                    "provisioningErrors": [],
+                    "proxyAddresses": [
+                      "SMTP:David@contoso.com"
+                    ],
+                    "sipProxyAddress": null,
+                    "state": null,
+                    "streetAddress": null,
+                    "surname": "Strome",
+                    "telephoneNumber": null
+                  },
+                  {
+                    "odata.type": "Microsoft.DirectoryServices.Contact",
+                    "objectType": "Contact",
+                    "objectId": "8c1315ce-bf6f-4e26-b24f-c830606ef41c",
+                    "deletionTimestamp": null,
+                    "city": null,
+                    "companyName": null,
+                    "country": null,
+                    "department": null,
+                    "dirSyncEnabled": null,
+                    "displayName": "Holly Holt",
+                    "facsimileTelephoneNumber": null,
+                    "givenName": "Holly",
+                    "jobTitle": null,
+                    "lastDirSyncTime": null,
+                    "mail": "Holly@contoso.com",
+                    "mailNickname": "HollyHolt",
+                    "mobile": null,
+                    "physicalDeliveryOfficeName": null,
+                    "postalCode": null,
+                    "provisioningErrors": [],
+                    "proxyAddresses": [
+                      "SMTP:Holly@contoso.com"
+                    ],
+                    "sipProxyAddress": null,
+                    "state": null,
+                    "streetAddress": null,
+                    "surname": "Holt",
+                    "telephoneNumber": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "You can get a collection of contacts from your tenant.",
+        "operationId": "get contacts"
+      }
+    },
+    "/contacts/{object_id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. The contact is returned in the response body.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "https://graph.windows.net/graphdir1.onmicrosoft.com/$metadata#directoryObjects/Microsoft.DirectoryServices.Contact/@Element",
+                "odata.type": "Microsoft.DirectoryServices.Contact",
+                "objectType": "Contact",
+                "objectId": "31944231-fd52-4a7f-b32e-7902a01fddf9",
+                "deletionTimestamp": null,
+                "city": null,
+                "companyName": null,
+                "country": null,
+                "department": null,
+                "dirSyncEnabled": null,
+                "displayName": "Marcus Breyer",
+                "facsimileTelephoneNumber": null,
+                "givenName": "Marcus",
+                "jobTitle": null,
+                "lastDirSyncTime": null,
+                "mail": "Marcus@contoso.com",
+                "mailNickname": "MarcusBreyer",
+                "mobile": null,
+                "physicalDeliveryOfficeName": null,
+                "postalCode": null,
+                "provisioningErrors": [],
+                "proxyAddresses": [
+                  "SMTP:Marcus@contoso.com"
+                ],
+                "sipProxyAddress": null,
+                "state": null,
+                "streetAddress": null,
+                "surname": "Breyer",
+                "telephoneNumber": null
+              }
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "Get a contact by using the object ID.",
+        "operationId": "get contact by id"
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          },
+          {
+            "in": "body",
+            "description": "this is request body, not real parameter",
+            "name": "bodyparam",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/contact",
+              "example": {
+                "department": "Sales",
+                "jobTitle": "Sales Rep"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates success. No response body is returned."
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Change a contact's properties.",
+        "operationId": "update contact"
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "7163f3b8-70c9-43d2-b9e1-4467ddaf087a"
+          },
+          {
+            "in": "query",
+            "description": "Specifies the version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates success."
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Delete a contact.",
+        "operationId": "delete contact"
+      }
+    },
+    "/contacts/{object_id}/$links/manager": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. A link to the contact's manager is returned.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/manager",
+                "url": "https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93/Microsoft.WindowsAzure.ActiveDirectory.Contact"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found. The requested resource was not found. This can occur if the manager property is not currently set for the specified contact. It can also have other causes, for example, a bad domain. A code and associated message is returned with the error.",
+            "examples": {
+              "application/json": {
+                "odata.error": {
+                  "code": "Request_ResourceNotFound",
+                  "message": {
+                    "lang": "en",
+                    "value": "Resource not found for the segment 'manager'."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "Get a link to the contact's manager.",
+        "operationId": "get contact manager link"
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          },
+          {
+            "in": "body",
+            "description": "The request body contains a single property that specifies the URL of the user or contact to add as manager.",
+            "name": "bodyparam",
+            "required": true,
+            "schema": {
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "url": "https://graph.windows.net/myorganization/directoryObjects/35110b16-360c-4c4a-93b2-03f065fabd93"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates success. No response body is returned."
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Update the contact's manager",
+        "operationId": "update contact manager"
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates success. N response body is returned."
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Delete the contact's manager.",
+        "operationId": "delete contact manager by id"
+      }
+    },
+    "/contacts/{object_id}/$links/directReports": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. One or more direct reports are returned.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/directReports",
+                "value": [
+                  {
+                    "url": "https://graph.windows.net/myorganization/directoryObjects/8c1315ce-bf6f-4e26-b24f-c830606ef41c/Microsoft.DirectoryServices.Contact"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "Get a links to the contact's direct reports.",
+        "operationId": "get contact direct reports links"
+      }
+    },
+    "/contacts/{object_id}/$links/memberOf": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The version of the Graph API to target. Beginning with version 1.5, the api-version string is represented in major.minor format. Prior releases were represented as date strings: '2013-11-08' and '2013-04-05'. Required.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "1.5",
+              "1.6"
+            ],
+            "default": "1.6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. Indicates success. One or more groups and/or directory roles are returned.",
+            "examples": {
+              "application/json": {
+                "odata.metadata": "https://graph.windows.net/myorganization/$metadata#directoryObjects/$links/memberOf",
+                "value": [
+                  {
+                    "url": "https://graph.windows.net/myorganization/directoryObjects/12345678-b942-47c9-a10e-a4bee353ce60/Microsoft.DirectoryServices.Group"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Read</i></b> or <b><i>Contacts.Write</i></b></p>",
+        "summary": "Get a links to the contact's direct group and directory role memberships.",
+        "operationId": "get contact memberOf links"
+      }
+    }
+  },
+  "host": "graph.windows.net",
+  "basePath": "/myorganization",
+  "schemes": [
+    "https"
+  ],
+  "definitions": {
+    "contact": {
+      "properties": {
+        "objectType": {
+          "type": "string",
+          "readOnly": true
+        },
+        "objectId": {
+          "type": "string",
+          "readOnly": true
+        },
+        "deletionTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "dirSyncEnabled": {
+          "type": "boolean"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "facsimileTelephoneNumber": {
+          "type": "string"
+        },
+        "givenName": {
+          "type": "string"
+        },
+        "jobTitle": {
+          "type": "string"
+        },
+        "lastDirSyncTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "mail": {
+          "type": "string"
+        },
+        "mailNickname": {
+          "type": "string"
+        },
+        "mobile": {
+          "type": "string"
+        },
+        "physicalDeliveryOfficeName": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "provisioningErrors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProvisioningError"
+          },
+          "readOnly": true
+        },
+        "proxyAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true,
+          "example": {
+            "proxyAddresses": [
+              "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
+            ]
+          }
+        },
+        "sipProxyAddress": {
+          "type": "string",
+          "readOnly": true
+        },
+        "state": {
+          "type": "string"
+        },
+        "streetAddress": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "telephoneNumber": {
+          "type": "string"
+        },
+        "thumbnailPhoto": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "displayName"
+      ]
+    },
+    "ProvisioningError": {
+      "properties": {
+        "errorDetail": {
+          "type": "string",
+          "readOnly": true
+        },
+        "resolved": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "serviceInstance": {
+          "type": "string",
+          "readOnly": true
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

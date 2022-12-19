@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal("<p><a href=\"http://A/\" data-raw-source=\"[A](http://A/)\" sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">A</a>.</p>", model.AdditionalNotes.Implementer);
             Assert.Equal("[Serializable]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new ()where K : struct", model.Syntax.Content[0].Value);
             Assert.Equal("vb", model.Syntax.Content[1].Language);
-            Assert.Equal("<Serializable>\nPublic Class Cat(Of T As {Class, New}, K As Structure)\n\n    Implements ICat, IAnimal", model.Syntax.Content[1].Value);
+            Assert.Equal("<Serializable>\nPublic Class Cat(Of T As {Class, New}, K As Structure)\n    Implements ICat, IAnimal", model.Syntax.Content[1].Value);
 
             Assert.Equal(2, model.Syntax.TypeParameters.Count);
             Assert.Equal("T", model.Syntax.TypeParameters[0].Name);

@@ -1,0 +1,236 @@
+﻿{
+  "items": [
+    {
+      "name": "CatLibrary",
+      "href": "CatLibrary.html",
+      "topicHref": "CatLibrary.html",
+      "topicUid": "CatLibrary",
+      "items": [
+        {
+          "name": "Cat<T, K>",
+          "href": "CatLibrary.Cat-2.html",
+          "topicHref": "CatLibrary.Cat-2.html",
+          "topicUid": "CatLibrary.Cat`2",
+          "name.vb": "Cat(Of T, K)"
+        },
+        {
+          "name": "CatException<T>",
+          "href": "CatLibrary.CatException-1.html",
+          "topicHref": "CatLibrary.CatException-1.html",
+          "topicUid": "CatLibrary.CatException`1",
+          "name.vb": "CatException(Of T)"
+        },
+        {
+          "name": "Complex<T, J>",
+          "href": "CatLibrary.Complex-2.html",
+          "topicHref": "CatLibrary.Complex-2.html",
+          "topicUid": "CatLibrary.Complex`2",
+          "name.vb": "Complex(Of T, J)"
+        },
+        {
+          "name": "FakeDelegate<T>",
+          "href": "CatLibrary.FakeDelegate-1.html",
+          "topicHref": "CatLibrary.FakeDelegate-1.html",
+          "topicUid": "CatLibrary.FakeDelegate`1",
+          "name.vb": "FakeDelegate(Of T)"
+        },
+        {
+          "name": "IAnimal",
+          "href": "CatLibrary.IAnimal.html",
+          "topicHref": "CatLibrary.IAnimal.html",
+          "topicUid": "CatLibrary.IAnimal"
+        },
+        {
+          "name": "ICat",
+          "href": "CatLibrary.ICat.html",
+          "topicHref": "CatLibrary.ICat.html",
+          "topicUid": "CatLibrary.ICat"
+        },
+        {
+          "name": "ICatExtension",
+          "href": "CatLibrary.ICatExtension.html",
+          "topicHref": "CatLibrary.ICatExtension.html",
+          "topicUid": "CatLibrary.ICatExtension"
+        },
+        {
+          "name": "MRefDelegate<K, T, L>",
+          "href": "CatLibrary.MRefDelegate-3.html",
+          "topicHref": "CatLibrary.MRefDelegate-3.html",
+          "topicUid": "CatLibrary.MRefDelegate`3",
+          "name.vb": "MRefDelegate(Of K, T, L)"
+        },
+        {
+          "name": "MRefNormalDelegate",
+          "href": "CatLibrary.MRefNormalDelegate.html",
+          "topicHref": "CatLibrary.MRefNormalDelegate.html",
+          "topicUid": "CatLibrary.MRefNormalDelegate"
+        },
+        {
+          "name": "Tom",
+          "href": "CatLibrary.Tom.html",
+          "topicHref": "CatLibrary.Tom.html",
+          "topicUid": "CatLibrary.Tom"
+        },
+        {
+          "name": "TomFromBaseClass",
+          "href": "CatLibrary.TomFromBaseClass.html",
+          "topicHref": "CatLibrary.TomFromBaseClass.html",
+          "topicUid": "CatLibrary.TomFromBaseClass"
+        }
+      ]
+    },
+    {
+      "name": "Microsoft.DevDiv",
+      "href": "Microsoft.DevDiv.html",
+      "topicHref": "Microsoft.DevDiv.html",
+      "topicUid": "Microsoft.DevDiv",
+      "items": [
+        {
+          "name": "ContainersRefType",
+          "href": "Microsoft.DevDiv.ContainersRefType.html",
+          "topicHref": "Microsoft.DevDiv.ContainersRefType.html",
+          "topicUid": "Microsoft.DevDiv.ContainersRefType"
+        },
+        {
+          "name": "ContainersRefType.ColorType",
+          "href": "Microsoft.DevDiv.ContainersRefType.ColorType.html",
+          "topicHref": "Microsoft.DevDiv.ContainersRefType.ColorType.html",
+          "topicUid": "Microsoft.DevDiv.ContainersRefType.ColorType"
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeChild",
+          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html",
+          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html",
+          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild"
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeChildInterface",
+          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html",
+          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html",
+          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface"
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeDelegate",
+          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html",
+          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html",
+          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate"
+        },
+        {
+          "name": "ExplicitLayoutClass",
+          "href": "Microsoft.DevDiv.ExplicitLayoutClass.html",
+          "topicHref": "Microsoft.DevDiv.ExplicitLayoutClass.html",
+          "topicUid": "Microsoft.DevDiv.ExplicitLayoutClass"
+        }
+      ]
+    },
+    {
+      "name": "MRef.Demo.Enumeration",
+      "href": "MRef.Demo.Enumeration.html",
+      "topicHref": "MRef.Demo.Enumeration.html",
+      "topicUid": "MRef.Demo.Enumeration",
+      "items": [
+        {
+          "name": "ColorType",
+          "href": "MRef.Demo.Enumeration.ColorType.html",
+          "topicHref": "MRef.Demo.Enumeration.ColorType.html",
+          "topicUid": "MRef.Demo.Enumeration.ColorType"
+        }
+      ]
+    },
+    {
+      "name": "VBTestClass1",
+      "href": "VBTestClass1.html",
+      "topicHref": "VBTestClass1.html",
+      "topicUid": "VBTestClass1",
+      "items": [
+        {
+          "name": "BaseClass1",
+          "href": "VBTestClass1.BaseClass1.html",
+          "topicHref": "VBTestClass1.BaseClass1.html",
+          "topicUid": "VBTestClass1.BaseClass1"
+        },
+        {
+          "name": "Class1",
+          "href": "VBTestClass1.Class1.html",
+          "topicHref": "VBTestClass1.Class1.html",
+          "topicUid": "VBTestClass1.Class1"
+        }
+      ]
+    }
+  ],
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_key": "obj/api/toc.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

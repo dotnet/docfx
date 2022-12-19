@@ -4,6 +4,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Verify.Xunit" Version="19.4.2" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />

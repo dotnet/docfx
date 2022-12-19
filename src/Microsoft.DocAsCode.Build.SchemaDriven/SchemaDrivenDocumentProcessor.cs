@@ -138,12 +138,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             pageMetadata = new ExpandoObject();
                             _schema.MetadataReference.SetValue(ref content, pageMetadata);
                         }
-                        foreach (var pair in metadata)
+                        foreach (var (key, value) in metadata.OrderBy(item => item.Key))
                         {
-                            if (!pageMetadata.ContainsKey(pair.Key))
-                            {
-                                pageMetadata[pair.Key] = pair.Value;
-                            }
+                            pageMetadata[key] = value;
                         }
 
                         var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));

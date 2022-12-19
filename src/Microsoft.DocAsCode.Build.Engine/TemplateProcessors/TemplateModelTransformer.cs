@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Newtonsoft.Json;
 
     public class TemplateModelTransformer
     {
@@ -279,7 +280,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 modelPath = Path.GetFullPath(Path.Combine(outputFolder, Path.GetRandomFileName()));
             }
 
-            JsonUtility.Serialize(modelPath, model);
+            JsonUtility.Serialize(modelPath, model, Formatting.Indented);
             return StringExtension.ToDisplayPath(modelPath);
         }
 

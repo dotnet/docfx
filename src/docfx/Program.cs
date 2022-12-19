@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode
 
     internal class Program
     {
-        static int Main(string[] args)
+        internal static int Main(string[] args)
         {
             try
             {
