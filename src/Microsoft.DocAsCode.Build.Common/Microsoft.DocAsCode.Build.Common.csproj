@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-    <PackageReference Include="System.Composition" Version="6.0.0" />
+    <PackageReference Include="System.Composition" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
