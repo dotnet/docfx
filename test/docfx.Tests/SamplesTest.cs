@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.Tests
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
     using Xunit;
     using VerifyXunit;
+    using VerifyTests;
 
     [UsesVerify]
     public class SamplesTest
@@ -54,6 +56,16 @@ namespace Microsoft.DocAsCode.Tests
                     _ => false,
                 };
             }
+        }
+    }
+    
+    // Enable compact diff output
+    public static class ModuleInitializer
+    {
+        [ModuleInitializer]
+        public static void Initialize()
+        {
+            VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
         }
     }
 }
