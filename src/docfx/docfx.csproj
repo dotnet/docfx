@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -6,9 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="langwordMapping.yml">
-    </EmbeddedResource>
+    <EmbeddedResource Include="langwordMapping.yml" />
     <EmbeddedResource Include="Template\*.zip" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
