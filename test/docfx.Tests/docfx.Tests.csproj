@@ -6,7 +6,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Verify.Xunit" Version="19.4.2" />
+    <PackageReference Include="Verify.Xunit" Version="19.5.0" />
   </ItemGroup>
 
   <ItemGroup>
