@@ -495,7 +495,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class Tom\n\n    Inherits Object"
+        "value": "Public Class Tom\n    Inherits Object"
       }
     ]
   },
@@ -568,8 +568,8 @@
     }
   ],
   "level": 1.0,
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

@@ -153,7 +153,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class ExplicitLayoutClass\n\n    Inherits Object"
+        "value": "Public Class ExplicitLayoutClass\n    Inherits Object"
       }
     ]
   },
@@ -208,8 +208,8 @@
     }
   ],
   "level": 1.0,
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

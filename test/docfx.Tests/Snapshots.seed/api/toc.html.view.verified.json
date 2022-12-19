@@ -246,8 +246,8 @@
       "level": 2.0
     }
   ],
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_lang": "csharp",
   "_tocPath": "api/toc.html",
   "_navPath": "toc.html",

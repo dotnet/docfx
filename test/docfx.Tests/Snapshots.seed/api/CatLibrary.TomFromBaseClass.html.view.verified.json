@@ -351,7 +351,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class TomFromBaseClass\n\n    Inherits Tom"
+        "value": "Public Class TomFromBaseClass\n    Inherits Tom"
       }
     ]
   },
@@ -507,8 +507,8 @@
       "isEii": false
     }
   ],
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

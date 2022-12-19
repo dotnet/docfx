@@ -298,7 +298,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Interface ICat\n\n    Inherits IAnimal"
+        "value": "Public Interface ICat\n    Inherits IAnimal"
       }
     ]
   },
@@ -653,8 +653,8 @@
       "level": 0.0
     }
   ],
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

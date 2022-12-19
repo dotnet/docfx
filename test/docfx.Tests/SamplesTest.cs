@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Tests
     {
         [Theory]
         [InlineData("seed")]
-        public Task BuildSample(string name)
+        public Task BuildSampleSnapshot(string name)
         {
             var samplePath = $"../../../../../samples/{name}";
             var sitePath = $"{samplePath}/_site";

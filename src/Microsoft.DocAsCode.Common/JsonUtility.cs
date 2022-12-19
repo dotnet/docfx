@@ -24,21 +24,21 @@ namespace Microsoft.DocAsCode.Common
                 }
             });
 
-        public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.Indented, JsonSerializer serializer = null)
+        public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             var localSerializer = serializer ?? DefaultSerializer.Value;
             localSerializer.Formatting = formatting;
             localSerializer.Serialize(writer, graph);
         }
 
-        public static string Serialize(object graph, Formatting formatting = Formatting.Indented, JsonSerializer serializer = null)
+        public static string Serialize(object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             using StringWriter writer = new StringWriter();
             Serialize(writer, graph, formatting, serializer);
             return writer.ToString();
         }
 
-        public static void Serialize(string path, object graph, Formatting formatting = Formatting.Indented, JsonSerializer serializer = null)
+        public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             using var stream = EnvironmentContext.FileAbstractLayer.Create(path);
             using StreamWriter writer = new StreamWriter(stream);
@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Common
             return (serializer ?? DefaultSerializer.Value).Deserialize<T>(json);
         }
 
-        public static string ToJsonString(this object graph, Formatting formatting = Formatting.Indented, JsonSerializer serializer = null)
+        public static string ToJsonString(this object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
             var sw = new StringWriter();
             Serialize(sw, graph, formatting, serializer);

@@ -153,7 +153,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class CatException(Of T)\n\n    Inherits Exception"
+        "value": "Public Class CatException(Of T)\n    Inherits Exception"
       }
     ],
     "typeParameters": [
@@ -213,8 +213,8 @@
     }
   ],
   "level": 1.0,
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

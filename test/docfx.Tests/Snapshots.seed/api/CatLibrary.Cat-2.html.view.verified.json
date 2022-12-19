@@ -3982,7 +3982,7 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "void IAnimal.Eat<Tool>(Tool a)\n\n    where Tool : class"
+                "value": "void IAnimal.Eat<Tool>(Tool a)\n    where Tool : class"
               },
               {
                 "lang": "vb",
@@ -4741,11 +4741,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Cat<T, K> : object, ICat, IAnimal where T : class, new()\n\n    where K : struct"
+        "value": "public class Cat<T, K> : object, ICat, IAnimal where T : class, new()\n    where K : struct"
       },
       {
         "lang": "vb",
-        "value": "Public Class Cat(Of T As {Class, New}, K As Structure)\n\n    Inherits Object\n\n    Implements ICat, IAnimal"
+        "value": "Public Class Cat(Of T As {Class, New}, K As Structure)\n    Inherits Object\n    Implements ICat, IAnimal"
       }
     ],
     "typeParameters": [
@@ -4899,8 +4899,8 @@
     }
   ],
   "conceptual": "\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"6\">This is a class talking about <a href=\"https://en.wikipedia.org/wiki/Cat\" sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"6\">CAT</a>.</p>\n<blockquote sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\">\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\"><strong sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"8\">NOTE</strong>\nThis is a CAT class</p>\n</blockquote>\n<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"12\">Refer to <xref href=\"CatLibrary.IAnimal\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CatLibrary.IAnimal\" sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"12\"></xref> to see other animals.</p>\n",
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",

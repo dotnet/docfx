@@ -397,7 +397,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public MustInherit Class BaseClass1\n\n    Inherits Object"
+        "value": "Public MustInherit Class BaseClass1\n    Inherits Object"
       }
     ]
   },
@@ -470,8 +470,8 @@
     }
   ],
   "level": 1.0,
-  "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "_appTitle": "docfx seed website",
   "_systemKeys": [
     "uid",
     "isEii",
