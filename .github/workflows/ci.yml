@@ -26,6 +26,7 @@ jobs:
     - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
+      if: github.ref == 'refs/heads/main'
       with:
         name: site
         path: docs/_site
