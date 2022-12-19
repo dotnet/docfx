@@ -1,0 +1,809 @@
+﻿### YamlMime:XRefMap
+sorted: true
+references:
+- uid: CatLibrary
+  name: CatLibrary
+  href: api/CatLibrary.html
+  commentId: N:CatLibrary
+  fullName: CatLibrary
+  nameWithType: CatLibrary
+- uid: CatLibrary.Cat`2
+  name: Cat<T, K>
+  href: api/CatLibrary.Cat-2.html
+  commentId: T:CatLibrary.Cat`2
+  name.vb: Cat(Of T, K)
+  fullName: CatLibrary.Cat<T, K>
+  fullName.vb: CatLibrary.Cat(Of T, K)
+  nameWithType: Cat<T, K>
+  nameWithType.vb: Cat(Of T, K)
+- uid: CatLibrary.Cat`2.#ctor
+  name: Cat()
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor
+  commentId: M:CatLibrary.Cat`2.#ctor
+  fullName: CatLibrary.Cat<T, K>.Cat()
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat()
+  nameWithType: Cat<T, K>.Cat()
+  nameWithType.vb: Cat(Of T, K).Cat()
+- uid: CatLibrary.Cat`2.#ctor(`0)
+  name: Cat(T)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor__0_
+  commentId: M:CatLibrary.Cat`2.#ctor(`0)
+  fullName: CatLibrary.Cat<T, K>.Cat(T)
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat(T)
+  nameWithType: Cat<T, K>.Cat(T)
+  nameWithType.vb: Cat(Of T, K).Cat(T)
+- uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  name: Cat(String, out Int32, String, Boolean)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_
+  commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
+  name.vb: Cat(String, ByRef Int32, String, Boolean)
+  fullName: CatLibrary.Cat<T, K>.Cat(System.String, out System.Int32, System.String, System.Boolean)
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat(System.String, ByRef System.Int32, System.String, System.Boolean)
+  nameWithType: Cat<T, K>.Cat(String, out Int32, String, Boolean)
+  nameWithType.vb: Cat(Of T, K).Cat(String, ByRef Int32, String, Boolean)
+- uid: CatLibrary.Cat`2.#ctor*
+  name: Cat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_
+  commentId: Overload:CatLibrary.Cat`2.#ctor
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Cat
+  fullName.vb: CatLibrary.Cat(Of T, K).Cat
+  nameWithType: Cat<T, K>.Cat
+  nameWithType.vb: Cat(Of T, K).Cat
+- uid: CatLibrary.Cat`2.Age
+  name: Age
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Age
+  commentId: P:CatLibrary.Cat`2.Age
+  fullName: CatLibrary.Cat<T, K>.Age
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+  nameWithType: Cat<T, K>.Age
+  nameWithType.vb: Cat(Of T, K).Age
+- uid: CatLibrary.Cat`2.Age*
+  name: Age
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Age_
+  commentId: Overload:CatLibrary.Cat`2.Age
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Age
+  fullName.vb: CatLibrary.Cat(Of T, K).Age
+  nameWithType: Cat<T, K>.Age
+  nameWithType.vb: Cat(Of T, K).Age
+- uid: CatLibrary.Cat`2.CalculateFood(DateTime)
+  name: CalculateFood(DateTime)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_DateTime_
+  commentId: M:CatLibrary.Cat`2.CalculateFood(DateTime)
+  fullName: CatLibrary.Cat<T, K>.CalculateFood(DateTime)
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(DateTime)
+  nameWithType: Cat<T, K>.CalculateFood(DateTime)
+  nameWithType.vb: Cat(Of T, K).CalculateFood(DateTime)
+- uid: CatLibrary.Cat`2.CalculateFood*
+  name: CalculateFood
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_
+  commentId: Overload:CatLibrary.Cat`2.CalculateFood
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.CalculateFood
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood
+  nameWithType: Cat<T, K>.CalculateFood
+  nameWithType.vb: Cat(Of T, K).CalculateFood
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  name: IAnimal.Eat()
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  name.vb: CatLibrary.IAnimal.Eat()
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat()
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat()
+  nameWithType: Cat<T, K>.IAnimal.Eat()
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat()
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
+  name: IAnimal.Eat(String)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat_System_String_
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
+  name.vb: CatLibrary.IAnimal.Eat(String)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat(System.String)
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(System.String)
+  nameWithType: Cat<T, K>.IAnimal.Eat(String)
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(String)
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
+  name: IAnimal.Eat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat_
+  commentId: Overload:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
+  isSpec: "True"
+  name.vb: CatLibrary.IAnimal.Eat
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat
+  nameWithType: Cat<T, K>.IAnimal.Eat
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
+  name: IAnimal.Eat<Tool>(Tool)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat__1___0_
+  commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
+  name.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat<Tool>(Tool)
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  nameWithType: Cat<T, K>.IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
+  name: IAnimal.Item[Int32]
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_System_Int32_
+  commentId: P:CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
+  name.vb: CatLibrary.IAnimal.Item(Int32)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Item[System.Int32]
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item(System.Int32)
+  nameWithType: Cat<T, K>.IAnimal.Item[Int32]
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item(Int32)
+- uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item*
+  name: IAnimal.Item
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_
+  commentId: Overload:CatLibrary.Cat`2.CatLibrary#IAnimal#Item
+  isSpec: "True"
+  name.vb: CatLibrary.IAnimal.Item
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Item
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item
+  nameWithType: Cat<T, K>.IAnimal.Item
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item
+- uid: CatLibrary.Cat`2.CatLibrary#ICat#eat
+  name: ICat.eat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_ICat_eat
+  commentId: E:CatLibrary.Cat`2.CatLibrary#ICat#eat
+  name.vb: CatLibrary.ICat.eat
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.ICat.eat
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.ICat.eat
+  nameWithType: Cat<T, K>.ICat.eat
+  nameWithType.vb: Cat(Of T, K).CatLibrary.ICat.eat
+- uid: CatLibrary.Cat`2.Equals(System.Object)
+  name: Equals(Object)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Equals_System_Object_
+  commentId: M:CatLibrary.Cat`2.Equals(System.Object)
+  fullName: CatLibrary.Cat<T, K>.Equals(System.Object)
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals(System.Object)
+  nameWithType: Cat<T, K>.Equals(Object)
+  nameWithType.vb: Cat(Of T, K).Equals(Object)
+- uid: CatLibrary.Cat`2.Equals*
+  name: Equals
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Equals_
+  commentId: Overload:CatLibrary.Cat`2.Equals
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Equals
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals
+  nameWithType: Cat<T, K>.Equals
+  nameWithType.vb: Cat(Of T, K).Equals
+- uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  name: GetTailLength(Int32*, Object[])
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___
+  commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
+  name.vb: GetTailLength(Int32*, Object())
+  fullName: CatLibrary.Cat<T, K>.GetTailLength(System.Int32*, System.Object[])
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, System.Object())
+  nameWithType: Cat<T, K>.GetTailLength(Int32*, Object[])
+  nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, Object())
+- uid: CatLibrary.Cat`2.GetTailLength*
+  name: GetTailLength
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_
+  commentId: Overload:CatLibrary.Cat`2.GetTailLength
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.GetTailLength
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength
+  nameWithType: Cat<T, K>.GetTailLength
+  nameWithType.vb: Cat(Of T, K).GetTailLength
+- uid: CatLibrary.Cat`2.isHealthy
+  name: isHealthy
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_isHealthy
+  commentId: F:CatLibrary.Cat`2.isHealthy
+  fullName: CatLibrary.Cat<T, K>.isHealthy
+  fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
+  nameWithType: Cat<T, K>.isHealthy
+  nameWithType.vb: Cat(Of T, K).isHealthy
+- uid: CatLibrary.Cat`2.Item(System.String)
+  name: Item[String]
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_System_String_
+  commentId: P:CatLibrary.Cat`2.Item(System.String)
+  name.vb: Item(String)
+  fullName: CatLibrary.Cat<T, K>.Item[System.String]
+  fullName.vb: CatLibrary.Cat(Of T, K).Item(System.String)
+  nameWithType: Cat<T, K>.Item[String]
+  nameWithType.vb: Cat(Of T, K).Item(String)
+- uid: CatLibrary.Cat`2.Item*
+  name: Item
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_
+  commentId: Overload:CatLibrary.Cat`2.Item
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Item
+  fullName.vb: CatLibrary.Cat(Of T, K).Item
+  nameWithType: Cat<T, K>.Item
+  nameWithType.vb: Cat(Of T, K).Item
+- uid: CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  name: Jump(T, K, ref Boolean)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump__0__1_System_Boolean__
+  commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
+  name.vb: Jump(T, K, ByRef Boolean)
+  fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref System.Boolean)
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, ByRef System.Boolean)
+  nameWithType: Cat<T, K>.Jump(T, K, ref Boolean)
+  nameWithType.vb: Cat(Of T, K).Jump(T, K, ByRef Boolean)
+- uid: CatLibrary.Cat`2.Jump*
+  name: Jump
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump_
+  commentId: Overload:CatLibrary.Cat`2.Jump
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Jump
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump
+  nameWithType: Cat<T, K>.Jump
+  nameWithType.vb: Cat(Of T, K).Jump
+- uid: CatLibrary.Cat`2.Name
+  name: Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Name
+  commentId: P:CatLibrary.Cat`2.Name
+  fullName: CatLibrary.Cat<T, K>.Name
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+  nameWithType: Cat<T, K>.Name
+  nameWithType.vb: Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.Name*
+  name: Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Name_
+  commentId: Overload:CatLibrary.Cat`2.Name
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Name
+  fullName.vb: CatLibrary.Cat(Of T, K).Name
+  nameWithType: Cat<T, K>.Name
+  nameWithType.vb: Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  name: Addition(Cat<T, K>, Int32)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_
+  commentId: M:CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
+  name.vb: Addition(Cat(Of T, K), Int32)
+  fullName: CatLibrary.Cat<T, K>.Addition(CatLibrary.Cat<T, K>, System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).Addition(CatLibrary.Cat(Of T, K), System.Int32)
+  nameWithType: Cat<T, K>.Addition(Cat<T, K>, Int32)
+  nameWithType.vb: Cat(Of T, K).Addition(Cat(Of T, K), Int32)
+- uid: CatLibrary.Cat`2.op_Addition*
+  name: Addition
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_
+  commentId: Overload:CatLibrary.Cat`2.op_Addition
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Addition
+  fullName.vb: CatLibrary.Cat(Of T, K).Addition
+  nameWithType: Cat<T, K>.Addition
+  nameWithType.vb: Cat(Of T, K).Addition
+- uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  name: Explicit(Cat<T, K> to Tom)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom
+  commentId: M:CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
+  name.vb: Narrowing(Cat(Of T, K) to Tom)
+  fullName: CatLibrary.Cat<T, K>.Explicit(CatLibrary.Cat<T, K> to CatLibrary.Tom)
+  fullName.vb: CatLibrary.Cat(Of T, K).Narrowing(CatLibrary.Cat(Of T, K) to CatLibrary.Tom)
+  nameWithType: Cat<T, K>.Explicit(Cat<T, K> to Tom)
+  nameWithType.vb: Cat(Of T, K).Narrowing(Cat(Of T, K) to Tom)
+- uid: CatLibrary.Cat`2.op_Explicit*
+  name: Explicit
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_
+  commentId: Overload:CatLibrary.Cat`2.op_Explicit
+  isSpec: "True"
+  name.vb: Narrowing
+  fullName: CatLibrary.Cat<T, K>.Explicit
+  fullName.vb: CatLibrary.Cat(Of T, K).Narrowing
+  nameWithType: Cat<T, K>.Explicit
+  nameWithType.vb: Cat(Of T, K).Narrowing
+- uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  name: Subtraction(Cat<T, K>, Int32)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_
+  commentId: M:CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
+  name.vb: Subtraction(Cat(Of T, K), Int32)
+  fullName: CatLibrary.Cat<T, K>.Subtraction(CatLibrary.Cat<T, K>, System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).Subtraction(CatLibrary.Cat(Of T, K), System.Int32)
+  nameWithType: Cat<T, K>.Subtraction(Cat<T, K>, Int32)
+  nameWithType.vb: Cat(Of T, K).Subtraction(Cat(Of T, K), Int32)
+- uid: CatLibrary.Cat`2.op_Subtraction*
+  name: Subtraction
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_
+  commentId: Overload:CatLibrary.Cat`2.op_Subtraction
+  isSpec: "True"
+  fullName: CatLibrary.Cat<T, K>.Subtraction
+  fullName.vb: CatLibrary.Cat(Of T, K).Subtraction
+  nameWithType: Cat<T, K>.Subtraction
+  nameWithType.vb: Cat(Of T, K).Subtraction
+- uid: CatLibrary.Cat`2.ownEat
+  name: ownEat
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_ownEat
+  commentId: E:CatLibrary.Cat`2.ownEat
+  fullName: CatLibrary.Cat<T, K>.ownEat
+  fullName.vb: CatLibrary.Cat(Of T, K).ownEat
+  nameWithType: Cat<T, K>.ownEat
+  nameWithType.vb: Cat(Of T, K).ownEat
+- uid: CatLibrary.CatException`1
+  name: CatException<T>
+  href: api/CatLibrary.CatException-1.html
+  commentId: T:CatLibrary.CatException`1
+  name.vb: CatException(Of T)
+  fullName: CatLibrary.CatException<T>
+  fullName.vb: CatLibrary.CatException(Of T)
+  nameWithType: CatException<T>
+  nameWithType.vb: CatException(Of T)
+- uid: CatLibrary.Complex`2
+  name: Complex<T, J>
+  href: api/CatLibrary.Complex-2.html
+  commentId: T:CatLibrary.Complex`2
+  name.vb: Complex(Of T, J)
+  fullName: CatLibrary.Complex<T, J>
+  fullName.vb: CatLibrary.Complex(Of T, J)
+  nameWithType: Complex<T, J>
+  nameWithType.vb: Complex(Of T, J)
+- uid: CatLibrary.FakeDelegate`1
+  name: FakeDelegate<T>
+  href: api/CatLibrary.FakeDelegate-1.html
+  commentId: T:CatLibrary.FakeDelegate`1
+  name.vb: FakeDelegate(Of T)
+  fullName: CatLibrary.FakeDelegate<T>
+  fullName.vb: CatLibrary.FakeDelegate(Of T)
+  nameWithType: FakeDelegate<T>
+  nameWithType.vb: FakeDelegate(Of T)
+- uid: CatLibrary.IAnimal
+  name: IAnimal
+  href: api/CatLibrary.IAnimal.html
+  commentId: T:CatLibrary.IAnimal
+  fullName: CatLibrary.IAnimal
+  nameWithType: IAnimal
+- uid: CatLibrary.IAnimal.Eat
+  name: Eat()
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat
+  commentId: M:CatLibrary.IAnimal.Eat
+  fullName: CatLibrary.IAnimal.Eat()
+  nameWithType: IAnimal.Eat()
+- uid: CatLibrary.IAnimal.Eat(System.String)
+  name: Eat(String)
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_
+  commentId: M:CatLibrary.IAnimal.Eat(System.String)
+  fullName: CatLibrary.IAnimal.Eat(System.String)
+  nameWithType: IAnimal.Eat(String)
+- uid: CatLibrary.IAnimal.Eat*
+  name: Eat
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_
+  commentId: Overload:CatLibrary.IAnimal.Eat
+  isSpec: "True"
+  fullName: CatLibrary.IAnimal.Eat
+  nameWithType: IAnimal.Eat
+- uid: CatLibrary.IAnimal.Eat``1(``0)
+  name: Eat<Tool>(Tool)
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_
+  commentId: M:CatLibrary.IAnimal.Eat``1(``0)
+  name.vb: Eat(Of Tool)(Tool)
+  fullName: CatLibrary.IAnimal.Eat<Tool>(Tool)
+  fullName.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  nameWithType: IAnimal.Eat<Tool>(Tool)
+  nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
+- uid: CatLibrary.IAnimal.Item(System.Int32)
+  name: Item[Int32]
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_
+  commentId: P:CatLibrary.IAnimal.Item(System.Int32)
+  name.vb: Item(Int32)
+  fullName: CatLibrary.IAnimal.Item[System.Int32]
+  fullName.vb: CatLibrary.IAnimal.Item(System.Int32)
+  nameWithType: IAnimal.Item[Int32]
+  nameWithType.vb: IAnimal.Item(Int32)
+- uid: CatLibrary.IAnimal.Item*
+  name: Item
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_
+  commentId: Overload:CatLibrary.IAnimal.Item
+  isSpec: "True"
+  fullName: CatLibrary.IAnimal.Item
+  nameWithType: IAnimal.Item
+- uid: CatLibrary.IAnimal.Name
+  name: Name
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name
+  commentId: P:CatLibrary.IAnimal.Name
+  fullName: CatLibrary.IAnimal.Name
+  nameWithType: IAnimal.Name
+- uid: CatLibrary.IAnimal.Name*
+  name: Name
+  href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name_
+  commentId: Overload:CatLibrary.IAnimal.Name
+  isSpec: "True"
+  fullName: CatLibrary.IAnimal.Name
+  nameWithType: IAnimal.Name
+- uid: CatLibrary.ICat
+  name: ICat
+  href: api/CatLibrary.ICat.html
+  commentId: T:CatLibrary.ICat
+  fullName: CatLibrary.ICat
+  nameWithType: ICat
+- uid: CatLibrary.ICat.eat
+  name: eat
+  href: api/CatLibrary.ICat.html#CatLibrary_ICat_eat
+  commentId: E:CatLibrary.ICat.eat
+  fullName: CatLibrary.ICat.eat
+  nameWithType: ICat.eat
+- uid: CatLibrary.ICatExtension
+  name: ICatExtension
+  href: api/CatLibrary.ICatExtension.html
+  commentId: T:CatLibrary.ICatExtension
+  fullName: CatLibrary.ICatExtension
+  nameWithType: ICatExtension
+- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  name: Play(ICat, String)
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)
+  nameWithType: ICatExtension.Play(ICat, String)
+- uid: CatLibrary.ICatExtension.Play*
+  name: Play
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_
+  commentId: Overload:CatLibrary.ICatExtension.Play
+  isSpec: "True"
+  fullName: CatLibrary.ICatExtension.Play
+  nameWithType: ICatExtension.Play
+- uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  name: Sleep(ICat, Int64)
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_
+  commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
+  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)
+  nameWithType: ICatExtension.Sleep(ICat, Int64)
+- uid: CatLibrary.ICatExtension.Sleep*
+  name: Sleep
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_
+  commentId: Overload:CatLibrary.ICatExtension.Sleep
+  isSpec: "True"
+  fullName: CatLibrary.ICatExtension.Sleep
+  nameWithType: ICatExtension.Sleep
+- uid: CatLibrary.MRefDelegate`3
+  name: MRefDelegate<K, T, L>
+  href: api/CatLibrary.MRefDelegate-3.html
+  commentId: T:CatLibrary.MRefDelegate`3
+  name.vb: MRefDelegate(Of K, T, L)
+  fullName: CatLibrary.MRefDelegate<K, T, L>
+  fullName.vb: CatLibrary.MRefDelegate(Of K, T, L)
+  nameWithType: MRefDelegate<K, T, L>
+  nameWithType.vb: MRefDelegate(Of K, T, L)
+- uid: CatLibrary.MRefNormalDelegate
+  name: MRefNormalDelegate
+  href: api/CatLibrary.MRefNormalDelegate.html
+  commentId: T:CatLibrary.MRefNormalDelegate
+  fullName: CatLibrary.MRefNormalDelegate
+  nameWithType: MRefNormalDelegate
+- uid: CatLibrary.Tom
+  name: Tom
+  href: api/CatLibrary.Tom.html
+  commentId: T:CatLibrary.Tom
+  fullName: CatLibrary.Tom
+  nameWithType: Tom
+- uid: CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})
+  name: TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
+  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__Tuple_System_String_CatLibrary_Tom__
+  commentId: M:CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})
+  name.vb: TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
+  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, Tuple<System.String, CatLibrary.Tom>)
+  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), Tuple(Of System.String, CatLibrary.Tom))
+  nameWithType: Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
+  nameWithType.vb: Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
+- uid: CatLibrary.Tom.TomMethod*
+  name: TomMethod
+  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_
+  commentId: Overload:CatLibrary.Tom.TomMethod
+  isSpec: "True"
+  fullName: CatLibrary.Tom.TomMethod
+  nameWithType: Tom.TomMethod
+- uid: CatLibrary.TomFromBaseClass
+  name: TomFromBaseClass
+  href: api/CatLibrary.TomFromBaseClass.html
+  commentId: T:CatLibrary.TomFromBaseClass
+  fullName: CatLibrary.TomFromBaseClass
+  nameWithType: TomFromBaseClass
+- uid: CatLibrary.TomFromBaseClass.#ctor(System.Int32)
+  name: TomFromBaseClass(Int32)
+  href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_System_Int32_
+  commentId: M:CatLibrary.TomFromBaseClass.#ctor(System.Int32)
+  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)
+  nameWithType: TomFromBaseClass.TomFromBaseClass(Int32)
+- uid: CatLibrary.TomFromBaseClass.#ctor*
+  name: TomFromBaseClass
+  href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_
+  commentId: Overload:CatLibrary.TomFromBaseClass.#ctor
+  isSpec: "True"
+  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass
+  nameWithType: TomFromBaseClass.TomFromBaseClass
+- uid: graph.windows.net/myorganization/Contacts/1.6
+  name: Contacts
+  href: restapi/contacts.html
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact
+  name: delete contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact manager by id
+  name: delete contact manager by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact by id
+  name: get contact by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact direct reports links
+  name: get contact direct reports links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact manager link
+  name: get contact manager link
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact memberOf links
+  name: get contact memberOf links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contacts
+  name: get contacts
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contacts
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact
+  name: update contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact manager
+  name: update contact manager
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact_manager
+- uid: Microsoft.DevDiv
+  name: Microsoft.DevDiv
+  href: api/Microsoft.DevDiv.html
+  commentId: N:Microsoft.DevDiv
+  fullName: Microsoft.DevDiv
+  nameWithType: Microsoft.DevDiv
+- uid: Microsoft.DevDiv.ContainersRefType
+  name: ContainersRefType
+  href: api/Microsoft.DevDiv.ContainersRefType.html
+  commentId: T:Microsoft.DevDiv.ContainersRefType
+  fullName: Microsoft.DevDiv.ContainersRefType
+  nameWithType: ContainersRefType
+- uid: Microsoft.DevDiv.ContainersRefType.ColorCount
+  name: ColorCount
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ColorCount
+  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorCount
+  fullName: Microsoft.DevDiv.ContainersRefType.ColorCount
+  nameWithType: ContainersRefType.ColorCount
+- uid: Microsoft.DevDiv.ContainersRefType.ColorType
+  name: ContainersRefType.ColorType
+  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html
+  commentId: T:Microsoft.DevDiv.ContainersRefType.ColorType
+  fullName: Microsoft.DevDiv.ContainersRefType.ColorType
+  nameWithType: ContainersRefType.ColorType
+- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Blue
+  name: Blue
+  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Blue
+  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Blue
+  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Blue
+  nameWithType: ContainersRefType.ColorType.Blue
+- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Red
+  name: Red
+  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Red
+  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Red
+  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Red
+  nameWithType: ContainersRefType.ColorType.Red
+- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
+  name: Yellow
+  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Yellow
+  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
+  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
+  nameWithType: ContainersRefType.ColorType.Yellow
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
+  name: ContainersRefType.ContainersRefTypeChild
+  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html
+  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
+  nameWithType: ContainersRefType.ContainersRefTypeChild
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
+  name: ContainersRefType.ContainersRefTypeChildInterface
+  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html
+  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
+  nameWithType: ContainersRefType.ContainersRefTypeChildInterface
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
+  name: ContainersRefType.ContainersRefTypeDelegate
+  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html
+  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
+  nameWithType: ContainersRefType.ContainersRefTypeDelegate
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
+  name: ContainersRefTypeEventHandler
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeEventHandler
+  commentId: E:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
+  nameWithType: ContainersRefType.ContainersRefTypeEventHandler
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name: ContainersRefTypeNonRefMethod(Object[])
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
+  commentId: M:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name.vb: ContainersRefTypeNonRefMethod(Object())
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object())
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(Object[])
+  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(Object())
+- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*
+  name: ContainersRefTypeNonRefMethod
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_
+  commentId: Overload:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod
+  isSpec: "True"
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod
+- uid: Microsoft.DevDiv.ContainersRefType.GetColorCount
+  name: GetColorCount
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_GetColorCount
+  commentId: P:Microsoft.DevDiv.ContainersRefType.GetColorCount
+  fullName: Microsoft.DevDiv.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: Microsoft.DevDiv.ContainersRefType.GetColorCount*
+  name: GetColorCount
+  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_GetColorCount_
+  commentId: Overload:Microsoft.DevDiv.ContainersRefType.GetColorCount
+  isSpec: "True"
+  fullName: Microsoft.DevDiv.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: Microsoft.DevDiv.ExplicitLayoutClass
+  name: ExplicitLayoutClass
+  href: api/Microsoft.DevDiv.ExplicitLayoutClass.html
+  commentId: T:Microsoft.DevDiv.ExplicitLayoutClass
+  fullName: Microsoft.DevDiv.ExplicitLayoutClass
+  nameWithType: ExplicitLayoutClass
+- uid: MRef.Demo.Enumeration
+  name: MRef.Demo.Enumeration
+  href: api/MRef.Demo.Enumeration.html
+  commentId: N:MRef.Demo.Enumeration
+  fullName: MRef.Demo.Enumeration
+  nameWithType: MRef.Demo.Enumeration
+- uid: MRef.Demo.Enumeration.ColorType
+  name: ColorType
+  href: api/MRef.Demo.Enumeration.ColorType.html
+  commentId: T:MRef.Demo.Enumeration.ColorType
+  fullName: MRef.Demo.Enumeration.ColorType
+  nameWithType: ColorType
+- uid: MRef.Demo.Enumeration.ColorType.Blue
+  name: Blue
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Blue
+  commentId: F:MRef.Demo.Enumeration.ColorType.Blue
+  fullName: MRef.Demo.Enumeration.ColorType.Blue
+  nameWithType: ColorType.Blue
+- uid: MRef.Demo.Enumeration.ColorType.Red
+  name: Red
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Red
+  commentId: F:MRef.Demo.Enumeration.ColorType.Red
+  fullName: MRef.Demo.Enumeration.ColorType.Red
+  nameWithType: ColorType.Red
+- uid: MRef.Demo.Enumeration.ColorType.Yellow
+  name: Yellow
+  href: api/MRef.Demo.Enumeration.ColorType.html#MRef_Demo_Enumeration_ColorType_Yellow
+  commentId: F:MRef.Demo.Enumeration.ColorType.Yellow
+  fullName: MRef.Demo.Enumeration.ColorType.Yellow
+  nameWithType: ColorType.Yellow
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0
+  name: Swagger Petstore
+  href: restapi/petstore.html
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet
+  name: addPet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUser
+  name: createUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithArrayInput
+  name: createUsersWithArrayInput
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithListInput
+  name: createUsersWithListInput
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder
+  name: deleteOrder
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deletePet
+  name: deletePet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteUser
+  name: deleteUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByStatus
+  name: findPetsByStatus
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByTags
+  name: findPetsByTags
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getInventory
+  name: getInventory
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getOrderById
+  name: getOrderById
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getPetById
+  name: getPetById
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/getUserByName
+  name: getUserByName
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/loginUser
+  name: loginUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/logoutUser
+  name: logoutUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/placeOrder
+  name: placeOrder
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet
+  name: pet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/store
+  name: store
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/user
+  name: user
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePet
+  name: updatePet
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePetWithForm
+  name: updatePetWithForm
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/updateUser
+  name: updateUser
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser
+- uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile
+  name: uploadFile
+  href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile
+- uid: VBTestClass1
+  name: VBTestClass1
+  href: api/VBTestClass1.html
+  commentId: N:VBTestClass1
+  fullName: VBTestClass1
+  nameWithType: VBTestClass1
+- uid: VBTestClass1.BaseClass1
+  name: BaseClass1
+  href: api/VBTestClass1.BaseClass1.html
+  commentId: T:VBTestClass1.BaseClass1
+  fullName: VBTestClass1.BaseClass1
+  nameWithType: BaseClass1
+- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
+  name: WithDeclarationKeyword(CounterSampleCalculator)
+  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_CounterSampleCalculator_
+  commentId: M:VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
+  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
+  nameWithType: BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
+- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_
+  commentId: Overload:VBTestClass1.BaseClass1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword
+  nameWithType: BaseClass1.WithDeclarationKeyword
+- uid: VBTestClass1.Class1
+  name: Class1
+  href: api/VBTestClass1.Class1.html
+  commentId: T:VBTestClass1.Class1
+  fullName: VBTestClass1.Class1
+  nameWithType: Class1
+- uid: VBTestClass1.Class1.Keyword
+  name: Keyword
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Keyword
+  commentId: P:VBTestClass1.Class1.Keyword
+  fullName: VBTestClass1.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: VBTestClass1.Class1.Keyword*
+  name: Keyword
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Keyword_
+  commentId: Overload:VBTestClass1.Class1.Keyword
+  isSpec: "True"
+  fullName: VBTestClass1.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: VBTestClass1.Class1.Value(System.String)
+  name: Value(String)
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_System_String_
+  commentId: M:VBTestClass1.Class1.Value(System.String)
+  fullName: VBTestClass1.Class1.Value(System.String)
+  nameWithType: Class1.Value(String)
+- uid: VBTestClass1.Class1.Value*
+  name: Value
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_
+  commentId: Overload:VBTestClass1.Class1.Value
+  isSpec: "True"
+  fullName: VBTestClass1.Class1.Value
+  nameWithType: Class1.Value
+- uid: VBTestClass1.Class1.ValueClass
+  name: ValueClass
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_ValueClass
+  commentId: F:VBTestClass1.Class1.ValueClass
+  fullName: VBTestClass1.Class1.ValueClass
+  nameWithType: Class1.ValueClass
+- uid: VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
+  name: WithDeclarationKeyword(CounterSampleCalculator)
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_CounterSampleCalculator_
+  commentId: M:VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
+  fullName: VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
+  nameWithType: Class1.WithDeclarationKeyword(CounterSampleCalculator)
+- uid: VBTestClass1.Class1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_
+  commentId: Overload:VBTestClass1.Class1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: VBTestClass1.Class1.WithDeclarationKeyword
+  nameWithType: Class1.WithDeclarationKeyword

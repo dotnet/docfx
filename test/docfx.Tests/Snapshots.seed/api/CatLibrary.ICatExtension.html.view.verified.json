@@ -1,0 +1,818 @@
+﻿{
+  "uid": "CatLibrary.ICatExtension",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)",
+          "isEii": false,
+          "isExtensionMethod": true,
+          "parent": "CatLibrary.ICatExtension",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Play(ICat, String)"
+            },
+            {
+              "lang": "vb",
+              "value": "Play(ICat, String)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ICatExtension.Play(ICat, String)"
+            },
+            {
+              "lang": "vb",
+              "value": "ICatExtension.Play(ICat, String)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play(ICat, String)\" alt=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play(ICat, String)\" alt=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void Play(this ICat icat, string toy)"
+              },
+              {
+                "lang": "vb",
+                "value": "<ExtensionAttribute>\nPublic Shared Sub Play(icat As ICat, toy As String)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "icat",
+                "type": {
+                  "uid": "CatLibrary.ICat",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ICat"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ICat"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "CatLibrary.ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "CatLibrary.ICat"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Cat</p>\n"
+              },
+              {
+                "id": "toy",
+                "type": {
+                  "uid": "System.String",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "String"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "String"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "String"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.String"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.String"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Something to play</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Play",
+            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "startLine": 340.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.ICatExtension.Play*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Play"
+              },
+              {
+                "lang": "vb",
+                "value": "Play"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ICatExtension.Play"
+              },
+              {
+                "lang": "vb",
+                "value": "ICatExtension.Play"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.ICatExtension.Play"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.ICatExtension.Play"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.ICatExtension.Play*\" text=\"Play\" alt=\"CatLibrary.ICatExtension.Play\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.ICatExtension.Play*\" text=\"Play\" alt=\"CatLibrary.ICatExtension.Play\"/>"
+              }
+            ],
+            "id": "CatLibrary_ICatExtension_Play_"
+          },
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public",
+            "static"
+          ],
+          "modifiers.vb": [
+            "Public",
+            "Shared"
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method to let cat play</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L341",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "seealso": null,
+          "id": "CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)",
+          "isEii": false,
+          "isExtensionMethod": true,
+          "parent": "CatLibrary.ICatExtension",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Sleep(ICat, Int64)"
+            },
+            {
+              "lang": "vb",
+              "value": "Sleep(ICat, Int64)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ICatExtension.Sleep(ICat, Int64)"
+            },
+            {
+              "lang": "vb",
+              "value": "ICatExtension.Sleep(ICat, Int64)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep(ICat, Int64)\" alt=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep(ICat, Int64)\" alt=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void Sleep(this ICat icat, long hours)"
+              },
+              {
+                "lang": "vb",
+                "value": "<ExtensionAttribute>\nPublic Shared Sub Sleep(icat As ICat, hours As Long)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "icat",
+                "type": {
+                  "uid": "CatLibrary.ICat",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ICat"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ICat"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "CatLibrary.ICat"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "CatLibrary.ICat"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">The type will be extended.</p>\n"
+              },
+              {
+                "id": "hours",
+                "type": {
+                  "uid": "System.Int64",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "Int64"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Int64"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "Int64"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Int64"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.Int64"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.Int64"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">The length of sleep.</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Sleep",
+            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "startLine": 333.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.ICatExtension.Sleep*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Sleep"
+              },
+              {
+                "lang": "vb",
+                "value": "Sleep"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ICatExtension.Sleep"
+              },
+              {
+                "lang": "vb",
+                "value": "ICatExtension.Sleep"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.ICatExtension.Sleep"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.ICatExtension.Sleep"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep*\" text=\"Sleep\" alt=\"CatLibrary.ICatExtension.Sleep\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep*\" text=\"Sleep\" alt=\"CatLibrary.ICatExtension.Sleep\"/>"
+              }
+            ],
+            "id": "CatLibrary_ICatExtension_Sleep_"
+          },
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public",
+            "static"
+          ],
+          "modifiers.vb": [
+            "Public",
+            "Shared"
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method hint that how long the cat can sleep.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Sleep(CatLibrary.ICat%2CSystem.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L334",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "seealso": null,
+          "id": "CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ICatExtension"
+    },
+    {
+      "lang": "vb",
+      "value": "ICatExtension"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ICatExtension"
+    },
+    {
+      "lang": "vb",
+      "value": "ICatExtension"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.ICatExtension"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.ICatExtension"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ICatExtension",
+    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "startLine": 326.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <strong>public</strong> and <strong>static</strong>.</p>\n<p>Also it shouldn&apos;t be a geneic class</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public static class ICatExtension : object"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Module ICatExtension\n\n    Inherits Object"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0.0,
+      "index": 0.0
+    }
+  ],
+  "level": 1.0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/CatLibrary.ICatExtension.html",
+  "_key": "obj/api/CatLibrary.ICatExtension.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L327",
+  "remarks": null,
+  "conceptual": null,
+  "implements": null,
+  "seealso": null,
+  "id": "CatLibrary_ICatExtension",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false
+}

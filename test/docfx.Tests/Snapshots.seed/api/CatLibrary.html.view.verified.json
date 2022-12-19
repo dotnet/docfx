@@ -1,0 +1,858 @@
+﻿{
+  "uid": "CatLibrary",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inClass": true,
+      "typePropertyName": "inClass",
+      "id": "classes",
+      "children": [
+        {
+          "uid": "CatLibrary.Cat`2",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Cat<T, K>"
+            },
+            {
+              "lang": "vb",
+              "value": "Cat(Of T, K)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Cat<T, K>"
+            },
+            {
+              "lang": "vb",
+              "value": "Cat(Of T, K)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Cat<T, K>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Cat(Of T, K)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>&lt;T, K&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>(Of T, K)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p>Here&apos;s main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">T</code> and <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_Cat_2",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.CatException`1",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatException(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatException(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.CatException(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>(Of T)"
+            }
+          ],
+          "level": 0.0,
+          "summary": null,
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_CatException_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Complex`2",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Complex<T, J>"
+            },
+            {
+              "lang": "vb",
+              "value": "Complex(Of T, J)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Complex<T, J>"
+            },
+            {
+              "lang": "vb",
+              "value": "Complex(Of T, J)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Complex<T, J>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Complex(Of T, J)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>&lt;T, J&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>(Of T, J)"
+            }
+          ],
+          "level": 0.0,
+          "summary": null,
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_Complex_2",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.ICatExtension",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ICatExtension"
+            },
+            {
+              "lang": "vb",
+              "value": "ICatExtension"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ICatExtension"
+            },
+            {
+              "lang": "vb",
+              "value": "ICatExtension"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.ICatExtension"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.ICatExtension"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\" alt=\"CatLibrary.ICatExtension\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\" alt=\"CatLibrary.ICatExtension\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <strong>public</strong> and <strong>static</strong>.</p>\n<p>Also it shouldn&apos;t be a geneic class</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_ICatExtension",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Tom",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Tom"
+            },
+            {
+              "lang": "vb",
+              "value": "Tom"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Tom"
+            },
+            {
+              "lang": "vb",
+              "value": "Tom"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Tom"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Tom"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"2\">Tom class is only inherit from Object. Not any member inside itself.</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_Tom",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.TomFromBaseClass",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "TomFromBaseClass"
+            },
+            {
+              "lang": "vb",
+              "value": "TomFromBaseClass"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "TomFromBaseClass"
+            },
+            {
+              "lang": "vb",
+              "value": "TomFromBaseClass"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.TomFromBaseClass"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.TomFromBaseClass"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"2\"><em sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"2\">TomFromBaseClass</em> inherits from @</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_TomFromBaseClass",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inInterface": true,
+      "typePropertyName": "inInterface",
+      "id": "interfaces",
+      "children": [
+        {
+          "uid": "CatLibrary.IAnimal",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IAnimal"
+            },
+            {
+              "lang": "vb",
+              "value": "IAnimal"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.IAnimal"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.IAnimal"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">This is <strong>basic</strong> interface of all animal.</p>\n",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_IAnimal",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.ICat",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ICat"
+            },
+            {
+              "lang": "vb",
+              "value": "ICat"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ICat"
+            },
+            {
+              "lang": "vb",
+              "value": "ICat"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.ICat"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.ICat"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICat.yml\" sourcestartlinenumber=\"2\">Cat's interface</p>\n",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_ICat",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inDelegate": true,
+      "typePropertyName": "inDelegate",
+      "id": "delegates",
+      "children": [
+        {
+          "uid": "CatLibrary.FakeDelegate`1",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "FakeDelegate<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "FakeDelegate(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "FakeDelegate<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "FakeDelegate(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.FakeDelegate<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.FakeDelegate(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\" alt=\"CatLibrary.FakeDelegate\"/>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\" alt=\"CatLibrary.FakeDelegate\"/>(Of T)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.FakeDelegate-1.yml\" sourcestartlinenumber=\"2\">Fake delegate</p>\n",
+          "type": "delegate",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_FakeDelegate_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.MRefDelegate`3",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "MRefDelegate<K, T, L>"
+            },
+            {
+              "lang": "vb",
+              "value": "MRefDelegate(Of K, T, L)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "MRefDelegate<K, T, L>"
+            },
+            {
+              "lang": "vb",
+              "value": "MRefDelegate(Of K, T, L)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.MRefDelegate<K, T, L>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.MRefDelegate(Of K, T, L)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\" alt=\"CatLibrary.MRefDelegate\"/>&lt;K, T, L&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\" alt=\"CatLibrary.MRefDelegate\"/>(Of K, T, L)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"2\">Generic delegate with many constrains.</p>\n",
+          "type": "delegate",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_MRefDelegate_3",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.MRefNormalDelegate",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "MRefNormalDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "MRefNormalDelegate"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "MRefNormalDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "MRefNormalDelegate"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.MRefNormalDelegate"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.MRefNormalDelegate"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\" alt=\"CatLibrary.MRefNormalDelegate\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\" alt=\"CatLibrary.MRefNormalDelegate\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"2\">Delegate in the namespace</p>\n",
+          "type": "delegate",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": null,
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CatLibrary_MRefNormalDelegate",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "level": 0.0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/CatLibrary.html",
+  "_key": "obj/api/CatLibrary.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "",
+  "sourceurl": "",
+  "summary": null,
+  "remarks": null,
+  "conceptual": null,
+  "syntax": null,
+  "implements": null,
+  "example": null,
+  "seealso": null,
+  "id": "CatLibrary",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isNamespace": true,
+  "inNamespace": true,
+  "_disableToc": false
+}

@@ -1,0 +1,1019 @@
+﻿{
+  "uid": "Microsoft.DevDiv.ContainersRefType",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "Microsoft.DevDiv",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [
+    {
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
+      "children": [
+        {
+          "uid": "Microsoft.DevDiv.ContainersRefType.ColorCount",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "Microsoft.DevDiv.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ColorCount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ColorCount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "Microsoft.DevDiv.ContainersRefType.ColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "Microsoft.DevDiv.ContainersRefType.ColorCount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorCount\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorCount\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public long ColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ColorCount As Long"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.Int64",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int64"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int64"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.Int64"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ColorCount",
+            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "startLine": 17.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "BaseClassForTestClass1"
+          ],
+          "namespace": "Microsoft.DevDiv",
+          "example": [],
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public"
+          ],
+          "modifiers.vb": [
+            "Public"
+          ],
+          "type": "field",
+          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ColorCount</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ColorCount.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L18",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "seealso": null,
+          "id": "Microsoft_DevDiv_ContainersRefType_ColorCount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "Microsoft.DevDiv.ContainersRefType.GetColorCount",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "Microsoft.DevDiv.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "GetColorCount"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.GetColorCount"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "Microsoft.DevDiv.ContainersRefType.GetColorCount"
+            },
+            {
+              "lang": "vb",
+              "value": "Microsoft.DevDiv.ContainersRefType.GetColorCount"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public long GetColorCount { get; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public ReadOnly Property GetColorCount As Long"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.Int64",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int64"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int64"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.Int64"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.Int64"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "GetColorCount",
+            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "startLine": 49.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "BaseClassForTestClass1"
+          ],
+          "namespace": "Microsoft.DevDiv",
+          "example": [],
+          "overload": {
+            "uid": "Microsoft.DevDiv.ContainersRefType.GetColorCount*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "GetColorCount"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefType.GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefType.GetColorCount"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "Microsoft.DevDiv.ContainersRefType.GetColorCount"
+              },
+              {
+                "lang": "vb",
+                "value": "Microsoft.DevDiv.ContainersRefType.GetColorCount"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+              }
+            ],
+            "id": "Microsoft_DevDiv_ContainersRefType_GetColorCount_"
+          },
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public",
+            "get"
+          ],
+          "modifiers.vb": [
+            "Public",
+            "ReadOnly"
+          ],
+          "type": "property",
+          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">GetColorCount</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_GetColorCount.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.GetColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L50",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "seealso": null,
+          "id": "Microsoft_DevDiv_ContainersRefType_GetColorCount",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "Microsoft.DevDiv.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefTypeNonRefMethod(Object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefTypeNonRefMethod(Object())"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeNonRefMethod(Object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeNonRefMethod(Object())"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])"
+            },
+            {
+              "lang": "vb",
+              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object())"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function ContainersRefTypeNonRefMethod(ParamArray parmsArray As Object()) As Integer"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "parmsArray",
+                "type": {
+                  "uid": "System.Object[]",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "Object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Object()"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "Object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Object()"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.Object[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.Object()"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>[]"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int32"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int32"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Int32"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Int32"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.Int32"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.Int32"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ContainersRefTypeNonRefMethod",
+            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "startLine": 67.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "BaseClassForTestClass1"
+          ],
+          "namespace": "Microsoft.DevDiv",
+          "example": [],
+          "overload": {
+            "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ContainersRefType.ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "ContainersRefType.ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod\"/>"
+              }
+            ],
+            "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_"
+          },
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public",
+            "static"
+          ],
+          "modifiers.vb": [
+            "Public",
+            "Shared"
+          ],
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L68",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "seealso": null,
+          "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inEvent": true,
+      "typePropertyName": "inEvent",
+      "id": "events",
+      "children": [
+        {
+          "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "Microsoft.DevDiv.ContainersRefType",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefTypeEventHandler"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ContainersRefType.ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "ContainersRefType.ContainersRefTypeEventHandler"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler"
+            },
+            {
+              "lang": "vb",
+              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public event EventHandler ContainersRefTypeEventHandler"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Event ContainersRefTypeEventHandler As EventHandler"
+              }
+            ],
+            "return": null,
+            "eventType": {
+              "type": {
+                "uid": "EventHandler",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "EventHandler"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "EventHandler"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "EventHandler"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "EventHandler"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"EventHandler\" text=\"EventHandler\" alt=\"EventHandler\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"EventHandler\" text=\"EventHandler\" alt=\"EventHandler\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "ContainersRefTypeEventHandler",
+            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "startLine": 85.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "BaseClassForTestClass1"
+          ],
+          "namespace": "Microsoft.DevDiv",
+          "level": 0.0,
+          "modifiers.csharp": [
+            "public"
+          ],
+          "modifiers.vb": [
+            "Public"
+          ],
+          "type": "event",
+          "summary": null,
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ContainersRefTypeEventHandler.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L86",
+          "remarks": null,
+          "conceptual": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeEventHandler",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "Microsoft.DevDiv.ContainersRefType"
+    },
+    {
+      "lang": "vb",
+      "value": "Microsoft.DevDiv.ContainersRefType"
+    }
+  ],
+  "type": "struct",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ContainersRefType",
+    "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+    "startLine": 11.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "BaseClassForTestClass1"
+  ],
+  "namespace": {
+    "uid": "Microsoft.DevDiv",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public struct ContainersRefType"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Structure ContainersRefType"
+      }
+    ]
+  },
+  "level": 0.0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/Microsoft.DevDiv.ContainersRefType.html",
+  "_key": "obj/api/Microsoft.DevDiv.ContainersRefType.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L12",
+  "remarks": null,
+  "conceptual": null,
+  "implements": null,
+  "seealso": null,
+  "id": "Microsoft_DevDiv_ContainersRefType",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inStruct": true,
+  "_disableToc": false
+}
