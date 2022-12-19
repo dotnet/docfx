@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.30.3" />
+    <PackageReference Include="Markdig" Version="0.30.4" />
     <PackageReference Include="System.Composition" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
