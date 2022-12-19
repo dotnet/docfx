@@ -627,8 +627,8 @@
     "endLine": 0,
     "isExternal": false
   },
-  "_enableSearch": true,
   "_appTitle": "docfx seed website",
+  "_enableSearch": true,
   "_systemKeys": [
     "uid",
     "htmlId",
@@ -657,16 +657,16 @@
     "tags",
     "externalDocs"
   ],
-  "_lang": "csharp",
-  "_tocPath": "restapi/toc.html",
-  "_navPath": "toc.html",
-  "_rel": "../",
-  "_path": "restapi/contacts.html",
   "_key": "restapi/contacts_swagger2.json",
-  "_navRel": "../toc.html",
-  "_tocRel": "toc.html",
+  "_lang": "csharp",
   "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "restapi/contacts.html",
+  "_rel": "../",
   "_tocKey": "~/restapi/toc.md",
+  "_tocPath": "restapi/toc.html",
+  "_tocRel": "toc.html",
   "__global": {
     "namespacesInSubtitle": "Namespaces",
     "classesInSubtitle": "Classes",

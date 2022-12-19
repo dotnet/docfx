@@ -171,13 +171,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
 
                     var model = (IDictionary<string, object>)m.Item.Model.Content;
-
-                    foreach (var pair in metadata)
+                    foreach (var (key, value) in metadata.OrderBy(item => item.Key))
                     {
-                        if (!model.ContainsKey(pair.Key))
-                        {
-                            model[pair.Key] = pair.Value;
-                        }
+                        model[key] = value;
                     }
 
                     Logger.LogDiagnostic($"Load shared model from template for {m.Item.DocumentType}...");

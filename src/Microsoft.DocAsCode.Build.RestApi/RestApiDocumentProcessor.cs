@@ -259,7 +259,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
         private static Dictionary<string, object> MergeMetadata(IDictionary<string, object> item, IDictionary<string, object> overwriteItems)
         {
             var result = new Dictionary<string, object>(item);
-            foreach (var pair in overwriteItems)
+            foreach (var pair in overwriteItems.OrderBy(item => item.Key))
             {
                 if (result.ContainsKey(pair.Key))
                 {

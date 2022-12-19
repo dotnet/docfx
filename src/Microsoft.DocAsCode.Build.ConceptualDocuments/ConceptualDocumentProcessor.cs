@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
@@ -85,12 +86,9 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 throw new NotSupportedException();
             }
             var content = MarkdownReader.ReadMarkdownAsConceptual(file.File);
-            foreach (var item in metadata)
+            foreach (var (key, value) in metadata.OrderBy(item => item.Key))
             {
-                if (!content.ContainsKey(item.Key))
-                {
-                    content[item.Key] = item.Value;
-                }
+                content[key] = value;
             }
             content[Constants.PropertyName.SystemKeys] = SystemKeys;
 

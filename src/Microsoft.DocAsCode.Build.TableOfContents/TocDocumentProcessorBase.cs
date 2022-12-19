@@ -5,10 +5,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -26,12 +26,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // Apply metadata to TOC
-            foreach (var pair in metadata)
+            foreach (var (key, value) in metadata.OrderBy(item => item.Key))
             {
-                if (!toc.Metadata.TryGetValue(pair.Key, out var val))
-                {
-                    toc.Metadata[pair.Key] = pair.Value;
-                }
+                toc.Metadata[key] = value;
             }
 
             return new FileModel(file, toc)
