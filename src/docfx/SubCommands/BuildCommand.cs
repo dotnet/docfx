@@ -18,8 +18,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class BuildCommand : ISubCommand
     {
-        private readonly string _version;
-
         private readonly TemplateManager _templateManager;
 
         public string Name { get; } = nameof(BuildCommand);
@@ -33,7 +31,6 @@ namespace Microsoft.DocAsCode.SubCommands
             Config = config;
 
             var assembly = typeof(Program).Assembly;
-            _version = EnvironmentContext.Version;
 
             SetDefaultConfigValue(Config);
 
@@ -74,17 +71,6 @@ namespace Microsoft.DocAsCode.SubCommands
             if (Config.Templates == null || Config.Templates.Count == 0)
             {
                 Config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
-            }
-            if (config.GlobalMetadata == null)
-            {
-                config.GlobalMetadata = new Dictionary<string, object>
-                {
-                    ["_docfxVersion"] = _version
-                };
-            }
-            else if (!config.GlobalMetadata.ContainsKey("_docfxVersion"))
-            {
-                config.GlobalMetadata["_docfxVersion"] = _version;
             }
         }
 
