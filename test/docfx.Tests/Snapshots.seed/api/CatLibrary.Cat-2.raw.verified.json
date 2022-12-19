@@ -4500,7 +4500,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class Cat(Of T As {Class, New}, K As Structure)\n\n    Inherits Object\n\n    Implements ICat, IAnimal"
+        "value": "Public Class Cat(Of T As {Class, New}, K As Structure)\n    Inherits Object\n    Implements ICat, IAnimal"
       }
     ],
     "typeParameters": [

@@ -83,10 +83,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             var result = new List<ApiLanguageValuePair>();
             foreach (var language in supportedLanguages)
             {
+                // TODO: Sometimes output contains undeterministic \n\n sequences
                 result.Add(new ApiLanguageValuePair
                 {
                     Language = language,
-                    Value = values.ContainsKey(language) ? values[language] : defaultValue,
+                    Value = values.ContainsKey(language) ? values[language].Replace("\n\n", "\n") : defaultValue,
                 });
             }
 

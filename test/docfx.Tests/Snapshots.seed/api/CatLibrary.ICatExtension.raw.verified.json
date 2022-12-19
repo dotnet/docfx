@@ -610,7 +610,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Module ICatExtension\n\n    Inherits Object"
+        "value": "Public Module ICatExtension\n    Inherits Object"
       }
     ]
   },

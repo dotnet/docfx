@@ -379,7 +379,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public MustInherit Class BaseClass1\n\n    Inherits Object"
+        "value": "Public MustInherit Class BaseClass1\n    Inherits Object"
       }
     ]
   },

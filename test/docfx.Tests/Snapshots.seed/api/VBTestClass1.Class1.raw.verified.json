@@ -954,7 +954,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class Class1\n\n    Inherits BaseClass1"
+        "value": "Public Class Class1\n    Inherits BaseClass1"
       }
     ]
   },

@@ -153,7 +153,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class Complex(Of T, J)\n\n    Inherits Object"
+        "value": "Public Class Complex(Of T, J)\n    Inherits Object"
       }
     ],
     "typeParameters": [

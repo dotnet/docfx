@@ -478,7 +478,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class Tom\n\n    Inherits Object"
+        "value": "Public Class Tom\n    Inherits Object"
       }
     ]
   },
