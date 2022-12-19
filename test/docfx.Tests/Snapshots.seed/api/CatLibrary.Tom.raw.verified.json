@@ -1,0 +1,665 @@
+﻿{
+  "uid": "CatLibrary.Tom",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Tom",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, Tuple<System.String, CatLibrary.Tom>)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), Tuple(Of System.String, CatLibrary.Tom))"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod(Complex&lt;TomFromBaseClass, TomFromBaseClass&gt;, Tuple&lt;String, Tom&gt;)\" alt=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex&lt;CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass&gt;, Tuple&lt;System.String, CatLibrary.Tom&gt;)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod(Complex&lt;TomFromBaseClass, TomFromBaseClass&gt;, Tuple&lt;String, Tom&gt;)\" alt=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex&lt;CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass&gt;, Tuple&lt;System.String, CatLibrary.Tom&gt;)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public Complex<string, TomFromBaseClass> TomMethod(Complex<TomFromBaseClass, TomFromBaseClass> a, Tuple<string, Tom> b)"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Function TomMethod(a As Complex(Of TomFromBaseClass, TomFromBaseClass), b As Tuple(Of String, Tom)) As Complex(Of String, TomFromBaseClass)"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "a",
+            "type": {
+              "uid": "CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass}",
+              "definition": "CatLibrary.Complex`2",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "Complex<TomFromBaseClass, TomFromBaseClass>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Complex(Of TomFromBaseClass, TomFromBaseClass)"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "Complex<TomFromBaseClass, TomFromBaseClass>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Complex(Of TomFromBaseClass, TomFromBaseClass)"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass)"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>&lt;<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>&gt;"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>(Of <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>)"
+                }
+              ]
+            },
+            "description": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">A complex input</p>\n"
+          },
+          {
+            "id": "b",
+            "type": {
+              "uid": "Tuple{System.String,CatLibrary.Tom}",
+              "definition": "Tuple`2",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "Tuple<String, Tom>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Tuple(Of String, Tom)"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "Tuple<String, Tom>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Tuple(Of String, Tom)"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "Tuple<System.String, CatLibrary.Tom>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "Tuple(Of System.String, CatLibrary.Tom)"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"Tuple`2\" text=\"Tuple\" alt=\"Tuple\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>&gt;"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"Tuple`2\" text=\"Tuple\" alt=\"Tuple\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>)"
+                }
+              ]
+            },
+            "description": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">Another complex input</p>\n"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "CatLibrary.Complex{System.String,CatLibrary.TomFromBaseClass}",
+            "definition": "CatLibrary.Complex`2",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Complex<String, TomFromBaseClass>"
+              },
+              {
+                "lang": "vb",
+                "value": "Complex(Of String, TomFromBaseClass)"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Complex<String, TomFromBaseClass>"
+              },
+              {
+                "lang": "vb",
+                "value": "Complex(Of String, TomFromBaseClass)"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.Complex<System.String, CatLibrary.TomFromBaseClass>"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.Complex(Of System.String, CatLibrary.TomFromBaseClass)"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>&gt;"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>)"
+              }
+            ]
+          },
+          "description": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">Complex <xref href=\"CatLibrary.TomFromBaseClass\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CatLibrary.TomFromBaseClass\" sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\"></xref></p>\n"
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "TomMethod",
+        "path": "src/SampleClass1/CatLibrary/Class1.cs",
+        "startLine": 293,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "CatLibrary"
+      ],
+      "namespace": "CatLibrary",
+      "example": [],
+      "overload": {
+        "uid": "CatLibrary.Tom.TomMethod*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "TomMethod"
+          },
+          {
+            "lang": "vb",
+            "value": "TomMethod"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "Tom.TomMethod"
+          },
+          {
+            "lang": "vb",
+            "value": "Tom.TomMethod"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CatLibrary.Tom.TomMethod"
+          },
+          {
+            "lang": "vb",
+            "value": "CatLibrary.Tom.TomMethod"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CatLibrary.Tom.TomMethod*\" text=\"TomMethod\" alt=\"CatLibrary.Tom.TomMethod\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CatLibrary.Tom.TomMethod*\" text=\"TomMethod\" alt=\"CatLibrary.Tom.TomMethod\"/>"
+          }
+        ]
+      },
+      "exceptions": [
+        {
+          "type": {
+            "uid": "CatLibrary.CatException`1",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "CatException<T>"
+              },
+              {
+                "lang": "vb",
+                "value": "CatException(Of T)"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "CatException<T>"
+              },
+              {
+                "lang": "vb",
+                "value": "CatException(Of T)"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.CatException<T>"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.CatException(Of T)"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>&lt;T&gt;"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>(Of T)"
+              }
+            ]
+          },
+          "description": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">This is the exception in current documentation</p>\n"
+        }
+      ],
+      "level": 0,
+      "modifiers.csharp": [
+        "public"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "method",
+      "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"2\">This is a Tom Method with complex type as return</p>\n",
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Tom"
+    },
+    {
+      "lang": "vb",
+      "value": "Tom"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Tom"
+    },
+    {
+      "lang": "vb",
+      "value": "Tom"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.Tom"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.Tom"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Tom",
+    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "startLine": 282,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"2\">Tom class is only inherit from Object. Not any member inside itself.</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class Tom : object"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class Tom\n\n    Inherits Object"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "derivedClasses": [
+    {
+      "isEii": false,
+      "isExtensionMethod": false,
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 2
+    }
+  ],
+  "level": 1,
+  "_enableSearch": true,
+  "_appTitle": "docfx seed website",
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/CatLibrary.Tom.html",
+  "_key": "obj/api/CatLibrary.Tom.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

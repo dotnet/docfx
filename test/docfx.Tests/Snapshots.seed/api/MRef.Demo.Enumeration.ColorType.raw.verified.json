@@ -1,0 +1,723 @@
+﻿{
+  "uid": "MRef.Demo.Enumeration.ColorType",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "MRef.Demo.Enumeration",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "MRef.Demo.Enumeration.ColorType.Blue",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "MRef.Demo.Enumeration.ColorType",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Blue"
+        },
+        {
+          "lang": "vb",
+          "value": "Blue"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ColorType.Blue"
+        },
+        {
+          "lang": "vb",
+          "value": "ColorType.Blue"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "MRef.Demo.Enumeration.ColorType.Blue"
+        },
+        {
+          "lang": "vb",
+          "value": "MRef.Demo.Enumeration.ColorType.Blue"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\" alt=\"MRef.Demo.Enumeration.ColorType.Blue\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\" alt=\"MRef.Demo.Enumeration.ColorType.Blue\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Blue = 1"
+          },
+          {
+            "lang": "vb",
+            "value": "Blue = 1"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "MRef.Demo.Enumeration.ColorType",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "Blue",
+        "path": "src/SampleClass1/CatLibrary/Class1.cs",
+        "startLine": 408,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "CatLibrary"
+      ],
+      "namespace": "MRef.Demo.Enumeration",
+      "example": [],
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "const"
+      ],
+      "modifiers.vb": [
+        "Public",
+        "Const"
+      ],
+      "type": "field",
+      "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">blue like river</p>\n",
+      "platform": null
+    },
+    {
+      "uid": "MRef.Demo.Enumeration.ColorType.Red",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "MRef.Demo.Enumeration.ColorType",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Red"
+        },
+        {
+          "lang": "vb",
+          "value": "Red"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ColorType.Red"
+        },
+        {
+          "lang": "vb",
+          "value": "ColorType.Red"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "MRef.Demo.Enumeration.ColorType.Red"
+        },
+        {
+          "lang": "vb",
+          "value": "MRef.Demo.Enumeration.ColorType.Red"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\" alt=\"MRef.Demo.Enumeration.ColorType.Red\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\" alt=\"MRef.Demo.Enumeration.ColorType.Red\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Red = 0"
+          },
+          {
+            "lang": "vb",
+            "value": "Red = 0"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "MRef.Demo.Enumeration.ColorType",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "Red",
+        "path": "src/SampleClass1/CatLibrary/Class1.cs",
+        "startLine": 404,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "CatLibrary"
+      ],
+      "namespace": "MRef.Demo.Enumeration",
+      "example": [],
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "const"
+      ],
+      "modifiers.vb": [
+        "Public",
+        "Const"
+      ],
+      "type": "field",
+      "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">this color is red</p>\n",
+      "platform": null
+    },
+    {
+      "uid": "MRef.Demo.Enumeration.ColorType.Yellow",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "MRef.Demo.Enumeration.ColorType",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Yellow"
+        },
+        {
+          "lang": "vb",
+          "value": "Yellow"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ColorType.Yellow"
+        },
+        {
+          "lang": "vb",
+          "value": "ColorType.Yellow"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "MRef.Demo.Enumeration.ColorType.Yellow"
+        },
+        {
+          "lang": "vb",
+          "value": "MRef.Demo.Enumeration.ColorType.Yellow"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\" alt=\"MRef.Demo.Enumeration.ColorType.Yellow\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\" alt=\"MRef.Demo.Enumeration.ColorType.Yellow\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Yellow = 2"
+          },
+          {
+            "lang": "vb",
+            "value": "Yellow = 2"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "MRef.Demo.Enumeration.ColorType",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "ColorType"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              },
+              {
+                "lang": "vb",
+                "value": "MRef.Demo.Enumeration.ColorType"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "Yellow",
+        "path": "src/SampleClass1/CatLibrary/Class1.cs",
+        "startLine": 412,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "CatLibrary"
+      ],
+      "namespace": "MRef.Demo.Enumeration",
+      "example": [],
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "const"
+      ],
+      "modifiers.vb": [
+        "Public",
+        "Const"
+      ],
+      "type": "field",
+      "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">yellow comes from desert</p>\n",
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "ColorType"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "ColorType"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MRef.Demo.Enumeration.ColorType"
+    },
+    {
+      "lang": "vb",
+      "value": "MRef.Demo.Enumeration.ColorType"
+    }
+  ],
+  "type": "enum",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ColorType",
+    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "startLine": 399,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "MRef.Demo.Enumeration",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MRef.Demo.Enumeration"
+      },
+      {
+        "lang": "vb",
+        "value": "MRef.Demo.Enumeration"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+  "remarks": "<p>\nRed/Blue/Yellow can become all color you want.\n</p>\n<ul></ul>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public enum ColorType : int"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Enum ColorType As Integer"
+      }
+    ]
+  },
+  "seealso": [
+    {
+      "linkType": "cRef",
+      "type": {
+        "uid": "System.Object",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Object"
+          },
+          {
+            "lang": "vb",
+            "value": "Object"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "Object"
+          },
+          {
+            "lang": "vb",
+            "value": "Object"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "System.Object"
+          },
+          {
+            "lang": "vb",
+            "value": "System.Object"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          }
+        ]
+      }
+    }
+  ],
+  "level": 0,
+  "_enableSearch": true,
+  "_appTitle": "docfx seed website",
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/MRef.Demo.Enumeration.ColorType.html",
+  "_key": "obj/api/MRef.Demo.Enumeration.ColorType.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

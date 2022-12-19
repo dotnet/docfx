@@ -1,0 +1,322 @@
+﻿{
+  "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "Microsoft.DevDiv",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType.ContainersRefTypeChild"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType.ContainersRefTypeChild"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ContainersRefType.ContainersRefTypeChild"
+    },
+    {
+      "lang": "vb",
+      "value": "ContainersRefType.ContainersRefTypeChild"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild"
+    },
+    {
+      "lang": "vb",
+      "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "ContainersRefTypeChild",
+    "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+    "startLine": 79,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "BaseClassForTestClass1"
+  ],
+  "namespace": {
+    "uid": "Microsoft.DevDiv",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "Microsoft.DevDiv"
+      },
+      {
+        "lang": "vb",
+        "value": "Microsoft.DevDiv"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class ContainersRefTypeChild : object"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class ContainersRefTypeChild\n\n    Inherits Object"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "_enableSearch": true,
+  "_appTitle": "docfx seed website",
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html",
+  "_key": "obj/api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

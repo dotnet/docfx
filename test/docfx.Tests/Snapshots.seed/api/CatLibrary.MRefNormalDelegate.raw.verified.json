@@ -1,0 +1,371 @@
+﻿{
+  "uid": "CatLibrary.MRefNormalDelegate",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefNormalDelegate"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefNormalDelegate"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.MRefNormalDelegate"
+    }
+  ],
+  "type": "delegate",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "MRefNormalDelegate",
+    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "startLine": 349,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"2\">Delegate in the namespace</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public delegate void MRefNormalDelegate(List<string> pics, out string name);"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Delegate Sub MRefNormalDelegate(pics As List(Of String), ByRef name As String)"
+      }
+    ],
+    "parameters": [
+      {
+        "id": "pics",
+        "type": {
+          "uid": "List{System.String}",
+          "definition": "List`1",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "List<String>"
+            },
+            {
+              "lang": "vb",
+              "value": "List(Of String)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "List<String>"
+            },
+            {
+              "lang": "vb",
+              "value": "List(Of String)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "List<System.String>"
+            },
+            {
+              "lang": "vb",
+              "value": "List(Of System.String)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"List`1\" text=\"List\" alt=\"List\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"List`1\" text=\"List\" alt=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">a name list of pictures.</p>\n"
+      },
+      {
+        "id": "name",
+        "type": {
+          "uid": "System.String",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "String"
+            },
+            {
+              "lang": "vb",
+              "value": "String"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "String"
+            },
+            {
+              "lang": "vb",
+              "value": "String"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "System.String"
+            },
+            {
+              "lang": "vb",
+              "value": "System.String"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">give out the needed name.</p>\n"
+      }
+    ]
+  },
+  "level": 0,
+  "_enableSearch": true,
+  "_appTitle": "docfx seed website",
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_lang": "csharp",
+  "_tocPath": "api/toc.html",
+  "_navPath": "toc.html",
+  "_rel": "../",
+  "_path": "api/CatLibrary.MRefNormalDelegate.html",
+  "_key": "obj/api/CatLibrary.MRefNormalDelegate.yml",
+  "_navRel": "../toc.html",
+  "_tocRel": "toc.html",
+  "_navKey": "~/toc.yml",
+  "_tocKey": "~/obj/api/toc.yml",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

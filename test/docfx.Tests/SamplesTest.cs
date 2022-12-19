@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Tests
             if (Directory.Exists(objPath))
                 Directory.Delete(objPath, recursive: true);
 
-            var psi = new ProcessStartInfo("docfx.exe", $"{samplePath}/docfx.json --exportViewModel");
+            var psi = new ProcessStartInfo("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
             psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
             var process = Process.Start(psi);
             process.WaitForExit();
