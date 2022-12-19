@@ -1513,7 +1513,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "void IAnimal.Eat<Tool>(Tool a)\n\n    where Tool : class"
+            "value": "void IAnimal.Eat<Tool>(Tool a)\n    where Tool : class"
           },
           {
             "lang": "vb",
@@ -4496,7 +4496,7 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Cat<T, K> : object, ICat, IAnimal where T : class, new()\n\n    where K : struct"
+        "value": "public class Cat<T, K> : object, ICat, IAnimal where T : class, new()\n    where K : struct"
       },
       {
         "lang": "vb",

@@ -151,7 +151,7 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public delegate void MRefDelegate<K, T, L>(K k, T t, L l)\n\n    where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>;"
+        "value": "public delegate void MRefDelegate<K, T, L>(K k, T t, L l)\n    where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>;"
       },
       {
         "lang": "vb",

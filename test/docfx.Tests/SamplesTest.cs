@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Threading.Tasks;
@@ -26,11 +27,19 @@ namespace Microsoft.DocAsCode.Tests
             if (Directory.Exists(objPath))
                 Directory.Delete(objPath, recursive: true);
 
-            var psi = new ProcessStartInfo("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
-            psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
-            var process = Process.Start(psi);
-            process.WaitForExit();
-            Assert.Equal(0, process.ExitCode);
+            if (Debugger.IsAttached)
+            {
+                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json", "--exportRawModel" }));
+            }
+            else
+            {
+                var psi = new ProcessStartInfo("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
+                psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
+                var process = Process.Start(psi);
+                process.WaitForExit();
+                Assert.Equal(0, process.ExitCode);
+            }
 
             return Verifier.VerifyDirectory(sitePath, IncludeFile)
                 .UseFileName($"Snapshots.{name}")

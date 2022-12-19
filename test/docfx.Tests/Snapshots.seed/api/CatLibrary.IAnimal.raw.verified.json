@@ -394,7 +394,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "void Eat<Tool>(Tool tool)\n\n    where Tool : class"
+            "value": "void Eat<Tool>(Tool tool)\n    where Tool : class"
           },
           {
             "lang": "vb",
