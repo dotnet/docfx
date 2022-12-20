@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             Config = config;
 
-            var assembly = typeof(Program).Assembly;
+            var assembly = typeof(DocfxProject).Assembly;
 
             SetDefaultConfigValue(Config);
 
