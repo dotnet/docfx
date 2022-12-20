@@ -1,7 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+  <Import Project="../Directory.Build.props" />
 
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
