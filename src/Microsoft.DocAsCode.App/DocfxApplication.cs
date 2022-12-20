@@ -13,11 +13,11 @@ namespace Microsoft.DocAsCode
     public abstract class DocfxProject : IDisposable
     {
         /// <summary>
-        /// Creates a new docfx project from a JSON config path.
+        /// Loads a docfx project from docfx.json.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>The created docfx project.</returns>
-        public static DocfxProject Create(string configPath)
+        public static DocfxProject Load(string configPath)
         {
             throw new NotImplementedException();
         }
