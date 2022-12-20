@@ -70,8 +70,8 @@ $packs =  @{
     );
 };
 $packs.Keys | Foreach-Object -Parallel {
-    $tempFolder = "$using:PSScriptRoot\src\docfx\Template\$_"
-    $destPath =  "$using:PSScriptRoot\src\docfx\Template\$_.zip"
+    $tempFolder = "$using:PSScriptRoot\src\Microsoft.DocAsCode.App\Template\$_"
+    $destPath =  "$using:PSScriptRoot\src\Microsoft.DocAsCode.App\Template\$_.zip"
     $packs = $using:packs
     foreach ($fileGroup in $packs[$_]) {
         $baseDir = "$using:templateHome\$($fileGroup.cwd ?? $_)"
