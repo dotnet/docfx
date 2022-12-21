@@ -40,16 +40,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            var config = Config;
-            foreach (var round in config)
-            {
-                var baseDirectory = round.BaseDirectory ?? Directory.GetCurrentDirectory();
-                var intermediateOutputFolder = round.Destination ?? Path.Combine(baseDirectory, "obj");
-                EnvironmentContext.SetBaseDirectory(baseDirectory);
-                EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);
-                MergeDocument(baseDirectory, intermediateOutputFolder);
-                EnvironmentContext.Clean();
-            }
+            RunMerge.Exec(Config);
         }
 
         #region MergeCommand ctor related
@@ -139,80 +130,5 @@ namespace Microsoft.DocAsCode.SubCommands
         }
 
         #endregion
-
-        private void MergeDocument(string baseDirectory, string outputDirectory)
-        {
-            foreach (var round in Config)
-            {
-                var parameters = ConfigToParameter(round, baseDirectory, outputDirectory);
-                if (parameters.Files.Count == 0)
-                {
-                    Logger.LogWarning("No files found, nothing is to be generated");
-                    continue;
-                }
-                try
-                {
-                    new MetadataMerger().Merge(parameters);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex.ToString());
-                }
-            }
-        }
-
-        private static MetadataMergeParameters ConfigToParameter(MergeJsonItemConfig config, string baseDirectory, string outputDirectory) =>
-            new MetadataMergeParameters
-            {
-                OutputBaseDir = outputDirectory,
-                Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
-                FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
-                TocMetadata = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
-                Files = GetFileCollectionFromFileMapping(
-                    baseDirectory,
-                    DocumentType.Article,
-                    GlobUtility.ExpandFileMapping(baseDirectory, config.Content)),
-            };
-
-        private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
-        {
-            if (fileMetadata == null)
-            {
-                return null;
-            }
-            var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
-            foreach (var item in fileMetadata)
-            {
-                var list = new List<FileMetadataItem>();
-                foreach (var pair in item.Value.Items)
-                {
-                    list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
-                }
-                result.Add(item.Key, list.ToImmutableArray());
-            }
-
-            return new FileMetadata(baseDirectory, result);
-        }
-
-        private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
-        {
-            if (mapping == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-            return from file in mapping.Items
-                   from item in file.Files
-                   select Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
-        }
-
-        private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, DocumentType type, FileMapping files)
-        {
-            var result = new FileCollection(baseDirectory);
-            foreach (var mapping in files.Items)
-            {
-                result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder);
-            }
-            return result;
-        }
     }
 }

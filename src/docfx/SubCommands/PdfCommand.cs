@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.SubCommands
             // 1. call BuildCommand to generate html files first
             // Output build command exec result to temp folder
             config.OutputFolder = rawOutputFolder;
-            BuildCommand.Exec(config);
+            RunBuild.Exec(config);
 
             // 2. call html2pdf converter
             var converter = new ConvertWrapper(options);

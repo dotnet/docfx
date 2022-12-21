@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode.Build.Engine;
 
-    public class MetadataMergeParameters
+    internal class MetadataMergeParameters
     {
         public FileCollection Files { get; set; }
         public string OutputBaseDir { get; set; }

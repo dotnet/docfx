@@ -35,20 +35,5 @@ namespace Microsoft.DocAsCode
         {
             return Task.CompletedTask;
         }
-
-        internal void RunMetadataCommand()
-        {
-
-        }
-
-        internal void RunBuildCommand()
-        {
-
-        }
-
-        internal void RunPdfCommand()
-        {
-
-        }
     }
 }

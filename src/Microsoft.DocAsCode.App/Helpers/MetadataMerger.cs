@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MetadataMerger
+    internal class MetadataMerger
     {
         public const string PhaseName = "Merge Metadata";
 
