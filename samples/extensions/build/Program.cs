@@ -1,3 +1,3 @@
 ﻿using Microsoft.DocAsCode;
 
-await DocfxProject.Load("docfx.json").Build(new() { Json = true });
+await DocfxProject.Build("docfx.json", new() { Json = true });

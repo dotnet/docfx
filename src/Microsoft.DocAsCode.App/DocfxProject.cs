@@ -47,16 +47,22 @@ namespace Microsoft.DocAsCode
         /// <summary>
         /// Builds the project as if executing the <c>docfx {configPath}</c> command.
         /// </summary>
+        /// <param name="configPath">The path to docfx.json config file.</param>
+        /// <param name="options">Option to control build behavior.</param>
         /// <returns>A task to await for build completion.</returns>
-        public Task Build() => Build(BuildOptions.Default);
+        public static Task Build(string configPath, BuildOptions options = null)
+        {
+            return new DocfxProject(configPath).Build(options ?? BuildOptions.Default);
+        }
 
         /// <summary>
         /// Builds the project as if executing the <c>docfx {configPath}</c> command.
         /// </summary>
         /// <param name="options">Option to control build behavior.</param>
         /// <returns>A task to await for build completion.</returns>
-        public Task Build(BuildOptions options)
+        public Task Build(BuildOptions options = null)
         {
+            options ??= BuildOptions.Default;
             var consoleLogListener = new ConsoleLogListener();
             var aggregatedLogListener = new AggregatedLogListener();
             Logger.RegisterListener(consoleLogListener);
