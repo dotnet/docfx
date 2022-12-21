@@ -17,9 +17,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class PdfCommand : ISubCommand
     {
-        private readonly BuildCommand _innerBuildCommand;
         private readonly PdfJsonConfig _config;
-        private readonly string _wkhtmltopdfFilePath;
 
         public string Name { get; } = nameof(PdfCommand);
         public bool AllowReplay => true;
@@ -27,59 +25,62 @@ namespace Microsoft.DocAsCode.SubCommands
         public PdfCommand(PdfCommandOptions options)
         {
             _config = ParseOptions(options);
-            _wkhtmltopdfFilePath = _config.Wkhtmltopdf?.FilePath.GetFullFilePath(_config.BaseDirectory);
-            ConvertWrapper.PrerequisiteCheck(_wkhtmltopdfFilePath);
-
-            if (_config.Serve == true)
-            {
-                Logger.LogWarning("--serve is not supported in pdf command, ignored");
-                _config.Serve = false;
-            }
-
-            if (_config.Templates == null || _config.Templates.Count == 0)
-            {
-                _config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
-            }
-
-            _innerBuildCommand = new BuildCommand(_config);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(_config.BaseDirectory) ? Directory.GetCurrentDirectory() : _config.BaseDirectory));
+            Exec(_config);
+        }
+
+        public static void Exec(PdfJsonConfig config)
+        {
+            var wkhtmltopdfFilePath = config.Wkhtmltopdf?.FilePath.GetFullFilePath(config.BaseDirectory);
+            ConvertWrapper.PrerequisiteCheck(wkhtmltopdfFilePath);
+
+            if (config.Serve == true)
+            {
+                Logger.LogWarning("--serve is not supported in pdf command, ignored");
+                config.Serve = false;
+            }
+
+            if (config.Templates == null || config.Templates.Count == 0)
+            {
+                config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
+            }
+
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
-            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(_config.OutputFolder) ? baseDirectory : _config.OutputFolder, _config.Destination ?? string.Empty));
-            var rawOutputFolder = string.IsNullOrEmpty(_config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : _config.RawOutputFolder;
+            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
+            var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;
             var options = new PdfOptions
             {
-                BasePath = _config.BasePath,
-                CssFilePath = _config.CssFilePath,
+                BasePath = config.BasePath,
+                CssFilePath = config.CssFilePath,
                 DestDirectory = outputFolder,
-                Host = _config.Host,
-                Locale = _config.Locale,
-                NeedGeneratePdfExternalLink = _config.GeneratesExternalLink,
-                GenerateAppendices = _config.GeneratesAppendices,
-                PdfConvertParallelism = _config.MaxParallelism == null || _config.MaxParallelism <= 0 ? Environment.ProcessorCount : _config.MaxParallelism.Value,
-                PdfDocsetName = _config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
-                SourceDirectory = Path.Combine(rawOutputFolder, _config.Destination ?? string.Empty),
-                ExcludeTocs = _config.ExcludedTocs?.ToArray(),
-                KeepRawFiles = _config.KeepRawFiles,
-                ExcludeDefaultToc = _config.ExcludeDefaultToc,
-                LoadErrorHandling = _config.LoadErrorHandling,
-                FilePath = _wkhtmltopdfFilePath,
-                AdditionalPdfCommandArgs = _config.Wkhtmltopdf?.AdditionalArguments,
-                TocTitle = _config.TocTitle,
-                OutlineOption = _config.OutlineOption,
-                CoverPageTitle = _config.CoverPageTitle,
-                NoInputStreamArgs = _config.NoInputStreamArgs,
+                Host = config.Host,
+                Locale = config.Locale,
+                NeedGeneratePdfExternalLink = config.GeneratesExternalLink,
+                GenerateAppendices = config.GeneratesAppendices,
+                PdfConvertParallelism = config.MaxParallelism == null || config.MaxParallelism <= 0 ? Environment.ProcessorCount : config.MaxParallelism.Value,
+                PdfDocsetName = config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
+                SourceDirectory = Path.Combine(rawOutputFolder, config.Destination ?? string.Empty),
+                ExcludeTocs = config.ExcludedTocs?.ToArray(),
+                KeepRawFiles = config.KeepRawFiles,
+                ExcludeDefaultToc = config.ExcludeDefaultToc,
+                LoadErrorHandling = config.LoadErrorHandling,
+                FilePath = wkhtmltopdfFilePath,
+                AdditionalPdfCommandArgs = config.Wkhtmltopdf?.AdditionalArguments,
+                TocTitle = config.TocTitle,
+                OutlineOption = config.OutlineOption,
+                CoverPageTitle = config.CoverPageTitle,
+                NoInputStreamArgs = config.NoInputStreamArgs,
             };
 
             // 1. call BuildCommand to generate html files first
             // Output build command exec result to temp folder
-            _innerBuildCommand.Config.OutputFolder = rawOutputFolder;
-
-            _innerBuildCommand.Exec(context);
+            config.OutputFolder = rawOutputFolder;
+            BuildCommand.Exec(config);
 
             // 2. call html2pdf converter
             var converter = new ConvertWrapper(options);

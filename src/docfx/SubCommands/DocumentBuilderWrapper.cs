@@ -37,7 +37,6 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly bool _disableGitFeatures;
         private readonly string _version;
         private readonly BuildJsonConfig _config;
-        private readonly CrossAppDomainListener _listener;
         private readonly TemplateManager _manager;
         private readonly LogLevel _logLevel;
 
@@ -47,14 +46,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 string baseDirectory,
                 string outputDirectory,
                 string pluginDirectory,
-                CrossAppDomainListener listener,
                 string templateDirectory)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _pluginDirectory = pluginDirectory;
             _baseDirectory = baseDirectory;
             _outputDirectory = outputDirectory;
-            _listener = listener;
             _manager = manager;
             _logLevel = Logger.LogLevelThreshold;
             _templateDirectory = templateDirectory;
@@ -66,52 +63,33 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void BuildDocument()
         {
-#if NET472
-            var sponsor = new System.Runtime.Remoting.Lifetime.ClientSponsor();
-#endif
             EnvironmentContext.SetBaseDirectory(_baseDirectory);
             EnvironmentContext.SetGitFeaturesDisabled(_disableGitFeatures);
             EnvironmentContext.SetVersion(_version);
-            if (_listener != null)
-            {
-                Logger.LogLevelThreshold = _logLevel;
-                Logger.RegisterListener(_listener);
-#if NET472
-                sponsor.Register(_listener);
-#endif
-            }
+
             try
             {
-                try
-                {
-                    BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory, _templateDirectory);
-                }
-                catch (AggregateException agg) when (agg.InnerException is DocfxException)
-                {
-                    throw new DocfxException(agg.InnerException.Message);
-                }
-                catch (AggregateException agg) when (agg.InnerException is DocumentException)
-                {
-                    throw new DocumentException(agg.InnerException.Message);
-                }
-                catch (DocfxException e)
-                {
-                    throw new DocfxException(e.Message);
-                }
-                catch (DocumentException)
-                {
-                    throw;
-                }
-                catch (Exception e)
-                {
-                    throw new DocfxException(e.ToString());
-                }
+                BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory, _templateDirectory);
             }
-            finally
+            catch (AggregateException agg) when (agg.InnerException is DocfxException)
             {
-#if NET472
-                sponsor.Close();
-#endif
+                throw new DocfxException(agg.InnerException.Message);
+            }
+            catch (AggregateException agg) when (agg.InnerException is DocumentException)
+            {
+                throw new DocumentException(agg.InnerException.Message);
+            }
+            catch (DocfxException e)
+            {
+                throw new DocfxException(e.Message);
+            }
+            catch (DocumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new DocfxException(e.ToString());
             }
         }
 
