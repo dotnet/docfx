@@ -9,18 +9,16 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Linq;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
 
     internal sealed class BuildCommand : ISubCommand
     {
-        public BuildJsonConfig Config { get; }
-
         public string Name { get; } = nameof(BuildCommand);
+
+        public BuildJsonConfig Config { get; }
 
         public bool AllowReplay => true;
 

@@ -1,17 +1,11 @@
 ﻿{
   "items": [
     {
-      "name": "Articles",
-      "href": "articles/intro.html",
-      "tocHref": "articles/toc.html",
-      "topicHref": "articles/intro.html"
-    },
-    {
       "name": "Api Documentation",
-      "href": "api/index.html",
+      "href": "api/MyExample.html",
       "tocHref": "api/toc.html",
-      "topicHref": "api/index.html",
-      "homepage": "api/index.html"
+      "topicHref": "api/MyExample.html",
+      "topicUid": "MyExample"
     }
   ],
   "_key": "toc.yml",

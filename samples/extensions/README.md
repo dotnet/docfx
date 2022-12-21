@@ -1,6 +1,6 @@
 # Customize docfx with extensions
 
-This sample shows how to customize docfx with the `memberpage` extensions. It uses the `Microsoft.DocAsCode.App` package to build the project instead using the global `docfx` commandline tool. To build the project, run the following command in this directory:
+This sample shows how to customize docfx with the `memberpage` extensions. It uses the `Microsoft.DocAsCode.App` package to build the project instead of using the global `docfx` commandline tool. To build the project, run the following command in this directory:
 
 ```bash
 dotnet run --project build
