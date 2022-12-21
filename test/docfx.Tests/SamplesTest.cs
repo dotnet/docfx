@@ -16,11 +16,10 @@ namespace Microsoft.DocAsCode.Tests
     [UsesVerify]
     public class SamplesTest
     {
-        [Theory]
-        [InlineData("seed")]
-        public Task BuildSampleSnapshot(string name)
+        [Fact]
+        public Task Seed()
         {
-            var samplePath = $"../../../../../samples/{name}";
+            var samplePath = $"../../../../../samples/seed";
             var sitePath = $"{samplePath}/_site";
             var objPath = $"{samplePath}/obj";
 
@@ -43,9 +42,7 @@ namespace Microsoft.DocAsCode.Tests
                 Assert.Equal(0, process.ExitCode);
             }
 
-            return Verifier.VerifyDirectory(sitePath, IncludeFile)
-                .UseFileName($"Snapshots.{name}")
-                .AutoVerify(includeBuildServer: false);
+            return Verifier.VerifyDirectory(sitePath, IncludeFile).AutoVerify(includeBuildServer: false);
 
             static bool IncludeFile(string file)
             {
