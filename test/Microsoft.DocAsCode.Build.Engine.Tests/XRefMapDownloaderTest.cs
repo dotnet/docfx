@@ -27,8 +27,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var xrefs = await downloader.DownloadAsync(new Uri("https://dotnet.github.io/docfx/xrefmap.yml")) as XRefMap;
             Assert.NotNull(xrefs);
             Assert.Equal("https://dotnet.github.io/docfx/", xrefs.BaseUrl);
-            var reader = xrefs.GetReader();
-            Assert.Equal("https://dotnet.github.io/docfx/api/Microsoft.DocAsCode.AssemblyLicenseAttribute.html", reader.Find("Microsoft.DocAsCode.AssemblyLicenseAttribute").Href);
         }
 
         [Fact]
