@@ -26,8 +26,14 @@ namespace Microsoft.DocAsCode
             if (version != null) HelpText.Heading = new HeadingInfo(name, version);
             var copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
             if (copyright != null) HelpText.Copyright = new CopyrightInfo(copyright, DateTime.Now.Year);
-            var license = assembly.GetCustomAttribute<AssemblyLicenseAttribute>()?.Value;
-            var usage = assembly.GetCustomAttribute<AssemblyUsageAttribute>()?.Value;
+            var license = "This is open-source software under MIT License.";
+            var usage = string.Join('\n',
+                "",
+                "",
+                "   Usage1: docfx <docfx.json file path> [-o <output folder path>]",
+                "   Usage2: docfx <subcommand> [<args>]",
+                "",
+                "See 'docfx help <command> to read about a specific subcommand guide");
             AddLinesToHelpText(HelpText, license);
             ProductName = name;
             GeneralUsage = usage;

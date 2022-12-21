@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Directory.Build.props" />
-
   <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Fsc.fs" />
     <Compile Include="Log.fs" />
     <Compile Include="FSharpCompilation.fs" />
     <Compile Include="FSharpProjectInfo.fs" />
