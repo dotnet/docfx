@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     [Serializable]
-    public class ContentPairingInfo
+    internal class ContentPairingInfo
     {
         [JsonProperty("contentFolder")]
         public string ContentFolder { get; set; }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Metadata.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode
@@ -14,7 +15,7 @@ namespace Microsoft.DocAsCode
     /// A docfx project provides access to a set of documentations
     /// and their associated configs, compilations and models.
     /// </summary>
-    public abstract class DocfxProject : IDisposable
+    public class DocfxProject
     {
         /// <summary>
         /// Loads a docfx project from docfx.json.
@@ -23,21 +24,14 @@ namespace Microsoft.DocAsCode
         /// <returns>The created docfx project.</returns>
         public static DocfxProject Load(string configPath)
         {
-            return new DefaultDocfxProject(configPath);
+            return new DocfxProject(configPath);
         }
 
-        public abstract Task Build();
+        private readonly string _configPath;
 
-        public abstract void Dispose();
-    }
+        private DocfxProject(string configPath) => _configPath = configPath;
 
-    internal class DefaultDocfxProject : DocfxProject
-    {
-        private string _configPath;
-
-        public DefaultDocfxProject(string configPath) => _configPath = configPath;
-
-        public override Task Build()
+        public Task Build()
         {
             return Task.CompletedTask;
         }
@@ -53,11 +47,6 @@ namespace Microsoft.DocAsCode
         }
 
         internal void RunPdfCommand()
-        {
-
-        }
-
-        public override void Dispose()
         {
 
         }

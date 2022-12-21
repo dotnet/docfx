@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     [Serializable]
-    public class FileItems : List<string>
+    internal class FileItems : List<string>
     {
         private static IEnumerable<string> Empty = new List<string>();
         public FileItems(string file) : base()

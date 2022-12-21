@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     [Serializable]
-    public class PdfJsonConfig : BuildJsonConfig
+    internal class PdfJsonConfig : BuildJsonConfig
     {
         [JsonProperty("name")]
         public string Name { get; set; }

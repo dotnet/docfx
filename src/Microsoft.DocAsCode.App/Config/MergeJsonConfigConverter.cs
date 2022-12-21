@@ -9,16 +9,16 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class FileMappingConverter : JsonConverter
+    internal class MergeJsonConfigConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(FileMapping);
+            return objectType == typeof(MergeJsonConfig);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var model = new FileMapping();
+            var model = new MergeJsonConfig();
             var value = reader.Value;
             IEnumerable<JToken> jItems;
             if (reader.TokenType == JsonToken.StartArray)
@@ -34,19 +34,19 @@ namespace Microsoft.DocAsCode
                 jItems = JObject.Load(reader);
             }
 
-            if (jItems is JValue)
+            if (jItems is JValue one)
             {
-                model.Add(FileModelParser.ParseItem(jItems.ToString()));
+                model.Add(serializer.Deserialize<MergeJsonItemConfig>(one.CreateReader()));
             }
             else if (jItems is JObject)
             {
-                model.Add(FileModelParser.ParseItem((JToken)jItems));
+                model.Add(serializer.Deserialize<MergeJsonItemConfig>(((JToken)jItems).CreateReader()));
             }
             else
             {
                 foreach (var item in jItems)
                 {
-                    FileMappingItem itemModel = FileModelParser.ParseItem(item);
+                    MergeJsonItemConfig itemModel = serializer.Deserialize<MergeJsonItemConfig>(item.CreateReader());
                     model.Add(itemModel);
                 }
             }
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((FileMapping)value).Items);
+            serializer.Serialize(writer, ((MergeJsonConfig)value).ToArray());
         }
     }
 }

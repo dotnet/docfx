@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode
 {
     using System.Collections.Generic;
 
-    public class MetadataJsonConfig : List<MetadataJsonItemConfig>
+    internal class MetadataJsonConfig : List<MetadataJsonItemConfig>
     {
         public MetadataJsonConfig(IEnumerable<MetadataJsonItemConfig> configs) : base(configs) { }
 

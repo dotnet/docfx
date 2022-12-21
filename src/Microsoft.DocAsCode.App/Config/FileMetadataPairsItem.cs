@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Common;
 
     [Serializable]
-    public class FileMetadataPairsItem
+    internal class FileMetadataPairsItem
     {
         public GlobMatcher Glob { get; }
 

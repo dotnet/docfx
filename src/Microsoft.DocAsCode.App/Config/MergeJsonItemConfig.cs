@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     [Serializable]
-    public class MergeJsonItemConfig
+    internal class MergeJsonItemConfig
     {
         [JsonIgnore]
         public string BaseDirectory { get; set; }

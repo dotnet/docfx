@@ -9,21 +9,25 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class MergeJsonConfigConverter : JsonConverter
+    internal class ListWithStringFallbackConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(MergeJsonConfig);
+            return objectType == typeof(FileMapping);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var model = new MergeJsonConfig();
+            var model = new ListWithStringFallback();
             var value = reader.Value;
             IEnumerable<JToken> jItems;
             if (reader.TokenType == JsonToken.StartArray)
             {
                 jItems = JArray.Load(reader);
+            }
+            else if (reader.TokenType == JsonToken.StartObject)
+            {
+                jItems = JContainer.Load(reader);
             }
             else if (reader.TokenType == JsonToken.String)
             {
@@ -34,20 +38,15 @@ namespace Microsoft.DocAsCode
                 jItems = JObject.Load(reader);
             }
 
-            if (jItems is JValue one)
+            if (jItems is JValue)
             {
-                model.Add(serializer.Deserialize<MergeJsonItemConfig>(one.CreateReader()));
-            }
-            else if (jItems is JObject)
-            {
-                model.Add(serializer.Deserialize<MergeJsonItemConfig>(((JToken)jItems).CreateReader()));
+                model.Add(jItems.ToString());
             }
             else
             {
                 foreach (var item in jItems)
                 {
-                    MergeJsonItemConfig itemModel = serializer.Deserialize<MergeJsonItemConfig>(item.CreateReader());
-                    model.Add(itemModel);
+                    model.Add(item.ToString());
                 }
             }
 
@@ -56,7 +55,12 @@ namespace Microsoft.DocAsCode
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, ((MergeJsonConfig)value).ToArray());
+            writer.WriteStartArray();
+            foreach(var item in (ListWithStringFallback)value)
+            {
+                serializer.Serialize(writer, item);
+            }
+            writer.WriteEndArray();
         }
     }
 }

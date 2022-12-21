@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="docfx" />
+    <InternalsVisibleTo Include="docfx.Tests" />
   </ItemGroup>
 
   <ItemGroup>

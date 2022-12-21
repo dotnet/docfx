@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
 
     [JsonConverter(typeof(ListWithStringFallbackConverter))]
     [Serializable]
-    public class ListWithStringFallback : List<string>
+    internal class ListWithStringFallback : List<string>
     {
         public ListWithStringFallback() : base()
         {

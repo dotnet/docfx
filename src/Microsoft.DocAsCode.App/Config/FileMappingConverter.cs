@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class ListWithStringFallbackConverter : JsonConverter
+    internal class FileMappingConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -18,16 +18,12 @@ namespace Microsoft.DocAsCode
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var model = new ListWithStringFallback();
+            var model = new FileMapping();
             var value = reader.Value;
             IEnumerable<JToken> jItems;
             if (reader.TokenType == JsonToken.StartArray)
             {
                 jItems = JArray.Load(reader);
-            }
-            else if (reader.TokenType == JsonToken.StartObject)
-            {
-                jItems = JContainer.Load(reader);
             }
             else if (reader.TokenType == JsonToken.String)
             {
@@ -40,13 +36,18 @@ namespace Microsoft.DocAsCode
 
             if (jItems is JValue)
             {
-                model.Add(jItems.ToString());
+                model.Add(FileModelParser.ParseItem(jItems.ToString()));
+            }
+            else if (jItems is JObject)
+            {
+                model.Add(FileModelParser.ParseItem((JToken)jItems));
             }
             else
             {
                 foreach (var item in jItems)
                 {
-                    model.Add(item.ToString());
+                    FileMappingItem itemModel = FileModelParser.ParseItem(item);
+                    model.Add(itemModel);
                 }
             }
 
@@ -55,12 +56,7 @@ namespace Microsoft.DocAsCode
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteStartArray();
-            foreach(var item in (ListWithStringFallback)value)
-            {
-                serializer.Serialize(writer, item);
-            }
-            writer.WriteEndArray();
+            serializer.Serialize(writer, ((FileMapping)value).Items);
         }
     }
 }

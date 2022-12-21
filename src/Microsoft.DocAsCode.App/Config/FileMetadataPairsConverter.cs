@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    public class FileMetadataPairsConverter : JsonConverter
+    internal class FileMetadataPairsConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

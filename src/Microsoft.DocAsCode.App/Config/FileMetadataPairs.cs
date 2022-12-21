@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode
 
     [Serializable]
     [JsonConverter(typeof(FileMetadataPairsConverter))]
-    public class FileMetadataPairs
+    internal class FileMetadataPairs
     {
         // Order matters, the latter one overrides the former one
         private List<FileMetadataPairsItem> _items;
