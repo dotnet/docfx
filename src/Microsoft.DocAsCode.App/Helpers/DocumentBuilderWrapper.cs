@@ -113,11 +113,16 @@ namespace Microsoft.DocAsCode.SubCommands
                     try
                     {
                         assembly = Assembly.Load(assemblyName);
+
                         Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
+
+                        // Verify assembly is loadable
+                        assembly.DefinedTypes.Select(type => type.AsType()).Count();
                     }
-                    catch (Exception ex) when (ex is BadImageFormatException || ex is FileLoadException || ex is FileNotFoundException)
+                    catch (Exception ex)
                     {
                         Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                        continue;
                     }
 
                     if (assembly != null)
