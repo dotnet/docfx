@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Exceptions;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.SubCommands;
 
@@ -30,7 +30,30 @@ namespace Microsoft.DocAsCode
 
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
 
-            BuildDocument(baseDirectory, outputFolder);
+            try
+            {
+                DocumentBuilderWrapper.BuildDocument(config, templateManager, baseDirectory, outputFolder, null, null);
+            }
+            catch (AggregateException agg) when (agg.InnerException is DocfxException)
+            {
+                throw new DocfxException(agg.InnerException.Message);
+            }
+            catch (AggregateException agg) when (agg.InnerException is DocumentException)
+            {
+                throw new DocumentException(agg.InnerException.Message);
+            }
+            catch (DocfxException e)
+            {
+                throw new DocfxException(e.Message);
+            }
+            catch (DocumentException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new DocfxException(e.ToString());
+            }
 
             templateManager.ProcessTheme(outputFolder, true);
             // TODO: SEARCH DATA
@@ -40,64 +63,6 @@ namespace Microsoft.DocAsCode
                 RunServe.Exec(outputFolder, config.Host, config.Port);
             }
             EnvironmentContext.Clean();
-
-            void BuildDocument(string baseDirectory, string outputDirectory)
-            {
-                var pluginBaseFolder = AppDomain.CurrentDomain.BaseDirectory;
-                var pluginFolderName = "plugins_" + Path.GetRandomFileName();
-                var pluginFilePath = Path.Combine(pluginBaseFolder, pluginFolderName);
-                var defaultPluginFolderPath = Path.Combine(pluginBaseFolder, "plugins");
-                if (Directory.Exists(pluginFilePath))
-                {
-                    throw new InvalidOperationException($"Plugin directory {pluginFilePath} already exists! Please remove this directory manually and have a retry.");
-                }
-
-                bool created = false;
-                try
-                {
-                    created = templateManager.TryExportTemplateFiles(pluginFilePath, @"^(?:plugins|md\.styles)/.*");
-                    if (created)
-                    {
-                        BuildDocumentWithPlugin(config, templateManager, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"), pluginFilePath);
-                    }
-                    else
-                    {
-                        if (Directory.Exists(defaultPluginFolderPath))
-                        {
-                            BuildDocumentWithPlugin(config, templateManager, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath, null);
-                        }
-                        else
-                        {
-                            DocumentBuilderWrapper.BuildDocument(config, templateManager, baseDirectory, outputDirectory, null, null);
-                        }
-                    }
-                }
-                finally
-                {
-                    if (created)
-                    {
-                        Logger.LogInfo($"Cleaning up temporary plugin folder \"{pluginFilePath}\"");
-                    }
-
-                    try
-                    {
-                        if (Directory.Exists(pluginFilePath))
-                        {
-                            Directory.Delete(pluginFilePath, true);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogWarning($"Error occurs when cleaning up temporary plugin folder \"{pluginFilePath}\", please clean it up manually: {e.Message}");
-                    }
-                }
-            }
-
-            void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
-            {
-                var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, templateDirectory);
-                wrapper.BuildDocument();
-            }
         }
     }
 }

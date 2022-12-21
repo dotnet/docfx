@@ -23,84 +23,15 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Build.UniversalReference;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.MarkdigEngine;
 
-    [Serializable]
-    internal sealed class DocumentBuilderWrapper
+    internal static class DocumentBuilderWrapper
     {
-        private readonly string _pluginDirectory;
-        private readonly string _baseDirectory;
-        private readonly string _outputDirectory;
-        private readonly string _templateDirectory;
-        private readonly bool _disableGitFeatures;
-        private readonly string _version;
-        private readonly BuildJsonConfig _config;
-        private readonly TemplateManager _manager;
-        private readonly LogLevel _logLevel;
-
-        public DocumentBuilderWrapper(
-                BuildJsonConfig config,
-                TemplateManager manager,
-                string baseDirectory,
-                string outputDirectory,
-                string pluginDirectory,
-                string templateDirectory)
-        {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _pluginDirectory = pluginDirectory;
-            _baseDirectory = baseDirectory;
-            _outputDirectory = outputDirectory;
-            _manager = manager;
-            _logLevel = Logger.LogLevelThreshold;
-            _templateDirectory = templateDirectory;
-
-            // pass EnvironmentContext into another domain
-            _disableGitFeatures = EnvironmentContext.GitFeaturesDisabled;
-            _version = EnvironmentContext.Version;
-        }
-
-        public void BuildDocument()
-        {
-            EnvironmentContext.SetBaseDirectory(_baseDirectory);
-            EnvironmentContext.SetGitFeaturesDisabled(_disableGitFeatures);
-            EnvironmentContext.SetVersion(_version);
-
-            try
-            {
-                BuildDocument(_config, _manager, _baseDirectory, _outputDirectory, _pluginDirectory, _templateDirectory);
-            }
-            catch (AggregateException agg) when (agg.InnerException is DocfxException)
-            {
-                throw new DocfxException(agg.InnerException.Message);
-            }
-            catch (AggregateException agg) when (agg.InnerException is DocumentException)
-            {
-                throw new DocumentException(agg.InnerException.Message);
-            }
-            catch (DocfxException e)
-            {
-                throw new DocfxException(e.Message);
-            }
-            catch (DocumentException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                throw new DocfxException(e.ToString());
-            }
-        }
+        private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
 
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
         {
-            IEnumerable<Assembly> assemblies;
-            using (new LoggerPhaseScope("LoadPluginAssemblies", LogLevel.Verbose))
-            {
-                assemblies = LoadPluginAssemblies(pluginDirectory);
-            }
-
             var postProcessorNames = config.PostProcessors.ToImmutableArray();
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 
@@ -124,7 +55,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
             }
 
-            using var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory);
+            using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory);
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
                 var parameters = ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
@@ -148,11 +79,6 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var assem in defaultPluggedAssemblies)
             {
                 yield return assem;
-            }
-
-            if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
-            {
-                yield break;
             }
 
             Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");

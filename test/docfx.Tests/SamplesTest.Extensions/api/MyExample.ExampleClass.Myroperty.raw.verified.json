@@ -1,0 +1,381 @@
+﻿{
+  "uid": "MyExample.ExampleClass.Myroperty*",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "uid": "MyExample.ExampleClass.Myroperty",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "MyExample.ExampleClass",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Myroperty"
+        },
+        {
+          "lang": "vb",
+          "value": "Myroperty"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ExampleClass.Myroperty"
+        },
+        {
+          "lang": "vb",
+          "value": "ExampleClass.Myroperty"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "MyExample.ExampleClass.Myroperty"
+        },
+        {
+          "lang": "vb",
+          "value": "MyExample.ExampleClass.Myroperty"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public string Myroperty { get; set; }"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Property Myroperty As String"
+          }
+        ],
+        "parameters": [],
+        "return": {
+          "type": {
+            "uid": "System.String",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.String"
+              },
+              {
+                "lang": "vb",
+                "value": "System.String"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "id": "Myroperty",
+        "path": "",
+        "startLine": 8,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "cs.temp.dll"
+      ],
+      "namespace": "MyExample",
+      "overload": {
+        "uid": "MyExample.ExampleClass.Myroperty*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Myroperty"
+          },
+          {
+            "lang": "vb",
+            "value": "Myroperty"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "ExampleClass.Myroperty"
+          },
+          {
+            "lang": "vb",
+            "value": "ExampleClass.Myroperty"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "MyExample.ExampleClass.Myroperty"
+          },
+          {
+            "lang": "vb",
+            "value": "MyExample.ExampleClass.Myroperty"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "get",
+        "set"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "property",
+      "summary": null,
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Myroperty"
+    },
+    {
+      "lang": "vb",
+      "value": "Myroperty"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ExampleClass.Myroperty"
+    },
+    {
+      "lang": "vb",
+      "value": "ExampleClass.Myroperty"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MyExample.ExampleClass.Myroperty"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample.ExampleClass.Myroperty"
+    }
+  ],
+  "type": "property",
+  "source": {
+    "id": "Myroperty",
+    "path": "",
+    "startLine": 8,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "cs.temp.dll"
+  ],
+  "namespace": {
+    "uid": "MyExample",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "level": 0,
+  "_isOverload": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "api/MyExample.ExampleClass.Myroperty.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MyExample.ExampleClass.Myroperty.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}
