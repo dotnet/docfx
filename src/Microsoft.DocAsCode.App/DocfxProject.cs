@@ -9,60 +9,41 @@ using Newtonsoft.Json.Linq;
 namespace Microsoft.DocAsCode
 {
     /// <summary>
-    /// Provides options to be used with <see cref="DocfxProject.Build(BuildOptions)"/>.
-    /// </summary>
-    public class BuildOptions
-    {
-        /// <summary>
-        /// Gets a read-only, singleton instance of <see cref="BuildOptions"/> that uses the default configuration.
-        /// </summary>
-        public static BuildOptions Default { get; } = new();
-
-        /// <summary>
-        /// Get or sets a value that indicates whether to export model as JSON as part of the build.
-        /// </summary>
-        public bool Json { get; init; }
-    }
-
-    /// <summary>
-    /// A docfx project provides access to a set of documentations
+    /// Provides access to a set of documentations
     /// and their associated configs, compilations and models.
     /// </summary>
-    public class DocfxProject
+    public class Docset
     {
         /// <summary>
-        /// Loads a docfx project from docfx.json.
+        /// Loads a docset from docfx.json.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
-        /// <returns>The created docfx project.</returns>
-        public static DocfxProject Load(string configPath)
+        /// <returns>The created docset.</returns>
+        public static Docset Load(string configPath)
         {
-            return new DocfxProject(configPath);
+            return new Docset(configPath);
         }
 
         private readonly string _configPath;
 
-        private DocfxProject(string configPath) => _configPath = configPath;
+        private Docset(string configPath) => _configPath = configPath;
 
         /// <summary>
-        /// Builds the project as if executing the <c>docfx {configPath}</c> command.
+        /// Builds a docset specified by docfx.json config.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
-        /// <param name="options">Option to control build behavior.</param>
         /// <returns>A task to await for build completion.</returns>
-        public static Task Build(string configPath, BuildOptions options = null)
+        public static Task Build(string configPath)
         {
-            return new DocfxProject(configPath).Build(options ?? BuildOptions.Default);
+            return new Docset(configPath).Build();
         }
 
         /// <summary>
-        /// Builds the project as if executing the <c>docfx {configPath}</c> command.
+        /// Builds the docset.
         /// </summary>
-        /// <param name="options">Option to control build behavior.</param>
         /// <returns>A task to await for build completion.</returns>
-        public Task Build(BuildOptions options = null)
+        public Task Build()
         {
-            options ??= BuildOptions.Default;
             var consoleLogListener = new ConsoleLogListener();
             var aggregatedLogListener = new AggregatedLogListener();
             Logger.RegisterListener(consoleLogListener);
@@ -79,14 +60,8 @@ namespace Microsoft.DocAsCode
                     RunMerge.Exec(value.ToObject<MergeJsonConfig>(JsonUtility.DefaultSerializer.Value));
                 if (config.TryGetValue("pdf", out value))
                     RunPdf.Exec(value.ToObject<PdfJsonConfig>(JsonUtility.DefaultSerializer.Value));
-
                 if (config.TryGetValue("build", out value))
-                {
-                    var buildConfig = value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value);
-                    if (options.Json)
-                        buildConfig.ExportRawModel = true;
-                    RunBuild.Exec(buildConfig);
-                }
+                    RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value));
 
                 return Task.CompletedTask;
             }

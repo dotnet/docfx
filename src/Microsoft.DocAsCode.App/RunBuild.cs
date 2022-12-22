@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
                 config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
             }
 
-            var assembly = typeof(DocfxProject).Assembly;
+            var assembly = typeof(Docset).Assembly;
             var templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, config.Templates, config.Themes, config.BaseDirectory);
 
             EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);

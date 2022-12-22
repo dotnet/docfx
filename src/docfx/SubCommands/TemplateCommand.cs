@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }
                     break;
             }
-            _assembly = typeof(DocfxProject).Assembly;
+            _assembly = typeof(Docset).Assembly;
             var templateRegex = new Regex($"{Regex.Escape(_assembly.GetName().Name)}\\.{Regex.Escape(Constants.EmbeddedTemplateFolderName)}\\.([\\S.]+)\\.zip");
             _templates = _assembly.GetManifestResourceNames().Select(s => templateRegex.Match(s)).Where(s => s.Success).Select(s => s.Groups[1].Value).ToArray();
         }
