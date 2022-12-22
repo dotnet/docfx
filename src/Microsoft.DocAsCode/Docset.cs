@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode
 
                 var config = JObject.Parse(File.ReadAllText(configPath));
                 if (config.TryGetValue("metadata", out var value))
-                    RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), Path.GetDirectoryName(_configPath));
+                    RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), Path.GetDirectoryName(configPath));
                 if (config.TryGetValue("merge", out value))
                     RunMerge.Exec(value.ToObject<MergeJsonConfig>(JsonUtility.DefaultSerializer.Value));
                 if (config.TryGetValue("pdf", out value))
