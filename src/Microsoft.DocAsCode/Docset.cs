@@ -15,34 +15,11 @@ namespace Microsoft.DocAsCode
     public class Docset
     {
         /// <summary>
-        /// Loads a docset from docfx.json.
-        /// </summary>
-        /// <param name="configPath">The path to docfx.json config file.</param>
-        /// <returns>The created docset.</returns>
-        public static Docset Load(string configPath)
-        {
-            return new Docset(configPath);
-        }
-
-        private readonly string _configPath;
-
-        private Docset(string configPath) => _configPath = configPath;
-
-        /// <summary>
         /// Builds a docset specified by docfx.json config.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>A task to await for build completion.</returns>
         public static Task Build(string configPath)
-        {
-            return new Docset(configPath).Build();
-        }
-
-        /// <summary>
-        /// Builds the docset.
-        /// </summary>
-        /// <returns>A task to await for build completion.</returns>
-        public Task Build()
         {
             var consoleLogListener = new ConsoleLogListener();
             var aggregatedLogListener = new AggregatedLogListener();
@@ -53,7 +30,7 @@ namespace Microsoft.DocAsCode
             {
                 using var _ = new PerformanceScope(string.Empty, LogLevel.Info);
 
-                var config = JObject.Parse(File.ReadAllText(_configPath));
+                var config = JObject.Parse(File.ReadAllText(configPath));
                 if (config.TryGetValue("metadata", out var value))
                     RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), Path.GetDirectoryName(_configPath));
                 if (config.TryGetValue("merge", out value))
