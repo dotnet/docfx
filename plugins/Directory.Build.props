@@ -10,8 +10,7 @@
     <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
 
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
