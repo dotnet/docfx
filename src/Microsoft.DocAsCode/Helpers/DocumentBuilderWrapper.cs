@@ -172,7 +172,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
                 if (!config.NoLangKeyword)
                 {
-                    parameters.XRefMaps = parameters.XRefMaps.Add("embedded:Microsoft.DocAsCode.App/langwordMapping.yml");
+                    parameters.XRefMaps = parameters.XRefMaps.Add("embedded:Microsoft.DocAsCode/langwordMapping.yml");
                 }
 
                 string outputFolderForDebugFiles = null;

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode\Microsoft.DocAsCode.csproj" />
   </ItemGroup>
 
   <ItemGroup>

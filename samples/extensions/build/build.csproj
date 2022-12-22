@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <!-- NOTE: Replace these with <PackageReference> in your own project -->
-    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
+    <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode\Microsoft.DocAsCode.csproj" />
     <ProjectReference Include="..\..\..\plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj" />
   </ItemGroup>
 

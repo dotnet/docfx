@@ -146,7 +146,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDF", "PDF", "{15381BB2-762
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{4C9CF944-2489-4AC2-9B18-497D12B53769}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.App", "src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj", "{3C583CD1-3A86-40B3-9E2F-08A3178A6566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode", "src\Microsoft.DocAsCode\Microsoft.DocAsCode.csproj", "{3C583CD1-3A86-40B3-9E2F-08A3178A6566}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
