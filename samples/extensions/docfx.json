@@ -34,7 +34,8 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "default",
+      "memberpage"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",

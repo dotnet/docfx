@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>Latest</LangVersion>
+    <ContentTargetFolders>contentFiles</ContentTargetFolders>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,10 +13,6 @@
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="content\**" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="content" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
