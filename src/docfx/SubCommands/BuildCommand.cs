@@ -9,17 +9,13 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Linq;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
 
     internal sealed class BuildCommand : ISubCommand
     {
-        private readonly TemplateManager _templateManager;
-
         public string Name { get; } = nameof(BuildCommand);
 
         public BuildJsonConfig Config { get; }
@@ -29,13 +25,6 @@ namespace Microsoft.DocAsCode.SubCommands
         public BuildCommand(BuildJsonConfig config)
         {
             Config = config;
-
-            var assembly = typeof(Program).Assembly;
-
-            SetDefaultConfigValue(Config);
-
-            _templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, Config.Templates, Config.Themes, Config.BaseDirectory);
-
         }
 
         public BuildCommand(BuildCommandOptions options) : this(ParseOptions(options))
@@ -44,41 +33,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            EnvironmentContext.SetGitFeaturesDisabled(Config.DisableGitFeatures);
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
-            // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
-            var baseDirectory = EnvironmentContext.BaseDirectory;
-            Config.IntermediateFolder = Config.IntermediateFolder ?? Path.Combine(baseDirectory, "obj", ".cache", "build");
-
-            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(Config.OutputFolder) ? baseDirectory : Config.OutputFolder, Config.Destination ?? string.Empty));
-
-            BuildDocument(baseDirectory, outputFolder);
-
-            _templateManager.ProcessTheme(outputFolder, true);
-            // TODO: SEARCH DATA
-
-            if (Config?.Serve ?? false)
-            {
-                ServeCommand.Serve(outputFolder, Config.Host, Config.Port);
-            }
-            EnvironmentContext.Clean();
+            RunBuild.Exec(Config);
         }
 
-        #region BuildCommand ctor related
-
-        private void SetDefaultConfigValue(BuildJsonConfig config)
-        {
-            if (Config.Templates == null || Config.Templates.Count == 0)
-            {
-                Config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
-            }
-        }
-
-        /// <summary>
-        /// TODO: refactor
-        /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
         {
             var configFile = GetConfigFilePath(options);
@@ -432,100 +389,5 @@ namespace Microsoft.DocAsCode.SubCommands
             [JsonProperty("build")]
             public BuildJsonConfig Item { get; set; }
         }
-
-        #endregion
-
-        #region Build document
-
-        private void BuildDocument(string baseDirectory, string outputDirectory)
-        {
-            var pluginBaseFolder = AppDomain.CurrentDomain.BaseDirectory;
-            var pluginFolderName = "plugins_" + Path.GetRandomFileName();
-            var pluginFilePath = Path.Combine(pluginBaseFolder, pluginFolderName);
-            var defaultPluginFolderPath = Path.Combine(pluginBaseFolder, "plugins");
-            if (Directory.Exists(pluginFilePath))
-            {
-                throw new PluginDirectoryAlreadyExistsException(pluginFilePath);
-            }
-
-            bool created = false;
-            try
-            {
-                created = _templateManager.TryExportTemplateFiles(pluginFilePath, @"^(?:plugins|md\.styles)/.*");
-                if (created)
-                {
-                    BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, Path.Combine(pluginFilePath, "plugins"), pluginFilePath);
-                }
-                else
-                {
-                    if (Directory.Exists(defaultPluginFolderPath))
-                    {
-                        BuildDocumentWithPlugin(Config, _templateManager, baseDirectory, outputDirectory, pluginBaseFolder, defaultPluginFolderPath, null);
-                    }
-                    else
-                    {
-                        DocumentBuilderWrapper.BuildDocument(Config, _templateManager, baseDirectory, outputDirectory, null, null);
-                    }
-                }
-            }
-            finally
-            {
-                if (created)
-                {
-                    Logger.LogInfo($"Cleaning up temporary plugin folder \"{pluginFilePath}\"");
-                }
-
-                try
-                {
-                    if (Directory.Exists(pluginFilePath))
-                    {
-                        Directory.Delete(pluginFilePath, true);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.LogWarning($"Error occurs when cleaning up temporary plugin folder \"{pluginFilePath}\", please clean it up manually: {e.Message}");
-                }
-            }
-        }
-
-#if NET472
-        private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
-        {
-            AppDomain builderDomain = null;
-            try
-            {
-                var pluginConfig = Path.Combine(pluginDirectory, "docfx.plugins.config");
-                Logger.LogInfo($"Plug-in directory: {pluginDirectory}, configuration file: {pluginConfig}");
-
-                AppDomainSetup setup = new AppDomainSetup
-                {
-                    ApplicationBase = applicationBaseDirectory,
-                    PrivateBinPath = string.Join(";", applicationBaseDirectory, pluginDirectory),
-                    ConfigurationFile = pluginConfig
-                };
-
-                builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
-                builderDomain.UnhandledException += (s, e) => { };
-                var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
-                builderDomain.DoCallBack(wrapper.BuildDocument);
-            }
-            finally
-            {
-                if (builderDomain != null)
-                {
-                    AppDomain.Unload(builderDomain);
-                }
-            }
-        }
-#else
-        private static void BuildDocumentWithPlugin(BuildJsonConfig config, TemplateManager manager, string baseDirectory, string outputDirectory, string applicationBaseDirectory, string pluginDirectory, string templateDirectory)
-        {
-            var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
-            wrapper.BuildDocument();
-        }
-#endif
-
-        #endregion
     }
 }

@@ -16,17 +16,16 @@ namespace Microsoft.DocAsCode.Tests
     [UsesVerify]
     public class SamplesTest
     {
+        private const string SamplesDir = "../../../../../samples";
+
         [Fact]
         public Task Seed()
         {
-            var samplePath = $"../../../../../samples/seed";
+            var samplePath = $"{SamplesDir}/seed";
             var sitePath = $"{samplePath}/_site";
             var objPath = $"{samplePath}/obj";
 
-            if (Directory.Exists(sitePath))
-                Directory.Delete(sitePath, recursive: true);
-            if (Directory.Exists(objPath))
-                Directory.Delete(objPath, recursive: true);
+            Clean(sitePath, objPath);
 
             if (Debugger.IsAttached)
             {
@@ -35,33 +34,65 @@ namespace Microsoft.DocAsCode.Tests
             }
             else
             {
-                var psi = new ProcessStartInfo("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
-                psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
-                var process = Process.Start(psi);
-                process.WaitForExit();
-                Assert.Equal(0, process.ExitCode);
+                Exec("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
             }
 
             return Verifier.VerifyDirectory(sitePath, IncludeFile).AutoVerify(includeBuildServer: false);
+        }
 
-            static bool IncludeFile(string file)
+        [Fact]
+        public void Extensions()
+        {
+            var samplePath = $"{SamplesDir}/extensions";
+            var sitePath = $"{samplePath}/_site";
+            var objPath = $"{samplePath}/obj";
+
+            Clean(sitePath, objPath);
+#if DEBUG
+            Exec("dotnet", "run --project build", workingDirectory: samplePath);
+#else
+            Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath);
+#endif
+
+            Assert.True(File.Exists($"{sitePath}/api/MyExample.ExampleClass.MyMethod.html"));
+        }
+
+        private static void Exec(string filename, string args, string workingDirectory = null)
+        {
+            var psi = new ProcessStartInfo(filename, args);
+            psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
+            if (workingDirectory != null)
+                psi.WorkingDirectory= Path.GetFullPath(workingDirectory);
+            var process = Process.Start(psi);
+            process.WaitForExit();
+            Assert.Equal(0, process.ExitCode);
+        }
+
+        private static void Clean(string sitePath, string objPath)
+        {
+            if (Directory.Exists(sitePath))
+                Directory.Delete(sitePath, recursive: true);
+            if (Directory.Exists(objPath))
+                Directory.Delete(objPath, recursive: true);
+        }
+
+        private static bool IncludeFile(string file)
+        {
+            return Path.GetExtension(file) switch
             {
-                return Path.GetExtension(file) switch
-                {
-                    ".json" => Path.GetFileName(file) != "manifest.json",
-                    ".yml" => true,
-                    _ => false,
-                };
-            }
+                ".json" => Path.GetFileName(file) != "manifest.json",
+                ".yml" => true,
+                _ => false,
+            };
         }
     }
     
-    // Enable compact diff output
     public static class ModuleInitializer
     {
         [ModuleInitializer]
         public static void Initialize()
         {
+            // Enable compact diff output
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
         }
     }
