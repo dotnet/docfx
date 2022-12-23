@@ -54,7 +54,9 @@ namespace Microsoft.DocAsCode.Tests
             Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath);
 #endif
 
-            Assert.True(File.Exists($"{sitePath}/api/MyExample.ExampleClass.MyMethod.html"));
+            var myMethodPage = $"{sitePath}/api/MyExample.ExampleClass.MyMethod.html";
+            Assert.True(File.Exists(myMethodPage));
+            Assert.Contains("public string MyMethod()", File.ReadAllText(myMethodPage));
         }
 
         private static void Exec(string filename, string args, string workingDirectory = null)

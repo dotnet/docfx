@@ -38,6 +38,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// Search in order:
         /// 1. Inside Embedded Resources
         ///     a. ZIP file with provided name
+        /// 2. AppContext.BaseDirectory, *NOTE* sub-folders are **NOT** included
+        ///     a. Folder with provided name
         /// 2. Inside OverrideFolder, *NOTE* sub-folders are **NOT** included
         ///     a. Folder with provided name
         ///     b. ZIP file with provided name
@@ -55,7 +57,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     $"embedded resource {resourceName}");
             }
 
-            var directory = Path.Combine(_baseDirectory, name);
+            var directory = Path.Combine(AppContext.BaseDirectory, "templates", name);
+            if (Directory.Exists(directory))
+            {
+                return new LocalFileResourceReader(directory);
+            }
+
+            directory = Path.Combine(_baseDirectory, name);
             if (Directory.Exists(directory))
             {
                 return new LocalFileResourceReader(directory);

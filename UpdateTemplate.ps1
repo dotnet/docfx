@@ -43,50 +43,5 @@ node $terserCommand $Vendor.lunr -o ".\styles\lunr.min.js" --comments "false"
 Copy-Item -Path $vendor.font -Destination (New-Item ".\fonts" -Type Container -Force) -Force -Recurse
 Copy-Item -Path $vendor.lunr -Destination (New-Item ".\styles" -Type Container -Force) -Force -Recurse
 
-# Pack templates
-$templateFiles = @('layout\', 'partials\', '*.js', '*.tmpl', '*.liquid', 'token.json')
-$webpageFiles = @('fonts\', 'styles\', 'favicon.ico', 'logo.svg', 'search-stopwords.json')
-$files = $TemplateFiles + $WebpageFiles
-$packs =  @{
-    common = @(
-        @{ files = $files; }
-    );
-    default = @(
-        @{ files = $files; cwd = 'common'; },
-        @{ files = $files; }
-    );
-    'default(zh-cn)' = @(
-        @{ files = $files; }
-    );
-    statictoc = @(
-        @{ files = $files; cwd = 'common'; },
-        @{ files = $files; cwd = 'default'; excluder = @('toc.html.*') },
-        @{ files = $files }
-    );
-    'pdf.default' = @(
-        @{ files = $files; cwd = 'common'; },
-        @{ files = $templateFiles + 'fonts\'; cwd = 'default';},
-        @{ files = $files } # Overrides the former one if file name is the same
-    );
-};
-$packs.Keys | Foreach-Object -Parallel {
-    $tempFolder = "$using:PSScriptRoot\src\Microsoft.DocAsCode\Template\$_"
-    $destPath =  "$using:PSScriptRoot\src\Microsoft.DocAsCode\Template\$_.zip"
-    $packs = $using:packs
-    foreach ($fileGroup in $packs[$_]) {
-        $baseDir = "$using:templateHome\$($fileGroup.cwd ?? $_)"
-        Set-Location $baseDir
-        $fileGroup.files | % { 
-            if (Test-Path($_)) {
-                Copy-Item -Path $_ -Destination (New-Item $tempFolder -Type Container -Force) -Exclude $fileGroup.excluder -Recurse -Force
-            }
-        }   
-    }
-    Add-Type -AssemblyName System.IO.Compression
-    Add-Type -AssemblyName System.IO.Compression.FileSystem
-    [System.AppContext]::SetSwitch('Switch.System.IO.Compression.ZipFile.UseBackslash', $false)
-    [System.IO.Compression.ZipFile]::CreateFromDirectory($tempFolder, $destPath)
-    Remove-Item -Path $tempFolder -Recurse -Force
-}
 
 Pop-Location
