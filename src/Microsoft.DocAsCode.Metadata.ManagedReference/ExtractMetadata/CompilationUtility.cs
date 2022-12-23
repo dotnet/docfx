@@ -7,10 +7,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using ICSharpCode.Decompiler.Metadata;
     using Microsoft.CodeAnalysis;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
-    using Microsoft.Win32;
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     name,
                     options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: GetNetFrameworkMetadataReferences().Concat(references));
+                    references: GetDefaultMetadataReferences().Concat(references));
             }
             catch (Exception e)
             {
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     name,
                     options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                     syntaxTrees: new[] { tree },
-                    references: GetNetFrameworkMetadataReferences().Concat(references));
+                    references: GetDefaultMetadataReferences().Concat(references));
             }
             catch (Exception e)
             {
@@ -52,14 +52,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        //TODO: Only process CSharp assembly currently
-        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths)
+        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths, IEnumerable<string> references = null)
         {
             try
             {
-                var options = new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
-                var references = GetNetFrameworkMetadataReferences().Concat(assemblyPaths.Select(path => MetadataReference.CreateFromFile(path)));
-                return CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, references, options);
+                return CS.CSharpCompilation.Create(
+                    "EmptyProjectWithAssembly",
+                    options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                    syntaxTrees: Array.Empty<SyntaxTree>(),
+                    references: assemblyPaths
+                        .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
+                        .Concat(references ?? Enumerable.Empty<string>())
+                        .Select(file => MetadataReference.CreateFromFile(file)));
             }
             catch (Exception e)
             {
@@ -70,7 +74,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
         {
-            foreach(var reference in assemblyCompilation.References)
+            foreach (var reference in assemblyCompilation.References)
             {
                 Logger.LogVerbose($"Loading assembly {reference.Display}...");
                 var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
@@ -102,16 +106,35 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return input.Substring(0, length) + "...";
         }
 
-        private static MetadataReference[] GetNetFrameworkMetadataReferences()
+        private static IEnumerable<MetadataReference> GetDefaultMetadataReferences()
         {
-            using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full");
-            var installPath = key?.GetValue("InstallPath")?.ToString() ?? throw new DocfxException("Cannot compile project, make sure .NET Framework is installed.");
-
-            return new[]
+            try
             {
-                MetadataReference.CreateFromFile(Path.Combine(installPath, "mscorlib.dll")),
-                MetadataReference.CreateFromFile(Path.Combine(installPath, "System.dll")),
-            };
+                var dotnetExeDirectory = DotNetCorePathFinder.FindDotNetExeDirectory();
+                var refDirectory = Path.Combine(dotnetExeDirectory, "packs/Microsoft.NETCore.App.Ref");
+                var version = new DirectoryInfo(refDirectory).GetDirectories().Select(d => d.Name).Max();
+                var moniker = new DirectoryInfo(Path.Combine(refDirectory, version, "ref")).GetDirectories().Select(d => d.Name).Max();
+                var path = Path.Combine(refDirectory, version, "ref", moniker);
+
+                Logger.LogInfo($"Compile using .NET SDK {version} for {moniker}");
+                return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
+                                .Select(path => MetadataReference.CreateFromFile(path));
+            }
+            catch
+            {
+                throw new DocfxException("Cannot find .NET Core SDK to compile the project.");
+            }
+        }
+
+        private static IEnumerable<string> GetReferenceAssemblies(string assemblyPath)
+        {
+            using var assembly = new PEFile(assemblyPath);
+            var assemblyResolver = new UniversalAssemblyResolver(assemblyPath, false, assembly.DetectTargetFrameworkId());
+            foreach (var reference in assembly.AssemblyReferences)
+            {
+                if (assemblyResolver.FindAssemblyFile(reference) is { } file)
+                    yield return file;
+            }
         }
     }
 }
