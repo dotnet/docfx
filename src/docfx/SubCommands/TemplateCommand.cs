@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.SubCommands
         private const string DefaultOutputFolder = "_exported_templates";
 
         private readonly string[] _templates;
-        private readonly System.Reflection.Assembly _assembly;
 
         private readonly TemplateCommandType _commandType;
 
@@ -51,9 +50,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }
                     break;
             }
-            _assembly = typeof(Docset).Assembly;
-            var templateRegex = new Regex($"{Regex.Escape(_assembly.GetName().Name)}\\.{Regex.Escape(Constants.EmbeddedTemplateFolderName)}\\.([\\S.]+)\\.zip");
-            _templates = _assembly.GetManifestResourceNames().Select(s => templateRegex.Match(s)).Where(s => s.Success).Select(s => s.Groups[1].Value).ToArray();
+            _templates = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates")).Select(Path.GetFileName).ToArray();
         }
 
         public void Exec(SubCommandRunningContext context)
@@ -71,10 +68,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void ExecListTemplate()
         {
-            // TODO: dynamically load...
-            $"{Environment.NewLine}Existing embedded templates are:".WriteLineToConsole(ConsoleColor.Gray);
-
-            _templates.Select(s => "\t" + s).ToArray().WriteLinesToConsole(ConsoleColor.White);
+            _templates.WriteLinesToConsole(ConsoleColor.White);
         }
 
         private void ExecExportTemplate()
@@ -86,7 +80,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var template in templates)
             {
                 Logger.LogInfo($"Exporting {template} to {outputFolder}");
-                var manager = new TemplateManager(_assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
+                var manager = new TemplateManager(typeof(Docset).Assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
                 if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
                 {
                     Logger.LogInfo($"{template} is exported to {outputFolder}");
