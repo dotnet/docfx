@@ -45,16 +45,6 @@ package-lock.json
 *.nuget.targets
 
 ###############
-#  template   #
-###############
-src/*/Template/*.zip
-src/docfx.website.themes/default/styles/docfx.vendor.css
-src/docfx.website.themes/default/styles/docfx.vendor.js
-src/docfx.website.themes/default/styles/lunr.js
-src/docfx.website.themes/default/styles/lunr.min.js
-src/docfx.website.themes/default/fonts/
-
-###############
 #    deploy   #
 ###############
 tools/Deployment/.vscode/

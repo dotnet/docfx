@@ -12,7 +12,7 @@ $logLevelParam = if ($env:TF_BUILD -eq "True") { "--loglevel=error" } else { "" 
 
 Push-Location $PSScriptRoot
 
-$templateHome ="$PSScriptRoot\src\docfx.website.themes"
+$templateHome ="$PSScriptRoot\templates"
 $defaultTemplate ="$templateHome\default"
 
 # Prepare default templates
