@@ -45,12 +45,14 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 ### Prerequisites
 
 - Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
-  - Need [.NET Core 6.x SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0), .NET Framework 4.7.2 and F# development tools
+  - Need [.NET Core 6.x SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0), .NET Framework 4.7.2 and F# development tools.
 - Install NodeJS (16.x.x).
 
 ### Build and Test
 
-- Run `./UpdateTemplate.ps1` to build the default site templates.
+- Build site templates in `templates` directory:
+  - Run `npm install` to restore npm dependencies.
+  - Run `npm run build` to build the templates.
 - Run `dotnet build` to build the project or use Visual Studio to build `docfx.sln`.
 - Run `dotnet test` to test the project or use Visual Studio test explorer.
 

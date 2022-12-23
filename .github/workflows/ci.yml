@@ -17,9 +17,12 @@ jobs:
       with:
         dotnet-version: 6.x
 
-    - run: ./UpdateTemplate.ps1
-    - run: dotnet build -c Release
+    - run: |
+        npm install
+        npm run build
+      working-directory: templates
 
+    - run: dotnet build -c Release
     - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - uses: codecov/codecov-action@v3
 

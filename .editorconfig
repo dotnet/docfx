@@ -16,6 +16,31 @@ trim_trailing_whitespace = true
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
 
+# Xml project files
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
+indent_size = 2
+
+[*.{csproj,vbproj,proj,nativeproj,locproj}]
+charset = utf-8
+
+# Xml config files
+[*.{props,targets,config,nuspec}]
+indent_size = 2
+
+# YAML config files
+[*.{yml,yaml}]
+indent_size = 2
+
+# JavaScript files
+[*.{js,json,ts,scss}]
+indent_size = 2
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+[*.{cmd,bat}]
+end_of_line = crlf
+
 # C# files
 [*.cs]
 # New line preferences
@@ -150,24 +175,3 @@ csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
-
-# Xml project files
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]
-indent_size = 2
-
-[*.{csproj,vbproj,proj,nativeproj,locproj}]
-charset = utf-8
-
-# Xml config files
-[*.{props,targets,config,nuspec}]
-indent_size = 2
-
-# YAML config files
-[*.{yml,yaml}]
-indent_size = 2
-
-# Shell scripts
-[*.sh]
-end_of_line = lf
-[*.{cmd,bat}]
-end_of_line = crlf

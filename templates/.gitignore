@@ -2,4 +2,8 @@ node_modules
 sample
 dist
 .tmp
-bower_components
+
+*.vendor.css
+*.vendor.js
+*.min.js
+fonts
