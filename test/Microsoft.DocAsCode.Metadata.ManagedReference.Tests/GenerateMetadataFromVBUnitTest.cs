@@ -59,7 +59,7 @@ End Namespace
                 Assert.Equal("Test1.Class2`1", type.Name);
                 Assert.Equal(@"Public Class Class2(Of T)
     Inherits List(Of T)
-    Implements IList(Of T), ICollection(Of T), IList, ICollection, IReadOnlyList(Of T), IReadOnlyCollection(Of T), IEnumerable(Of T), IEnumerable", type.Syntax.Content[SyntaxLanguage.VB]);
+    Implements IList(Of T), ICollection(Of T), IReadOnlyList(Of T), IReadOnlyCollection(Of T), IEnumerable(Of T), IList, ICollection, IEnumerable", type.Syntax.Content[SyntaxLanguage.VB]);
                 Assert.Equal(new[] { "Public", "Class" }, type.Modifiers[SyntaxLanguage.VB]);
             }
             {
@@ -1474,8 +1474,7 @@ End Namespace
 <Test(New Object() {Nothing, ""abc"", ""d""c, 1.1F, 1.2, CType(2, SByte), CType(3, Byte), CType(4, Short), CType(5, UShort), 6, 8L, 9UL, New Integer() {10, 11, 12}})>
 <Test(New Type() {GetType(Func(Of )), GetType(Func(Of , )), GetType(Func(Of String, String))})>
 Public Class TestAttribute
-    Inherits Attribute
-    Implements _Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
+    Inherits Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
             var ctor = type.Items[0];
             Assert.NotNull(type);
             Assert.Equal(@"<Test(1)>

@@ -41,10 +41,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         public void TestGenerateMetadataFromAssembly()
         {
             var compilation = CompilationUtility.CreateCompilationFromAssembly(AssemblyFiles);
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, AssemblyFiles).Select(s => s.assembly).ToList();
-
+            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, AssemblyFiles)
+                .Select(s => s.assembly).OrderBy(s => s.Name).ToList();
+            
             {
-                var output = GenerateYamlMetadata(compilation, referenceAssembly[1]);
+                var output = GenerateYamlMetadata(compilation, referenceAssembly[2]);
                 var @class = output.Items[0].Items[2];
                 Assert.NotNull(@class);
                 Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
@@ -53,7 +54,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             }
 
             {
-                var output = GenerateYamlMetadata(compilation, referenceAssembly[2]);
+                var output = GenerateYamlMetadata(compilation, referenceAssembly[1]);
                 var @class = output.Items[0].Items[0];
                 Assert.NotNull(@class);
                 Assert.Equal("CarLibrary2.Cat2", @class.Name);

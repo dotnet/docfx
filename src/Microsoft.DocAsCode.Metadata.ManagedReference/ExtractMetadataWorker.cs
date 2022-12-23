@@ -333,8 +333,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (assemblyFiles.Count > 0)
             {
-                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(
-                    assemblyFiles.Concat(_references ?? Enumerable.Empty<string>()));
+                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles, _references);
                 if (assemblyCompilation != null)
                 {
                     var commentFiles = (from file in assemblyFiles
