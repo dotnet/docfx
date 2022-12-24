@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="docfx.Snapshot.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode\Microsoft.DocAsCode.csproj" />
   </ItemGroup>
 
