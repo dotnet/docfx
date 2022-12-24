@@ -81,21 +81,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (assembly == null)
                 {
                     Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
+                    continue;
                 }
-                else
-                {
-                    //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
-                    if (assembly.Identity?.Name == "mscorlib")
-                    {
-                        Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
-                        continue;
-                    }
 
-                    if (reference is PortableExecutableReference portableReference &&
-                        assemblyPaths.Contains(portableReference.FilePath))
-                    {
-                        yield return (reference, assembly);
-                    }
+                //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
+                if (assembly.Identity?.Name == "mscorlib")
+                {
+                    Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
+                    continue;
+                }
+
+                if (reference is PortableExecutableReference portableReference &&
+                    assemblyPaths.Any(path => portableReference.FilePath.Replace('\\', '/') == path.Replace('\\', '/')))
+                {
+                    yield return (reference, assembly);
                 }
             }
         }

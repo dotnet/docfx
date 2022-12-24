@@ -7,7 +7,11 @@ on:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -24,12 +28,14 @@ jobs:
 
     - run: dotnet build -c Release
     - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
     - uses: codecov/codecov-action@v3
+      if: matrix.os == 'windows-latest'
 
     - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'windows-latest'
       with:
         name: site
         path: docs/_site

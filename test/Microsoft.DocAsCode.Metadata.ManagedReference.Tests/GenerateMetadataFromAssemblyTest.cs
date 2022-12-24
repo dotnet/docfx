@@ -20,21 +20,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         public readonly string[] AssemblyFiles =
             new[]
             {
-                @"TestData\BaseClassForTestClass1.dll",
-                @"TestData\CatLibrary.dll",
-                @"TestData\CatLibrary2.dll",
+                @"TestData/BaseClassForTestClass1.dll",
+                @"TestData/CatLibrary.dll",
+                @"TestData/CatLibrary2.dll",
             };
 
         public readonly string[] TupleAssemblyFiles =
             new[]
             {
-                @"TestData\TupleLibrary.dll",
+                @"TestData/TupleLibrary.dll",
             };
 
         public readonly string[] TupleReferencesFiles =
             new[]
             {
-                @"TestDataReferences\System.ValueTuple.dll",
+                @"TestDataReferences/System.ValueTuple.dll",
             };
 
         [Fact]

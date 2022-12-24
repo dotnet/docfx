@@ -100,7 +100,7 @@ name2={{name2}};
             };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 name1=test1,
@@ -157,7 +157,7 @@ name2=test2;
                 Tuple.Create("partial1.tmpl.partial", partial1),
                 Tuple.Create("partial2.tmpl.partial", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 test1
@@ -229,7 +229,7 @@ Hello Body
                 Tuple.Create("partial1.tmpl.partial", partial1),
                 Tuple.Create("partial2.tmpl.partial", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
@@ -603,7 +603,7 @@ exports.transform = function (model){
             };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 test1
@@ -658,7 +658,7 @@ test2
                 Tuple.Create("_partial1.liquid", partial1),
                 Tuple.Create("_partial2.liquid", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 test1
@@ -781,7 +781,7 @@ Hello Master
                 Tuple.Create("_partial1.liquid", partial1),
                 Tuple.Create("_partial2.liquid", partial2));
 
-            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, null));
             Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"

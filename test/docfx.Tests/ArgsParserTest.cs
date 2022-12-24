@@ -43,11 +43,11 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(2, metadataCommand.Config.Count);
             Assert.True(metadataCommand.Config[0].Force);
             Assert.True(metadataCommand.Config[1].Force);
-            Assert.Equal(@"Assets\docfx.json_metadata_build", metadataCommand.BaseDirectory);
+            Assert.Equal(@"Assets/docfx.json_metadata_build", metadataCommand.BaseDirectory.Replace('\\', '/'));
             Assert.Equal(typeof(BuildCommand), commands[1].GetType());
             var buildCommand = (BuildCommand)commands[1];
             Assert.True(buildCommand.Config.Force);
-            Assert.Equal(@"Assets\docfx.json_metadata_build", buildCommand.Config.BaseDirectory);
+            Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
 
             args = new string[] { "Assets/docfx.json_empty/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);
@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(2, metadataCommand.Config.Count);
             Assert.True(metadataCommand.Config[0].Force);
             Assert.True(metadataCommand.Config[1].Force);
-            Assert.Equal(@"Assets\docfx.json_metadata_build",  metadataCommand.BaseDirectory);
+            Assert.Equal(@"Assets/docfx.json_metadata_build",  metadataCommand.BaseDirectory.Replace('\\', '/'));
             Assert.Null(metadataCommand.OutputFolder);
 
             args = new string[] { "metadata", "Assets/docfx.json_empty/docfx.json", "A.csproj" };
@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Tests
             var buildCommand = (BuildCommand)command;
             Assert.True(buildCommand.Config.Force);
             Assert.True(buildCommand.Config.ForcePostProcess);
-            Assert.Equal(@"Assets\docfx.json_metadata_build", buildCommand.Config.BaseDirectory);
+            Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
             Assert.Equal(@"output", buildCommand.Config.OutputFolder);
 
             args = new string[] { "build", "Assets/docfx.json_empty/docfx.json" };

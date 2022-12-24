@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.True(model.IsExplicitInterfaceImplementation);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("ModelItemDictionary\\toc.yml");
+                var outputRawModelPath = GetRawModelFilePath("ModelItemDictionary/toc.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -268,7 +268,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal("TestData/mref/com.microsoft.azure.management.sql.SqlServer.firewallRules(Interface)_1.yml", model.Metadata["_key"].ToString(), ignoreCase);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("sql\\toc.yml");
+                var outputRawModelPath = GetRawModelFilePath("sql/toc.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);

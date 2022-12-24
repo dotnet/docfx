@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return path;
             }
 
-            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return Path.GetFullPath(path).Replace('\\', '/');
         }
 
         public static bool MatchStart(ref StringSlice slice, string startString, bool isCaseSensitive = true)

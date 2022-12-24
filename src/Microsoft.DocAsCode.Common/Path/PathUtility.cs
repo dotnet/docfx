@@ -327,7 +327,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return path;
             }
-            return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return Path.GetFullPath(path).Replace('\\', '/');
         }
 
         public static bool IsDirectory(string path)

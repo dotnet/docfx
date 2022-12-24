@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 return null;
             }
 
-            var overridenProperties = new Dictionary<string, object>(properties);
+            var overridenProperties = new Dictionary<string, object>(properties.OrderBy(p => p.Key));
             foreach (var requiredProperty in requiredProperties)
             {
                 if (requiredProperty != null)

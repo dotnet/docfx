@@ -32,33 +32,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            if (Type.GetType("Mono.Runtime") != null) // is mono
-            {
-                var assembly = typeof(System.Runtime.GCSettings).Assembly;
-                var assemblyDirectory = Path.GetDirectoryName(assembly.Location);
-                var monoDir = new DirectoryInfo(assemblyDirectory).Parent.FullName; // get mono directory
-
-                var msbuildBasePath = Path.Combine(monoDir, "msbuild", "15.0", "bin");
-                var msbuildPath = Path.Combine(msbuildBasePath, "MSBuild.dll");
-
-                if (!File.Exists(msbuildPath))
-                {
-                    var message = $"Unable to find msbuild from {msbuildPath}, please try downloading latest mono to solve the issue.";
-                    Logger.LogError(message);
-                    throw new DocfxException(message);
-                }
-
-                Logger.LogInfo($"Using mono {msbuildPath} as inner compiler.");
-                MSBuildLocator.RegisterMSBuildPath(msbuildBasePath);
-
-                return new EnvironmentScope(new Dictionary<string, string>
-                {
-                    [MSBuildExePathKey] = msbuildPath,
-                    ["MSBuildExtensionsPath"] = Path.Combine(monoDir, "xbuild"),
-                    ["MSBuildSDKsPath"] = Path.Combine(msbuildBasePath, "Sdks")
-                });
-            }
-
             try
             {
                 // workaround for https://github.com/dotnet/docfx/issues/1969

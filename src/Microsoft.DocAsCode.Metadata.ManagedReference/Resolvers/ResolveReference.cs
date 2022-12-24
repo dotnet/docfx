@@ -64,10 +64,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     page.References.Add(key, reference);
                     addingReferences.Add(reference);
                 }
-                else
-                {
-                    Debug.Fail($"Reference not found: {key}");
-                }
             }
         }
 

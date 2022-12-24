@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalBasicScenario()
         {
             try
@@ -274,7 +274,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalWithFirstCanIncrementalButSecondCannotIncremental()
         {
             //        | Should trace incremental info | Can incremental |
@@ -418,7 +418,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalWithFirstCanIncrementalButSecondShouldnotTraceIncrementalInfo()
         {
             //        | Should trace incremental info | Can incremental |
@@ -531,7 +531,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalWithFileInDirectory()
         {
             try
@@ -850,7 +850,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalSplitScenario()
         {
             try

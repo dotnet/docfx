@@ -74,7 +74,8 @@ You cannot overwrite a readonly property: `site_name`, please add an `editable` 
 There is an invalid H2: `name`: the contentType of this property in schema must be `markdown`
 There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsValidation.create""]/summary`: the contentType of this property in schema must be `markdown`
 ""/operations/1"" in overwrite object fails to overwrite ""/operations"" for ""management.azure.com.advisor.fragmentsValidation"" because it does not match any existing item.",
-                String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)));
+                String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)),
+                ignoreLineEndingDifferences: true);
             Assert.Equal("14", warningLogs[2].Line);
             Assert.Equal("17", warningLogs[3].Line);
         }
