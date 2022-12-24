@@ -108,7 +108,7 @@
         ],
         "return": {
           "type": {
-            "uid": "EventHandler",
+            "uid": "System.EventHandler",
             "name": [
               {
                 "lang": "csharp",
@@ -132,21 +132,21 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "EventHandler"
+                "value": "System.EventHandler"
               },
               {
                 "lang": "vb",
-                "value": "EventHandler"
+                "value": "System.EventHandler"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"EventHandler\" text=\"EventHandler\" alt=\"EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"EventHandler\" text=\"EventHandler\" alt=\"EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
               }
             ]
           }

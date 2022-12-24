@@ -162,8 +162,8 @@
       {
         "id": "pics",
         "type": {
-          "uid": "List{System.String}",
-          "definition": "List`1",
+          "uid": "System.Collections.Generic.List{System.String}",
+          "definition": "System.Collections.Generic.List`1",
           "name": [
             {
               "lang": "csharp",
@@ -187,21 +187,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "List<System.String>"
+              "value": "System.Collections.Generic.List<System.String>"
             },
             {
               "lang": "vb",
-              "value": "List(Of System.String)"
+              "value": "System.Collections.Generic.List(Of System.String)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"List`1\" text=\"List\" alt=\"List\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"List`1\" text=\"List\" alt=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
             }
           ]
         },

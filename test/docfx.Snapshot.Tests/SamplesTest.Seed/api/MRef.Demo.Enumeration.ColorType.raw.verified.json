@@ -552,11 +552,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public enum ColorType : int"
+        "value": "public enum ColorType"
       },
       {
         "lang": "vb",
-        "value": "Public Enum ColorType As Integer"
+        "value": "Public Enum ColorType"
       }
     ]
   },

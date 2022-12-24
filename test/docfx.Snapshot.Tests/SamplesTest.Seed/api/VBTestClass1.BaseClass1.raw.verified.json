@@ -50,7 +50,7 @@
   },
   "children": [
     {
-      "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)",
+      "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)",
       "isEii": false,
       "isExtensionMethod": false,
       "parent": "VBTestClass1.BaseClass1",
@@ -58,97 +58,97 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "WithDeclarationKeyword(Class1)"
         },
         {
           "lang": "vb",
-          "value": "WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "WithDeclarationKeyword(Class1)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "BaseClass1.WithDeclarationKeyword(Class1)"
         },
         {
           "lang": "vb",
-          "value": "BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "BaseClass1.WithDeclarationKeyword(Class1)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)"
         },
         {
           "lang": "vb",
-          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)"
+          "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\" text=\"WithDeclarationKeyword(CounterSampleCalculator)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\"/>"
+          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\" text=\"WithDeclarationKeyword(Class1)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\" text=\"WithDeclarationKeyword(CounterSampleCalculator)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)\"/>"
+          "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\" text=\"WithDeclarationKeyword(Class1)\" alt=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\"/>"
         }
       ],
       "syntax": {
         "content": [
           {
             "lang": "csharp",
-            "value": "public abstract DateTime WithDeclarationKeyword(CounterSampleCalculator keyword)"
+            "value": "public abstract DateTime WithDeclarationKeyword(Class1 keyword)"
           },
           {
             "lang": "vb",
-            "value": "Public MustOverride Function WithDeclarationKeyword(keyword As CounterSampleCalculator) As DateTime"
+            "value": "Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As Date"
           }
         ],
         "parameters": [
           {
             "id": "keyword",
             "type": {
-              "uid": "CounterSampleCalculator",
+              "uid": "VBTestClass1.Class1",
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "CounterSampleCalculator"
+                  "value": "Class1"
                 },
                 {
                   "lang": "vb",
-                  "value": "CounterSampleCalculator"
+                  "value": "Class1"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "CounterSampleCalculator"
+                  "value": "Class1"
                 },
                 {
                   "lang": "vb",
-                  "value": "CounterSampleCalculator"
+                  "value": "Class1"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "CounterSampleCalculator"
+                  "value": "VBTestClass1.Class1"
                 },
                 {
                   "lang": "vb",
-                  "value": "CounterSampleCalculator"
+                  "value": "VBTestClass1.Class1"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"CounterSampleCalculator\" text=\"CounterSampleCalculator\" alt=\"CounterSampleCalculator\"/>"
+                  "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"CounterSampleCalculator\" text=\"CounterSampleCalculator\" alt=\"CounterSampleCalculator\"/>"
+                  "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
                 }
               ]
             }
@@ -156,7 +156,7 @@
         ],
         "return": {
           "type": {
-            "uid": "DateTime",
+            "uid": "System.DateTime",
             "name": [
               {
                 "lang": "csharp",
@@ -180,21 +180,21 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "DateTime"
+                "value": "System.DateTime"
               },
               {
                 "lang": "vb",
-                "value": "DateTime"
+                "value": "System.DateTime"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"DateTime\" text=\"DateTime\" alt=\"DateTime\"/>"
+                "value": "<xref uid=\"System.DateTime\" text=\"DateTime\" alt=\"System.DateTime\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"DateTime\" text=\"DateTime\" alt=\"DateTime\"/>"
+                "value": "<xref uid=\"System.DateTime\" text=\"DateTime\" alt=\"System.DateTime\"/>"
               }
             ]
           }
@@ -375,11 +375,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public abstract class BaseClass1 : object"
+        "value": "public abstract class BaseClass1"
       },
       {
         "lang": "vb",
-        "value": "Public MustInherit Class BaseClass1\n    Inherits Object"
+        "value": "Public MustInherit Class BaseClass1"
       }
     ]
   },
@@ -388,6 +388,7 @@
       "uid": "System.Object",
       "isEii": false,
       "isExtensionMethod": false,
+      "parent": "System",
       "isExternal": true,
       "name": [
         {
@@ -435,16 +436,48 @@
   ],
   "derivedClasses": [
     {
+      "uid": "VBTestClass1.Class1",
       "isEii": false,
       "isExtensionMethod": false,
-      "specName": [
+      "parent": "VBTestClass1",
+      "name": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"VBTestClass1.Class1\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+          "value": "Class1"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"VBTestClass1.Class1\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+          "value": "Class1"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Class1"
+        },
+        {
+          "lang": "vb",
+          "value": "Class1"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "VBTestClass1.Class1"
+        },
+        {
+          "lang": "vb",
+          "value": "VBTestClass1.Class1"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
         }
       ],
       "level": 0,
@@ -452,6 +485,392 @@
     }
   ],
   "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Finalize",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Finalize()"
+        },
+        {
+          "lang": "vb",
+          "value": "Finalize()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Finalize()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Finalize()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Finalize()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Finalize()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Finalize\" text=\"Finalize\" alt=\"System.Object.Finalize\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Finalize\" text=\"Finalize\" alt=\"System.Object.Finalize\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_systemKeys": [

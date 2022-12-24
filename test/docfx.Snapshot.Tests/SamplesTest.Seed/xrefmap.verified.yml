@@ -67,12 +67,12 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).Age
   nameWithType: Cat<T, K>.Age
   nameWithType.vb: Cat(Of T, K).Age
-- uid: CatLibrary.Cat`2.CalculateFood(DateTime)
-  name: CalculateFood(DateTime)
-  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_DateTime_
-  commentId: M:CatLibrary.Cat`2.CalculateFood(DateTime)
-  fullName: CatLibrary.Cat<T, K>.CalculateFood(DateTime)
-  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(DateTime)
+- uid: CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  name: Override CalculateFood Name
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_System_DateTime_
+  commentId: M:CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  fullName: CatLibrary.Cat<T, K>.CalculateFood(System.DateTime)
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(System.DateTime)
   nameWithType: Cat<T, K>.CalculateFood(DateTime)
   nameWithType.vb: Cat(Of T, K).CalculateFood(DateTime)
 - uid: CatLibrary.Cat`2.CalculateFood*
@@ -463,13 +463,13 @@ references:
   commentId: T:CatLibrary.Tom
   fullName: CatLibrary.Tom
   nameWithType: Tom
-- uid: CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})
+- uid: CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
   name: TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
-  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__Tuple_System_String_CatLibrary_Tom__
-  commentId: M:CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},Tuple{System.String,CatLibrary.Tom})
+  href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__
+  commentId: M:CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
   name.vb: TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
-  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, Tuple<System.String, CatLibrary.Tom>)
-  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), Tuple(Of System.String, CatLibrary.Tom))
+  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, System.Tuple<System.String, CatLibrary.Tom>)
+  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), System.Tuple(Of System.String, CatLibrary.Tom))
   nameWithType: Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
   nameWithType.vb: Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
 - uid: CatLibrary.Tom.TomMethod*
@@ -743,12 +743,12 @@ references:
   commentId: T:VBTestClass1.BaseClass1
   fullName: VBTestClass1.BaseClass1
   nameWithType: BaseClass1
-- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
-  name: WithDeclarationKeyword(CounterSampleCalculator)
-  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_CounterSampleCalculator_
-  commentId: M:VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
-  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
-  nameWithType: BaseClass1.WithDeclarationKeyword(CounterSampleCalculator)
+- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_VBTestClass1_Class1_
+  commentId: M:VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
+  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
+  nameWithType: BaseClass1.WithDeclarationKeyword(Class1)
 - uid: VBTestClass1.BaseClass1.WithDeclarationKeyword*
   name: WithDeclarationKeyword
   href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_
@@ -794,12 +794,12 @@ references:
   commentId: F:VBTestClass1.Class1.ValueClass
   fullName: VBTestClass1.Class1.ValueClass
   nameWithType: Class1.ValueClass
-- uid: VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
-  name: WithDeclarationKeyword(CounterSampleCalculator)
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_CounterSampleCalculator_
-  commentId: M:VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
-  fullName: VBTestClass1.Class1.WithDeclarationKeyword(CounterSampleCalculator)
-  nameWithType: Class1.WithDeclarationKeyword(CounterSampleCalculator)
+- uid: VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_VBTestClass1_Class1_
+  commentId: M:VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
+  fullName: VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
+  nameWithType: Class1.WithDeclarationKeyword(Class1)
 - uid: VBTestClass1.Class1.WithDeclarationKeyword*
   name: WithDeclarationKeyword
   href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_

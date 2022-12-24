@@ -12,7 +12,7 @@ Public Class Class1
     Public ValueClass As Class1
 
     <Obsolete("This member is obsolete.", True)>
-    Public Shadows ReadOnly Property Keyword As CounterSampleCalculator
+    Public Shadows ReadOnly Property Keyword As Class1
         Get
             Throw New ArgumentNullException()
         End Get
@@ -21,7 +21,7 @@ Public Class Class1
     ''' <summary>
     ''' What is **Sub**?
     ''' </summary>
-    Public Overrides Function WithDeclarationKeyword(keyword As CounterSampleCalculator) As DateTime
+    Public Overrides Function WithDeclarationKeyword(keyword As Class1) As DateTime
         Return DateTime.Now
     End Function
 
@@ -41,5 +41,5 @@ End Class
 ''' This is the BaseClass
 ''' </summary>
 Public MustInherit Class BaseClass1
-    Public MustOverride Function WithDeclarationKeyword(keyword As CounterSampleCalculator) As DateTime
+    Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As DateTime
 End Class
