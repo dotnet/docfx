@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         // TODO: update incremental actions
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestBasic()
         {
             #region Prepare test data

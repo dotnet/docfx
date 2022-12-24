@@ -22,10 +22,7 @@ namespace Microsoft.DocAsCode.Tests
         public Task Seed()
         {
             var samplePath = $"{SamplesDir}/seed";
-            var sitePath = $"{samplePath}/_site";
-            var objPath = $"{samplePath}/obj";
-
-            Clean(sitePath, objPath);
+            Clean(samplePath);
 
             if (Debugger.IsAttached)
             {
@@ -34,27 +31,25 @@ namespace Microsoft.DocAsCode.Tests
             }
             else
             {
-                Exec("docfx.exe", $"{samplePath}/docfx.json --exportRawModel");
+                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
+                Exec(docfxPath, $"{samplePath}/docfx.json --exportRawModel");
             }
 
-            return Verifier.VerifyDirectory(sitePath, IncludeFile).AutoVerify(includeBuildServer: false);
+            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
         }
 
         [Fact]
         public void Extensions()
         {
             var samplePath = $"{SamplesDir}/extensions";
-            var sitePath = $"{samplePath}/_site";
-            var objPath = $"{samplePath}/obj";
-
-            Clean(sitePath, objPath);
+            Clean(samplePath);
 #if DEBUG
             Exec("dotnet", "run --project build", workingDirectory: samplePath);
 #else
             Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath);
 #endif
 
-            var myMethodPage = $"{sitePath}/api/MyExample.ExampleClass.MyMethod.html";
+            var myMethodPage = $"{samplePath}/_site/api/MyExample.ExampleClass.MyMethod.html";
             Assert.True(File.Exists(myMethodPage));
             Assert.Contains("public string MyMethod()", File.ReadAllText(myMethodPage));
         }
@@ -70,12 +65,14 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(0, process.ExitCode);
         }
 
-        private static void Clean(string sitePath, string objPath)
+        private static void Clean(string samplePath)
         {
-            if (Directory.Exists(sitePath))
-                Directory.Delete(sitePath, recursive: true);
-            if (Directory.Exists(objPath))
-                Directory.Delete(objPath, recursive: true);
+            if (Directory.Exists($"{samplePath}/_site"))
+                Directory.Delete($"{samplePath}/_site", recursive: true);
+
+            foreach (var objPath in Directory.GetDirectories(samplePath, "obj", SearchOption.AllDirectories))
+                if (Directory.Exists(objPath))
+                    Directory.Delete(objPath, recursive: true);
         }
 
         private static bool IncludeFile(string file)

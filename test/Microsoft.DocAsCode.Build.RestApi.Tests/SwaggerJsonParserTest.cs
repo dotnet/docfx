@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSimpleSwaggerJsonShouldSucceed()
         {
-            var swaggerFile = @"TestData\swagger\simple_swagger2.json";
+            var swaggerFile = @"TestData/swagger/simple_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Single(swagger.Paths.Values);
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSwaggerJsonWithReferenceShouldSucceed()
         {
-            var swaggerFile = @"TestData\swagger\ref_swagger2.json";
+            var swaggerFile = @"TestData/swagger/ref_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Single(swagger.Paths);
@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSwaggerJsonWithTagShouldSucceed()
         {
-            const string swaggerFile = @"TestData\swagger\tag_swagger2.json";
+            const string swaggerFile = @"TestData/swagger/tag_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(3, swagger.Tags.Count);
@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSwaggerJsonWithPathParametersShouldSucceed()
         {
-            const string swaggerFile = @"TestData\swagger\pathParameters_swagger2.json";
+            const string swaggerFile = @"TestData/swagger/pathParameters_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Single(swagger.Paths.Values);
@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
         {
-            const string swaggerFile = @"TestData\swagger\loopref_swagger2.json";
+            const string swaggerFile = @"TestData/swagger/loopref_swagger2.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Single(swagger.Paths.Values);
@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseSwaggerJsonWithExternalLoopReferenceShouldSucceed()
         {
-            const string swaggerFile = @"TestData\swagger\externalLoopRef_A.json";
+            const string swaggerFile = @"TestData/swagger/externalLoopRef_A.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Single(swagger.Paths.Values);
@@ -191,7 +191,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseKeyWordSwaggerJsonShouldSucceed()
         {
-            var swaggerFile = @"TestData\swagger\resolveKeyWordWithRefInside.json";
+            var swaggerFile = @"TestData/swagger/resolveKeyWordWithRefInside.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             ///test x-ms-examples: unresolved.

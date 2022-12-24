@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 base.Initialize(tagName, markup, tokens);
                 lock (_locker)
                 {
-                    SharedDependencies.Add(markup);
+                    SharedDependencies.Add(markup.Trim());
                 }
             }
 

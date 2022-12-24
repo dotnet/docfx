@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return context.CreateContext(context.Variables.SetItem(FallbackFoldersKey, (IReadOnlyList<string>)fallbackFolders.Select(folder => folder.Replace('/', '\\')).ToList()));
+            return context.CreateContext(context.Variables.SetItem(FallbackFoldersKey, (IReadOnlyList<string>)fallbackFolders.Select(folder => folder.Replace('\\', '/')).ToList()));
         }
 
         public static IMarkdownContext SetDependency(this IMarkdownContext context, HashSet<string> dependency)

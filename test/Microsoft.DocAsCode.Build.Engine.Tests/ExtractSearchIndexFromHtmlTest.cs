@@ -210,7 +210,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
   }
 }";
             var actualIndexJSON = File.ReadAllText(Path.Combine(tempTestFolder, "index.json"), Encoding.UTF8);
-            Assert.Equal(expectedIndexJSON, actualIndexJSON);
+            Assert.Equal(expectedIndexJSON, actualIndexJSON, ignoreLineEndingDifferences: true);
         }
     }
 }

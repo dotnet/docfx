@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmIncludeInlineToken token, MarkdownInlineContext context)
         {
-            var src = token.Src.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var src = token.Src.Replace('\\', '/');
 
             return string.IsNullOrEmpty(token.Title)
                     ? $"[!INCLUDE [{token.Name}]({src})]"
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmIncludeBlockToken token, MarkdownBlockContext context)
         {
-            var src = token.Src.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var src = token.Src.Replace('\\', '/');
 
             return string.IsNullOrEmpty(token.Title)
                     ? $"[!INCLUDE [{token.Name}]({src})]\n\n"

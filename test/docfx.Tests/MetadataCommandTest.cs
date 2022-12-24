@@ -89,28 +89,6 @@ namespace Microsoft.DocAsCode.Tests
         [Trait("Related", "docfx")]
         [Trait("Language", "CSharp")]
         [Trait("Framework", "netcore")]
-        public void TestMetadataCommandFromNet46CSProject()
-        {
-            // Create default project
-            var projectFile = Path.Combine(_projectFolder, "net46-test.csproj");
-            var sourceFile = Path.Combine(_projectFolder, "test.cs");
-            File.Copy("Assets/net46-test.csproj.sample.1", projectFile);
-            File.Copy("Assets/test.cs.sample.1", sourceFile);
-
-            new MetadataCommand(new MetadataCommandOptions
-            {
-                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                Projects = new List<string> { projectFile },
-            }).Exec(null);
-
-
-            CheckResult();
-        }
-
-        [Fact]
-        [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
-        [Trait("Framework", "netcore")]
         public void TestMetadataCommandFromMultipleFrameworksCSProject()
         {
             // Create default project
@@ -123,7 +101,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Projects = new List<string> { projectFile },
-                MSBuildProperties = "TargetFramework=net46"
+                MSBuildProperties = "TargetFramework=net6.0"
             }).Exec(null);
 
             CheckResult();

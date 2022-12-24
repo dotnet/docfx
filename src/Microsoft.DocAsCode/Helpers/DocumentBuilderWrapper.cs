@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                        Logger.LogVerbose($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
                         continue;
                     }
 

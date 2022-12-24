@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         {
             Guard.ArgumentNotNullOrEmpty(path, nameof(path));
 
-            return HttpUtility.UrlDecode(path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+            return HttpUtility.UrlDecode(path.Replace('\\', '/'));
         }
 
         private static string WrapQuoteToPath(string path)
