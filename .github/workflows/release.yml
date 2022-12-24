@@ -17,7 +17,11 @@ jobs:
       with:
         dotnet-version: 6.x
 
-    - run: ./UpdateTemplate.ps1
+    - run: |
+        npm install
+        npm run build
+      working-directory: templates
+
     - name: dotnet pack
       run: |
         $version = $env:GITHUB_REF_NAME.TrimStart('v')
