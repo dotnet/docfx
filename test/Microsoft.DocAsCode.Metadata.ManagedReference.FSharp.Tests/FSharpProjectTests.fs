@@ -15,7 +15,7 @@ open Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 
 
 [<Collection("F# Test Collection")>]
-type FSharpProjectTests  (output: ITestOutputHelper) =
+type private FSharpProjectTests  (output: ITestOutputHelper) =
     let printfn format = Printf.kprintf (fun msg -> output.WriteLine(msg)) format 
    
     let makeLoader () =
