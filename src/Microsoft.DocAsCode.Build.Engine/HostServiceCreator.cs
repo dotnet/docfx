@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }, _context.MaxParallelism);
 
-            return (models, invalidFiles);
+            return (models.OrderBy(m => m.File, StringComparer.Ordinal).ToArray(), invalidFiles);
         }
 
         private static ImmutableDictionary<string, object> ApplyFileMetadata(

@@ -1850,8 +1850,8 @@
     "tags",
     "externalDocs"
   ],
-  "title": "Pet Store APIs",
   "footer": "<h3 id=\"see-alsos\" sourcefile=\"specs/petstore-operations.footer.md\" sourcestartlinenumber=\"7\">See Alsos</h3>\n<p sourcefile=\"specs/petstore-operations.footer.md\" sourcestartlinenumber=\"9\">See other REST APIs:</p>\n<ul sourcefile=\"specs/petstore-operations.footer.md\" sourcestartlinenumber=\"10\">\n<li sourcefile=\"specs/petstore-operations.footer.md\" sourcestartlinenumber=\"10\"><a href=\"~/restapi/contacts_swagger2.json\" sourcefile=\"specs/petstore-operations.footer.md\" sourcestartlinenumber=\"10\">Contacts API</a></li>\n</ul>\n",
+  "title": "Pet Store APIs",
   "_key": "restapi/petstore.swagger.json",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
