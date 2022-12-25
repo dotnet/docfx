@@ -17,7 +17,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
@@ -30,12 +30,12 @@ jobs:
     - run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
 
     - uses: codecov/codecov-action@v3
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'ubuntu-latest'
 
     - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
-      if: github.ref == 'refs/heads/main' && matrix.os == 'windows-latest'
+      if: github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
       with:
         name: site
         path: docs/_site

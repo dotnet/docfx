@@ -5,7 +5,7 @@ on:
 
 jobs:
   release:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
@@ -13,7 +13,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
@@ -23,9 +23,7 @@ jobs:
       working-directory: templates
 
     - name: dotnet pack
-      run: |
-        $version = $env:GITHUB_REF_NAME.TrimStart('v')
-        dotnet pack -c Release -o drop /p:Version=$version /p:InformationalVersion=$version
+      run: dotnet pack -c Release -o drop /p:Version=${GITHUB_REF_NAME#v}
 
     - uses: actions/upload-artifact@v3
       with:

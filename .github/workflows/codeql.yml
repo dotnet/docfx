@@ -6,7 +6,7 @@ on:
     - cron: '0 0 * * 0'
 jobs:
   codeql:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       security-events: write
 
@@ -15,7 +15,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-    - uses: actions/setup-dotnet@v1
+    - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
