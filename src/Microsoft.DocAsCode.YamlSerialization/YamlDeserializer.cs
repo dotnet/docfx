@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
     using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
     /// <summary>
-    /// A façade for the YAML library with the standard configuration.
+    /// A facade for the YAML library with the standard configuration.
     /// </summary>
     public sealed class YamlDeserializer
     {
