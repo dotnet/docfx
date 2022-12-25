@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode\Microsoft.DocAsCode.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
   </ItemGroup>
 
   <ItemGroup>
