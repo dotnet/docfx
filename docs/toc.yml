@@ -1,5 +1,5 @@
 ﻿- name: Docs
-  href: tutorial/
+  href: docs/
 - name: API
   href: obj/api/
 - name: Extensions

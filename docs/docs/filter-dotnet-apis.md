@@ -1,5 +1,4 @@
-How-to: Filter Out Unwanted APIs or Attributes 
-================================
+# Filter .NET APIs
 
 A filter configuration file is in [YAML](http://www.yaml.org/spec/1.2/spec.html) format. You may filter out unwanted APIs or attributes by providing a filter configuration file and specifying its path.
 

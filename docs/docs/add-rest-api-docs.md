@@ -1,8 +1,4 @@
-Introduction to REST API Documentation
-===============================
-
-Introduction
--------------
+# Add REST API docs
 
 DocFX supports generating documentation from REST APIs following [Swagger specification](http://swagger.io/specification/) version 2.0.
 

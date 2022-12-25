@@ -1,19 +1,21 @@
-Walkthrough Part III: Generate PDF Documentation
-==========================
+# Create PDF
 
-After completing [Walkthrough Part II: Add API Documentation to the Website](walkthrough_create_a_docfx_project_2.md), we successfully create a website containing both Conceptual and API documentation. In this section, we will generate PDF files for these articles.
 
-After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` folder is in the following structure(Download the artifacts [*HERE*](artifacts/walkthrough3.zip)):
+### 2.4 Generate PDF documentation command `docfx pdf`
 
+**Syntax**
 ```
-|- articles
-|- images
-|- src
-|- src2
-|- index.md
-|- toc.yml
-|- docfx.json
+docfx pdf [<config_file_path>] [-o:<output_path>]
 ```
+`docfx pdf` generates PDF for the files defined in config file, if config file is not specified, `docfx` tries to find and use `docfx.json` file under current folder.
+
+> [!NOTE]
+> Prerequisite: We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) and save the executable folder path to **%PATH%**. Or just install wkhtmltopdf using chocolatey: `choco install wkhtmltopdf`
+
+Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
+
+If `cover.md` is found in a folder, it will be rendered as the cover page.
+
 
 Step0. Install prerequisite 
 ---------------------------
@@ -104,26 +106,3 @@ Parameters are similar to `build` section, definitely it is using a different te
 
 Now, let's run `docfx`, and you can find pdf file walkthrough3_pdf.pdf generated under `_site_pdf` folder:
 ![PDF Preview](images/walkthrough3.png)
-
-*Optional* Step3. Enable plugins
-----------------------------------------------------
-If you wish to use plugins with pdf as well, you need to add a `template` node to the pdf section. It needs to start with the `pdf.template` followed by the path to the plugins you want to use:
-
-```json
-"template": [
-  "pdf.default",
-  "pluginPackages/rest.tagpage.2.31.0/content" 
-],
-```
-
-Conclusion
----------
-In this walkthrough, we build a PDF file according to the TOC file under `pdf` folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the table of contents page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.
-
-Read more
----------
-* [Walkthrough Part I: Generate a Simple Documentation Website](walkthrough_create_a_docfx_project.md)
-
-* [Walkthrough Part II: Adding API Documentation to the Website](walkthrough_create_a_docfx_project_2.md)
-
-* [Walkthrough Advanced: Customize Your Website](advanced_walkthrough.md)
