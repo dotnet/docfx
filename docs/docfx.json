@@ -18,17 +18,14 @@
         "dest": "api"
       },
       {
-        "files": [ "tutorial/**/*.{md,yml}", "*.{md,yml}", "templates-and-plugins/**/*.{md,yml}" ]
+        "files": [ "**/*.{md,yml}" ],
+        "exclude": [ "_site/**", "obj/**" ]
       }
     ],
     "resource": [
       {
         "files": [ "**/images/**" ],
-        "exclude": [ "_site/**", "**/obj/**", "**.meta" ]
-      },
-      {
-        "files": "schemas/**schema.json",
-        "src": ".."
+        "exclude": [ "_site/**", "obj/**" ]
       }
     ],
     "xrefService": [

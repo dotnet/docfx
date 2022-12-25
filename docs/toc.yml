@@ -3,4 +3,4 @@
 - name: API
   href: obj/api/
 - name: Extensions
-  href: templates-and-plugins/
+  href: extensions/
