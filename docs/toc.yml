@@ -1,9 +1,6 @@
-﻿- name: Tutorials
+﻿- name: Docs
   href: tutorial/
-- name: Specifications
-  href: spec/
-  homepage: spec/metadata_format_spec.md
-- name: API Documentation
-  href: obj/temp/docfxapi/
-- name: "Templates & Plugins"
+- name: API
+  href: obj/api/
+- name: Extensions
   href: templates-and-plugins/
