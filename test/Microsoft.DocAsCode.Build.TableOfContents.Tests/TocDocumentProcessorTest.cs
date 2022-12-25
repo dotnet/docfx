@@ -374,11 +374,6 @@ items:
 - name: Topic2
   href: sub1/sub2/toc.yml
 ";
-            // Test for OS sensitive file path
-            if (PathUtility.IsPathCaseInsensitive())
-            {
-                sub1tocmd = sub1tocmd.ToUpperInvariant();
-            }
 
             var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
             FileCollection files = new FileCollection(_inputFolder);
@@ -416,7 +411,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
-                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
+                                        IncludedFrom = "~/sub1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -437,7 +432,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
-                                        IncludedFrom = "~/SUB1/sub3/toc.md",
+                                        IncludedFrom = "~/sub1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -474,7 +469,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc",
-                                        IncludedFrom = "~/SUB1/sub2/toc.yml",
+                                        IncludedFrom = "~/sub1/sub2/toc.yml",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -494,7 +489,7 @@ items:
                                     new TocItemViewModel
                                     {
                                         Name = "ReferencedToc2",
-                                        IncludedFrom = "~/SUB1/sub3/toc.md",
+                                        IncludedFrom = "~/sub1/sub3/toc.md",
                                         Items = new TocViewModel
                                         {
                                             new TocItemViewModel
@@ -551,11 +546,11 @@ items:
         {
             var referencedToc = _fileCreator.CreateFile(@"
 - name: Topic
-  href: TOC.md
+  href: toc.md
 ", FileType.YamlToc, "sub1");
             var subToc = _fileCreator.CreateFile(@"
 #Topic
-##[ReferencedToc](Toc.yml)
+##[ReferencedToc](toc.yml)
 ", FileType.MarkdownToc, "sub1");
             var content = $@"
 - name: Topic1

@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -27,7 +27,7 @@ jobs:
       working-directory: templates
 
     - run: dotnet build -c Release
-    - run: dotnet test -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
 
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'windows-latest'

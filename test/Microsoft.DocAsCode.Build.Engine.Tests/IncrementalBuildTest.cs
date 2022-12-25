@@ -1564,7 +1564,7 @@ tagRules : [
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestSrcFileUpdate()
         {
             // conceptual1--->conceptual2(phase 2)
@@ -2017,7 +2017,7 @@ tagRules : [
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestLocalFileCaseChange()
         {
             #region Prepare test data
@@ -5259,8 +5259,7 @@ tagRules : [
             }
         }
 
-
-        [Fact]
+        [Fact(Skip = "Incremental build to be deprecated")]
         public void TestIncrementalWithContentProvidedDocumentType()
         {
             #region Prepare test data

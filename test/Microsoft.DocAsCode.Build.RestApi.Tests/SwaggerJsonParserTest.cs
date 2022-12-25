@@ -191,7 +191,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         [Fact]
         public void ParseKeyWordSwaggerJsonShouldSucceed()
         {
-            var swaggerFile = @"TestData/swagger/resolveKeyWordWithRefInside.json";
+            var swaggerFile = @"TestData/swagger/resolveKeywordWithRefInside.json";
             var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             ///test x-ms-examples: unresolved.
