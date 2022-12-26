@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotLiquid" Version="2.2.656" />
+    <PackageReference Include="DotLiquid" Version="2.2.677" />
     <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="Stubble.Core" Version="1.10.8" />
   </ItemGroup>
