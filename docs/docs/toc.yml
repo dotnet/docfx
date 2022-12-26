@@ -1,30 +1,30 @@
-﻿- name: Quick Start
-  href: ../index.md
+﻿- name: Getting Started
+  items:
+  - name: Quick Start
+    href: ../index.md
 - name: Essentials
   items:
-  - name: User Manual
-    href: docfx.exe_user_manual.md
+  - name: Markdown
+    href: markdown.md
   - name: Table of Contents
-    href: ../essentials/table-of-contents.md
-  - name: "HowTo: Filter Out Unwanted APIs"
-    href: howto_filter_out_unwanted_apis_attributes.md
-  - name: Walkthrough Topics
-    href: walkthrough/toc.md
-    homepage: walkthrough/walkthrough_overview.md
-- name: Content
+    href: table-of-contents.md
+  - name: Config
+    href: config.md
+  - name: Template
+    href: template.md
+  - name: .NET API Docs
+    href: dotnet-api-docs.md
+  - name: REST API Docs
+    href: rest-api-docs.md
+  - name: PDF
+    href: pdf.md
+- name: Reference
   items:
-  - name: TOC
-    href: intro_toc.md
-  - name: REST API
-    href: intro_rest_api_documentation.md
-  - name: Overwrite Files
-    href: intro_overwrite_files.md
-  - name: Links and Cross References
-    href: links_and_cross_references.md
-- name: Template System
-  items:
-  - name: Introduction
-    href: intro_template.md
-  - name: "HowTo: Create Custom Template"
-    href: howto_create_custom_template.md
-
+  - name: JSON Format
+    href: json-format.md
+  - name: .NET XML Tags
+    href: dotnet-xml-tags.md
+  - name: .NET YAML Format
+    href: dotnet-yaml-format.md
+  - name: REST API YAML Format
+    href: rest-api-yaml-format.md

@@ -49,11 +49,10 @@
       <div role="main" class="container body-content hide-when-search">
         {% include partials/toc -%}
         <div class="article row grid-right">
+          <h1>{{title}}</h1>
           <span class="pull-right mobile-hide">
-          <a href="{{contributionLink}}" class="contribution-link">Add Your Own Template and Tools</a>
+          <a href="{{contributionLink}}" class="contribution-link">Add Mine</a>
           </span>
-          {{rawTitle}}
-          {{description}}
           {%- if items -%}
           <ul id="template-container">
           {%- for template in items -%}

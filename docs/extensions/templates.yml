@@ -1,22 +1,23 @@
 ﻿### YamlMime:Dashboard
 ---
-uid: att
-title: Available templates and themes
+title: Templates
 documentType: dashboard
-contributionLink: ~/templates-and-plugins/contribute-your-template.md
+contributionLink: https://github.com/dotnet/docfx/edit/main/docs/extensions/templates.yml
 items: 
   - name: default
     description: The default template
     type: Embedded
-    thumbnail: ~/templates-and-plugins/images/default.screenshot.png
+    thumbnail: images/default.screenshot.png
     homepage: https://github.com/dotnet/docfx/tree/main/templates/default
     repository:
       type: git
       url: "https://github.com/dotnet/docfx/tree/main/templates/default"
   - name: statictoc
-    description: The template similar to default template however with static toc. With static toc, the generated web pages can be previewed from local file system.
+    description: |
+      The template similar to default template however with static toc. 
+      With static toc, the generated web pages can be previewed from local file system.
     type: Embedded
-    thumbnail: ~/templates-and-plugins/images/default.green.screenshot.png
+    thumbnail: images/default.green.screenshot.png
     homepage: https://github.com/dotnet/docfx/tree/main/templates/statictoc
     repository:
       type: git
@@ -31,7 +32,7 @@ items:
     version: 1.0.0
     engines:
       docfx: ">=2.17.4"
-    thumbnail: ~/templates-and-plugins/images/mathew.screenshot.png
+    thumbnail: images/mathew.screenshot.png
     homepage: https://github.com/MathewSachin/docfx-tmpl
     repository:
       type: git
@@ -48,7 +49,7 @@ items:
     version: 0.1
     engines:
       docfx: ">=2.40.0"
-    thumbnail: ~/templates-and-plugins/images/material.screenshot.png
+    thumbnail: images/material.screenshot.png
     homepage: https://ovasquez.github.io/docfx-material
     repository:
       type: git
@@ -65,7 +66,7 @@ items:
     version: 1.0
     engines:
       docfx: ">=2.40.0"
-    thumbnail: ~/templates-and-plugins/images/darkfx.screenshot.png
+    thumbnail: images/darkfx.screenshot.png
     homepage: https://github.com/steffen-wilke/darkfx
     repository:
       type: git
@@ -80,7 +81,7 @@ items:
     author: Marvin Neurath
     version: 1.0
     type: External
-    thumbnail: ~/templates-and-plugins/images/unityfx.png
+    thumbnail: images/unityfx.png
     homepage: https://github.com/code-beans/UnityFX
     repository:
       type: git
@@ -93,7 +94,7 @@ items:
     author: Mickael Bonfill (jbltx)
     version: 0.3
     type: External
-    thumbnail: ~/templates-and-plugins/images/discordfx.screenshot.png
+    thumbnail: images/discordfx.screenshot.png
     homepage: https://github.com/jbltx/DiscordFX
     repository:
       type: git
@@ -102,11 +103,12 @@ items:
       command: "-t default,templates/discordfx"
       config: '"template":["default","templates/discordfx"]'
   - name: SingulinkFX
-    description: Customizable responsive DocFX template designed with memberpage plugin compatibility to produce docs similar to Microsoft .NET docs.
+    description: |
+      Customizable responsive DocFX template designed with memberpage plugin compatibility to produce docs similar to Microsoft .NET docs.
     author: Singulink
     version: 1.0
     type: External
-    thumbnail: ~/templates-and-plugins/images/singulinkfx.screenshot.png
+    thumbnail: images/singulinkfx.screenshot.png
     homepage: https://github.com/Singulink/SingulinkFX
     repository:
       type: git
@@ -114,6 +116,3 @@ items:
     usage:
       command: "-t default,templates/singulinkfx"
       config: '"template":["default","templates/singulinkfx"]'
-description: |
-  # Dashboard for Templates
-  The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!

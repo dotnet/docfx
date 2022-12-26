@@ -1,3 +1,0 @@
-# `apt`
-## `description`
-Available plugins:

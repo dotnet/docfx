@@ -1,6 +1,6 @@
 # Quick Start
 
-Build your technical documentation site with docfx. Converts .NET assembly, XML code comment and markdown into rendered HTML pages, JSON model or PDF files.
+Build your technical documentation site with docfx. Converts .NET assembly, XML code comment, REST API Swagger files and markdown into rendered HTML pages, JSON model or PDF files.
 
 ## Create a New Docset
 
@@ -22,13 +22,71 @@ To create a new docset, run:
 docfx init --quiet
 ```
 
-This command creates a new docset under the default `docfx_project` directory. To build the docset, run: 
+This command creates a new docset under the `docfx_project` directory. To build the docset, run: 
 
-```
-cd docfx_project
-docfx --serve
+```bash
+docfx docfx_project/docfx.json --serve
 ```
 
 Now you can preview the website on <http://localhost:8080>.
 
-## Add .NET API reference
+To see your changes in local preview, save your changes then run this command in a new terminal to rebuild the website:
+
+```bash
+docfx docfx_project/docfx.json
+```
+
+## Publish to GitHub Pages
+
+Docfx produces static HTML files under the `_site` folder ready for publish to any static site hosting servers.
+
+To publish to GitHub Pages, [enable GitHub Pages](https://docs.github.com/en/pages/quickstart), then upload `_site` folder to GitHub Pages in your GitHub action workflow.
+
+This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish docset under the `docs` folder to the `gh-pages` branch:
+
+```yaml
+# Your GitHub workflow file under .github/workflows/
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+    with:
+        dotnet-version: 6.x
+
+    - run: dotnet install -g docfx
+    - run: docfx docs/docfx.json
+
+    - name: Deploy
+    uses: peaceiris/actions-gh-pages@v3
+    with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_site
+```
+
+## Use the NuGet Library
+
+You can also use docfx as a NuGet library:
+
+```xml
+<PackageReference Include="Microsoft.DocAsCode.App" Version="2.60.0" />
+```
+
+Then build a docset using:
+
+```cs
+await Microsoft.DocAsCode.Docset.Build("docfx.json");
+```
+
+See [API References](api/Microsoft.DocAsCode.yml) for additional APIs.
+
+## Next Steps
+
+- [Write Articles](docs/markdown.md)
+- [Organize Contents](docs/table-of-contents.md)
+- [Configure Website](docs/config.md)
+- [Customize Website](docs/template.md)
+- [Add .NET API Docs](docs/dotnet-api-docs.md)
+- [Add REST API Docs](docs/rest-api-docs.md)

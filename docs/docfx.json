@@ -7,16 +7,11 @@
           "src": "../src/Microsoft.DocAsCode.App"
         }
       ],
-      "dest": "obj/api"
+      "dest": "api"
     }
   ],
   "build": {
     "content": [
-      {
-        "files": [ "**/*.yml" ],
-        "src": "obj/api",
-        "dest": "api"
-      },
       {
         "files": [ "**/*.{md,yml}" ],
         "exclude": [ "_site/**", "obj/**" ]
@@ -37,10 +32,9 @@
       "_appFooter": "Made with <a href='https://dotnet.github.io/docfx/'>docfx</a>"
     },
     "dest": "_site",
-    "markdownEngineName": "markdig",
     "template": [
       "default",
-      "custom_template"
+      "template"
     ]
   }
 }

@@ -1,14 +1,13 @@
 ﻿### YamlMime:Dashboard
 ---
-uid: apt
-title: 'Available plugins and templates'
+title: Packages
 documentType: dashboard
-contributionLink: ~/templates-and-plugins/contribute-your-template.md
+contributionLink: https://github.com/dotnet/docfx/edit/main/docs/extensions/packages.yml
 items: 
   - name: memberpage
     description: It splits the *YAML* data model into member level. Currently it supports ManagedReference document type. With this template enabled, the class page contains lists of method overloads, fields, events and so on, while every method overload, field or event displays in a separated page.
     type: Internal
-    thumbnail: ~/templates-and-plugins/images/memberpage.default.screenshot.png
+    thumbnail: images/memberpage.default.screenshot.png
     homepage: https://www.nuget.org/packages/memberpage/
     repository:
       type: git
@@ -20,7 +19,7 @@ items:
   - name: rest.tagpage
     description: It splits the *REST* model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.
     type: Internal
-    thumbnail: ~/templates-and-plugins/images/rest.tagpage.default.screenshot.png
+    thumbnail: images/rest.tagpage.default.screenshot.png
     homepage: https://www.nuget.org/packages/rest.tagpage/
     repository:
       type: git
@@ -32,7 +31,7 @@ items:
   - name: rest.operationpage
     description: It splits the *REST* model into operation level model. If it's enabled together with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.
     type: Internal
-    thumbnail: ~/templates-and-plugins/images/rest.operationpage.default.screenshot.png
+    thumbnail: images/rest.operationpage.default.screenshot.png
     homepage: https://www.nuget.org/packages/rest.operationpage/
     repository:
       type: git
@@ -48,7 +47,7 @@ items:
     version: 1.0.0
     engines:
       docfx: ">=2.20.0"
-    thumbnail: ~/templates-and-plugins/images/roel4ez-feather.screenshot.png
+    thumbnail: images/roel4ez-feather.screenshot.png
     homepage: https://github.com/roel4ez/docfx-lightbox-plugin
     repository:
       type: git
@@ -65,7 +64,7 @@ items:
     version: 1.0.0
     engines:
       docfx: ">=2.20.0"
-    thumbnail: ~/templates-and-plugins/images/roel4ez-modal.screenshot.png
+    thumbnail: images/roel4ez-modal.screenshot.png
     homepage: https://github.com/roel4ez/docfx-lightbox-plugin
     repository:
       type: git
@@ -82,7 +81,7 @@ items:
     version: 1.0.13
     engines:
       docfx: ">=2.35.4"
-    thumbnail: ~/templates-and-plugins/images/docfx.plantuml.plugin.screenshot.png
+    thumbnail: images/docfx.plantuml.plugin.screenshot.png
     homepage: https://github.com/KevReed/DocFx.Plugins.PlantUml
     repository:
       type: git
@@ -92,6 +91,3 @@ items:
       init: "nuget install DocFx.Plugins.PlantUml -ExcludeVersion -OutputDirectory ."
       command: "-t default,DocFx.Plugins.PlantUml/template"
       config: '"template":["default","DocFx.Plugins.PlantUml/template"]'
-description: |
-  # Dashboard for Plugins
-  The plugins listed here mainly focus on the functionality of the generated website, it often contains a *plugins* folder containing assemblies for advanced processing of the data model. It usually also contains corresponding renderer files to further transform the processed data model to web pages. You can follow [How to Create Custom Document Processors](../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [How to Create Custom PostProcessor](../tutorial/howto_add_a_customized_post_processor.md) to create your own plugins. Add your own customized templates and plugins here for others to view and use!
