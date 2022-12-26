@@ -22,8 +22,6 @@
   items:
   - name: JSON Format
     href: json-format.md
-  - name: .NET XML Tags
-    href: dotnet-xml-tags.md
   - name: .NET YAML Format
     href: dotnet-yaml-format.md
   - name: REST API YAML Format

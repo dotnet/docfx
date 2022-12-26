@@ -26,6 +26,10 @@ The YAML document is a tree of TOC nodes, each of which has these properties:
 - `href`: The path the TOC node leads to. Optional because a node can exist just to parent other nodes.
 - `items`: If a node has children, they're listed in the items array.
 
+## Navigation Bar
+
+The `toc.yml` file in the `docfx.json` folder will be used to fill the content of the navigation bar at the top of the page.
+
 ## Nested TOCs
 
 To nest a TOC within another TOC, set the `href` property to point to the `toc.yml` file that you want to nest. You can also use this structure as a way to reuse a TOC structure in one or more TOC files.

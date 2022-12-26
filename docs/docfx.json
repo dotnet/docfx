@@ -1,12 +1,7 @@
 ﻿{
   "metadata": [
     {
-      "src": [
-        {
-          "files": [ "**.csproj" ],
-          "src": "../src/Microsoft.DocAsCode.App"
-        }
-      ],
+      "src": [ "../src/Microsoft.DocAsCode.App/*.csproj" ],
       "dest": "api"
     }
   ],
