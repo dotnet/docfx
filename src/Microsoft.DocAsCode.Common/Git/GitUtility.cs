@@ -37,6 +37,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static readonly string[] BuildSystemBranchName = new[]
         {
+            "GITHUB_REF_NAME",        // GitHub Actions
             "APPVEYOR_REPO_BRANCH",   // AppVeyor
             "Git_Branch",             // Team City
             "CI_BUILD_REF_NAME",      // GitLab CI

@@ -35,7 +35,7 @@ jobs:
     - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
-      if: github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest'
       with:
         name: site
         path: docs/_site

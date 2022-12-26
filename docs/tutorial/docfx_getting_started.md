@@ -110,6 +110,7 @@ Many build systems set an environment variable with the branch name.  DocFX uses
 - `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
 - `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
+- `GITHUB_REF_NAME` - [GitHub Actions](https://github.com/features/actions)
 
 Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use, if the CI service you use is not in the list above.
 
