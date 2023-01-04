@@ -35,5 +35,32 @@
     "markdownEngineName": "markdig",
     "dest": "_site",
     "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+  },
+  "pdf": {
+    "content": [
+      {
+        "files": [ "obj/api/*.yml" ],
+        "exclude": [ "**/toc.yml" ]
+      },
+      {
+        "files": [ "articles/**/*.md", "*.md", "restapi/**" ]
+      },
+      {
+        "files": [ "pdf/toc.yml" ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [ "articles/images/**"]
+      }
+    ],
+    "overwrite": "specs/*.md",
+    "markdownEngineName": "markdig",
+    "wkhtmltopdf": {
+      "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
+      "additionalArguments": "--enable-local-file-access"
+    },
+    "dest": "_site_pdf",
+    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
   }
 }
