@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
+    <RollForward>Major</RollForward>
     <Description>The docfx command line tool published as .NET tool</Description>
   </PropertyGroup>
 
