@@ -32,7 +32,13 @@ namespace Microsoft.DocAsCode.Tests
             else
             {
                 var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                Exec(docfxPath, $"{samplePath}/docfx.json --exportRawModel");
+                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json --exportRawModel");
+
+                if (OperatingSystem.IsWindows())
+                {
+                    Assert.Equal(0, exitCode);
+                    Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
+                }
             }
 
             return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
@@ -44,9 +50,9 @@ namespace Microsoft.DocAsCode.Tests
             var samplePath = $"{SamplesDir}/extensions";
             Clean(samplePath);
 #if DEBUG
-            Exec("dotnet", "run --project build", workingDirectory: samplePath);
+            Assert.Equal(0, Exec("dotnet", "run --project build", workingDirectory: samplePath));
 #else
-            Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath);
+            Assert.Equal(0, Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath));
 #endif
 
             var myMethodPage = $"{samplePath}/_site/api/MyExample.ExampleClass.MyMethod.html";
@@ -54,7 +60,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Contains("public string MyMethod()", File.ReadAllText(myMethodPage));
         }
 
-        private static void Exec(string filename, string args, string workingDirectory = null)
+        private static int Exec(string filename, string args, string workingDirectory = null)
         {
             var psi = new ProcessStartInfo(filename, args);
             psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
@@ -62,13 +68,16 @@ namespace Microsoft.DocAsCode.Tests
                 psi.WorkingDirectory= Path.GetFullPath(workingDirectory);
             var process = Process.Start(psi);
             process.WaitForExit();
-            Assert.Equal(0, process.ExitCode);
+            return process.ExitCode;
         }
 
         private static void Clean(string samplePath)
         {
             if (Directory.Exists($"{samplePath}/_site"))
                 Directory.Delete($"{samplePath}/_site", recursive: true);
+
+            if (Directory.Exists($"{samplePath}/_site_pdf"))
+                Directory.Delete($"{samplePath}/_site_pdf", recursive: true);
 
             foreach (var objPath in Directory.GetDirectories(samplePath, "obj", SearchOption.AllDirectories))
                 if (Directory.Exists(objPath))
