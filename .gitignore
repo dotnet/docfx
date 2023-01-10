@@ -1,28 +1,20 @@
-###############
-#    folder   #
-###############
-/**/DROP/
-/**/TEMP/
-/**/packages/
-/**/bin/
-/**/csx/
-/**/obj/
-/**/xdocoutput/
-/**/node_modules/
-/**/*.sln.ide/
-/TestResults/
-/TestTools/
-/.vs/
-.NuGet/
-artifacts/
-target/
-/**/_site/
-.vscode/
-.vs/
+packages
+bin
+csx
+obj
+xdocoutput
+node_modules
+*.sln.ide
+TestResults
+TestTools
+.vs
+.vscode
+.NuGet
+artifacts
+target
+_site
+_site_pdf
 
-###############
-#  temp file  #
-###############
 *.nupkg
 *.log
 *.tmp
@@ -43,9 +35,3 @@ project.lock.json
 package-lock.json
 *.sublime-workspace
 *.nuget.targets
-
-###############
-#    deploy   #
-###############
-tools/Deployment/.vscode/
-tools/Deployment/out/
