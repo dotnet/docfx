@@ -1,6 +1,6 @@
 # Table of Contents
 
-A table of contents (TOC) defines the structure of a docset.
+A table of contents (TOC) defines the structure of a set of documents.
 
 ## YAML TOC
 

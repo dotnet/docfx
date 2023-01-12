@@ -23,7 +23,7 @@ The `resource` config defines static resources copied to output as is.
 
 ## URL Management
 
-URL is determined by the file path relative to `docfx.json`. Docfx uses “Ugly URLs”: a file named `docs/urls.md` produces the `docs/urls.html` URL.
+URL is determined by the file path relative to `docfx.json`. Docfx uses “Ugly URLs”: a file named `docs/urls.md` is accessible from the `docs/urls.html` URL.
 
 To customize URL pattern for a directory, use the `src` property to remove the directory name from the URL, and use the `dest` property to insert an URL prefix:
 
@@ -37,22 +37,22 @@ To customize URL pattern for a directory, use the `src` property to remove the d
 }
 ```
 
-In this example, files in the `articles` directory uses `docs` as the base URL: The `articles/getting-started/installation.md` file produces the `docs/getting-started/installation.html` URL.
+In this example, files in the `articles` directory uses `docs` as the base URL: The `articles/getting-started/installation.md` file is accessible by the `docs/getting-started/installation.html` URL.
 
 ## Metadata
 
 Metadata are attributes attached to an file. It helps shape the look and feel of a page and provides extra context to the article.
 
-To add metadata to an article, use "YAML Front Matter":
+To add metadata to an article, use "YAML Front Matter" markdown extension syntax:
 
 ```md
 ---
-title:
-description:
+title: a title
+description: a description
 ---
 ```
 
-Some metadata attributes are consistent across a set of content. Use the `globalMetadata` property in `docfx.json` to apply the same metadata to all articles in a docset:
+Some metadata attributes are consistent across a set of content. Use the `globalMetadata` property in `docfx.json` to apply the same metadata to all articles:
 
 ```json
 {

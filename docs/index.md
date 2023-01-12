@@ -2,7 +2,7 @@
 
 Build your technical documentation site with docfx. Converts .NET assembly, XML code comment, REST API Swagger files and markdown into rendered HTML pages, JSON model or PDF files.
 
-## Create a New Docset
+## Create a New Website
 
 In this section we will build a simple documentation site on your local machine.
 
@@ -30,7 +30,7 @@ docfx docfx_project/docfx.json --serve
 
 Now you can preview the website on <http://localhost:8080>.
 
-To see your changes in local preview, save your changes then run this command in a new terminal to rebuild the website:
+To preview your local changes, save changes then run this command in a new terminal to rebuild the website:
 
 ```bash
 docfx docfx_project/docfx.json
@@ -38,11 +38,13 @@ docfx docfx_project/docfx.json
 
 ## Publish to GitHub Pages
 
-Docfx produces static HTML files under the `_site` folder ready for publish to any static site hosting servers.
+Docfx produces static HTML files under the `_site` folder ready for publishing to any static site hosting servers.
 
-To publish to GitHub Pages, [enable GitHub Pages](https://docs.github.com/en/pages/quickstart), then upload `_site` folder to GitHub Pages in your GitHub action workflow.
+To publish to GitHub Pages:
+1. [Enable GitHub Pages](https://docs.github.com/en/pages/quickstart).
+2. Upload `_site` folder to GitHub Pages using GitHub actions.
 
-This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish docset under the `docs` folder to the `gh-pages` branch:
+This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish to the `gh-pages` branch:
 
 ```yaml
 # Your GitHub workflow file under .github/workflows/
@@ -87,6 +89,4 @@ See [API References](api/Microsoft.DocAsCode.yml) for additional APIs.
 - [Write Articles](docs/markdown.md)
 - [Organize Contents](docs/table-of-contents.md)
 - [Configure Website](docs/config.md)
-- [Customize Website](docs/template.md)
 - [Add .NET API Docs](docs/dotnet-api-docs.md)
-- [Add REST API Docs](docs/rest-api-docs.md)
