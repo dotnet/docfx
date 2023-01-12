@@ -9,7 +9,10 @@ To add API docs for a .NET project, add a `metadata` section before the `build` 
 ```json
 {
   "metadata": {
-    "src": [ "../src/**/bin/Release/**.dll" ],
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
     "dest": "api"
   },
   "build": {
@@ -31,7 +34,10 @@ When file extension is `.csproj`, `.vbproj`, `.fsproj` or `.sln`, docfx builds t
 ```json
 {
   "metadata": {
-    "src": [ "../src/**/*.csproj" ],
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
     "dest": "api",
     "properties": {
       "TargetFramework": "net6.0"
@@ -45,7 +51,10 @@ When file extension is `.cs` or `.vb`, docfx uses the latest .NET Core SDK insta
 ```json
 {
   "metadata": {
-    "src": [ "../src/**/*.cs" ],
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
     "dest": "api",
     "references": [
       "path-to-my-library.dll"
@@ -66,7 +75,10 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
 ```json
 {
   "metadata": {
-    "src": [ "../src/**/bin/Release/**.dll" ],
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
     "dest": "api",
     "shouldSkipMarkup": true
   }
@@ -82,7 +94,10 @@ To add additional filter rules, add a custom YAML file and set the `filter` prop
 ```json
 {
   "metadata": {
-    "src": [ "../src/**/bin/Release/**.dll" ],
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
     "dest": "api",
     "filter": "filterConfig.yml" // <-- Path to custom filter config
   }
