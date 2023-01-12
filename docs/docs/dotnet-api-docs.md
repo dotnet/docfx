@@ -84,7 +84,7 @@ To add additional filter rules, add a custom YAML file and set the `filter` prop
   "metadata": {
     "src": [ "../src/**/bin/Release/**.dll" ],
     "dest": "api",
-    "filter": "filterConfig.yml"
+    "filter": "filterConfig.yml" // <-- Path to custom filter config
   }
 }
 ```
@@ -147,6 +147,3 @@ apiRules:
 ```
 
 Where the `ctorArguments` property specifies a list of match conditions based on constructor parameters and the `ctorNamedArguments` property specifies match conditions using named constructor arguments.
-
-
-## Create Member Pages

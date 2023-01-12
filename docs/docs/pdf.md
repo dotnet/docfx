@@ -1,108 +1,40 @@
 # Create PDF
 
+Docfx produces PDF files based on the TOC structure.
 
-### 2.4 Generate PDF documentation command `docfx pdf`
+## Install wkhtmltopdf
 
-**Syntax**
-```
-docfx pdf [<config_file_path>] [-o:<output_path>]
-```
-`docfx pdf` generates PDF for the files defined in config file, if config file is not specified, `docfx` tries to find and use `docfx.json` file under current folder.
+To build PDF files, first install `wkhtmltopdf` by downloading the latest binary from the [official site](https://wkhtmltopdf.org/downloads.html) or install using chocolatey: `choco install wkhtmltopdf`.
 
-> [!NOTE]
-> Prerequisite: We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) and save the executable folder path to **%PATH%**. Or just install wkhtmltopdf using chocolatey: `choco install wkhtmltopdf`
+Make sure the `wkhtmltopdf` command is added to `PATH` environment variable and is available in the terminal.
 
-Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
+## PDF Config
 
-If `cover.md` is found in a folder, it will be rendered as the cover page.
+Add a `pdf` section in `docfx.json`:
 
-
-Step0. Install prerequisite 
----------------------------
-We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) to some folder, e.g. `E:\Program Files\wkhtmltopdf\`, and save the executable folder path to **%PATH%** by: `set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin`.
-
-> [!NOTE]
-> Alternativeley you can install wkhtmltopdf via [chocolatey](https://chocolatey.org/) with `choco install wkhtmltopdf`. This will also add the executable folder to **%PATH%** during installation.
-
-Step1. Add a toc.yml specific for PDF
----------------------------
-Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the table of contents page of the PDF, so we create a `toc.yml` file specific for PDF under a new folder `pdf`, using [TOC Include](http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file) to include content from other TOC files.
-```yml
-- name: Articles
-  href: ../articles/toc.yml
-- name: Api Documentation
-  href: ../api/toc.yml
-- name: Another Api Documentation
-  href: ../api-vb/toc.yml
-```
-
-Step2. Add *pdf* section into docfx.json
-----------------------------------------------------
-Parameters are similar to `build` section, definitely it is using a different template (the builtin template is `pdf.default`), with another output destination. We also exclude TOC files as each TOC file generates a PDF file:
 ```json
-...
+{
   "pdf": {
-    "content": [
-      {
-        "files": [
-          "api/**.yml",
-          "api-vb/**.yml"
-        ],
-        "exclude": [
-          "**/toc.yml",
-          "**/toc.md"
-        ]
-      },
-      {
-        "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
-          "toc.yml",
-          "*.md",
-          "pdf/*"
-        ],
-        "exclude": [
-          "**/bin/**",
-          "**/obj/**",
-          "_site_pdf/**",
-          "**/toc.yml",
-          "**/toc.md"
-        ]
-      },
-      {
-        "files": "pdf/toc.yml"
-      }
-    ],
-    "resource": [
-      {
-        "files": [
-          "images/**"
-        ],
-        "exclude": [
-          "**/bin/**",
-          "**/obj/**",
-          "_site_pdf/**"
-        ]
-      }
-    ],
-    "overwrite": [
-      {
-        "files": [
-          "apidoc/**.md"
-        ],
-        "exclude": [
-          "**/bin/**",
-          "**/obj/**",
-          "_site_pdf/**"
-        ]
-      }
-    ],
+    "content": [{
+      "files": [ "**/*.{md,yml}" ]
+    }],
     "wkhtmltopdf": {
       "additionalArguments": "--enable-local-file-access"
     },
-    "dest": "_site_pdf"
   }
+}
 ```
 
-Now, let's run `docfx`, and you can find pdf file walkthrough3_pdf.pdf generated under `_site_pdf` folder:
-![PDF Preview](images/walkthrough3.png)
+Most of the config options are the same as `build` config. The `wkhtmltopdf` config contains additional details to control `wkhtmltopdf` behavior:
+- `filePath`: Path to `wkhtmltopdf.exe`.
+- `additionalArguments`: Additional command line arguments passed to `wkhtmltopdf`. Usually needs `--enable-local-file-access` to allow access to local files.
+
+Running `docfx` command againt the above configuration produces a PDF file for every TOC included in the `content` property. The PDF files are placed under the `_site_pdf` folder based on the TOC name.
+
+See [this sample](https://github.com/dotnet/docfx/tree/main/samples/seed) on an example PDF config.
+
+## Add Cover Page
+
+A cover page is the first PDF page before the TOC page.
+
+To add a cover page, add a `cover.md` file alongside `toc.yml`. The content of `cover.md` will be rendered as the PDF cover page.
