@@ -14,13 +14,10 @@
     href: template.md
   - name: .NET API Docs
     href: dotnet-api-docs.md
+  - name: .NET YAML Format
+    href: dotnet-yaml-format.md
   - name: REST API Docs
     href: rest-api-docs.md
   - name: PDF
     href: pdf.md
-- name: Reference
-  items:
-  - name: JSON Format
-    href: json-format.md
-  - name: .NET YAML Format
-    href: dotnet-yaml-format.md
+
