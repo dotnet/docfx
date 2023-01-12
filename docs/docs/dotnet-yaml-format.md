@@ -1,12 +1,8 @@
-DocFx: Metadata Format for .NET Languages
-===============================================
+# .NET API Docs YAML Format
 
-## 0. Introduction
+This document describes the YAML file format to represent .NET API docs.
 
-
-### 0.1 Goal and Non-goals
-
-### 0.2 Terminology
+The first line of the YAML file is the magic header `### YamlMime:ManagedReference`.
 
 ## 1. Items
 

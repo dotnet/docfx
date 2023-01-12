@@ -75,4 +75,78 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
 
 ## Filter APIs
 
+Docfx hides generated code or members marked as `[EditorBrowsableAttribute]` from API docs using filters. The [default filter config](https://github.com/dotnet/docfx/blob/main/src/Microsoft.DocAsCode.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) contains common API patterns to exclude from docs. 
+
+To add additional filter rules, add a custom YAML file and set the `filter` property in `docfx.json` to point to the custom YAML filter:
+
+```json
+{
+  "metadata": {
+    "src": [ "../src/**/bin/Release/**.dll" ],
+    "dest": "api",
+    "filter": "filterConfig.yml"
+  }
+}
+```
+
+The filter config is a list of rules. A rule can include or exclude a set of APIs based on a pattern. The rules are processed sequentially and would stop when a rule matches.
+
+### Filter by UID
+
+Every item in the generated API docs has a [`UID`](dotnet-yaml-format.md) (a unique identifier calculated for each API) to filter against using regular expression. This example uses `uidRegex` to excludes all APIs whose uids start with `Microsoft.DevDiv` but not `Microsoft.DevDiv.SpecialCase`.
+
+```yaml
+apiRules:
+- include:
+    uidRegex: ^Microsoft\.DevDiv\.SpecialCase
+- exclude:
+    uidRegex: ^Microsoft\.DevDiv
+```
+
+### Filter by Type
+
+This example exclude APIs whose uid starts with `Microsoft.DevDiv` and type is `Type`:
+
+```yaml
+apiRules:
+- exclude:
+    uidRegex: ^Microsoft\.DevDiv
+    type: Type
+```
+
+Supported value for `type` are:
+- `Namespace`
+- `Class`
+- `Struct`
+- `Enum`
+- `Interface`
+- `Delegate`
+- `Event`
+- `Field`
+- `Method`
+- `Property`
+
+- `Type`: a `Class`, `Struct`, `Enum`, `Interface` or `Delegate`.
+- `Member`: a `Field`, `Event`, `Method` or `Property`.
+
+API filter are hierarchical, if a namespace is excluded, all types/members defined in the namespace would also be excluded. Similarly, if a type is excluded, all members defined in the type would also be excluded.
+
+### Filter by Attribute
+
+ This example excludes all APIs which have `AttributeUsageAttribute` set to `System.AttributeTargets.Class` and the `Inherited` argument set to `true`:
+
+```yaml
+apiRules:
+- exclude:
+  hasAttribute:
+    uid: System.AttributeUsageAttribute
+    ctorArguments:
+    - System.AttributeTargets.Class
+    ctorNamedArguments:
+      Inherited: "true"
+```
+
+Where the `ctorArguments` property specifies a list of match conditions based on constructor parameters and the `ctorNamedArguments` property specifies match conditions using named constructor arguments.
+
+
 ## Create Member Pages

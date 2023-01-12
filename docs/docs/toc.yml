@@ -24,5 +24,3 @@
     href: json-format.md
   - name: .NET YAML Format
     href: dotnet-yaml-format.md
-  - name: REST API YAML Format
-    href: rest-api-yaml-format.md
