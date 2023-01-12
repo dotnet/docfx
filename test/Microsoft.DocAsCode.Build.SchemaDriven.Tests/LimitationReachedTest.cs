@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     [Collection("docfx STA")]
     public class LimitationReachedTest : TestBase
     {
-        private const string SpecPath = @"TestData\specs\docfx_document_schema.md";
         private static Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

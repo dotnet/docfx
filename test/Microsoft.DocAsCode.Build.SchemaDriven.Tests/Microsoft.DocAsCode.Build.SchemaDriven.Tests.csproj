@@ -17,12 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\spec\docfx_document_schema.md" Link="TestData\specs\docfx_document_schema.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="TestData\inputs\EmptyUidReference.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
