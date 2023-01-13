@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
     /// Provides access to a set of documentations
     /// and their associated configs, compilations and models.
     /// </summary>
-    public class Docset
+    public static class Docset
     {
         /// <summary>
         /// Builds a docset specified by docfx.json config.

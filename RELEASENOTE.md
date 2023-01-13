@@ -1,5 +1,7 @@
-Version Notes (Current Version: v2.59.5)
+Release Notes
 =======================================
+
+> NOTE: Starting from v2.30.0, release notes are published to [GitHub Releases](https://github.com/dotnet/docfx/releases).
 
 v2.59.5
 -----------

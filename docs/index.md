@@ -1,66 +1,92 @@
----
-title: DocFX - static documentation generator
-documentType: index
----
-<style type="text/css">
-footer{
-  position: relative;
-}
-</style>
+# Quick Start
 
-<div class="hero">
-  <div class="wrap">
-    <div class="text">
-      <strong>DocFX</strong>
-    </div>
-    <div class="buttons-unit-small">
-      <a class="version-link" href="../RELEASENOTE.md">Release Notes</a><span>|</span><a class="github-link" href="https://github.com/dotnet/docfx">View on Github</a>
-    </div>
-    <div class="minitext">
-    An extensible and scalable static documentation generator.
-    </div>
-    <div class="buttons-unit">
-      <a href="tutorial/docfx_getting_started.md" class="button"><i class="glyphicon glyphicon-send"></i>Get Started</a>
-      <a href="https://github.com/dotnet/docfx/releases" class="button"><i class="glyphicon glyphicon-download"></i>Download</a>
-    </div>
-  </div>
-</div>
-<div class="key-section">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2 text-center">
-        <i class="glyphicon glyphicon-grain"></i>
-        <section>
-          <h2>Generate static sites from Markdown and code files</h2>
-          <p class="lead">DocFX can produce documentation from source code (including C#, F#, Visual Basic, REST, JavaScript, Java, Python and TypeScript) as well as raw Markdown files.</p>
-        </section>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="counter-key-section">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2 text-center">
-        <i class="glyphicon glyphicon-transfer"></i>
-        <section>
-          <h2>Run everywhere</h2>
-          <p class="lead">DocFX can run on Linux, macOS, and Windows. The generated static website can be deployed to any host such as GitHub Pages or Azure Websites with no additional configuration.</p>
-        </section>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="key-section">
-  <div class="container content">
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2 text-center">
-        <i class="glyphicon glyphicon-cutlery"></i>
-        <section>
-          <h2>Easily customize the output</h2>
-          <p class="lead">DocFX provides a flexible way to customize templates and themes.</p>
-        </section>
-      </div>
-    </div>
-  </div>
-</div>
+Build your technical documentation site with docfx. Converts .NET assembly, XML code comment, REST API Swagger files and markdown into rendered HTML pages, JSON model or PDF files.
+
+## Create a New Website
+
+In this section we will build a simple documentation site on your local machine.
+
+> Prerequisites
+> - Familiarity with the command line
+> - Install [.NET SDK](https://dotnet.microsoft.com/en-us/download) 6.0 or higher
+
+Make sure you have [.NET SDK](https://dotnet.microsoft.com/en-us/download) installed, then open a terminal and enter the following command to install the latest docfx:
+
+```bash
+dotnet tool update -g docfx
+```
+
+To create a new docset, run:
+
+```bash
+docfx init --quiet
+```
+
+This command creates a new docset under the `docfx_project` directory. To build the docset, run: 
+
+```bash
+docfx docfx_project/docfx.json --serve
+```
+
+Now you can preview the website on <http://localhost:8080>.
+
+To preview your local changes, save changes then run this command in a new terminal to rebuild the website:
+
+```bash
+docfx docfx_project/docfx.json
+```
+
+## Publish to GitHub Pages
+
+Docfx produces static HTML files under the `_site` folder ready for publishing to any static site hosting servers.
+
+To publish to GitHub Pages:
+1. [Enable GitHub Pages](https://docs.github.com/en/pages/quickstart).
+2. Upload `_site` folder to GitHub Pages using GitHub actions.
+
+This example uses [`peaceiris/actions-gh-pages`](https://github.com/marketplace/actions/github-pages-action) to publish to the `gh-pages` branch:
+
+```yaml
+# Your GitHub workflow file under .github/workflows/
+
+jobs:
+  publish-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+    with:
+        dotnet-version: 6.x
+
+    - run: dotnet install -g docfx
+    - run: docfx docs/docfx.json
+
+    - name: Deploy
+    uses: peaceiris/actions-gh-pages@v3
+    with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/_site
+```
+
+## Use the NuGet Library
+
+You can also use docfx as a NuGet library:
+
+```xml
+<PackageReference Include="Microsoft.DocAsCode.App" Version="2.60.0" />
+```
+
+Then build a docset using:
+
+```cs
+await Microsoft.DocAsCode.Docset.Build("docfx.json");
+```
+
+See [API References](api/Microsoft.DocAsCode.yml) for additional APIs.
+
+## Next Steps
+
+- [Write Articles](docs/markdown.md)
+- [Organize Contents](docs/table-of-contents.md)
+- [Configure Website](docs/config.md)
+- [Add .NET API Docs](docs/dotnet-api-docs.md)

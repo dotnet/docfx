@@ -1,0 +1,77 @@
+### YamlMime:Dashboard
+---
+title: Tools
+documentType: dashboard
+contributionLink: https://github.com/dotnet/docfx/edit/main/docs/extensions/tools.yml
+items:
+  - name: DocFxTocGenerator
+    description: |
+      Generate a Table of Contents (TOC) in YAML format for DocFX. 
+      It has features like the ability to configure the order of files and the names of documents and folders. 
+      This tool is part of the DocFx Companion Tools set that can be installed using Chocolatey.
+    type: External
+    thumbnail: images/docfxtocgenerator.screenshot.png
+    homepage: https://github.com/Ellerbach/docfx-companion-tools
+    repository:
+      type: git
+      url: "https://github.com/Ellerbach/docfx-companion-tools/tree/main/src/DocFxTocGenerator"
+    license: MIT
+    usage:
+      install: "choco install docfx-companion-tools"
+      init: "git clone https://github.com/Ellerbach/docfx-companion-tools.git"
+      command: "TocGenerator -d <docs folder> [-o <output folder>] [-vsi]"
+  - name: DocLinkChecker
+    description: |
+      Validate links in documents and check for orphaned attachments in the .attachments folder. 
+      The tool indicates whether there are errors or warnings, so it can be used in a CI pipeline.
+      It can also clean up orphaned attachments automatically.
+      This tool is part of the DocFx Companion Tools set that can be installed using Chocolatey. 
+    type: External
+    thumbnail: images/doclinkchecker.screenshot.png
+    homepage: https://github.com/Ellerbach/docfx-companion-tools
+    repository:
+      type: git
+      url: "https://github.com/Ellerbach/docfx-companion-tools/tree/main/src/DocLinkChecker"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/Ellerbach/docfx-companion-tools.git"
+      command: "DocLinkChecker -d <docs folder> [-vac]"
+  - name: DocLanguageTranslator
+    description: |
+      Allows to generate and translate automatically missing files or identify missing files in multi language pattern directories.
+      This tool is part of the DocFx Companion Tools set that can be installed using Chocolatey.
+    type: External
+    thumbnail: images/doclanguagetranslator.screenshot.png
+    homepage: https://github.com/Ellerbach/docfx-companion-tools
+    repository:
+      type: git
+      url: "https://github.com/Ellerbach/docfx-companion-tools/tree/main/src/DocLanguageTranslator"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/Ellerbach/docfx-companion-tools.git"
+      command: "DocLanguageTranslator -d <docs folder> [-k <key>] [-l <location>] [-cv]"
+  - name: DocFx Quick Start
+    description: |
+      A repo containing documentation, configuration and sample pipelines to help you get started quickly with DocFx.
+      The Quick Start can be used as a reference or to copy elements from it to your own repo.
+      The Quick Start itself can be generated to a website using DocFx as well.
+      It uses the DocFx Companion Tools *DocFxTocGenerator* and *DocLinkChecker*.
+    type: External
+    thumbnail: images/docfxquickstart.screenshot.png
+    homepage: https://github.com/mtirionMSFT/DocFxQuickStart
+    repository:
+      type: git
+      url: "https://github.com/mtirionMSFT/DocFxQuickStart"
+    license: MIT
+    usage:
+      init: "git clone https://github.com/mtirionMSFT/DocFxQuickStart.git"
+  - name: Addin for Cake Build System
+    description: |
+      Cake AddIn that generates documentation for .Net API reference and markdown files using DocFx.
+    type: External
+    thumbnail: images/cake-contrib-addin-large.png
+    homepage: https://cakebuild.net/extensions/cake-docfx/
+    repository:
+      type: git
+      url: "https://github.com/cake-contrib/Cake.DocFx.git"
+    license: MIT

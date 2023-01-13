@@ -1,0 +1,23 @@
+﻿- name: Getting Started
+  items:
+  - name: Quick Start
+    href: ../index.md
+- name: Essentials
+  items:
+  - name: Markdown
+    href: markdown.md
+  - name: Table of Contents
+    href: table-of-contents.md
+  - name: Config
+    href: config.md
+  - name: Template
+    href: template.md
+  - name: .NET API Docs
+    href: dotnet-api-docs.md
+  - name: .NET YAML Format
+    href: dotnet-yaml-format.md
+  - name: REST API Docs
+    href: rest-api-docs.md
+  - name: PDF
+    href: pdf.md
+

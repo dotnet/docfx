@@ -27,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     [Collection("docfx STA")]
     public class SchemaDrivenProcessorTest : TestBase
     {
-        private const string SpecPath = @"TestData/specs/docfx_document_schema.md";
         private static readonly Regex InputMatcher = new Regex(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex SchemaMatcher = new Regex(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -53,37 +52,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             };
 
             _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
-        }
-
-        [Fact]
-        public void TestCaseFromSchemaSpec()
-        {
-            using var listener = new TestListenerScope("TestCaseFromSchemaSpec");
-            var spec = File.ReadAllText(SpecPath);
-            var input = InputMatcher.Match(spec).Groups[2].Value;
-            var inputFileName = "landingPage1.yml";
-            var inputFile = CreateFile(inputFileName, input, _inputFolder);
-            File.WriteAllText(_inputFolder + "/landingPage1.yml", input);
-
-            var schema = SchemaMatcher.Match(spec).Groups[1].Value;
-            var schemaFile = CreateFile("template/schemas/landingpage.schema.json", schema, _templateFolder);
-            FileCollection files = new FileCollection(_defaultFiles);
-            files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-            BuildDocument(files);
-
-            Assert.Equal(13, listener.Items.Count);
-            Assert.Equal("There is no template processing document type(s): LandingPage", listener.Items.FirstOrDefault(s => s.Message.StartsWith("There")).Message);
-            Assert.Equal(10, listener.Items.Count(s => s.Message.StartsWith("Invalid file link")));
-
-            var rawModelFilePath = GetRawModelFilePath(inputFileName);
-            Assert.True(File.Exists(rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
-
-            Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
-            Assert.Equal("Hello world!", rawModel["meta"].ToString());
-            Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
-            Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/sections/1/children/0/content\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
-                , rawModel["sections"][1]["children"][0]["content"].ToString());
         }
 
         [Fact]
