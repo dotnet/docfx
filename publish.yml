@@ -27,7 +27,7 @@ jobs:
     inputs:
       FileDirPath: '$(Build.SourcesDirectory)'
 
-  - task: EsrpCodeSigning@1
+  - task: EsrpCodeSigning@2
     displayName: 'Sign NuGet packages'
     inputs:
       ConnectedServiceName: 'CodeSigning-APEX'
