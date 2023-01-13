@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -135,9 +136,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             var baseUrl = uri.GetLeftPart(UriPartial.Path);
             baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
-            using var wc = new WebClient();
-            ServicePointManager.CheckCertificateRevocationList = true;
-            using var stream = await wc.OpenReadTaskAsync(uri);
+            using var httpClient = new HttpClient(new HttpClientHandler() { CheckCertificateRevocationList = true });
+            using var stream = await httpClient.GetStreamAsync(uri);
             using var sr = new StreamReader(stream);
             var map = YamlUtility.Deserialize<XRefMap>(sr);
             map.BaseUrl = baseUrl;

@@ -967,15 +967,15 @@ exports.getOptions = function (){
                 _fakeResponses.Add(uri, responseMessage);
             }
 
-            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
             {
                 if (_fakeResponses.ContainsKey(request.RequestUri))
                 {
-                    return _fakeResponses[request.RequestUri];
+                    return Task.FromResult(_fakeResponses[request.RequestUri]);
                 }
                 else
                 {
-                    return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+                    return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request });
                 }
             }
         }

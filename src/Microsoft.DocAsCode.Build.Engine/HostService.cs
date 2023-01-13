@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly object _syncRoot = new object();
         private readonly object _tocSyncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<ModelWithCache> _lru;
         #endregion
 
         #region Properties
@@ -494,10 +493,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
             EventHandler contentAccessedHandler = null;
-            if (_lru != null)
-            {
-                contentAccessedHandler = ContentAccessedHandler;
-            }
             if (Models != null)
             {
                 foreach (var m in Models)
@@ -591,11 +586,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 FileMap[m.OriginalFileAndType] = m.FileAndType;
             }
-        }
-
-        private void ContentAccessedHandler(object sender, EventArgs e)
-        {
-            _lru.Access((ModelWithCache)sender);
         }
 
         private static void OnLruRemoving(ModelWithCache m)

@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return path;
         }
 
-        private string GetImageLink(string href, MarkdownObject origin, string? altText) => GetLink(href, origin);
+        private string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
 
         private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
         {
