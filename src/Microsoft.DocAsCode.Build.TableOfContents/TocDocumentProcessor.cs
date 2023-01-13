@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             // TODO: what if user wants to set TocHref?
             var tocHref = item.TocHref;
             var tocHrefType = Utility.GetHrefType(tocHref);
-            if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
+            if (tocHrefType == HrefType.YamlTocFile)
             {
                 context.RegisterToc(key, HttpUtility.UrlDecode(UriUtility.GetPath(tocHref)));
             }

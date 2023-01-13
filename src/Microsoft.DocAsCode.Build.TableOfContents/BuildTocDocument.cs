@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             var tocHref = item.TocHref;
             var type = Utility.GetHrefType(tocHref);
-            if (type == HrefType.MarkdownTocFile || type == HrefType.YamlTocFile)
+            if (type == HrefType.YamlTocFile)
             {
                 UpdateNearestTocCore(host, UriUtility.GetPath(tocHref), toc, nearest);
             }

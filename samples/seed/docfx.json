@@ -19,7 +19,8 @@
         "dest": "api"
       },
       {
-        "files": [ "articles/**/*.md", "*.md", "toc.yml", "restapi/**" ]
+        "files": [ "articles/**/*.md", "*.md", "**/toc.yml", "restapi/**" ],
+        "exclude": [ "pdf/toc.yml" ]
       }
     ],
     "resource": [
@@ -32,6 +33,7 @@
       "_appTitle": "docfx seed website",
       "_enableSearch": true
     },
+    "exportRawModel": true,
     "markdownEngineName": "markdig",
     "dest": "_site",
     "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]

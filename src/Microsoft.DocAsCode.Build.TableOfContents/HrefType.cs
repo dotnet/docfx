@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         AbsolutePath,
         RelativeFile,
         RelativeFolder,
-        MarkdownTocFile,
         YamlTocFile,
     }
 }

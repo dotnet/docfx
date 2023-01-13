@@ -1,0 +1,4 @@
+﻿- name: Pet Store API
+  href: petstore.swagger.json
+- name: Contacts API
+  href: contacts_swagger2.json

@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             // check whether toc exists
             TocItemInfo tocFileModel = null;
-            if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
+            if (!string.IsNullOrEmpty(item.TocHref) && tocHrefType == HrefType.YamlTocFile)
             {
                 var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
                 var tocFile = file.ChangeFile(tocFilePath);
@@ -219,7 +219,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
                     }
                     break;
-                case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
                         item.IncludedFrom = item.Href;
@@ -396,7 +395,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return;
             }
             var hrefType = Utility.GetHrefType(item.Href);
-            if ((hrefType == HrefType.MarkdownTocFile || hrefType == HrefType.YamlTocFile || hrefType == HrefType.RelativeFolder) &&
+            if ((hrefType == HrefType.YamlTocFile || hrefType == HrefType.RelativeFolder) &&
                 (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href)))
             {
                 Logger.LogWarning($"Illegal href: {item.Href}.`#` or `?` aren't allowed when referencing toc file.");

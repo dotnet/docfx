@@ -7,19 +7,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
 
     internal static class Utility
     {
         public static bool IsSupportedFile(string file)
         {
-            var fileType = GetTocFileType(file);
-            if (fileType == TocFileType.Markdown || fileType == TocFileType.Yaml)
-            {
-                return true;
-            }
-
-            return false;
+            return string.Equals("toc.yml", Path.GetFileName(file), StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool IsSupportedRelativeHref(string href)
@@ -32,8 +25,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             // TocFile href type can happen when homepage is set to toc.yml explicitly
             return hrefType == HrefType.RelativeFile
-                || hrefType == HrefType.YamlTocFile
-                || hrefType == HrefType.MarkdownTocFile;
+                || hrefType == HrefType.YamlTocFile;
         }
 
         public static HrefType GetHrefType(string href)
@@ -49,40 +41,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return HrefType.RelativeFolder;
             }
 
-            var tocFileType = GetTocFileType(hrefWithoutAnchor);
-
-            if (tocFileType == TocFileType.Markdown)
-            {
-                return HrefType.MarkdownTocFile;
-            }
-
-            if (tocFileType == TocFileType.Yaml)
+            if (IsSupportedFile(hrefWithoutAnchor))
             {
                 return HrefType.YamlTocFile;
             }
 
             return HrefType.RelativeFile;
-        }
-
-        public static TocFileType GetTocFileType(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-            {
-                return TocFileType.None;
-            }
-
-            var fileName = Path.GetFileName(filePath);
-
-            if (Constants.TableOfContents.MarkdownTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
-            {
-                return TocFileType.Markdown;
-            }
-            if (Constants.TableOfContents.YamlTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
-            {
-                return TocFileType.Yaml;
-            }
-
-            return TocFileType.None;
         }
     }
 }

@@ -27,12 +27,12 @@ namespace Microsoft.DocAsCode.Tests
             if (Debugger.IsAttached)
             {
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json", "--exportRawModel" }));
+                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
             }
             else
             {
                 var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json --exportRawModel");
+                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json");
 
                 if (OperatingSystem.IsWindows())
                 {

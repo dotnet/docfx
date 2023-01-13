@@ -72,20 +72,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 throw new FileNotFoundException($"File {file} does not exist.", file);
             }
 
-            var fileType = Utility.GetTocFileType(file);
             try
             {
-                if (fileType == TocFileType.Markdown)
-                {
-                    return new TocItemViewModel
-                    {
-                        Items = MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file)
-                    };
-                }
-                else if (fileType == TocFileType.Yaml)
-                {
-                    return LoadYamlToc(file);
-                }
+                return LoadYamlToc(file);
             }
             catch (Exception e)
             {
