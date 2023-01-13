@@ -5,20 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/common" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/common" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
     
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
 
-    <Content Include="../../templates/default(zh-cn)/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default(zh-cn)" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="../../templates/default(zh-cn)/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default(zh-cn)" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
 
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/pdf.default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="../../templates/pdf.default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
 
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude);**/toc.html.*" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/statictoc/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude);**/toc.html.*" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="../../templates/statictoc/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +51,5 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />
   </ItemGroup>
 </Project>
