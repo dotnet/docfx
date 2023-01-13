@@ -187,7 +187,7 @@ outputFileName: {renameFile2}
                 var outputHtml = GetOutputFilePath(renameFile2);
                 Assert.True(File.Exists(outputHtml));
                 var content = File.ReadAllText(outputHtml);
-                Assert.Equal($"<p><a href=\"{renameFile1}\">Constructor</a></p>\n",
+                Assert.Equal($"\n<p><a href=\"{renameFile1}\">Constructor</a></p>\n",
 content);
             }
         }
@@ -215,7 +215,7 @@ Some content";
             Assert.Equal("This is title", title);
             Assert.True(model.TryGetValue("rawTitle", out var rawTitle));
             Assert.Equal(
-                "<h1 id=\"this-is-title\" sourcefile=\"title.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">This is title</h1>",
+                "<h1 id=\"this-is-title\" sourcefile=\"title.md\" sourcestartlinenumber=\"1\">This is title</h1>",
                 rawTitle);
         }
 

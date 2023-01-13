@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var paragraphBlockParser = pipeline.BlockParsers.FindExact<ParagraphBlockParser>() ?? new ParagraphBlockParser();
             pipeline.BlockParsers.Clear();
             pipeline.BlockParsers.Add(paragraphBlockParser);
-            pipeline.BlockParsers.Add(new YamlFrontMatterParser());
+            pipeline.BlockParsers.Add(new YamlFrontMatterParser { AllowInMiddleOfDocument = true });
         }
 
         public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

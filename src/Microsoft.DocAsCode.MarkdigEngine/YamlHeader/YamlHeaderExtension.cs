@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             if (!pipeline.BlockParsers.Contains<YamlFrontMatterParser>())
             {
                 // Insert the YAML parser before the thematic break parser, as it is also triggered on a --- dash
-                pipeline.BlockParsers.InsertBefore<ThematicBreakParser>(new YamlFrontMatterParser());
+                pipeline.BlockParsers.InsertBefore<ThematicBreakParser>(new YamlFrontMatterParser { AllowInMiddleOfDocument = true });
             }
         }
 

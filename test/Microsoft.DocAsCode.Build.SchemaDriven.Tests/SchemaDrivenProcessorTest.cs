@@ -98,7 +98,7 @@ breadcrumb_path: https://live.docs.microsoft.com/absolute/toc.json
             Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
             Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
             Assert.Equal("../a b/toc.md", rawModel["toc_rel"].Value<string>());
-            Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/file_include\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
+            Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" jsonPath=\"/file_include\"><a href=\"~/{inputFile}\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\">root</a></p>\n",
                 rawModel["file_include"].Value<string>());
             Assert.Equal("../../a b/toc.md", rawModel["file_include2"].Value<string>());
             Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());

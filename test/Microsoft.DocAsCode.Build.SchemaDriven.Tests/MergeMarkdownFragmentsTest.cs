@@ -315,7 +315,7 @@ overwrite in contents block
             Assert.True(File.Exists(_rawModelFilePath));
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Equal("name overwrite", rawModel["name"]);
-            Assert.Equal($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
+            Assert.Equal($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
             Assert.Equal($"<p sourceFile=\"{_inputFolder}/Suppressions.yml.md\" sourceStartLineNumber=\"14\">overwrite in contents block</p>\n", rawModel["definitions"][0]["properties"][1]["description"].ToString());
         }
 

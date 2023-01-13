@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Empty(model.Children);
                 Assert.Empty(model.Tags);
                 Assert.True((bool)model.Metadata["_isSplittedByTag"]);
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
             }
             {
                 // Verify splitted tag page
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.NotNull(model);
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
                 Assert.Equal("pet", model.Name);
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
                 Assert.Equal(8, model.Children.Count);
                 Assert.Empty(model.Tags);
                 Assert.Empty(model.Children[0].Tags);
@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.True((bool)model.Metadata["_isSplittedToTag"]);
 
                 // Test overwritten metadata
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
             }
         }
 
@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.NotNull(model);
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
                 Assert.Equal("pet", model.Name);
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
                 Assert.Equal(8, model.Children.Count);
                 Assert.Empty(model.Tags);
                 Assert.Empty(model.Children[0].Tags);
