@@ -49,12 +49,10 @@ namespace Microsoft.DocAsCode
                     .ConfigureLogging(options => options.ClearProviders())
                     .UseUrls(url);
 
+                Console.WriteLine($"Serving \"{folder}\" on {url}. Press Ctrl+C to shut down.");
                 using var app = builder.Build();
                 app.UseFileServer(fileServerOptions);
-                app.Start();
-
-                Console.WriteLine($"Serving \"{folder}\" on {url}");
-                Console.ReadLine();
+                app.Run();
             }
             catch (System.Reflection.TargetInvocationException)
             {
