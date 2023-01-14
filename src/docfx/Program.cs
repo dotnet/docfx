@@ -71,13 +71,6 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
-            if (command.AllowReplay)
-            {
-                Logger.RegisterAsyncListener(new AggregatedLogListener(aggregatedLogListener));
-            }
-
-            Logger.UnregisterListener(aggregatedLogListener);
-
             var context = new SubCommandRunningContext();
             PerformanceScope scope = null;
             try
