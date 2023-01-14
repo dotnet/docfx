@@ -82,8 +82,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Glob.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdownLite.Tests", "test\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.csproj", "{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdownRewriters.Tests", "test\Microsoft.DocAsCode.MarkdownRewriters.Tests\Microsoft.DocAsCode.MarkdownRewriters.Tests.csproj", "{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Metadata.ManagedReference.Tests", "test\Microsoft.DocAsCode.Metadata.ManagedReference.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.Tests.csproj", "{3076A12F-C423-4D5E-9B6F-543B683820F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.MemberLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
@@ -116,8 +114,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.SchemaDriven.Tests", "test\Microsoft.DocAsCode.Build.SchemaDriven.Tests\Microsoft.DocAsCode.Build.SchemaDriven.Tests.csproj", "{298FBFBA-F535-4C29-AB70-A1041F50098C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigMarkdownRewriters", "src\Microsoft.DocAsCode.MarkdigMarkdownRewriters\Microsoft.DocAsCode.MarkdigMarkdownRewriters.csproj", "{15F6D925-973D-46F2-9603-93FDECC4430D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.UniversalReference", "src\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj", "{DF88D1C8-1139-4174-8325-DD8166D6C3A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.DataContracts.UniversalReference", "src\Microsoft.DocAsCode.DataContracts.UniversalReference\Microsoft.DocAsCode.DataContracts.UniversalReference.csproj", "{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}"
@@ -146,9 +142,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PDF", "PDF", "{15381BB2-762
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests\Microsoft.DocAsCode.MarkdigEngine.Extensions.Tests.csproj", "{4C9CF944-2489-4AC2-9B18-497D12B53769}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode", "src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj", "{3C583CD1-3A86-40B3-9E2F-08A3178A6566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.App", "src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj", "{3C583CD1-3A86-40B3-9E2F-08A3178A6566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docfx.Snapshot.Tests", "test\docfx.Snapshot.Tests\docfx.Snapshot.Tests.csproj", "{3AC4C0C1-AC55-4E2D-8FF6-CE04A90B00B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.Snapshot.Tests", "test\docfx.Snapshot.Tests\docfx.Snapshot.Tests.csproj", "{3AC4C0C1-AC55-4E2D-8FF6-CE04A90B00B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -508,18 +504,6 @@ Global
 		{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}.Release|x64.Build.0 = Release|Any CPU
 		{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}.Release|x86.Build.0 = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|x64.Build.0 = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Debug|x86.Build.0 = Debug|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|x64.ActiveCfg = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|x64.Build.0 = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|x86.ActiveCfg = Release|Any CPU
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}.Release|x86.Build.0 = Release|Any CPU
 		{3076A12F-C423-4D5E-9B6F-543B683820F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3076A12F-C423-4D5E-9B6F-543B683820F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3076A12F-C423-4D5E-9B6F-543B683820F9}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -712,18 +696,6 @@ Global
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|x64.Build.0 = Release|Any CPU
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|x86.ActiveCfg = Release|Any CPU
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|x86.Build.0 = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|x64.Build.0 = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Debug|x86.Build.0 = Debug|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|x64.ActiveCfg = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|x64.Build.0 = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|x86.ActiveCfg = Release|Any CPU
-		{15F6D925-973D-46F2-9603-93FDECC4430D}.Release|x86.Build.0 = Release|Any CPU
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -917,7 +889,6 @@ Global
 		{F50B1AF2-B971-4B01-962B-0BB14E6CB209} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{A95C5BAE-1D0D-44FD-A984-7CBF055A62E2} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{4E26923D-9F35-4668-AB5A-BDC5D56D70CC} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{3076A12F-C423-4D5E-9B6F-543B683820F9} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{2746DA6E-D310-4F07-B41B-929BB3D6E14B} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
@@ -934,7 +905,6 @@ Global
 		{CB8D3397-E338-4801-B3E7-42FE65F535AE} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{2978E4CC-7D67-43DA-B6C9-09559C530EFC} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
 		{298FBFBA-F535-4C29-AB70-A1041F50098C} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{15F6D925-973D-46F2-9603-93FDECC4430D} = {377A4748-C426-4D5E-9A25-6D1809A7B85C}
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
 		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3} = {C3023E7B-AA8B-469E-8333-5737093A9D60}
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
