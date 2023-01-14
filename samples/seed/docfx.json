@@ -3,7 +3,7 @@
     {
       "src": [
         {
-          "files": [ "**/*.sln", "src/DotnetNew/*.csproj" ],
+          "files": [ "**/*.sln", "DotnetNew/*.csproj" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
           "src": "src"
         }
