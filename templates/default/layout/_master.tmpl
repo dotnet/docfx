@@ -8,6 +8,7 @@
 <!--[if IE]><![endif]-->
 <html>
   {{>partials/head}}
+  {{^redirect_url}}
   <body data-spy="scroll" data-target="#affix" data-offset="120">
     <div id="wrapper">
       <header>
@@ -52,4 +53,5 @@
     </div>
     {{>partials/scripts}}
   </body>
+  {{/redirect_url}}
 </html>
