@@ -59,6 +59,51 @@
     "title": "Class TomFromBaseClass | docfx seed website",
     "keywords": "Class TomFromBaseClass TomFromBaseClass inherits from @ Inheritance Object Tom TomFromBaseClass Inherited Members Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>) Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CatLibrary Assembly : CatLibrary.dll Syntax public class TomFromBaseClass : Tom Constructors | Improve this Doc View Source TomFromBaseClass(Int32) This is a #ctor with parameter Declaration public TomFromBaseClass(int k) Parameters Type Name Description Int32 k"
   },
+  "api/CSharp8.DefaultInterfaceMembers.html": {
+    "href": "api/CSharp8.DefaultInterfaceMembers.html",
+    "title": "Interface DefaultInterfaceMembers | docfx seed website",
+    "keywords": "Interface DefaultInterfaceMembers Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public interface DefaultInterfaceMembers Fields | Improve this Doc View Source GravitationalConstant Declaration public const double GravitationalConstant = 6.673E-11 Field Value Type Description Double | Improve this Doc View Source X Declaration public const int X = 0 Field Value Type Description Int32 Methods | Improve this Doc View Source DoSomething() Declaration static void DoSomething() | Improve this Doc View Source DoSomethingElse() Declaration static void DoSomethingElse() Operators | Improve this Doc View Source UnaryPlus(DefaultInterfaceMembers) Declaration static DefaultInterfaceMembers operator +(DefaultInterfaceMembers a) Parameters Type Name Description DefaultInterfaceMembers a Returns Type Description DefaultInterfaceMembers"
+  },
+  "api/CSharp8.DefaultInterfaceMembers.IA.html": {
+    "href": "api/CSharp8.DefaultInterfaceMembers.IA.html",
+    "title": "Interface DefaultInterfaceMembers.IA | docfx seed website",
+    "keywords": "Interface DefaultInterfaceMembers.IA Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public interface IA Methods | Improve this Doc View Source M() Declaration virtual void M()"
+  },
+  "api/CSharp8.DefaultInterfaceMembers.Nested.html": {
+    "href": "api/CSharp8.DefaultInterfaceMembers.Nested.html",
+    "title": "Class DefaultInterfaceMembers.Nested | docfx seed website",
+    "keywords": "Class DefaultInterfaceMembers.Nested Inheritance Object DefaultInterfaceMembers.Nested Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public class Nested"
+  },
+  "api/CSharp8.DisposableRefStructs.html": {
+    "href": "api/CSharp8.DisposableRefStructs.html",
+    "title": "Struct DisposableRefStructs | docfx seed website",
+    "keywords": "Struct DisposableRefStructs Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() ValueType.ToString() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public ref struct DisposableRefStructs Methods | Improve this Doc View Source Dispose() Declaration public void Dispose() | Improve this Doc View Source DoSomething() Declaration public static void DoSomething()"
+  },
+  "api/CSharp8.html": {
+    "href": "api/CSharp8.html",
+    "title": "Namespace CSharp8 | docfx seed website",
+    "keywords": "Namespace CSharp8 Classes DefaultInterfaceMembers.Nested Issue4007 This works: SomeMethod(Int32) . This does not work: SomeOtherMethod() . Misc NullableReferenceTypes Structs DisposableRefStructs ReadOnlyMembers Interfaces DefaultInterfaceMembers DefaultInterfaceMembers.IA"
+  },
+  "api/CSharp8.Issue4007.html": {
+    "href": "api/CSharp8.Issue4007.html",
+    "title": "Class Issue4007 | docfx seed website",
+    "keywords": "Class Issue4007 This works: SomeMethod(Int32) . This does not work: SomeOtherMethod() . Inheritance Object Issue4007 Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public class Issue4007 Methods | Improve this Doc View Source SomeMethod(Int32) This works: SomeMethod(Int32) . This does not work: SomeOtherMethod() . Declaration public void SomeMethod(int a) Parameters Type Name Description Int32 a | Improve this Doc View Source SomeOtherMethod() This works: SomeMethod(Int32) . This does not work: SomeOtherMethod() . Declaration public void SomeOtherMethod()"
+  },
+  "api/CSharp8.Misc.html": {
+    "href": "api/CSharp8.Misc.html",
+    "title": "Class Misc | docfx seed website",
+    "keywords": "Class Misc Inheritance Object Misc Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public class Misc Methods | Improve this Doc View Source AsynchronousStreams() Declaration public static async Task AsynchronousStreams() Returns Type Description Task | Improve this Doc View Source GenerateSequence() Declaration public static async IAsyncEnumerable<int> GenerateSequence() Returns Type Description IAsyncEnumerable < Int32 > | Improve this Doc View Source IndicesAndRanges() Declaration public static void IndicesAndRanges() | Improve this Doc View Source IsExpression(DateTime) Declaration public static bool IsExpression(DateTime date) Parameters Type Name Description DateTime date Returns Type Description Boolean | Improve this Doc View Source NullCoalescingAssignment() Declaration public static void NullCoalescingAssignment() | Improve this Doc View Source StackallocInNestedExpressions() Declaration public static void StackallocInNestedExpressions() | Improve this Doc View Source StaticLocalFunctions(Int32) Declaration public static int StaticLocalFunctions(int n) Parameters Type Name Description Int32 n Returns Type Description Int32 | Improve this Doc View Source SwitchExpression(ConsoleColor) Declaration public static bool SwitchExpression(ConsoleColor color) Parameters Type Name Description ConsoleColor color Returns Type Description Boolean | Improve this Doc View Source UsingDeclaration() Declaration public static void UsingDeclaration()"
+  },
+  "api/CSharp8.NullableReferenceTypes.html": {
+    "href": "api/CSharp8.NullableReferenceTypes.html",
+    "title": "Class NullableReferenceTypes | docfx seed website",
+    "keywords": "Class NullableReferenceTypes Inheritance Object NullableReferenceTypes Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public class NullableReferenceTypes Fields | Improve this Doc View Source Field Declaration public string Field Field Value Type Description String Properties | Improve this Doc View Source Property Declaration public string Property { get; set; } Property Value Type Description String Methods | Improve this Doc View Source DoSomething(List<String>) Declaration public static (string, object)? DoSomething(List<string> name = null) Parameters Type Name Description List < String > name Returns Type Description Nullable < (T1 Item1, T2 Item2) < String , Object >>"
+  },
+  "api/CSharp8.ReadOnlyMembers.html": {
+    "href": "api/CSharp8.ReadOnlyMembers.html",
+    "title": "Struct ReadOnlyMembers | docfx seed website",
+    "keywords": "Struct ReadOnlyMembers Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public struct ReadOnlyMembers Properties | Improve this Doc View Source Counter Declaration public int Counter { readonly get; set; } Property Value Type Description Int32 | Improve this Doc View Source X Declaration public readonly int X { get; } Property Value Type Description Int32 | Improve this Doc View Source Y Declaration public readonly int Y { get; } Property Value Type Description Int32 Methods | Improve this Doc View Source Sum() Declaration public readonly double Sum() Returns Type Description Double | Improve this Doc View Source ToString() Declaration public override readonly string ToString() Returns Type Description String Overrides ValueType.ToString()"
+  },
   "api/Microsoft.DevDiv.ContainersRefType.ColorType.html": {
     "href": "api/Microsoft.DevDiv.ContainersRefType.ColorType.html",
     "title": "Enum ContainersRefType.ColorType | docfx seed website",

@@ -80,6 +80,62 @@
       ]
     },
     {
+      "name": "CSharp8",
+      "href": "CSharp8.html",
+      "topicHref": "CSharp8.html",
+      "topicUid": "CSharp8",
+      "items": [
+        {
+          "name": "DefaultInterfaceMembers",
+          "href": "CSharp8.DefaultInterfaceMembers.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.html",
+          "topicUid": "CSharp8.DefaultInterfaceMembers"
+        },
+        {
+          "name": "DefaultInterfaceMembers.IA",
+          "href": "CSharp8.DefaultInterfaceMembers.IA.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.IA.html",
+          "topicUid": "CSharp8.DefaultInterfaceMembers.IA"
+        },
+        {
+          "name": "DefaultInterfaceMembers.Nested",
+          "href": "CSharp8.DefaultInterfaceMembers.Nested.html",
+          "topicHref": "CSharp8.DefaultInterfaceMembers.Nested.html",
+          "topicUid": "CSharp8.DefaultInterfaceMembers.Nested"
+        },
+        {
+          "name": "DisposableRefStructs",
+          "href": "CSharp8.DisposableRefStructs.html",
+          "topicHref": "CSharp8.DisposableRefStructs.html",
+          "topicUid": "CSharp8.DisposableRefStructs"
+        },
+        {
+          "name": "Issue4007",
+          "href": "CSharp8.Issue4007.html",
+          "topicHref": "CSharp8.Issue4007.html",
+          "topicUid": "CSharp8.Issue4007"
+        },
+        {
+          "name": "Misc",
+          "href": "CSharp8.Misc.html",
+          "topicHref": "CSharp8.Misc.html",
+          "topicUid": "CSharp8.Misc"
+        },
+        {
+          "name": "NullableReferenceTypes",
+          "href": "CSharp8.NullableReferenceTypes.html",
+          "topicHref": "CSharp8.NullableReferenceTypes.html",
+          "topicUid": "CSharp8.NullableReferenceTypes"
+        },
+        {
+          "name": "ReadOnlyMembers",
+          "href": "CSharp8.ReadOnlyMembers.html",
+          "topicHref": "CSharp8.ReadOnlyMembers.html",
+          "topicUid": "CSharp8.ReadOnlyMembers"
+        }
+      ]
+    },
+    {
       "name": "Microsoft.DevDiv",
       "href": "Microsoft.DevDiv.html",
       "topicHref": "Microsoft.DevDiv.html",
