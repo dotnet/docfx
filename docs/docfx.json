@@ -19,7 +19,7 @@
     ],
     "resource": [
       {
-        "files": [ "**/images/**" ],
+        "files": [ "**/images/**", "codesnippet/**" ],
         "exclude": [ "_site/**", "obj/**" ]
       }
     ],
