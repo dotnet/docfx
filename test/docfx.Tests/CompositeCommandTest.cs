@@ -97,7 +97,7 @@ public class HelloWorld(){}}
             var summary = html.DocumentNode.SelectSingleNode("//div[contains(@class, 'summary')]/p").InnerHtml;
             Assert.Equal("The class &lt; &gt; &gt; description goes here...", summary.Trim());
             var note = html.DocumentNode.SelectSingleNode("//div[@class='NOTE']").InnerHtml;
-            Assert.Equal("<h5>Note</h5><p>This is <em>note</em></p>", note.Trim());
+            Assert.Equal("<h5>Note</h5>\n<p>This is <em>note</em></p>", note.Trim());
             var code = html.DocumentNode.SelectNodes("//pre/code")[1].InnerHtml;
             Assert.Equal(@"var handler = DateTimeHandler();
 for (var i = 0; i &lt; 10; i++){

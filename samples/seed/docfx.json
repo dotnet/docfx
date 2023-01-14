@@ -32,7 +32,6 @@
       "_appTitle": "docfx seed website",
       "_enableSearch": true
     },
-    "markdownEngineName": "markdig",
     "dest": "_site",
     "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
   },
@@ -55,7 +54,6 @@
       }
     ],
     "overwrite": "specs/*.md",
-    "markdownEngineName": "markdig",
     "wkhtmltopdf": {
       "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
       "additionalArguments": "--enable-local-file-access"
