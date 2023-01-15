@@ -176,36 +176,38 @@ namespace Microsoft.DocAsCode.Tests
 
             var file = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile1, ".html"));
             Assert.True(File.Exists(file));
-            Assert.Equal<string>(
-                new string[]
-                {
-                    "",
-                    "<h1 id=\"hello-test1\">Hello Test1</h1>",
-                    "<p>Test XRef: <a class=\"xref\" href=\"test2.html\">Hello World</a>",
-                    "Test XRef: @unknown_xref",
-                    "Test XRef: <a class=\"xref\" href=\"test2.html\"><img src=\".\"></a>",
-                    "Test link: <a href=\"test2.html\">link text</a>",
-                    "<p>",
-                    "test</p>",
-                    "",
-                },
-                File.ReadAllLines(file));
+            Assert.Equal(
+                """
+
+                <h1 id="hello-test1">Hello Test1</h1>
+                <p>Test XRef: <a class="xref" href="test2.html">Hello World</a>
+                Test XRef: @unknown_xref
+                Test XRef: <a class="xref" href="test2.html"><img src="."></a>
+                Test link: <a href="test2.html">link text</a></p>
+                <p>
+                test
+                </p>
+
+                """,
+                File.ReadAllText(file),
+                ignoreLineEndingDifferences: true);
 
             file = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile2, ".html"));
             Assert.True(File.Exists(file));
-            Assert.Equal<string>(
-                new string[]
-                {
-                    "",
-                    "<h1 id=\"hello-world\">Hello World</h1>",
-                    "<p>Test XRef: <a class=\"xref\" href=\"test1.html\">Hello Test1</a>",
-                    "Test XRef auto link: <a class=\"xref\" href=\"test1.html\">Hello Test1</a>",
-                    "Test link: <a href=\"test1.html\">link text</a>",
-                    "<p>",
-                    "test</p>",
-                    ""
-                },
-                File.ReadAllLines(file));
+            Assert.Equal(
+                """
+                
+                <h1 id="hello-world">Hello World</h1>
+                <p>Test XRef: <a class="xref" href="test1.html">Hello Test1</a>
+                Test XRef auto link: <a class="xref" href="test1.html">Hello Test1</a>
+                Test link: <a href="test1.html">link text</a></p>
+                <p>
+                test
+                </p>
+
+                """,
+                File.ReadAllText(file),
+                ignoreLineEndingDifferences: true);
         }
 
         [Fact]

@@ -234,7 +234,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     question.Process(config, questionContext);
                 }
-                config.Build.MarkdownEngineName = "markdig";
 
                 if (_options.OnlyConfigFile)
                 {
