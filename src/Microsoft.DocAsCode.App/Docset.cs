@@ -22,9 +22,7 @@ namespace Microsoft.DocAsCode
         public static Task Build(string configPath)
         {
             var consoleLogListener = new ConsoleLogListener();
-            var aggregatedLogListener = new AggregatedLogListener();
             Logger.RegisterListener(consoleLogListener);
-            Logger.RegisterListener(aggregatedLogListener);
 
             try
             {
@@ -45,6 +43,7 @@ namespace Microsoft.DocAsCode
             finally
             {
                 Logger.Flush();
+                Logger.PrintSummary();
                 Logger.UnregisterAllListeners();
             }
         }

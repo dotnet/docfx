@@ -4,6 +4,9 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.IO;
+    using System.Text;
+    using Microsoft.DocAsCode.Plugins;
 
     public sealed class ConsoleLogListener : ILoggerListener
     {
@@ -11,37 +14,26 @@ namespace Microsoft.DocAsCode.Common
 
         public void WriteLine(ILogItem item)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
             var level = item.LogLevel;
-            var message = item.Message;
-            var phase = item.Phase;
-            var file = item.File;
-            var line = item.Line;
-            if (level < LogLevelThreshold) return;
-            var now = DateTime.UtcNow.ToString("yy-MM-dd hh:mm:ss.fff");
-
-            var formatter = $"[{now}]{level}:";
-            if (!string.IsNullOrEmpty(phase))
-            {
-                formatter += $"[{phase}]";
-            }
-            if (!string.IsNullOrEmpty(file))
-            {
-                string lineInfo = string.Empty;
-                if (!string.IsNullOrEmpty(line))
-                {
-                    lineInfo = $"#L{line}";
-                }
-                formatter += $"({file.Replace('\\', '/')}{lineInfo})";
-            }
-
-            formatter += message;
+            if (level < LogLevelThreshold)
+                return;
 
             var consoleColor = GetConsoleColor(level);
-            ConsoleUtility.WriteLine(formatter, consoleColor);
+
+            var message = new StringBuilder();
+            if (!string.IsNullOrEmpty(item.File))
+            {
+                message.Append($"{Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, item.File))}");
+                if (!string.IsNullOrEmpty(item.Line))
+                    message.Append($"({item.Line},1)");
+                if (!string.IsNullOrEmpty(item.Code))
+                    message.Append($": {item.LogLevel.ToString().ToLowerInvariant()} {item.Code}");
+                message.Append(": ");
+            }
+
+            message.Append(item.Message);
+
+            ConsoleUtility.WriteLine(message.ToString(), consoleColor);
         }
 
         public void Dispose()
@@ -54,21 +46,15 @@ namespace Microsoft.DocAsCode.Common
 
         private ConsoleColor GetConsoleColor(LogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case LogLevel.Verbose:
-                    return ConsoleColor.Gray;
-                case LogLevel.Info:
-                    return ConsoleColor.White;
-                case LogLevel.Suggestion:
-                    return ConsoleColor.Blue;
-                case LogLevel.Warning:
-                    return ConsoleColor.Yellow;
-                case LogLevel.Error:
-                    return ConsoleColor.Red;
-                default:
-                    throw new NotSupportedException(level.ToString());
-            }
+                LogLevel.Verbose => ConsoleColor.Gray,
+                LogLevel.Info => ConsoleColor.White,
+                LogLevel.Suggestion => ConsoleColor.Blue,
+                LogLevel.Warning => ConsoleColor.Yellow,
+                LogLevel.Error => ConsoleColor.Red,
+                _ => throw new NotSupportedException(level.ToString()),
+            };
         }
     }
 }
