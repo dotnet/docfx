@@ -28,13 +28,6 @@ namespace Microsoft.DocAsCode.Common
             _root = root;
         }
 
-        public ReportLogListener(StreamWriter writer, string repoRoot, string root)
-        {
-            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
-            _repoRoot = repoRoot;
-            _root = root;
-        }
-
         public void WriteLine(ILogItem item)
         {
             if (item == null)

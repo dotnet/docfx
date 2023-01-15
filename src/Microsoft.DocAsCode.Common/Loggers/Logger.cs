@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Common
         public static int ErrorCount => _errorCount;
 
         private static readonly CompositeLogListener _syncListener = new CompositeLogListener();
-        private static readonly AsyncLogListener _asyncListener = new AsyncLogListener();
         private static int _warningCount = 0;
         private static int _errorCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
@@ -50,40 +49,9 @@ namespace Microsoft.DocAsCode.Common
             _syncListener.RemoveListener(listener);
         }
 
-        public static void RegisterAsyncListener(ILoggerListener listener)
-        {
-            if (listener == null)
-            {
-                throw new ArgumentNullException(nameof(listener));
-            }
-
-            _asyncListener.AddListener(listener);
-        }
-
-        public static ILoggerListener FindAsyncListener(Predicate<ILoggerListener> predicate)
-        {
-            if (predicate == null)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            return _asyncListener.FindListener(predicate);
-        }
-
-        public static void UnregisterAsyncListener(ILoggerListener listener)
-        {
-            if (listener == null)
-            {
-                throw new ArgumentNullException(nameof(listener));
-            }
-
-            _asyncListener.RemoveListener(listener);
-        }
-
         public static void UnregisterAllListeners()
         {
             _syncListener.RemoveAllListeners();
-            _asyncListener.RemoveAllListeners();
         }
 
         public static void Log(ILogItem item)
@@ -114,7 +82,6 @@ namespace Microsoft.DocAsCode.Common
                         Message = "Too many warnings, no more warning will be logged."
                     };
                     _syncListener.WriteLine(msg);
-                    _asyncListener.WriteLine(msg);
                 }
             }
 
@@ -125,13 +92,6 @@ namespace Microsoft.DocAsCode.Common
             }
 
             _syncListener.WriteLine(item);
-            _asyncListener.WriteLine(item);
-        }
-
-        [Obsolete]
-        public static void Log(LogLevel level, string message, string phase, string file, string line)
-        {
-            Log(level, message, phase, file, line, null);
         }
 
         public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
@@ -160,32 +120,14 @@ namespace Microsoft.DocAsCode.Common
             };
         }
 
-        [Obsolete]
-        public static void LogDiagnostic(string message, string phase, string file, string line)
-        {
-            LogDiagnostic(message, phase, file, line, null);
-        }
-
         public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Diagnostic, message, phase, file, line, code);
         }
 
-        [Obsolete]
-        public static void LogVerbose(string message, string phase, string file, string line)
-        {
-            LogVerbose(message, phase, file, line, null);
-        }
-
         public static void LogVerbose(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Verbose, message, phase, file, line, code);
-        }
-
-        [Obsolete]
-        public static void LogInfo(string message, string phase, string file, string line)
-        {
-            LogInfo(message, phase, file, line, null);
         }
 
         public static void LogInfo(string message, string phase = null, string file = null, string line = null, string code = null)
@@ -198,21 +140,9 @@ namespace Microsoft.DocAsCode.Common
             Log(LogLevel.Suggestion, message, phase, file, line, code);
         }
 
-        [Obsolete]
-        public static void LogWarning(string message, string phase, string file, string line)
-        {
-            LogWarning(message, phase, file, line, null);
-        }
-
         public static void LogWarning(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Warning, message, phase, file, line, code);
-        }
-
-        [Obsolete]
-        public static void LogError(string message, string phase, string file, string line)
-        {
-            LogError(message, phase, file, line, null);
         }
 
         public static void LogError(string message, string phase = null, string file = null, string line = null, string code = null)
@@ -232,7 +162,6 @@ namespace Microsoft.DocAsCode.Common
         public static void Flush()
         {
             _syncListener.Flush();
-            _asyncListener.Flush();
         }
 
         public static void PrintSummary()
@@ -250,8 +179,8 @@ namespace Microsoft.DocAsCode.Common
                 ConsoleUtility.WriteLine("\n\nBuild succeeded.\n", ConsoleColor.Green);
             }
 
-            ConsoleUtility.WriteLine($"    { _errorCount} error(s)", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
-            ConsoleUtility.WriteLine($"    {_warningCount} warning(s)\n", _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White);
+            ConsoleUtility.WriteLine($"    {_warningCount} warning(s)", _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White);
+            ConsoleUtility.WriteLine($"    { _errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
         }
 
         [Serializable]

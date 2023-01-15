@@ -41,9 +41,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
             if (options is LogOptions logOption)
             {
-                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindAsyncListener(l => l is ReportLogListener) == null)
+                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath))
                 {
-                    Logger.RegisterAsyncListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
+                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
                 }
 
                 if (logOption.LogLevel.HasValue)
