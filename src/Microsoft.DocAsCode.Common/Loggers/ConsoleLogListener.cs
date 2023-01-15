@@ -46,21 +46,15 @@ namespace Microsoft.DocAsCode.Common
 
         private ConsoleColor GetConsoleColor(LogLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case LogLevel.Verbose:
-                    return ConsoleColor.Gray;
-                case LogLevel.Info:
-                    return ConsoleColor.White;
-                case LogLevel.Suggestion:
-                    return ConsoleColor.Blue;
-                case LogLevel.Warning:
-                    return ConsoleColor.Yellow;
-                case LogLevel.Error:
-                    return ConsoleColor.Red;
-                default:
-                    throw new NotSupportedException(level.ToString());
-            }
+                LogLevel.Verbose => ConsoleColor.Gray,
+                LogLevel.Info => ConsoleColor.White,
+                LogLevel.Suggestion => ConsoleColor.Blue,
+                LogLevel.Warning => ConsoleColor.Yellow,
+                LogLevel.Error => ConsoleColor.Red,
+                _ => throw new NotSupportedException(level.ToString()),
+            };
         }
     }
 }

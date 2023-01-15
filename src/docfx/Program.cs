@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode
             finally
             {
                 Logger.Flush();
+                Logger.PrintSummary();
                 Logger.UnregisterAllListeners();
             }
         }
@@ -36,9 +37,7 @@ namespace Microsoft.DocAsCode
             EnvironmentContext.SetVersion(typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
 
             var consoleLogListener = new ConsoleLogListener();
-            var aggregatedLogListener = new AggregatedLogListener();
             Logger.RegisterListener(consoleLogListener);
-            Logger.RegisterListener(aggregatedLogListener);
 
             CommandController controller = null;
             ISubCommand command;

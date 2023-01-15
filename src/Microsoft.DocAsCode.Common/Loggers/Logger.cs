@@ -11,10 +11,12 @@ namespace Microsoft.DocAsCode.Common
         public const int WarningThrottling = 10000;
         public static bool HasError { get; private set; }
         public static int WarningCount => _warningCount;
+        public static int ErrorCount => _errorCount;
 
         private static readonly CompositeLogListener _syncListener = new CompositeLogListener();
         private static readonly AsyncLogListener _asyncListener = new AsyncLogListener();
         private static int _warningCount = 0;
+        private static int _errorCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
         public volatile static bool WarningsAsErrors = false;
 
@@ -119,6 +121,7 @@ namespace Microsoft.DocAsCode.Common
             if (item.LogLevel == LogLevel.Error)
             {
                 HasError = true;
+                Interlocked.Increment(ref _errorCount);
             }
 
             _syncListener.WriteLine(item);
@@ -230,6 +233,25 @@ namespace Microsoft.DocAsCode.Common
         {
             _syncListener.Flush();
             _asyncListener.Flush();
+        }
+
+        public static void PrintSummary()
+        {
+            if (_errorCount > 0)
+            {
+                ConsoleUtility.WriteLine($"\n\nBuild failed.\n", ConsoleColor.Red);
+            }
+            else if (_warningCount > 0)
+            {
+                ConsoleUtility.WriteLine($"\n\nBuild succeeded with warning.\n", ConsoleColor.Yellow);
+            }
+            else
+            {
+                ConsoleUtility.WriteLine("\n\nBuild succeeded.\n", ConsoleColor.Green);
+            }
+
+            ConsoleUtility.WriteLine($"    { _errorCount} error(s)", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
+            ConsoleUtility.WriteLine($"    {_warningCount} warning(s)\n", _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White);
         }
 
         [Serializable]
