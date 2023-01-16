@@ -104,6 +104,41 @@
     "title": "Struct ReadOnlyMembers | docfx seed website",
     "keywords": "Struct ReadOnlyMembers Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp8 Assembly : DotnetNew.dll Syntax public struct ReadOnlyMembers Properties | Improve this Doc View Source Counter Declaration public int Counter { readonly get; set; } Property Value Type Description Int32 | Improve this Doc View Source X Declaration public readonly int X { get; } Property Value Type Description Int32 | Improve this Doc View Source Y Declaration public readonly int Y { get; } Property Value Type Description Int32 Methods | Improve this Doc View Source Sum() Declaration public readonly double Sum() Returns Type Description Double | Improve this Doc View Source ToString() Declaration public override readonly string ToString() Returns Type Description String Overrides ValueType.ToString()"
   },
+  "api/CSharp9.FunctionPointers.html": {
+    "href": "api/CSharp9.FunctionPointers.html",
+    "title": "Class FunctionPointers | docfx seed website",
+    "keywords": "Class FunctionPointers Inheritance Object FunctionPointers Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class FunctionPointers Methods | Improve this Doc View Source Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>) Declaration public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f) Parameters Type Name Description Action < Int32 > a delegate*< Int32 , Void > b delegate*< Int32 , Int32 > c delegate*unmanaged< Int32 , Int32 > d delegate*unmanaged [CDecl]< Int32 , Int32 > e delegate*unmanaged [ CallConvStdcall , CallConvSuppressGCTransition ]< Int32 , Int32 > f"
+  },
+  "api/CSharp9.html": {
+    "href": "api/CSharp9.html",
+    "title": "Namespace CSharp9 | docfx seed website",
+    "keywords": "Namespace CSharp9 Classes FunctionPointers InitOnlySetters NativeSizedIntegers RecordTypes RecordTypes.Person RecordTypes.Teacher"
+  },
+  "api/CSharp9.InitOnlySetters.html": {
+    "href": "api/CSharp9.InitOnlySetters.html",
+    "title": "Class InitOnlySetters | docfx seed website",
+    "keywords": "Class InitOnlySetters Inheritance Object InitOnlySetters Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class InitOnlySetters Properties | Improve this Doc View Source PressureInMillibars Declaration public decimal PressureInMillibars { get; set; } Property Value Type Description Decimal | Improve this Doc View Source RecordedAt Declaration public DateTime RecordedAt { get; set; } Property Value Type Description DateTime | Improve this Doc View Source TemperatureInCelsius Declaration public decimal TemperatureInCelsius { get; set; } Property Value Type Description Decimal"
+  },
+  "api/CSharp9.NativeSizedIntegers.html": {
+    "href": "api/CSharp9.NativeSizedIntegers.html",
+    "title": "Class NativeSizedIntegers | docfx seed website",
+    "keywords": "Class NativeSizedIntegers Inheritance Object NativeSizedIntegers Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class NativeSizedIntegers Fields | Improve this Doc View Source X Declaration public nint X Field Value Type Description IntPtr | Improve this Doc View Source Y Declaration public nuint Y Field Value Type Description UIntPtr"
+  },
+  "api/CSharp9.RecordTypes.html": {
+    "href": "api/CSharp9.RecordTypes.html",
+    "title": "Class RecordTypes | docfx seed website",
+    "keywords": "Class RecordTypes Inheritance Object RecordTypes Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class RecordTypes"
+  },
+  "api/CSharp9.RecordTypes.Person.html": {
+    "href": "api/CSharp9.RecordTypes.Person.html",
+    "title": "Class RecordTypes.Person | docfx seed website",
+    "keywords": "Class RecordTypes.Person Inheritance Object RecordTypes.Person RecordTypes.Teacher Implements IEquatable < RecordTypes.Person > Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class Person : IEquatable<RecordTypes.Person> Constructors | Improve this Doc View Source Person(String, String) Declaration public Person(string FirstName, string LastName) Parameters Type Name Description String FirstName String LastName Properties | Improve this Doc View Source FirstName Declaration public string FirstName { get; set; } Property Value Type Description String | Improve this Doc View Source LastName Declaration public string LastName { get; set; } Property Value Type Description String Implements System.IEquatable<T>"
+  },
+  "api/CSharp9.RecordTypes.Teacher.html": {
+    "href": "api/CSharp9.RecordTypes.Teacher.html",
+    "title": "Class RecordTypes.Teacher | docfx seed website",
+    "keywords": "Class RecordTypes.Teacher Inheritance Object RecordTypes.Person RecordTypes.Teacher Implements IEquatable < RecordTypes.Person > IEquatable < RecordTypes.Teacher > Inherited Members RecordTypes.Person.FirstName RecordTypes.Person.LastName Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class Teacher : RecordTypes.Person, IEquatable<RecordTypes.Person>, IEquatable<RecordTypes.Teacher> Constructors | Improve this Doc View Source Teacher(String, String, Int32) Declaration public Teacher(string FirstName, string LastName, int Grade) Parameters Type Name Description String FirstName String LastName Int32 Grade Properties | Improve this Doc View Source Grade Declaration public int Grade { get; set; } Property Value Type Description Int32 Implements System.IEquatable<T> System.IEquatable<T>"
+  },
   "api/Microsoft.DevDiv.ContainersRefType.ColorType.html": {
     "href": "api/Microsoft.DevDiv.ContainersRefType.ColorType.html",
     "title": "Enum ContainersRefType.ColorType | docfx seed website",

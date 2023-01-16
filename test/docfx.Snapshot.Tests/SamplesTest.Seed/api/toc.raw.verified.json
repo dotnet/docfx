@@ -136,6 +136,50 @@
       ]
     },
     {
+      "name": "CSharp9",
+      "href": "CSharp9.html",
+      "topicHref": "CSharp9.html",
+      "topicUid": "CSharp9",
+      "items": [
+        {
+          "name": "FunctionPointers",
+          "href": "CSharp9.FunctionPointers.html",
+          "topicHref": "CSharp9.FunctionPointers.html",
+          "topicUid": "CSharp9.FunctionPointers"
+        },
+        {
+          "name": "InitOnlySetters",
+          "href": "CSharp9.InitOnlySetters.html",
+          "topicHref": "CSharp9.InitOnlySetters.html",
+          "topicUid": "CSharp9.InitOnlySetters"
+        },
+        {
+          "name": "NativeSizedIntegers",
+          "href": "CSharp9.NativeSizedIntegers.html",
+          "topicHref": "CSharp9.NativeSizedIntegers.html",
+          "topicUid": "CSharp9.NativeSizedIntegers"
+        },
+        {
+          "name": "RecordTypes",
+          "href": "CSharp9.RecordTypes.html",
+          "topicHref": "CSharp9.RecordTypes.html",
+          "topicUid": "CSharp9.RecordTypes"
+        },
+        {
+          "name": "RecordTypes.Person",
+          "href": "CSharp9.RecordTypes.Person.html",
+          "topicHref": "CSharp9.RecordTypes.Person.html",
+          "topicUid": "CSharp9.RecordTypes.Person"
+        },
+        {
+          "name": "RecordTypes.Teacher",
+          "href": "CSharp9.RecordTypes.Teacher.html",
+          "topicHref": "CSharp9.RecordTypes.Teacher.html",
+          "topicUid": "CSharp9.RecordTypes.Teacher"
+        }
+      ]
+    },
+    {
       "name": "Microsoft.DevDiv",
       "href": "Microsoft.DevDiv.html",
       "topicHref": "Microsoft.DevDiv.html",

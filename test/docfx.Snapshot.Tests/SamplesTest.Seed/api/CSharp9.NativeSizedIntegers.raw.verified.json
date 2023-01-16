@@ -1,0 +1,922 @@
+﻿{
+  "uid": "CSharp9.NativeSizedIntegers",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "CSharp9.NativeSizedIntegers.X",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp9.NativeSizedIntegers",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "X"
+        },
+        {
+          "lang": "vb",
+          "value": "X"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "NativeSizedIntegers.X"
+        },
+        {
+          "lang": "vb",
+          "value": "NativeSizedIntegers.X"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp9.NativeSizedIntegers.X"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp9.NativeSizedIntegers.X"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\" alt=\"CSharp9.NativeSizedIntegers.X\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\" alt=\"CSharp9.NativeSizedIntegers.X\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public nint X"
+          },
+          {
+            "lang": "vb",
+            "value": "Public X As IntPtr"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "System.IntPtr",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "IntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "IntPtr"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "IntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "IntPtr"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.IntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "System.IntPtr"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.IntPtr\" text=\"IntPtr\" alt=\"System.IntPtr\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.IntPtr\" text=\"IntPtr\" alt=\"System.IntPtr\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "X",
+        "path": "src/DotnetNew/CSharp9.cs",
+        "startLine": 23,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp9",
+      "level": 0,
+      "modifiers.csharp": [
+        "public"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "field",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp9.NativeSizedIntegers.Y",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp9.NativeSizedIntegers",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Y"
+        },
+        {
+          "lang": "vb",
+          "value": "Y"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "NativeSizedIntegers.Y"
+        },
+        {
+          "lang": "vb",
+          "value": "NativeSizedIntegers.Y"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp9.NativeSizedIntegers.Y"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp9.NativeSizedIntegers.Y"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\" alt=\"CSharp9.NativeSizedIntegers.Y\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\" alt=\"CSharp9.NativeSizedIntegers.Y\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public nuint Y"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Y As UIntPtr"
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "System.UIntPtr",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "UIntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "UIntPtr"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "UIntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "UIntPtr"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.UIntPtr"
+              },
+              {
+                "lang": "vb",
+                "value": "System.UIntPtr"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.UIntPtr\" text=\"UIntPtr\" alt=\"System.UIntPtr\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.UIntPtr\" text=\"UIntPtr\" alt=\"System.UIntPtr\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "Y",
+        "path": "src/DotnetNew/CSharp9.cs",
+        "startLine": 24,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp9",
+      "level": 0,
+      "modifiers.csharp": [
+        "public"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "field",
+      "summary": null,
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "NativeSizedIntegers"
+    },
+    {
+      "lang": "vb",
+      "value": "NativeSizedIntegers"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "NativeSizedIntegers"
+    },
+    {
+      "lang": "vb",
+      "value": "NativeSizedIntegers"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp9.NativeSizedIntegers"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp9.NativeSizedIntegers"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "NativeSizedIntegers",
+    "path": "src/DotnetNew/CSharp9.cs",
+    "startLine": 21,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "DotnetNew"
+  ],
+  "namespace": {
+    "uid": "CSharp9",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp9"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp9"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class NativeSizedIntegers"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class NativeSizedIntegers"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/CSharp9.NativeSizedIntegers.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp9.NativeSizedIntegers.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

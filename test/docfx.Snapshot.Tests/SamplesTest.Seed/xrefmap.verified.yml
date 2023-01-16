@@ -885,6 +885,180 @@ references:
   isSpec: "True"
   fullName: CSharp8.ReadOnlyMembers.Y
   nameWithType: ReadOnlyMembers.Y
+- uid: CSharp9
+  name: CSharp9
+  href: api/CSharp9.html
+  commentId: N:CSharp9
+  fullName: CSharp9
+  nameWithType: CSharp9
+- uid: CSharp9.FunctionPointers
+  name: FunctionPointers
+  href: api/CSharp9.FunctionPointers.html
+  commentId: T:CSharp9.FunctionPointers
+  fullName: CSharp9.FunctionPointers
+  nameWithType: FunctionPointers
+- uid: CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
+  name: Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)
+  href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_System_Action_System_Int32_______
+  commentId: M:CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
+  name.vb: Example(Action(Of Int32), , , , , )
+  fullName: CSharp9.FunctionPointers.Example(System.Action<System.Int32>, delegate*<System.Int32, System.Void>, delegate*<System.Int32, System.Int32>, delegate* unmanaged<System.Int32, System.Int32>, delegate* unmanaged[Cdecl]<System.Int32, System.Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>)
+  fullName.vb: CSharp9.FunctionPointers.Example(System.Action(Of System.Int32), , , , , )
+  nameWithType: FunctionPointers.Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)
+  nameWithType.vb: FunctionPointers.Example(Action(Of Int32), , , , , )
+- uid: CSharp9.FunctionPointers.Example*
+  name: Example
+  href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_
+  commentId: Overload:CSharp9.FunctionPointers.Example
+  isSpec: "True"
+  fullName: CSharp9.FunctionPointers.Example
+  nameWithType: FunctionPointers.Example
+- uid: CSharp9.InitOnlySetters
+  name: InitOnlySetters
+  href: api/CSharp9.InitOnlySetters.html
+  commentId: T:CSharp9.InitOnlySetters
+  fullName: CSharp9.InitOnlySetters
+  nameWithType: InitOnlySetters
+- uid: CSharp9.InitOnlySetters.PressureInMillibars
+  name: PressureInMillibars
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_PressureInMillibars
+  commentId: P:CSharp9.InitOnlySetters.PressureInMillibars
+  fullName: CSharp9.InitOnlySetters.PressureInMillibars
+  nameWithType: InitOnlySetters.PressureInMillibars
+- uid: CSharp9.InitOnlySetters.PressureInMillibars*
+  name: PressureInMillibars
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_PressureInMillibars_
+  commentId: Overload:CSharp9.InitOnlySetters.PressureInMillibars
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.PressureInMillibars
+  nameWithType: InitOnlySetters.PressureInMillibars
+- uid: CSharp9.InitOnlySetters.RecordedAt
+  name: RecordedAt
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_RecordedAt
+  commentId: P:CSharp9.InitOnlySetters.RecordedAt
+  fullName: CSharp9.InitOnlySetters.RecordedAt
+  nameWithType: InitOnlySetters.RecordedAt
+- uid: CSharp9.InitOnlySetters.RecordedAt*
+  name: RecordedAt
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_RecordedAt_
+  commentId: Overload:CSharp9.InitOnlySetters.RecordedAt
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.RecordedAt
+  nameWithType: InitOnlySetters.RecordedAt
+- uid: CSharp9.InitOnlySetters.TemperatureInCelsius
+  name: TemperatureInCelsius
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_TemperatureInCelsius
+  commentId: P:CSharp9.InitOnlySetters.TemperatureInCelsius
+  fullName: CSharp9.InitOnlySetters.TemperatureInCelsius
+  nameWithType: InitOnlySetters.TemperatureInCelsius
+- uid: CSharp9.InitOnlySetters.TemperatureInCelsius*
+  name: TemperatureInCelsius
+  href: api/CSharp9.InitOnlySetters.html#CSharp9_InitOnlySetters_TemperatureInCelsius_
+  commentId: Overload:CSharp9.InitOnlySetters.TemperatureInCelsius
+  isSpec: "True"
+  fullName: CSharp9.InitOnlySetters.TemperatureInCelsius
+  nameWithType: InitOnlySetters.TemperatureInCelsius
+- uid: CSharp9.NativeSizedIntegers
+  name: NativeSizedIntegers
+  href: api/CSharp9.NativeSizedIntegers.html
+  commentId: T:CSharp9.NativeSizedIntegers
+  fullName: CSharp9.NativeSizedIntegers
+  nameWithType: NativeSizedIntegers
+- uid: CSharp9.NativeSizedIntegers.X
+  name: X
+  href: api/CSharp9.NativeSizedIntegers.html#CSharp9_NativeSizedIntegers_X
+  commentId: F:CSharp9.NativeSizedIntegers.X
+  fullName: CSharp9.NativeSizedIntegers.X
+  nameWithType: NativeSizedIntegers.X
+- uid: CSharp9.NativeSizedIntegers.Y
+  name: Y
+  href: api/CSharp9.NativeSizedIntegers.html#CSharp9_NativeSizedIntegers_Y
+  commentId: F:CSharp9.NativeSizedIntegers.Y
+  fullName: CSharp9.NativeSizedIntegers.Y
+  nameWithType: NativeSizedIntegers.Y
+- uid: CSharp9.RecordTypes
+  name: RecordTypes
+  href: api/CSharp9.RecordTypes.html
+  commentId: T:CSharp9.RecordTypes
+  fullName: CSharp9.RecordTypes
+  nameWithType: RecordTypes
+- uid: CSharp9.RecordTypes.Person
+  name: RecordTypes.Person
+  href: api/CSharp9.RecordTypes.Person.html
+  commentId: T:CSharp9.RecordTypes.Person
+  fullName: CSharp9.RecordTypes.Person
+  nameWithType: RecordTypes.Person
+- uid: CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
+  name: Person(String, String)
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_System_String_System_String_
+  commentId: M:CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
+  fullName: CSharp9.RecordTypes.Person.Person(System.String, System.String)
+  nameWithType: RecordTypes.Person.Person(String, String)
+- uid: CSharp9.RecordTypes.Person.#ctor*
+  name: Person
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_
+  commentId: Overload:CSharp9.RecordTypes.Person.#ctor
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Person.Person
+  nameWithType: RecordTypes.Person.Person
+- uid: CSharp9.RecordTypes.Person.FirstName
+  name: FirstName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName
+  commentId: P:CSharp9.RecordTypes.Person.FirstName
+  fullName: CSharp9.RecordTypes.Person.FirstName
+  nameWithType: RecordTypes.Person.FirstName
+- uid: CSharp9.RecordTypes.Person.FirstName*
+  name: FirstName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName_
+  commentId: Overload:CSharp9.RecordTypes.Person.FirstName
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Person.FirstName
+  nameWithType: RecordTypes.Person.FirstName
+- uid: CSharp9.RecordTypes.Person.LastName
+  name: LastName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName
+  commentId: P:CSharp9.RecordTypes.Person.LastName
+  fullName: CSharp9.RecordTypes.Person.LastName
+  nameWithType: RecordTypes.Person.LastName
+- uid: CSharp9.RecordTypes.Person.LastName*
+  name: LastName
+  href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName_
+  commentId: Overload:CSharp9.RecordTypes.Person.LastName
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Person.LastName
+  nameWithType: RecordTypes.Person.LastName
+- uid: CSharp9.RecordTypes.Teacher
+  name: RecordTypes.Teacher
+  href: api/CSharp9.RecordTypes.Teacher.html
+  commentId: T:CSharp9.RecordTypes.Teacher
+  fullName: CSharp9.RecordTypes.Teacher
+  nameWithType: RecordTypes.Teacher
+- uid: CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
+  name: Teacher(String, String, Int32)
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_
+  commentId: M:CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
+  fullName: CSharp9.RecordTypes.Teacher.Teacher(System.String, System.String, System.Int32)
+  nameWithType: RecordTypes.Teacher.Teacher(String, String, Int32)
+- uid: CSharp9.RecordTypes.Teacher.#ctor*
+  name: Teacher
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_
+  commentId: Overload:CSharp9.RecordTypes.Teacher.#ctor
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Teacher.Teacher
+  nameWithType: RecordTypes.Teacher.Teacher
+- uid: CSharp9.RecordTypes.Teacher.Grade
+  name: Grade
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher_Grade
+  commentId: P:CSharp9.RecordTypes.Teacher.Grade
+  fullName: CSharp9.RecordTypes.Teacher.Grade
+  nameWithType: RecordTypes.Teacher.Grade
+- uid: CSharp9.RecordTypes.Teacher.Grade*
+  name: Grade
+  href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher_Grade_
+  commentId: Overload:CSharp9.RecordTypes.Teacher.Grade
+  isSpec: "True"
+  fullName: CSharp9.RecordTypes.Teacher.Grade
+  nameWithType: RecordTypes.Teacher.Grade
 - uid: graph.windows.net/myorganization/Contacts/1.6
   name: Contacts
   href: restapi/contacts.html
