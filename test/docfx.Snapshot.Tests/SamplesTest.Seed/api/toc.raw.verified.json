@@ -80,6 +80,50 @@
       ]
     },
     {
+      "name": "CSharp10",
+      "href": "CSharp10.html",
+      "topicHref": "CSharp10.html",
+      "topicUid": "CSharp10",
+      "items": [
+        {
+          "name": "ConstantInterpolatedStrings",
+          "href": "CSharp10.ConstantInterpolatedStrings.html",
+          "topicHref": "CSharp10.ConstantInterpolatedStrings.html",
+          "topicUid": "CSharp10.ConstantInterpolatedStrings"
+        },
+        {
+          "name": "Issue7737",
+          "href": "CSharp10.Issue7737.html",
+          "topicHref": "CSharp10.Issue7737.html",
+          "topicUid": "CSharp10.Issue7737"
+        },
+        {
+          "name": "ParameterlessStructConstructors",
+          "href": "CSharp10.ParameterlessStructConstructors.html",
+          "topicHref": "CSharp10.ParameterlessStructConstructors.html",
+          "topicUid": "CSharp10.ParameterlessStructConstructors"
+        },
+        {
+          "name": "ReadOnlyRecordStruct",
+          "href": "CSharp10.ReadOnlyRecordStruct.html",
+          "topicHref": "CSharp10.ReadOnlyRecordStruct.html",
+          "topicUid": "CSharp10.ReadOnlyRecordStruct"
+        },
+        {
+          "name": "RecordClass",
+          "href": "CSharp10.RecordClass.html",
+          "topicHref": "CSharp10.RecordClass.html",
+          "topicUid": "CSharp10.RecordClass"
+        },
+        {
+          "name": "RecordStruct",
+          "href": "CSharp10.RecordStruct.html",
+          "topicHref": "CSharp10.RecordStruct.html",
+          "topicUid": "CSharp10.RecordStruct"
+        }
+      ]
+    },
+    {
       "name": "CSharp8",
       "href": "CSharp8.html",
       "topicHref": "CSharp8.html",

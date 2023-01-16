@@ -1,0 +1,451 @@
+﻿{
+  "uid": "CSharp10",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "uid": "CSharp10.ConstantInterpolatedStrings",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ConstantInterpolatedStrings"
+        },
+        {
+          "lang": "vb",
+          "value": "ConstantInterpolatedStrings"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ConstantInterpolatedStrings"
+        },
+        {
+          "lang": "vb",
+          "value": "ConstantInterpolatedStrings"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.ConstantInterpolatedStrings"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.ConstantInterpolatedStrings"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\" alt=\"CSharp10.ConstantInterpolatedStrings\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\" alt=\"CSharp10.ConstantInterpolatedStrings\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "class",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp10.Issue7737",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Issue7737"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue7737"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Issue7737"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue7737"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.Issue7737"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.Issue7737"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\" alt=\"CSharp10.Issue7737\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\" alt=\"CSharp10.Issue7737\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "class",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp10.ParameterlessStructConstructors",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ParameterlessStructConstructors"
+        },
+        {
+          "lang": "vb",
+          "value": "ParameterlessStructConstructors"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ParameterlessStructConstructors"
+        },
+        {
+          "lang": "vb",
+          "value": "ParameterlessStructConstructors"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.ParameterlessStructConstructors"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.ParameterlessStructConstructors"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\" alt=\"CSharp10.ParameterlessStructConstructors\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\" alt=\"CSharp10.ParameterlessStructConstructors\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "struct",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp10.ReadOnlyRecordStruct",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReadOnlyRecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "ReadOnlyRecordStruct"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "ReadOnlyRecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "ReadOnlyRecordStruct"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.ReadOnlyRecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.ReadOnlyRecordStruct"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\" alt=\"CSharp10.ReadOnlyRecordStruct\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\" alt=\"CSharp10.ReadOnlyRecordStruct\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "struct",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp10.RecordClass",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "RecordClass"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordClass"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RecordClass"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordClass"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.RecordClass"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.RecordClass"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\" alt=\"CSharp10.RecordClass\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\" alt=\"CSharp10.RecordClass\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "class",
+      "platform": null,
+      "isEii": false
+    },
+    {
+      "uid": "CSharp10.RecordStruct",
+      "isExtensionMethod": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "RecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordStruct"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "RecordStruct"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp10.RecordStruct"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp10.RecordStruct"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\" alt=\"CSharp10.RecordStruct\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\" alt=\"CSharp10.RecordStruct\"/>"
+        }
+      ],
+      "level": 0,
+      "summary": null,
+      "type": "struct",
+      "platform": null,
+      "isEii": false
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp10"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp10"
+    }
+  ],
+  "type": "namespace",
+  "assemblies": [
+    "DotnetNew"
+  ],
+  "level": 0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/CSharp10.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp10.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

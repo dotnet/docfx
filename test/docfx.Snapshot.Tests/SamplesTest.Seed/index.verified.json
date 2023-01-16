@@ -59,6 +59,41 @@
     "title": "Class TomFromBaseClass | docfx seed website",
     "keywords": "Class TomFromBaseClass TomFromBaseClass inherits from @ Inheritance Object Tom TomFromBaseClass Inherited Members Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>) Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CatLibrary Assembly : CatLibrary.dll Syntax public class TomFromBaseClass : Tom Constructors | Improve this Doc View Source TomFromBaseClass(Int32) This is a #ctor with parameter Declaration public TomFromBaseClass(int k) Parameters Type Name Description Int32 k"
   },
+  "api/CSharp10.ConstantInterpolatedStrings.html": {
+    "href": "api/CSharp10.ConstantInterpolatedStrings.html",
+    "title": "Class ConstantInterpolatedStrings | docfx seed website",
+    "keywords": "Class ConstantInterpolatedStrings Inheritance Object ConstantInterpolatedStrings Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public class ConstantInterpolatedStrings Fields | Improve this Doc View Source S1 Declaration public const string S1 = \"Hello world\" Field Value Type Description String | Improve this Doc View Source S2 Declaration public const string S2 = \"Hello World\" Field Value Type Description String | Improve this Doc View Source S3 Declaration public const string S3 = \"Hello world Kevin, welcome to the team!\" Field Value Type Description String"
+  },
+  "api/CSharp10.html": {
+    "href": "api/CSharp10.html",
+    "title": "Namespace CSharp10 | docfx seed website",
+    "keywords": "Namespace CSharp10 Classes ConstantInterpolatedStrings Issue7737 RecordClass Structs ParameterlessStructConstructors ReadOnlyRecordStruct RecordStruct"
+  },
+  "api/CSharp10.Issue7737.html": {
+    "href": "api/CSharp10.Issue7737.html",
+    "title": "Class Issue7737 | docfx seed website",
+    "keywords": "Class Issue7737 Inheritance Object Issue7737 Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public class Issue7737 Methods | Improve this Doc View Source Foo() Exception Declaration public void Foo()"
+  },
+  "api/CSharp10.ParameterlessStructConstructors.html": {
+    "href": "api/CSharp10.ParameterlessStructConstructors.html",
+    "title": "Struct ParameterlessStructConstructors | docfx seed website",
+    "keywords": "Struct ParameterlessStructConstructors Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() ValueType.ToString() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public struct ParameterlessStructConstructors Constructors | Improve this Doc View Source ParameterlessStructConstructors() Declaration public ParameterlessStructConstructors() Fields | Improve this Doc View Source X Declaration public int X Field Value Type Description Int32 Properties | Improve this Doc View Source Description Declaration public string Description { readonly get; set; } Property Value Type Description String | Improve this Doc View Source Y Declaration public int Y { readonly get; set; } Property Value Type Description Int32"
+  },
+  "api/CSharp10.ReadOnlyRecordStruct.html": {
+    "href": "api/CSharp10.ReadOnlyRecordStruct.html",
+    "title": "Struct ReadOnlyRecordStruct | docfx seed website",
+    "keywords": "Struct ReadOnlyRecordStruct Implements IEquatable < ReadOnlyRecordStruct > Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() ValueType.ToString() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public readonly struct ReadOnlyRecordStruct : IEquatable<ReadOnlyRecordStruct> Constructors | Improve this Doc View Source ReadOnlyRecordStruct(Double, Double, Double) Declaration public ReadOnlyRecordStruct(double X, double Y, double Z) Parameters Type Name Description Double X Double Y Double Z Properties | Improve this Doc View Source X Declaration public double X { readonly get; set; } Property Value Type Description Double | Improve this Doc View Source Y Declaration public double Y { readonly get; set; } Property Value Type Description Double | Improve this Doc View Source Z Declaration public double Z { readonly get; set; } Property Value Type Description Double Implements System.IEquatable<T>"
+  },
+  "api/CSharp10.RecordClass.html": {
+    "href": "api/CSharp10.RecordClass.html",
+    "title": "Class RecordClass | docfx seed website",
+    "keywords": "Class RecordClass Inheritance Object RecordClass Implements IEquatable < RecordClass > Inherited Members Object.Equals(Object) Object.Equals(Object, Object) Object.GetHashCode() Object.GetType() Object.MemberwiseClone() Object.ReferenceEquals(Object, Object) Object.ToString() Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public class RecordClass : IEquatable<RecordClass> Constructors | Improve this Doc View Source RecordClass(String, String) Declaration public RecordClass(string FirstName, string LastName) Parameters Type Name Description String FirstName String LastName Properties | Improve this Doc View Source FirstName Declaration public string FirstName { get; set; } Property Value Type Description String | Improve this Doc View Source LastName Declaration public string LastName { get; set; } Property Value Type Description String Implements System.IEquatable<T>"
+  },
+  "api/CSharp10.RecordStruct.html": {
+    "href": "api/CSharp10.RecordStruct.html",
+    "title": "Struct RecordStruct | docfx seed website",
+    "keywords": "Struct RecordStruct Implements IEquatable < RecordStruct > Inherited Members ValueType.Equals(Object) ValueType.GetHashCode() ValueType.ToString() Object.Equals(Object, Object) Object.GetType() Object.ReferenceEquals(Object, Object) Namespace : CSharp10 Assembly : DotnetNew.dll Syntax public struct RecordStruct : IEquatable<RecordStruct> Constructors | Improve this Doc View Source RecordStruct(DateTime, Double) Declaration public RecordStruct(DateTime TakenAt, double Measurement) Parameters Type Name Description DateTime TakenAt Double Measurement Properties | Improve this Doc View Source Measurement Declaration public double Measurement { readonly get; set; } Property Value Type Description Double | Improve this Doc View Source TakenAt Declaration public DateTime TakenAt { readonly get; set; } Property Value Type Description DateTime Implements System.IEquatable<T>"
+  },
   "api/CSharp8.DefaultInterfaceMembers.html": {
     "href": "api/CSharp8.DefaultInterfaceMembers.html",
     "title": "Interface DefaultInterfaceMembers | docfx seed website",
