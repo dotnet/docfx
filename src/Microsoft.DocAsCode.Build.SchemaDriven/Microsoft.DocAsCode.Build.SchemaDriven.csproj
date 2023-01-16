@@ -14,13 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Markdig" Version="0.30.4" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="schemas\v1.0\" />
-  </ItemGroup>
-
 </Project>
