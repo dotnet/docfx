@@ -4,9 +4,7 @@
 namespace Microsoft.DocAsCode.Exceptions
 {
     using System;
-    using System.Runtime.Serialization;
 
-    [Serializable]
     public class DocfxException : Exception
     {
         private const string DefaultMessage = "Error happens when running docfx";
@@ -20,10 +18,6 @@ namespace Microsoft.DocAsCode.Exceptions
         }
 
         public DocfxException(string message, Exception innerException) : base(message ?? DefaultMessage, innerException)
-        {
-        }
-
-        protected DocfxException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

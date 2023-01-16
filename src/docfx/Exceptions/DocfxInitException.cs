@@ -4,23 +4,10 @@
 namespace Microsoft.DocAsCode.Exceptions
 {
     using System;
-    using System.Runtime.Serialization;
 
     public class DocfxInitException : Exception
     {
-        public DocfxInitException() : this("Error happens when running docfx init")
-        {
-        }
-
-        public DocfxInitException(string message) : base(message)
-        {
-        }
-
         public DocfxInitException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected DocfxInitException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

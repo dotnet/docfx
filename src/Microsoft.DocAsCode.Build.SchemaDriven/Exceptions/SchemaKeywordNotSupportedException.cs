@@ -3,21 +3,9 @@
 
 namespace Microsoft.DocAsCode.Exceptions
 {
-    using System;
-    using System.Runtime.Serialization;
-
-    [Serializable]
     public class SchemaKeywordNotSupportedException : DocfxException
     {
         public SchemaKeywordNotSupportedException(string keyword) : base($"{keyword} keyword is not supported in current schema driven document processor")
-        {
-        }
-
-        public SchemaKeywordNotSupportedException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected SchemaKeywordNotSupportedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
