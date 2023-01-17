@@ -15,7 +15,11 @@ namespace Microsoft.DocAsCode
     {
         public static void Exec(PdfJsonConfig config)
         {
-            var wkhtmltopdfFilePath = Path.Combine(config.BaseDirectory, config.Wkhtmltopdf?.FilePath);
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
+            // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
+            var baseDirectory = EnvironmentContext.BaseDirectory;
+
+            var wkhtmltopdfFilePath = config.Wkhtmltopdf?.FilePath is null ? null : Path.Combine(baseDirectory, config.Wkhtmltopdf.FilePath);
             ConvertWrapper.PrerequisiteCheck(wkhtmltopdfFilePath);
 
             if (config.Serve == true)
@@ -29,9 +33,6 @@ namespace Microsoft.DocAsCode
                 config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
             }
 
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
-            // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
-            var baseDirectory = EnvironmentContext.BaseDirectory;
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
             var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;
             var options = new PdfOptions
