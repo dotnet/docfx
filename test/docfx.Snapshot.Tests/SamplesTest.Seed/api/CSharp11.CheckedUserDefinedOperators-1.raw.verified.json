@@ -1,0 +1,4124 @@
+﻿{
+  "uid": "CSharp11.CheckedUserDefinedOperators`1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Addition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Addition(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Addition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Addition(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Addition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Addition(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)\" text=\"Addition(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Addition(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)\" text=\"Addition(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Addition(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator +(T lhs, T rhs)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Operator +(lhs As T, rhs As T) As T"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Addition",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 28,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Addition*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Addition"
+          },
+          {
+            "lang": "vb",
+            "value": "Addition"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Addition"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Addition"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Addition"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Addition"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Addition*\" text=\"Addition\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Addition\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Addition*\" text=\"Addition\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Addition\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedAddition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedAddition(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedAddition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedAddition(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedAddition(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedAddition(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)\" text=\"CheckedAddition(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedAddition(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)\" text=\"CheckedAddition(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedAddition(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedAddition",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 37,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedAddition"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedAddition"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedAddition"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedAddition"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedAddition"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedAddition"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition*\" text=\"CheckedAddition\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedAddition\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition*\" text=\"CheckedAddition\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedAddition\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedDecrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedDecrement(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedDecrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedDecrement(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedDecrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedDecrement(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)\" text=\"CheckedDecrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDecrement(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)\" text=\"CheckedDecrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDecrement(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedDecrement",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 35,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedDecrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedDecrement"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedDecrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedDecrement"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedDecrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedDecrement"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement*\" text=\"CheckedDecrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDecrement\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement*\" text=\"CheckedDecrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDecrement\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedDivision(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedDivision(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedDivision(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedDivision(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedDivision(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedDivision(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)\" text=\"CheckedDivision(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDivision(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)\" text=\"CheckedDivision(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDivision(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedDivision",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 40,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedDivision"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedDivision"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedDivision"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedDivision"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedDivision"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedDivision"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision*\" text=\"CheckedDivision\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDivision\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision*\" text=\"CheckedDivision\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedDivision\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedExplicit(T to Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedNarrowing(T to Int32)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedExplicit(T to Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedNarrowing(T to Int32)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedExplicit(T to System.Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedNarrowing(T to System.Int32)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32\" text=\"CheckedExplicit(T to Int32)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedExplicit(T to System.Int32)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32\" text=\"CheckedExplicit(T to Int32)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedExplicit(T to System.Int32)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "System.Int32",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "Int32"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "Int32"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "System.Int32"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedExplicit",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 41,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedExplicit"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedNarrowing"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedExplicit"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedNarrowing"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedExplicit"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedNarrowing"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*\" text=\"CheckedExplicit\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedExplicit\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*\" text=\"CheckedExplicit\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedExplicit\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedIncrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedIncrement(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedIncrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedIncrement(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedIncrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedIncrement(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)\" text=\"CheckedIncrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedIncrement(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)\" text=\"CheckedIncrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedIncrement(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedIncrement",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 34,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedIncrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedIncrement"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedIncrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedIncrement"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedIncrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedIncrement"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement*\" text=\"CheckedIncrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedIncrement\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement*\" text=\"CheckedIncrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedIncrement\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedMultiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedMultiply(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedMultiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedMultiply(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedMultiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedMultiply(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)\" text=\"CheckedMultiply(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedMultiply(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)\" text=\"CheckedMultiply(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedMultiply(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedMultiply",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 39,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedMultiply"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedMultiply"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedMultiply"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedMultiply"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedMultiply"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedMultiply"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply*\" text=\"CheckedMultiply\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedMultiply\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply*\" text=\"CheckedMultiply\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedMultiply\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedSubtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedSubtraction(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedSubtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedSubtraction(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedSubtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedSubtraction(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)\" text=\"CheckedSubtraction(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedSubtraction(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)\" text=\"CheckedSubtraction(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedSubtraction(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedSubtraction",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 38,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedSubtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedSubtraction"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedSubtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedSubtraction"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedSubtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedSubtraction"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction*\" text=\"CheckedSubtraction\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedSubtraction\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction*\" text=\"CheckedSubtraction\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedSubtraction\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUnaryNegation(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.CheckedUnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).CheckedUnaryNegation(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedUnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedUnaryNegation(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)\" text=\"CheckedUnaryNegation(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedUnaryNegation(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)\" text=\"CheckedUnaryNegation(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedUnaryNegation(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "Not supported in c#"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_CheckedUnaryNegation",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 36,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUnaryNegation"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.CheckedUnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).CheckedUnaryNegation"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.CheckedUnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).CheckedUnaryNegation"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation*\" text=\"CheckedUnaryNegation\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedUnaryNegation\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation*\" text=\"CheckedUnaryNegation\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.CheckedUnaryNegation\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Decrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Decrement(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Decrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Decrement(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Decrement(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Decrement(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)\" text=\"Decrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Decrement(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)\" text=\"Decrement(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Decrement(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator --(T x)"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Decrement",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 26,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Decrement*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Decrement"
+          },
+          {
+            "lang": "vb",
+            "value": "Decrement"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Decrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Decrement"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Decrement"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Decrement"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Decrement*\" text=\"Decrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Decrement\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Decrement*\" text=\"Decrement\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Decrement\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Division(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Division(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Division(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Division(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Division(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Division(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)\" text=\"Division(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Division(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)\" text=\"Division(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Division(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator /(T lhs, T rhs)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Operator /(lhs As T, rhs As T) As T"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Division",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 31,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Division*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Division"
+          },
+          {
+            "lang": "vb",
+            "value": "Division"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Division"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Division"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Division"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Division"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Division*\" text=\"Division\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Division\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Division*\" text=\"Division\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Division\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Explicit(T to Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "Narrowing(T to Int32)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Explicit(T to Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Narrowing(T to Int32)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Explicit(T to System.Int32)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Narrowing(T to System.Int32)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32\" text=\"Explicit(T to Int32)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Explicit(T to System.Int32)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32\" text=\"Explicit(T to Int32)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Explicit(T to System.Int32)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static explicit operator int (T x)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Narrowing Operator CType(x As T) As Integer"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "System.Int32",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "Int32"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "Int32"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.Int32"
+              },
+              {
+                "lang": "vb",
+                "value": "System.Int32"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Explicit",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 32,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Explicit*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Explicit"
+          },
+          {
+            "lang": "vb",
+            "value": "Narrowing"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Explicit"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Narrowing"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Explicit"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Narrowing"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Explicit*\" text=\"Explicit\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Explicit\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Explicit*\" text=\"Explicit\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Explicit\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Increment(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Increment(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Increment(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Increment(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Increment(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Increment(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)\" text=\"Increment(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Increment(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)\" text=\"Increment(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Increment(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator ++(T x)"
+          },
+          {
+            "lang": "vb",
+            "value": "VB cannot support this operator."
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Increment",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 25,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Increment*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Increment"
+          },
+          {
+            "lang": "vb",
+            "value": "Increment"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Increment"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Increment"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Increment"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Increment"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Increment*\" text=\"Increment\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Increment\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Increment*\" text=\"Increment\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Increment\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Multiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Multiply(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Multiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Multiply(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Multiply(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Multiply(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)\" text=\"Multiply(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Multiply(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)\" text=\"Multiply(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Multiply(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator *(T lhs, T rhs)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Operator *(lhs As T, rhs As T) As T"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Multiply",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 30,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Multiply*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Multiply"
+          },
+          {
+            "lang": "vb",
+            "value": "Multiply"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Multiply"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Multiply"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Multiply"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Multiply"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Multiply*\" text=\"Multiply\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Multiply\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Multiply*\" text=\"Multiply\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Multiply\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Subtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "Subtraction(T, T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.Subtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).Subtraction(T, T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.Subtraction(T, T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).Subtraction(T, T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)\" text=\"Subtraction(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Subtraction(T, T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)\" text=\"Subtraction(T, T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Subtraction(T, T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator -(T lhs, T rhs)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Operator -(lhs As T, rhs As T) As T"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "lhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          },
+          {
+            "id": "rhs",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_Subtraction",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 29,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_Subtraction*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "Subtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "Subtraction"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.Subtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).Subtraction"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.Subtraction"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).Subtraction"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Subtraction*\" text=\"Subtraction\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Subtraction\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_Subtraction*\" text=\"Subtraction\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.Subtraction\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.CheckedUserDefinedOperators`1",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "UnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "UnaryNegation(T)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "CheckedUserDefinedOperators<T>.UnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CheckedUserDefinedOperators(Of T).UnaryNegation(T)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.CheckedUserDefinedOperators<T>.UnaryNegation(T)"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.CheckedUserDefinedOperators(Of T).UnaryNegation(T)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)\" text=\"UnaryNegation(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.UnaryNegation(T)\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)\" text=\"UnaryNegation(T)\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.UnaryNegation(T)\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "static T operator -(T x)"
+          },
+          {
+            "lang": "vb",
+            "value": "Shared Operator -(x As T) As T"
+          }
+        ],
+        "parameters": [
+          {
+            "id": "x",
+            "type": {
+              "uid": "{T}",
+              "definition": "T",
+              "name": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "nameWithType": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "fullName": [
+                {
+                  "lang": "csharp",
+                  "value": "T"
+                },
+                {
+                  "lang": "vb",
+                  "value": "T"
+                }
+              ],
+              "specName": [
+                {
+                  "lang": "csharp",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                },
+                {
+                  "lang": "vb",
+                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                }
+              ]
+            }
+          }
+        ],
+        "return": {
+          "type": {
+            "uid": "{T}",
+            "definition": "T",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "T"
+              },
+              {
+                "lang": "vb",
+                "value": "T"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "op_UnaryNegation",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 27,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "UnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "UnaryNegation"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "CheckedUserDefinedOperators<T>.UnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "CheckedUserDefinedOperators(Of T).UnaryNegation"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.CheckedUserDefinedOperators<T>.UnaryNegation"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.CheckedUserDefinedOperators(Of T).UnaryNegation"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation*\" text=\"UnaryNegation\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.UnaryNegation\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation*\" text=\"UnaryNegation\" alt=\"CSharp11.CheckedUserDefinedOperators&lt;T&gt;.UnaryNegation\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "type": "operator",
+      "summary": null,
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "CheckedUserDefinedOperators<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CheckedUserDefinedOperators(Of T)"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "CheckedUserDefinedOperators<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CheckedUserDefinedOperators(Of T)"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11.CheckedUserDefinedOperators<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11.CheckedUserDefinedOperators(Of T)"
+    }
+  ],
+  "type": "interface",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "CheckedUserDefinedOperators",
+    "path": "src/DotnetNew/CSharp11.cs",
+    "startLine": 23,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "DotnetNew"
+  ],
+  "namespace": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public interface CheckedUserDefinedOperators<T>\n    where T : CheckedUserDefinedOperators<T>"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Interface CheckedUserDefinedOperators(Of T As CheckedUserDefinedOperators(Of T))"
+      }
+    ],
+    "typeParameters": [
+      {
+        "id": "T"
+      }
+    ]
+  },
+  "level": 0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/CSharp11.CheckedUserDefinedOperators-1.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp11.CheckedUserDefinedOperators-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}
