@@ -9,6 +9,7 @@ _site
 _site_pdf
 docs/api
 
+*.user
 *.log
 *.cache
 .settings

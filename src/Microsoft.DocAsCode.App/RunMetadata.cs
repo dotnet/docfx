@@ -4,6 +4,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Build.Locator;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Metadata.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
@@ -12,6 +13,12 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunMetadata
     {
+        static RunMetadata()
+        {
+            var vs = MSBuildLocator.RegisterDefaults();
+            Logger.LogInfo($"Use {vs?.Name} {vs?.Version}");
+        }
+
         public static void Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
         {
             try
@@ -24,25 +31,23 @@ namespace Microsoft.DocAsCode
 
                     // If Root Output folder is specified from command line, use it instead of the base directory
                     EnvironmentContext.SetOutputDirectory(outputDirectory ?? configDirectory);
-                    using (new MSBuildEnvironmentScope())
+
+                    foreach (var item in config)
                     {
-                        foreach (var item in config)
-                        {
-                            VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+                        VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
 
-                            var inputModel = ConvertToInputModel(item);
+                        var inputModel = ConvertToInputModel(item);
 
-                            EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
+                        EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
-                            // TODO: Use plugin to generate metadata for files with different extension?
-                            using var worker = new ExtractMetadataWorker(inputModel);
-                            // Use task.run to get rid of current context (causing deadlock in xunit)
-                            var task = Task.Run(worker.ExtractMetadataAsync);
-                            task.Wait();
-                        }
-
-                        VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
+                        // TODO: Use plugin to generate metadata for files with different extension?
+                        using var worker = new ExtractMetadataWorker(inputModel);
+                        // Use task.run to get rid of current context (causing deadlock in xunit)
+                        var task = Task.Run(worker.ExtractMetadataAsync);
+                        task.Wait();
                     }
+
+                    VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
                 }
             }
             catch (AggregateException e)
