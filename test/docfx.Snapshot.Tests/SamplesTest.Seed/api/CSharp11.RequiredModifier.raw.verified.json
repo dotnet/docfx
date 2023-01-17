@@ -1,0 +1,1190 @@
+﻿{
+  "uid": "CSharp11.RequiredModifier",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "children": [
+    {
+      "uid": "CSharp11.RequiredModifier.FirstName",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.RequiredModifier",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "FirstName"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RequiredModifier.FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "RequiredModifier.FirstName"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.RequiredModifier.FirstName"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.RequiredModifier.FirstName"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName\" text=\"FirstName\" alt=\"CSharp11.RequiredModifier.FirstName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName\" text=\"FirstName\" alt=\"CSharp11.RequiredModifier.FirstName\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public string FirstName { get; set; }"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Property FirstName As String"
+          }
+        ],
+        "parameters": [],
+        "return": {
+          "type": {
+            "uid": "System.String",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.String"
+              },
+              {
+                "lang": "vb",
+                "value": "System.String"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "FirstName",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 46,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.RequiredModifier.FirstName*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "FirstName"
+          },
+          {
+            "lang": "vb",
+            "value": "FirstName"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "RequiredModifier.FirstName"
+          },
+          {
+            "lang": "vb",
+            "value": "RequiredModifier.FirstName"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.RequiredModifier.FirstName"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.RequiredModifier.FirstName"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\" alt=\"CSharp11.RequiredModifier.FirstName\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\" alt=\"CSharp11.RequiredModifier.FirstName\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "get",
+        "set"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "property",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.RequiredModifier.LastName",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.RequiredModifier",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "LastName"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RequiredModifier.LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "RequiredModifier.LastName"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.RequiredModifier.LastName"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.RequiredModifier.LastName"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.LastName\" text=\"LastName\" alt=\"CSharp11.RequiredModifier.LastName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.LastName\" text=\"LastName\" alt=\"CSharp11.RequiredModifier.LastName\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public string LastName { get; set; }"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Property LastName As String"
+          }
+        ],
+        "parameters": [],
+        "return": {
+          "type": {
+            "uid": "System.String",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.String"
+              },
+              {
+                "lang": "vb",
+                "value": "System.String"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "LastName",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 48,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.RequiredModifier.LastName*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "LastName"
+          },
+          {
+            "lang": "vb",
+            "value": "LastName"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "RequiredModifier.LastName"
+          },
+          {
+            "lang": "vb",
+            "value": "RequiredModifier.LastName"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.RequiredModifier.LastName"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.RequiredModifier.LastName"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\" alt=\"CSharp11.RequiredModifier.LastName\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\" alt=\"CSharp11.RequiredModifier.LastName\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "get",
+        "set"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "property",
+      "summary": null,
+      "platform": null
+    },
+    {
+      "uid": "CSharp11.RequiredModifier.MiddleName",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CSharp11.RequiredModifier",
+      "isExternal": false,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MiddleName"
+        },
+        {
+          "lang": "vb",
+          "value": "MiddleName"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "RequiredModifier.MiddleName"
+        },
+        {
+          "lang": "vb",
+          "value": "RequiredModifier.MiddleName"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CSharp11.RequiredModifier.MiddleName"
+        },
+        {
+          "lang": "vb",
+          "value": "CSharp11.RequiredModifier.MiddleName"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName\" text=\"MiddleName\" alt=\"CSharp11.RequiredModifier.MiddleName\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName\" text=\"MiddleName\" alt=\"CSharp11.RequiredModifier.MiddleName\"/>"
+        }
+      ],
+      "syntax": {
+        "content": [
+          {
+            "lang": "csharp",
+            "value": "public string MiddleName { get; set; }"
+          },
+          {
+            "lang": "vb",
+            "value": "Public Property MiddleName As String"
+          }
+        ],
+        "parameters": [],
+        "return": {
+          "type": {
+            "uid": "System.String",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "String"
+              },
+              {
+                "lang": "vb",
+                "value": "String"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "System.String"
+              },
+              {
+                "lang": "vb",
+                "value": "System.String"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              }
+            ]
+          }
+        }
+      },
+      "source": {
+        "remote": {
+          "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+          "branch": "main",
+          "repo": "https://github.com/dotnet/docfx"
+        },
+        "id": "MiddleName",
+        "path": "src/DotnetNew/CSharp11.cs",
+        "startLine": 47,
+        "endLine": 0,
+        "isExternal": false
+      },
+      "assemblies": [
+        "DotnetNew"
+      ],
+      "namespace": "CSharp11",
+      "overload": {
+        "uid": "CSharp11.RequiredModifier.MiddleName*",
+        "name": [
+          {
+            "lang": "csharp",
+            "value": "MiddleName"
+          },
+          {
+            "lang": "vb",
+            "value": "MiddleName"
+          }
+        ],
+        "nameWithType": [
+          {
+            "lang": "csharp",
+            "value": "RequiredModifier.MiddleName"
+          },
+          {
+            "lang": "vb",
+            "value": "RequiredModifier.MiddleName"
+          }
+        ],
+        "fullName": [
+          {
+            "lang": "csharp",
+            "value": "CSharp11.RequiredModifier.MiddleName"
+          },
+          {
+            "lang": "vb",
+            "value": "CSharp11.RequiredModifier.MiddleName"
+          }
+        ],
+        "specName": [
+          {
+            "lang": "csharp",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\" alt=\"CSharp11.RequiredModifier.MiddleName\"/>"
+          },
+          {
+            "lang": "vb",
+            "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\" alt=\"CSharp11.RequiredModifier.MiddleName\"/>"
+          }
+        ]
+      },
+      "level": 0,
+      "modifiers.csharp": [
+        "public",
+        "get",
+        "set"
+      ],
+      "modifiers.vb": [
+        "Public"
+      ],
+      "type": "property",
+      "summary": null,
+      "platform": null
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "RequiredModifier"
+    },
+    {
+      "lang": "vb",
+      "value": "RequiredModifier"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "RequiredModifier"
+    },
+    {
+      "lang": "vb",
+      "value": "RequiredModifier"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11.RequiredModifier"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11.RequiredModifier"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "RequiredModifier",
+    "path": "src/DotnetNew/CSharp11.cs",
+    "startLine": 44,
+    "endLine": 0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "DotnetNew"
+  ],
+  "namespace": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class RequiredModifier"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class RequiredModifier"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+        }
+      ],
+      "level": 0,
+      "index": 0
+    }
+  ],
+  "level": 1,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.Equals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.Equals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        }
+      ],
+      "level": 0
+    }
+  ],
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/CSharp11.RequiredModifier.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp11.RequiredModifier.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  }
+}

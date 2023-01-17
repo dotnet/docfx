@@ -19,7 +19,9 @@ jobs:
         node-version: 16
     - uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.x
+        dotnet-version: |
+          6.x
+          7.x
 
     - run: |
         npm install
@@ -35,7 +37,7 @@ jobs:
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build --framework net7.0 --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'

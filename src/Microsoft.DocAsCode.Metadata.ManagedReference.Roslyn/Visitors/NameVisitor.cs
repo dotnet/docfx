@@ -298,6 +298,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         Append("Implicit");
                     }
+                    else if (symbol.Name == "op_CheckedExplicit")
+                    {
+                        Append("CheckedExplicit");
+                    }
+                    else if (symbol.Name == "op_CheckedImplicit")
+                    {
+                        Append("CheckedImplicit");
+                    }
                     else
                     {
                         Debug.Fail("Unexpected conversion name.");
@@ -830,6 +838,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     else if (symbol.Name == "op_Implicit")
                     {
                         Append("Widening");
+                    }
+                    else if (symbol.Name == "op_CheckedExplicit")
+                    {
+                        Append("CheckedNarrowing");
+                    }
+                    else if (symbol.Name == "op_CheckedImplicit")
+                    {
+                        Append("CheckedWidening");
                     }
                     else
                     {
