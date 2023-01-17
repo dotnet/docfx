@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using Microsoft.DocAsCode.DataContracts.UniversalReference;
     using Microsoft.DocAsCode.Plugins;
 
-    using AutoMapper;
-
     public static class ModelConverter
     {
         public static ApiBuildOutput ToApiBuildOutput(PageViewModel model)
@@ -35,29 +33,19 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             var supportedLanguages = model.Items[0].SupportedLanguages;
 
             // map references to ApiNames
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile(new ApiNamesProfile(supportedLanguages));
-            });
-            Mapper.Configuration.AssertConfigurationIsValid();
             Dictionary<string, ApiNames> references = null;
             if (model.References != null)
             {
                 references = new Dictionary<string, ApiNames>();
                 foreach (var reference in model.References
                     .Where(r => !string.IsNullOrEmpty(r.Uid))
-                    .Select(Mapper.Map<ReferenceViewModel, ApiNames>))
+                    .Select(ToReferenceApiNames))
                 {
                     references[reference.Uid] = reference;
                 }
             }
 
             // map references of children to ApiBuildOutput
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages, model.Metadata, references));
-            });
-            Mapper.Configuration.AssertConfigurationIsValid();
             var childUids = model.Items[0].Children ?? Enumerable.Empty<string>()
                 .Concat(model.Items[0].ChildrenInDevLangs != null
                     ? model.Items[0].ChildrenInDevLangs.SelectMany(kv => kv.Value)
@@ -68,14 +56,14 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 foreach (var reference in model.References
                     .Where(r => !string.IsNullOrEmpty(r.Uid) && childUids.Contains(r.Uid))
-                    .Select(Mapper.Map<ReferenceViewModel, ApiBuildOutput>))
+                    .Select(ToReferenceApiBuildOutput))
                 {
                     children[reference.Uid] = reference;
                 }
             }
 
             // map items to ApiBuildOutput
-            var items = Mapper.Map<List<ItemViewModel>, List<ApiBuildOutput>>(model.Items);
+            var items = model.Items.Select(ToItemApiBuildOutput).ToList();
             var result = items[0];
             foreach (var child in items.Skip(1).Where(r => !string.IsNullOrEmpty(r.Uid)))
             {
@@ -97,6 +85,201 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             }
 
             return result;
+
+            ApiNames ToReferenceApiNames(ReferenceViewModel src)
+            {
+                return new ApiNames
+                {
+                    Uid = src.Uid,
+                    Name = ToApiListInDevLangs(src.Name, src.NameInDevLangs, supportedLanguages),
+                    NameWithType = ToApiListInDevLangs(src.NameWithType, src.NameWithTypeInDevLangs, supportedLanguages),
+                    FullName = ToApiListInDevLangs(src.FullName, src.FullNameInDevLangs, supportedLanguages),
+                    Definition = src.Definition,
+                    Spec = ToSpec(),
+                    Metadata = src.Additional,
+                };
+
+                List<ApiLanguageValuePair<string>> ToSpec()
+                {
+                    var result = new List<ApiLanguageValuePair<string>>();
+                    var specs = src.Specs;
+                    foreach (var language in supportedLanguages)
+                    {
+                        if (specs?.ContainsKey(language) == true)
+                        {
+                            result.Add(new ApiLanguageValuePair<string>
+                            {
+                                Language = language,
+                                Value = GetSpecName(specs[language])
+                            });
+                        }
+                        else
+                        {
+                            result.Add(new ApiLanguageValuePair<string>
+                            {
+                                Language = language,
+                                Value = GetXref(src.Uid, src.Name, src.FullName)
+                            });
+                        }
+                    }
+                    return result;
+                }
+
+                static string GetSpecName(List<SpecViewModel> spec)
+                {
+                    return spec == null ? null : string.Concat(spec.Select(GetCompositeName));
+                }
+
+                static string GetCompositeName(SpecViewModel svm)
+                {
+                    // If href does not exists, return full name
+                    if (string.IsNullOrEmpty(svm.Uid)) { return HttpUtility.HtmlEncode(svm.FullName); }
+
+                    // If href exists, return name with href
+                    return GetXref(svm.Uid, svm.Name, svm.FullName);
+                }
+            }
+
+            ApiBuildOutput ToReferenceApiBuildOutput(ReferenceViewModel src)
+            {
+                var dest = new ApiBuildOutput
+                {
+                    Uid = src.Uid,
+                    CommentId = src.CommentId,
+                    Href = src.Href,
+                    Name = ToApiListInDevLangs(src.Name, src.NameInDevLangs, supportedLanguages),
+                    NameWithType = ToApiListInDevLangs(src.NameWithType, src.NameWithTypeInDevLangs, supportedLanguages),
+                    FullName = ToApiListInDevLangs(src.FullName, src.FullNameInDevLangs, supportedLanguages),
+                    Metadata = src.Additional,
+                };
+
+                if (dest.Metadata.TryGetValue(Constants.PropertyName.Syntax, out object syntax))
+                {
+                    dest.Syntax = ToApiSyntaxBuildOutput(syntax as SyntaxDetailViewModel);
+                    dest.Metadata.Remove(Constants.PropertyName.Syntax);
+                }
+                if (dest.Metadata.TryGetValue(Constants.PropertyName.Type, out object type))
+                {
+                    dest.Type = type as string;
+                    dest.Metadata.Remove(Constants.PropertyName.Type);
+                }
+                if (dest.Metadata.TryGetValue(Constants.PropertyName.Summary, out object summary))
+                {
+                    dest.Summary = summary as string;
+                    dest.Metadata.Remove(Constants.PropertyName.Summary);
+                }
+                if (dest.Metadata.TryGetValue(Constants.PropertyName.Platform, out object platform))
+                {
+                    dest.Platform = ToApiListInDevLangs(platform as List<string>, null, supportedLanguages);
+                    dest.Metadata.Remove(Constants.PropertyName.Platform);
+                }
+
+                return dest;
+            }
+
+            ApiSyntaxBuildOutput ToApiSyntaxBuildOutput(SyntaxDetailViewModel src)
+            {
+                if (src is null)
+                    return null;
+
+                return new ApiSyntaxBuildOutput
+                {
+                    Content = ToApiListInDevLangs(src.Content, src.Contents, supportedLanguages),
+                    Return = ToApiListInDevLangsResolvingApiNames(src.Return, src.ReturnInDevLangs, supportedLanguages, references),
+                    Parameters = ToApiParametersBuildOutput(src.Parameters),
+                    TypeParameters = ToApiParametersBuildOutput(src.TypeParameters),
+                };
+            }
+
+            List<ApiParameterBuildOutput> ToApiParametersBuildOutput(List<ApiParameter> src)
+            {
+                return src?.Select(p => new ApiParameterBuildOutput
+                {
+                    Name = p.Name,
+                    Type = p.Type?.Select(ToApiNames).ToList(),
+                    Description = p.Description,
+                    Optional = p.Optional,
+                    DefaultValue = p.DefaultValue,
+                    Metadata = p.Metadata,
+                }).ToList();
+            }
+
+            ApiNames ToApiNames(string src)
+            {
+                return ResolveApiNames(src, supportedLanguages, references);
+            }
+
+            ApiBuildOutput ToItemApiBuildOutput(ItemViewModel src)
+            {
+                return new ApiBuildOutput
+                {
+                    Uid = src.Uid,
+                    CommentId = src.CommentId,
+                    Parent = ToApiListInDevLangsResolvingApiNames(src.Parent, src.ParentInDevLangs, supportedLanguages, references),
+                    Package = ToApiListInDevLangsResolvingApiNames(src.Package, src.PackageInDevLangs, supportedLanguages, references),
+
+                    Href = src.Href,
+                    SupportedLanguages = src.SupportedLanguages,
+
+                    Name = ToApiListInDevLangs(src.Name, src.Names, supportedLanguages),
+                    NameWithType = ToApiListInDevLangs(src.NameWithType, src.NamesWithType, supportedLanguages),
+                    FullName = ToApiListInDevLangs(src.FullName, src.FullNames, supportedLanguages),
+                    Type = src.Type,
+                    Source = ToApiListInDevLangs(src.Source, src.SourceInDevLangs, supportedLanguages),
+                    Documentation = src.Documentation,
+                    AssemblyNameList = ToApiListInDevLangs(src.AssemblyNameList, src.AssemblyNameListInDevLangs, supportedLanguages),
+                    NamespaceName = ToApiListInDevLangsResolvingApiNames(src.NamespaceName, src.NamespaceNameInDevLangs, supportedLanguages, references),
+                    Summary = src.Summary,
+                    Remarks = src.Remarks,
+                    Examples = src.Examples,
+                    Syntax = ToApiSyntaxBuildOutput(src.Syntax),
+
+                    Overridden = ToApiListInDevLangsResolvingApiNames(src.Overridden, src.OverriddenInDevLangs, supportedLanguages, references),
+                    Overload = src.Overload is null ? null : supportedLanguages.Select(l => new ApiLanguageValuePair<ApiNames>
+                    {
+                        Language = l,
+                        Value = ToApiNames(src.Overload)
+                    }).ToList(),
+
+                    Exceptions = ToApiListInDevlangsResolvingApiNames(src.Exceptions, src.ExceptionsInDevLangs, supportedLanguages, references),
+
+                    SeeAlsos = src.SeeAlsos?.Select(ToApiLinkInfoBuildOutput).ToList(),
+                    SeeAlsoContent = src.SeeAlsoContent,
+                    Sees = src.Sees?.Select(ToApiLinkInfoBuildOutput).ToList(),
+
+                    Inheritance = ToApiListInDevLangsResolvingApiNames(src.Inheritance, src.InheritanceInDevLangs, supportedLanguages, references),
+                    DerivedClasses = ToApiListInDevLangsResolvingApiNames(src.DerivedClasses, src.DerivedClassesInDevLangs, supportedLanguages, references),
+                    Implements = ToApiListInDevLangsResolvingApiNames(src.Implements, src.ImplementsInDevLangs, supportedLanguages, references),
+                    InheritedMembers = ToApiListInDevLangsResolvingApiNames(src.InheritedMembers, src.InheritedMembersInDevLangs, supportedLanguages, references),
+                    ExtensionMethods = ToApiListInDevLangsResolvingApiNames(src.ExtensionMethods, src.ExtensionMethodsInDevLangs, supportedLanguages, references),
+
+                    Conceptual = src.Conceptual,
+
+                    Platform = ToApiListInDevLangs(src.Platform, src.PlatformInDevLangs, supportedLanguages),
+                    Metadata = model.Metadata?.Concat(src.Metadata.Where(p => !model.Metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value) ?? src.Metadata,
+                };
+            }
+
+            ApiLinkInfoBuildOutput ToApiLinkInfoBuildOutput(LinkInfo src)
+            {
+                return new ApiLinkInfoBuildOutput
+                {
+                    LinkType = src.LinkType,
+                    Type = src.LinkType == LinkType.CRef ? ToApiNames(src.LinkId) : null,
+                    Url = src.LinkType == LinkType.HRef ? ToUrl(src) : null,
+                };
+
+                static string ToUrl(LinkInfo source)
+                {
+                    var href = $"<span><a href=\"{HttpUtility.HtmlEncode(source.LinkId)}\">";
+                    if (!string.IsNullOrEmpty(source.AltText))
+                    {
+                        href += HttpUtility.HtmlEncode(source.AltText);
+                    }
+                    href += "</a></span>";
+                    return href;
+                }
+            }
         }
 
         public static List<ApiLanguageValuePair<ApiNames>> ToApiListInDevLangsResolvingApiNames(string defaultValue, SortedList<string, string> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
