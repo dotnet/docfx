@@ -1,0 +1,56 @@
+name: zip
+on:
+  push:
+    branches:
+      - hotfix/*
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: v2.60.0
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: |
+          6.x
+
+    - run: npm install
+      working-directory: templates
+
+    - run: npm run build
+      working-directory: templates
+
+    - name: dotnet publish
+      run: |
+        dotnet publish src/docfx -c Release /p:NoWarn=NU1605 /p:Version=2.60.0 --self-contained -r win-x64 -o drop/publish/win-x64
+        dotnet publish src/docfx -c Release /p:NoWarn=NU1605 /p:Version=2.60.0 --self-contained -r linux-x64 -o drop/publish/linux-x64
+        dotnet publish src/docfx -c Release /p:NoWarn=NU1605 /p:Version=2.60.0 --self-contained -r osx-x64 -o drop/publish/osx-x64
+        mkdir -p drop/bin
+
+    - run: zip -r ../../bin/docfx-win-x64-v2.60.0.zip .
+      working-directory: drop/publish/win-x64
+    - run: zip -r ../../bin/docfx-linux-x64-v2.60.0.zip .
+      working-directory: drop/publish/linux-x64
+    - run: zip -r ../../bin/docfx-osx-x64-v2.60.0.zip .
+      working-directory: drop/publish/osx-x64
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: bin
+        path: drop/bin
+
+    - name: Upload GitHub release
+      run: |
+        gh release upload v2.60.0 drop/bin/docfx-win-x64-v2.60.0.zip
+        gh release upload v2.60.0 drop/bin/docfx-linux-x64-v2.60.0.zip
+        gh release upload v2.60.0 drop/bin/docfx-osx-x64-v2.60.0.zip
+      env:
+        GH_TOKEN: ${{ github.token }}
