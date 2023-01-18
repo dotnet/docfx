@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "ParameterlessStructConstructors()"
+          "value": "New()"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "ParameterlessStructConstructors.ParameterlessStructConstructors()"
+          "value": "ParameterlessStructConstructors.New()"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp10.ParameterlessStructConstructors.ParameterlessStructConstructors()"
+          "value": "CSharp10.ParameterlessStructConstructors.New()"
         }
       ],
       "specName": [

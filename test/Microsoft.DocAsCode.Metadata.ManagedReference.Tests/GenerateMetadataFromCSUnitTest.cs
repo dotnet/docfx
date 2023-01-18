@@ -150,9 +150,9 @@ namespace Test1
             {
                 var function = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(function);
-                Assert.Equal("Func1<TResult>(Nullable<T>, IEnumerable<T>)", function.DisplayNames.First().Value);
-                Assert.Equal("Class1<T>.Func1<TResult>(Nullable<T>, IEnumerable<T>)", function.DisplayNamesWithType.First().Value);
-                Assert.Equal("Test1.Class1<T>.Func1<TResult>(System.Nullable<T>, System.Collections.Generic.IEnumerable<T>)", function.DisplayQualifiedNames.First().Value);
+                Assert.Equal("Func1<TResult>(T?, IEnumerable<T>)", function.DisplayNames.First().Value);
+                Assert.Equal("Class1<T>.Func1<TResult>(T?, IEnumerable<T>)", function.DisplayNamesWithType.First().Value);
+                Assert.Equal("Test1.Class1<T>.Func1<TResult>(T?, System.Collections.Generic.IEnumerable<T>)", function.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.Class1`1.Func1``1(System.Nullable{`0},System.Collections.Generic.IEnumerable{`0})", function.Name);
 
                 var parameterX = function.Syntax.Parameters[0];
@@ -196,9 +196,9 @@ namespace Test1
             {
                 var operator1 = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(operator1);
-                Assert.Equal("Equality(Class1<T>, Class1<T>)", operator1.DisplayNames.First().Value);
-                Assert.Equal("Class1<T>.Equality(Class1<T>, Class1<T>)", operator1.DisplayNamesWithType.First().Value);
-                Assert.Equal("Test1.Class1<T>.Equality(Test1.Class1<T>, Test1.Class1<T>)", operator1.DisplayQualifiedNames.First().Value);
+                Assert.Equal("operator ==(Class1<T>, Class1<T>)", operator1.DisplayNames.First().Value);
+                Assert.Equal("Class1<T>.operator ==(Class1<T>, Class1<T>)", operator1.DisplayNamesWithType.First().Value);
+                Assert.Equal("Test1.Class1<T>.operator ==(Test1.Class1<T>, Test1.Class1<T>)", operator1.DisplayQualifiedNames.First().Value);
                 Assert.Equal("Test1.Class1`1.op_Equality(Test1.Class1{`0},Test1.Class1{`0})", operator1.Name);
                 Assert.NotNull(operator1.Syntax.Parameters);
 
@@ -1027,9 +1027,9 @@ namespace Test1
                 var p = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(p);
                 Assert.True(p.IsExplicitInterfaceImplementation);
-                Assert.Equal("IFoo<String>.Item[String]", p.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.IFoo<String>.Item[String]", p.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.Item[System.String]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("IFoo<String>.this[String]", p.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.IFoo<String>.this[String]", p.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.this[System.String]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Item(System.String)", p.Name);
                 Assert.Equal(@"int IFoo<string>.this[string x] { get; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{System.String}.Item(System.String)", p.Implements[0]);
@@ -1038,9 +1038,9 @@ namespace Test1
                 var p = output.Items[0].Items[0].Items[6];
                 Assert.NotNull(p);
                 Assert.True(p.IsExplicitInterfaceImplementation);
-                Assert.Equal("IFoo<T>.Item[T]", p.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.IFoo<T>.Item[T]", p.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.Item[T]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("IFoo<T>.this[T]", p.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.IFoo<T>.this[T]", p.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.this[T]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Item(`0)", p.Name);
                 Assert.Equal(@"int IFoo<T>.this[T x] { get; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{{T}}.Item({T})", p.Implements[0]);
@@ -1275,72 +1275,72 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("UnaryPlus(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.UnaryPlus(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.UnaryPlus(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator +(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator +(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator +(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_UnaryPlus(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator +(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(method);
-                Assert.Equal("UnaryNegation(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.UnaryNegation(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.UnaryNegation(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator -(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator -(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator -(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_UnaryNegation(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator -(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(method);
-                Assert.Equal("LogicalNot(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.LogicalNot(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.LogicalNot(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator !(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator !(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator !(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LogicalNot(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator !(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(method);
-                Assert.Equal("OnesComplement(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.OnesComplement(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.OnesComplement(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator ~(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator ~(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator ~(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_OnesComplement(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator ~(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[4];
                 Assert.NotNull(method);
-                Assert.Equal("Increment(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Increment(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Increment(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator ++(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator ++(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator ++(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Increment(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator ++(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(method);
-                Assert.Equal("Decrement(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Decrement(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Decrement(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator --(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator --(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator --(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Decrement(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator --(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[6];
                 Assert.NotNull(method);
-                Assert.Equal("True(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.True(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.True(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator true(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator true(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator true(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_True(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator true (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[7];
                 Assert.NotNull(method);
-                Assert.Equal("False(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.False(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.False(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator false(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator false(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator false(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_False(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator false (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -1348,90 +1348,90 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[8];
                 Assert.NotNull(method);
-                Assert.Equal("Addition(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Addition(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Addition(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator +(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator +(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator +(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Addition(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator +(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[9];
                 Assert.NotNull(method);
-                Assert.Equal("Subtraction(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Subtraction(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Subtraction(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator -(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator -(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator -(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Subtraction(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator -(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[10];
                 Assert.NotNull(method);
-                Assert.Equal("Multiply(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Multiply(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Multiply(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator *(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator *(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator *(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Multiply(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator *(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[11];
                 Assert.NotNull(method);
-                Assert.Equal("Division(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Division(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Division(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator /(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator /(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator /(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Division(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator /(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[12];
                 Assert.NotNull(method);
-                Assert.Equal("Modulus(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Modulus(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Modulus(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator %(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator %(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator %(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Modulus(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator %(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[13];
                 Assert.NotNull(method);
-                Assert.Equal("BitwiseAnd(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.BitwiseAnd(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.BitwiseAnd(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator &(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator &(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator &(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_BitwiseAnd(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator &(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[14];
                 Assert.NotNull(method);
-                Assert.Equal("BitwiseOr(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.BitwiseOr(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.BitwiseOr(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator |(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator |(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator |(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_BitwiseOr(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator |(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[15];
                 Assert.NotNull(method);
-                Assert.Equal("ExclusiveOr(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.ExclusiveOr(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.ExclusiveOr(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator ^(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator ^(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator ^(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_ExclusiveOr(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator ^(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[16];
                 Assert.NotNull(method);
-                Assert.Equal("RightShift(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.RightShift(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.RightShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator >>(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator >>(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator >>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_RightShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator >>(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[17];
                 Assert.NotNull(method);
-                Assert.Equal("LeftShift(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.LeftShift(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.LeftShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator <<(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator <<(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator <<(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LeftShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator <<(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -1439,54 +1439,54 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[18];
                 Assert.NotNull(method);
-                Assert.Equal("Equality(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Equality(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Equality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator ==(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator ==(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator ==(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Equality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator ==(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[19];
                 Assert.NotNull(method);
-                Assert.Equal("Inequality(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Inequality(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Inequality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator !=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator !=(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator !=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Inequality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator !=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[20];
                 Assert.NotNull(method);
-                Assert.Equal("GreaterThan(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.GreaterThan(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.GreaterThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator >(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator >(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator >(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_GreaterThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator>(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[21];
                 Assert.NotNull(method);
-                Assert.Equal("LessThan(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.LessThan(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.LessThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator <(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator <(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator <(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LessThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator <(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[22];
                 Assert.NotNull(method);
-                Assert.Equal("GreaterThanOrEqual(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.GreaterThanOrEqual(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.GreaterThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator >=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator >=(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator >=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_GreaterThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator >=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[23];
                 Assert.NotNull(method);
-                Assert.Equal("LessThanOrEqual(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.LessThanOrEqual(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.LessThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("operator <=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.operator <=(Foo, Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.operator <=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LessThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator <=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -1494,18 +1494,18 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[24];
                 Assert.NotNull(method);
-                Assert.Equal("Implicit(Int32 to Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Implicit(Int32 to Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Implicit(System.Int32 to Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("implicit operator Foo(Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.implicit operator Foo(Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.implicit operator Test1.Foo(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Implicit(System.Int32)~Test1.Foo", method.Name);
                 Assert.Equal(@"public static implicit operator Foo(int x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[25];
                 Assert.NotNull(method);
-                Assert.Equal("Explicit(Foo to Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Explicit(Foo to Int32)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Explicit(Test1.Foo to System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("explicit operator Int32(Foo)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.explicit operator Int32(Foo)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.explicit operator System.Int32(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Explicit(Test1.Foo)~System.Int32", method.Name);
                 Assert.Equal(@"public static explicit operator int (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -1996,54 +1996,54 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"public int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.String)", indexer.Name);
                 Assert.Equal(@"public virtual int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"public abstract int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[DateTime]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[DateTime]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[System.DateTime]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[DateTime]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[DateTime]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[System.DateTime]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.DateTime)", indexer.Name);
                 Assert.Equal(@"protected int this[DateTime x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[4];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[T]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[T]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[T]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[T]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(`0)", indexer.Name);
                 Assert.Equal(@"public int this[T t] { get; protected set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Int32, T]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo<T>.Item[Int32, T]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo<T>.Item[System.Int32, T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Int32, T]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo<T>.this[Int32, T]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo<T>.this[System.Int32, T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32,`0)", indexer.Name);
                 Assert.Equal(@"protected int this[int x, T t] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -2051,9 +2051,9 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[1].Items[0];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Bar.Item[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Bar.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Bar.this[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Bar.this[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"public virtual int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Int32)", indexer.Implements[0]);
@@ -2061,9 +2061,9 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[1].Items[1];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Bar.Item[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Bar.Item[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Bar.this[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Bar.this[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item(System.String)", indexer.Name);
                 Assert.Equal(@"public override int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.String)", indexer.Overridden);
@@ -2072,9 +2072,9 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[1].Items[2];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Bar.Item[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Bar.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Bar.this[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Bar.this[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"public sealed override int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.Object)", indexer.Overridden);
@@ -2084,27 +2084,27 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[2].Items[0];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("IFooBar.Item[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.IFooBar.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("IFooBar.this[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.this[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[2].Items[1];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("IFooBar.Item[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.IFooBar.Item[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[String]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("IFooBar.this[String]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.this[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.String)", indexer.Name);
                 Assert.Equal(@"int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[2].Items[2];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("IFooBar.Item[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.IFooBar.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[Object]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("IFooBar.this[Object]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.IFooBar.this[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
             }
@@ -2177,7 +2177,8 @@ namespace Test1
     }
 }
 ";
-            var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, "reference.dll");
+            Directory.CreateDirectory(nameof(TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference));
+            var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, $"{nameof(TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference)}/reference.dll");
             var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(referencedAssembly.Location));
             Assert.Equal("test.dll", compilation.AssemblyName);
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
@@ -2241,12 +2242,12 @@ namespace Test1
             {
                 var indexer = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(indexer);
-                Assert.Equal("Item[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Item(Int32)", indexer.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Foo<T>.Item[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo(Of T).Item(Int32)", indexer.DisplayNamesWithType[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo<T>.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo(Of T).Item(System.Int32)", indexer.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("this[Int32]", indexer.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[](Int32)", indexer.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Foo<T>.this[Int32]", indexer.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo(Of T).this[](Int32)", indexer.DisplayNamesWithType[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo<T>.this[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo(Of T).this[](System.Int32)", indexer.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32)", indexer.Name);
                 Assert.Single(indexer.Syntax.Parameters);
                 var parameter = indexer.Syntax.Parameters[0];
@@ -2341,12 +2342,12 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(method);
-                Assert.Equal("M(Object)", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("M(dynamic)", method.DisplayNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("M(Object)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Foo.M(Object)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.M(dynamic)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("Foo.M(Object)", method.DisplayNamesWithType[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.M(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.M(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.M(dynamic)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.M(Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.M(System.Object)", method.Name);
                 Assert.Equal("public dynamic M(dynamic arg)", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Public Function M(arg As Object) As Object", method.Syntax.Content[SyntaxLanguage.VB]);
@@ -2367,12 +2368,12 @@ namespace Test1
             {
                 var method = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(method);
-                Assert.Equal("Item[Object]", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Item(Object)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Foo.Item[Object]", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("Foo.Item(Object)", method.DisplayNamesWithType[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Item[System.Object]", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("Test1.Foo.Item(System.Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("this[dynamic]", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("this[](Object)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Foo.this[dynamic]", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("Foo.this[](Object)", method.DisplayNamesWithType[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.this[dynamic]", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test1.Foo.this[](Object)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.Item(System.Object)", method.Name);
                 Assert.Equal(@"public dynamic this[dynamic index] { get; }", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(@"Public ReadOnly Property Item(index As Object) As Object", method.Syntax.Content[SyntaxLanguage.VB]);

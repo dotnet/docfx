@@ -58,41 +58,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Increment(T)"
+          "value": "operator ++(T)"
         },
         {
           "lang": "vb",
-          "value": "Increment(T)"
+          "value": "op_Increment(T)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "StaticAbstractMembersInInterfaces.IGetNext<T>.Increment(T)"
+          "value": "StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)"
         },
         {
           "lang": "vb",
-          "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T).Increment(T)"
+          "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.Increment(T)"
+          "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)"
         },
         {
           "lang": "vb",
-          "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).Increment(T)"
+          "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"Increment(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.Increment(T)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.operator ++(T)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"Increment(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.Increment(T)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.operator ++(T)\"/>"
         }
       ],
       "syntax": {

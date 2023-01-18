@@ -83,9 +83,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
             {
                 var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.XmlPeek(System.String,System.ValueTuple{System.String,System.String}[])");
-                Assert.Equal("XmlPeek(String, (String prefix, String uri)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("XmlTasks.XmlPeek(String, (String prefix, String uri)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(System.String, System.ValueTuple<System.String, System.String>[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("XmlPeek(String, params (String prefix, String uri)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("XmlTasks.XmlPeek(String, params (String prefix, String uri)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(System.String, params (System.String prefix, System.String uri)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
                 Assert.Equal("public string XmlPeek(string xpath, params (string prefix, string uri)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
