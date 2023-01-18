@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordStruct(DateTime, Double)"
+          "value": "New(DateTime, Double)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordStruct.RecordStruct(DateTime, Double)"
+          "value": "RecordStruct.New(DateTime, Double)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp10.RecordStruct.RecordStruct(System.DateTime, System.Double)"
+          "value": "CSharp10.RecordStruct.New(System.DateTime, System.Double)"
         }
       ],
       "specName": [

@@ -30,9 +30,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override void DefaultVisit(ISymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
         {
-            item.DisplayNames[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
-            item.DisplayNamesWithType[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.WithType | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
-            item.DisplayQualifiedNames[SyntaxLanguage.VB] = NameVisitorCreator.GetVB(NameOptions.Qualified | NameOptions.WithGenericParameter | NameOptions.WithParameter).GetName(symbol);
+            item.DisplayNames[SyntaxLanguage.VB] = SymbolFormatter.GetName(symbol, SyntaxLanguage.VB);
+            item.DisplayNamesWithType[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.VB);
+            item.DisplayQualifiedNames[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedName(symbol, SyntaxLanguage.VB);
         }
 
         public override void GenerateNamedType(INamedTypeSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)

@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "ReadOnlyRecordStruct(Double, Double, Double)"
+          "value": "New(Double, Double, Double)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "ReadOnlyRecordStruct.ReadOnlyRecordStruct(Double, Double, Double)"
+          "value": "ReadOnlyRecordStruct.New(Double, Double, Double)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(System.Double, System.Double, System.Double)"
+          "value": "CSharp10.ReadOnlyRecordStruct.New(System.Double, System.Double, System.Double)"
         }
       ],
       "specName": [

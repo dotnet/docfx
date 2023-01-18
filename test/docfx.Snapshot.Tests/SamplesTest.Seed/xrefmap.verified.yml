@@ -20,27 +20,29 @@ references:
   name: Cat()
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor
   commentId: M:CatLibrary.Cat`2.#ctor
+  name.vb: New()
   fullName: CatLibrary.Cat<T, K>.Cat()
-  fullName.vb: CatLibrary.Cat(Of T, K).Cat()
+  fullName.vb: CatLibrary.Cat(Of T, K).New()
   nameWithType: Cat<T, K>.Cat()
-  nameWithType.vb: Cat(Of T, K).Cat()
+  nameWithType.vb: Cat(Of T, K).New()
 - uid: CatLibrary.Cat`2.#ctor(`0)
   name: Cat(T)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor__0_
   commentId: M:CatLibrary.Cat`2.#ctor(`0)
+  name.vb: New(T)
   fullName: CatLibrary.Cat<T, K>.Cat(T)
-  fullName.vb: CatLibrary.Cat(Of T, K).Cat(T)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(T)
   nameWithType: Cat<T, K>.Cat(T)
-  nameWithType.vb: Cat(Of T, K).Cat(T)
+  nameWithType.vb: Cat(Of T, K).New(T)
 - uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
   name: Cat(String, out Int32, String, Boolean)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_
   commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
-  name.vb: Cat(String, ByRef Int32, String, Boolean)
+  name.vb: New(String, Int32, String, Boolean)
   fullName: CatLibrary.Cat<T, K>.Cat(System.String, out System.Int32, System.String, System.Boolean)
-  fullName.vb: CatLibrary.Cat(Of T, K).Cat(System.String, ByRef System.Int32, System.String, System.Boolean)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(System.String, System.Int32, System.String, System.Boolean)
   nameWithType: Cat<T, K>.Cat(String, out Int32, String, Boolean)
-  nameWithType.vb: Cat(Of T, K).Cat(String, ByRef Int32, String, Boolean)
+  nameWithType.vb: Cat(Of T, K).New(String, Int32, String, Boolean)
 - uid: CatLibrary.Cat`2.#ctor*
   name: Cat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_
@@ -88,20 +90,20 @@ references:
   name: IAnimal.Eat()
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat
   commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
-  name.vb: CatLibrary.IAnimal.Eat()
+  name.vb: ''
   fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat()
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat()
+  fullName.vb: ''
   nameWithType: Cat<T, K>.IAnimal.Eat()
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat()
+  nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
   name: IAnimal.Eat(String)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat_System_String_
   commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
-  name.vb: CatLibrary.IAnimal.Eat(String)
+  name.vb: ''
   fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat(System.String)
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(System.String)
+  fullName.vb: ''
   nameWithType: Cat<T, K>.IAnimal.Eat(String)
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(String)
+  nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
   name: IAnimal.Eat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat_
@@ -116,20 +118,20 @@ references:
   name: IAnimal.Eat<Tool>(Tool)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat__1___0_
   commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)
-  name.vb: CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  name.vb: ''
   fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat<Tool>(Tool)
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  fullName.vb: ''
   nameWithType: Cat<T, K>.IAnimal.Eat<Tool>(Tool)
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Eat(Of Tool)(Tool)
+  nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
-  name: IAnimal.Item[Int32]
+  name: IAnimal.this[Int32]
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_System_Int32_
   commentId: P:CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
-  name.vb: CatLibrary.IAnimal.Item(Int32)
-  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Item[System.Int32]
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item(System.Int32)
-  nameWithType: Cat<T, K>.IAnimal.Item[Int32]
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item(Int32)
+  name.vb: CatLibrary.IAnimal.this[](Int32)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.this[System.Int32]
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.this[](System.Int32)
+  nameWithType: Cat<T, K>.IAnimal.this[Int32]
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.this[](Int32)
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item*
   name: IAnimal.Item
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_
@@ -167,14 +169,14 @@ references:
   nameWithType: Cat<T, K>.Equals
   nameWithType.vb: Cat(Of T, K).Equals
 - uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
-  name: GetTailLength(Int32*, Object[])
+  name: GetTailLength(Int32*, params Object[])
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___
   commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
-  name.vb: GetTailLength(Int32*, Object())
-  fullName: CatLibrary.Cat<T, K>.GetTailLength(System.Int32*, System.Object[])
-  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, System.Object())
-  nameWithType: Cat<T, K>.GetTailLength(Int32*, Object[])
-  nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, Object())
+  name.vb: GetTailLength(Int32*, ParamArray Object())
+  fullName: CatLibrary.Cat<T, K>.GetTailLength(System.Int32*, params System.Object[])
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, ParamArray System.Object())
+  nameWithType: Cat<T, K>.GetTailLength(Int32*, params Object[])
+  nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, ParamArray Object())
 - uid: CatLibrary.Cat`2.GetTailLength*
   name: GetTailLength
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_
@@ -193,14 +195,14 @@ references:
   nameWithType: Cat<T, K>.isHealthy
   nameWithType.vb: Cat(Of T, K).isHealthy
 - uid: CatLibrary.Cat`2.Item(System.String)
-  name: Item[String]
+  name: this[String]
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_System_String_
   commentId: P:CatLibrary.Cat`2.Item(System.String)
-  name.vb: Item(String)
-  fullName: CatLibrary.Cat<T, K>.Item[System.String]
-  fullName.vb: CatLibrary.Cat(Of T, K).Item(System.String)
-  nameWithType: Cat<T, K>.Item[String]
-  nameWithType.vb: Cat(Of T, K).Item(String)
+  name.vb: this[](String)
+  fullName: CatLibrary.Cat<T, K>.this[System.String]
+  fullName.vb: CatLibrary.Cat(Of T, K).this[](System.String)
+  nameWithType: Cat<T, K>.this[String]
+  nameWithType.vb: Cat(Of T, K).this[](String)
 - uid: CatLibrary.Cat`2.Item*
   name: Item
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_
@@ -214,11 +216,11 @@ references:
   name: Jump(T, K, ref Boolean)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump__0__1_System_Boolean__
   commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
-  name.vb: Jump(T, K, ByRef Boolean)
+  name.vb: Jump(T, K, Boolean)
   fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref System.Boolean)
-  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, ByRef System.Boolean)
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, System.Boolean)
   nameWithType: Cat<T, K>.Jump(T, K, ref Boolean)
-  nameWithType.vb: Cat(Of T, K).Jump(T, K, ByRef Boolean)
+  nameWithType.vb: Cat(Of T, K).Jump(T, K, Boolean)
 - uid: CatLibrary.Cat`2.Jump*
   name: Jump
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump_
@@ -246,14 +248,14 @@ references:
   nameWithType: Cat<T, K>.Name
   nameWithType.vb: Cat(Of T, K).Name
 - uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
-  name: Addition(Cat<T, K>, Int32)
+  name: operator +(Cat<T, K>, Int32)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_
   commentId: M:CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
-  name.vb: Addition(Cat(Of T, K), Int32)
-  fullName: CatLibrary.Cat<T, K>.Addition(CatLibrary.Cat<T, K>, System.Int32)
-  fullName.vb: CatLibrary.Cat(Of T, K).Addition(CatLibrary.Cat(Of T, K), System.Int32)
-  nameWithType: Cat<T, K>.Addition(Cat<T, K>, Int32)
-  nameWithType.vb: Cat(Of T, K).Addition(Cat(Of T, K), Int32)
+  name.vb: +(Cat(Of T, K), Int32)
+  fullName: CatLibrary.Cat<T, K>.operator +(CatLibrary.Cat<T, K>, System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).+(CatLibrary.Cat(Of T, K), System.Int32)
+  nameWithType: Cat<T, K>.operator +(Cat<T, K>, Int32)
+  nameWithType.vb: Cat(Of T, K).+(Cat(Of T, K), Int32)
 - uid: CatLibrary.Cat`2.op_Addition*
   name: Addition
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_
@@ -264,14 +266,14 @@ references:
   nameWithType: Cat<T, K>.Addition
   nameWithType.vb: Cat(Of T, K).Addition
 - uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
-  name: Explicit(Cat<T, K> to Tom)
+  name: explicit operator Tom(Cat<T, K>)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom
   commentId: M:CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
-  name.vb: Narrowing(Cat(Of T, K) to Tom)
-  fullName: CatLibrary.Cat<T, K>.Explicit(CatLibrary.Cat<T, K> to CatLibrary.Tom)
-  fullName.vb: CatLibrary.Cat(Of T, K).Narrowing(CatLibrary.Cat(Of T, K) to CatLibrary.Tom)
-  nameWithType: Cat<T, K>.Explicit(Cat<T, K> to Tom)
-  nameWithType.vb: Cat(Of T, K).Narrowing(Cat(Of T, K) to Tom)
+  name.vb: CType(Cat(Of T, K))
+  fullName: CatLibrary.Cat<T, K>.explicit operator CatLibrary.Tom(CatLibrary.Cat<T, K>)
+  fullName.vb: CatLibrary.Cat(Of T, K).CType(CatLibrary.Cat(Of T, K))
+  nameWithType: Cat<T, K>.explicit operator Tom(Cat<T, K>)
+  nameWithType.vb: Cat(Of T, K).CType(Cat(Of T, K))
 - uid: CatLibrary.Cat`2.op_Explicit*
   name: Explicit
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_
@@ -283,14 +285,14 @@ references:
   nameWithType: Cat<T, K>.Explicit
   nameWithType.vb: Cat(Of T, K).Narrowing
 - uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
-  name: Subtraction(Cat<T, K>, Int32)
+  name: operator -(Cat<T, K>, Int32)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_
   commentId: M:CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
-  name.vb: Subtraction(Cat(Of T, K), Int32)
-  fullName: CatLibrary.Cat<T, K>.Subtraction(CatLibrary.Cat<T, K>, System.Int32)
-  fullName.vb: CatLibrary.Cat(Of T, K).Subtraction(CatLibrary.Cat(Of T, K), System.Int32)
-  nameWithType: Cat<T, K>.Subtraction(Cat<T, K>, Int32)
-  nameWithType.vb: Cat(Of T, K).Subtraction(Cat(Of T, K), Int32)
+  name.vb: -(Cat(Of T, K), Int32)
+  fullName: CatLibrary.Cat<T, K>.operator -(CatLibrary.Cat<T, K>, System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).-(CatLibrary.Cat(Of T, K), System.Int32)
+  nameWithType: Cat<T, K>.operator -(Cat<T, K>, Int32)
+  nameWithType.vb: Cat(Of T, K).-(Cat(Of T, K), Int32)
 - uid: CatLibrary.Cat`2.op_Subtraction*
   name: Subtraction
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_
@@ -370,14 +372,14 @@ references:
   nameWithType: IAnimal.Eat<Tool>(Tool)
   nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
 - uid: CatLibrary.IAnimal.Item(System.Int32)
-  name: Item[Int32]
+  name: this[Int32]
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_
   commentId: P:CatLibrary.IAnimal.Item(System.Int32)
-  name.vb: Item(Int32)
-  fullName: CatLibrary.IAnimal.Item[System.Int32]
-  fullName.vb: CatLibrary.IAnimal.Item(System.Int32)
-  nameWithType: IAnimal.Item[Int32]
-  nameWithType.vb: IAnimal.Item(Int32)
+  name.vb: this[](Int32)
+  fullName: CatLibrary.IAnimal.this[System.Int32]
+  fullName.vb: CatLibrary.IAnimal.this[](System.Int32)
+  nameWithType: IAnimal.this[Int32]
+  nameWithType.vb: IAnimal.this[](Int32)
 - uid: CatLibrary.IAnimal.Item*
   name: Item
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_
@@ -489,8 +491,11 @@ references:
   name: TomFromBaseClass(Int32)
   href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_System_Int32_
   commentId: M:CatLibrary.TomFromBaseClass.#ctor(System.Int32)
+  name.vb: New(Int32)
   fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)
+  fullName.vb: CatLibrary.TomFromBaseClass.New(System.Int32)
   nameWithType: TomFromBaseClass.TomFromBaseClass(Int32)
+  nameWithType.vb: TomFromBaseClass.New(Int32)
 - uid: CatLibrary.TomFromBaseClass.#ctor*
   name: TomFromBaseClass
   href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_
@@ -557,8 +562,11 @@ references:
   name: ParameterlessStructConstructors()
   href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors__ctor
   commentId: M:CSharp10.ParameterlessStructConstructors.#ctor
+  name.vb: New()
   fullName: CSharp10.ParameterlessStructConstructors.ParameterlessStructConstructors()
+  fullName.vb: CSharp10.ParameterlessStructConstructors.New()
   nameWithType: ParameterlessStructConstructors.ParameterlessStructConstructors()
+  nameWithType.vb: ParameterlessStructConstructors.New()
 - uid: CSharp10.ParameterlessStructConstructors.#ctor*
   name: ParameterlessStructConstructors
   href: api/CSharp10.ParameterlessStructConstructors.html#CSharp10_ParameterlessStructConstructors__ctor_
@@ -608,8 +616,11 @@ references:
   name: ReadOnlyRecordStruct(Double, Double, Double)
   href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_
   commentId: M:CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)
+  name.vb: New(Double, Double, Double)
   fullName: CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(System.Double, System.Double, System.Double)
+  fullName.vb: CSharp10.ReadOnlyRecordStruct.New(System.Double, System.Double, System.Double)
   nameWithType: ReadOnlyRecordStruct.ReadOnlyRecordStruct(Double, Double, Double)
+  nameWithType.vb: ReadOnlyRecordStruct.New(Double, Double, Double)
 - uid: CSharp10.ReadOnlyRecordStruct.#ctor*
   name: ReadOnlyRecordStruct
   href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct__ctor_
@@ -666,8 +677,11 @@ references:
   name: RecordClass(String, String)
   href: api/CSharp10.RecordClass.html#CSharp10_RecordClass__ctor_System_String_System_String_
   commentId: M:CSharp10.RecordClass.#ctor(System.String,System.String)
+  name.vb: New(String, String)
   fullName: CSharp10.RecordClass.RecordClass(System.String, System.String)
+  fullName.vb: CSharp10.RecordClass.New(System.String, System.String)
   nameWithType: RecordClass.RecordClass(String, String)
+  nameWithType.vb: RecordClass.New(String, String)
 - uid: CSharp10.RecordClass.#ctor*
   name: RecordClass
   href: api/CSharp10.RecordClass.html#CSharp10_RecordClass__ctor_
@@ -711,8 +725,11 @@ references:
   name: RecordStruct(DateTime, Double)
   href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_System_DateTime_System_Double_
   commentId: M:CSharp10.RecordStruct.#ctor(System.DateTime,System.Double)
+  name.vb: New(DateTime, Double)
   fullName: CSharp10.RecordStruct.RecordStruct(System.DateTime, System.Double)
+  fullName.vb: CSharp10.RecordStruct.New(System.DateTime, System.Double)
   nameWithType: RecordStruct.RecordStruct(DateTime, Double)
+  nameWithType.vb: RecordStruct.New(DateTime, Double)
 - uid: CSharp10.RecordStruct.#ctor*
   name: RecordStruct
   href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_
@@ -762,13 +779,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>
   nameWithType.vb: CheckedUserDefinedOperators(Of T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)
-  name: Addition(T, T)
+  name: operator +(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Addition(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Addition(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.Addition(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Addition(T, T)
+  name.vb: +(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator +(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).+(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator +(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).+(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Addition*
   name: Addition
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition_
@@ -779,13 +797,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Addition
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Addition
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)
-  name: CheckedAddition(T, T)
+  name: operator checked +(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedAddition(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedAddition(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedAddition(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedAddition(T, T)
+  name.vb: op_CheckedAddition(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked +(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedAddition(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked +(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedAddition(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition*
   name: CheckedAddition
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition_
@@ -796,13 +815,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedAddition
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedAddition
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)
-  name: CheckedDecrement(T)
+  name: operator checked --(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedDecrement(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedDecrement(T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedDecrement(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedDecrement(T)
+  name.vb: op_CheckedDecrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked --(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDecrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked --(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDecrement(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement*
   name: CheckedDecrement
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement_
@@ -813,13 +833,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedDecrement
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedDecrement
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)
-  name: CheckedDivision(T, T)
+  name: operator checked /(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedDivision(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedDivision(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedDivision(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedDivision(T, T)
+  name.vb: op_CheckedDivision(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked /(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedDivision(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked /(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDivision(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision*
   name: CheckedDivision
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision_
@@ -830,14 +851,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedDivision
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedDivision
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
-  name: CheckedExplicit(T to Int32)
+  name: explicit operator checked Int32(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit__0__System_Int32
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
-  name.vb: CheckedNarrowing(T to Int32)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedExplicit(T to System.Int32)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedNarrowing(T to System.Int32)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedExplicit(T to Int32)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedNarrowing(T to Int32)
+  name.vb: op_CheckedExplicit(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked System.Int32(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked Int32(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*
   name: CheckedExplicit
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit_
@@ -849,13 +870,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedExplicit
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedNarrowing
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)
-  name: CheckedIncrement(T)
+  name: operator checked ++(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedIncrement(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedIncrement(T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedIncrement(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedIncrement(T)
+  name.vb: op_CheckedIncrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked ++(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedIncrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked ++(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedIncrement(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement*
   name: CheckedIncrement
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement_
@@ -866,13 +888,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedIncrement
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedIncrement
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)
-  name: CheckedMultiply(T, T)
+  name: operator checked *(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedMultiply(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedMultiply(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedMultiply(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedMultiply(T, T)
+  name.vb: op_CheckedMultiply(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked *(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedMultiply(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked *(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedMultiply(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply*
   name: CheckedMultiply
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply_
@@ -883,13 +906,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedMultiply
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedMultiply
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)
-  name: CheckedSubtraction(T, T)
+  name: operator checked -(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedSubtraction(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedSubtraction(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedSubtraction(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedSubtraction(T, T)
+  name.vb: op_CheckedSubtraction(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedSubtraction(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedSubtraction(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction*
   name: CheckedSubtraction
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction_
@@ -900,13 +924,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedSubtraction
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedSubtraction
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)
-  name: CheckedUnaryNegation(T)
+  name: operator checked -(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.CheckedUnaryNegation(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CheckedUnaryNegation(T)
-  nameWithType: CheckedUserDefinedOperators<T>.CheckedUnaryNegation(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedUnaryNegation(T)
+  name.vb: op_CheckedUnaryNegation(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator checked -(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator checked -(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedUnaryNegation(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation*
   name: CheckedUnaryNegation
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation_
@@ -917,13 +942,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.CheckedUnaryNegation
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CheckedUnaryNegation
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)
-  name: Decrement(T)
+  name: operator --(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Decrement__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Decrement(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Decrement(T)
-  nameWithType: CheckedUserDefinedOperators<T>.Decrement(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Decrement(T)
+  name.vb: op_Decrement(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator --(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Decrement(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator --(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Decrement(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Decrement*
   name: Decrement
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Decrement_
@@ -934,13 +960,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Decrement
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Decrement
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)
-  name: Division(T, T)
+  name: operator /(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Division(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Division(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.Division(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Division(T, T)
+  name.vb: /(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator /(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)./(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator /(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T)./(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Division*
   name: Division
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division_
@@ -951,14 +978,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Division
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Division
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
-  name: Explicit(T to Int32)
+  name: explicit operator Int32(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit__0__System_Int32
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
-  name.vb: Narrowing(T to Int32)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Explicit(T to System.Int32)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Narrowing(T to System.Int32)
-  nameWithType: CheckedUserDefinedOperators<T>.Explicit(T to Int32)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Narrowing(T to Int32)
+  name.vb: CType(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator System.Int32(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator Int32(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).CType(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit*
   name: Explicit
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit_
@@ -970,13 +997,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Explicit
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Narrowing
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)
-  name: Increment(T)
+  name: operator ++(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Increment(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Increment(T)
-  nameWithType: CheckedUserDefinedOperators<T>.Increment(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Increment(T)
+  name.vb: op_Increment(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator ++(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_Increment(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator ++(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).op_Increment(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Increment*
   name: Increment
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment_
@@ -987,13 +1015,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Increment
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Increment
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)
-  name: Multiply(T, T)
+  name: operator *(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Multiply(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Multiply(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.Multiply(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Multiply(T, T)
+  name.vb: '*(T, T)'
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator *(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).*(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator *(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).*(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Multiply*
   name: Multiply
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply_
@@ -1004,13 +1033,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Multiply
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Multiply
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)
-  name: Subtraction(T, T)
+  name: operator -(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction__0__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.Subtraction(T, T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).Subtraction(T, T)
-  nameWithType: CheckedUserDefinedOperators<T>.Subtraction(T, T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).Subtraction(T, T)
+  name.vb: -(T, T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T, T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator -(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T, T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Subtraction*
   name: Subtraction
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction_
@@ -1021,13 +1051,14 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.Subtraction
   nameWithType.vb: CheckedUserDefinedOperators(Of T).Subtraction
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)
-  name: UnaryNegation(T)
+  name: operator -(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation__0_
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.UnaryNegation(T)
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).UnaryNegation(T)
-  nameWithType: CheckedUserDefinedOperators<T>.UnaryNegation(T)
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).UnaryNegation(T)
+  name.vb: -(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T)
+  nameWithType: CheckedUserDefinedOperators<T>.operator -(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation*
   name: UnaryNegation
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation_
@@ -1098,13 +1129,14 @@ references:
   nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>
   nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T)
 - uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)
-  name: Increment(T)
+  name: operator ++(T)
   href: api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_
   commentId: M:CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)
-  fullName: CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.Increment(T)
-  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).Increment(T)
-  nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>.Increment(T)
-  nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T).Increment(T)
+  name.vb: op_Increment(T)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)
+  nameWithType: StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)
+  nameWithType.vb: StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)
 - uid: CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*
   name: Increment
   href: api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_
@@ -1124,8 +1156,11 @@ references:
   name: RepeatSequence()
   href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor
   commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor
+  name.vb: New()
   fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New()
   nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.New()
 - uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.#ctor*
   name: RepeatSequence
   href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence__ctor_
@@ -1134,11 +1169,14 @@ references:
   fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence
   nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence
 - uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  name: Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
+  name: operator ++(RepeatSequence)
   href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_
   commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
+  name.vb: op_Increment(RepeatSequence)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
 - uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*
   name: Increment
   href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_
@@ -1235,11 +1273,14 @@ references:
   fullName: CSharp8.DefaultInterfaceMembers.Nested
   nameWithType: DefaultInterfaceMembers.Nested
 - uid: CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)
-  name: UnaryPlus(DefaultInterfaceMembers)
+  name: operator +(DefaultInterfaceMembers)
   href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_
   commentId: M:CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)
-  fullName: CSharp8.DefaultInterfaceMembers.UnaryPlus(CSharp8.DefaultInterfaceMembers)
-  nameWithType: DefaultInterfaceMembers.UnaryPlus(DefaultInterfaceMembers)
+  name.vb: +(DefaultInterfaceMembers)
+  fullName: CSharp8.DefaultInterfaceMembers.operator +(CSharp8.DefaultInterfaceMembers)
+  fullName.vb: CSharp8.DefaultInterfaceMembers.+(CSharp8.DefaultInterfaceMembers)
+  nameWithType: DefaultInterfaceMembers.operator +(DefaultInterfaceMembers)
+  nameWithType.vb: DefaultInterfaceMembers.+(DefaultInterfaceMembers)
 - uid: CSharp8.DefaultInterfaceMembers.op_UnaryPlus*
   name: UnaryPlus
   href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_
@@ -1447,13 +1488,13 @@ references:
   fullName: CSharp8.NullableReferenceTypes
   nameWithType: NullableReferenceTypes
 - uid: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
-  name: DoSomething(List<String>)
+  name: DoSomething(List<String?>?)
   href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__
   commentId: M:CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
   name.vb: DoSomething(List(Of String))
   fullName: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List<System.String>)
   fullName.vb: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List(Of System.String))
-  nameWithType: NullableReferenceTypes.DoSomething(List<String>)
+  nameWithType: NullableReferenceTypes.DoSomething(List<String?>?)
   nameWithType.vb: NullableReferenceTypes.DoSomething(List(Of String))
 - uid: CSharp8.NullableReferenceTypes.DoSomething*
   name: DoSomething
@@ -1659,8 +1700,11 @@ references:
   name: Person(String, String)
   href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_System_String_System_String_
   commentId: M:CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
+  name.vb: New(String, String)
   fullName: CSharp9.RecordTypes.Person.Person(System.String, System.String)
+  fullName.vb: CSharp9.RecordTypes.Person.New(System.String, System.String)
   nameWithType: RecordTypes.Person.Person(String, String)
+  nameWithType.vb: RecordTypes.Person.New(String, String)
 - uid: CSharp9.RecordTypes.Person.#ctor*
   name: Person
   href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_
@@ -1704,8 +1748,11 @@ references:
   name: Teacher(String, String, Int32)
   href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_
   commentId: M:CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
+  name.vb: New(String, String, Int32)
   fullName: CSharp9.RecordTypes.Teacher.Teacher(System.String, System.String, System.Int32)
+  fullName.vb: CSharp9.RecordTypes.Teacher.New(System.String, System.String, System.Int32)
   nameWithType: RecordTypes.Teacher.Teacher(String, String, Int32)
+  nameWithType.vb: RecordTypes.Teacher.New(String, String, Int32)
 - uid: CSharp9.RecordTypes.Teacher.#ctor*
   name: Teacher
   href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_
@@ -1823,14 +1870,14 @@ references:
   fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
   nameWithType: ContainersRefType.ContainersRefTypeEventHandler
 - uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  name: ContainersRefTypeNonRefMethod(Object[])
+  name: ContainersRefTypeNonRefMethod(params Object[])
   href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
   commentId: M:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  name.vb: ContainersRefTypeNonRefMethod(Object())
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object())
-  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(Object[])
-  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(Object())
+  name.vb: ContainersRefTypeNonRefMethod(ParamArray Object())
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])
+  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray System.Object())
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params Object[])
+  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
 - uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*
   name: ContainersRefTypeNonRefMethod
   href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_

@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "Person(String, String)"
+          "value": "New(String, String)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordTypes.Person.Person(String, String)"
+          "value": "RecordTypes.Person.New(String, String)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp9.RecordTypes.Person.Person(System.String, System.String)"
+          "value": "CSharp9.RecordTypes.Person.New(System.String, System.String)"
         }
       ],
       "specName": [

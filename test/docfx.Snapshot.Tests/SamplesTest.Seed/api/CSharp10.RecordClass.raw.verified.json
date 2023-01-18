@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordClass(String, String)"
+          "value": "New(String, String)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordClass.RecordClass(String, String)"
+          "value": "RecordClass.New(String, String)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp10.RecordClass.RecordClass(System.String, System.String)"
+          "value": "CSharp10.RecordClass.New(System.String, System.String)"
         }
       ],
       "specName": [

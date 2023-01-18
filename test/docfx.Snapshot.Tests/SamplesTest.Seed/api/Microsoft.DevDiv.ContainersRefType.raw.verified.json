@@ -319,41 +319,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ContainersRefTypeNonRefMethod(Object[])"
+          "value": "ContainersRefTypeNonRefMethod(params Object[])"
         },
         {
           "lang": "vb",
-          "value": "ContainersRefTypeNonRefMethod(Object())"
+          "value": "ContainersRefTypeNonRefMethod(ParamArray Object())"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ContainersRefType.ContainersRefTypeNonRefMethod(Object[])"
+          "value": "ContainersRefType.ContainersRefTypeNonRefMethod(params Object[])"
         },
         {
           "lang": "vb",
-          "value": "ContainersRefType.ContainersRefTypeNonRefMethod(Object())"
+          "value": "ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])"
+          "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])"
         },
         {
           "lang": "vb",
-          "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object())"
+          "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray System.Object())"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])\"/>"
         }
       ],
       "syntax": {

@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "RepeatSequence()"
+          "value": "New()"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()"
+          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.New()"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence()"
+          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New()"
         }
       ],
       "specName": [
@@ -186,41 +186,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "operator ++(RepeatSequence)"
         },
         {
           "lang": "vb",
-          "value": "Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "op_Increment(RepeatSequence)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)"
         },
         {
           "lang": "vb",
-          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
         },
         {
           "lang": "vb",
-          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
+          "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\" text=\"Increment(StaticAbstractMembersInInterfaces.RepeatSequence)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\" text=\"operator ++(RepeatSequence)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\" text=\"Increment(StaticAbstractMembersInInterfaces.RepeatSequence)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\" text=\"operator ++(RepeatSequence)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\"/>"
         }
       ],
       "syntax": {

@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "TomFromBaseClass(Int32)"
+          "value": "New(Int32)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "TomFromBaseClass.TomFromBaseClass(Int32)"
+          "value": "TomFromBaseClass.New(Int32)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)"
+          "value": "CatLibrary.TomFromBaseClass.New(System.Int32)"
         }
       ],
       "specName": [
