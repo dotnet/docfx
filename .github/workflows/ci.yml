@@ -1,9 +1,9 @@
 name: ci
 on:
   pull_request:
-    branches: [ main, feature/* ]
+    branches: [ main, feature/*, hotfix/* ]
   push:
-    branches: [ main, feature/* ]
+    branches: [ main, feature/*, hotfix/* ]
 
 jobs:
   test:
