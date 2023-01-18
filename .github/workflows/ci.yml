@@ -1,9 +1,9 @@
 name: ci
 on:
   pull_request:
-    branches: [ main, feature/* ]
+    branches: [ main, feature/*, hotfix/* ]
   push:
-    branches: [ main, feature/* ]
+    branches: [ main, feature/*, hotfix/* ]
 
 jobs:
   test:
@@ -21,9 +21,10 @@ jobs:
       with:
         dotnet-version: 6.x
 
-    - run: |
-        npm install
-        npm run build
+    - run: npm install
+      working-directory: templates
+
+    - run: npm run build
       working-directory: templates
 
     - run: choco install wkhtmltopdf
