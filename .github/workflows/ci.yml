@@ -23,9 +23,10 @@ jobs:
           6.x
           7.x
 
-    - run: |
-        npm install
-        npm run build
+    - run: npm install
+      working-directory: templates
+
+    - run: npm run build
       working-directory: templates
 
     - run: choco install wkhtmltopdf
@@ -37,7 +38,7 @@ jobs:
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build --framework net7.0 --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- docs/docfx.json
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
