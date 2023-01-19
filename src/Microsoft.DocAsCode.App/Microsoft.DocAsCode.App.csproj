@@ -1,24 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Docfx published as a library for extensibility and advanced customization</Description>
-    <TemplateExclude>**/node_modules/**;**/package.json;**/package-lock.json</TemplateExclude>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/common" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-
-    <Content Include="../../templates/default(zh-cn)/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/default(zh-cn)" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/pdf.default/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/pdf.default" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-
-    <Content Include="../../templates/common/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/default/**/*.*" Exclude="$(TemplateExclude);**/toc.html.*" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
-    <Content Include="../../templates/statictoc/**/*.*" Exclude="$(TemplateExclude)" LinkBase="templates/statictoc" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true"/>
+    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
   <ItemGroup>

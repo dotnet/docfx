@@ -22,6 +22,31 @@ async function build() {
   ])
 
   cpSync('node_modules/bootstrap/dist/fonts', 'default/fonts', { recursive: true })
+
+  copyToDist()
+}
+
+function copyToDist() {
+  cpSync('common', 'dist/common', { recursive: true, overwrite: true, filter });
+  cpSync('common', 'dist/default', { recursive: true, overwrite: true, filter });
+  cpSync('common', 'dist/pdf.default', { recursive: true, overwrite: true, filter });
+  cpSync('common', 'dist/statictoc', { recursive: true, overwrite: true, filter });
+
+  cpSync('default', 'dist/default', { recursive: true, overwrite: true, filter });
+  cpSync('default', 'dist/pdf.default', { recursive: true, overwrite: true, filter });
+  cpSync('default', 'dist/statictoc', { recursive: true, overwrite: true, filter: staticTocFilter });
+
+  cpSync('default(zh-cn)', 'dist/default(zh-cn)', { recursive: true, overwrite: true, filter });
+  cpSync('pdf.default', 'dist/pdf.default', { recursive: true, overwrite: true, filter });
+  cpSync('statictoc', 'dist/statictoc', { recursive: true, overwrite: true, filter });
+
+  function filter(src) {
+    return !src.includes('node_modules') && !src.includes('package-lock.json');
+  }
+
+  function staticTocFilter(src) {
+    return filter(src) && !src.includes('toc.html');
+  }
 }
 
 async function minifyJs(outputFile, inputFiles) {
