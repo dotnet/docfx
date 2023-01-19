@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <Content Include="templates\memberpage\**" LinkBase="templates\memberpage" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="templates/memberpage/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
   <ItemGroup>
