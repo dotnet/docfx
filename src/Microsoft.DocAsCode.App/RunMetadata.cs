@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Exceptions;
 using Microsoft.DocAsCode.Metadata.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
 
@@ -15,8 +16,10 @@ namespace Microsoft.DocAsCode
     {
         static RunMetadata()
         {
-            var vs = MSBuildLocator.RegisterDefaults();
-            Logger.LogInfo($"Use {vs?.Name} {vs?.Version}");
+            var vs = MSBuildLocator.RegisterDefaults() ?? throw new DocfxException(
+                $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
+
+            Logger.LogInfo($"Use {vs.Name} {vs.Version}");
         }
 
         public static void Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
