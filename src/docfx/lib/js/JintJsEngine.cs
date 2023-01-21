@@ -1,12 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Esprima;
 using Jint;
 using Jint.Native;
 using Jint.Native.Json;
-using Jint.Native.Object;
-using Jint.Runtime;
 using Jint.Runtime.Interop;
 using Newtonsoft.Json.Linq;
 
@@ -36,11 +33,12 @@ internal sealed class JintJsEngine : JavaScriptEngine
             jsArg.AsObject().Set("__global", _global);
         }
 
-        return ToJToken(method.Invoke(jsArg));
+        return ToJToken(_engine.Invoke(method, jsArg));
     }
 
     public override void Dispose()
     {
+        _engine.Dispose();
     }
 
     private JsValue Run(PathString scriptPath)
@@ -50,13 +48,12 @@ internal sealed class JintJsEngine : JavaScriptEngine
             return result;
         }
 
-        var engine = new Engine(opt => opt.LimitRecursion(5000));
+        using var engine = new Engine(opt => opt.LimitRecursion(5000));
         var exports = MakeObject();
         var module = MakeObject();
         module.Set("exports", exports);
 
         var sourceCode = _package.ReadString(scriptPath);
-        var parserOptions = new ParserOptions(scriptPath);
 
         // add process to input to get the correct file path while running script inside docs-ui
         var script = $@"
@@ -67,8 +64,8 @@ internal sealed class JintJsEngine : JavaScriptEngine
         var dirname = Path.GetDirectoryName(scriptPath) ?? "";
         var require = new ClrFunctionInstance(engine, "require", Require);
 
-        var func = engine.Evaluate(script, parserOptions);
-        func.Invoke(module, exports, dirname, require, MakeObject());
+        var func = engine.Evaluate(script, scriptPath);
+        engine.Invoke(func, module, exports, dirname, require, MakeObject());
         return _modules[scriptPath] = module.Get("exports");
 
         JsValue Require(JsValue self, JsValue[] arguments)
@@ -77,24 +74,19 @@ internal sealed class JintJsEngine : JavaScriptEngine
         }
     }
 
-    private ObjectInstance MakeObject()
+    private JsObject MakeObject()
     {
-        return _engine.Realm.Intrinsics.Object.Construct(Arguments.Empty);
-    }
-
-    private ObjectInstance MakeArray()
-    {
-        return _engine.Realm.Intrinsics.Array.Construct(Arguments.Empty);
+        return new JsObject(_engine);
     }
 
     private JsValue ToJsValue(JToken token)
     {
         if (token is JArray arr)
         {
-            var result = MakeArray();
+            var result = new JsArray(_engine, (uint)arr.Count);
             foreach (var item in arr)
             {
-                _engine.Realm.Intrinsics.Array.PrototypeObject.Push(result, Arguments.From(ToJsValue(item)));
+                result.Push(ToJsValue(item));
             }
             return result;
         }
@@ -106,7 +98,7 @@ internal sealed class JintJsEngine : JavaScriptEngine
             {
                 if (value != null)
                 {
-                    result.Set(key, ToJsValue(value));
+                    result.FastSetDataProperty(key, ToJsValue(value));
                 }
             }
             return result;

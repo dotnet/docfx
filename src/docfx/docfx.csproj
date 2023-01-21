@@ -28,7 +28,7 @@
     <PackageReference Include="Microsoft.Graph" Version="4.25.0" />
     <PackageReference Include="Microsoft.Experimental.Collections" Version="1.0.6-e190117-3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Jint" Version="3.0.0-beta-2035" />
+    <PackageReference Include="Jint" Version="3.0.0-beta-2046" />
     <PackageReference Include="O9d.Json.Formatting" Version="0.1.0" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.1" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
