@@ -457,54 +457,6 @@
   "level": 1,
   "inheritedMembers": [
     {
-      "uid": "System.Object.ToString",
-      "isEii": false,
-      "isExtensionMethod": false,
-      "parent": "System.Object",
-      "isExternal": true,
-      "name": [
-        {
-          "lang": "csharp",
-          "value": "ToString()"
-        },
-        {
-          "lang": "vb",
-          "value": "ToString()"
-        }
-      ],
-      "nameWithType": [
-        {
-          "lang": "csharp",
-          "value": "Object.ToString()"
-        },
-        {
-          "lang": "vb",
-          "value": "Object.ToString()"
-        }
-      ],
-      "fullName": [
-        {
-          "lang": "csharp",
-          "value": "System.Object.ToString()"
-        },
-        {
-          "lang": "vb",
-          "value": "System.Object.ToString()"
-        }
-      ],
-      "specName": [
-        {
-          "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
-        },
-        {
-          "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
-        }
-      ],
-      "level": 0
-    },
-    {
       "uid": "System.Object.Equals(System.Object)",
       "isEii": false,
       "isExtensionMethod": false,
@@ -596,54 +548,6 @@
         {
           "lang": "vb",
           "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
-        }
-      ],
-      "level": 0
-    },
-    {
-      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
-      "isEii": false,
-      "isExtensionMethod": false,
-      "parent": "System.Object",
-      "isExternal": true,
-      "name": [
-        {
-          "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
-        },
-        {
-          "lang": "vb",
-          "value": "ReferenceEquals(Object, Object)"
-        }
-      ],
-      "nameWithType": [
-        {
-          "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
-        },
-        {
-          "lang": "vb",
-          "value": "Object.ReferenceEquals(Object, Object)"
-        }
-      ],
-      "fullName": [
-        {
-          "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
-        },
-        {
-          "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
-        }
-      ],
-      "specName": [
-        {
-          "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
-        },
-        {
-          "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
         }
       ],
       "level": 0
@@ -788,6 +692,102 @@
         {
           "lang": "vb",
           "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+        }
+      ],
+      "level": 0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "System.Object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "System.Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
         }
       ],
       "level": 0

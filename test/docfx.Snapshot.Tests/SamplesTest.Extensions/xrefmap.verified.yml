@@ -27,13 +27,13 @@ references:
   nameWithType: ExampleClass.ExampleClass
 - uid: MyExample.ExampleClass.MyEvent
   name: MyEvent
-  href: api/MyExample.ExampleClass.MyEvent.html#MyExample_ExampleClass_MyEvent
+  href: api/MyExample.ExampleClass.MyEvent.html
   commentId: E:MyExample.ExampleClass.MyEvent
   fullName: MyExample.ExampleClass.MyEvent
   nameWithType: ExampleClass.MyEvent
 - uid: MyExample.ExampleClass.MyField
   name: MyField
-  href: api/MyExample.ExampleClass.MyField.html#MyExample_ExampleClass_MyField
+  href: api/MyExample.ExampleClass.MyField.html
   commentId: F:MyExample.ExampleClass.MyField
   fullName: MyExample.ExampleClass.MyField
   nameWithType: ExampleClass.MyField

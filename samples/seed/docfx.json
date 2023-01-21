@@ -33,6 +33,7 @@
       "_enableSearch": true
     },
     "dest": "_site",
+    "exportRawModel": true,
     "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
   },
   "pdf": {

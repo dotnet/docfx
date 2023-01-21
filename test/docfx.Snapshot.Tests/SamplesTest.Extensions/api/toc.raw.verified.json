@@ -24,8 +24,8 @@
             },
             {
               "name": "MyEvent",
-              "href": "MyExample.ExampleClass.MyEvent.html#MyExample_ExampleClass_MyEvent",
-              "topicHref": "MyExample.ExampleClass.MyEvent.html#MyExample_ExampleClass_MyEvent",
+              "href": "MyExample.ExampleClass.MyEvent.html",
+              "topicHref": "MyExample.ExampleClass.MyEvent.html",
               "topicUid": "MyExample.ExampleClass.MyEvent",
               "fullName": "MyExample.ExampleClass.MyEvent",
               "nameWithType": "ExampleClass.MyEvent",
@@ -34,8 +34,8 @@
             },
             {
               "name": "MyField",
-              "href": "MyExample.ExampleClass.MyField.html#MyExample_ExampleClass_MyField",
-              "topicHref": "MyExample.ExampleClass.MyField.html#MyExample_ExampleClass_MyField",
+              "href": "MyExample.ExampleClass.MyField.html",
+              "topicHref": "MyExample.ExampleClass.MyField.html",
               "topicUid": "MyExample.ExampleClass.MyField",
               "fullName": "MyExample.ExampleClass.MyField",
               "nameWithType": "ExampleClass.MyField",

@@ -27,12 +27,12 @@ namespace Microsoft.DocAsCode.Tests
             if (Debugger.IsAttached)
             {
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json", "--exportRawModel" }));
+                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
             }
             else
             {
                 var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json --exportRawModel");
+                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json");
 
                 if (OperatingSystem.IsWindows())
                 {
@@ -45,19 +45,18 @@ namespace Microsoft.DocAsCode.Tests
         }
 
         [Fact]
-        public void Extensions()
+        public Task Extensions()
         {
             var samplePath = $"{SamplesDir}/extensions";
             Clean(samplePath);
+
 #if DEBUG
             Assert.Equal(0, Exec("dotnet", "run --project build", workingDirectory: samplePath));
 #else
             Assert.Equal(0, Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath));
 #endif
 
-            var myMethodPage = $"{samplePath}/_site/api/MyExample.ExampleClass.MyMethod.html";
-            Assert.True(File.Exists(myMethodPage));
-            Assert.Contains("public string MyMethod()", File.ReadAllText(myMethodPage));
+            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
         }
 
         private static int Exec(string filename, string args, string workingDirectory = null)
