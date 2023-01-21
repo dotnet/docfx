@@ -24,12 +24,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
         private readonly MarkdownContext _context;
+        private readonly Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> _configureMarkdig;
 
         public MarkdigMarkdownService(
             MarkdownServiceParameters parameters,
-            ICompositionContainer container = null)
+            ICompositionContainer container = null,
+            Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> configureMarkdig = null)
         {
             _parameters = parameters;
+            _configureMarkdig = configureMarkdig;
             _mvb = MarkdownValidatorBuilder.Create(parameters, container);
             _context = new MarkdownContext(
                 key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
@@ -166,6 +169,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 && optionalExtensionsObj is IEnumerable<object> optionalExtensions)
             {
                 builder.UseOptionalExtensions(optionalExtensions.Select(e => e as string).Where(e => e != null));
+            }
+
+            if (_configureMarkdig != null)
+            {
+                builder = _configureMarkdig(builder);
             }
 
             return builder.Build();

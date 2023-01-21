@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>2.60.0</PackageValidationBaselineVersion>
     <Description>Docfx published as a library for extensibility and advanced customization</Description>
   </PropertyGroup>
 

@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunBuild
     {
-        public static void Exec(BuildJsonConfig config)
+        public static void Exec(BuildJsonConfig config, BuildOptions options)
         {
             if (config.Templates == null || config.Templates.Count == 0)
             {
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode
 
             try
             {
-                DocumentBuilderWrapper.BuildDocument(config, templateManager, baseDirectory, outputFolder, null, null);
+                DocumentBuilderWrapper.BuildDocument(config, options, templateManager, baseDirectory, outputFolder, null, null);
             }
             catch (AggregateException agg) when (agg.InnerException is DocfxException)
             {

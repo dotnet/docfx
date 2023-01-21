@@ -3,19 +3,18 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
-    using System.Composition;
-
+    using System;
+    using Markdig;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("markdig", typeof(IMarkdownServiceProvider))]
     public class MarkdigServiceProvider : IMarkdownServiceProvider
     {
-        [Import]
-        public ICompositionContainer Container { get; set; }
+        public ICompositionContainer Container { get; init; }
+        public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; init; }
 
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
-            return new MarkdigMarkdownService(parameters, Container);
+            return new MarkdigMarkdownService(parameters, Container, ConfigureMarkdig);
         }
     }
 }

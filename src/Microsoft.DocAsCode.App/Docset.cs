@@ -21,6 +21,17 @@ namespace Microsoft.DocAsCode
         /// <returns>A task to await for build completion.</returns>
         public static Task Build(string configPath)
         {
+            return Build(configPath, new());
+        }
+        
+        /// <summary>
+        /// Builds a docset specified by docfx.json config.
+        /// </summary>
+        /// <param name="configPath">The path to docfx.json config file.</param>
+        /// <param name="options">The build options.</param>
+        /// <returns>A task to await for build completion.</returns>
+        public static Task Build(string configPath, BuildOptions options)
+        {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);
 
@@ -34,9 +45,9 @@ namespace Microsoft.DocAsCode
                 if (config.TryGetValue("merge", out value))
                     RunMerge.Exec(value.ToObject<MergeJsonConfig>(JsonUtility.DefaultSerializer.Value));
                 if (config.TryGetValue("pdf", out value))
-                    RunPdf.Exec(value.ToObject<PdfJsonConfig>(JsonUtility.DefaultSerializer.Value));
+                    RunPdf.Exec(value.ToObject<PdfJsonConfig>(JsonUtility.DefaultSerializer.Value), options);
                 if (config.TryGetValue("build", out value))
-                    RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value));
+                    RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value), options);
 
                 return Task.CompletedTask;
             }

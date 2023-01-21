@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunPdf
     {
-        public static void Exec(PdfJsonConfig config)
+        public static void Exec(PdfJsonConfig config, BuildOptions buildOptions)
         {
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode
             // 1. call BuildCommand to generate html files first
             // Output build command exec result to temp folder
             config.OutputFolder = rawOutputFolder;
-            RunBuild.Exec(config);
+            RunBuild.Exec(config, buildOptions);
 
             // 2. call html2pdf converter
             var converter = new ConvertWrapper(options);

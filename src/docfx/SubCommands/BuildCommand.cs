@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            RunBuild.Exec(Config);
+            RunBuild.Exec(Config, new());
         }
 
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
