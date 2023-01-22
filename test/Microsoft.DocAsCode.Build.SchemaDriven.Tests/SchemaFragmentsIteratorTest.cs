@@ -11,8 +11,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     using Xunit;
     using YamlDotNet.RepresentationModel;
 
-    [Trait("Owner", "renzeyu")]
-    [Trait("EntityType", "SchemaDrivenProcessorTest")]
     public class SchemaFragmentsIteratorTest
     {
         [Fact]

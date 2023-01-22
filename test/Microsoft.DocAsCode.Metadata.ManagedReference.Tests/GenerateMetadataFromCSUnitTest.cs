@@ -18,9 +18,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Language", "CSharp")]
-    [Trait("EntityType", "Model")]
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {

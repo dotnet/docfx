@@ -13,8 +13,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Tests.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    [Collection("docfx STA")]
+        [Collection("docfx STA")]
     public class FileAbstractLayerWithEnvironmentVariableTest : TestBase
     {
         [Fact]

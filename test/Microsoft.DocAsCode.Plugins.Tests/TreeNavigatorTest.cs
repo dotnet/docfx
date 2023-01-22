@@ -8,8 +8,7 @@ namespace Microsoft.DocAsCode.Plugins.Tests
 
     using Microsoft.DocAsCode.Plugins;
 
-    [Trait("Owner", "lianwei")]
-    public class TreeNavigatorTest
+        public class TreeNavigatorTest
     {
         [Fact]
         public void NavigateSimpleTreeShouldSucceed()

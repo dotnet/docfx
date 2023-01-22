@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
     using Microsoft.DocAsCode.Build.Common;
 
-    [Trait("Owner", "vwxyzh")]
     public class ReflectionHelperTest
     {
         [Fact]

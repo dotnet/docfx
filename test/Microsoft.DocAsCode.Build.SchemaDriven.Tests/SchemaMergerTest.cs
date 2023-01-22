@@ -16,8 +16,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "SchemaMergerTest")]
     [Collection("docfx STA")]
     public class SchemaMergerTest : TestBase
     {

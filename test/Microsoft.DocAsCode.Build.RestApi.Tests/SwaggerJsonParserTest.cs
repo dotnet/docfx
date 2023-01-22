@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "SwaggerJsonParser")]
     public class SwaggerJsonParserTest
     {
         [Fact]

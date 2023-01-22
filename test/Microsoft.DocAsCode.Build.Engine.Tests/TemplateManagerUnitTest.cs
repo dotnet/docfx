@@ -14,8 +14,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "TemplateManager")]
     [Collection("docfx STA")]
     public class TemplateManagerUnitTest : TestBase
     {

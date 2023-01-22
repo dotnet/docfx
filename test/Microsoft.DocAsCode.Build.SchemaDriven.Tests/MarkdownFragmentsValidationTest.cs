@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
     using Xunit;
 
-    [Trait("Owner", "jipe")]
-    [Trait("EntityType", "MarkdownFragmentsValidationTest")]
     [Collection("docfx STA")]
     public class MarkdownFragmentsValidationTest : TestBase
     {

@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "TemplatePreprocessor")]
     [Collection("docfx STA")]
     public class TemplatePreprocessorLoaderUnitTest : TestBase
     {

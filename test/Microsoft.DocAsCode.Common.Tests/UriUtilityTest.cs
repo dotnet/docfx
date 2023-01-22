@@ -7,8 +7,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    public class UriUtilityTest
+        public class UriUtilityTest
     {
         [InlineData("", "", "", "", "", "")]
         [InlineData("abc", "abc", "", "", "", "abc")]

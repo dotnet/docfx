@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 
     using Microsoft.DocAsCode.Plugins;
 
-    [Trait("Owner", "zhyan")]
-    [Trait("EntityType", "MarkdownTocReader")]
     public class MarkdownTocReaderTest
     {
         [Fact]

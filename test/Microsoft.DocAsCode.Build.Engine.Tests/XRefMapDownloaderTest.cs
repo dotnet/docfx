@@ -14,8 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.Linq;
 
-    [Trait("Owner", "makaretu")]
-    public class XRefMapDownloadTest
+        public class XRefMapDownloadTest
     {
         [Fact]
         public async Task BaseUrlIsSet()

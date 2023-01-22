@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Metadata.ManagedReference;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("EntityType", "ViewModel")]
     public class ConvertToViewModelUnitTest
     {
         #region Data

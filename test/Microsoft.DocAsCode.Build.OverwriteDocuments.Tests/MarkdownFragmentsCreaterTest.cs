@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
     using Markdig.Syntax;
     using Xunit;
 
-    [Trait("Owner", "renzeyu")]
-    [Trait("EntityType", nameof(MarkdownFragmentsCreater))]
     public class MarkdownFragmentsCreaterTest
     {
         [Fact]

@@ -18,8 +18,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "RestApiDocumentProcessor")]
     [Collection("docfx STA")]
     public class RestApiDocumentProcessorTest : TestBase
     {

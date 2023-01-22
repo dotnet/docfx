@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Common;
     using YamlDotNet.Core;
 
-    [Trait("Owner", "zhyan")]
-    public class YamlDeserializerWithFallbackTest
+        public class YamlDeserializerWithFallbackTest
     {
         [Fact]
         public void TestYamlDeserializerWithFallback()

@@ -14,8 +14,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
-    [Trait("Owner", "lianwei")]
-    public class TocRestructureTest : TestBase
+        public class TocRestructureTest : TestBase
     {
         [Fact]
         public void TestTocRestructureWithLeafNode()

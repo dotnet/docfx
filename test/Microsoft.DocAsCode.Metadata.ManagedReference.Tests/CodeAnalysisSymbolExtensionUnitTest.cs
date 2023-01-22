@@ -9,8 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using CodeAnalysis.CSharp;
     using Xunit;
 
-    [Trait("Owner", "xuzho")]
-    [Trait("Related", "CodeAnalysisSymbolExtension")]
+        [Trait("Related", "CodeAnalysisSymbolExtension")]
     public class CodeAnalysisSymbolExtensionUnitTest
     {
         [Fact]

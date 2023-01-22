@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "CircularBuffer")]
+        [Trait("Related", "CircularBuffer")]
     public class CircularBufferTest
     {
         [Fact]

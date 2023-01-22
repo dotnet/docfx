@@ -6,8 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    public class JintProcessorHelperTest
+        public class JintProcessorHelperTest
     {
         [Trait("Related", "JintProcessor")]
         [Fact]

@@ -13,8 +13,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "UriTemplate")]
+        [Trait("Related", "UriTemplate")]
     public class UriTemplateTest
     {
         [Fact]

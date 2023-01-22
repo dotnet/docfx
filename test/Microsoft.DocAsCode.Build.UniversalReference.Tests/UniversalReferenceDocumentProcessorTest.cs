@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
 
     using Xunit;
 
-    [Trait("EntityType", "UniversalReferenceDocumentProcessor")]
     public class UniversalReferenceDocumentProcessorTest : TestBase
     {
         private string _outputFolder;

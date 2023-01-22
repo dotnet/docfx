@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "XRefAtchive")]
+        [Trait("Related", "XRefAtchive")]
     public class XRefArchiveBuilderTest
     {
         [Fact]

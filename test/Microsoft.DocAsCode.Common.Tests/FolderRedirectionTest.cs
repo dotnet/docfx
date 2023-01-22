@@ -7,8 +7,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "renzeyu")]
-    [Trait("Related", "FolderRedirection")]
+        [Trait("Related", "FolderRedirection")]
     public class FolderRedirectionTest
     {
         [Fact]

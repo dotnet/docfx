@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    [Trait("Owner", "lianwei")]
     public class ModelAttributeHandlerTest
     {
         #region UniqueIdentityAttribute

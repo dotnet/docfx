@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
 
     using Xunit;
 
-    [Trait("Owner", "jipe")]
-    [Trait("EntityType", nameof(OverwriteUtility))]
     public class OverwriteUtilityTest
     {
         [Fact]

@@ -22,8 +22,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "SchemaDrivenProcessorTest")]
     [Collection("docfx STA")]
     public class SchemaDrivenProcessorTest : TestBase
     {

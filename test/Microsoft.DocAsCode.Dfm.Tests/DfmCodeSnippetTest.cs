@@ -220,8 +220,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
         }
 
         [Theory]
-        [Trait("Owner", "humao")]
-        [Trait("Related", "DfmMarkdown")]
+                [Trait("Related", "DfmMarkdown")]
         #region Inline Data
         [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {

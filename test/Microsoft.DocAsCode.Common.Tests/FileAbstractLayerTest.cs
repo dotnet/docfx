@@ -13,8 +13,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Tests.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    public class FileAbstractLayerTest : TestBase
+        public class FileAbstractLayerTest : TestBase
     {
         [Fact]
         public void TestFileAbstractLayerWithLinkImplementsShouldReadFileCorrectlyWhenInputNoFallback()

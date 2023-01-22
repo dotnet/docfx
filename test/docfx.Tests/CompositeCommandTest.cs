@@ -31,7 +31,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx#428")]
-        [Trait("Language", "CSharp")]
         public void TestCommandFromCSCodeToHtml()
         {
             // Create source file

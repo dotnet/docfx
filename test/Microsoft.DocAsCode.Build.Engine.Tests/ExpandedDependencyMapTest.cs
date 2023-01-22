@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "xuzho")]
-    public class ExpandedDependencyMapTest
+        public class ExpandedDependencyMapTest
     {
         [Fact]
         public void BasicTest()

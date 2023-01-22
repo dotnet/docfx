@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "TocDocumentProcessorTest")]
     [Collection("docfx STA")]
     public class TocDocumentProcessorTest : TestBase
     {

@@ -19,8 +19,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "jehuan")]
-    [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
     [Collection("docfx STA")]
     public class SplitRestApiToTagLevelTest : TestBase
     {

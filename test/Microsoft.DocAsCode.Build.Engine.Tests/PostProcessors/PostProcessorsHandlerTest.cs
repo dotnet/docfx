@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "jehuan")]
     [Collection("docfx STA")]
     public class PostProcessorsHandlerTest : IncrementalTestBase
     {

@@ -10,8 +10,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "StreamSegmentSerialization")]
+        [Trait("Related", "StreamSegmentSerialization")]
     public class StreamSegmentSerializationTest
     {
         [Fact]

@@ -640,7 +640,6 @@ tag started with alphabet should not be encode: <abc> <a-hello> <AC att='bcd'></
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
-        [Trait("A wrong case need to be fixed in dfm", "' in title should be traslated to &#39; instead of &amp;#39;")]
         public void TestDfmLink_LinkWithSpecialCharactorsInTitle()
         {
             var source = @"[text's string](https://www.google.com.sg/?gfe_rd=cr&ei=Xk ""Google's homepage"")";

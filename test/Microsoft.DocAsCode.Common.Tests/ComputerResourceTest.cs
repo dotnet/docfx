@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    [Collection("docfx STA")]
+        [Collection("docfx STA")]
     public class ComputerResourceTest
     {
         [Fact]

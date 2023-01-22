@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments.Tests
 {
     using Xunit;
 
-    [Trait("Owner", "yih")]
     [Trait("Related", "Conceptual")]
     public class WordCounterUnitTest
     {

@@ -11,8 +11,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis.CSharp;
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Language", "CSharp")]
     [Trait("Related", "Filter")]
     [Collection("docfx STA")]
     public class ApiFilterUnitTest

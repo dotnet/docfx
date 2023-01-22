@@ -21,8 +21,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Xunit;
     using TableOfContents;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "ManagedReferenceDocumentProcessorWithPlugins")]
     public class SplitClassPageToMemberLevelTest : TestBase
     {
         private string _outputFolder;

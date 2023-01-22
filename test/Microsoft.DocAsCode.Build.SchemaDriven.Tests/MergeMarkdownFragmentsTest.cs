@@ -12,8 +12,6 @@
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    [Trait("Owner", "renzeyu")]
-    [Trait("EntityType", "SchemaDrivenProcessorTest")]
     [Collection("docfx STA")]
     public class MergeMarkdownFragmentsTest : TestBase
     {

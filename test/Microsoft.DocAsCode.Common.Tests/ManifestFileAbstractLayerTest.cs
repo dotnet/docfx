@@ -12,8 +12,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    public class ManifestFileAbstractLayerTest : TestBase
+        public class ManifestFileAbstractLayerTest : TestBase
     {
         [Fact]
         public void TestFileAbstractLayerFromManifestShouldReadFileCorrectly()

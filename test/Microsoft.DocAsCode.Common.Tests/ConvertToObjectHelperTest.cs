@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Newtonsoft.Json;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("Related", "ConvertToObjectHelper")]
+        [Trait("Related", "ConvertToObjectHelper")]
     public class ConvertToObjectHelperTest
     {
         [Theory]

@@ -17,8 +17,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
 
     using Xunit;
 
-    [Trait("Owner", "jipe")]
-    [Trait("EntityType", "OverwriteDocumentModelCreater")]
     public class OverwriteDocumentModelCreaterTest
     {
         private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creater");

@@ -7,8 +7,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "superyyrrzz")]
-    [Collection("docfx STA")]
+        [Collection("docfx STA")]
     public class LogCodesLogListenerTest
     {
         [Fact]

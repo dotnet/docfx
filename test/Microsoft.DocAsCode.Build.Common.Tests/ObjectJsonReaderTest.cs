@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
     using Xunit;
     using Newtonsoft.Json;
 
-    [Trait("Owner", "lianwei")]
     public class ObjectJsonReaderTest
     {
         [Theory]

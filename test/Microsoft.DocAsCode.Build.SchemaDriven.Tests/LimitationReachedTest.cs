@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     using Microsoft.DocAsCode.Tests.Common;
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "SchemaDrivenProcessorTest")]
     [Collection("docfx STA")]
     public class LimitationReachedTest : TestBase
     {

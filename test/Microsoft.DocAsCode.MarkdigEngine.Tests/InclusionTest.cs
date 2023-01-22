@@ -661,7 +661,6 @@ Inline [!include[ref3](ref3.md ""This is root"")]
         }
 
         [Fact]
-        [Trait("BugItem", "1101156")]
         [Trait("Related", "Inclusion")]
         public void TestBlockInclude_ImageRelativePath()
         {

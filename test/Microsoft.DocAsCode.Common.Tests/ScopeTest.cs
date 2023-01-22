@@ -14,8 +14,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using System.Linq;
     using System.Threading;
 
-    [Trait("Owner", "vwxyzh")]
-    [Collection("docfx STA")]
+        [Collection("docfx STA")]
     public class ScopeTest
     {
         [Fact]

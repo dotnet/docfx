@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Xunit;
 
     [Collection("docfx STA")]
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "ConceptualDocumentProcessorTest")]
     public class ConceptualDocumentProcessorTest : TestBase
     {
         private readonly string _outputFolder;

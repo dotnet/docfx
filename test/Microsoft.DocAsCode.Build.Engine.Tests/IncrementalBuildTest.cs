@@ -24,8 +24,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using System.Composition;
 
-    [Trait("Owner", "xuzho")]
-    [Trait("EntityType", "DocumentBuilder")]
     [Collection("docfx STA")]
     public class IncrementalBuildTest : IncrementalTestBase
     {

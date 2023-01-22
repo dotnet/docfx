@@ -15,8 +15,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
-    [Trait("Owner", "zhyan")]
-    public class YamlSerializationTest
+        public class YamlSerializationTest
     {
         [Theory]
         [InlineData(" Add --globalMetadata, --globalMetadataFile and --fileMetadataFile\n")]

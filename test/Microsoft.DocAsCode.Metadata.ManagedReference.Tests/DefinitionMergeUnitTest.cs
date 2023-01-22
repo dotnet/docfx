@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis.CSharp;
     using Xunit;
 
-    [Trait("Language", "CSharp")]
     public class DefinitionMergeUnitTest
     {
         [Fact]

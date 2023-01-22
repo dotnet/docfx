@@ -32,7 +32,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProject()
         {
             var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -51,7 +50,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProjectWithVsinstalldirEnvSet()
         {
             var envName = "VSINSTALLDIR";
@@ -70,7 +68,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromDll()
         {
             var dllFile = Path.Combine(_projectFolder, "test.dll");
@@ -87,8 +84,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
-        [Trait("Framework", "netcore")]
         public void TestMetadataCommandFromMultipleFrameworksCSProject()
         {
             // Create default project
@@ -109,7 +104,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "VB")]
         public void TestMetadataCommandFromVBProject()
         {
             // Create default project
@@ -171,7 +165,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProjectWithFilterInConfig()
         {
             // Create default project
@@ -224,7 +217,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProjectWithFilterInOption()
         {
             // Create default project
@@ -273,7 +265,6 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact(Skip = "Don't know why this fails.")]
         [Trait("Related", "docfx")]
-        [Trait("Language", "CSharp")]
         public void TestMetadataCommandFromCSProjectWithDuplicateProjectReference()
         {
             // Create default project

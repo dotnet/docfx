@@ -9,8 +9,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "StateMachine")]
+        [Trait("Related", "StateMachine")]
     public class SharedObjectTest
     {
         [Fact]

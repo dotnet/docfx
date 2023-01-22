@@ -10,8 +10,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "juchen")]
-    [Trait("Related", "CollectionUtilityTest")]
+        [Trait("Related", "CollectionUtilityTest")]
     public class CollectionUtilityTest
     {
         [Theory]

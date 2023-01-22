@@ -27,8 +27,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Tests.Common;
     using System.Composition;
 
-    [Trait("Owner", "zhyan")]
-    [Trait("EntityType", "DocumentBuilder")]
     [Collection("docfx STA")]
     public class DocumentBuilderTest : TestBase
     {

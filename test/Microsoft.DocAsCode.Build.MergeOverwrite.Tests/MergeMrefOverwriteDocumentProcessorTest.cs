@@ -16,8 +16,6 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite.Tests
 
     using Xunit;
 
-    [Trait("Owner", "yufeih")]
-    [Trait("EntityType", nameof(MergeMrefOverwriteDocumentProcessor))]
     public class MergeMrefOverwriteDocumentProcessorTest : TestBase
     {
         [Fact]

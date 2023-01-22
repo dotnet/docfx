@@ -10,8 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "TemplateRenderer")]
     [Collection("docfx STA")]
     public class TemplateRendererLoaderUnitTest : TestBase
     {

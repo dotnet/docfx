@@ -9,8 +9,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    public class JsonPointerTest : TestBase
+        public class JsonPointerTest : TestBase
     {
         [Fact]
         public void TestJsonPointerSpec()

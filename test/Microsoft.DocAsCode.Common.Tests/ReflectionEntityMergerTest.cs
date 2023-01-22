@@ -8,8 +8,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common.EntityMergers;
 
-    [Trait("Owner", "vwxyzh")]
-    [Trait("Related", "ReflectionEntityMerger")]
+        [Trait("Related", "ReflectionEntityMerger")]
     public class ReflectionEntityMergerTest
     {
         [Fact]

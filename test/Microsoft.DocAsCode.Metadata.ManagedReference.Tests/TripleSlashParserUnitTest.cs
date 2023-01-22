@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Xunit;
 
-    [Trait("Owner", "lianwei")]
-    [Trait("EntityType", "Parser")]
     public class TripleSlashParserUnitTest
     {
         [Trait("Related", "TripleSlashComments")]

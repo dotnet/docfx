@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    [Trait("Owner", "hellosnow")]
-    [Trait("Related", "JObjectMerger")]
+        [Trait("Related", "JObjectMerger")]
     public class JObjectMergerTest
     {
         [Fact]
