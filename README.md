@@ -46,7 +46,8 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 ### Prerequisites
 
 - Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
-  - Need [.NET Core 6.x SDK](https://dotnet.microsoft.com/download/dotnet-core/6.0), .NET Framework 4.7.2 and F# development tools.
+  - Need [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core) 6.x and 7.x.
+  - Need F# development tools.
 - Install NodeJS (16.x.x).
 - Install wkhtmltopdf on Windows to test PDF using `choco install wkhtmltopdf`.
 
