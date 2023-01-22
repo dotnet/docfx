@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <None Update="TestData\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\plugins\Microsoft.DocAsCode.Build.OperationLevelRestApi\Microsoft.DocAsCode.Build.OperationLevelRestApi.csproj" />
     <ProjectReference Include="..\..\plugins\Microsoft.DocAsCode.Build.TagLevelRestApi\Microsoft.DocAsCode.Build.TagLevelRestApi.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />

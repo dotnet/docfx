@@ -5,9 +5,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
-    <None Update="PostProcessors\**;TestData\**;tmpl\tmpl1\sub\file1;tmpl\tmpl1\tmpl1.dot.$">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="PostProcessors\**;tmpl\tmpl1\sub\file1;tmpl\tmpl1\tmpl1.dot.$" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,11 +25,5 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="TestData\snippets\dataflowdegreeofparallelism.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

@@ -5,10 +5,4 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="InteractiveCode\sample.code">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
