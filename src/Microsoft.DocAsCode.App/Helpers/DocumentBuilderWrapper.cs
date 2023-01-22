@@ -24,13 +24,12 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.UniversalReference;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.MarkdigEngine;
 
     internal static class DocumentBuilderWrapper
     {
         private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
 
-        public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
+        public static void BuildDocument(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
         {
             var postProcessorNames = config.PostProcessors.ToImmutableArray();
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
@@ -58,7 +57,7 @@ namespace Microsoft.DocAsCode.SubCommands
             using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory);
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                var parameters = ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
+                var parameters = ConfigToParameter(config, options, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
                 builder.Build(parameters, outputDirectory);
             }
         }
@@ -74,7 +73,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 typeof(TocDocumentProcessor).Assembly,
                 typeof(SchemaDrivenDocumentProcessor).Assembly,
                 typeof(UniversalReferenceDocumentProcessor).Assembly,
-                typeof(MarkdigServiceProvider).Assembly
             };
             foreach (var assem in defaultPluggedAssemblies)
             {
@@ -133,7 +131,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
+        private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
         {
             using (new PerformanceScope("GenerateParameters"))
             {
@@ -148,7 +146,8 @@ namespace Microsoft.DocAsCode.SubCommands
                     FALName = config.FALName,
                     DisableGitFeatures = config.DisableGitFeatures,
                     SchemaLicense = config.SchemaLicense,
-                    TagParameters = config.TagParameters
+                    TagParameters = config.TagParameters,
+                    ConfigureMarkdig = options.ConfigureMarkdig,
                 };
                 if (config.GlobalMetadata != null)
                 {

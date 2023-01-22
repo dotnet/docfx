@@ -1,3 +1,10 @@
 ﻿using Microsoft.DocAsCode;
+using Markdig;
 
-await Docset.Build("docfx.json");
+var options = new BuildOptions
+{
+    // Enable citation markdown extension
+    ConfigureMarkdig = pipeline => pipeline.UseCitations(),
+};
+
+await Docset.Build("docfx.json", options);

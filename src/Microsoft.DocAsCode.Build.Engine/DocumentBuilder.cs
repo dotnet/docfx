@@ -315,17 +315,24 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             IMarkdownServiceProvider GetMarkdownServiceProvider()
             {
-                using (new PerformanceScope(nameof(GetMarkdownServiceProvider)))
+                var markdownEngineName = parameters[0].MarkdownEngineName;
+                if (markdownEngineName == "markdig")
                 {
-                    var result = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
+                    return new MarkdigServiceProvider
+                    {
+                        Container = _container.GetExport<ICompositionContainer>(),
+                        ConfigureMarkdig = parameters[0].ConfigureMarkdig
+                    };
+                }
+            
+                var result = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, markdownEngineName);
                     if (result == null)
                     {
-                        Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
-                        throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+                    Logger.LogError($"Unable to find markdown engine: {markdownEngineName}");
+                    throw new DocfxException($"Unable to find markdown engine: {markdownEngineName}");
                     }
-                    Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}", code: InfoCodes.Build.MarkdownEngineName);
+                Logger.LogInfo($"Markdown engine is {markdownEngineName}", code: InfoCodes.Build.MarkdownEngineName);
                     return result;
-                }
             }
 
             void EnrichCurrentBuildInfo(BuildInfo current, BuildInfo last)
@@ -430,7 +437,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Extensions = parameters.MarkdownEngineParameters,
                     Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider)?.ToImmutableDictionary(),
                 },
-                new CompositionContainer(CompositionContainer.DefaultContainer));
+                new CompositionContainer(CompositionContainer.DefaultContainer),
+                parameters.ConfigureMarkdig);
         }
 
         private void ClearCacheExcept(string subFolder)

@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public static void Exec(PdfJsonConfig config)
         {
-            RunPdf.Exec(config);
+            RunPdf.Exec(config, new());
         }
 
         private static PdfJsonConfig ParseOptions(PdfCommandOptions options)

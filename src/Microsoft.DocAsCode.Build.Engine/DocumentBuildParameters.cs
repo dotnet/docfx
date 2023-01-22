@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-
+    using Markdig;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -55,6 +55,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [IncrementalIgnore]
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
+
+        [IncrementalIgnore]
+        public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; set; }
 
         [IncrementalIgnore]
         public string VersionName { get; set; }
