@@ -264,14 +264,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method to let cat play</p>\n",
       "platform": null
@@ -491,14 +483,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method hint that how long the cat can sleep.</p>\n",
       "platform": null

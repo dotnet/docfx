@@ -169,12 +169,6 @@
       ],
       "namespace": "CSharp9",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": null,
       "platform": null
@@ -299,12 +293,6 @@
       ],
       "namespace": "CSharp9",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": null,
       "platform": null

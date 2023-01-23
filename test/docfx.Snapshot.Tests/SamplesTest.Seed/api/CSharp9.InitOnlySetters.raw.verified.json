@@ -213,14 +213,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -389,14 +381,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -565,14 +549,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null

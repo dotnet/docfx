@@ -170,14 +170,6 @@
       "namespace": "MRef.Demo.Enumeration",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">blue like river</p>\n",
       "platform": null
@@ -303,14 +295,6 @@
       "namespace": "MRef.Demo.Enumeration",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">this color is red</p>\n",
       "platform": null
@@ -436,14 +420,6 @@
       "namespace": "MRef.Demo.Enumeration",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">yellow comes from desert</p>\n",
       "platform": null

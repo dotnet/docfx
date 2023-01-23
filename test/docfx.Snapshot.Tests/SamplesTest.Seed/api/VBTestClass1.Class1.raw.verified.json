@@ -229,14 +229,6 @@
           ]
         }
       ],
-      "modifiers.csharp": [
-        "public",
-        "get"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -455,12 +447,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">This is a <em sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">Function</em></p>\n",
       "platform": null
@@ -586,12 +572,6 @@
       "namespace": "VBTestClass1",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">This is a <em sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">Value</em> type</p>\n",
       "platform": null
@@ -851,14 +831,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "override"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Overrides"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">What is <strong sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">Sub</strong>?</p>\n",
       "platform": null
