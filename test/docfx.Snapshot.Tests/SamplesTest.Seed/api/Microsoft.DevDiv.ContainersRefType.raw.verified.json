@@ -170,12 +170,6 @@
       "namespace": "Microsoft.DevDiv",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ColorCount</p>\n",
       "platform": null
@@ -300,12 +294,6 @@
       ],
       "namespace": "Microsoft.DevDiv",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "event",
       "summary": null,
       "platform": null
@@ -522,14 +510,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
       "platform": null
@@ -699,14 +679,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "get"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">GetColorCount</p>\n",
       "platform": null

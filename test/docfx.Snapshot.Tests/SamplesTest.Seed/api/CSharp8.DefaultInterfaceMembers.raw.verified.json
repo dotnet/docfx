@@ -413,14 +413,6 @@
       ],
       "namespace": "CSharp8",
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": null,
       "platform": null
@@ -760,14 +752,6 @@
       ],
       "namespace": "CSharp8",
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": null,
       "platform": null

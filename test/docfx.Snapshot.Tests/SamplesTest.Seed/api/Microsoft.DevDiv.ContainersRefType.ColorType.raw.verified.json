@@ -170,14 +170,6 @@
       "namespace": "Microsoft.DevDiv",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">blue</p>\n",
       "platform": null
@@ -303,14 +295,6 @@
       "namespace": "Microsoft.DevDiv",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">red</p>\n",
       "platform": null
@@ -436,14 +420,6 @@
       "namespace": "Microsoft.DevDiv",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "const"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Const"
-      ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">yellow</p>\n",
       "platform": null

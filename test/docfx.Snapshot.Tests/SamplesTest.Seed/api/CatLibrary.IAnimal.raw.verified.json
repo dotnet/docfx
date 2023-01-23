@@ -737,12 +737,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "get"
-      ],
-      "modifiers.vb": [
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Return specific number animal's name.</p>\n",
       "platform": null
@@ -912,12 +906,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "get"
-      ],
-      "modifiers.vb": [
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Name of Animal.</p>\n",
       "platform": null

@@ -167,12 +167,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "constructor",
       "summary": null,
       "platform": null
@@ -341,14 +335,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -473,12 +459,6 @@
       ],
       "namespace": "CSharp10",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": null,
       "platform": null
@@ -647,14 +627,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null

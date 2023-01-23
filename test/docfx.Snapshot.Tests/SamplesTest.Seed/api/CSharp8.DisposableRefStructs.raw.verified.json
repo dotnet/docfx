@@ -167,12 +167,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": null,
       "platform": null
@@ -295,14 +289,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "method",
       "summary": null,
       "platform": null

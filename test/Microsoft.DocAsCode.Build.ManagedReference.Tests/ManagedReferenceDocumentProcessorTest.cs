@@ -142,7 +142,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
-                Assert.Equal("public", model.Children[0].Modifiers["csharp"][0]);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/mref.overwrite.default.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overwrite summary</p>\n", model.Children[0].Metadata["summary"]);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/mref.overwrite.default.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Children[0].Conceptual);
             }
@@ -333,7 +332,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal(expectedVM.Items[0].Names, actualVM.Items[0].Names);
             Assert.Equal(expectedVM.Items[0].NamesWithType, actualVM.Items[0].NamesWithType);
             Assert.Equal(expectedVM.Items[0].FullNames, actualVM.Items[0].FullNames);
-            Assert.Equal(expectedVM.Items[0].Modifiers, actualVM.Items[0].Modifiers);
         }
 
         [Fact]

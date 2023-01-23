@@ -32,12 +32,6 @@ items:
     content.vb: Public Enum MergeType
   extensionMethods:
   - System.Object.Microsoft.DocAsCode.Common.JsonUtility.ToJsonString(Newtonsoft.Json.Formatting,Newtonsoft.Json.JsonSerializer)
-  modifiers.csharp:
-  - public
-  - enum
-  modifiers.vb:
-  - Public
-  - Enum
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
   commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Merge
   id: Merge
@@ -64,12 +58,6 @@ items:
     content: Merge = 0
     return:
       type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
-  modifiers.csharp:
-  - public
-  - const
-  modifiers.vb:
-  - Public
-  - Const
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
   commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Key
   id: Key
@@ -96,12 +84,6 @@ items:
     content: Key = 1
     return:
       type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
-  modifiers.csharp:
-  - public
-  - const
-  modifiers.vb:
-  - Public
-  - Const
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
   commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Replace
   id: Replace
@@ -128,12 +110,6 @@ items:
     content: Replace = 2
     return:
       type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
-  modifiers.csharp:
-  - public
-  - const
-  modifiers.vb:
-  - Public
-  - Const
 - uid: Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
   commentId: F:Microsoft.DocAsCode.Build.SchemaDriven.MergeType.Ignore
   id: Ignore
@@ -160,12 +136,6 @@ items:
     content: Ignore = 3
     return:
       type: Microsoft.DocAsCode.Build.SchemaDriven.MergeType
-  modifiers.csharp:
-  - public
-  - const
-  modifiers.vb:
-  - Public
-  - Const
 references:
 - uid: Microsoft.DocAsCode.Build.SchemaDriven
   commentId: N:Microsoft.DocAsCode.Build.SchemaDriven

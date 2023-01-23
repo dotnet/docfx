@@ -262,14 +262,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "method",
       "summary": null,
       "platform": null
@@ -394,12 +386,6 @@
       ],
       "namespace": "CSharp8",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": null,
       "platform": null
@@ -568,14 +554,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null

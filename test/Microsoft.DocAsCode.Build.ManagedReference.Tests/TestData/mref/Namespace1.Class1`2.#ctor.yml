@@ -20,7 +20,3 @@ items:
     content: public Class1()
     content.vb: Public Sub New
   overload: Namespace1.Class1`2.#ctor*
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public

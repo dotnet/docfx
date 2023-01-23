@@ -168,12 +168,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CSharp10.Issue7737.yml\" sourcestartlinenumber=\"2\"><xref href=\"System.Exception\" data-throw-if-not-resolved=\"false\"></xref></p>\n",
       "platform": null

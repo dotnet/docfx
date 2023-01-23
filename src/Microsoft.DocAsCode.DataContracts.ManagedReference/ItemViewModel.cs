@@ -323,11 +323,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [UniqueIdentityReference]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
-        [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonIgnore]
-        public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
-
         [YamlMember(Alias = Constants.PropertyName.Conceptual)]
         [JsonProperty(Constants.PropertyName.Conceptual)]
         [MarkdownContent]
@@ -358,7 +353,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
                 .Add(Constants.ExtensionMemberPrefix.Name, Names, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.NameWithType, NamesWithType, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
-                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
                 .Add(string.Empty, Metadata)
                 .Create();
     }

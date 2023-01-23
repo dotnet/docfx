@@ -168,12 +168,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "constructor",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Default constructor.</p>\n",
       "platform": null
@@ -347,12 +341,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "constructor",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Constructor with one generic parameter.</p>\n",
       "platform": null
@@ -666,12 +654,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "constructor",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">It's a complex constructor. The parameter will have some attributes.</p>\n",
       "platform": null
@@ -841,14 +823,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "protected",
-        "get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Protected"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Hint cat's age.</p>\n",
       "platform": null
@@ -1098,12 +1072,6 @@
       ],
       "level": 0,
       "conceptual": "\n<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"17\">This is overriding methods. You can override parameter descriptions for methods, you can even add exceptions to methods. Check the intermediate <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"17\">obj</code> folder to see the data model of the generated method/class. Override Yaml header should follow the data structure.</p>\n",
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">It's an overridden summary in <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">markdown</code> format</p>\n",
       "platform": null
@@ -1977,12 +1945,6 @@
           ]
         }
       ],
-      "modifiers.csharp": [
-        "get"
-      ],
-      "modifiers.vb": [
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">EII index.</p>\n",
       "platform": null
@@ -2414,14 +2376,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "override"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Overrides"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Override the method of <code>Object.Equals(object obj).</code></p>\n",
       "platform": null
@@ -2687,12 +2641,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">It's an <code>unsafe</code> method.\nAs you see, <code data-dev-comment-type=\"paramref\" class=\"paramref\">catName</code> is a <strong>pointer</strong>, so we need to add <code data-dev-comment-type=\"languageKeyword\" class=\"languageKeyword\">unsafe</code> keyword.</p>\n",
       "platform": null
@@ -2829,12 +2777,6 @@
           "ctor": "System.NonSerializedAttribute.#ctor",
           "arguments": []
         }
-      ],
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
       ],
       "type": "field",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Field with attribute.</p>\n",
@@ -3054,16 +2996,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "protected get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Protected Get",
-        "Set"
-      ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>\n",
       "platform": null
@@ -3362,12 +3294,6 @@
           ]
         }
       ],
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">This method have attribute above it.</p>\n",
       "platform": null
@@ -3581,14 +3507,6 @@
             }
           ]
         }
-      ],
-      "modifiers.csharp": [
-        "public",
-        "get"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "ReadOnly"
       ],
       "type": "property",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">EII property.</p>\n",
@@ -3855,14 +3773,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "operator",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Addition operator of this class.</p>\n",
       "platform": null
@@ -4081,14 +3991,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "operator",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Expilicit operator of this class.</p>\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n",
       "platform": null
@@ -4351,14 +4253,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "operator",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Similar with operaotr +, refer to that topic.</p>\n",
       "platform": null
@@ -4484,12 +4378,6 @@
       "namespace": "CatLibrary",
       "example": [],
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "event",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Eat event of this cat</p>\n",
       "platform": null

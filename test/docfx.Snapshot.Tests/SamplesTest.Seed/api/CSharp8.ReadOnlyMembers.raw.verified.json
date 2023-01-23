@@ -213,14 +213,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly get",
-        "set"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -388,13 +380,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": null,
       "platform": null
@@ -605,15 +590,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "override",
-        "readonly"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Overrides"
-      ],
       "type": "method",
       "summary": null,
       "platform": null
@@ -782,15 +758,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly",
-        "get"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": null,
       "platform": null
@@ -959,15 +926,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "readonly",
-        "get"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "ReadOnly"
-      ],
       "type": "property",
       "summary": null,
       "platform": null

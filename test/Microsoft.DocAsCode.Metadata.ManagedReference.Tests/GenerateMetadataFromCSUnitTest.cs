@@ -100,7 +100,6 @@ namespace Test1.Test2
             Assert.Equal("Test1.Test2", ns.DisplayNames[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Test2", ns.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Test2", ns.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-            Assert.Empty(ns.Modifiers);
         }
 
         [Trait("Related", "Generic")]
@@ -147,7 +146,6 @@ namespace Test1
                 Assert.Equal("T", type.Syntax.TypeParameters[0].Name);
                 Assert.Null(type.Syntax.TypeParameters[0].Type);
                 Assert.Equal("The type", type.Syntax.TypeParameters[0].Description);
-                Assert.Equal(new[] { "public", "sealed", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var function = output.Items[0].Items[0].Items[0];
@@ -170,7 +168,6 @@ namespace Test1
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Nullable{{TResult}}", returnValue.Type);
                 Assert.Equal("public TResult? Func1<TResult>(T? x, IEnumerable<T> y)\r\n    where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, function.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var proptery = output.Items[0].Items[0].Items[1];
@@ -184,7 +181,6 @@ namespace Test1
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
                 Assert.Equal(@"public IEnumerable<T> Items { get; set; }", proptery.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, proptery.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var event1 = output.Items[0].Items[0].Items[2];
@@ -196,7 +192,6 @@ namespace Test1
                 Assert.Null(event1.Syntax.Parameters);
                 Assert.Equal("EventHandler", event1.Syntax.Return.Type);
                 Assert.Equal("public event EventHandler Event1", event1.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, event1.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var operator1 = output.Items[0].Items[0].Items[3];
@@ -219,7 +214,6 @@ namespace Test1
                 Assert.Equal("System.Boolean", operator1.Syntax.Return.Type);
 
                 Assert.Equal("public static bool operator ==(Class1<T> x, Class1<T> y)", operator1.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, operator1.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var proptery = output.Items[0].Items[0].Items[4];
@@ -233,7 +227,6 @@ namespace Test1
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
                 Assert.Equal(@"public IEnumerable<T> Items2 { get; }", proptery.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get" }, proptery.Modifiers[SyntaxLanguage.CSharp]);
             }
             // check references
             {
@@ -286,7 +279,6 @@ namespace Test1
                 Assert.NotNull(returnValue);
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.String", returnValue.Type);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[1];
@@ -300,7 +292,6 @@ namespace Test1
                 Assert.NotNull(returnValue);
                 Assert.NotNull(returnValue.Type);
                 Assert.Equal("System.Int32", returnValue.Type);
-                Assert.Equal(new[] { "get" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var @event = output.Items[0].Items[0].Items[2];
@@ -312,7 +303,6 @@ namespace Test1
                 Assert.Equal("event EventHandler FooBar", @event.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(@event.Syntax.Parameters);
                 Assert.Equal("EventHandler", @event.Syntax.Return.Type);
-                Assert.Equal(new string[0], @event.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -336,7 +326,6 @@ namespace Test1
             Assert.Equal("IFoo", ifoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.IFoo", ifoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public interface IFoo", ifoo.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "interface" }, ifoo.Modifiers[SyntaxLanguage.CSharp]);
 
             var ibar = output.Items[0].Items[1];
             Assert.NotNull(ibar);
@@ -344,7 +333,6 @@ namespace Test1
             Assert.Equal("IBar", ibar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.IBar", ibar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public interface IBar : IFoo", ibar.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "interface" }, ibar.Modifiers[SyntaxLanguage.CSharp]);
 
             var ifoobar = output.Items[0].Items[2];
             Assert.NotNull(ifoobar);
@@ -352,7 +340,6 @@ namespace Test1
             Assert.Equal("IFooBar", ifoobar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.IFooBar", ifoobar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public interface IFooBar : IBar, IFoo", ifoobar.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "interface" }, ifoobar.Modifiers[SyntaxLanguage.CSharp]);
         }
 
         [Fact]
@@ -374,7 +361,6 @@ namespace Test1
             Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
             Assert.Null(foo.Implements);
         }
 
@@ -399,7 +385,6 @@ namespace Test1
             Assert.Equal("Foo.SubFoo", subFoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Foo.SubFoo", subFoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class SubFoo : Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "class" }, subFoo.Modifiers[SyntaxLanguage.CSharp]);
             Assert.NotNull(subFoo.Implements);
             Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
         }
@@ -426,7 +411,6 @@ namespace Test1
             Assert.Equal("Foo", foo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
             Assert.Equal("Test1.Foo", foo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
             Assert.Equal("public class Foo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
-            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
             Assert.Null(foo.Implements);
         }
 
@@ -459,7 +443,6 @@ namespace Test1
             Assert.NotNull(foo.Implements);
             Assert.Single(foo.Implements);
             Assert.Equal(new[] { "Test1.IFoo" }, foo.Implements);
-            Assert.Equal(new[] { "public", "class" }, foo.Modifiers[SyntaxLanguage.CSharp]);
 
 
             var bar = output.Items[0].Items[1];
@@ -470,7 +453,6 @@ namespace Test1
             Assert.Equal("public class Bar<T> : Foo<T[]>, IFoo, IBar", bar.Syntax.Content[SyntaxLanguage.CSharp]);
             Assert.Equal(new[] { "System.Object", "Test1.Foo{{T}[]}" }, bar.Inheritance);
             Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar" }, bar.Implements);
-            Assert.Equal(new[] { "public", "class" }, bar.Modifiers[SyntaxLanguage.CSharp]);
 
             var foobar = output.Items[0].Items[2];
             Assert.NotNull(foobar);
@@ -480,7 +462,6 @@ namespace Test1
             Assert.Equal("public class FooBar : Bar<string>, IFooBar, IFoo, IBar", foobar.Syntax.Content[SyntaxLanguage.CSharp]);
             Assert.Equal(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, foobar.Inheritance);
             Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s), foobar.Implements.OrderBy(s => s));
-            Assert.Equal(new[] { "public", "class" }, foobar.Modifiers[SyntaxLanguage.CSharp]);
 
             Assert.NotNull(output.References);
             Assert.Equal(19, output.References.Count);
@@ -609,7 +590,6 @@ namespace Test1
                 Assert.Equal("Test1.ABC", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.ABC", type.Name);
                 Assert.Equal("public enum ABC", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "enum" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -619,7 +599,6 @@ namespace Test1
                 Assert.Equal("Test1.YN", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.YN", type.Name);
                 Assert.Equal("public enum YN : byte", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "enum" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -629,7 +608,6 @@ namespace Test1
                 Assert.Equal("Test1.XYZ", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.XYZ", type.Name);
                 Assert.Equal("public enum XYZ", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "enum" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -661,7 +639,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo", type.Name);
                 Assert.Equal("public struct Foo", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
-                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -672,7 +649,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar`1", type.Name);
                 Assert.Equal("public struct Bar<T> : IEnumerable<T>, IEnumerable", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(new[] { "System.Collections.Generic.IEnumerable{{T}}", "System.Collections.IEnumerable" }, type.Implements);
-                Assert.Equal(new[] { "public", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             // inheritance of Foo
             {
@@ -719,7 +695,6 @@ namespace Test1
                 Assert.Equal("public delegate void Foo();", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Syntax.Parameters);
                 Assert.Null(type.Syntax.Return);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -729,7 +704,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar`1", type.Name);
                 Assert.Equal("public delegate T Bar<T>(IEnumerable<T> x = null)\r\n    where T : class;", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
 
                 Assert.NotNull(type.Syntax.Parameters);
                 Assert.Single(type.Syntax.Parameters);
@@ -737,7 +711,6 @@ namespace Test1
                 Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", type.Syntax.Parameters[0].Type);
                 Assert.NotNull(type.Syntax.Return);
                 Assert.Equal("{T}", type.Syntax.Return.Type);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -759,7 +732,6 @@ namespace Test1
                 Assert.Equal("w", type.Syntax.Parameters[3].Name);
                 Assert.Equal("System.Byte[]", type.Syntax.Parameters[3].Type);
                 Assert.Null(type.Syntax.Return);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[3];
@@ -772,7 +744,6 @@ namespace Test1
 
                 Assert.Null(type.Syntax.Parameters);
                 Assert.Equal("System.Int32", type.Syntax.Return.Type);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var type = output.Items[0].Items[4];
@@ -785,7 +756,6 @@ namespace Test1
 
                 Assert.Null(type.Syntax.Parameters);
                 Assert.Equal("System.Int32", type.Syntax.Return.Type);
-                Assert.Equal(new[] { "public", "delegate" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -832,7 +802,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M1()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M1", method.Name);
                 Assert.Equal("public abstract void M1()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "abstract" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
@@ -842,7 +811,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M2``1(``0)", method.Name);
                 Assert.Equal("protected virtual Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<T>", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "virtual" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[2];
@@ -852,7 +820,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M3<TResult>(System.String)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M3``1(System.String)", method.Name);
                 Assert.Equal("public static TResult M3<TResult>(string x)\r\n    where TResult : class", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
@@ -862,7 +829,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M4(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M4(System.Int32)", method.Name);
                 Assert.Equal("public void M4(int x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[4];
@@ -872,7 +838,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M5(ref System.Int32, out System.String, in System.Boolean)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M5(System.Int32@,System.String@,System.Boolean@)", method.Name);
                 Assert.Equal("public void M5(ref int x, out string y, in bool z)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[5];
@@ -882,7 +847,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M6()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M6", method.Name);
                 Assert.Equal("public ref int M6()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[6];
@@ -892,7 +856,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.M7()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.M7", method.Name);
                 Assert.Equal("public ref readonly int M7()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             // Bar
             {
@@ -904,7 +867,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.M1", method.Name);
                 Assert.Equal("public override void M1()", method.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.M1", method.Overridden);
-                Assert.Equal(new[] { "public", "override" }, method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M1", method.Implements[0]);
             }
             {
@@ -925,7 +887,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.M8<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.M8``1(``0)", method.Name);
                 Assert.Equal("public int M8<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M8``1({TArg})", method.Implements[0]);
             }
             // IFooBar
@@ -937,7 +898,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.M1()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M1", method.Name);
                 Assert.Equal("void M1()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[2].Items[1];
@@ -947,7 +907,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.M2<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M2``1(``0)", method.Name);
                 Assert.Equal("Foo<T> M2<TArg>(TArg arg)\r\n    where TArg : Foo<string>", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[2].Items[2];
@@ -957,7 +916,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.M8<TArg>(TArg)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.M8``1(``0)", method.Name);
                 Assert.Equal("int M8<TArg>(TArg arg)\r\n    where TArg : struct, new()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -1006,7 +964,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1", type.Name);
                 Assert.Equal(@"public class Foo<T> : IFoo, IFoo<string>, IFoo<T> where T : class", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Contains("Test1.IFoo", type.Implements);
                 Assert.Contains("Test1.IFoo{System.String}", type.Implements);
                 Assert.Contains("Test1.IFoo{{T}}", type.Implements);
@@ -1020,7 +977,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo.Bar(ref System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#Bar(System.Int32@)", method.Name);
                 Assert.Equal(@"object IFoo.Bar(ref int x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo.Bar(System.Int32@)", method.Implements[0]);
             }
             {
@@ -1032,7 +988,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.Bar<TArg>(TArg[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Bar``1(``0[])", method.Name);
                 Assert.Equal(@"string IFoo<string>.Bar<TArg>(TArg[] x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{System.String}.Bar``1({TArg}[])", method.Implements[0]);
             }
             {
@@ -1044,7 +999,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.Bar<TArg>(TArg[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Bar``1(``0[])", method.Name);
                 Assert.Equal(@"T IFoo<T>.Bar<TArg>(TArg[] x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], method.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{{T}}.Bar``1({TArg}[])", method.Implements[0]);
             }
             {
@@ -1056,7 +1010,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.P", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#P", p.Name);
                 Assert.Equal(@"string IFoo<string>.P { get; set; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", "set" }, p.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{System.String}.P", p.Implements[0]);
             }
             {
@@ -1068,7 +1021,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.P", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#P", p.Name);
                 Assert.Equal(@"T IFoo<T>.P { get; set; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", "set" }, p.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{{T}}.P", p.Implements[0]);
             }
             {
@@ -1080,7 +1032,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<System.String>.Item[System.String]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{System#String}#Item(System.String)", p.Name);
                 Assert.Equal(@"int IFoo<string>.this[string x] { get; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", }, p.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{System.String}.Item(System.String)", p.Implements[0]);
             }
             {
@@ -1092,7 +1043,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo<T>.Item[T]", p.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo{T}#Item(`0)", p.Name);
                 Assert.Equal(@"int IFoo<T>.this[T x] { get; }", p.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", }, p.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo{{T}}.Item({T})", p.Implements[0]);
             }
             {
@@ -1104,7 +1054,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Test1.IFoo.E", e.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Test1#IFoo#E", e.Name);
                 Assert.Equal(@"event EventHandler IFoo.E", e.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], e.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFoo.E", e.Implements[0]);
             }
         }
@@ -1147,7 +1096,6 @@ namespace Test
                 Assert.Equal("Test.IInterface", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test.IInterface", type.Name);
                 Assert.Equal("public interface IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "interface" }, type.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
 
                 // Verify member with EditorBrowsable.Never should be filtered out
@@ -1160,7 +1108,6 @@ namespace Test
                 Assert.Equal("Test.Class", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test.Class", type.Name);
                 Assert.Equal("public class Class : IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test.IInterface", type.Implements[0]);
 
                 // Verify EII member with EditorBrowsable.Never should be filtered out
@@ -1218,7 +1165,6 @@ namespace Test1
                 Assert.Equal("Test1.FooImple<T>.M1<U>(T, U)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.FooImple`1.M1``1(`0,``0)", method.Name);
                 Assert.Equal("public void M1<U>(T a, U b)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             var extensionMethods = output.Items[0].Items[1].ExtensionMethods;
             Assert.Equal(2, extensionMethods.Count);
@@ -1334,7 +1280,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.UnaryPlus(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_UnaryPlus(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator +(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
@@ -1353,7 +1298,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.LogicalNot(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LogicalNot(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator !(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
@@ -1363,7 +1307,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.OnesComplement(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_OnesComplement(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator ~(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[4];
@@ -1373,7 +1316,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Increment(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Increment(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator ++(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[5];
@@ -1383,7 +1325,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Decrement(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Decrement(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator --(Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[6];
@@ -1393,7 +1334,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.True(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_True(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator true (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[7];
@@ -1403,7 +1343,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.False(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_False(Test1.Foo)", method.Name);
                 Assert.Equal(@"public static Foo operator false (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             // binary
             {
@@ -1414,7 +1353,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Addition(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Addition(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator +(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[9];
@@ -1424,7 +1362,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Subtraction(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Subtraction(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator -(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[10];
@@ -1434,7 +1371,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Multiply(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Multiply(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator *(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[11];
@@ -1444,7 +1380,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Division(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Division(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator /(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[12];
@@ -1454,7 +1389,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Modulus(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Modulus(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator %(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[13];
@@ -1464,7 +1398,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.BitwiseAnd(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_BitwiseAnd(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator &(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[14];
@@ -1474,7 +1407,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.BitwiseOr(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_BitwiseOr(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator |(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[15];
@@ -1484,7 +1416,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.ExclusiveOr(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_ExclusiveOr(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator ^(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[16];
@@ -1494,7 +1425,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.RightShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_RightShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator >>(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[17];
@@ -1504,7 +1434,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.LeftShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LeftShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static Foo operator <<(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             // comparison
             {
@@ -1515,7 +1444,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Equality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Equality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator ==(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[19];
@@ -1525,7 +1453,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Inequality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Inequality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator !=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[20];
@@ -1535,7 +1462,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.GreaterThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_GreaterThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator>(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[21];
@@ -1545,7 +1471,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.LessThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LessThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator <(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[22];
@@ -1555,7 +1480,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.GreaterThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_GreaterThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator >=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[23];
@@ -1565,7 +1489,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.LessThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_LessThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"public static bool operator <=(Foo x, int y)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             // conversion
             {
@@ -1576,7 +1499,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Implicit(System.Int32 to Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Implicit(System.Int32)~Test1.Foo", method.Name);
                 Assert.Equal(@"public static implicit operator Foo(int x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var method = output.Items[0].Items[0].Items[25];
@@ -1586,7 +1508,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo.Explicit(Test1.Foo to System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo.op_Explicit(Test1.Foo)~System.Int32", method.Name);
                 Assert.Equal(@"public static explicit operator int (Foo x)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "static" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -1621,7 +1542,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Foo()", constructor.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.#ctor", constructor.Name);
                 Assert.Equal("public Foo()", constructor.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, constructor.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var constructor = output.Items[0].Items[0].Items[1];
@@ -1631,7 +1551,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Foo(System.Int32)", constructor.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.#ctor(System.Int32)", constructor.Name);
                 Assert.Equal("public Foo(int x)", constructor.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, constructor.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var constructor = output.Items[0].Items[0].Items[2];
@@ -1641,7 +1560,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Foo(System.String)", constructor.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.#ctor(System.String)", constructor.Name);
                 Assert.Equal("protected Foo(string x)", constructor.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected" }, constructor.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var constructor = output.Items[0].Items[1].Items[0];
@@ -1651,7 +1569,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Bar()", constructor.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.#ctor", constructor.Name);
                 Assert.Equal("public Bar()", constructor.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, constructor.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var constructor = output.Items[0].Items[1].Items[1];
@@ -1661,7 +1578,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Bar(System.Int32)", constructor.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.#ctor(System.Int32)", constructor.Name);
                 Assert.Equal("protected Bar(int x)", constructor.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected" }, constructor.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -1698,7 +1614,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.X", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.X", field.Name);
                 Assert.Equal("public volatile int X", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "volatile" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[0].Items[1];
@@ -1708,7 +1623,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Y", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Y", field.Name);
                 Assert.Equal("protected static readonly Foo<T> Y", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "static", "readonly" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[0].Items[2];
@@ -1718,7 +1632,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Z", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Z", field.Name);
                 Assert.Equal("protected const string Z = \"\"", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[1].Items[0];
@@ -1728,7 +1641,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Black", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Black", field.Name);
                 Assert.Equal("Black = 0", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[1].Items[1];
@@ -1738,7 +1650,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Red", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Red", field.Name);
                 Assert.Equal("Red = 1", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[1].Items[2];
@@ -1748,7 +1659,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Blue", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Blue", field.Name);
                 Assert.Equal(@"Blue = 2", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[1].Items[3];
@@ -1758,7 +1668,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Green", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Green", field.Name);
                 Assert.Equal("Green = 4", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var field = output.Items[0].Items[1].Items[4];
@@ -1768,7 +1677,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.White", field.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.White", field.Name);
                 Assert.Equal(@"White = 7", field.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "const" }, field.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -1810,7 +1718,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.A", a.Name);
                 Assert.Equal("public event EventHandler A", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var b = output.Items[0].Items[0].Items[1];
@@ -1820,7 +1727,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.B", b.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.B", b.Name);
                 Assert.Equal("protected static event EventHandler B", b.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "static" }, b.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var c = output.Items[0].Items[0].Items[2];
@@ -1830,7 +1736,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.C", c.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.C", c.Name);
                 Assert.Equal("protected abstract event EventHandler<T> C", c.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "abstract" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var d = output.Items[0].Items[0].Items[3];
@@ -1849,7 +1754,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar<T>.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar`1.A", a.Name);
                 Assert.Equal("public event EventHandler A", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public" }, a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var c = output.Items[0].Items[1].Items[1];
@@ -1860,7 +1764,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar`1.C", c.Name);
                 Assert.Equal("protected sealed override event EventHandler<T> C", c.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{{T}}.C", c.Overridden);
-                Assert.Equal(new[] { "protected", "sealed", "override" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var d = output.Items[0].Items[1].Items[2];
@@ -1871,7 +1774,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar`1.D", d.Name);
                 Assert.Equal("public override event EventHandler<T> D", d.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{{T}}.D", d.Overridden);
-                Assert.Equal(new[] { "public", "override" }, d.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var a = output.Items[0].Items[2].Items[0];
@@ -1881,7 +1783,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar<T>.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar`1.A", a.Name);
                 Assert.Equal("event EventHandler A", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var d = output.Items[0].Items[2].Items[1];
@@ -1891,7 +1792,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar<T>.D", d.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar`1.D", d.Name);
                 Assert.Equal("event EventHandler<T> D", d.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new string[0], d.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -1937,7 +1837,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.A", a.Name);
                 Assert.Equal(@"public int A { get; set; }", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var b = output.Items[0].Items[0].Items[1];
@@ -1947,7 +1846,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.B", b.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.B", b.Name);
                 Assert.Equal(@"public virtual int B { get; }", b.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "virtual", "get" }, b.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var c = output.Items[0].Items[0].Items[2];
@@ -1957,7 +1855,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.C", c.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.C", c.Name);
                 Assert.Equal(@"public abstract int C { set; }", c.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "abstract", "set" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var d = output.Items[0].Items[0].Items[3];
@@ -1967,7 +1864,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.D", d.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.D", d.Name);
                 Assert.Equal(@"protected int D { get; }", d.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "get" }, d.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var e = output.Items[0].Items[0].Items[4];
@@ -1977,7 +1873,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.E", e.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.E", e.Name);
                 Assert.Equal(@"public T E { get; protected set; }", e.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "protected set" }, e.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var f = output.Items[0].Items[0].Items[5];
@@ -2014,7 +1909,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.A", a.Name);
                 Assert.Equal(@"public virtual int A { get; set; }", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "virtual", "get", "set" }, a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var b = output.Items[0].Items[1].Items[1];
@@ -2025,7 +1919,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.B", b.Name);
                 Assert.Equal(@"public override int B { get; }", b.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.B", b.Overridden);
-                Assert.Equal(new[] { "public", "override", "get" }, b.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var c = output.Items[0].Items[1].Items[2];
@@ -2036,7 +1929,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.C", c.Name);
                 Assert.Equal(@"public sealed override int C { set; }", c.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.C", c.Overridden);
-                Assert.Equal(new[] { "public", "sealed", "override", "set" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var a = output.Items[0].Items[2].Items[0];
@@ -2046,7 +1938,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.A", a.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.A", a.Name);
                 Assert.Equal(@"int A { get; set; }", a.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", "set" }, a.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var b = output.Items[0].Items[2].Items[1];
@@ -2056,7 +1947,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.B", b.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.B", b.Name);
                 Assert.Equal(@"int B { get; }", b.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get" }, b.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var c = output.Items[0].Items[2].Items[2];
@@ -2066,7 +1956,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.C", c.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.C", c.Name);
                 Assert.Equal(@"int C { set; }", c.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "set" }, c.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -2112,7 +2001,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"public int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[1];
@@ -2122,7 +2010,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.String)", indexer.Name);
                 Assert.Equal(@"public virtual int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "virtual", "get" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[2];
@@ -2132,7 +2019,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"public abstract int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "abstract", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[3];
@@ -2142,7 +2028,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.DateTime]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.DateTime)", indexer.Name);
                 Assert.Equal(@"protected int this[DateTime x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "get" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[4];
@@ -2152,7 +2037,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(`0)", indexer.Name);
                 Assert.Equal(@"public int this[T t] { get; protected set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "protected set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[0].Items[5];
@@ -2162,7 +2046,6 @@ namespace Test1
                 Assert.Equal("Test1.Foo<T>.Item[System.Int32, T]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo`1.Item(System.Int32,`0)", indexer.Name);
                 Assert.Equal(@"protected int this[int x, T t] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "protected", "get", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             // Bar
             {
@@ -2173,7 +2056,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Bar.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"public virtual int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "virtual", "get", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Int32)", indexer.Implements[0]);
             }
             {
@@ -2185,7 +2067,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Item(System.String)", indexer.Name);
                 Assert.Equal(@"public override int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.String)", indexer.Overridden);
-                Assert.Equal(new[] { "public", "override", "get" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.String)", indexer.Implements[0]);
             }
             {
@@ -2197,7 +2078,6 @@ namespace Test1
                 Assert.Equal("Test1.Bar.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"public sealed override int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.Foo{System.String}.Item(System.Object)", indexer.Overridden);
-                Assert.Equal(new[] { "public", "sealed", "override", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Object)", indexer.Implements[0]);
             }
             // IFooBar
@@ -2209,7 +2089,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.Item[System.Int32]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Int32)", indexer.Name);
                 Assert.Equal(@"int this[int x] { get; set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get", "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[2].Items[1];
@@ -2219,7 +2098,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.Item[System.String]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.String)", indexer.Name);
                 Assert.Equal(@"int this[string x] { get; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "get" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var indexer = output.Items[0].Items[2].Items[2];
@@ -2229,7 +2107,6 @@ namespace Test1
                 Assert.Equal("Test1.IFooBar.Item[System.Object]", indexer.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.IFooBar.Item(System.Object)", indexer.Name);
                 Assert.Equal(@"int this[object x] { set; }", indexer.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "set" }, indexer.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -2529,8 +2406,6 @@ namespace Test1
 
                 Assert.Equal(@"public static class Foo", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Equal(@"Public Module Foo", type.Syntax.Content[SyntaxLanguage.VB]);
-                Assert.Equal(new[] { "public", "static", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "Public", "Module" }, type.Modifiers[SyntaxLanguage.VB]);
             }
         }
 
@@ -3655,7 +3530,6 @@ namespace Test1
                 Assert.Equal("Test1.S.M()", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.M", method.Name);
                 Assert.Equal("public readonly void M()", method.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "readonly" }, method.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[1];
@@ -3665,7 +3539,6 @@ namespace Test1
                 Assert.Equal("Test1.S.P1", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P1", property.Name);
                 Assert.Equal(@"public readonly int P1 { get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "readonly", "get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[2];
@@ -3675,7 +3548,6 @@ namespace Test1
                 Assert.Equal("Test1.S.P2", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P2", property.Name);
                 Assert.Equal(@"public readonly int P2 { get; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "readonly", "get" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[3];
@@ -3685,7 +3557,6 @@ namespace Test1
                 Assert.Equal("Test1.S.P3", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P3", property.Name);
                 Assert.Equal(@"public readonly int P3 { set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "readonly", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[4];
@@ -3695,7 +3566,6 @@ namespace Test1
                 Assert.Equal("Test1.S.P4", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P4", property.Name);
                 Assert.Equal(@"public int P4 { readonly get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "readonly get", "set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
             {
                 var property = output.Items[0].Items[0].Items[5];
@@ -3705,7 +3575,6 @@ namespace Test1
                 Assert.Equal("Test1.S.P5", property.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
                 Assert.Equal("Test1.S.P5", property.Name);
                 Assert.Equal(@"public int P5 { get; readonly set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
-                Assert.Equal(new[] { "public", "get", "readonly set" }, property.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -3732,7 +3601,6 @@ namespace Test1
                 Assert.Equal("Test1.S", type.Name);
                 Assert.Equal("public readonly struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
-                Assert.Equal(new[] { "public", "readonly", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
 
@@ -3759,7 +3627,6 @@ namespace Test1
                 Assert.Equal("Test1.S", type.Name);
                 Assert.Equal("public ref struct S", type.Syntax.Content[SyntaxLanguage.CSharp]);
                 Assert.Null(type.Implements);
-                Assert.Equal(new[] { "public", "ref", "struct" }, type.Modifiers[SyntaxLanguage.CSharp]);
             }
         }
     }

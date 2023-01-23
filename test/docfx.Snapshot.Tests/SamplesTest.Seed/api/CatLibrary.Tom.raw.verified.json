@@ -393,12 +393,6 @@
         }
       ],
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "method",
       "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"2\">This is a Tom Method with complex type as return</p>\n",
       "platform": null

@@ -167,12 +167,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "constructor",
       "summary": null,
       "platform": null
@@ -434,14 +428,6 @@
           ]
         }
       ],
-      "modifiers.csharp": [
-        "public",
-        "static"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Shared"
-      ],
       "type": "operator",
       "summary": null,
       "platform": null
@@ -566,12 +552,6 @@
       ],
       "namespace": "CSharp11",
       "level": 0,
-      "modifiers.csharp": [
-        "public"
-      ],
-      "modifiers.vb": [
-        "Public"
-      ],
       "type": "field",
       "summary": null,
       "platform": null
@@ -782,14 +762,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "override"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "Overrides"
-      ],
       "type": "method",
       "summary": null,
       "platform": null

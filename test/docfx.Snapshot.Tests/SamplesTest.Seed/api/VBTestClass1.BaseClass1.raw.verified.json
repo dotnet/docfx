@@ -260,14 +260,6 @@
         ]
       },
       "level": 0,
-      "modifiers.csharp": [
-        "public",
-        "abstract"
-      ],
-      "modifiers.vb": [
-        "Public",
-        "MustOverride"
-      ],
       "type": "method",
       "summary": null,
       "platform": null

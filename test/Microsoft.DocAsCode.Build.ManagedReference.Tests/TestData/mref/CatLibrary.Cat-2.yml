@@ -90,12 +90,6 @@ items:
     ctor: System.SerializableAttribute.#ctor
     arguments: []
   nameWithType.vb: Cat(Of T, K)
-  modifiers.csharp:
-  - public
-  - class
-  modifiers.vb:
-  - Public
-  - Class
   fullName.vb: CatLibrary.Cat(Of T, K)
   name.vb: Cat(Of T, K)
 - uid: CatLibrary.Cat`2.#ctor
@@ -128,10 +122,6 @@ items:
     content.vb: Public Sub New
   overload: CatLibrary.Cat`2.#ctor*
   nameWithType.vb: Cat(Of T, K).Cat()
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).Cat()
 - uid: CatLibrary.Cat`2.#ctor(`0)
   commentId: M:CatLibrary.Cat`2.#ctor(`0)
@@ -171,10 +161,6 @@ items:
       description: This parameter type defined by class.
   overload: CatLibrary.Cat`2.#ctor*
   nameWithType.vb: Cat(Of T, K).Cat(T)
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).Cat(T)
 - uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
   commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
@@ -219,10 +205,6 @@ items:
       description: It's an in parameter.
   overload: CatLibrary.Cat`2.#ctor*
   nameWithType.vb: Cat(Of T, K).Cat(String, ByRef Int32, String, Boolean)
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).Cat(System.String, ByRef System.Int32, System.String, System.Boolean)
   name.vb: Cat(String, ByRef Int32, String, Boolean)
 - uid: CatLibrary.Cat`2.CalculateFood(System.DateTime)
@@ -262,10 +244,6 @@ items:
       description: It's a relationship map of different kind food.
   overload: CatLibrary.Cat`2.CalculateFood*
   nameWithType.vb: Cat(Of T, K).CalculateFood(DateTime)
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(System.DateTime)
 - uid: CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
   commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
@@ -323,10 +301,6 @@ items:
     - type: System.String
       value: Debug
   nameWithType.vb: Cat(Of T, K).Jump(T, K, ByRef Boolean)
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, ByRef System.Boolean)
   name.vb: Jump(T, K, ByRef Boolean)
 - uid: CatLibrary.Cat`2.Equals(System.Object)
@@ -367,12 +341,6 @@ items:
   overridden: System.Object.Equals(System.Object)
   overload: CatLibrary.Cat`2.Equals*
   nameWithType.vb: Cat(Of T, K).Equals(Object)
-  modifiers.csharp:
-  - public
-  - override
-  modifiers.vb:
-  - Public
-  - Overrides
   fullName.vb: CatLibrary.Cat(Of T, K).Equals(System.Object)
 - uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
   commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
@@ -414,10 +382,6 @@ items:
       description: Return cat tail's length.
   overload: CatLibrary.Cat`2.GetTailLength*
   nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, Object())
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, System.Object())
   name.vb: GetTailLength(Int32*, Object())
 - uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
@@ -460,12 +424,6 @@ items:
       description: Result with <em>int</em> type.
   overload: CatLibrary.Cat`2.op_Addition*
   nameWithType.vb: Cat(Of T, K).Addition(Cat(Of T, K), Int32)
-  modifiers.csharp:
-  - public
-  - static
-  modifiers.vb:
-  - Public
-  - Shared
   fullName.vb: CatLibrary.Cat(Of T, K).Addition(CatLibrary.Cat(Of T, K), System.Int32)
   name.vb: Addition(Cat(Of T, K), Int32)
 - uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
@@ -505,12 +463,6 @@ items:
       type: System.Int32
   overload: CatLibrary.Cat`2.op_Subtraction*
   nameWithType.vb: Cat(Of T, K).Subtraction(Cat(Of T, K), Int32)
-  modifiers.csharp:
-  - public
-  - static
-  modifiers.vb:
-  - Public
-  - Shared
   fullName.vb: CatLibrary.Cat(Of T, K).Subtraction(CatLibrary.Cat(Of T, K), System.Int32)
   name.vb: Subtraction(Cat(Of T, K), Int32)
 - uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
@@ -550,12 +502,6 @@ items:
       description: Advanced class type of cat.
   overload: CatLibrary.Cat`2.op_Explicit*
   nameWithType.vb: Cat(Of T, K).Narrowing(Cat(Of T, K) to Tom)
-  modifiers.csharp:
-  - public
-  - static
-  modifiers.vb:
-  - Public
-  - Shared
   fullName.vb: CatLibrary.Cat(Of T, K).Narrowing(CatLibrary.Cat(Of T, K) to CatLibrary.Tom)
   name.vb: Narrowing(Cat(Of T, K) to Tom)
 - uid: CatLibrary.Cat`2.Item(System.String)
@@ -595,14 +541,6 @@ items:
       description: Cat's number.
   overload: CatLibrary.Cat`2.Item*
   nameWithType.vb: Cat(Of T, K).Item(String)
-  modifiers.csharp:
-  - public
-  - protected get
-  - set
-  modifiers.vb:
-  - Public
-  - Protected Get
-  - Set
   fullName.vb: CatLibrary.Cat(Of T, K).Item(System.String)
   name.vb: Item(String)
 - uid: CatLibrary.Cat`2.Age
@@ -638,12 +576,6 @@ items:
       type: System.Int32
   overload: CatLibrary.Cat`2.Age*
   nameWithType.vb: Cat(Of T, K).Age
-  modifiers.csharp:
-  - protected
-  - get
-  - set
-  modifiers.vb:
-  - Protected
   fullName.vb: CatLibrary.Cat(Of T, K).Age
 - uid: CatLibrary.Cat`2.ownEat
   commentId: E:CatLibrary.Cat`2.ownEat
@@ -676,10 +608,6 @@ items:
     return:
       type: System.EventHandler
   nameWithType.vb: Cat(Of T, K).ownEat
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).ownEat
 - uid: CatLibrary.Cat`2.isHealthy
   commentId: F:CatLibrary.Cat`2.isHealthy
@@ -729,10 +657,6 @@ items:
     ctor: System.NonSerializedAttribute.#ctor
     arguments: []
   nameWithType.vb: Cat(Of T, K).isHealthy
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
   fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
   commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat
@@ -885,12 +809,6 @@ items:
   implements:
   - CatLibrary.IAnimal.Name
   nameWithType.vb: Cat(Of T, K).Name
-  modifiers.csharp:
-  - public
-  - get
-  modifiers.vb:
-  - Public
-  - ReadOnly
   fullName.vb: CatLibrary.Cat(Of T, K).Name
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
   commentId: P:CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
@@ -932,10 +850,6 @@ items:
   implements:
   - CatLibrary.IAnimal.Item(System.Int32)
   nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.Item(Int32)
-  modifiers.csharp:
-  - get
-  modifiers.vb:
-  - ReadOnly
   fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.Item(System.Int32)
   name.vb: CatLibrary.IAnimal.Item(Int32)
 - uid: CatLibrary.Cat`2.CatLibrary#ICat#eat
