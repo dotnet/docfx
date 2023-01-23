@@ -136,10 +136,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("extensionMethods")]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
-        [JsonIgnore]
-        public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
-
         [YamlMember(Alias = "conceptual")]
         [JsonProperty("conceptual")]
         public string Conceptual { get; set; }
@@ -162,7 +158,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         public CompositeDictionary MetadataJson =>
             CompositeDictionary
                 .CreateBuilder()
-                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
                 .Add(string.Empty, Metadata)
                 .Create();
 
@@ -242,7 +237,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Implements = vm.Implements?.Select(ApiNames.FromUid).ToList(),
                 InheritedMembers = vm.InheritedMembers,
                 ExtensionMethods = vm.ExtensionMethods,
-                Modifiers = vm.Modifiers,
                 Conceptual = vm.Conceptual,
                 Metadata = vm.Metadata,
                 Attributes = vm.Attributes,

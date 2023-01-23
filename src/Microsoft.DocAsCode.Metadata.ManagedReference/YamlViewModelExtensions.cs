@@ -311,17 +311,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.FullNameForVB = fullnameForVB;
             }
 
-            var modifierCSharp = model.Modifiers.GetLanguageProperty(SyntaxLanguage.CSharp);
-            if (modifierCSharp?.Count > 0)
-            {
-                result.Modifiers["csharp"] = modifierCSharp;
-            }
-            var modifierForVB = model.Modifiers.GetLanguageProperty(SyntaxLanguage.VB);
-            if (modifierForVB?.Count > 0)
-            {
-                result.Modifiers["vb"] = modifierForVB;
-            }
-
             return result;
         }
 

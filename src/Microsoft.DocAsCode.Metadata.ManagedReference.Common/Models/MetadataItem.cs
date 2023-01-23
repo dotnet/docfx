@@ -143,10 +143,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [MergeOption(MergeOption.Ignore)]
         public List<AttributeInfo> Attributes { get; set; }
 
-        [YamlMember(Alias = "modifiers")]
-        [JsonProperty("modifiers")]
-        public SortedList<SyntaxLanguage, List<string>> Modifiers { get; set; } = new SortedList<SyntaxLanguage, List<string>>();
-
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
         public List<MetadataItem> Items { get; set; }
