@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Build.Common
             foreach (var uid in host.GetAllUids())
             {
                 var ms = host.LookupByUid(uid);
-                var od = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
+                var od = ms.Where(m => m.Type == DocumentType.Overwrite).OrderBy(m => m.File).ToList();
                 var articles = ms.Except(od).ToList();
                 if (articles.Count == 0 || od.Count == 0)
                 {
