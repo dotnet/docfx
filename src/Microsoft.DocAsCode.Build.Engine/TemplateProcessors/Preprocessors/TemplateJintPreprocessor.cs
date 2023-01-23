@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return s =>
                 {
-                    var model = JintProcessorHelper.ConvertObjectToJsValue(s);
+                    var model = JintProcessorHelper.ConvertObjectToJsValue(engine, s);
                     return engine.Invoke(func, model).ToObject();
                 };
             }

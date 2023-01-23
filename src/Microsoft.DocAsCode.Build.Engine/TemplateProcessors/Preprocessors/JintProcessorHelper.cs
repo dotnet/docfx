@@ -10,31 +10,29 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public static class JintProcessorHelper
     {
-        private static readonly Engine DefaultEngine = new Engine();
-
-        public static JsValue ConvertObjectToJsValue(object raw)
+        public static JsValue ConvertObjectToJsValue(Engine engine, object raw)
         {
             if (raw is IDictionary<string, object> idict)
             {
-                var jsObject = new JsObject(DefaultEngine);
+                var jsObject = new JsObject(engine);
                 foreach (var pair in idict)
                 {
-                    jsObject.FastSetDataProperty(pair.Key, ConvertObjectToJsValue(pair.Value));
+                    jsObject.FastSetDataProperty(pair.Key, ConvertObjectToJsValue(engine, pair.Value));
                 }
                 return jsObject;
             }
             else if (raw is IList<object> list)
             {
-                var jsArray = new JsArray(DefaultEngine, (uint) list.Count);
+                var jsArray = new JsArray(engine, (uint) list.Count);
                 foreach (var item in list)
                 {
-                    jsArray.Push(ConvertObjectToJsValue(item));
+                    jsArray.Push(ConvertObjectToJsValue(engine, item));
                 }
                 return jsArray;
             }
             else
             {
-                return JsValue.FromObject(DefaultEngine, raw);
+                return JsValue.FromObject(engine, raw);
             }
         }
     }

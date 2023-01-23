@@ -16,7 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             var testData = ConvertToObjectHelper.ConvertStrongTypeToObject(new TestData());
             {
-                var jsValue = JintProcessorHelper.ConvertObjectToJsValue(testData);
+                var engine = new Jint.Engine();
+                var jsValue = JintProcessorHelper.ConvertObjectToJsValue(engine, testData);
                 Assert.True(jsValue.IsObject());
                 dynamic value = jsValue.ToObject();
                 Assert.Equal(2, value.ValueA);
@@ -39,7 +40,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [InlineData('a', "a")]
         public void TestJObjectConvertWithPrimaryType(object input, object expected)
         {
-            var jsValue = JintProcessorHelper.ConvertObjectToJsValue(input);
+            var engine = new Jint.Engine();
+            var jsValue = JintProcessorHelper.ConvertObjectToJsValue(engine, input);
             Assert.Equal(expected, jsValue.ToObject());
         }
 
