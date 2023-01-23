@@ -40,12 +40,6 @@ items:
   extensionMethods:
   - CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)
   - CatLibrary.ICat.CatLibrary.ICatExtension.Play(System.String)
-  modifiers.csharp:
-  - public
-  - interface
-  modifiers.vb:
-  - Public
-  - Interface
 - uid: CatLibrary.ICat.eat
   commentId: E:CatLibrary.ICat.eat
   id: eat

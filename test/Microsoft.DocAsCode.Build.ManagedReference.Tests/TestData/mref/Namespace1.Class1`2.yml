@@ -20,12 +20,6 @@ items:
   inheritance:
   - System.Object
   nameWithType.vb: Cat(Of T, K)
-  modifiers.csharp:
-  - public
-  - class
-  modifiers.vb:
-  - Public
-  - Class
   fullName.vb: CatLibrary.Cat(Of T, K)
   name.vb: Cat(Of T, K)
 references:
