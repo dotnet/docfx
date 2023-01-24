@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "<ExtensionAttribute>\nPublic Shared Sub Play(icat As ICat, toy As String)"
+            "value": "Public Shared Sub Play(icat As ICat, toy As String)"
           }
         ],
         "parameters": [
@@ -322,7 +322,7 @@
           },
           {
             "lang": "vb",
-            "value": "<ExtensionAttribute>\nPublic Shared Sub Sleep(icat As ICat, hours As Long)"
+            "value": "Public Shared Sub Sleep(icat As ICat, hours As Long)"
           }
         ],
         "parameters": [

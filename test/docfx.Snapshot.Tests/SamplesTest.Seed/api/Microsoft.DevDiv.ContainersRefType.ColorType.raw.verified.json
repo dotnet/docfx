@@ -527,11 +527,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public enum ColorType"
+        "value": "public enum ContainersRefType.ColorType"
       },
       {
         "lang": "vb",
-        "value": "Public Enum ColorType"
+        "value": "Public Enum ContainersRefType.ColorType"
       }
     ]
   },

@@ -99,7 +99,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public decimal PressureInMillibars { get; set; }"
+            "value": "public decimal PressureInMillibars { get; init; }"
           },
           {
             "lang": "vb",
@@ -267,7 +267,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public DateTime RecordedAt { get; set; }"
+            "value": "public DateTime RecordedAt { get; init; }"
           },
           {
             "lang": "vb",
@@ -435,7 +435,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public decimal TemperatureInCelsius { get; set; }"
+            "value": "public decimal TemperatureInCelsius { get; init; }"
           },
           {
             "lang": "vb",

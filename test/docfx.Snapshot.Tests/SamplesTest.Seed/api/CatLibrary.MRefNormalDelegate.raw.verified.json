@@ -151,11 +151,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public delegate void MRefNormalDelegate(List<string> pics, out string name);"
+        "value": "public delegate void MRefNormalDelegate(List<string> pics, out string name)"
       },
       {
         "lang": "vb",
-        "value": "Public Delegate Sub MRefNormalDelegate(pics As List(Of String), ByRef name As String)"
+        "value": "Public Delegate Sub MRefNormalDelegate(pics As List(Of String), name As String)"
       }
     ],
     "parameters": [

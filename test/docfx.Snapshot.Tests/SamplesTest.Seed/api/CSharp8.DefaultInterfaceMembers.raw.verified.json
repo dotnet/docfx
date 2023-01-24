@@ -99,11 +99,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static void DoSomething()"
+            "value": "public static void DoSomething()"
           },
           {
             "lang": "vb",
-            "value": "Shared Sub DoSomething"
+            "value": "Public Shared Sub DoSomething()"
           }
         ]
       },
@@ -221,11 +221,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static void DoSomethingElse()"
+            "value": "public static void DoSomethingElse()"
           },
           {
             "lang": "vb",
-            "value": "Shared Sub DoSomethingElse"
+            "value": "Public Shared Sub DoSomethingElse()"
           }
         ]
       },
@@ -347,7 +347,7 @@
           },
           {
             "lang": "vb",
-            "value": "Const GravitationalConstant As Double = 6.673E-11"
+            "value": "Public Const GravitationalConstant As Double = 6.673E-11"
           }
         ],
         "return": {
@@ -467,11 +467,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static DefaultInterfaceMembers operator +(DefaultInterfaceMembers a)"
+            "value": "public static DefaultInterfaceMembers operator +(DefaultInterfaceMembers a)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator +(a As DefaultInterfaceMembers) As DefaultInterfaceMembers"
+            "value": "Public Shared Operator +(a As DefaultInterfaceMembers) As DefaultInterfaceMembers"
           }
         ],
         "parameters": [
@@ -686,7 +686,7 @@
           },
           {
             "lang": "vb",
-            "value": "Const X As Integer = 0"
+            "value": "Public Const X As Integer = 0"
           }
         ],
         "return": {

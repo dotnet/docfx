@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub Foo"
+            "value": "Public Sub Foo()"
           }
         ]
       },

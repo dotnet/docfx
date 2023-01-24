@@ -99,11 +99,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator ++(T other)"
+            "value": "public static abstract T operator ++(T other)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_Increment(other As T) As T"
           }
         ],
         "parameters": [
@@ -367,11 +367,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public interface IGetNext<T>\n    where T : StaticAbstractMembersInInterfaces.IGetNext<T>"
+        "value": "public interface StaticAbstractMembersInInterfaces.IGetNext<T> where T : StaticAbstractMembersInInterfaces.IGetNext<T>"
       },
       {
         "lang": "vb",
-        "value": "Public Interface IGetNext(Of T As StaticAbstractMembersInInterfaces.IGetNext(Of T))"
+        "value": "Public Interface StaticAbstractMembersInInterfaces.IGetNext(Of T As StaticAbstractMembersInInterfaces.IGetNext(Of T))"
       }
     ],
     "typeParameters": [

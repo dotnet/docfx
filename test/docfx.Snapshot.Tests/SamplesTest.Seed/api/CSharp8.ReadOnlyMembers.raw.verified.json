@@ -271,7 +271,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Function Sum As Double"
+            "value": "Public Function Sum() As Double"
           }
         ],
         "return": {
@@ -438,7 +438,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Overrides Function ToString As String"
+            "value": "Public Overrides Function ToString() As String"
           }
         ],
         "return": {

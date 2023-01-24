@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub Dispose"
+            "value": "Public Sub Dispose()"
           }
         ]
       },
@@ -225,7 +225,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub DoSomething"
+            "value": "Public Shared Sub DoSomething()"
           }
         ]
       },

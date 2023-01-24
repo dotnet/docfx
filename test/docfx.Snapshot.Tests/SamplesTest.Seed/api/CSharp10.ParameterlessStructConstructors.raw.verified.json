@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub New"
+            "value": "Public Sub New()"
           }
         ]
       },
@@ -221,7 +221,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string Description { readonly get; set; }"
+            "value": "public string Description { readonly get; init; }"
           },
           {
             "lang": "vb",

@@ -99,11 +99,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator +(T lhs, T rhs)"
+            "value": "public static abstract T operator +(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator +(lhs As T, rhs As T) As T"
+            "value": "Public Shared MustInherit Operator +(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -363,11 +363,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked +(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedAddition(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -627,11 +627,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked --(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedDecrement(x As T) As T"
           }
         ],
         "parameters": [
@@ -844,11 +844,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked /(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedDivision(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -1108,11 +1108,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract explicit operator checked int(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedExplicit(x As T) As Integer"
           }
         ],
         "parameters": [
@@ -1324,11 +1324,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked ++(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedIncrement(x As T) As T"
           }
         ],
         "parameters": [
@@ -1541,11 +1541,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked *(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedMultiply(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -1805,11 +1805,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked -(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedSubtraction(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -2069,11 +2069,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "Not supported in c#"
+            "value": "public static abstract T operator checked -(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_CheckedUnaryNegation(x As T) As T"
           }
         ],
         "parameters": [
@@ -2286,11 +2286,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator --(T x)"
+            "value": "public static abstract T operator --(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_Decrement(x As T) As T"
           }
         ],
         "parameters": [
@@ -2503,11 +2503,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator /(T lhs, T rhs)"
+            "value": "public static abstract T operator /(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator /(lhs As T, rhs As T) As T"
+            "value": "Public Shared MustInherit Operator /(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -2767,11 +2767,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static explicit operator int (T x)"
+            "value": "public static abstract explicit operator int(T x)"
           },
           {
             "lang": "vb",
-            "value": "Shared Narrowing Operator CType(x As T) As Integer"
+            "value": "Public Shared MustInherit Narrowing Operator CType(x As T) As Integer"
           }
         ],
         "parameters": [
@@ -2983,11 +2983,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator ++(T x)"
+            "value": "public static abstract T operator ++(T x)"
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared MustInherit Function op_Increment(x As T) As T"
           }
         ],
         "parameters": [
@@ -3200,11 +3200,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator *(T lhs, T rhs)"
+            "value": "public static abstract T operator *(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator *(lhs As T, rhs As T) As T"
+            "value": "Public Shared MustInherit Operator *(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -3464,11 +3464,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator -(T lhs, T rhs)"
+            "value": "public static abstract T operator -(T lhs, T rhs)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator -(lhs As T, rhs As T) As T"
+            "value": "Public Shared MustInherit Operator -(lhs As T, rhs As T) As T"
           }
         ],
         "parameters": [
@@ -3728,11 +3728,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "static T operator -(T x)"
+            "value": "public static abstract T operator -(T x)"
           },
           {
             "lang": "vb",
-            "value": "Shared Operator -(x As T) As T"
+            "value": "Public Shared MustInherit Operator -(x As T) As T"
           }
         ],
         "parameters": [
@@ -3996,7 +3996,7 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public interface CheckedUserDefinedOperators<T>\n    where T : CheckedUserDefinedOperators<T>"
+        "value": "public interface CheckedUserDefinedOperators<T> where T : CheckedUserDefinedOperators<T>"
       },
       {
         "lang": "vb",

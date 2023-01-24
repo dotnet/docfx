@@ -361,7 +361,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public double X { readonly get; set; }"
+            "value": "public double X { get; init; }"
           },
           {
             "lang": "vb",
@@ -529,7 +529,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public double Y { readonly get; set; }"
+            "value": "public double Y { get; init; }"
           },
           {
             "lang": "vb",
@@ -697,7 +697,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public double Z { readonly get; set; }"
+            "value": "public double Z { get; init; }"
           },
           {
             "lang": "vb",
@@ -916,11 +916,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public readonly struct ReadOnlyRecordStruct : IEquatable<ReadOnlyRecordStruct>"
+        "value": "public readonly record struct ReadOnlyRecordStruct : IEquatable<ReadOnlyRecordStruct>"
       },
       {
         "lang": "vb",
-        "value": "Public Structure ReadOnlyRecordStruct\n    Implements IEquatable(Of ReadOnlyRecordStruct)"
+        "value": "Public Structure ReadOnlyRecordStruct Implements IEquatable(Of ReadOnlyRecordStruct)"
       }
     ]
   },

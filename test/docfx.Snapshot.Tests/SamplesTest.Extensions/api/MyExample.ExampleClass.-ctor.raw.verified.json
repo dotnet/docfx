@@ -57,7 +57,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub New"
+            "value": "Public Sub New()"
           }
         ]
       },

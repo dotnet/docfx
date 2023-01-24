@@ -151,11 +151,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public delegate void ContainersRefTypeDelegate();"
+        "value": "public delegate void ContainersRefType.ContainersRefTypeDelegate()"
       },
       {
         "lang": "vb",
-        "value": "Public Delegate Sub ContainersRefTypeDelegate"
+        "value": "Public Delegate Sub ContainersRefType.ContainersRefTypeDelegate()"
       }
     ]
   },

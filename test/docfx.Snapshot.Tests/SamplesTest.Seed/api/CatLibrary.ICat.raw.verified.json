@@ -281,7 +281,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Interface ICat\n    Inherits IAnimal"
+        "value": "Public Interface ICat Inherits IAnimal"
       }
     ]
   },

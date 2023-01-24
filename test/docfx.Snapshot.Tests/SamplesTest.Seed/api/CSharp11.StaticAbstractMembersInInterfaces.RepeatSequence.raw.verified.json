@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub New"
+            "value": "Public Sub New()"
           }
         ]
       },
@@ -225,7 +225,7 @@
           },
           {
             "lang": "vb",
-            "value": "VB cannot support this operator."
+            "value": "Public Shared Function op_Increment(other As StaticAbstractMembersInInterfaces.RepeatSequence) As StaticAbstractMembersInInterfaces.RepeatSequence"
           }
         ],
         "parameters": [
@@ -610,7 +610,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Overrides Function ToString As String"
+            "value": "Public Overrides Function ToString() As String"
           }
         ],
         "return": {
@@ -867,11 +867,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public struct RepeatSequence : StaticAbstractMembersInInterfaces.IGetNext<StaticAbstractMembersInInterfaces.RepeatSequence>"
+        "value": "public struct StaticAbstractMembersInInterfaces.RepeatSequence : StaticAbstractMembersInInterfaces.IGetNext<StaticAbstractMembersInInterfaces.RepeatSequence>"
       },
       {
         "lang": "vb",
-        "value": "Public Structure RepeatSequence\n    Implements StaticAbstractMembersInInterfaces.IGetNext(Of StaticAbstractMembersInInterfaces.RepeatSequence)"
+        "value": "Public Structure StaticAbstractMembersInInterfaces.RepeatSequence Implements StaticAbstractMembersInInterfaces.IGetNext(Of StaticAbstractMembersInInterfaces.RepeatSequence)"
       }
     ]
   },

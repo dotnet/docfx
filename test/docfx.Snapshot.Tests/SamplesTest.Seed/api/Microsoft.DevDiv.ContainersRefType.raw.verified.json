@@ -568,7 +568,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public ReadOnly Property GetColorCount As Long"
+            "value": "Public Property GetColorCount As Long"
           }
         ],
         "parameters": [],

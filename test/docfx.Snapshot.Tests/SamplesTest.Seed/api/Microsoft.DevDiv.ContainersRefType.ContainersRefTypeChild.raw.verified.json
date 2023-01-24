@@ -149,11 +149,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class ContainersRefTypeChild"
+        "value": "public class ContainersRefType.ContainersRefTypeChild"
       },
       {
         "lang": "vb",
-        "value": "Public Class ContainersRefTypeChild"
+        "value": "Public Class ContainersRefType.ContainersRefTypeChild"
       }
     ]
   },

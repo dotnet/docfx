@@ -361,7 +361,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public int Grade { get; set; }"
+            "value": "public int Grade { get; init; }"
           },
           {
             "lang": "vb",
@@ -580,11 +580,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Teacher : RecordTypes.Person, IEquatable<RecordTypes.Person>, IEquatable<RecordTypes.Teacher>"
+        "value": "public record RecordTypes.Teacher : RecordTypes.Person, IEquatable<RecordTypes.Person>, IEquatable<RecordTypes.Teacher>"
       },
       {
         "lang": "vb",
-        "value": "Public Class Teacher\n    Inherits RecordTypes.Person\n    Implements IEquatable(Of RecordTypes.Person), IEquatable(Of RecordTypes.Teacher)"
+        "value": "Public Class RecordTypes.Teacher Inherits RecordTypes.Person Implements IEquatable(Of RecordTypes.Person), IEquatable(Of RecordTypes.Teacher)"
       }
     ]
   },
