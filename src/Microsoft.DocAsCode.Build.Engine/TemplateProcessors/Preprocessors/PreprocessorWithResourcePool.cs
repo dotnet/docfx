@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
-    using Jint.Parser;
+    using Esprima;
     using Microsoft.DocAsCode.Common;
 
     internal class PreprocessorWithResourcePool : ITemplatePreprocessor

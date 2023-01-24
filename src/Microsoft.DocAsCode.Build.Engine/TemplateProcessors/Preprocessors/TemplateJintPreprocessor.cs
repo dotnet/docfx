@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Jint.Native.Function;
+
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
@@ -9,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Jint;
     using Jint.Native;
     using Jint.Native.Object;
-    using Jint.Parser;
     using Microsoft.DocAsCode.Common;
 
     public class TemplateJintPreprocessor : ITemplatePreprocessor
@@ -150,7 +151,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         cachedEngine = CreateEngine(engine, RequireFuncVariableName);
                         engineCache[s] = cachedEngine;
-                        cachedEngine.Execute(script, new ParserOptions { Source = s });
+                        cachedEngine.Execute(script, s);
                     }
 
                     return cachedEngine.GetValue(ExportsVariableName);
@@ -164,8 +165,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (value.IsObject())
             {
                 var exports = value.AsObject();
-                _getOptionsFunc = GetFunc(GetOptionsFuncVariableName, exports);
-                _transformFunc = GetFunc(TransformFuncVariableName, exports);
+                _getOptionsFunc = GetFunc(engine, GetOptionsFuncVariableName, exports);
+                _transformFunc = GetFunc(engine, TransformFuncVariableName, exports);
             }
             else
             {
@@ -193,26 +194,26 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var engine = new Engine();
 
-            engine.SetValue(ExportsVariableName, engine.Object.Construct(Jint.Runtime.Arguments.Empty));
+            engine.SetValue(ExportsVariableName, new JsObject(engine));
             engine.SetValue(ConsoleVariableName, ConsoleObject);
             engine.SetValue(UtilityVariableName, _utilityObject);
 
             return engine;
         }
 
-        private static Func<object, object> GetFunc(string funcName, ObjectInstance exports)
+        private static Func<object, object> GetFunc(Engine engine, string funcName, ObjectInstance exports)
         {
             var func = exports.Get(funcName);
             if (func.IsUndefined() || func.IsNull())
             {
                 return null;
             }
-            if (func.Is<ICallable>())
+            if (func is FunctionInstance)
             {
                 return s =>
                 {
-                    var model = JintProcessorHelper.ConvertObjectToJsValue(s);
-                    return func.Invoke(model).ToObject();
+                    var model = JintProcessorHelper.ConvertObjectToJsValue(engine, s);
+                    return engine.Invoke(func, model).ToObject();
                 };
             }
             else

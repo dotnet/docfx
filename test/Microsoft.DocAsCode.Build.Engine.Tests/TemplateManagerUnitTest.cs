@@ -474,7 +474,7 @@ exports.transform = function (model){
 
             var model = new
             {
-                model = new 
+                model = new
                {
                    name = longName,
                }
@@ -564,7 +564,7 @@ exports.transform = function (model){
                 );
             var outputFilePath1 = Path.Combine(_outputFolder, "file.html");
             Assert.True(File.Exists(outputFilePath1));
-            Assert.Equal("2019-08-19T05:40:30.000Z", File.ReadAllText(outputFilePath1));
+            Assert.Equal("2019-08-19T05:40:30.463Z", File.ReadAllText(outputFilePath1));
         }
         #endregion
 
