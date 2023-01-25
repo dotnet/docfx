@@ -58,7 +58,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "DoSomething(List<String>)"
+          "value": "DoSomething(List<String?>?)"
         },
         {
           "lang": "vb",
@@ -68,7 +68,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "NullableReferenceTypes.DoSomething(List<String>)"
+          "value": "NullableReferenceTypes.DoSomething(List<String?>?)"
         },
         {
           "lang": "vb",
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String&gt;)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String&gt;)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
         }
       ],
       "syntax": {

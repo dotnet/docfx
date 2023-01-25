@@ -384,8 +384,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("M1(Int32, Int32())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("M1(Int32, ParamArray Int32())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).M1(System.Int32, ParamArray System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Public Overridable Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -442,8 +442,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[2].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("M1(Int32, Int32())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.IFooBar.M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("M1(Int32, ParamArray Int32())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.IFooBar.M1(System.Int32, ParamArray System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -589,40 +589,40 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("UnaryPlus(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.UnaryPlus(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("+(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.+(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_UnaryPlus(Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator +(x As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(method);
-                Assert.Equal("UnaryNegation(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.UnaryNegation(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("-(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.-(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_UnaryNegation(Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator -(x As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(method);
-                Assert.Equal("OnesComplement(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.OnesComplement(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Not(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Not(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_OnesComplement(Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator Not(x As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(method);
-                Assert.Equal("True(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.True(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("IsTrue(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.IsTrue(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_True(Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator IsTrue(x As Foo) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[4];
                 Assert.NotNull(method);
-                Assert.Equal("False(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.False(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("IsFalse(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.IsFalse(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_False(Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator IsFalse(x As Foo) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -630,80 +630,80 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(method);
-                Assert.Equal("Addition(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Addition(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("+(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.+(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Addition(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator +(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[6];
                 Assert.NotNull(method);
-                Assert.Equal("Subtraction(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Subtraction(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("-(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.-(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Subtraction(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator -(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[7];
                 Assert.NotNull(method);
-                Assert.Equal("Multiply(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Multiply(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("*(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.*(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Multiply(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator *(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[8];
                 Assert.NotNull(method);
-                Assert.Equal("Division(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Division(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("/(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo./(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Division(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator /(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[9];
                 Assert.NotNull(method);
-                Assert.Equal("Modulus(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Modulus(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Mod(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Mod(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Modulus(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator Mod(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[10];
                 Assert.NotNull(method);
-                Assert.Equal("BitwiseAnd(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.BitwiseAnd(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("And(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.And(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_BitwiseAnd(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator And(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[11];
                 Assert.NotNull(method);
-                Assert.Equal("BitwiseOr(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.BitwiseOr(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Or(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Or(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_BitwiseOr(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator Or(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[12];
                 Assert.NotNull(method);
-                Assert.Equal("ExclusiveOr(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.ExclusiveOr(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Xor(Foo, Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.Xor(Test1.Foo, Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_ExclusiveOr(Test1.Foo,Test1.Foo)", method.Name);
                 Assert.Equal(@"Public Shared Operator Xor(x As Foo, y As Foo) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[13];
                 Assert.NotNull(method);
-                Assert.Equal("RightShift(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.RightShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">>(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_RightShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator >>(x As Foo, y As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[14];
                 Assert.NotNull(method);
-                Assert.Equal("LeftShift(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.LeftShift(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<<(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<<(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LeftShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <<(x As Foo, y As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -711,48 +711,48 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[15];
                 Assert.NotNull(method);
-                Assert.Equal("Equality(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Equality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Equality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator =(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[16];
                 Assert.NotNull(method);
-                Assert.Equal("Inequality(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Inequality(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<>(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Inequality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <>(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[17];
                 Assert.NotNull(method);
-                Assert.Equal("GreaterThan(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.GreaterThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_GreaterThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator>(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[18];
                 Assert.NotNull(method);
-                Assert.Equal("LessThan(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.LessThan(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LessThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[19];
                 Assert.NotNull(method);
-                Assert.Equal("GreaterThanOrEqual(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.GreaterThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_GreaterThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator >=(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[20];
                 Assert.NotNull(method);
-                Assert.Equal("LessThanOrEqual(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.LessThanOrEqual(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LessThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <=(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -760,16 +760,16 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[21];
                 Assert.NotNull(method);
-                Assert.Equal("Widening(Int32 to Foo)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Widening(System.Int32 to Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("CType(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.CType(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Implicit(System.Int32)~Test1.Foo", method.Name);
                 Assert.Equal(@"Public Shared Widening Operator CType(x As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[22];
                 Assert.NotNull(method);
-                Assert.Equal("Narrowing(Foo to Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.Narrowing(Test1.Foo to System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("CType(Foo)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.CType(Test1.Foo)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Explicit(Test1.Foo)~System.Int32", method.Name);
                 Assert.Equal(@"Public Shared Narrowing Operator CType(x As Foo) As Integer", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -801,8 +801,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("Foo(T())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).Foo(T())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("New(T())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).New(T())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.#ctor(`0[])", method.Name);
                 Assert.Equal("Protected Sub New(x As T())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -810,16 +810,16 @@ End Namespace
             {
                 var method = output.Items[0].Items[1].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("Bar()", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.Bar()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("New()", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.New()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.#ctor", method.Name);
                 Assert.Equal("Protected Sub New", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[1].Items[1];
                 Assert.NotNull(method);
-                Assert.Equal("Bar(String())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.Bar(System.String())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("New(String())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.New(System.String())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.#ctor(System.String[])", method.Name);
                 Assert.Equal("Public Sub New(x As String())", method.Syntax.Content[SyntaxLanguage.VB]);
             }

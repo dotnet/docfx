@@ -62,7 +62,7 @@
         },
         {
           "lang": "vb",
-          "value": "Teacher(String, String, Int32)"
+          "value": "New(String, String, Int32)"
         }
       ],
       "nameWithType": [
@@ -72,7 +72,7 @@
         },
         {
           "lang": "vb",
-          "value": "RecordTypes.Teacher.Teacher(String, String, Int32)"
+          "value": "RecordTypes.Teacher.New(String, String, Int32)"
         }
       ],
       "fullName": [
@@ -82,7 +82,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp9.RecordTypes.Teacher.Teacher(System.String, System.String, System.Int32)"
+          "value": "CSharp9.RecordTypes.Teacher.New(System.String, System.String, System.Int32)"
         }
       ],
       "specName": [
