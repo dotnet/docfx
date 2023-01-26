@@ -2,7 +2,7 @@
 
 Template defines the appearance of the website. 
 
-Docfx ships a default website template with the same look and feel as this site. Additional templates are available at the [Template Gallary](../extensions/templates.yml).
+Docfx ships a default website template with the same look and feel as this site. Additional templates are available at the [Template Gallery](../extensions/templates.yml).
 
 ## Create a Custom Template
 
