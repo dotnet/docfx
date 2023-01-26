@@ -193,9 +193,9 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
   vm.sourceurl = common.getViewSourceHref(vm, null, gitUrlPattern);
 
   // set to null incase mustache looks up
-  vm.summary = vm.summary || null;
+  vm.summary = vm.summary || "";
   vm.remarks = vm.remarks || null;
-  vm.conceptual = vm.conceptual || null;
+  vm.conceptual = vm.conceptual || "";
   vm.syntax = vm.syntax || null;
   vm.implements = vm.implements || null;
   vm.example = vm.example || null;
