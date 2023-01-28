@@ -81,7 +81,7 @@
           },
           {
             "lang": "vb",
-            "value": "ExampleClass"
+            "value": "New"
           }
         ],
         "nameWithType": [
@@ -91,7 +91,7 @@
           },
           {
             "lang": "vb",
-            "value": "ExampleClass.ExampleClass"
+            "value": "ExampleClass.New"
           }
         ],
         "fullName": [
@@ -101,7 +101,7 @@
           },
           {
             "lang": "vb",
-            "value": "MyExample.ExampleClass.ExampleClass"
+            "value": "MyExample.ExampleClass.New"
           }
         ],
         "specName": [
@@ -132,7 +132,7 @@
     },
     {
       "lang": "vb",
-      "value": "ExampleClass"
+      "value": "New"
     }
   ],
   "nameWithType": [
@@ -142,7 +142,7 @@
     },
     {
       "lang": "vb",
-      "value": "ExampleClass.ExampleClass"
+      "value": "ExampleClass.New"
     }
   ],
   "fullName": [
@@ -152,7 +152,7 @@
     },
     {
       "lang": "vb",
-      "value": "MyExample.ExampleClass.ExampleClass"
+      "value": "MyExample.ExampleClass.New"
     }
   ],
   "type": "constructor",

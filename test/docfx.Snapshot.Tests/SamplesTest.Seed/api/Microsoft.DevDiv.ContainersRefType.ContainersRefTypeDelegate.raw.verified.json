@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
       }
     ],
     "level": 0
@@ -136,11 +136,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
       }
     ],
     "level": 0

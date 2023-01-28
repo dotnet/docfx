@@ -26,8 +26,11 @@ references:
   name: ExampleClass
   href: api/MyExample.ExampleClass.-ctor.html
   commentId: Overload:MyExample.ExampleClass.#ctor
+  name.vb: New
   fullName: MyExample.ExampleClass.ExampleClass
+  fullName.vb: MyExample.ExampleClass.New
   nameWithType: ExampleClass.ExampleClass
+  nameWithType.vb: ExampleClass.New
 - uid: MyExample.ExampleClass.MyEvent
   name: MyEvent
   href: api/MyExample.ExampleClass.MyEvent.html

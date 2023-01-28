@@ -162,41 +162,41 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Nullable<(T1 Item1, T2 Item2)<String, Object>>"
+                "value": "(String, Object)?"
               },
               {
                 "lang": "vb",
-                "value": "Nullable(Of (Item1 As T1, Item2 As T2)(Of String, Object))"
+                "value": "Nullable(Of (String, Object))"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Nullable<(T1 Item1, T2 Item2)<String, Object>>"
+                "value": "(String, Object)?"
               },
               {
                 "lang": "vb",
-                "value": "Nullable(Of (Item1 As T1, Item2 As T2)(Of String, Object))"
+                "value": "Nullable(Of (String, Object))"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Nullable<System.ValueTuple<System.String, System.Object>>"
+                "value": "(System.String, System.Object)?"
               },
               {
                 "lang": "vb",
-                "value": "System.Nullable(Of System.ValueTuple(Of System.String, System.Object))"
+                "value": "System.Nullable(Of (System.String, System.Object))"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\"/>&lt;<xref uid=\"System.ValueTuple`2\" text=\"(T1 Item1, T2 Item2)\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>&gt;&gt;"
+                "value": "(<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)?"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\"/>(Of <xref uid=\"System.ValueTuple`2\" text=\"(Item1 As T1, Item2 As T2)\"/>(Of <xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>))"
+                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\"/>(Of (<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>))"
               }
             ]
           }

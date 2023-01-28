@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 static string GetCompositeName(SpecViewModel svm)
                 {
                     // If href does not exists, return full name
-                    if (string.IsNullOrEmpty(svm.Uid)) { return HttpUtility.HtmlEncode(svm.FullName); }
+                    if (string.IsNullOrEmpty(svm.Uid)) { return HttpUtility.HtmlEncode(svm.Name); }
 
                     // If href exists, return name with href
                     return GetXref(svm.Uid, svm.Name);

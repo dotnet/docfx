@@ -226,7 +226,7 @@
           },
           {
             "lang": "vb",
-            "value": "RecordStruct"
+            "value": "New"
           }
         ],
         "nameWithType": [
@@ -236,7 +236,7 @@
           },
           {
             "lang": "vb",
-            "value": "RecordStruct.RecordStruct"
+            "value": "RecordStruct.New"
           }
         ],
         "fullName": [
@@ -246,7 +246,7 @@
           },
           {
             "lang": "vb",
-            "value": "CSharp10.RecordStruct.RecordStruct"
+            "value": "CSharp10.RecordStruct.New"
           }
         ],
         "specName": [

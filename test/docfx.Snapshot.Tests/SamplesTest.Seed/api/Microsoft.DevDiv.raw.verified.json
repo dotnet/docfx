@@ -89,11 +89,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
         }
       ],
       "level": 0,
@@ -138,11 +138,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefType.ContainersRefTypeChild\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefType.ContainersRefTypeChild\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
         }
       ],
       "level": 0,
@@ -187,11 +187,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefType.ContainersRefTypeChildInterface\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefType.ContainersRefTypeChildInterface\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
         }
       ],
       "level": 0,
@@ -236,11 +236,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefType.ContainersRefTypeDelegate\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefType.ContainersRefTypeDelegate\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
         }
       ],
       "level": 0,

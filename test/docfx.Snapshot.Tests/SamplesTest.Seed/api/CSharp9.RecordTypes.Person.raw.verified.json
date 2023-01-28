@@ -226,7 +226,7 @@
           },
           {
             "lang": "vb",
-            "value": "Person"
+            "value": "New"
           }
         ],
         "nameWithType": [
@@ -236,7 +236,7 @@
           },
           {
             "lang": "vb",
-            "value": "RecordTypes.Person.Person"
+            "value": "RecordTypes.Person.New"
           }
         ],
         "fullName": [
@@ -246,7 +246,7 @@
           },
           {
             "lang": "vb",
-            "value": "CSharp9.RecordTypes.Person.Person"
+            "value": "CSharp9.RecordTypes.Person.New"
           }
         ],
         "specName": [
@@ -817,11 +817,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>&gt;"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>)"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>)"
         }
       ]
     }

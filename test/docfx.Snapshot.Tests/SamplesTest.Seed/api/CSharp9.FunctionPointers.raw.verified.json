@@ -192,10 +192,6 @@
                 {
                   "lang": "csharp",
                   "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Void\" text=\"Void\"/>&gt;"
-                },
-                {
-                  "lang": "vb",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Void\" text=\"Void\"/>&gt;"
                 }
               ]
             }
@@ -238,10 +234,6 @@
                 {
                   "lang": "csharp",
                   "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
-                },
-                {
-                  "lang": "vb",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -253,41 +245,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<Int32, Int32>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<Int32, Int32>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged<System.Int32, System.Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged<System.Int32, System.Int32>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
-                },
-                {
-                  "lang": "vb",
-                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -299,41 +287,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CDecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CDecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CDecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CDecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CDecl]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<System.Int32, System.Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CDecl]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<System.Int32, System.Int32>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
-                },
-                {
-                  "lang": "vb",
-                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -345,41 +329,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CallConvStdcall, CallConvSuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CallConvStdcall, CallConvSuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CallConvStdcall, CallConvSuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CallConvStdcall, CallConvSuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [System.Runtime.CompilerServices.CallConvStdcall, System.Runtime.CompilerServices.CallConvSuppressGCTransition]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [System.Runtime.CompilerServices.CallConvStdcall, System.Runtime.CompilerServices.CallConvSuppressGCTransition]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
-                },
-                {
-                  "lang": "vb",
-                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged[<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"Stdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"SuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }

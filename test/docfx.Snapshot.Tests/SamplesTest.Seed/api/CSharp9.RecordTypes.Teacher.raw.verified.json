@@ -272,7 +272,7 @@
           },
           {
             "lang": "vb",
-            "value": "Teacher"
+            "value": "New"
           }
         ],
         "nameWithType": [
@@ -282,7 +282,7 @@
           },
           {
             "lang": "vb",
-            "value": "RecordTypes.Teacher.Teacher"
+            "value": "RecordTypes.Teacher.New"
           }
         ],
         "fullName": [
@@ -292,7 +292,7 @@
           },
           {
             "lang": "vb",
-            "value": "CSharp9.RecordTypes.Teacher.Teacher"
+            "value": "CSharp9.RecordTypes.Teacher.New"
           }
         ],
         "specName": [
@@ -676,11 +676,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
         }
       ],
       "level": 0,
@@ -725,11 +725,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>&gt;"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>)"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>)"
         }
       ]
     },
@@ -769,11 +769,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>&gt;"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>&lt;<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>)"
+          "value": "<xref uid=\"System.IEquatable`1\" text=\"IEquatable\"/>(Of <xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>)"
         }
       ]
     }
