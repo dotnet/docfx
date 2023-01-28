@@ -43,7 +43,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string syntaxStr = GetSyntaxContent(type, symbol, adapter);
 
-            Debug.Assert(!string.IsNullOrEmpty(syntaxStr));
             if (string.IsNullOrEmpty(syntaxStr)) return;
 
             syntax.Content[Language] = syntaxStr;

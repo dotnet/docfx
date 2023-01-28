@@ -99,11 +99,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public static (string, object)? DoSomething(List<string> name = null)"
+            "value": "public static (string?, object?)? DoSomething(List<string?>? name = null)"
           },
           {
             "lang": "vb",
-            "value": "Public Shared Function DoSomething(name As List(Of String) = Nothing) As(String, Object)(Of String , Object)"
+            "value": "Public Shared Function DoSomething(name As List(Of String) = Nothing) As (String, Object)?"
           }
         ],
         "parameters": [
@@ -316,7 +316,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string Field"
+            "value": "public string? Field"
           },
           {
             "lang": "vb",
@@ -440,11 +440,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string Property { get; set; }"
+            "value": "public string? Property { get; set; }"
           },
           {
             "lang": "vb",
-            "value": "Public Property Property As String"
+            "value": "Public Property [Property] As String"
           }
         ],
         "parameters": [],

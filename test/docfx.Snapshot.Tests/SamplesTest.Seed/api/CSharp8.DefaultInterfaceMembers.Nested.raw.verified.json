@@ -149,11 +149,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Nested"
+        "value": "public class DefaultInterfaceMembers.Nested"
       },
       {
         "lang": "vb",
-        "value": "Public Class Nested"
+        "value": "Public Class DefaultInterfaceMembers.Nested"
       }
     ]
   },

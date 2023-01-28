@@ -315,7 +315,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string FirstName { get; set; }"
+            "value": "public string FirstName { get; init; }"
           },
           {
             "lang": "vb",
@@ -483,7 +483,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string LastName { get; set; }"
+            "value": "public string LastName { get; init; }"
           },
           {
             "lang": "vb",
@@ -702,11 +702,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class RecordClass : IEquatable<RecordClass>"
+        "value": "public record RecordClass : IEquatable<RecordClass>"
       },
       {
         "lang": "vb",
-        "value": "Public Class RecordClass\n    Implements IEquatable(Of RecordClass)"
+        "value": "Public Class RecordClass Implements IEquatable(Of RecordClass)"
       }
     ]
   },

@@ -99,11 +99,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public static async Task AsynchronousStreams()"
+            "value": "public static Task AsynchronousStreams()"
           },
           {
             "lang": "vb",
-            "value": "Public Shared Function AsynchronousStreams As Task"
+            "value": "Public Shared Function AsynchronousStreams() As Task"
           }
         ],
         "return": {
@@ -266,11 +266,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public static async IAsyncEnumerable<int> GenerateSequence()"
+            "value": "public static IAsyncEnumerable<int> GenerateSequence()"
           },
           {
             "lang": "vb",
-            "value": "Public Shared Function GenerateSequence As IAsyncEnumerable(Of Integer)"
+            "value": "Public Shared Function GenerateSequence() As IAsyncEnumerable(Of Integer)"
           }
         ],
         "return": {
@@ -438,7 +438,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub IndicesAndRanges"
+            "value": "Public Shared Sub IndicesAndRanges()"
           }
         ]
       },
@@ -560,7 +560,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Function IsExpression(date As Date) As Boolean"
+            "value": "Public Shared Function IsExpression([date] As Date) As Boolean"
           }
         ],
         "parameters": [
@@ -775,7 +775,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub NullCoalescingAssignment"
+            "value": "Public Shared Sub NullCoalescingAssignment()"
           }
         ]
       },
@@ -897,7 +897,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub StackallocInNestedExpressions"
+            "value": "Public Shared Sub StackallocInNestedExpressions()"
           }
         ]
       },
@@ -1449,7 +1449,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub UsingDeclaration"
+            "value": "Public Shared Sub UsingDeclaration()"
           }
         ]
       },

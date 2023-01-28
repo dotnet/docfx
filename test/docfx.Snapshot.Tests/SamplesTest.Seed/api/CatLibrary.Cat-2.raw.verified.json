@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub New"
+            "value": "Public Sub New()"
           }
         ]
       },
@@ -399,7 +399,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub New(nickName As String, ByRef age As Integer, realName As String, isHealthy As Boolean)"
+            "value": "Public Sub New(nickName As String, age As Integer, realName As String, isHealthy As Boolean)"
           }
         ],
         "parameters": [
@@ -881,7 +881,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Function CalculateFood(date As Date) As Dictionary(Of String, List(Of Integer))"
+            "value": "Public Function CalculateFood([date] As Date) As Dictionary(Of String, List(Of Integer))"
           }
         ],
         "parameters": [
@@ -1130,7 +1130,7 @@
           },
           {
             "lang": "vb",
-            "value": "Sub CatLibrary.IAnimal.Eat Implements IAnimal.Eat"
+            "value": "void IAnimal.Eat()"
           }
         ]
       },
@@ -1298,7 +1298,7 @@
           },
           {
             "lang": "vb",
-            "value": "Sub CatLibrary.IAnimal.Eat(food As String) Implements IAnimal.Eat"
+            "value": "void IAnimal.Eat(string food)"
           }
         ],
         "parameters": [
@@ -1511,11 +1511,11 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "void IAnimal.Eat<Tool>(Tool a)\n    where Tool : class"
+            "value": "void IAnimal.Eat<Tool>(Tool a) where Tool : class"
           },
           {
             "lang": "vb",
-            "value": "Sub CatLibrary.IAnimal.Eat(Of Tool As Class)(a As Tool) Implements IAnimal.Eat"
+            "value": "void IAnimal.Eat<Tool>(Tool a) where Tool : class"
           }
         ],
         "parameters": [
@@ -1740,7 +1740,7 @@
           },
           {
             "lang": "vb",
-            "value": "ReadOnly WriteOnly Property CatLibrary.IAnimal.Item(a As Integer) As String Implements IAnimal.this[]"
+            "value": "ReadOnly Default Property CatLibrary.IAnimal.this[](a As Integer) As String"
           }
         ],
         "parameters": [
@@ -2003,7 +2003,7 @@
           },
           {
             "lang": "vb",
-            "value": "Event CatLibrary.ICat.eat As EventHandler Implements ICat.eat"
+            "value": "Event CatLibrary.ICat.eat As EventHandler"
           }
         ],
         "return": {
@@ -2434,7 +2434,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Function GetTailLength(catName As Integer *, ParamArray parameters As Object()) As Long"
+            "value": "Public Function GetTailLength(catName As Integer*, ParamArray parameters As Object()) As Long"
           }
         ],
         "parameters": [
@@ -2836,7 +2836,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Property Item(a As String) As Integer"
+            "value": "Public Default Property this[](a As String) As Integer"
           }
         ],
         "parameters": [
@@ -3054,7 +3054,7 @@
           },
           {
             "lang": "vb",
-            "value": "<Conditional(\"Debug\")>\nPublic Sub Jump(ownType As T, anotherOwnType As K, ByRef cheat As Boolean)"
+            "value": "<Conditional(\"Debug\")>\nPublic Sub Jump(ownType As T, anotherOwnType As K, cheat As Boolean)"
           }
         ],
         "parameters": [
@@ -4499,11 +4499,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "[Serializable]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new()\n    where K : struct"
+        "value": "[Serializable]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct"
       },
       {
         "lang": "vb",
-        "value": "<Serializable>\nPublic Class Cat(Of T As {Class, New}, K As Structure)\n    Implements ICat, IAnimal"
+        "value": "<Serializable>\nPublic Class Cat(Of T As {Class, New}, K As Structure) Implements ICat, IAnimal"
       }
     ],
     "typeParameters": [

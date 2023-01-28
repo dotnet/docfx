@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Sub Eat"
+            "value": "Sub Eat()"
           }
         ]
       },
@@ -394,7 +394,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "void Eat<Tool>(Tool tool)\n    where Tool : class"
+            "value": "void Eat<Tool>(Tool tool) where Tool : class"
           },
           {
             "lang": "vb",
@@ -577,7 +577,7 @@
           },
           {
             "lang": "vb",
-            "value": "ReadOnly Property Item(index As Integer) As String"
+            "value": "ReadOnly Default Property this[](index As Integer) As String"
           }
         ],
         "parameters": [

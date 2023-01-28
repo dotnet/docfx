@@ -151,7 +151,7 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public delegate int FakeDelegate<T>(long num, string name, params object[] scores);"
+        "value": "public delegate int FakeDelegate<T>(long num, string name, params object[] scores)"
       },
       {
         "lang": "vb",

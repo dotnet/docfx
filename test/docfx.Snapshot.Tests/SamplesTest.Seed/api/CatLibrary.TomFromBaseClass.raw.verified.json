@@ -328,7 +328,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class TomFromBaseClass\n    Inherits Tom"
+        "value": "Public Class TomFromBaseClass Inherits Tom"
       }
     ]
   },

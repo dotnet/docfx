@@ -273,7 +273,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub SomeOtherMethod"
+            "value": "Public Sub SomeOtherMethod()"
           }
         ]
       },

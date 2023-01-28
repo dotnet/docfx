@@ -702,11 +702,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public struct RecordStruct : IEquatable<RecordStruct>"
+        "value": "public record struct RecordStruct : IEquatable<RecordStruct>"
       },
       {
         "lang": "vb",
-        "value": "Public Structure RecordStruct\n    Implements IEquatable(Of RecordStruct)"
+        "value": "Public Structure RecordStruct Implements IEquatable(Of RecordStruct)"
       }
     ]
   },

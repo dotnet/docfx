@@ -99,7 +99,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string FirstName { get; set; }"
+            "value": "public required string FirstName { get; init; }"
           },
           {
             "lang": "vb",
@@ -267,7 +267,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string LastName { get; set; }"
+            "value": "public required string LastName { get; init; }"
           },
           {
             "lang": "vb",
@@ -435,7 +435,7 @@
         "content": [
           {
             "lang": "csharp",
-            "value": "public string MiddleName { get; set; }"
+            "value": "public string MiddleName { get; init; }"
           },
           {
             "lang": "vb",
