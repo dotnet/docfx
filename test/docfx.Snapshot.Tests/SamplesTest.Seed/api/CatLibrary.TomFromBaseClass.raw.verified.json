@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(Int32)\" alt=\"CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(Int32)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(Int32)\" alt=\"CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor(System.Int32)\" text=\"TomFromBaseClass(Int32)\"/>"
         }
       ],
       "syntax": {
@@ -144,11 +144,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 }
               ]
             },
@@ -208,11 +208,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass.TomFromBaseClass\"/>"
+            "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass.TomFromBaseClass\"/>"
+            "value": "<xref uid=\"CatLibrary.TomFromBaseClass.#ctor*\" text=\"TomFromBaseClass\"/>"
           }
         ]
       },
@@ -309,11 +309,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -372,11 +372,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         }
       ],
       "level": 0,
@@ -420,11 +420,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
         }
       ],
       "level": 0,
@@ -471,11 +471,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod\" alt=\"CatLibrary.Tom.TomMethod\"/>(<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>&lt;<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>&gt;, <xref uid=\"System.Tuple`2\" text=\"Tuple\" alt=\"System.Tuple\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>&gt;)"
+          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod\"/>(<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>&gt;, <xref uid=\"System.Tuple`2\" text=\"Tuple\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>&gt;)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod\" alt=\"CatLibrary.Tom.TomMethod\"/>(<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>(Of <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>), <xref uid=\"System.Tuple`2\" text=\"Tuple\" alt=\"System.Tuple\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>))"
+          "value": "<xref uid=\"CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\" text=\"TomMethod\"/>(<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>), <xref uid=\"System.Tuple`2\" text=\"Tuple\"/>(Of <xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>))"
         }
       ],
       "level": 0,
@@ -523,11 +523,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -571,11 +571,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -619,11 +619,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -667,11 +667,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -715,11 +715,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         }
       ],
       "level": 0
@@ -763,11 +763,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -811,11 +811,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0

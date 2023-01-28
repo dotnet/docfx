@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething\" text=\"DoSomething()\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomething()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething\" text=\"DoSomething()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething\" text=\"DoSomething()\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomething()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething\" text=\"DoSomething()\"/>"
         }
       ],
       "syntax": {
@@ -158,11 +158,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomething*\" text=\"DoSomething\"/>"
           }
         ]
       },
@@ -210,11 +210,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\" text=\"DoSomethingElse()\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\" text=\"DoSomethingElse()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\" text=\"DoSomethingElse()\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\" text=\"DoSomethingElse()\"/>"
         }
       ],
       "syntax": {
@@ -280,11 +280,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\" alt=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.DoSomethingElse*\" text=\"DoSomethingElse\"/>"
           }
         ]
       },
@@ -332,11 +332,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\" text=\"GravitationalConstant\" alt=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\" text=\"GravitationalConstant\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\" text=\"GravitationalConstant\" alt=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.GravitationalConstant\" text=\"GravitationalConstant\"/>"
         }
       ],
       "syntax": {
@@ -386,11 +386,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Double\" text=\"Double\" alt=\"System.Double\"/>"
+                "value": "<xref uid=\"System.Double\" text=\"Double\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Double\" text=\"Double\" alt=\"System.Double\"/>"
+                "value": "<xref uid=\"System.Double\" text=\"Double\"/>"
               }
             ]
           }
@@ -456,11 +456,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\" text=\"operator +(DefaultInterfaceMembers)\" alt=\"CSharp8.DefaultInterfaceMembers.operator +(CSharp8.DefaultInterfaceMembers)\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\" text=\"operator +(DefaultInterfaceMembers)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\" text=\"operator +(DefaultInterfaceMembers)\" alt=\"CSharp8.DefaultInterfaceMembers.operator +(CSharp8.DefaultInterfaceMembers)\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\" text=\"operator +(DefaultInterfaceMembers)\"/>"
         }
       ],
       "syntax": {
@@ -512,11 +512,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+                  "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+                  "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
                 }
               ]
             }
@@ -558,11 +558,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
               }
             ]
           }
@@ -619,11 +619,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"UnaryPlus\" alt=\"CSharp8.DefaultInterfaceMembers.UnaryPlus\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"UnaryPlus\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"UnaryPlus\" alt=\"CSharp8.DefaultInterfaceMembers.UnaryPlus\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"UnaryPlus\"/>"
           }
         ]
       },
@@ -671,11 +671,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.X\" text=\"X\" alt=\"CSharp8.DefaultInterfaceMembers.X\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.X\" text=\"X\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.X\" text=\"X\" alt=\"CSharp8.DefaultInterfaceMembers.X\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.X\" text=\"X\"/>"
         }
       ],
       "syntax": {
@@ -725,11 +725,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           }
@@ -844,11 +844,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0

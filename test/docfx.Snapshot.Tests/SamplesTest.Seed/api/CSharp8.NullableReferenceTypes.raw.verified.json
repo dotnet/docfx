@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\" alt=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List&lt;System.String&gt;)\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;String?&gt;?)\"/>"
         }
       ],
       "syntax": {
@@ -145,11 +145,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
+                  "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+                  "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
                 }
               ]
             }
@@ -192,11 +192,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\" alt=\"System.Nullable\"/>&lt;<xref uid=\"System.ValueTuple`2\" text=\"(T1 Item1, T2 Item2)\" alt=\"System.ValueTuple\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>&gt;&gt;"
+                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\"/>&lt;<xref uid=\"System.ValueTuple`2\" text=\"(T1 Item1, T2 Item2)\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>&gt;&gt;"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\" alt=\"System.Nullable\"/>(Of <xref uid=\"System.ValueTuple`2\" text=\"(Item1 As T1, Item2 As T2)\" alt=\"System.ValueTuple\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>))"
+                "value": "<xref uid=\"System.Nullable`1\" text=\"Nullable\"/>(Of <xref uid=\"System.ValueTuple`2\" text=\"(Item1 As T1, Item2 As T2)\"/>(Of <xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>))"
               }
             ]
           }
@@ -253,11 +253,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.NullableReferenceTypes.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.NullableReferenceTypes.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\"/>"
           }
         ]
       },
@@ -305,11 +305,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\" alt=\"CSharp8.NullableReferenceTypes.Field\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\" alt=\"CSharp8.NullableReferenceTypes.Field\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\"/>"
         }
       ],
       "syntax": {
@@ -359,11 +359,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           }
@@ -429,11 +429,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\" alt=\"CSharp8.NullableReferenceTypes.Property\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\" alt=\"CSharp8.NullableReferenceTypes.Property\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\"/>"
         }
       ],
       "syntax": {
@@ -484,11 +484,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           }
@@ -545,11 +545,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\" alt=\"CSharp8.NullableReferenceTypes.Property\"/>"
+            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\" alt=\"CSharp8.NullableReferenceTypes.Property\"/>"
+            "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\"/>"
           }
         ]
       },
@@ -646,11 +646,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -707,11 +707,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         }
       ],
       "level": 0,
@@ -759,11 +759,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -807,11 +807,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -855,11 +855,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -903,11 +903,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -951,11 +951,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         }
       ],
       "level": 0
@@ -999,11 +999,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -1047,11 +1047,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0

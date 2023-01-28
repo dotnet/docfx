@@ -40,11 +40,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
         }
       ],
       "level": 0,

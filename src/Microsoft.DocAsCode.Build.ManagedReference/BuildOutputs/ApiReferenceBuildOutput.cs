@@ -193,7 +193,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.NameInDevLangs, supportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NameWithTypeInDevLangs, supportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNameInDevLangs, supportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name, vm.FullName), supportedLanguages, vm.Specs),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
             };
             if (result.Metadata.TryGetValue("syntax", out object syntax))
@@ -221,7 +221,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.Names, vm.SupportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NamesWithType, vm.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNames, vm.SupportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name, vm.FullName), vm.SupportedLanguages),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name), vm.SupportedLanguages),
                 Source = vm.Source,
                 Documentation = vm.Documentation,
                 AssemblyNameList = vm.AssemblyNameList,
@@ -307,7 +307,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             }
 
             // If href exists, return name with href
-            return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name, svm.FullName);
+            return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name);
         }
     }
 }

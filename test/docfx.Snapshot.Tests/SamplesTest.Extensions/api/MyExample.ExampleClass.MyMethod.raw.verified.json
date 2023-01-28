@@ -42,11 +42,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\" alt=\"MyExample.ExampleClass.MyMethod()\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\" alt=\"MyExample.ExampleClass.MyMethod()\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.MyMethod\" text=\"MyMethod()\"/>"
         }
       ],
       "syntax": {
@@ -96,11 +96,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           }
@@ -152,11 +152,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\" alt=\"MyExample.ExampleClass.MyMethod\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\" alt=\"MyExample.ExampleClass.MyMethod\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.MyMethod*\" text=\"MyMethod\"/>"
           }
         ]
       },
@@ -248,11 +248,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0

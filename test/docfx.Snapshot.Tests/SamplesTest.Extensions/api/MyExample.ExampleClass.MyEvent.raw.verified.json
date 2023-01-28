@@ -8,11 +8,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\"/>"
       }
     ],
     "level": 0
@@ -99,11 +99,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0
@@ -156,11 +156,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"Action`1\" text=\"Action\" alt=\"Action\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
+            "value": "<xref uid=\"Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>&gt;"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"Action`1\" text=\"Action\" alt=\"Action\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+            "value": "<xref uid=\"Action`1\" text=\"Action\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
           }
         ]
       }

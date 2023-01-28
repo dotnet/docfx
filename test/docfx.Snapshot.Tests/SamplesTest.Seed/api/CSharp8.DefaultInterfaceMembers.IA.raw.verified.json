@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
         }
       ],
       "syntax": {
@@ -158,11 +158,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
           }
         ]
       },
@@ -259,11 +259,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0

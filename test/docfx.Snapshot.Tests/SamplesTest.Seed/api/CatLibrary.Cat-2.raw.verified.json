@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor\" text=\"Cat()\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat()\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor\" text=\"Cat()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor\" text=\"Cat()\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat()\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor\" text=\"Cat()\"/>"
         }
       ],
       "syntax": {
@@ -159,11 +159,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           }
         ]
       },
@@ -211,11 +211,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat(T)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat(T)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
         }
       ],
       "syntax": {
@@ -268,11 +268,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 }
               ]
             },
@@ -332,11 +332,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           }
         ]
       },
@@ -384,11 +384,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)\" text=\"Cat(String, out Int32, String, Boolean)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat(System.String, out System.Int32, System.String, System.Boolean)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)\" text=\"Cat(String, out Int32, String, Boolean)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)\" text=\"Cat(String, out Int32, String, Boolean)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat(System.String, out System.Int32, System.String, System.Boolean)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)\" text=\"Cat(String, out Int32, String, Boolean)\"/>"
         }
       ],
       "syntax": {
@@ -440,11 +440,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 }
               ]
             },
@@ -487,11 +487,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 }
               ]
             },
@@ -534,11 +534,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 }
               ]
             },
@@ -581,11 +581,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
                 }
               ]
             },
@@ -645,11 +645,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Cat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
           }
         ]
       },
@@ -697,11 +697,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Age\" text=\"Age\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Age\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Age\" text=\"Age\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Age\" text=\"Age\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Age\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Age\" text=\"Age\"/>"
         }
       ],
       "syntax": {
@@ -752,11 +752,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           }
@@ -814,11 +814,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Age*\" text=\"Age\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Age\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Age*\" text=\"Age\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Age*\" text=\"Age\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Age\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Age*\" text=\"Age\"/>"
           }
         ]
       },
@@ -866,11 +866,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood(System.DateTime)\" text=\"Override CalculateFood Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CalculateFood(System.DateTime)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood(System.DateTime)\" text=\"Override CalculateFood Name\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood(System.DateTime)\" text=\"Override CalculateFood Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CalculateFood(System.DateTime)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood(System.DateTime)\" text=\"Override CalculateFood Name\"/>"
         }
       ],
       "syntax": {
@@ -922,11 +922,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.DateTime\" text=\"DateTime\" alt=\"System.DateTime\"/>"
+                  "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.DateTime\" text=\"DateTime\" alt=\"System.DateTime\"/>"
+                  "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                 }
               ]
             },
@@ -970,11 +970,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Collections.Generic.Dictionary`2\" text=\"Dictionary\" alt=\"System.Collections.Generic.Dictionary\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;&gt;"
+                "value": "<xref uid=\"System.Collections.Generic.Dictionary`2\" text=\"Dictionary\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>&gt;&gt;"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Collections.Generic.Dictionary`2\" text=\"Dictionary\" alt=\"System.Collections.Generic.Dictionary\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>, <xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>))"
+                "value": "<xref uid=\"System.Collections.Generic.Dictionary`2\" text=\"Dictionary\"/>(Of <xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\"/>))"
               }
             ]
           },
@@ -1044,11 +1044,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood*\" text=\"CalculateFood\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CalculateFood\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood*\" text=\"CalculateFood\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood*\" text=\"CalculateFood\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CalculateFood\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CalculateFood*\" text=\"CalculateFood\"/>"
           }
         ]
       },
@@ -1059,11 +1059,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
               }
             ]
           },
@@ -1115,11 +1115,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat\" text=\"IAnimal.Eat()\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat()\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat\" text=\"IAnimal.Eat()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat\" text=\"IAnimal.Eat()\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat()\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat\" text=\"IAnimal.Eat()\"/>"
         }
       ],
       "syntax": {
@@ -1186,11 +1186,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           }
         ]
       },
@@ -1231,11 +1231,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat\" alt=\"CatLibrary.IAnimal.Eat\"/>()"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat\"/>()"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat\" alt=\"CatLibrary.IAnimal.Eat\"/>()"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat\" text=\"Eat\"/>()"
             }
           ]
         }
@@ -1283,11 +1283,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)\" text=\"IAnimal.Eat(String)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat(System.String)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)\" text=\"IAnimal.Eat(String)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)\" text=\"IAnimal.Eat(String)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat(System.String)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)\" text=\"IAnimal.Eat(String)\"/>"
         }
       ],
       "syntax": {
@@ -1339,11 +1339,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 }
               ]
             },
@@ -1403,11 +1403,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           }
         ]
       },
@@ -1448,11 +1448,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\" alt=\"CatLibrary.IAnimal.Eat\"/>(<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\" alt=\"CatLibrary.IAnimal.Eat\"/>(<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
             }
           ]
         }
@@ -1500,11 +1500,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)\" text=\"IAnimal.Eat&lt;Tool&gt;(Tool)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat&lt;Tool&gt;(Tool)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)\" text=\"IAnimal.Eat&lt;Tool&gt;(Tool)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)\" text=\"IAnimal.Eat&lt;Tool&gt;(Tool)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat&lt;Tool&gt;(Tool)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat``1(``0)\" text=\"IAnimal.Eat&lt;Tool&gt;(Tool)\"/>"
         }
       ],
       "syntax": {
@@ -1557,11 +1557,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"{Tool}\" text=\"Tool\" alt=\"Tool\"/>"
+                  "value": "<xref uid=\"{Tool}\" text=\"Tool\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"{Tool}\" text=\"Tool\" alt=\"Tool\"/>"
+                  "value": "<xref uid=\"{Tool}\" text=\"Tool\"/>"
                 }
               ]
             },
@@ -1627,11 +1627,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Eat\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*\" text=\"IAnimal.Eat\"/>"
           }
         ]
       },
@@ -1673,11 +1673,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat&lt;Tool&gt;\" alt=\"CatLibrary.IAnimal.Eat&lt;Tool&gt;\"/>(Tool)"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat&lt;Tool&gt;\"/>(Tool)"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat(Of Tool)\" alt=\"CatLibrary.IAnimal.Eat(Of Tool)\"/>(Tool)"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat(Of Tool)\"/>(Tool)"
             }
           ]
         }
@@ -1725,11 +1725,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)\" text=\"IAnimal.this[Int32]\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.this[System.Int32]\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)\" text=\"IAnimal.this[Int32]\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)\" text=\"IAnimal.this[Int32]\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.this[System.Int32]\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)\" text=\"IAnimal.this[Int32]\"/>"
         }
       ],
       "syntax": {
@@ -1781,11 +1781,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 }
               ]
             },
@@ -1828,11 +1828,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           },
@@ -1891,11 +1891,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item*\" text=\"IAnimal.Item\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Item\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item*\" text=\"IAnimal.Item\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item*\" text=\"IAnimal.Item\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.IAnimal.Item\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#IAnimal#Item*\" text=\"IAnimal.Item\"/>"
           }
         ]
       },
@@ -1936,11 +1936,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\" alt=\"CatLibrary.IAnimal.Item\"/>[<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>]"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\"/>[<xref uid=\"System.Int32\" text=\"Int32\"/>]"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\" alt=\"CatLibrary.IAnimal.Item\"/>(<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>)"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\"/>(<xref uid=\"System.Int32\" text=\"Int32\"/>)"
             }
           ]
         }
@@ -1988,11 +1988,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#ICat#eat\" text=\"ICat.eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.ICat.eat\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#ICat#eat\" text=\"ICat.eat\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#ICat#eat\" text=\"ICat.eat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.CatLibrary.ICat.eat\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.CatLibrary#ICat#eat\" text=\"ICat.eat\"/>"
         }
       ],
       "syntax": {
@@ -2042,11 +2042,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               }
             ]
           }
@@ -2106,11 +2106,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.ICat.eat\" text=\"eat\" alt=\"CatLibrary.ICat.eat\"/>"
+              "value": "<xref uid=\"CatLibrary.ICat.eat\" text=\"eat\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.ICat.eat\" text=\"eat\" alt=\"CatLibrary.ICat.eat\"/>"
+              "value": "<xref uid=\"CatLibrary.ICat.eat\" text=\"eat\"/>"
             }
           ]
         }
@@ -2158,11 +2158,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Equals(System.Object)\" text=\"Equals(Object)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Equals(System.Object)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Equals(System.Object)\" text=\"Equals(Object)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Equals(System.Object)\" text=\"Equals(Object)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Equals(System.Object)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Equals(System.Object)\" text=\"Equals(Object)\"/>"
         }
       ],
       "syntax": {
@@ -2214,11 +2214,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
                 }
               ]
             },
@@ -2261,11 +2261,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
               }
             ]
           },
@@ -2324,11 +2324,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+            "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+            "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
           }
         ]
       },
@@ -2367,11 +2367,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Equals*\" text=\"Equals\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Equals\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Equals*\" text=\"Equals\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Equals*\" text=\"Equals\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Equals\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Equals*\" text=\"Equals\"/>"
           }
         ]
       },
@@ -2419,11 +2419,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])\" text=\"GetTailLength(Int32*, params Object[])\" alt=\"CatLibrary.Cat&lt;T, K&gt;.GetTailLength(System.Int32*, params System.Object[])\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])\" text=\"GetTailLength(Int32*, params Object[])\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])\" text=\"GetTailLength(Int32*, params Object[])\" alt=\"CatLibrary.Cat&lt;T, K&gt;.GetTailLength(System.Int32*, params System.Object[])\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])\" text=\"GetTailLength(Int32*, params Object[])\"/>"
         }
       ],
       "syntax": {
@@ -2475,11 +2475,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>*"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>*"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>*"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>*"
                 }
               ]
             },
@@ -2522,11 +2522,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>[]"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>[]"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>()"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>()"
                 }
               ]
             },
@@ -2569,11 +2569,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               }
             ]
           },
@@ -2632,11 +2632,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength*\" text=\"GetTailLength\" alt=\"CatLibrary.Cat&lt;T, K&gt;.GetTailLength\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength*\" text=\"GetTailLength\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength*\" text=\"GetTailLength\" alt=\"CatLibrary.Cat&lt;T, K&gt;.GetTailLength\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.GetTailLength*\" text=\"GetTailLength\"/>"
           }
         ]
       },
@@ -2684,11 +2684,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.isHealthy\" text=\"isHealthy\" alt=\"CatLibrary.Cat&lt;T, K&gt;.isHealthy\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.isHealthy\" text=\"isHealthy\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.isHealthy\" text=\"isHealthy\" alt=\"CatLibrary.Cat&lt;T, K&gt;.isHealthy\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.isHealthy\" text=\"isHealthy\"/>"
         }
       ],
       "syntax": {
@@ -2738,11 +2738,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
               }
             ]
           }
@@ -2821,11 +2821,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Item(System.String)\" text=\"this[String]\" alt=\"CatLibrary.Cat&lt;T, K&gt;.this[System.String]\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Item(System.String)\" text=\"this[String]\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Item(System.String)\" text=\"this[String]\" alt=\"CatLibrary.Cat&lt;T, K&gt;.this[System.String]\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Item(System.String)\" text=\"this[String]\"/>"
         }
       ],
       "syntax": {
@@ -2877,11 +2877,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                  "value": "<xref uid=\"System.String\" text=\"String\"/>"
                 }
               ]
             },
@@ -2924,11 +2924,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           },
@@ -2987,11 +2987,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Item*\" text=\"Item\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Item\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Item*\" text=\"Item\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Item*\" text=\"Item\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Item\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Item*\" text=\"Item\"/>"
           }
         ]
       },
@@ -3039,11 +3039,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)\" text=\"Jump(T, K, ref Boolean)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Jump(T, K, ref System.Boolean)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)\" text=\"Jump(T, K, ref Boolean)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)\" text=\"Jump(T, K, ref Boolean)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Jump(T, K, ref System.Boolean)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)\" text=\"Jump(T, K, ref Boolean)\"/>"
         }
       ],
       "syntax": {
@@ -3096,11 +3096,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 }
               ]
             },
@@ -3144,11 +3144,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"{K}\" text=\"K\" alt=\"K\"/>"
+                  "value": "<xref uid=\"{K}\" text=\"K\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"{K}\" text=\"K\" alt=\"K\"/>"
+                  "value": "<xref uid=\"{K}\" text=\"K\"/>"
                 }
               ]
             },
@@ -3191,11 +3191,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\" alt=\"System.Boolean\"/>"
+                  "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
                 }
               ]
             },
@@ -3255,11 +3255,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Jump*\" text=\"Jump\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Jump\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Jump*\" text=\"Jump\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Jump*\" text=\"Jump\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Jump\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Jump*\" text=\"Jump\"/>"
           }
         ]
       },
@@ -3270,11 +3270,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+                "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
               }
             ]
           },
@@ -3337,11 +3337,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Name\" text=\"Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Name\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Name\" text=\"Name\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.Name\" text=\"Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Name\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.Name\" text=\"Name\"/>"
         }
       ],
       "syntax": {
@@ -3392,11 +3392,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           }
@@ -3454,11 +3454,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Name*\" text=\"Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Name\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Name*\" text=\"Name\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.Name*\" text=\"Name\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Name\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.Name*\" text=\"Name\"/>"
           }
         ]
       },
@@ -3499,11 +3499,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\" alt=\"CatLibrary.IAnimal.Name\"/>"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\" alt=\"CatLibrary.IAnimal.Name\"/>"
+              "value": "<xref uid=\"CatLibrary.IAnimal.Name\" text=\"Name\"/>"
             }
           ]
         }
@@ -3551,11 +3551,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator +(Cat&lt;T, K&gt;, Int32)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.operator +(CatLibrary.Cat&lt;T, K&gt;, System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator +(Cat&lt;T, K&gt;, Int32)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator +(Cat&lt;T, K&gt;, Int32)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.operator +(CatLibrary.Cat&lt;T, K&gt;, System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator +(Cat&lt;T, K&gt;, Int32)\"/>"
         }
       ],
       "syntax": {
@@ -3607,11 +3607,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>&lt;T, K&gt;"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>(Of T, K)"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
                 }
               ]
             },
@@ -3654,11 +3654,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 }
               ]
             },
@@ -3701,11 +3701,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           },
@@ -3764,11 +3764,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition*\" text=\"Addition\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Addition\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition*\" text=\"Addition\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition*\" text=\"Addition\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Addition\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Addition*\" text=\"Addition\"/>"
           }
         ]
       },
@@ -3816,11 +3816,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom\" text=\"explicit operator Tom(Cat&lt;T, K&gt;)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.explicit operator CatLibrary.Tom(CatLibrary.Cat&lt;T, K&gt;)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom\" text=\"explicit operator Tom(Cat&lt;T, K&gt;)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom\" text=\"explicit operator Tom(Cat&lt;T, K&gt;)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.explicit operator CatLibrary.Tom(CatLibrary.Cat&lt;T, K&gt;)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom\" text=\"explicit operator Tom(Cat&lt;T, K&gt;)\"/>"
         }
       ],
       "syntax": {
@@ -3872,11 +3872,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>&lt;T, K&gt;"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>(Of T, K)"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
                 }
               ]
             },
@@ -3919,11 +3919,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+                "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+                "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
               }
             ]
           },
@@ -3982,11 +3982,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit*\" text=\"Explicit\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Explicit\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit*\" text=\"Explicit\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit*\" text=\"Explicit\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Explicit\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Explicit*\" text=\"Explicit\"/>"
           }
         ]
       },
@@ -4034,11 +4034,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator -(Cat&lt;T, K&gt;, Int32)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.operator -(CatLibrary.Cat&lt;T, K&gt;, System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator -(Cat&lt;T, K&gt;, Int32)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator -(Cat&lt;T, K&gt;, Int32)\" alt=\"CatLibrary.Cat&lt;T, K&gt;.operator -(CatLibrary.Cat&lt;T, K&gt;, System.Int32)\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)\" text=\"operator -(Cat&lt;T, K&gt;, Int32)\"/>"
         }
       ],
       "syntax": {
@@ -4090,11 +4090,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>&lt;T, K&gt;"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>(Of T, K)"
+                  "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
                 }
               ]
             }
@@ -4136,11 +4136,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
                 }
               ]
             }
@@ -4182,11 +4182,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           }
@@ -4244,11 +4244,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction*\" text=\"Subtraction\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Subtraction\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction*\" text=\"Subtraction\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction*\" text=\"Subtraction\" alt=\"CatLibrary.Cat&lt;T, K&gt;.Subtraction\"/>"
+            "value": "<xref uid=\"CatLibrary.Cat`2.op_Subtraction*\" text=\"Subtraction\"/>"
           }
         ]
       },
@@ -4296,11 +4296,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2.ownEat\" text=\"ownEat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.ownEat\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.ownEat\" text=\"ownEat\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2.ownEat\" text=\"ownEat\" alt=\"CatLibrary.Cat&lt;T, K&gt;.ownEat\"/>"
+          "value": "<xref uid=\"CatLibrary.Cat`2.ownEat\" text=\"ownEat\"/>"
         }
       ],
       "syntax": {
@@ -4350,11 +4350,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               }
             ]
           }
@@ -4481,11 +4481,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -4557,11 +4557,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         }
       ],
       "level": 0,
@@ -4605,11 +4605,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>"
         }
       ]
     },
@@ -4648,11 +4648,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\"/>"
         }
       ]
     }
@@ -4697,11 +4697,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -4745,11 +4745,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -4793,11 +4793,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -4841,11 +4841,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         }
       ],
       "level": 0
@@ -4889,11 +4889,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -4937,11 +4937,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0
@@ -4987,11 +4987,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\" alt=\"CatLibrary.ICatExtension.Play\"/>(<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\" alt=\"CatLibrary.ICatExtension.Play\"/>(<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
         }
       ],
       "level": 0
@@ -5035,11 +5035,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\" alt=\"CatLibrary.ICatExtension.Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\" alt=\"CatLibrary.ICatExtension.Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\"/>)"
         }
       ],
       "level": 0

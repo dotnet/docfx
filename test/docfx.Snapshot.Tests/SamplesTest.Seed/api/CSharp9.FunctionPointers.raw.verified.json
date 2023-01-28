@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\" alt=\"CSharp9.FunctionPointers.Example(System.Action&lt;System.Int32&gt;, delegate*&lt;System.Int32, System.Void&gt;, delegate*&lt;System.Int32, System.Int32&gt;, delegate* unmanaged&lt;System.Int32, System.Int32&gt;, delegate* unmanaged[Cdecl]&lt;System.Int32, System.Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;System.Int32, System.Int32&gt;)\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\" alt=\"CSharp9.FunctionPointers.Example(System.Action&lt;System.Int32&gt;, delegate*&lt;System.Int32, System.Void&gt;, delegate*&lt;System.Int32, System.Int32&gt;, delegate* unmanaged&lt;System.Int32, System.Int32&gt;, delegate* unmanaged[Cdecl]&lt;System.Int32, System.Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;System.Int32, System.Int32&gt;)\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\"/>"
         }
       ],
       "syntax": {
@@ -145,11 +145,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Action`1\" text=\"Action\" alt=\"System.Action\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Action`1\" text=\"Action\" alt=\"System.Action\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>)"
+                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\"/>)"
                 }
               ]
             }
@@ -191,11 +191,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Void\" text=\"Void\" alt=\"System.Void\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Void\" text=\"Void\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Void\" text=\"Void\" alt=\"System.Void\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Void\" text=\"Void\"/>&gt;"
                 }
               ]
             }
@@ -237,11 +237,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -283,11 +283,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -329,11 +329,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged [CDecl]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -375,11 +375,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\" alt=\"System.Runtime.CompilerServices.CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\" alt=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\" alt=\"System.Runtime.CompilerServices.CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\" alt=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>&gt;"
+                  "value": "delegate*unmanaged [<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"CallConvStdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"CallConvSuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
                 }
               ]
             }
@@ -437,11 +437,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\" alt=\"CSharp9.FunctionPointers.Example\"/>"
+            "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\" alt=\"CSharp9.FunctionPointers.Example\"/>"
+            "value": "<xref uid=\"CSharp9.FunctionPointers.Example*\" text=\"Example\"/>"
           }
         ]
       },
@@ -538,11 +538,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\" alt=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
     "level": 0
@@ -599,11 +599,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
         }
       ],
       "level": 0,
@@ -651,11 +651,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -699,11 +699,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -747,11 +747,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -795,11 +795,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -843,11 +843,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         }
       ],
       "level": 0
@@ -891,11 +891,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -939,11 +939,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\" alt=\"System.Object.ToString\"/>()"
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0

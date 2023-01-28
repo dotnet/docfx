@@ -39,11 +39,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\" alt=\"MyExample.ExampleClass\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\" alt=\"MyExample.ExampleClass\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass\" text=\"ExampleClass\"/>"
         }
       ],
       "level": 0,

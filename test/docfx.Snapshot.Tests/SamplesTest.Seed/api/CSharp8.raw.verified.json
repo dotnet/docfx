@@ -40,11 +40,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\" alt=\"CSharp8.DefaultInterfaceMembers\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
         }
       ],
       "level": 0,
@@ -89,11 +89,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\" alt=\"CSharp8.DefaultInterfaceMembers.IA\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\" alt=\"CSharp8.DefaultInterfaceMembers.IA\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\"/>"
         }
       ],
       "level": 0,
@@ -138,11 +138,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\" alt=\"CSharp8.DefaultInterfaceMembers.Nested\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\" alt=\"CSharp8.DefaultInterfaceMembers.Nested\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\"/>"
         }
       ],
       "level": 0,
@@ -187,11 +187,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\" alt=\"CSharp8.DisposableRefStructs\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\" alt=\"CSharp8.DisposableRefStructs\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\"/>"
         }
       ],
       "level": 0,
@@ -236,11 +236,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\" alt=\"CSharp8.Issue4007\"/>"
+          "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\" alt=\"CSharp8.Issue4007\"/>"
+          "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\"/>"
         }
       ],
       "level": 0,
@@ -285,11 +285,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\" alt=\"CSharp8.Misc\"/>"
+          "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\" alt=\"CSharp8.Misc\"/>"
+          "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\"/>"
         }
       ],
       "level": 0,
@@ -334,11 +334,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\" alt=\"CSharp8.NullableReferenceTypes\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\" alt=\"CSharp8.NullableReferenceTypes\"/>"
+          "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\"/>"
         }
       ],
       "level": 0,
@@ -383,11 +383,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\" alt=\"CSharp8.ReadOnlyMembers\"/>"
+          "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\" alt=\"CSharp8.ReadOnlyMembers\"/>"
+          "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\"/>"
         }
       ],
       "level": 0,

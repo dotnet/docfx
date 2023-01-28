@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -136,11 +136,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -197,11 +197,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>&lt;<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>&gt;"
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\" alt=\"System.Collections.Generic.List\"/>(Of <xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>)"
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
             }
           ]
         },
@@ -244,11 +244,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"String\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"String\"/>"
             }
           ]
         },

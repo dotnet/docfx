@@ -39,11 +39,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\" alt=\"CSharp9.FunctionPointers\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\" alt=\"CSharp9.FunctionPointers\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers\" text=\"FunctionPointers\"/>"
         }
       ],
       "level": 0,
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\" alt=\"CSharp9.InitOnlySetters\"/>"
+          "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\" alt=\"CSharp9.InitOnlySetters\"/>"
+          "value": "<xref uid=\"CSharp9.InitOnlySetters\" text=\"InitOnlySetters\"/>"
         }
       ],
       "level": 0,
@@ -137,11 +137,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\" alt=\"CSharp9.NativeSizedIntegers\"/>"
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\" alt=\"CSharp9.NativeSizedIntegers\"/>"
+          "value": "<xref uid=\"CSharp9.NativeSizedIntegers\" text=\"NativeSizedIntegers\"/>"
         }
       ],
       "level": 0,
@@ -186,11 +186,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\" alt=\"CSharp9.RecordTypes\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\" alt=\"CSharp9.RecordTypes\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>"
         }
       ],
       "level": 0,
@@ -236,11 +236,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\" alt=\"CSharp9.RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\" alt=\"CSharp9.RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
         }
       ],
       "level": 0,
@@ -285,11 +285,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\" alt=\"CSharp9.RecordTypes.Teacher\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\" alt=\"CSharp9.RecordTypes.Teacher\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>"
         }
       ],
       "level": 0,

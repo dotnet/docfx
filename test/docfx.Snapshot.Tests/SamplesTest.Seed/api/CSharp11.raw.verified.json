@@ -39,11 +39,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\" alt=\"CSharp11.CheckedUserDefinedOperators\"/>&lt;T&gt;"
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\"/>&lt;T&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\" alt=\"CSharp11.CheckedUserDefinedOperators\"/>(Of T)"
+          "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\"/>(Of T)"
         }
       ],
       "level": 0,
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\" alt=\"CSharp11.RequiredModifier\"/>"
+          "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\" alt=\"CSharp11.RequiredModifier\"/>"
+          "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
         }
       ],
       "level": 0,
@@ -137,11 +137,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\" alt=\"CSharp11.StaticAbstractMembersInInterfaces\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\" alt=\"CSharp11.StaticAbstractMembersInInterfaces\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
         }
       ],
       "level": 0,
@@ -186,11 +186,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"StaticAbstractMembersInInterfaces.IGetNext\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext\"/>&lt;T&gt;"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"StaticAbstractMembersInInterfaces.IGetNext\"/>&lt;T&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"StaticAbstractMembersInInterfaces.IGetNext\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext\"/>(Of T)"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"StaticAbstractMembersInInterfaces.IGetNext\"/>(Of T)"
         }
       ],
       "level": 0,
@@ -236,11 +236,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"StaticAbstractMembersInInterfaces.RepeatSequence\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"StaticAbstractMembersInInterfaces.RepeatSequence\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"StaticAbstractMembersInInterfaces.RepeatSequence\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"StaticAbstractMembersInInterfaces.RepeatSequence\"/>"
         }
       ],
       "level": 0,

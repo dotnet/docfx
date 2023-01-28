@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -136,11 +136,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -196,11 +196,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+              "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+              "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
             }
           ]
         },
@@ -243,11 +243,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"String\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"String\"/>"
             }
           ]
         },
@@ -290,11 +290,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>[]"
+              "value": "<xref uid=\"System.Object\" text=\"Object\"/>[]"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>()"
+              "value": "<xref uid=\"System.Object\" text=\"Object\"/>()"
             }
           ]
         },
@@ -343,11 +343,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+            "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+            "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
           }
         ]
       },

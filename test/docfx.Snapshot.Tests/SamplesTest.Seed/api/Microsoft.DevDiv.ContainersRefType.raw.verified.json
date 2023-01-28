@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorCount\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorCount\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorCount\" text=\"ColorCount\"/>"
         }
       ],
       "syntax": {
@@ -142,11 +142,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               }
             ]
           }
@@ -213,11 +213,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler\" text=\"ContainersRefTypeEventHandler\"/>"
         }
       ],
       "syntax": {
@@ -267,11 +267,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\" alt=\"System.EventHandler\"/>"
+                "value": "<xref uid=\"System.EventHandler\" text=\"EventHandler\"/>"
               }
             ]
           }
@@ -337,11 +337,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])\" text=\"ContainersRefTypeNonRefMethod(params Object[])\"/>"
         }
       ],
       "syntax": {
@@ -393,11 +393,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>[]"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>[]"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>()"
+                  "value": "<xref uid=\"System.Object\" text=\"Object\"/>()"
                 }
               ]
             }
@@ -439,11 +439,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\" alt=\"System.Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
               }
             ]
           }
@@ -501,11 +501,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod\"/>"
+            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\" alt=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod\"/>"
+            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*\" text=\"ContainersRefTypeNonRefMethod\"/>"
           }
         ]
       },
@@ -553,11 +553,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\" text=\"GetColorCount\"/>"
         }
       ],
       "syntax": {
@@ -608,11 +608,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int64\" text=\"Int64\" alt=\"System.Int64\"/>"
+                "value": "<xref uid=\"System.Int64\" text=\"Int64\"/>"
               }
             ]
           }
@@ -670,11 +670,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\" alt=\"Microsoft.DevDiv.ContainersRefType.GetColorCount\"/>"
+            "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.GetColorCount*\" text=\"GetColorCount\"/>"
           }
         ]
       },
@@ -771,11 +771,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       }
     ],
     "level": 0
@@ -835,11 +835,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\" alt=\"System.ValueType.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\" alt=\"System.ValueType.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -883,11 +883,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\" alt=\"System.ValueType.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\" alt=\"System.ValueType.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -931,11 +931,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\" alt=\"System.ValueType.ToString\"/>()"
+          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\" alt=\"System.ValueType.ToString\"/>()"
+          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0
@@ -979,11 +979,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -1027,11 +1027,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -1075,11 +1075,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0

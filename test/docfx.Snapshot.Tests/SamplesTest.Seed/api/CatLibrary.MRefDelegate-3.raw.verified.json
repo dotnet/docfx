@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -136,11 +136,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -197,11 +197,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"{K}\" text=\"K\" alt=\"K\"/>"
+              "value": "<xref uid=\"{K}\" text=\"K\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"{K}\" text=\"K\" alt=\"K\"/>"
+              "value": "<xref uid=\"{K}\" text=\"K\"/>"
             }
           ]
         },
@@ -245,11 +245,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              "value": "<xref uid=\"{T}\" text=\"T\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+              "value": "<xref uid=\"{T}\" text=\"T\"/>"
             }
           ]
         },
@@ -293,11 +293,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"{L}\" text=\"L\" alt=\"L\"/>"
+              "value": "<xref uid=\"{L}\" text=\"L\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"{L}\" text=\"L\" alt=\"L\"/>"
+              "value": "<xref uid=\"{L}\" text=\"L\"/>"
             }
           ]
         },

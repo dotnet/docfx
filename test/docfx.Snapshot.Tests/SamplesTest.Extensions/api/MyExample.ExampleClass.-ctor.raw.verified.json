@@ -42,11 +42,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\" alt=\"MyExample.ExampleClass.ExampleClass()\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\" alt=\"MyExample.ExampleClass.ExampleClass()\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\"/>"
         }
       ],
       "syntax": {
@@ -107,11 +107,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\" alt=\"MyExample.ExampleClass.ExampleClass\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\" alt=\"MyExample.ExampleClass.ExampleClass\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\"/>"
           }
         ]
       },
@@ -203,11 +203,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0

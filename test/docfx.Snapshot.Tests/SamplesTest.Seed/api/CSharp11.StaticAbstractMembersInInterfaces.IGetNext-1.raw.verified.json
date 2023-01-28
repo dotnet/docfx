@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.operator ++(T)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.operator ++(T)\"/>"
+          "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\"/>"
         }
       ],
       "syntax": {
@@ -145,11 +145,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                  "value": "<xref uid=\"{T}\" text=\"T\"/>"
                 }
               ]
             }
@@ -192,11 +192,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                "value": "<xref uid=\"{T}\" text=\"T\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"{T}\" text=\"T\" alt=\"T\"/>"
+                "value": "<xref uid=\"{T}\" text=\"T\"/>"
               }
             ]
           }
@@ -253,11 +253,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"Increment\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.Increment\"/>"
+            "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"Increment\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"Increment\" alt=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext&lt;T&gt;.Increment\"/>"
+            "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"Increment\"/>"
           }
         ]
       },
@@ -354,11 +354,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\" alt=\"CSharp11\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
     "level": 0

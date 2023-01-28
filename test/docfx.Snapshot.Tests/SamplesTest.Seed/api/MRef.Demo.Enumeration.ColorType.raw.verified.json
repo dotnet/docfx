@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\" alt=\"MRef.Demo.Enumeration.ColorType.Blue\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\" alt=\"MRef.Demo.Enumeration.ColorType.Blue\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Blue\" text=\"Blue\"/>"
         }
       ],
       "syntax": {
@@ -142,11 +142,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               }
             ]
           }
@@ -213,11 +213,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\" alt=\"MRef.Demo.Enumeration.ColorType.Red\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\" alt=\"MRef.Demo.Enumeration.ColorType.Red\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Red\" text=\"Red\"/>"
         }
       ],
       "syntax": {
@@ -267,11 +267,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               }
             ]
           }
@@ -338,11 +338,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\" alt=\"MRef.Demo.Enumeration.ColorType.Yellow\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\" alt=\"MRef.Demo.Enumeration.ColorType.Yellow\"/>"
+          "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType.Yellow\" text=\"Yellow\"/>"
         }
       ],
       "syntax": {
@@ -392,11 +392,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\" alt=\"MRef.Demo.Enumeration.ColorType\"/>"
+                "value": "<xref uid=\"MRef.Demo.Enumeration.ColorType\" text=\"ColorType\"/>"
               }
             ]
           }
@@ -512,11 +512,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\" alt=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
       }
     ],
     "level": 0
@@ -574,11 +574,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+            "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+            "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
           }
         ]
       }

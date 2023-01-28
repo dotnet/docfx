@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                             result.Add(new ApiLanguageValuePair<string>
                             {
                                 Language = language,
-                                Value = GetXref(src.Uid, src.Name, src.FullName)
+                                Value = GetXref(src.Uid, src.Name)
                             });
                         }
                     }
@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     if (string.IsNullOrEmpty(svm.Uid)) { return HttpUtility.HtmlEncode(svm.FullName); }
 
                     // If href exists, return name with href
-                    return GetXref(svm.Uid, svm.Name, svm.FullName);
+                    return GetXref(svm.Uid, svm.Name);
                 }
             }
 
@@ -423,7 +423,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             };
         }
 
-        public static string GetXref(string uid, string text = null, string alt = null)
+        public static string GetXref(string uid, string text = null)
         {
             var result = $"<xref uid=\"{HttpUtility.HtmlEncode(uid)}\"";
             if (!string.IsNullOrEmpty(text))
@@ -433,14 +433,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             else
             {
                 result += " displayProperty=\"name\"";
-            }
-            if (!string.IsNullOrEmpty(alt))
-            {
-                result += $" alt=\"{HttpUtility.HtmlEncode(alt)}\"";
-            }
-            else
-            {
-                result += " altProperty=\"fullName\"";
             }
             result += "/>";
             return result;

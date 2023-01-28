@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
         }
       ],
       "syntax": {
@@ -142,11 +142,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               }
             ]
           }
@@ -213,11 +213,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
         }
       ],
       "syntax": {
@@ -267,11 +267,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               }
             ]
           }
@@ -338,11 +338,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\"/>"
+          "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
         }
       ],
       "syntax": {
@@ -392,11 +392,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\" alt=\"Microsoft.DevDiv.ContainersRefType.ColorType\"/>"
+                "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ContainersRefType.ColorType\"/>"
               }
             ]
           }
@@ -512,11 +512,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\" alt=\"Microsoft.DevDiv\"/>"
+        "value": "<xref uid=\"Microsoft.DevDiv\" text=\"Microsoft.DevDiv\"/>"
       }
     ],
     "level": 0

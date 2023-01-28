@@ -42,11 +42,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+          "value": "<xref uid=\"MyExample.ExampleClass.Myroperty\" text=\"Myroperty\"/>"
         }
       ],
       "syntax": {
@@ -97,11 +97,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+                "value": "<xref uid=\"System.String\" text=\"String\"/>"
               }
             ]
           }
@@ -153,11 +153,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\" alt=\"MyExample.ExampleClass.Myroperty\"/>"
+            "value": "<xref uid=\"MyExample.ExampleClass.Myroperty*\" text=\"Myroperty\"/>"
           }
         ]
       },
@@ -249,11 +249,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0
