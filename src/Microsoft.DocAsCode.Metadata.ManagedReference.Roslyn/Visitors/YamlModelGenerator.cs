@@ -46,7 +46,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             ReferenceItem reference = new ReferenceItem
             {
-                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
+                NameParts = new(),
+                NameWithTypeParts = new(),
+                QualifiedNameParts = new(),
                 IsDefinition = symbol.IsDefinition,
                 CommentId = VisitorHelper.GetCommentId(symbol)
             };
@@ -81,7 +83,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             ReferenceItem reference = new ReferenceItem
             {
-                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
+                NameParts = new(),
+                NameWithTypeParts = new(),
+                QualifiedNameParts = new(),
                 IsDefinition = true,
                 CommentId = "Overload:" + uidBody
             };
@@ -115,7 +119,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             ReferenceItem reference = new ReferenceItem
             {
-                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>()
+                NameParts = new(),
+                NameWithTypeParts = new(),
+                QualifiedNameParts = new(),
             };
             GenerateReferenceInternal(symbol, reference, adapter);
             var originalSymbol = symbol;

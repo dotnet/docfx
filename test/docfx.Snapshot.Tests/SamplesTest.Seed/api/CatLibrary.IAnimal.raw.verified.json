@@ -698,41 +698,41 @@
         "name": [
           {
             "lang": "csharp",
-            "value": "Item"
+            "value": "this[Int32]"
           },
           {
             "lang": "vb",
-            "value": "Item"
+            "value": "this[](Int32)"
           }
         ],
         "nameWithType": [
           {
             "lang": "csharp",
-            "value": "IAnimal.Item"
+            "value": "IAnimal.this[Int32]"
           },
           {
             "lang": "vb",
-            "value": "IAnimal.Item"
+            "value": "IAnimal.this[](Int32)"
           }
         ],
         "fullName": [
           {
             "lang": "csharp",
-            "value": "CatLibrary.IAnimal.Item"
+            "value": "CatLibrary.IAnimal.this[System.Int32]"
           },
           {
             "lang": "vb",
-            "value": "CatLibrary.IAnimal.Item"
+            "value": "CatLibrary.IAnimal.this[](System.Int32)"
           }
         ],
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CatLibrary.IAnimal.Item*\" text=\"Item\"/>"
+            "value": "this[<xref uid=\"System.Int32*\" text=\"Int32\"/>]"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CatLibrary.IAnimal.Item*\" text=\"Item\"/>"
+            "value": "<xref uid=\"CatLibrary.IAnimal.Item*\" text=\"this[]\"/>(<xref uid=\"System.Int32*\" text=\"Int32\"/>)"
           }
         ]
       },

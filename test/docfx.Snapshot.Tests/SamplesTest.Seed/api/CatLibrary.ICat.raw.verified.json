@@ -345,41 +345,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Item[Int32]"
+          "value": "this[Int32]"
         },
         {
           "lang": "vb",
-          "value": "Item(Int32)"
+          "value": "this[](Int32)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "IAnimal.Item[Int32]"
+          "value": "IAnimal.this[Int32]"
         },
         {
           "lang": "vb",
-          "value": "IAnimal.Item(Int32)"
+          "value": "IAnimal.this[](Int32)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.IAnimal.Item[System.Int32]"
+          "value": "CatLibrary.IAnimal.this[System.Int32]"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.IAnimal.Item(System.Int32)"
+          "value": "CatLibrary.IAnimal.this[](System.Int32)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\"/>[<xref uid=\"System.Int32\" text=\"Int32\"/>]"
+          "value": "this[<xref uid=\"System.Int32\" text=\"Int32\"/>]"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"Item\"/>(<xref uid=\"System.Int32\" text=\"Int32\"/>)"
+          "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"this[]\"/>(<xref uid=\"System.Int32\" text=\"Int32\"/>)"
         }
       ],
       "level": 0,
@@ -477,11 +477,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat&lt;Tool&gt;\"/>(Tool)"
+          "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat\"/>&lt;Tool&gt;(Tool)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat(Of Tool)\"/>(Tool)"
+          "value": "<xref uid=\"CatLibrary.IAnimal.Eat``1(``0)\" text=\"Eat\"/>(Of Tool)(Tool)"
         }
       ],
       "level": 0
@@ -548,41 +548,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Play(String)"
+          "value": "Play(ICat, String)"
         },
         {
           "lang": "vb",
-          "value": "Play(String)"
+          "value": "Play(ICat, String)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ICatExtension.Play(String)"
+          "value": "ICatExtension.Play(ICat, String)"
         },
         {
           "lang": "vb",
-          "value": "ICatExtension.Play(String)"
+          "value": "ICatExtension.Play(ICat, String)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.ICatExtension.Play(System.String)"
+          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.ICatExtension.Play(System.String)"
+          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.String\" text=\"String\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(System.String)\" text=\"Play\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.String\" text=\"String\"/>)"
         }
       ],
       "level": 0
@@ -596,41 +596,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Sleep(Int64)"
+          "value": "Sleep(ICat, Int64)"
         },
         {
           "lang": "vb",
-          "value": "Sleep(Int64)"
+          "value": "Sleep(ICat, Int64)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ICatExtension.Sleep(Int64)"
+          "value": "ICatExtension.Sleep(ICat, Int64)"
         },
         {
           "lang": "vb",
-          "value": "ICatExtension.Sleep(Int64)"
+          "value": "ICatExtension.Sleep(ICat, Int64)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.ICatExtension.Sleep(System.Int64)"
+          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.ICatExtension.Sleep(System.Int64)"
+          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"Int64\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(System.Int64)\" text=\"Sleep\"/>(<xref uid=\"System.Int64\" text=\"Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"Int64\"/>)"
         }
       ],
       "level": 0

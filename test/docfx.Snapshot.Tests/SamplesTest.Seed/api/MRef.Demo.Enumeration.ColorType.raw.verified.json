@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       }
     ],
     "level": 0
@@ -512,11 +512,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MRef.Demo.Enumeration\" text=\"MRef.Demo.Enumeration\"/>"
+        "value": "<xref uid=\"MRef\" text=\"MRef\"/>.<xref uid=\"MRef.Demo\" text=\"Demo\"/>.<xref uid=\"MRef.Demo.Enumeration\" text=\"Enumeration\"/>"
       }
     ],
     "level": 0

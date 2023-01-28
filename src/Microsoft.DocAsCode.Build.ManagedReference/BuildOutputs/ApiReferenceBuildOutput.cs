@@ -303,7 +303,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             // If href does not exists, return full name
             if (string.IsNullOrEmpty(svm.Uid))
             {
-                return HttpUtility.HtmlEncode(svm.FullName);
+                return HttpUtility.HtmlEncode(svm.Name);
             }
 
             // If href exists, return name with href

@@ -272,7 +272,7 @@
           },
           {
             "lang": "vb",
-            "value": "ReadOnlyRecordStruct"
+            "value": "New"
           }
         ],
         "nameWithType": [
@@ -282,7 +282,7 @@
           },
           {
             "lang": "vb",
-            "value": "ReadOnlyRecordStruct.ReadOnlyRecordStruct"
+            "value": "ReadOnlyRecordStruct.New"
           }
         ],
         "fullName": [
@@ -292,7 +292,7 @@
           },
           {
             "lang": "vb",
-            "value": "CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct"
+            "value": "CSharp10.ReadOnlyRecordStruct.New"
           }
         ],
         "specName": [

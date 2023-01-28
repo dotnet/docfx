@@ -236,11 +236,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Person\" text=\"RecordTypes.Person\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
         }
       ],
       "level": 0,
@@ -285,11 +285,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"RecordTypes.Teacher\"/>"
+          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>"
         }
       ],
       "level": 0,

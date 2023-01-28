@@ -89,11 +89,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"DefaultInterfaceMembers.IA\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
         }
       ],
       "level": 0,
@@ -138,11 +138,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"DefaultInterfaceMembers.Nested\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
         }
       ],
       "level": 0,

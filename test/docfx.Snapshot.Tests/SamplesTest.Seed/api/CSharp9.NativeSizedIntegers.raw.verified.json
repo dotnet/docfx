@@ -112,7 +112,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "IntPtr"
+                "value": "nint"
               },
               {
                 "lang": "vb",
@@ -122,7 +122,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "IntPtr"
+                "value": "nint"
               },
               {
                 "lang": "vb",
@@ -132,7 +132,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.IntPtr"
+                "value": "nint"
               },
               {
                 "lang": "vb",
@@ -142,11 +142,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.IntPtr\" text=\"IntPtr\"/>"
+                "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.IntPtr\" text=\"IntPtr\"/>"
+                "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
               }
             ]
           }
@@ -236,7 +236,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "UIntPtr"
+                "value": "nuint"
               },
               {
                 "lang": "vb",
@@ -246,7 +246,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "UIntPtr"
+                "value": "nuint"
               },
               {
                 "lang": "vb",
@@ -256,7 +256,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.UIntPtr"
+                "value": "nuint"
               },
               {
                 "lang": "vb",
@@ -266,11 +266,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.UIntPtr\" text=\"UIntPtr\"/>"
+                "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.UIntPtr\" text=\"UIntPtr\"/>"
+                "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
               }
             ]
           }
