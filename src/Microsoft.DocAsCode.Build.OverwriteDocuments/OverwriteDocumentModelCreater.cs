@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             catch (Exception ex)
             {
                 throw new MarkdownFragmentsException(
-                    $"Encountered an invalid YAML code block: {ex.Message}",
+                    $"Encountered an invalid YAML code block: {ex.ToString()}",
                     yamlCodeBlockSource.Line,
                     ex);
             }
@@ -116,8 +116,8 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     {
                         object value;
                         var goodItems = (from item in listObject
-                                         where item is Dictionary<object, object> 
-                                            && ((Dictionary<object, object>)item).TryGetValue(segment.Key, out value) 
+                                         where item is Dictionary<object, object>
+                                            && ((Dictionary<object, object>)item).TryGetValue(segment.Key, out value)
                                             && ((string)value).Equals(segment.Value)
                                          select (Dictionary<object, object>)item).ToList();
                         if (goodItems.Count > 0)

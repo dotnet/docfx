@@ -28,21 +28,19 @@ namespace Microsoft.DocAsCode.YamlSerialization
     /// </summary>
     public sealed class YamlDeserializer
     {
-        private static Dictionary<string, Type> PredefinedTagMappings { get; } =
-            new Dictionary<string, Type>
-            {
-                { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
-                { "tag:yaml.org,2002:bool", typeof(bool) },
-                { "tag:yaml.org,2002:float", typeof(double) },
-                { "tag:yaml.org,2002:int", typeof(int) },
-                { "tag:yaml.org,2002:str", typeof(string) },
-                { "tag:yaml.org,2002:timestamp", typeof(DateTime) },
-            };
+        private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new Dictionary<TagName, Type>
+        {
+            { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
+            { "tag:yaml.org,2002:bool", typeof(bool) },
+            { "tag:yaml.org,2002:float", typeof(double) },
+            { "tag:yaml.org,2002:int", typeof(int) },
+            { "tag:yaml.org,2002:str", typeof(string) },
+            { "tag:yaml.org,2002:timestamp", typeof(DateTime) },
+        };
 
-        private readonly Dictionary<string, Type> _tagMappings;
+        private readonly Dictionary<TagName, Type> _tagMappings;
         private readonly List<IYamlTypeConverter> _converters;
-        private readonly TypeDescriptorProxy _typeDescriptor =
-            new TypeDescriptorProxy();
+        private readonly TypeDescriptorProxy _typeDescriptor = new TypeDescriptorProxy();
         private readonly IValueDeserializer _valueDeserializer;
 
         public IList<INodeDeserializer> NodeDeserializers { get; private set; }
@@ -103,7 +101,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 new EnumerableNodeDeserializer(),
                 new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
             };
-            _tagMappings = new Dictionary<string, Type>(PredefinedTagMappings);
+            _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
             TypeResolvers = new List<INodeTypeResolver>
             {
                 new TagNodeTypeResolver(_tagMappings),
@@ -219,7 +217,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
             }
 
-            private sealed class AliasState : Dictionary<string, ValuePromise>, IPostDeserializationCallback
+            private sealed class AliasState : Dictionary<AnchorName, ValuePromise>, IPostDeserializationCallback
             {
                 public void OnDeserialization()
                 {
@@ -295,10 +293,10 @@ namespace Microsoft.DocAsCode.YamlSerialization
                     return valuePromise.HasValue ? valuePromise.Value : valuePromise;
                 }
 
-                string anchor = null;
+                AnchorName? anchor = null;
 
                 var nodeEvent = reader.Peek<NodeEvent>();
-                if (nodeEvent != null && !string.IsNullOrEmpty(nodeEvent.Anchor))
+                if (nodeEvent != null && !nodeEvent.Anchor.IsEmpty)
                 {
                     anchor = nodeEvent.Anchor;
                 }
@@ -309,9 +307,9 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 {
                     var aliasState = state.Get<AliasState>();
 
-                    if (!aliasState.TryGetValue(anchor, out ValuePromise valuePromise))
+                    if (!aliasState.TryGetValue(anchor.Value, out ValuePromise valuePromise))
                     {
-                        aliasState.Add(anchor, new ValuePromise(value));
+                        aliasState.Add(anchor.Value, new ValuePromise(value));
                     }
                     else if (!valuePromise.HasValue)
                     {
@@ -319,7 +317,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                     }
                     else
                     {
-                        aliasState[anchor] = new ValuePromise(value);
+                        aliasState[anchor.Value] = new ValuePromise(value);
                     }
                 }
 

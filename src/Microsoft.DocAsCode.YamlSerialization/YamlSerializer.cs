@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.DocAsCode.YamlSerialization.ObjectGraphVisitors;
+
 namespace Microsoft.DocAsCode.YamlSerialization
 {
     using System;
@@ -90,14 +92,14 @@ namespace Microsoft.DocAsCode.YamlSerialization
             if (!IsOptionSet(SerializationOptions.DisableAliases))
             {
                 var anchorAssigner = new AnchorAssigner(Converters);
-                traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, null);
+                traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, default);
 
                 emittingVisitor = new AnchorAssigningObjectGraphVisitor(emittingVisitor, eventEmitter, anchorAssigner);
             }
 
             if (!IsOptionSet(SerializationOptions.EmitDefaults))
             {
-                emittingVisitor = new DefaultExclusiveObjectGraphVisitor(emittingVisitor);
+                emittingVisitor = new ExclusiveObjectGraphVisitor(emittingVisitor);
             }
 
             return emittingVisitor;
@@ -130,7 +132,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
             }
             else
             {
-                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, string>());
+                return new TypeAssigningEventEmitter(writer, IsOptionSet(SerializationOptions.Roundtrip), new Dictionary<Type, TagName>());
             }
         }
 
@@ -156,3 +158,4 @@ namespace Microsoft.DocAsCode.YamlSerialization
         }
     }
 }
+
