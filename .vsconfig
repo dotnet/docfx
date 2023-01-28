@@ -6,7 +6,6 @@
     "Microsoft.VisualStudio.Component.NuGet",
     "Microsoft.VisualStudio.Component.Roslyn.Compiler",
     "Microsoft.VisualStudio.Component.Roslyn.LanguageServices",
-    "Microsoft.VisualStudio.Component.FSharp",
     "Microsoft.NetCore.Component.SDK",
     "Microsoft.Net.ComponentGroup.DevelopmentPrerequisites",
     "Microsoft.Component.MSBuild",
