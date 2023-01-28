@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <summary>
         /// The yaml layout should be 
         /// namespace -- class level -- method level
+        /// But also allows nested namespaces
         /// </summary>
         /// <param name="allMembers"></param>
         /// <returns></returns>
@@ -83,20 +84,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var i in member.Items)
             {
-                Debug.Assert(!i.Type.IsPageLevel());
-                if (i.Type.IsPageLevel())
+                var result = CheckNamespaceMembersMembers(i);
+                if (!string.IsNullOrEmpty(result))
                 {
-                    Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
-                    message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
-                    i.IsInvalid = true;
-                }
-                else
-                {
-                    var result = CheckNamespaceMembersMembers(i);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        message.AppendLine(result);
-                    }
+                    message.AppendLine(result);
                 }
             }
 
@@ -115,19 +106,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (member.IsInvalid)
             {
                 return string.Empty;
-            }
-
-            // does method has members?
-            Debug.Assert(member.Items == null);
-            if (member.Items != null)
-            {
-                foreach (var i in member.Items)
-                {
-                    i.IsInvalid = true;
-                }
-
-                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {member.Type.ToString()} should not contain items. Will be ignored.");
-                message.AppendFormat("{0} should not contain items.", member.Type.ToString());
             }
 
             return message.ToString();

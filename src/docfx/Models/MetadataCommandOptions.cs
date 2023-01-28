@@ -43,5 +43,8 @@ namespace Microsoft.DocAsCode
 
         [Option("disableDefaultFilter", HelpText = "Disable the default API filter (default filter only generate public or protected APIs).")]
         public bool DisableDefaultFilter { get; set; }
+
+        [Option("useMultiLevelToc", HelpText = "Generate a multi-level table of contents, making a namespace tree as opposed to a flat list of namespaces.")]
+        public bool UseMultiLevelToc { get; set; }
     }
 }

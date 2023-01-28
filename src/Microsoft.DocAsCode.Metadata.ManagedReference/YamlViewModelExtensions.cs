@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         result.Add(child.ToTocItemViewModel());
                     }
-                    return new TocViewModel(result.OrderBy(s => s.Name));
+                    return new TocViewModel(result);
                 default:
                     return null;
             }

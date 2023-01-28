@@ -72,6 +72,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 MSBuildProperties = msbuildProperties,
                 CodeSourceBasePath = input.CodeSourceBasePath,
                 DisableDefaultFilter = input.DisableDefaultFilter,
+                UseMultiLevelToc = input.UseMultiLevelToc
             };
 
             _useCompatibilityFileName = input.UseCompatibilityFileName;
@@ -386,7 +387,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 List<string> outputFiles;
                 using (new PerformanceScope("ResolveAndExport"))
                 {
-                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
+                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName, options.UseMultiLevelToc).ToList();
                 }
 
                 applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
@@ -500,10 +501,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             string folder,
             bool preserveRawInlineComments,
             bool shouldSkipMarkup,
-            bool useCompatibilityFileName)
+            bool useCompatibilityFileName,
+            bool useMultiLevelToc)
         {
             var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, preserveRawInlineComments);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, preserveRawInlineComments, useMultiLevelToc);
 
             var tocFileName = Constants.TocYamlFileName;
             // 0. load last Manifest and remove files

@@ -52,5 +52,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("disableDefaultFilter")]
         public bool DisableDefaultFilter { get; set; }
+
+        [JsonProperty("useMultiLevelToc")]
+        public bool UseMultiLevelToc { get; set; }
     }
 }
