@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
                 reference.QualifiedNameParts.Add(SyntaxLanguage.VB, new());
 
-            reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.VB, asOverload);
-            reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.VB, asOverload);
-            reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.VB, asOverload);
+            reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
+            reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
+            reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
         }
     }
 }

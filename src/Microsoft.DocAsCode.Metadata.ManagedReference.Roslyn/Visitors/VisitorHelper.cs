@@ -55,9 +55,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return assemblySymbol.MetadataName;
             }
 
-            if (symbol is IDynamicTypeSymbol dynamicSymbol)
+            if (symbol is IDynamicTypeSymbol)
             {
-                return typeof(object).FullName;
+                return "dynamic";
             }
 
             var id = GetDocumentationCommentId(symbol)?.Substring(2);

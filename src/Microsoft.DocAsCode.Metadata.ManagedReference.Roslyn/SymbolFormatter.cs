@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
@@ -16,23 +15,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeExplicitInterface,
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
             parameterOptions: SymbolDisplayParameterOptions.IncludeType,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral,
+            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral | SymbolDisplayMiscellaneousOptions.UseSpecialTypes,
             extensionMethodStyle: SymbolDisplayExtensionMethodStyle.StaticMethod);
 
-        private static readonly SymbolDisplayFormat s_nameWithTypeFormat = new(
-            memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeExplicitInterface | SymbolDisplayMemberOptions.IncludeContainingType,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            parameterOptions: SymbolDisplayParameterOptions.IncludeType,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral,
-            extensionMethodStyle: SymbolDisplayExtensionMethodStyle.StaticMethod);
+        private static readonly SymbolDisplayFormat s_nameWithTypeFormat = s_nameFormat
+            .AddMemberOptions(SymbolDisplayMemberOptions.IncludeContainingType)
+            .WithTypeQualificationStyle(SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
 
-        private static readonly SymbolDisplayFormat s_qualifiedNameFormat = new(
-            memberOptions: SymbolDisplayMemberOptions.IncludeParameters | SymbolDisplayMemberOptions.IncludeExplicitInterface | SymbolDisplayMemberOptions.IncludeContainingType,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-            parameterOptions: SymbolDisplayParameterOptions.IncludeType,
-            extensionMethodStyle: SymbolDisplayExtensionMethodStyle.StaticMethod);
+        private static readonly SymbolDisplayFormat s_qualifiedNameFormat = s_nameWithTypeFormat
+            .WithTypeQualificationStyle(SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
 
         private static readonly SymbolDisplayFormat s_namespaceFormat = new(
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
@@ -50,18 +41,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             memberOptions: SymbolDisplayMemberOptions.IncludeContainingType,
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
 
-        private static readonly SymbolDisplayFormat s_linkItemQualifiedNameFormat = new(
-            memberOptions: SymbolDisplayMemberOptions.IncludeContainingType,
-            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+        private static readonly SymbolDisplayFormat s_linkItemQualifiedNameFormat = s_linkItemNameWithTypeFormat
+            .WithTypeQualificationStyle(SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
 
         public static string GetName(ISymbol symbol, SyntaxLanguage language)
         {
             return GetNameParts(symbol, language).ToDisplayString();
         }
 
-        public static ImmutableArray<SymbolDisplayPart> GetNameParts(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true)
+        public static ImmutableArray<SymbolDisplayPart> GetNameParts(
+            ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true, bool overload = false)
         {
-            return GetDisplayParts(symbol, language, nullableReferenceType, symbol.Kind switch
+            return GetDisplayParts(symbol, language, nullableReferenceType, overload, symbol.Kind switch
             {
                 SymbolKind.NamedType => s_nameWithTypeFormat,
                 SymbolKind.Namespace => s_namespaceFormat,
@@ -75,9 +66,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetNameWithTypeParts(symbol, language).ToDisplayString();
         }
 
-        public static ImmutableArray<SymbolDisplayPart> GetNameWithTypeParts(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true)
+        public static ImmutableArray<SymbolDisplayPart> GetNameWithTypeParts(
+            ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true, bool overload = false)
         {
-            return GetDisplayParts(symbol, language, nullableReferenceType, symbol.Kind switch
+            return GetDisplayParts(symbol, language, nullableReferenceType, overload, symbol.Kind switch
             {
                 SymbolKind.Namespace => s_namespaceFormat,
                 SymbolKind.Method => s_methodNameWithTypeFormat,
@@ -90,9 +82,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetQualifiedNameParts(symbol, language).ToDisplayString();
         }
 
-        public static ImmutableArray<SymbolDisplayPart> GetQualifiedNameParts(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true)
+        public static ImmutableArray<SymbolDisplayPart> GetQualifiedNameParts(
+            ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true, bool overload = false)
         {
-            return GetDisplayParts(symbol, language, nullableReferenceType, symbol.Kind switch
+            return GetDisplayParts(symbol, language, nullableReferenceType, overload, symbol.Kind switch
             {
                 SymbolKind.Namespace => s_namespaceFormat,
                 SymbolKind.Method => s_methodQualifiedNameFormat,
@@ -122,42 +115,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var result = new List<LinkItem>();
             foreach (var part in parts)
             {
-                // Strip type parameters, parameters for overloads
-                if (overload && IsStartOfCSharpConstructor(part))
-                    break;
-
                 result.Add(ToLinkItem(part));
 
                 if (overload && part.Kind is SymbolDisplayPartKind.MethodName)
                     break;
-
-                if (overload && IsVisualBasicConstructor(part))
-                    break;
             }
             return result;
-
-            bool IsStartOfCSharpConstructor(SymbolDisplayPart part)
-            {
-                return language is SyntaxLanguage.CSharp && part.Kind is SymbolDisplayPartKind.Punctuation && part.ToString() == "(";
-            }
-
-            bool IsVisualBasicConstructor(SymbolDisplayPart part)
-            {
-                return language is SyntaxLanguage.VB && part.Kind is SymbolDisplayPartKind.Keyword && part.ToString() == "New";
-            }
 
             LinkItem ToLinkItem(SymbolDisplayPart part)
             {
                 var symbol = part.Symbol;
                 if (symbol is null || part.Kind is SymbolDisplayPartKind.TypeParameterName)
-                {
                     return new() { DisplayName = part.ToString() };
-                }
 
                 if (symbol is INamedTypeSymbol type && type.IsGenericType)
-                {
                     symbol = type.ConstructedFrom;
-                }
 
                 return new()
                 {
@@ -168,17 +140,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static ImmutableArray<SymbolDisplayPart> GetDisplayParts(ISymbol symbol, SyntaxLanguage language, SymbolDisplayFormat format)
-        {
-            return GetDisplayParts(symbol, language, true, format);
-        }
-
-        private static ImmutableArray<SymbolDisplayPart> GetDisplayParts(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType, SymbolDisplayFormat format)
+        private static ImmutableArray<SymbolDisplayPart> GetDisplayParts(
+            ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType, bool overload, SymbolDisplayFormat format)
         {
             if (!nullableReferenceType)
-            {
                 format = format.RemoveMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
-            }
+
+            if (overload)
+                format = format.RemoveMemberOptions(SymbolDisplayMemberOptions.IncludeParameters);
 
             try
             {
@@ -192,6 +161,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return ImmutableArray<SymbolDisplayPart>.Empty;
             }
+        }
+
+        private static SymbolDisplayFormat WithTypeQualificationStyle(this SymbolDisplayFormat format, SymbolDisplayTypeQualificationStyle style)
+        {
+            return new(
+                format.GlobalNamespaceStyle,
+                style,
+                format.GenericsOptions,
+                format.MemberOptions,
+                format.DelegateStyle,
+                format.ExtensionMethodStyle,
+                format.ParameterOptions,
+                format.PropertyStyle,
+                format.LocalOptions,
+                format.KindOptions,
+                format.MiscellaneousOptions);
         }
     }
 }

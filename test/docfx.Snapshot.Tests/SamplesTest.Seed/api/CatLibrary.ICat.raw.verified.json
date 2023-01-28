@@ -345,41 +345,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "this[Int32]"
+          "value": "this[int]"
         },
         {
           "lang": "vb",
-          "value": "this[](Int32)"
+          "value": "this[](Integer)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "IAnimal.this[Int32]"
+          "value": "IAnimal.this[int]"
         },
         {
           "lang": "vb",
-          "value": "IAnimal.this[](Int32)"
+          "value": "IAnimal.this[](Integer)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.IAnimal.this[System.Int32]"
+          "value": "CatLibrary.IAnimal.this[int]"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.IAnimal.this[](System.Int32)"
+          "value": "CatLibrary.IAnimal.this[](Integer)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "this[<xref uid=\"System.Int32\" text=\"Int32\"/>]"
+          "value": "this[<xref uid=\"System.Int32\" text=\"int\"/>]"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"this[]\"/>(<xref uid=\"System.Int32\" text=\"Int32\"/>)"
+          "value": "<xref uid=\"CatLibrary.IAnimal.Item(System.Int32)\" text=\"this[]\"/>(<xref uid=\"System.Int32\" text=\"Integer\"/>)"
         }
       ],
       "level": 0,
@@ -494,7 +494,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Eat(String)"
+          "value": "Eat(string)"
         },
         {
           "lang": "vb",
@@ -504,7 +504,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "IAnimal.Eat(String)"
+          "value": "IAnimal.Eat(string)"
         },
         {
           "lang": "vb",
@@ -514,17 +514,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.IAnimal.Eat(System.String)"
+          "value": "CatLibrary.IAnimal.Eat(string)"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.IAnimal.Eat(System.String)"
+          "value": "CatLibrary.IAnimal.Eat(String)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\"/>(<xref uid=\"System.String\" text=\"String\"/>)"
+          "value": "<xref uid=\"CatLibrary.IAnimal.Eat(System.String)\" text=\"Eat\"/>(<xref uid=\"System.String\" text=\"string\"/>)"
         },
         {
           "lang": "vb",
@@ -548,7 +548,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Play(ICat, String)"
+          "value": "Play(ICat, string)"
         },
         {
           "lang": "vb",
@@ -558,7 +558,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ICatExtension.Play(ICat, String)"
+          "value": "ICatExtension.Play(ICat, string)"
         },
         {
           "lang": "vb",
@@ -568,17 +568,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
+          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, string)"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)"
+          "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, String)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.String\" text=\"String\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.String\" text=\"string\"/>)"
         },
         {
           "lang": "vb",
@@ -596,41 +596,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Sleep(ICat, Int64)"
+          "value": "Sleep(ICat, long)"
         },
         {
           "lang": "vb",
-          "value": "Sleep(ICat, Int64)"
+          "value": "Sleep(ICat, Long)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ICatExtension.Sleep(ICat, Int64)"
+          "value": "ICatExtension.Sleep(ICat, long)"
         },
         {
           "lang": "vb",
-          "value": "ICatExtension.Sleep(ICat, Int64)"
+          "value": "ICatExtension.Sleep(ICat, Long)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
+          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, long)"
         },
         {
           "lang": "vb",
-          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)"
+          "value": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, Long)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"long\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"Int64\"/>)"
+          "value": "<xref uid=\"CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\" text=\"Sleep\"/>(<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>, <xref uid=\"System.Int64\" text=\"Long\"/>)"
         }
       ],
       "level": 0

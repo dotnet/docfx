@@ -544,7 +544,7 @@
         "name": [
           {
             "lang": "csharp",
-            "value": "Object"
+            "value": "object"
           },
           {
             "lang": "vb",
@@ -554,7 +554,7 @@
         "nameWithType": [
           {
             "lang": "csharp",
-            "value": "Object"
+            "value": "object"
           },
           {
             "lang": "vb",
@@ -564,21 +564,21 @@
         "fullName": [
           {
             "lang": "csharp",
-            "value": "System.Object"
+            "value": "object"
           },
           {
             "lang": "vb",
-            "value": "System.Object"
+            "value": "Object"
           }
         ],
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+            "value": "<xref uid=\"System.Object\" text=\"object\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+            "value": "<xref uid=\"System.Object\" text=\"object\"/>"
           }
         ]
       }

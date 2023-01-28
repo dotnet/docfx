@@ -58,41 +58,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)"
+          "value": "Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
         },
         {
           "lang": "vb",
-          "value": "Example(Action(Of Int32), , , , , )"
+          "value": "Example(Action(Of Integer), , , , , )"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "FunctionPointers.Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)"
+          "value": "FunctionPointers.Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
         },
         {
           "lang": "vb",
-          "value": "FunctionPointers.Example(Action(Of Int32), , , , , )"
+          "value": "FunctionPointers.Example(Action(Of Integer), , , , , )"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CSharp9.FunctionPointers.Example(System.Action<System.Int32>, delegate*<System.Int32, System.Void>, delegate*<System.Int32, System.Int32>, delegate* unmanaged<System.Int32, System.Int32>, delegate* unmanaged[Cdecl]<System.Int32, System.Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>)"
+          "value": "CSharp9.FunctionPointers.Example(System.Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)"
         },
         {
           "lang": "vb",
-          "value": "CSharp9.FunctionPointers.Example(System.Action(Of System.Int32), , , , , )"
+          "value": "CSharp9.FunctionPointers.Example(System.Action(Of Integer), , , , , )"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;Int32&gt;, delegate*&lt;Int32, Void&gt;, delegate*&lt;Int32, Int32&gt;, delegate* unmanaged&lt;Int32, Int32&gt;, delegate* unmanaged[Cdecl]&lt;Int32, Int32&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;Int32, Int32&gt;)\"/>"
+          "value": "<xref uid=\"CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)\" text=\"Example(Action&lt;int&gt;, delegate*&lt;int, void&gt;, delegate*&lt;int, int&gt;, delegate* unmanaged&lt;int, int&gt;, delegate* unmanaged[Cdecl]&lt;int, int&gt;, delegate* unmanaged[Stdcall, SuppressGCTransition]&lt;int, int&gt;)\"/>"
         }
       ],
       "syntax": {
@@ -115,41 +115,41 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "Action<Int32>"
+                  "value": "Action<int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "Action(Of Int32)"
+                  "value": "Action(Of Integer)"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "Action<Int32>"
+                  "value": "Action<int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "Action(Of Int32)"
+                  "value": "Action(Of Integer)"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "System.Action<System.Int32>"
+                  "value": "System.Action<int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "System.Action(Of System.Int32)"
+                  "value": "System.Action(Of Integer)"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.Int32\" text=\"int\"/>&gt;"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\"/>)"
+                  "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>(Of <xref uid=\"System.Int32\" text=\"Integer\"/>)"
                 }
               ]
             }
@@ -161,37 +161,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<Int32, Void>"
+                  "value": "delegate*<int, void>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<Int32, Void>"
+                  "value": "delegate*<int, void>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<Int32, Void>"
+                  "value": "delegate*<int, void>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<Int32, Void>"
+                  "value": "delegate*<int, void>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<System.Int32, System.Void>"
+                  "value": "delegate*<int, void>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<System.Int32, System.Void>"
+                  "value": "delegate*<int, void>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Void\" text=\"Void\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Void\" text=\"void\"/>&gt;"
                 }
               ]
             }
@@ -203,37 +203,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<Int32, Int32>"
+                  "value": "delegate*<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<Int32, Int32>"
+                  "value": "delegate*<int, int>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<Int32, Int32>"
+                  "value": "delegate*<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<Int32, Int32>"
+                  "value": "delegate*<int, int>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*<System.Int32, System.Int32>"
+                  "value": "delegate*<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate*<System.Int32, System.Int32>"
+                  "value": "delegate*<int, int>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
                 }
               ]
             }
@@ -245,37 +245,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged<Int32, Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged<int, int>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
                 }
               ]
             }
@@ -287,37 +287,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Cdecl]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Cdecl]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Cdecl]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Cdecl]<int, int>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
                 }
               ]
             }
@@ -329,37 +329,37 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 },
                 {
                   "lang": "vb",
-                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>"
+                  "value": "delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "delegate* unmanaged[<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"Stdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"SuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>, <xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                  "value": "delegate* unmanaged[<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"Stdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"SuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
                 }
               ]
             }
@@ -549,7 +549,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -559,7 +559,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -569,21 +569,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object"
+          "value": "object"
         },
         {
           "lang": "vb",
-          "value": "System.Object"
+          "value": "Object"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
       "level": 0,
@@ -601,7 +601,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object)"
+          "value": "Equals(object)"
         },
         {
           "lang": "vb",
@@ -611,7 +611,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
@@ -621,17 +621,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "Object.Equals(Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -649,7 +649,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object, Object)"
+          "value": "Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -659,7 +659,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object, Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -669,17 +669,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "Object.Equals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -707,7 +707,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
@@ -717,11 +717,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetHashCode()"
+          "value": "Object.GetHashCode()"
         }
       ],
       "specName": [
@@ -755,7 +755,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
@@ -765,11 +765,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetType()"
+          "value": "Object.GetType()"
         }
       ],
       "specName": [
@@ -803,7 +803,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
@@ -813,11 +813,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "Object.MemberwiseClone()"
         }
       ],
       "specName": [
@@ -841,7 +841,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
+          "value": "ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -851,7 +851,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -861,17 +861,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "Object.ReferenceEquals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -899,7 +899,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
@@ -909,11 +909,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ToString()"
+          "value": "Object.ToString()"
         }
       ],
       "specName": [
