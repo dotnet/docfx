@@ -256,7 +256,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     Conceptual = src.Conceptual,
 
                     Platform = ToApiListInDevLangs(src.Platform, src.PlatformInDevLangs, supportedLanguages),
-                    Metadata = model.Metadata?.Concat(src.Metadata.Where(p => !model.Metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value) ?? src.Metadata,
+                    Metadata = model.Metadata?.Concat(src.Metadata.Where(p => !model.Metadata.ContainsKey(p.Key))).ToDictionary(p => p.Key, p => p.Value) ?? src.Metadata,
                 };
             }
 

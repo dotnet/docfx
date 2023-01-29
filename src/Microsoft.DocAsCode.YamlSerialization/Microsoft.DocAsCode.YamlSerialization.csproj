@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="6.0.0" />
+    <PackageReference Include="YamlDotNet" Version="12.3.1" />
   </ItemGroup>
 </Project>

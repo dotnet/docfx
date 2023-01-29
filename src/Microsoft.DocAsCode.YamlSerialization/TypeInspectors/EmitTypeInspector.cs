@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
     public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
     {
-        private static readonly ConcurrentDictionary<Type, CachingItem> _cache =
-            new ConcurrentDictionary<Type, CachingItem>();
+        private static readonly ConcurrentDictionary<Type, CachingItem> _cache = new();
+        private static readonly ConcurrentDictionary<Type, List<IPropertyDescriptor>> _propertyDescriptorCache = new();
         private readonly ITypeResolver _resolver;
 
         public EmitTypeInspector(ITypeResolver resolver)
@@ -34,15 +34,20 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             {
                 throw item.Error;
             }
-            var result = from p in item.Properies select (IPropertyDescriptor)new EmitPropertyDescriptor(p, _resolver);
             if (container == null || item.ExtensibleProperies.Count == 0)
             {
-                return result;
+                // all static information
+                return _propertyDescriptorCache.GetOrAdd(type, GetPropertyDescriptors(item).ToList());
             }
-            return result.Concat(
+            return GetPropertyDescriptors(item).Concat(
                 from ep in item.ExtensibleProperies
                 from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
                 select new ExtensiblePropertyDescriptor(ep, ep.Prefix + key, _resolver));
+        }
+
+        private IEnumerable<IPropertyDescriptor> GetPropertyDescriptors(CachingItem item)
+        {
+            return from p in item.Properies select new EmitPropertyDescriptor(p, _resolver);
         }
 
         public override IPropertyDescriptor GetProperty(Type type, object container, string name)
