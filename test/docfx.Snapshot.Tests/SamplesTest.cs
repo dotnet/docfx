@@ -27,21 +27,42 @@ namespace Microsoft.DocAsCode.Tests
             if (Debugger.IsAttached)
             {
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { $"{samplePath}/docfx.json" }));
+                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
+                Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
             }
             else
             {
                 var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                var exitCode = Exec(docfxPath, $"{samplePath}/docfx.json");
-
-                if (OperatingSystem.IsWindows())
-                {
-                    Assert.Equal(0, exitCode);
-                    Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
-                }
+                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
+                Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
             }
 
             return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        }
+
+        [Fact]
+        public void Pdf()
+        {
+            if (!OperatingSystem.IsWindows())
+                return;
+            
+            var samplePath = $"{SamplesDir}/seed";
+            Clean(samplePath);
+
+            if (Debugger.IsAttached)
+            {
+                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
+                Assert.Equal(0, Program.Main(new[] { "pdf", $"{samplePath}/docfx.json" }));
+            }
+            else
+            {
+                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
+                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
+                Assert.Equal(0, Exec(docfxPath, $"pdf {samplePath}/docfx.json"));
+            }
+
+            Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
         }
 
         [Fact]
