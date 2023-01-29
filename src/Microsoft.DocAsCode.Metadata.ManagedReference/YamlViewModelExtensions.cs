@@ -276,7 +276,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Attributes = model.Attributes,
             };
 
-            result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
+            if (model.Parent != null && model.Parent.Name != null)
+            {
+                if (model.Name.StartsWith(model.Parent.Name))
+                    result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
+                else
+                    result.Id = model.Name.Substring(model.Name.LastIndexOf(".") + 1);
+            }
 
             result.Name = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default);
             var nameForCSharp = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);

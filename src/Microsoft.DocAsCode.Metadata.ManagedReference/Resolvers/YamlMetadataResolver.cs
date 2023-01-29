@@ -58,6 +58,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 TocNamespaceStyle.Flattened => GenerateFlatToc(namespaces),
                 TocNamespaceStyle.Nested => GenerateNestedToc(namespaces),
+                TocNamespaceStyle.CompactNested => GenerateCompactNestedToc(namespaces),
                 _ => GenerateFlatToc(namespaces),
             };
         }
@@ -107,6 +108,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .OrderBy(x => x.Type == MemberType.Namespace ? 0 : 1)
                     .ThenBy(x => x.Name)
                     .ToList();
+
+            return root;
+        }
+
+        private static MetadataItem GenerateCompactNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+        {
+            var root = GenerateNestedToc(namespaces);
+
+            Queue<MetadataItem> metadataItemQueue = new();
+            metadataItemQueue.Enqueue(root);
+
+            while (metadataItemQueue.TryDequeue(out var metadataItem))
+            {
+                if (metadataItem.Type == MemberType.Namespace)
+                {
+                    var lastIndex = metadataItem.Name?.LastIndexOf('.');
+                    if (lastIndex >= 0)
+                        metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
+                }
+
+                if (metadataItem.Items != null)
+                    foreach (var item in metadataItem.Items)
+                        metadataItemQueue.Enqueue(item);
+            }
+
 
             return root;
         }

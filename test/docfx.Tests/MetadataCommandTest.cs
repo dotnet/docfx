@@ -324,6 +324,43 @@ namespace Microsoft.DocAsCode.Tests
 
         [Fact]
         [Trait("Related", "docfx")]
+        public void TestMetadataCommandFromCSProjectWithMultipleNamespacesCompact()
+        {
+            var projectFile = Path.Combine(_projectFolder, "test.csproj");
+            var sourceFile = Path.Combine(_projectFolder, "test.cs");
+            File.Copy("Assets/test.csproj.sample.1", projectFile);
+            File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
+
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                Projects = new List<string> { projectFile },
+                TocNamespaceStyle = TocNamespaceStyle.CompactNested
+            }).Exec(null);
+
+            var file = Path.Combine(_outputFolder, "toc.yml");
+            Assert.True(File.Exists(file));
+            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+            Assert.Equal("Foo", tocViewModel[0].Uid);
+            Assert.Equal("Foo", tocViewModel[0].Name);
+
+            Assert.Equal("Foo.Sub", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("Sub", tocViewModel[0].Items[0].Name);
+            Assert.Equal("Foo.Sub.SubBar", tocViewModel[0].Items[0].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[0].Items[0].Items[0].Name);
+
+            Assert.Equal("Foo.Bar", tocViewModel[0].Items[1].Uid);
+            Assert.Equal("Bar", tocViewModel[0].Items[1].Name);
+
+            Assert.Equal("OtherNamespace", tocViewModel[1].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[1].Name);
+
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[1].Items[0].Name);
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
         public void TestMetadataCommandFromCSProjectWithMultipleNamespacesWithFlatToc()
         {
             var projectFile = Path.Combine(_projectFolder, "test.csproj");
