@@ -304,22 +304,23 @@ namespace Microsoft.DocAsCode.Tests
             var file = Path.Combine(_outputFolder, "toc.yml");
             Assert.True(File.Exists(file));
             var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
 
-            Assert.Equal("Foo.Sub", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Foo.Sub", tocViewModel[0].Items[0].Name);
-            Assert.Equal("Foo.Sub.SubBar", tocViewModel[0].Items[0].Items[0].Uid);
-            Assert.Equal("SubBar", tocViewModel[0].Items[0].Items[0].Name);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[1].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[1].Name);
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
 
-            Assert.Equal("OtherNamespace", tocViewModel[1].Uid);
-            Assert.Equal("OtherNamespace", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
 
-            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[1].Items[0].Uid);
-            Assert.Equal("OtherBar", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[1].Items[0].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[1].Items[0].Items[0].Name);
+
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
         }
 
         [Fact]
@@ -341,22 +342,22 @@ namespace Microsoft.DocAsCode.Tests
             var file = Path.Combine(_outputFolder, "toc.yml");
             Assert.True(File.Exists(file));
             var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
-            Assert.Equal("Foo.Sub", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Sub", tocViewModel[0].Items[0].Name);
-            Assert.Equal("Foo.Sub.SubBar", tocViewModel[0].Items[0].Items[0].Uid);
-            Assert.Equal("SubBar", tocViewModel[0].Items[0].Items[0].Name);
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
 
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[1].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[1].Name);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Foo", tocViewModel[1].Name);
 
-            Assert.Equal("OtherNamespace", tocViewModel[1].Uid);
-            Assert.Equal("OtherNamespace", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[1].Items[0].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[1].Items[0].Items[0].Name);
 
-            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[1].Items[0].Uid);
-            Assert.Equal("OtherBar", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
         }
 
         [Fact]
@@ -378,22 +379,22 @@ namespace Microsoft.DocAsCode.Tests
             var file = Path.Combine(_outputFolder, "toc.yml");
             Assert.True(File.Exists(file));
             var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
-            Assert.Equal("Foo", tocViewModel[0].Uid);
-            Assert.Equal("Foo", tocViewModel[0].Name);
-            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
-            Assert.Equal("Foo.Sub", tocViewModel[1].Uid);
-            Assert.Equal("Foo.Sub", tocViewModel[1].Name);
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
 
-            Assert.Equal("Foo.Sub.SubBar", tocViewModel[1].Items[0].Uid);
-            Assert.Equal("SubBar", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[0].Name);
 
-            Assert.Equal("OtherNamespace", tocViewModel[2].Uid);
-            Assert.Equal("OtherNamespace", tocViewModel[2].Name);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Uid);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Name);
 
-            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[2].Items[0].Uid);
-            Assert.Equal("OtherBar", tocViewModel[2].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[2].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[2].Items[0].Name);
         }
 
         private void CheckResult()
