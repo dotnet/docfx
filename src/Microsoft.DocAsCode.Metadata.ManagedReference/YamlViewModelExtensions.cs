@@ -276,12 +276,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Attributes = model.Attributes,
             };
 
-            if (model.Parent != null && model.Parent.Name != null)
+            if (model.Parent != null && model.Parent.Name != null && !model.Name.StartsWith(model.Parent.Name))
             {
-                if (model.Name.StartsWith(model.Parent.Name))
-                    result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
-                else
-                    result.Id = model.Name.Substring(model.Name.LastIndexOf(".") + 1);
+                result.Id = model.Name.Substring(model.Name.LastIndexOf(".") + 1);
+            } else
+            {
+                result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
             }
 
             result.Name = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default);
