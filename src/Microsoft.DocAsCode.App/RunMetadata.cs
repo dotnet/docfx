@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode
                 OutputFolder = outputFolder,
                 CodeSourceBasePath = configModel?.CodeSourceBasePath,
                 DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
-                UseMultiLevelToc = configModel?.UseMultiLevelToc ?? false,
+                TocNamespaceStyle = configModel?.TocNamespaceStyle ?? TocNamespaceStyle.Flattened,
             };
 
             var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);

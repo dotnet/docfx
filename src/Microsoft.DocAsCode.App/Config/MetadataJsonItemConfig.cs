@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using System.Collections.Generic;
-
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
     using Newtonsoft.Json;
 
     internal class MetadataJsonItemConfig
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode
         [JsonProperty("disableDefaultFilter")]
         public bool DisableDefaultFilter { get; set; }
 
-        [JsonProperty("useMultiLevelToc")]
-        public bool UseMultiLevelToc { get; set; }
+        [JsonProperty("tocNamespaceStyle")]
+        public TocNamespaceStyle TocNamespaceStyle{  get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     using CommandLine;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
 
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
@@ -44,7 +45,7 @@ namespace Microsoft.DocAsCode
         [Option("disableDefaultFilter", HelpText = "Disable the default API filter (default filter only generate public or protected APIs).")]
         public bool DisableDefaultFilter { get; set; }
 
-        [Option("useMultiLevelToc", HelpText = "Generate a multi-level table of contents, making a namespace tree as opposed to a flat list of namespaces.")]
-        public bool UseMultiLevelToc { get; set; }
+        [Option("tocNamespaceStyle", HelpText = "Determines the style to be used for generating the table-of-contents.")]
+        public TocNamespaceStyle TocNamespaceStyle { get; set; }
     }
 }

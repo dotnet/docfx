@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Tests
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.SubCommands;
     using Microsoft.DocAsCode.Tests.Common;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
 
     [Collection("docfx STA")]
     public class MetadataCommandTest : TestBase
@@ -297,7 +298,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Projects = new List<string> { projectFile },
-                UseMultiLevelToc = true
+                TocNamespaceStyle = TocNamespaceStyle.Nested
             }).Exec(null);
 
             var file = Path.Combine(_outputFolder, "toc.yml");
@@ -334,7 +335,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Projects = new List<string> { projectFile },
-                UseMultiLevelToc = false
+                TocNamespaceStyle = TocNamespaceStyle.Flattened
             }).Exec(null);
 
             var file = Path.Combine(_outputFolder, "toc.yml");

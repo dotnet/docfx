@@ -33,10 +33,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             bool preserveRawInlineComments,
-            bool useMultiLevelToc)
+            TocNamespaceStyle tocNamespaceStyle)
         {
             MetadataModel viewModel = new MetadataModel();
-            viewModel.TocYamlViewModel = GenerateToc(allMembers, useMultiLevelToc);
+            viewModel.TocYamlViewModel = GenerateToc(allMembers, tocNamespaceStyle);
             viewModel.Members = new List<MetadataItem>();
             ResolverContext context = new ResolverContext
             {
@@ -50,21 +50,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return viewModel;
         }
 
-        private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, bool useMultiLevelToc)
+        private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, TocNamespaceStyle tocNamespaceStyle)
         {
             var namespaces = allMembers.Where(s => s.Value.Type == MemberType.Namespace);
 
-            if (!useMultiLevelToc)
-                return new MetadataItem
-                {
-                    Type = MemberType.Toc,
-                    Items = namespaces
-                        .Select(x => x.Value)
-                        .OrderBy(x => x.Name)
-                        .ToList(),
-                };
+            return tocNamespaceStyle switch
+            {
+                TocNamespaceStyle.Flattened => GenerateFlatToc(namespaces),
+                TocNamespaceStyle.Nested => GenerateNestedToc(namespaces),
+                _ => GenerateFlatToc(namespaces),
+            };
+        }
 
+        private static MetadataItem GenerateFlatToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+        {
+            return new MetadataItem
+            {
+                Type = MemberType.Toc,
+                Items = namespaces
+                    .Select(x => x.Value)
+                    .ToList(),
+            };
+        }
 
+        private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+        {
             MetadataItem root = new MetadataItem()
             {
                 Type = MemberType.Toc,
@@ -72,8 +82,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
             Dictionary<string, MetadataItem> namespacedItems = new();
 
+            var dotsPerNamespace = namespaces.ToDictionary(x => x.Key, x => x.Value.Name.Where(y => y == '.').Count());
             foreach (var member in namespaces
-                .OrderBy(x => x.Value.Name.Where(x => x == '.').Count())
+                .OrderBy(x => dotsPerNamespace[x.Key])
                 .Select(x => x.Value)
             )
             {

@@ -124,7 +124,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case MemberType.Toc:
                 case MemberType.Namespace:
                     var result = new List<TocItemViewModel>();
-                    foreach (var child in item.Items)
+                    foreach (var child in item.Items
+                        .OrderBy(x => x.Type == MemberType.Namespace ? 0 : 1)
+                        .ThenBy(x => x.Name)
+                    )
                     {
                         result.Add(child.ToTocItemViewModel());
                     }
