@@ -222,6 +222,7 @@ Key                      | Description
 content                  | Contains all the files to generate documentation, including metadata `yml` files and conceptual `md` files. `name-files` file mapping with several ways to define it, as to be described in **Section4**. The `files` contains all the project files to have API generated.
 resource                 | Contains all the resource files that conceptual and metadata files dependent on, e.g. image files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
 overwrite                | Contains all the conceptual files which contains yaml header with `uid` and is intended to override the existing metadata `yml` files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
+force                    | Force rebuilds all the documentation.
 globalMetadata           | Contains metadata that will be applied to every file, in key-value pair format. For example, you can define `"_appTitle": "This is the title"` in this section, and when applying template `default`, it will be part of the page title as defined in the template.
 fileMetadata             | Contains metadata that will be applied to specific files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
 globalMetadataFiles      | Specify a list of JSON file path containing globalMetadata settings, as similar to `{"key":"value"}`. Please read **Section3.2.3** for detail.
