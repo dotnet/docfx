@@ -130,8 +130,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (metadataItem.Type == MemberType.Namespace)
                 {
                     var lastIndex = metadataItem.Name?.LastIndexOf('.');
-                    if (lastIndex >= 0 && metadataItem.Parent != root)
-                        metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
+                    if (metadataItem.Parent != root)
+                    {
+                        if (metadataItem.Parent?.Name != null && metadataItem.Name.StartsWith(metadataItem.Parent.Name))
+                            metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(metadataItem.Parent.Name.Length + 1));
+                        else if (lastIndex >= 0 && metadataItem.Parent != root)
+                            metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
+                    } 
                 }
 
                 if (metadataItem.Items != null)
