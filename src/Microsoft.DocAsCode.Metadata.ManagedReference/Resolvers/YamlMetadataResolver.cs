@@ -95,9 +95,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var parentNamespace = member.Name.Substring(0, member.Name.LastIndexOf('.'));
                     if (namespacedItems.TryGetValue(parentNamespace, out var parent))
+                    {
                         parent.Items.Add(member);
+                        member.Parent = parent;
+                    }
                     else
+                    {
                         root.Items.Add(member);
+                        member.Parent = root;
+                    }
                 }
                 else
                     root.Items.Add(member);
@@ -124,7 +130,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (metadataItem.Type == MemberType.Namespace)
                 {
                     var lastIndex = metadataItem.Name?.LastIndexOf('.');
-                    if (lastIndex >= 0)
+                    if (lastIndex >= 0 && metadataItem.Parent != root)
                         metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
                 }
 

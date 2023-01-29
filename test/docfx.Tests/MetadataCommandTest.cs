@@ -349,7 +349,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
 
             Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
-            Assert.Equal("Foo", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
 
             Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
             Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
