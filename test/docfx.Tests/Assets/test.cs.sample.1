@@ -9,5 +9,11 @@ namespace Foo
         {
             return null;
         }
+
+        public static implicit operator Bar(uint value) => new();
+        public static implicit operator Bar(string value) => new();
+        
+        public static explicit operator uint(Bar value) => 0;
+        public static explicit operator string(Bar value) => "";
     }
 }
