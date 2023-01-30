@@ -172,7 +172,7 @@
   "api/CSharp9.FunctionPointers.html": {
     "href": "api/CSharp9.FunctionPointers.html",
     "title": "Class FunctionPointers | docfx seed website",
-    "keywords": "Class FunctionPointers Inheritance object FunctionPointers Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class FunctionPointers Methods | Improve this Doc View Source Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>) Declaration public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f) Parameters Type Name Description Action < int > a delegate*< int , void > b delegate*< int , int > c delegate* unmanaged< int , int > d delegate* unmanaged[ .(System.Int32) ]< int , int > e delegate* unmanaged[ Stdcall , SuppressGCTransition ]< int , int > f"
+    "keywords": "Class FunctionPointers Inheritance object FunctionPointers Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace : CSharp9 Assembly : DotnetNew.dll Syntax public class FunctionPointers Methods | Improve this Doc View Source Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>) Declaration public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f) Parameters Type Name Description Action < int > a delegate*< int , void > b delegate*< int , int > c delegate* unmanaged< int , int > d delegate* unmanaged[ Cdecl ]< int , int > e delegate* unmanaged[ Stdcall , SuppressGCTransition ]< int , int > f"
   },
   "api/CSharp9.html": {
     "href": "api/CSharp9.html",
@@ -242,7 +242,7 @@
   "api/MRef.Demo.Enumeration.ColorType.html": {
     "href": "api/MRef.Demo.Enumeration.ColorType.html",
     "title": "Enum ColorType | docfx seed website",
-    "keywords": "Enum ColorType Enumeration ColorType Namespace : MRef . MRef.Demo . Enumeration Assembly : CatLibrary.dll Syntax public enum ColorType Remarks Red/Blue/Yellow can become all color you want. Fields Name Description Blue blue like river Red this color is red Yellow yellow comes from desert See Also object"
+    "keywords": "Enum ColorType Enumeration ColorType Namespace : MRef . Demo . Enumeration Assembly : CatLibrary.dll Syntax public enum ColorType Remarks Red/Blue/Yellow can become all color you want. Fields Name Description Blue blue like river Red this color is red Yellow yellow comes from desert See Also object"
   },
   "api/MRef.Demo.Enumeration.html": {
     "href": "api/MRef.Demo.Enumeration.html",
