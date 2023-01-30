@@ -280,41 +280,41 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "IAsyncEnumerable<Int32>"
+                "value": "IAsyncEnumerable<int>"
               },
               {
                 "lang": "vb",
-                "value": "IAsyncEnumerable(Of Int32)"
+                "value": "IAsyncEnumerable(Of Integer)"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "IAsyncEnumerable<Int32>"
+                "value": "IAsyncEnumerable<int>"
               },
               {
                 "lang": "vb",
-                "value": "IAsyncEnumerable(Of Int32)"
+                "value": "IAsyncEnumerable(Of Integer)"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Collections.Generic.IAsyncEnumerable<System.Int32>"
+                "value": "System.Collections.Generic.IAsyncEnumerable<int>"
               },
               {
                 "lang": "vb",
-                "value": "System.Collections.Generic.IAsyncEnumerable(Of System.Int32)"
+                "value": "System.Collections.Generic.IAsyncEnumerable(Of Integer)"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>&lt;<xref uid=\"System.Int32\" text=\"Int32\"/>&gt;"
+                "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>&lt;<xref uid=\"System.Int32\" text=\"int\"/>&gt;"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>(Of <xref uid=\"System.Int32\" text=\"Int32\"/>)"
+                "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>(Of <xref uid=\"System.Int32\" text=\"Integer\"/>)"
               }
             ]
           }
@@ -519,7 +519,7 @@
         },
         {
           "lang": "vb",
-          "value": "IsExpression(DateTime)"
+          "value": "IsExpression(Date)"
         }
       ],
       "nameWithType": [
@@ -529,7 +529,7 @@
         },
         {
           "lang": "vb",
-          "value": "Misc.IsExpression(DateTime)"
+          "value": "Misc.IsExpression(Date)"
         }
       ],
       "fullName": [
@@ -539,7 +539,7 @@
         },
         {
           "lang": "vb",
-          "value": "CSharp8.Misc.IsExpression(System.DateTime)"
+          "value": "CSharp8.Misc.IsExpression(Date)"
         }
       ],
       "specName": [
@@ -575,7 +575,7 @@
                 },
                 {
                   "lang": "vb",
-                  "value": "DateTime"
+                  "value": "Date"
                 }
               ],
               "nameWithType": [
@@ -585,7 +585,7 @@
                 },
                 {
                   "lang": "vb",
-                  "value": "DateTime"
+                  "value": "Date"
                 }
               ],
               "fullName": [
@@ -595,7 +595,7 @@
                 },
                 {
                   "lang": "vb",
-                  "value": "System.DateTime"
+                  "value": "Date"
                 }
               ],
               "specName": [
@@ -617,7 +617,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
@@ -627,7 +627,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
@@ -637,21 +637,21 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
-                "value": "System.Boolean"
+                "value": "Boolean"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
               }
             ]
           }
@@ -974,41 +974,41 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "StaticLocalFunctions(Int32)"
+          "value": "StaticLocalFunctions(int)"
         },
         {
           "lang": "vb",
-          "value": "StaticLocalFunctions(Int32)"
+          "value": "StaticLocalFunctions(Integer)"
         }
       ],
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Misc.StaticLocalFunctions(Int32)"
+          "value": "Misc.StaticLocalFunctions(int)"
         },
         {
           "lang": "vb",
-          "value": "Misc.StaticLocalFunctions(Int32)"
+          "value": "Misc.StaticLocalFunctions(Integer)"
         }
       ],
       "fullName": [
         {
           "lang": "csharp",
-          "value": "CSharp8.Misc.StaticLocalFunctions(System.Int32)"
+          "value": "CSharp8.Misc.StaticLocalFunctions(int)"
         },
         {
           "lang": "vb",
-          "value": "CSharp8.Misc.StaticLocalFunctions(System.Int32)"
+          "value": "CSharp8.Misc.StaticLocalFunctions(Integer)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(Int32)\"/>"
+          "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(int)\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(Int32)\"/>"
+          "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(int)\"/>"
         }
       ],
       "syntax": {
@@ -1030,41 +1030,41 @@
               "name": [
                 {
                   "lang": "csharp",
-                  "value": "Int32"
+                  "value": "int"
                 },
                 {
                   "lang": "vb",
-                  "value": "Int32"
+                  "value": "Integer"
                 }
               ],
               "nameWithType": [
                 {
                   "lang": "csharp",
-                  "value": "Int32"
+                  "value": "int"
                 },
                 {
                   "lang": "vb",
-                  "value": "Int32"
+                  "value": "Integer"
                 }
               ],
               "fullName": [
                 {
                   "lang": "csharp",
-                  "value": "System.Int32"
+                  "value": "int"
                 },
                 {
                   "lang": "vb",
-                  "value": "System.Int32"
+                  "value": "Integer"
                 }
               ],
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                  "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                 }
               ]
             }
@@ -1076,41 +1076,41 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "Int32"
+                "value": "Integer"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "Int32"
+                "value": "Integer"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "System.Int32"
+                "value": "Integer"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
               }
             ]
           }
@@ -1291,7 +1291,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
@@ -1301,7 +1301,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
@@ -1311,21 +1311,21 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Boolean"
+                "value": "bool"
               },
               {
                 "lang": "vb",
-                "value": "System.Boolean"
+                "value": "Boolean"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Boolean\" text=\"Boolean\"/>"
+                "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
               }
             ]
           }
@@ -1636,7 +1636,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -1646,7 +1646,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -1656,21 +1656,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object"
+          "value": "object"
         },
         {
           "lang": "vb",
-          "value": "System.Object"
+          "value": "Object"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
       "level": 0,
@@ -1688,7 +1688,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object)"
+          "value": "Equals(object)"
         },
         {
           "lang": "vb",
@@ -1698,7 +1698,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
@@ -1708,17 +1708,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "Object.Equals(Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -1736,7 +1736,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object, Object)"
+          "value": "Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -1746,7 +1746,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object, Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -1756,17 +1756,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "Object.Equals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -1794,7 +1794,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
@@ -1804,11 +1804,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetHashCode()"
+          "value": "Object.GetHashCode()"
         }
       ],
       "specName": [
@@ -1842,7 +1842,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
@@ -1852,11 +1852,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetType()"
+          "value": "Object.GetType()"
         }
       ],
       "specName": [
@@ -1890,7 +1890,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
@@ -1900,11 +1900,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "Object.MemberwiseClone()"
         }
       ],
       "specName": [
@@ -1928,7 +1928,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
+          "value": "ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -1938,7 +1938,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -1948,17 +1948,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "Object.ReferenceEquals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -1986,7 +1986,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
@@ -1996,11 +1996,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ToString()"
+          "value": "Object.ToString()"
         }
       ],
       "specName": [

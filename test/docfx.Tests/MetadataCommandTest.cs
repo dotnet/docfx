@@ -144,8 +144,8 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("testVBproj1.Foo.Bar", memberViewModel.Items[0].FullName);
             Assert.Equal("testVBproj1.Foo.Bar.FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
             Assert.Equal("FooBar``1(System.Int32[],System.Byte,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-            Assert.Equal("FooBar<TArg>(Int32[], Byte, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-            Assert.Equal("testVBproj1.Foo.Bar.FooBar<TArg>(System.Int32[], System.Byte, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
+            Assert.Equal("FooBar<TArg>(int[], byte, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
+            Assert.Equal("testVBproj1.Foo.Bar.FooBar<TArg>(int[], byte, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
             Assert.NotNull(memberViewModel.References.Find(
                 s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
                 ));
@@ -313,8 +313,8 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
             Assert.Equal("Foo.Bar.FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Uid);
             Assert.Equal("FooBar``1(System.Int32[],System.Byte*,``0,System.Collections.Generic.List{``0[]})", memberViewModel.Items[1].Id);
-            Assert.Equal("FooBar<TArg>(Int32[], Byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
-            Assert.Equal("Foo.Bar.FooBar<TArg>(System.Int32[], System.Byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
+            Assert.Equal("FooBar<TArg>(int[], byte*, TArg, List<TArg[]>)", memberViewModel.Items[1].Name);
+            Assert.Equal("Foo.Bar.FooBar<TArg>(int[], byte*, TArg, System.Collections.Generic.List<TArg[]>)", memberViewModel.Items[1].FullName);
             Assert.NotNull(memberViewModel.References.Find(
                 s => s.Uid.Equals("System.Collections.Generic.List{System.String}")
                 ));

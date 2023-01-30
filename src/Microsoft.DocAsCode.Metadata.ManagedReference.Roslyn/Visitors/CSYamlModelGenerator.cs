@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
                 reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, new());
 
-            reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
-            reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
-            reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+            reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+            reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+            reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
         }
     }
 }

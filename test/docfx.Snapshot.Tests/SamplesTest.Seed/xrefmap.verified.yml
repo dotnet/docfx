@@ -35,14 +35,14 @@ references:
   nameWithType: Cat<T, K>.Cat(T)
   nameWithType.vb: Cat(Of T, K).New(T)
 - uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
-  name: Cat(String, out Int32, String, Boolean)
+  name: Cat(string, out int, string, bool)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_
   commentId: M:CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
-  name.vb: New(String, Int32, String, Boolean)
-  fullName: CatLibrary.Cat<T, K>.Cat(System.String, out System.Int32, System.String, System.Boolean)
-  fullName.vb: CatLibrary.Cat(Of T, K).New(System.String, System.Int32, System.String, System.Boolean)
-  nameWithType: Cat<T, K>.Cat(String, out Int32, String, Boolean)
-  nameWithType.vb: Cat(Of T, K).New(String, Int32, String, Boolean)
+  name.vb: New(String, Integer, String, Boolean)
+  fullName: CatLibrary.Cat<T, K>.Cat(string, out int, string, bool)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(String, Integer, String, Boolean)
+  nameWithType: Cat<T, K>.Cat(string, out int, string, bool)
+  nameWithType.vb: Cat(Of T, K).New(String, Integer, String, Boolean)
 - uid: CatLibrary.Cat`2.#ctor*
   name: Cat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_
@@ -74,10 +74,11 @@ references:
   name: Override CalculateFood Name
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_System_DateTime_
   commentId: M:CatLibrary.Cat`2.CalculateFood(System.DateTime)
+  name.vb: CalculateFood(Date)
   fullName: CatLibrary.Cat<T, K>.CalculateFood(System.DateTime)
-  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(System.DateTime)
+  fullName.vb: CatLibrary.Cat(Of T, K).CalculateFood(Date)
   nameWithType: Cat<T, K>.CalculateFood(DateTime)
-  nameWithType.vb: Cat(Of T, K).CalculateFood(DateTime)
+  nameWithType.vb: Cat(Of T, K).CalculateFood(Date)
 - uid: CatLibrary.Cat`2.CalculateFood*
   name: CalculateFood
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_
@@ -97,13 +98,13 @@ references:
   nameWithType: Cat<T, K>.IAnimal.Eat()
   nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
-  name: IAnimal.Eat(String)
+  name: IAnimal.Eat(string)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Eat_System_String_
   commentId: M:CatLibrary.Cat`2.CatLibrary#IAnimal#Eat(System.String)
   name.vb: ''
-  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat(System.String)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.Eat(string)
   fullName.vb: ''
-  nameWithType: Cat<T, K>.IAnimal.Eat(String)
+  nameWithType: Cat<T, K>.IAnimal.Eat(string)
   nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Eat*
   name: IAnimal.Eat
@@ -122,23 +123,24 @@ references:
   nameWithType: Cat<T, K>.IAnimal.Eat<Tool>(Tool)
   nameWithType.vb: ''
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
-  name: IAnimal.this[Int32]
+  name: IAnimal.this[int]
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_System_Int32_
   commentId: P:CatLibrary.Cat`2.CatLibrary#IAnimal#Item(System.Int32)
-  name.vb: CatLibrary.IAnimal.this[](Int32)
-  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.this[System.Int32]
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.this[](System.Int32)
-  nameWithType: Cat<T, K>.IAnimal.this[Int32]
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.this[](Int32)
+  name.vb: CatLibrary.IAnimal.this[](Integer)
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.this[int]
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.this[](Integer)
+  nameWithType: Cat<T, K>.IAnimal.this[int]
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.this[](Integer)
 - uid: CatLibrary.Cat`2.CatLibrary#IAnimal#Item*
-  name: IAnimal.this[Int32]
+  name: IAnimal.this
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_IAnimal_Item_
   commentId: Overload:CatLibrary.Cat`2.CatLibrary#IAnimal#Item
-  name.vb: CatLibrary.IAnimal.this[](Int32)
-  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.this[System.Int32]
-  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.this[](System.Int32)
-  nameWithType: Cat<T, K>.IAnimal.this[Int32]
-  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.this[](Int32)
+  isSpec: "True"
+  name.vb: CatLibrary.IAnimal.this[]
+  fullName: CatLibrary.Cat<T, K>.CatLibrary.IAnimal.this
+  fullName.vb: CatLibrary.Cat(Of T, K).CatLibrary.IAnimal.this[]
+  nameWithType: Cat<T, K>.IAnimal.this
+  nameWithType.vb: Cat(Of T, K).CatLibrary.IAnimal.this[]
 - uid: CatLibrary.Cat`2.CatLibrary#ICat#eat
   name: ICat.eat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CatLibrary_ICat_eat
@@ -149,12 +151,13 @@ references:
   nameWithType: Cat<T, K>.ICat.eat
   nameWithType.vb: Cat(Of T, K).CatLibrary.ICat.eat
 - uid: CatLibrary.Cat`2.Equals(System.Object)
-  name: Equals(Object)
+  name: Equals(object)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Equals_System_Object_
   commentId: M:CatLibrary.Cat`2.Equals(System.Object)
-  fullName: CatLibrary.Cat<T, K>.Equals(System.Object)
-  fullName.vb: CatLibrary.Cat(Of T, K).Equals(System.Object)
-  nameWithType: Cat<T, K>.Equals(Object)
+  name.vb: Equals(Object)
+  fullName: CatLibrary.Cat<T, K>.Equals(object)
+  fullName.vb: CatLibrary.Cat(Of T, K).Equals(Object)
+  nameWithType: Cat<T, K>.Equals(object)
   nameWithType.vb: Cat(Of T, K).Equals(Object)
 - uid: CatLibrary.Cat`2.Equals*
   name: Equals
@@ -166,14 +169,14 @@ references:
   nameWithType: Cat<T, K>.Equals
   nameWithType.vb: Cat(Of T, K).Equals
 - uid: CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
-  name: GetTailLength(Int32*, params Object[])
+  name: GetTailLength(int*, params object[])
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___
   commentId: M:CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])
-  name.vb: GetTailLength(Int32*, ParamArray Object())
-  fullName: CatLibrary.Cat<T, K>.GetTailLength(System.Int32*, params System.Object[])
-  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(System.Int32*, ParamArray System.Object())
-  nameWithType: Cat<T, K>.GetTailLength(Int32*, params Object[])
-  nameWithType.vb: Cat(Of T, K).GetTailLength(Int32*, ParamArray Object())
+  name.vb: GetTailLength(Integer*, ParamArray Object())
+  fullName: CatLibrary.Cat<T, K>.GetTailLength(int*, params object[])
+  fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength(Integer*, ParamArray Object())
+  nameWithType: Cat<T, K>.GetTailLength(int*, params object[])
+  nameWithType.vb: Cat(Of T, K).GetTailLength(Integer*, ParamArray Object())
 - uid: CatLibrary.Cat`2.GetTailLength*
   name: GetTailLength
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_GetTailLength_
@@ -192,31 +195,32 @@ references:
   nameWithType: Cat<T, K>.isHealthy
   nameWithType.vb: Cat(Of T, K).isHealthy
 - uid: CatLibrary.Cat`2.Item(System.String)
-  name: this[String]
+  name: this[string]
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_System_String_
   commentId: P:CatLibrary.Cat`2.Item(System.String)
   name.vb: this[](String)
-  fullName: CatLibrary.Cat<T, K>.this[System.String]
-  fullName.vb: CatLibrary.Cat(Of T, K).this[](System.String)
-  nameWithType: Cat<T, K>.this[String]
+  fullName: CatLibrary.Cat<T, K>.this[string]
+  fullName.vb: CatLibrary.Cat(Of T, K).this[](String)
+  nameWithType: Cat<T, K>.this[string]
   nameWithType.vb: Cat(Of T, K).this[](String)
 - uid: CatLibrary.Cat`2.Item*
-  name: this[String]
+  name: this
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_
   commentId: Overload:CatLibrary.Cat`2.Item
-  name.vb: this[](String)
-  fullName: CatLibrary.Cat<T, K>.this[System.String]
-  fullName.vb: CatLibrary.Cat(Of T, K).this[](System.String)
-  nameWithType: Cat<T, K>.this[String]
-  nameWithType.vb: Cat(Of T, K).this[](String)
+  isSpec: "True"
+  name.vb: this[]
+  fullName: CatLibrary.Cat<T, K>.this
+  fullName.vb: CatLibrary.Cat(Of T, K).this[]
+  nameWithType: Cat<T, K>.this
+  nameWithType.vb: Cat(Of T, K).this[]
 - uid: CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
-  name: Jump(T, K, ref Boolean)
+  name: Jump(T, K, ref bool)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Jump__0__1_System_Boolean__
   commentId: M:CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)
   name.vb: Jump(T, K, Boolean)
-  fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref System.Boolean)
-  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, System.Boolean)
-  nameWithType: Cat<T, K>.Jump(T, K, ref Boolean)
+  fullName: CatLibrary.Cat<T, K>.Jump(T, K, ref bool)
+  fullName.vb: CatLibrary.Cat(Of T, K).Jump(T, K, Boolean)
+  nameWithType: Cat<T, K>.Jump(T, K, ref bool)
   nameWithType.vb: Cat(Of T, K).Jump(T, K, Boolean)
 - uid: CatLibrary.Cat`2.Jump*
   name: Jump
@@ -245,23 +249,24 @@ references:
   nameWithType: Cat<T, K>.Name
   nameWithType.vb: Cat(Of T, K).Name
 - uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
-  name: operator +(Cat<T, K>, Int32)
+  name: operator +(Cat<T, K>, int)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_
   commentId: M:CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
-  name.vb: +(Cat(Of T, K), Int32)
-  fullName: CatLibrary.Cat<T, K>.operator +(CatLibrary.Cat<T, K>, System.Int32)
-  fullName.vb: CatLibrary.Cat(Of T, K).+(CatLibrary.Cat(Of T, K), System.Int32)
-  nameWithType: Cat<T, K>.operator +(Cat<T, K>, Int32)
-  nameWithType.vb: Cat(Of T, K).+(Cat(Of T, K), Int32)
+  name.vb: +(Cat(Of T, K), Integer)
+  fullName: CatLibrary.Cat<T, K>.operator +(CatLibrary.Cat<T, K>, int)
+  fullName.vb: CatLibrary.Cat(Of T, K).+(CatLibrary.Cat(Of T, K), Integer)
+  nameWithType: Cat<T, K>.operator +(Cat<T, K>, int)
+  nameWithType.vb: Cat(Of T, K).+(Cat(Of T, K), Integer)
 - uid: CatLibrary.Cat`2.op_Addition*
   name: operator +
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_
   commentId: Overload:CatLibrary.Cat`2.op_Addition
-  name.vb: +(Cat(Of T, K), Int32)
+  isSpec: "True"
+  name.vb: +
   fullName: CatLibrary.Cat<T, K>.operator +
-  fullName.vb: CatLibrary.Cat(Of T, K).+(CatLibrary.Cat(Of T, K), System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).+
   nameWithType: Cat<T, K>.operator +
-  nameWithType.vb: Cat(Of T, K).+(Cat(Of T, K), Int32)
+  nameWithType.vb: Cat(Of T, K).+
 - uid: CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom
   name: explicit operator Tom(Cat<T, K>)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom
@@ -276,29 +281,30 @@ references:
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Explicit_
   commentId: Overload:CatLibrary.Cat`2.op_Explicit
   isSpec: "True"
-  name.vb: CType(Cat(Of T, K))
+  name.vb: CType
   fullName: CatLibrary.Cat<T, K>.explicit operator CatLibrary.Tom
-  fullName.vb: CatLibrary.Cat(Of T, K).CType(CatLibrary.Cat(Of T, K))
+  fullName.vb: CatLibrary.Cat(Of T, K).CType
   nameWithType: Cat<T, K>.explicit operator Tom
-  nameWithType.vb: Cat(Of T, K).CType(Cat(Of T, K))
+  nameWithType.vb: Cat(Of T, K).CType
 - uid: CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
-  name: operator -(Cat<T, K>, Int32)
+  name: operator -(Cat<T, K>, int)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_
   commentId: M:CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)
-  name.vb: -(Cat(Of T, K), Int32)
-  fullName: CatLibrary.Cat<T, K>.operator -(CatLibrary.Cat<T, K>, System.Int32)
-  fullName.vb: CatLibrary.Cat(Of T, K).-(CatLibrary.Cat(Of T, K), System.Int32)
-  nameWithType: Cat<T, K>.operator -(Cat<T, K>, Int32)
-  nameWithType.vb: Cat(Of T, K).-(Cat(Of T, K), Int32)
+  name.vb: -(Cat(Of T, K), Integer)
+  fullName: CatLibrary.Cat<T, K>.operator -(CatLibrary.Cat<T, K>, int)
+  fullName.vb: CatLibrary.Cat(Of T, K).-(CatLibrary.Cat(Of T, K), Integer)
+  nameWithType: Cat<T, K>.operator -(Cat<T, K>, int)
+  nameWithType.vb: Cat(Of T, K).-(Cat(Of T, K), Integer)
 - uid: CatLibrary.Cat`2.op_Subtraction*
   name: operator -
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Subtraction_
   commentId: Overload:CatLibrary.Cat`2.op_Subtraction
-  name.vb: -(Cat(Of T, K), Int32)
+  isSpec: "True"
+  name.vb: '-'
   fullName: CatLibrary.Cat<T, K>.operator -
-  fullName.vb: CatLibrary.Cat(Of T, K).-(CatLibrary.Cat(Of T, K), System.Int32)
+  fullName.vb: CatLibrary.Cat(Of T, K).-
   nameWithType: Cat<T, K>.operator -
-  nameWithType.vb: Cat(Of T, K).-(Cat(Of T, K), Int32)
+  nameWithType.vb: Cat(Of T, K).-
 - uid: CatLibrary.Cat`2.ownEat
   name: ownEat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_ownEat
@@ -347,11 +353,14 @@ references:
   fullName: CatLibrary.IAnimal.Eat()
   nameWithType: IAnimal.Eat()
 - uid: CatLibrary.IAnimal.Eat(System.String)
-  name: Eat(String)
+  name: Eat(string)
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_
   commentId: M:CatLibrary.IAnimal.Eat(System.String)
-  fullName: CatLibrary.IAnimal.Eat(System.String)
-  nameWithType: IAnimal.Eat(String)
+  name.vb: Eat(String)
+  fullName: CatLibrary.IAnimal.Eat(string)
+  fullName.vb: CatLibrary.IAnimal.Eat(String)
+  nameWithType: IAnimal.Eat(string)
+  nameWithType.vb: IAnimal.Eat(String)
 - uid: CatLibrary.IAnimal.Eat*
   name: Eat
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_
@@ -369,23 +378,24 @@ references:
   nameWithType: IAnimal.Eat<Tool>(Tool)
   nameWithType.vb: IAnimal.Eat(Of Tool)(Tool)
 - uid: CatLibrary.IAnimal.Item(System.Int32)
-  name: this[Int32]
+  name: this[int]
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_
   commentId: P:CatLibrary.IAnimal.Item(System.Int32)
-  name.vb: this[](Int32)
-  fullName: CatLibrary.IAnimal.this[System.Int32]
-  fullName.vb: CatLibrary.IAnimal.this[](System.Int32)
-  nameWithType: IAnimal.this[Int32]
-  nameWithType.vb: IAnimal.this[](Int32)
+  name.vb: this[](Integer)
+  fullName: CatLibrary.IAnimal.this[int]
+  fullName.vb: CatLibrary.IAnimal.this[](Integer)
+  nameWithType: IAnimal.this[int]
+  nameWithType.vb: IAnimal.this[](Integer)
 - uid: CatLibrary.IAnimal.Item*
-  name: this[Int32]
+  name: this
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_
   commentId: Overload:CatLibrary.IAnimal.Item
-  name.vb: this[](Int32)
-  fullName: CatLibrary.IAnimal.this[System.Int32]
-  fullName.vb: CatLibrary.IAnimal.this[](System.Int32)
-  nameWithType: IAnimal.this[Int32]
-  nameWithType.vb: IAnimal.this[](Int32)
+  isSpec: "True"
+  name.vb: this[]
+  fullName: CatLibrary.IAnimal.this
+  fullName.vb: CatLibrary.IAnimal.this[]
+  nameWithType: IAnimal.this
+  nameWithType.vb: IAnimal.this[]
 - uid: CatLibrary.IAnimal.Name
   name: Name
   href: api/CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name
@@ -418,11 +428,14 @@ references:
   fullName: CatLibrary.ICatExtension
   nameWithType: ICatExtension
 - uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
-  name: Play(ICat, String)
+  name: Play(ICat, string)
   href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_
   commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
-  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, System.String)
-  nameWithType: ICatExtension.Play(ICat, String)
+  name.vb: Play(ICat, String)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, string)
+  fullName.vb: CatLibrary.ICatExtension.Play(CatLibrary.ICat, String)
+  nameWithType: ICatExtension.Play(ICat, string)
+  nameWithType.vb: ICatExtension.Play(ICat, String)
 - uid: CatLibrary.ICatExtension.Play*
   name: Play
   href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_
@@ -431,11 +444,14 @@ references:
   fullName: CatLibrary.ICatExtension.Play
   nameWithType: ICatExtension.Play
 - uid: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
-  name: Sleep(ICat, Int64)
+  name: Sleep(ICat, long)
   href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_
   commentId: M:CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)
-  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, System.Int64)
-  nameWithType: ICatExtension.Sleep(ICat, Int64)
+  name.vb: Sleep(ICat, Long)
+  fullName: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, long)
+  fullName.vb: CatLibrary.ICatExtension.Sleep(CatLibrary.ICat, Long)
+  nameWithType: ICatExtension.Sleep(ICat, long)
+  nameWithType.vb: ICatExtension.Sleep(ICat, Long)
 - uid: CatLibrary.ICatExtension.Sleep*
   name: Sleep
   href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_
@@ -465,13 +481,13 @@ references:
   fullName: CatLibrary.Tom
   nameWithType: Tom
 - uid: CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
-  name: TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
+  name: TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
   href: api/CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__
   commentId: M:CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})
   name.vb: TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
-  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, System.Tuple<System.String, CatLibrary.Tom>)
-  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), System.Tuple(Of System.String, CatLibrary.Tom))
-  nameWithType: Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<String, Tom>)
+  fullName: CatLibrary.Tom.TomMethod(CatLibrary.Complex<CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass>, System.Tuple<string, CatLibrary.Tom>)
+  fullName.vb: CatLibrary.Tom.TomMethod(CatLibrary.Complex(Of CatLibrary.TomFromBaseClass, CatLibrary.TomFromBaseClass), System.Tuple(Of String, CatLibrary.Tom))
+  nameWithType: Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
   nameWithType.vb: Tom.TomMethod(Complex(Of TomFromBaseClass, TomFromBaseClass), Tuple(Of String, Tom))
 - uid: CatLibrary.Tom.TomMethod*
   name: TomMethod
@@ -487,14 +503,14 @@ references:
   fullName: CatLibrary.TomFromBaseClass
   nameWithType: TomFromBaseClass
 - uid: CatLibrary.TomFromBaseClass.#ctor(System.Int32)
-  name: TomFromBaseClass(Int32)
+  name: TomFromBaseClass(int)
   href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_System_Int32_
   commentId: M:CatLibrary.TomFromBaseClass.#ctor(System.Int32)
-  name.vb: New(Int32)
-  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass(System.Int32)
-  fullName.vb: CatLibrary.TomFromBaseClass.New(System.Int32)
-  nameWithType: TomFromBaseClass.TomFromBaseClass(Int32)
-  nameWithType.vb: TomFromBaseClass.New(Int32)
+  name.vb: New(Integer)
+  fullName: CatLibrary.TomFromBaseClass.TomFromBaseClass(int)
+  fullName.vb: CatLibrary.TomFromBaseClass.New(Integer)
+  nameWithType: TomFromBaseClass.TomFromBaseClass(int)
+  nameWithType.vb: TomFromBaseClass.New(Integer)
 - uid: CatLibrary.TomFromBaseClass.#ctor*
   name: TomFromBaseClass
   href: api/CatLibrary.TomFromBaseClass.html#CatLibrary_TomFromBaseClass__ctor_
@@ -618,13 +634,13 @@ references:
   fullName: CSharp10.ReadOnlyRecordStruct
   nameWithType: ReadOnlyRecordStruct
 - uid: CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)
-  name: ReadOnlyRecordStruct(Double, Double, Double)
+  name: ReadOnlyRecordStruct(double, double, double)
   href: api/CSharp10.ReadOnlyRecordStruct.html#CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_
   commentId: M:CSharp10.ReadOnlyRecordStruct.#ctor(System.Double,System.Double,System.Double)
   name.vb: New(Double, Double, Double)
-  fullName: CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(System.Double, System.Double, System.Double)
-  fullName.vb: CSharp10.ReadOnlyRecordStruct.New(System.Double, System.Double, System.Double)
-  nameWithType: ReadOnlyRecordStruct.ReadOnlyRecordStruct(Double, Double, Double)
+  fullName: CSharp10.ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)
+  fullName.vb: CSharp10.ReadOnlyRecordStruct.New(Double, Double, Double)
+  nameWithType: ReadOnlyRecordStruct.ReadOnlyRecordStruct(double, double, double)
   nameWithType.vb: ReadOnlyRecordStruct.New(Double, Double, Double)
 - uid: CSharp10.ReadOnlyRecordStruct.#ctor*
   name: ReadOnlyRecordStruct
@@ -682,13 +698,13 @@ references:
   fullName: CSharp10.RecordClass
   nameWithType: RecordClass
 - uid: CSharp10.RecordClass.#ctor(System.String,System.String)
-  name: RecordClass(String, String)
+  name: RecordClass(string, string)
   href: api/CSharp10.RecordClass.html#CSharp10_RecordClass__ctor_System_String_System_String_
   commentId: M:CSharp10.RecordClass.#ctor(System.String,System.String)
   name.vb: New(String, String)
-  fullName: CSharp10.RecordClass.RecordClass(System.String, System.String)
-  fullName.vb: CSharp10.RecordClass.New(System.String, System.String)
-  nameWithType: RecordClass.RecordClass(String, String)
+  fullName: CSharp10.RecordClass.RecordClass(string, string)
+  fullName.vb: CSharp10.RecordClass.New(String, String)
+  nameWithType: RecordClass.RecordClass(string, string)
   nameWithType.vb: RecordClass.New(String, String)
 - uid: CSharp10.RecordClass.#ctor*
   name: RecordClass
@@ -733,14 +749,14 @@ references:
   fullName: CSharp10.RecordStruct
   nameWithType: RecordStruct
 - uid: CSharp10.RecordStruct.#ctor(System.DateTime,System.Double)
-  name: RecordStruct(DateTime, Double)
+  name: RecordStruct(DateTime, double)
   href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_System_DateTime_System_Double_
   commentId: M:CSharp10.RecordStruct.#ctor(System.DateTime,System.Double)
-  name.vb: New(DateTime, Double)
-  fullName: CSharp10.RecordStruct.RecordStruct(System.DateTime, System.Double)
-  fullName.vb: CSharp10.RecordStruct.New(System.DateTime, System.Double)
-  nameWithType: RecordStruct.RecordStruct(DateTime, Double)
-  nameWithType.vb: RecordStruct.New(DateTime, Double)
+  name.vb: New(Date, Double)
+  fullName: CSharp10.RecordStruct.RecordStruct(System.DateTime, double)
+  fullName.vb: CSharp10.RecordStruct.New(Date, Double)
+  nameWithType: RecordStruct.RecordStruct(DateTime, double)
+  nameWithType.vb: RecordStruct.New(Date, Double)
 - uid: CSharp10.RecordStruct.#ctor*
   name: RecordStruct
   href: api/CSharp10.RecordStruct.html#CSharp10_RecordStruct__ctor_
@@ -806,11 +822,11 @@ references:
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Addition
   isSpec: "True"
-  name.vb: +(T, T)
+  name.vb: +
   fullName: CSharp11.CheckedUserDefinedOperators<T>.operator +
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).+(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).+
   nameWithType: CheckedUserDefinedOperators<T>.operator +
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).+(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).+
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)
   name: operator checked +(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition__0__0_
@@ -869,22 +885,22 @@ references:
   nameWithType: CheckedUserDefinedOperators<T>.operator checked /
   nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedDivision
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
-  name: explicit operator checked Int32(T)
+  name: explicit operator checked int(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit__0__System_Int32
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit(`0)~System.Int32
   name.vb: op_CheckedExplicit(T)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked System.Int32(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked int(T)
   fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
-  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked Int32(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked int(T)
   nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedExplicit(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit*
-  name: explicit operator checked Int32
+  name: explicit operator checked int
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_CheckedExplicit
   name.vb: op_CheckedExplicit
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked System.Int32
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked int
   fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).op_CheckedExplicit
-  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked Int32
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator checked int
   nameWithType.vb: CheckedUserDefinedOperators(Of T).op_CheckedExplicit
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)
   name: operator checked ++(T)
@@ -995,29 +1011,29 @@ references:
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Division
   isSpec: "True"
-  name.vb: /(T, T)
+  name.vb: /
   fullName: CSharp11.CheckedUserDefinedOperators<T>.operator /
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)./(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T)./
   nameWithType: CheckedUserDefinedOperators<T>.operator /
-  nameWithType.vb: CheckedUserDefinedOperators(Of T)./(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T)./
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
-  name: explicit operator Int32(T)
+  name: explicit operator int(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit__0__System_Int32
   commentId: M:CSharp11.CheckedUserDefinedOperators`1.op_Explicit(`0)~System.Int32
   name.vb: CType(T)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator System.Int32(T)
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator int(T)
   fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType(T)
-  nameWithType: CheckedUserDefinedOperators<T>.explicit operator Int32(T)
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator int(T)
   nameWithType.vb: CheckedUserDefinedOperators(Of T).CType(T)
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Explicit*
-  name: explicit operator Int32
+  name: explicit operator int
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Explicit_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Explicit
-  name.vb: CType(T)
-  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator System.Int32
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType(T)
-  nameWithType: CheckedUserDefinedOperators<T>.explicit operator Int32
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).CType(T)
+  name.vb: CType
+  fullName: CSharp11.CheckedUserDefinedOperators<T>.explicit operator int
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).CType
+  nameWithType: CheckedUserDefinedOperators<T>.explicit operator int
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).CType
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)
   name: operator ++(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment__0_
@@ -1051,11 +1067,11 @@ references:
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Multiply
   isSpec: "True"
-  name.vb: '*(T, T)'
+  name.vb: '*'
   fullName: CSharp11.CheckedUserDefinedOperators<T>.operator *
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).*(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).*
   nameWithType: CheckedUserDefinedOperators<T>.operator *
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).*(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).*
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)
   name: operator -(T, T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction__0__0_
@@ -1070,11 +1086,11 @@ references:
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_Subtraction
   isSpec: "True"
-  name.vb: -(T, T)
+  name.vb: '-'
   fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T, T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-
   nameWithType: CheckedUserDefinedOperators<T>.operator -
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T, T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-
 - uid: CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)
   name: operator -(T)
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation__0_
@@ -1089,11 +1105,11 @@ references:
   href: api/CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation_
   commentId: Overload:CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation
   isSpec: "True"
-  name.vb: -(T)
+  name.vb: '-'
   fullName: CSharp11.CheckedUserDefinedOperators<T>.operator -
-  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-(T)
+  fullName.vb: CSharp11.CheckedUserDefinedOperators(Of T).-
   nameWithType: CheckedUserDefinedOperators<T>.operator -
-  nameWithType.vb: CheckedUserDefinedOperators(Of T).-(T)
+  nameWithType.vb: CheckedUserDefinedOperators(Of T).-
 - uid: CSharp11.RequiredModifier
   name: RequiredModifier
   href: api/CSharp11.RequiredModifier.html
@@ -1319,11 +1335,11 @@ references:
   href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_
   commentId: Overload:CSharp8.DefaultInterfaceMembers.op_UnaryPlus
   isSpec: "True"
-  name.vb: +(DefaultInterfaceMembers)
+  name.vb: +
   fullName: CSharp8.DefaultInterfaceMembers.operator +
-  fullName.vb: CSharp8.DefaultInterfaceMembers.+(CSharp8.DefaultInterfaceMembers)
+  fullName.vb: CSharp8.DefaultInterfaceMembers.+
   nameWithType: DefaultInterfaceMembers.operator +
-  nameWithType.vb: DefaultInterfaceMembers.+(DefaultInterfaceMembers)
+  nameWithType.vb: DefaultInterfaceMembers.+
 - uid: CSharp8.DefaultInterfaceMembers.X
   name: X
   href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_X
@@ -1369,11 +1385,14 @@ references:
   fullName: CSharp8.Issue4007
   nameWithType: Issue4007
 - uid: CSharp8.Issue4007.SomeMethod(System.Int32)
-  name: SomeMethod(Int32)
+  name: SomeMethod(int)
   href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeMethod_System_Int32_
   commentId: M:CSharp8.Issue4007.SomeMethod(System.Int32)
-  fullName: CSharp8.Issue4007.SomeMethod(System.Int32)
-  nameWithType: Issue4007.SomeMethod(Int32)
+  name.vb: SomeMethod(Integer)
+  fullName: CSharp8.Issue4007.SomeMethod(int)
+  fullName.vb: CSharp8.Issue4007.SomeMethod(Integer)
+  nameWithType: Issue4007.SomeMethod(int)
+  nameWithType.vb: Issue4007.SomeMethod(Integer)
 - uid: CSharp8.Issue4007.SomeMethod*
   name: SomeMethod
   href: api/CSharp8.Issue4007.html#CSharp8_Issue4007_SomeMethod_
@@ -1443,8 +1462,11 @@ references:
   name: IsExpression(DateTime)
   href: api/CSharp8.Misc.html#CSharp8_Misc_IsExpression_System_DateTime_
   commentId: M:CSharp8.Misc.IsExpression(System.DateTime)
+  name.vb: IsExpression(Date)
   fullName: CSharp8.Misc.IsExpression(System.DateTime)
+  fullName.vb: CSharp8.Misc.IsExpression(Date)
   nameWithType: Misc.IsExpression(DateTime)
+  nameWithType.vb: Misc.IsExpression(Date)
 - uid: CSharp8.Misc.IsExpression*
   name: IsExpression
   href: api/CSharp8.Misc.html#CSharp8_Misc_IsExpression_
@@ -1479,11 +1501,14 @@ references:
   fullName: CSharp8.Misc.StackallocInNestedExpressions
   nameWithType: Misc.StackallocInNestedExpressions
 - uid: CSharp8.Misc.StaticLocalFunctions(System.Int32)
-  name: StaticLocalFunctions(Int32)
+  name: StaticLocalFunctions(int)
   href: api/CSharp8.Misc.html#CSharp8_Misc_StaticLocalFunctions_System_Int32_
   commentId: M:CSharp8.Misc.StaticLocalFunctions(System.Int32)
-  fullName: CSharp8.Misc.StaticLocalFunctions(System.Int32)
-  nameWithType: Misc.StaticLocalFunctions(Int32)
+  name.vb: StaticLocalFunctions(Integer)
+  fullName: CSharp8.Misc.StaticLocalFunctions(int)
+  fullName.vb: CSharp8.Misc.StaticLocalFunctions(Integer)
+  nameWithType: Misc.StaticLocalFunctions(int)
+  nameWithType.vb: Misc.StaticLocalFunctions(Integer)
 - uid: CSharp8.Misc.StaticLocalFunctions*
   name: StaticLocalFunctions
   href: api/CSharp8.Misc.html#CSharp8_Misc_StaticLocalFunctions_
@@ -1524,13 +1549,13 @@ references:
   fullName: CSharp8.NullableReferenceTypes
   nameWithType: NullableReferenceTypes
 - uid: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
-  name: DoSomething(List<String?>?)
+  name: DoSomething(List<string?>?)
   href: api/CSharp8.NullableReferenceTypes.html#CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__
   commentId: M:CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})
   name.vb: DoSomething(List(Of String))
-  fullName: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List<System.String>)
-  fullName.vb: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List(Of System.String))
-  nameWithType: NullableReferenceTypes.DoSomething(List<String?>?)
+  fullName: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List<string?>?)
+  fullName.vb: CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List(Of String))
+  nameWithType: NullableReferenceTypes.DoSomething(List<string?>?)
   nameWithType.vb: NullableReferenceTypes.DoSomething(List(Of String))
 - uid: CSharp8.NullableReferenceTypes.DoSomething*
   name: DoSomething
@@ -1642,14 +1667,14 @@ references:
   fullName: CSharp9.FunctionPointers
   nameWithType: FunctionPointers
 - uid: CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
-  name: Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)
+  name: Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
   href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_System_Action_System_Int32_______
   commentId: M:CSharp9.FunctionPointers.Example(System.Action{System.Int32},,,,,)
-  name.vb: Example(Action(Of Int32), , , , , )
-  fullName: CSharp9.FunctionPointers.Example(System.Action<System.Int32>, delegate*<System.Int32, System.Void>, delegate*<System.Int32, System.Int32>, delegate* unmanaged<System.Int32, System.Int32>, delegate* unmanaged[Cdecl]<System.Int32, System.Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<System.Int32, System.Int32>)
-  fullName.vb: CSharp9.FunctionPointers.Example(System.Action(Of System.Int32), , , , , )
-  nameWithType: FunctionPointers.Example(Action<Int32>, delegate*<Int32, Void>, delegate*<Int32, Int32>, delegate* unmanaged<Int32, Int32>, delegate* unmanaged[Cdecl]<Int32, Int32>, delegate* unmanaged[Stdcall, SuppressGCTransition]<Int32, Int32>)
-  nameWithType.vb: FunctionPointers.Example(Action(Of Int32), , , , , )
+  name.vb: Example(Action(Of Integer), , , , , )
+  fullName: CSharp9.FunctionPointers.Example(System.Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
+  fullName.vb: CSharp9.FunctionPointers.Example(System.Action(Of Integer), , , , , )
+  nameWithType: FunctionPointers.Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>)
+  nameWithType.vb: FunctionPointers.Example(Action(Of Integer), , , , , )
 - uid: CSharp9.FunctionPointers.Example*
   name: Example
   href: api/CSharp9.FunctionPointers.html#CSharp9_FunctionPointers_Example_
@@ -1733,13 +1758,13 @@ references:
   fullName: CSharp9.RecordTypes.Person
   nameWithType: RecordTypes.Person
 - uid: CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
-  name: Person(String, String)
+  name: Person(string, string)
   href: api/CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person__ctor_System_String_System_String_
   commentId: M:CSharp9.RecordTypes.Person.#ctor(System.String,System.String)
   name.vb: New(String, String)
-  fullName: CSharp9.RecordTypes.Person.Person(System.String, System.String)
-  fullName.vb: CSharp9.RecordTypes.Person.New(System.String, System.String)
-  nameWithType: RecordTypes.Person.Person(String, String)
+  fullName: CSharp9.RecordTypes.Person.Person(string, string)
+  fullName.vb: CSharp9.RecordTypes.Person.New(String, String)
+  nameWithType: RecordTypes.Person.Person(string, string)
   nameWithType.vb: RecordTypes.Person.New(String, String)
 - uid: CSharp9.RecordTypes.Person.#ctor*
   name: Person
@@ -1784,14 +1809,14 @@ references:
   fullName: CSharp9.RecordTypes.Teacher
   nameWithType: RecordTypes.Teacher
 - uid: CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
-  name: Teacher(String, String, Int32)
+  name: Teacher(string, string, int)
   href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_System_String_System_String_System_Int32_
   commentId: M:CSharp9.RecordTypes.Teacher.#ctor(System.String,System.String,System.Int32)
-  name.vb: New(String, String, Int32)
-  fullName: CSharp9.RecordTypes.Teacher.Teacher(System.String, System.String, System.Int32)
-  fullName.vb: CSharp9.RecordTypes.Teacher.New(System.String, System.String, System.Int32)
-  nameWithType: RecordTypes.Teacher.Teacher(String, String, Int32)
-  nameWithType.vb: RecordTypes.Teacher.New(String, String, Int32)
+  name.vb: New(String, String, Integer)
+  fullName: CSharp9.RecordTypes.Teacher.Teacher(string, string, int)
+  fullName.vb: CSharp9.RecordTypes.Teacher.New(String, String, Integer)
+  nameWithType: RecordTypes.Teacher.Teacher(string, string, int)
+  nameWithType.vb: RecordTypes.Teacher.New(String, String, Integer)
 - uid: CSharp9.RecordTypes.Teacher.#ctor*
   name: Teacher
   href: api/CSharp9.RecordTypes.Teacher.html#CSharp9_RecordTypes_Teacher__ctor_
@@ -1912,13 +1937,13 @@ references:
   fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
   nameWithType: ContainersRefType.ContainersRefTypeEventHandler
 - uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  name: ContainersRefTypeNonRefMethod(params Object[])
+  name: ContainersRefTypeNonRefMethod(params object[])
   href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
   commentId: M:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
   name.vb: ContainersRefTypeNonRefMethod(ParamArray Object())
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params System.Object[])
-  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray System.Object())
-  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params Object[])
+  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
+  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
   nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
 - uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*
   name: ContainersRefTypeNonRefMethod
@@ -2093,11 +2118,14 @@ references:
   fullName: VBTestClass1.Class1.Keyword
   nameWithType: Class1.Keyword
 - uid: VBTestClass1.Class1.Value(System.String)
-  name: Value(String)
+  name: Value(string)
   href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_System_String_
   commentId: M:VBTestClass1.Class1.Value(System.String)
-  fullName: VBTestClass1.Class1.Value(System.String)
-  nameWithType: Class1.Value(String)
+  name.vb: Value(String)
+  fullName: VBTestClass1.Class1.Value(string)
+  fullName.vb: VBTestClass1.Class1.Value(String)
+  nameWithType: Class1.Value(string)
+  nameWithType.vb: Class1.Value(String)
 - uid: VBTestClass1.Class1.Value*
   name: Value
   href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_

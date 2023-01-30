@@ -164,7 +164,7 @@
               },
               {
                 "lang": "vb",
-                "value": "DateTime"
+                "value": "Date"
               }
             ],
             "nameWithType": [
@@ -174,7 +174,7 @@
               },
               {
                 "lang": "vb",
-                "value": "DateTime"
+                "value": "Date"
               }
             ],
             "fullName": [
@@ -184,7 +184,7 @@
               },
               {
                 "lang": "vb",
-                "value": "System.DateTime"
+                "value": "Date"
               }
             ],
             "specName": [
@@ -385,7 +385,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -395,7 +395,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -405,21 +405,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object"
+          "value": "object"
         },
         {
           "lang": "vb",
-          "value": "System.Object"
+          "value": "Object"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
       "level": 0,
@@ -487,7 +487,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object)"
+          "value": "Equals(object)"
         },
         {
           "lang": "vb",
@@ -497,7 +497,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
@@ -507,17 +507,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "Object.Equals(Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -535,7 +535,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object, Object)"
+          "value": "Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -545,7 +545,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object, Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -555,17 +555,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "Object.Equals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -593,7 +593,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Finalize()"
+          "value": "object.Finalize()"
         },
         {
           "lang": "vb",
@@ -603,11 +603,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Finalize()"
+          "value": "object.Finalize()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Finalize()"
+          "value": "Object.Finalize()"
         }
       ],
       "specName": [
@@ -641,7 +641,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
@@ -651,11 +651,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetHashCode()"
+          "value": "Object.GetHashCode()"
         }
       ],
       "specName": [
@@ -689,7 +689,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
@@ -699,11 +699,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetType()"
+          "value": "Object.GetType()"
         }
       ],
       "specName": [
@@ -737,7 +737,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
@@ -747,11 +747,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "Object.MemberwiseClone()"
         }
       ],
       "specName": [
@@ -775,7 +775,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
+          "value": "ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -785,7 +785,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -795,17 +795,17 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "Object.ReferenceEquals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
@@ -833,7 +833,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
@@ -843,11 +843,11 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ToString()"
+          "value": "object.ToString()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ToString()"
+          "value": "Object.ToString()"
         }
       ],
       "specName": [

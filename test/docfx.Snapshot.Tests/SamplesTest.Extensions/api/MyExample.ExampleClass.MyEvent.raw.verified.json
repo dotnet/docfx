@@ -126,7 +126,7 @@
         "name": [
           {
             "lang": "csharp",
-            "value": "Action<String>"
+            "value": "Action<string>"
           },
           {
             "lang": "vb",
@@ -136,7 +136,7 @@
         "nameWithType": [
           {
             "lang": "csharp",
-            "value": "Action<String>"
+            "value": "Action<string>"
           },
           {
             "lang": "vb",
@@ -146,17 +146,17 @@
         "fullName": [
           {
             "lang": "csharp",
-            "value": "Action<System.String>"
+            "value": "Action<string>"
           },
           {
             "lang": "vb",
-            "value": "Action(Of System.String)"
+            "value": "Action(Of String)"
           }
         ],
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>&gt;"
+            "value": "<xref uid=\"Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.String\" text=\"string\"/>&gt;"
           },
           {
             "lang": "vb",

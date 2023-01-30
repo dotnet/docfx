@@ -167,7 +167,7 @@
           "name": [
             {
               "lang": "csharp",
-              "value": "List<String>"
+              "value": "List<string>"
             },
             {
               "lang": "vb",
@@ -177,7 +177,7 @@
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "List<String>"
+              "value": "List<string>"
             },
             {
               "lang": "vb",
@@ -187,17 +187,17 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "System.Collections.Generic.List<System.String>"
+              "value": "System.Collections.Generic.List<string>"
             },
             {
               "lang": "vb",
-              "value": "System.Collections.Generic.List(Of System.String)"
+              "value": "System.Collections.Generic.List(Of String)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"String\"/>&gt;"
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"string\"/>&gt;"
             },
             {
               "lang": "vb",
@@ -214,7 +214,7 @@
           "name": [
             {
               "lang": "csharp",
-              "value": "String"
+              "value": "string"
             },
             {
               "lang": "vb",
@@ -224,7 +224,7 @@
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "String"
+              "value": "string"
             },
             {
               "lang": "vb",
@@ -234,21 +234,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "System.String"
+              "value": "string"
             },
             {
               "lang": "vb",
-              "value": "System.String"
+              "value": "String"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.String\" text=\"String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"string\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.String\" text=\"String\"/>"
+              "value": "<xref uid=\"System.String\" text=\"string\"/>"
             }
           ]
         },

@@ -356,7 +356,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Double"
+                "value": "double"
               },
               {
                 "lang": "vb",
@@ -366,7 +366,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Double"
+                "value": "double"
               },
               {
                 "lang": "vb",
@@ -376,21 +376,21 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Double"
+                "value": "double"
               },
               {
                 "lang": "vb",
-                "value": "System.Double"
+                "value": "Double"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Double\" text=\"Double\"/>"
+                "value": "<xref uid=\"System.Double\" text=\"double\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Double\" text=\"Double\"/>"
+                "value": "<xref uid=\"System.Double\" text=\"double\"/>"
               }
             ]
           }
@@ -593,7 +593,7 @@
           },
           {
             "lang": "vb",
-            "value": "+(DefaultInterfaceMembers)"
+            "value": "+"
           }
         ],
         "nameWithType": [
@@ -603,7 +603,7 @@
           },
           {
             "lang": "vb",
-            "value": "DefaultInterfaceMembers.+(DefaultInterfaceMembers)"
+            "value": "DefaultInterfaceMembers.+"
           }
         ],
         "fullName": [
@@ -613,17 +613,13 @@
           },
           {
             "lang": "vb",
-            "value": "CSharp8.DefaultInterfaceMembers.+(CSharp8.DefaultInterfaceMembers)"
+            "value": "CSharp8.DefaultInterfaceMembers.+"
           }
         ],
         "specName": [
           {
             "lang": "csharp",
             "value": "operator <xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"+\"/>"
-          },
-          {
-            "lang": "vb",
-            "value": "+(<xref uid=\"CSharp8.DefaultInterfaceMembers*\" text=\"DefaultInterfaceMembers\"/>)"
           }
         ]
       },
@@ -695,41 +691,41 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "Int32"
+                "value": "Integer"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "Int32"
+                "value": "Integer"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "System.Int32"
+                "value": "int"
               },
               {
                 "lang": "vb",
-                "value": "System.Int32"
+                "value": "Integer"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"System.Int32\" text=\"Int32\"/>"
+                "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
               }
             ]
           }
