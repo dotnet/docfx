@@ -103,9 +103,6 @@ namespace Microsoft.DocAsCode
         [Option("noLangKeyword", HelpText = "Disable default lang keyword.")]
         public bool? NoLangKeyword { get; set; }
 
-        [Option("intermediateFolder", HelpText = "Set folder for intermediate build results.")]
-        public string IntermediateFolder { get; set; }
-
         [Option("changesFile", HelpText = "Set changes file.")]
         public string ChangesFile { get; set; }
 
@@ -117,9 +114,6 @@ namespace Microsoft.DocAsCode
 
         [Option("keepFileLink", HelpText = "If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.")]
         public bool KeepFileLink { get; set; }
-
-        [Option("cleanupCacheHistory", HelpText = "If set to true, docfx create a new intermediate folder for cache files, historical cache data will be cleaned up")]
-        public bool CleanupCacheHistory { get; set; }
 
         [Option("falName", HelpText = "Set the name of input file abstract layer builder.")]
         public string FALName { get; set; }

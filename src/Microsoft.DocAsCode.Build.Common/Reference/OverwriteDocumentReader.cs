@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Generic;
     using System.Linq;
     using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
 
     using YamlDotNet.Serialization;
     using YamlDotNet.Core;
@@ -34,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new NotSupportedException(file.Type.ToString());
             }
 
-            return new FileModel(file, null, serializer: new BinaryFormatter());
+            return new FileModel(file, null);
         }
 
         /// <summary>

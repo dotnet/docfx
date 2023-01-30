@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Metadata.ManagedReference.FSharp;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
@@ -89,8 +88,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             });
 
             var roslynLoader = new RoslynProjectLoader(_workspace);
-            var fsharpLoader = new FSharpProjectLoader(msbuildProperties);
-            _loader = new AbstractProjectLoader(new IProjectLoader[] {roslynLoader, fsharpLoader});
+            _loader = new AbstractProjectLoader(new IProjectLoader[] { roslynLoader });
         }
 
         public async Task ExtractMetadataAsync()

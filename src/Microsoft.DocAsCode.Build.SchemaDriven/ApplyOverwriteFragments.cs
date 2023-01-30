@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using YamlDotNet.RepresentationModel;
 
     [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteFragments : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class ApplyOverwriteFragments : BaseDocumentBuildStep
     {
         public override string Name => nameof(ApplyOverwriteFragments);
 
@@ -32,8 +32,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 return;
             }
-
-            host.ReportDependencyTo(model, model.MarkdownFragmentsModel.Key, DependencyTypeName.Include);
 
             if (model.MarkdownFragmentsModel.Content == null)
             {
@@ -175,15 +173,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

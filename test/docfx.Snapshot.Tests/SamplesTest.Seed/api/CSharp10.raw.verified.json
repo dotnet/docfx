@@ -39,11 +39,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\" alt=\"CSharp10.ConstantInterpolatedStrings\"/>"
+          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\" alt=\"CSharp10.ConstantInterpolatedStrings\"/>"
+          "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings\" text=\"ConstantInterpolatedStrings\"/>"
         }
       ],
       "level": 0,
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\" alt=\"CSharp10.Issue7737\"/>"
+          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\" alt=\"CSharp10.Issue7737\"/>"
+          "value": "<xref uid=\"CSharp10.Issue7737\" text=\"Issue7737\"/>"
         }
       ],
       "level": 0,
@@ -137,11 +137,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\" alt=\"CSharp10.ParameterlessStructConstructors\"/>"
+          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\" alt=\"CSharp10.ParameterlessStructConstructors\"/>"
+          "value": "<xref uid=\"CSharp10.ParameterlessStructConstructors\" text=\"ParameterlessStructConstructors\"/>"
         }
       ],
       "level": 0,
@@ -186,11 +186,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\" alt=\"CSharp10.ReadOnlyRecordStruct\"/>"
+          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\" alt=\"CSharp10.ReadOnlyRecordStruct\"/>"
+          "value": "<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>"
         }
       ],
       "level": 0,
@@ -235,11 +235,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\" alt=\"CSharp10.RecordClass\"/>"
+          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\" alt=\"CSharp10.RecordClass\"/>"
+          "value": "<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>"
         }
       ],
       "level": 0,
@@ -284,11 +284,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\" alt=\"CSharp10.RecordStruct\"/>"
+          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\" alt=\"CSharp10.RecordStruct\"/>"
+          "value": "<xref uid=\"CSharp10.RecordStruct\" text=\"RecordStruct\"/>"
         }
       ],
       "level": 0,

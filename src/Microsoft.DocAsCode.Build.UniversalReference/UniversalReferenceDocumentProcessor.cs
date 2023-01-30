@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -54,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(file, page, serializer: new BinaryFormatter())
+            return new FileModel(file, page)
             {
                 Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot

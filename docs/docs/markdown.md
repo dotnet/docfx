@@ -2,7 +2,31 @@
 
 [Markdown](https://daringfireball.net/projects/markdown/) is a lightweight markup language with plain text formatting syntax. Docfx supports [CommonMark](https://commonmark.org/) compliant Markdown parsed through the [Markdig](https://github.com/xoofx/markdig) parsing engine.
 
+## Markdown Extensions
+
 Docfx supports additional markdown syntax that provide richer content. These syntax are specific to docfx and won't be rendered elsewhere like GitHub.
+
+To use a custom markdown extension:
+
+1. Use docfx as a NuGet library:
+
+```xml
+<PackageReference Include="Microsoft.DocAsCode.App" Version="2.61.0" />
+```
+
+2. Configure the markdig markdown pipeline:
+
+```cs
+var options = new BuildOptions
+{
+    // Enable custom markdown extensions here
+    ConfigureMarkdig = pipeline => pipeline.UseCitations(),
+}
+
+await Docset.Build("docfx.json", options);
+```
+
+Here is a list of markdown extensions provided by docfx by default.
 
 ## Alerts
 

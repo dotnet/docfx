@@ -1080,7 +1080,7 @@ exports.getOptions = function (){
             string versionDir = null,
             string falName = null)
         {
-            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
             if (applyTemplateSettings == null)
             {
                 applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);

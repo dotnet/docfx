@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -156,8 +155,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IMarkdownService MarkdownService { get; set; }
 
         public ICustomHrefGenerator HrefGenerator { get; }
-
-        internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 
         internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();
 

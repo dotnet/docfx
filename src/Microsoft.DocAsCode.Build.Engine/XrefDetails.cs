@@ -185,6 +185,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return (GetDefaultPlainTextNode(value), false);
                     }
                 }
+                if (!string.IsNullOrEmpty(Text))
+                {
+                    return (GetDefaultPlainTextNode(Text), false);
+                }
                 return (GetDefaultPlainTextNode(Uid), false);
             }
         }

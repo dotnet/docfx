@@ -1,8 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />

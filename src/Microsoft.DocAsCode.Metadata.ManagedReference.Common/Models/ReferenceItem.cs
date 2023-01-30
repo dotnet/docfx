@@ -18,7 +18,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
-        public SortedList<SyntaxLanguage, List<LinkItem>> Parts { get; set; }
+        public SortedList<SyntaxLanguage, List<LinkItem>> NameParts { get; set; }
+
+        [YamlMember(Alias = "nameWithType")]
+        [JsonProperty("nameWithType")]
+        public SortedList<SyntaxLanguage, List<LinkItem>> NameWithTypeParts { get; set; }
+
+        [YamlMember(Alias = "qualifiedName")]
+        [JsonProperty("qualifiedName")]
+        public SortedList<SyntaxLanguage, List<LinkItem>> QualifiedNameParts { get; set; }
 
         [YamlMember(Alias = "isDefinition")]
         [JsonProperty("isDefinition")]
@@ -39,17 +47,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public ReferenceItem Clone()
         {
             var result = (ReferenceItem)MemberwiseClone();
-            if (Parts != null)
+            result.NameParts = CloneParts(result.NameParts);
+            result.NameWithTypeParts = CloneParts(result.NameWithTypeParts);
+            result.QualifiedNameParts = CloneParts(result.QualifiedNameParts);
+            return result;
+
+            SortedList<SyntaxLanguage, List<LinkItem>> CloneParts(SortedList<SyntaxLanguage, List<LinkItem>> parts)
             {
-                var dict = new SortedList<SyntaxLanguage, List<LinkItem>>(Parts.Count);
-                foreach (var item in Parts)
+                if (parts is null)
+                    return null;
+
+                var dict = new SortedList<SyntaxLanguage, List<LinkItem>>(parts.Count);
+                foreach (var item in parts)
                 {
                     dict.Add(item.Key, (from x in item.Value select x.Clone()).ToList());
                 }
-                result.Parts = dict;
+                return dict;
             }
-
-            return result;
         }
 
         private static T? Merge<T>(T? source, T? target) where T : struct
@@ -97,44 +111,52 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 CommentId = MergeCommentId(other.CommentId, CommentId);
             }
 
-            if (other.Parts != null && Parts != null)
+            NameParts = MergeParts(NameParts, other.NameParts);
+            NameWithTypeParts = MergeParts(NameWithTypeParts, other.NameWithTypeParts);
+            QualifiedNameParts = MergeParts(QualifiedNameParts, other.QualifiedNameParts);
+
+            SortedList<SyntaxLanguage, List<LinkItem>> MergeParts(SortedList<SyntaxLanguage, List<LinkItem>> self, SortedList<SyntaxLanguage, List<LinkItem>> other)
             {
-                foreach (var pair in other.Parts)
+                if (other != null && self != null)
                 {
-                    var sourceParts = pair.Value;
-                    if (Parts.TryGetValue(pair.Key, out List<LinkItem> targetParts))
+                    foreach (var pair in other)
                     {
-                        if (sourceParts.Count == 0)
+                        var sourceParts = pair.Value;
+                        if (self.TryGetValue(pair.Key, out List<LinkItem> targetParts))
                         {
-                            continue;
-                        }
-                        if (targetParts.Count == 0)
-                        {
-                            targetParts.AddRange(sourceParts);
-                            continue;
-                        }
-
-                        Debug.Assert(sourceParts.Count == targetParts.Count);
-
-                        if (sourceParts.Count == targetParts.Count)
-                        {
-                            for (int i = 0; i < sourceParts.Count; i++)
+                            if (sourceParts.Count == 0)
                             {
-                                Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
-                                targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
-                                targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
+                                continue;
+                            }
+                            if (targetParts.Count == 0)
+                            {
+                                targetParts.AddRange(sourceParts);
+                                continue;
+                            }
+
+                            Debug.Assert(sourceParts.Count == targetParts.Count);
+
+                            if (sourceParts.Count == targetParts.Count)
+                            {
+                                for (int i = 0; i < sourceParts.Count; i++)
+                                {
+                                    Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
+                                    targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
+                                    targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
+                                }
                             }
                         }
+                        else
+                        {
+                            self.Add(pair.Key, pair.Value);
+                        }
                     }
-                    else
-                    {
-                        Parts.Add(pair.Key, pair.Value);
-                    }
+                    return self;
                 }
-            }
-            else
-            {
-                Parts = Parts ?? other.Parts;
+                else
+                {
+                    return self ?? other;
+                }
             }
         }
     }
@@ -148,14 +170,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
         public string DisplayName { get; set; }
-
-        [YamlMember(Alias = "nameWithType")]
-        [JsonProperty("nameWithType")]
-        public string DisplayNamesWithType { get; set; }
-
-        [YamlMember(Alias = "qualifiedName")]
-        [JsonProperty("qualifiedName")]
-        public string DisplayQualifiedNames { get; set; }
 
         /// <summary>
         /// The external path for current source if it is not locally available
@@ -171,9 +185,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        public LinkItem Clone()
-        {
-            return (LinkItem)MemberwiseClone();
-        }
+        public LinkItem Clone() => (LinkItem)MemberwiseClone();
+
+        public override string ToString() => DisplayName;
     }
 }

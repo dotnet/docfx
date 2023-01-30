@@ -3,15 +3,10 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Reflection;
     using Xunit;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.VisualBasic;
-    using Microsoft.CodeAnalysis.Emit;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
@@ -54,9 +49,7 @@ End Namespace
                 Assert.Equal("Class2(Of T)", type.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Class2(Of T)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Class2`1", type.Name);
-                Assert.Equal(@"Public Class Class2(Of T)
-    Inherits List(Of T)
-    Implements IList(Of T), ICollection(Of T), IReadOnlyList(Of T), IReadOnlyCollection(Of T), IEnumerable(Of T), IList, ICollection, IEnumerable", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Public Class Class2(Of T) Inherits List(Of T) Implements IList(Of T), ICollection(Of T), IReadOnlyList(Of T), IReadOnlyCollection(Of T), IEnumerable(Of T), IList, ICollection, IEnumerable", type.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[2];
@@ -156,8 +149,7 @@ End Namespace
                 Assert.Equal("IC(Of TItem)", type.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IC(Of TItem)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IC`1", type.Name);
-                Assert.Equal(@"Public Interface IC(Of TItem As {IA, New})
-    Inherits IA, IB(Of TItem())", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Public Interface IC(Of TItem As {IA, New}) Inherits IA, IB(Of TItem())", type.Syntax.Content[SyntaxLanguage.VB]);
             }
         }
 
@@ -204,8 +196,7 @@ End Namespace
                 Assert.Equal("S3(Of T1, T2)", type.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.S3(Of T1, T2)", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.S3`2", type.Name);
-                Assert.Equal(@"Public Structure S3(Of T1 As {Class, IA, New}, T2 As IB(Of T1))
-    Implements IA, IB(Of T1())", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Public Structure S3(Of T1 As {Class, IA, New}, T2 As IB(Of T1)) Implements IA, IB(Of T1())", type.Syntax.Content[SyntaxLanguage.VB]);
             }
         }
 
@@ -254,7 +245,7 @@ Namespace Test1
             Assert.Equal("Foo.SubFoo", subFoo.DisplayNames[SyntaxLanguage.VB]);
             Assert.Equal("Foo.SubFoo", subFoo.DisplayNamesWithType[SyntaxLanguage.VB]);
             Assert.Equal("Test1.Foo.SubFoo", subFoo.DisplayQualifiedNames[SyntaxLanguage.VB]);
-            Assert.Equal("Public Class SubFoo\r\n    Implements Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Class Foo.SubFoo Implements Foo.IFoo", subFoo.Syntax.Content[SyntaxLanguage.VB]);
             Assert.NotNull(subFoo.Implements);
             Assert.Equal("Test1.Foo.IFoo", subFoo.Implements[0]);
         }
@@ -303,7 +294,7 @@ End Namespace
                 Assert.Equal("D1", type.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.D1", type.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.D1", type.Name);
-                Assert.Equal(@"Public Delegate Sub D1", type.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Public Delegate Sub D1()", type.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var type = output.Items[0].Items[1];
@@ -384,8 +375,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("M1(Int32, ParamArray Int32())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).M1(System.Int32, ParamArray System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("M1(Integer, ParamArray Integer())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).M1(Integer, ParamArray Integer())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Public Overridable Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -403,7 +394,7 @@ End Namespace
                 Assert.Equal("M3()", method.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo(Of T).M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.M3", method.Name);
-                Assert.Equal("Public Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal("Public Sub M3()", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[3];
@@ -417,8 +408,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[1].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("M1(Int32, Int32())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.M1(System.Int32, System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("M1(Integer, Integer())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.M1(Integer, Integer())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Public Overrides Sub M1(x As Integer, y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -436,14 +427,14 @@ End Namespace
                 Assert.Equal("M3()", method.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.M3", method.Name);
-                Assert.Equal("Public Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal("Public Sub M3()", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             // IFooBar
             {
                 var method = output.Items[0].Items[2].Items[0];
                 Assert.NotNull(method);
-                Assert.Equal("M1(Int32, ParamArray Int32())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.IFooBar.M1(System.Int32, ParamArray System.Int32())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("M1(Integer, ParamArray Integer())", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.IFooBar.M1(Integer, ParamArray Integer())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M1(System.Int32,System.Int32[])", method.Name);
                 Assert.Equal("Sub M1(x As Integer, ParamArray y As Integer())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -461,7 +452,7 @@ End Namespace
                 Assert.Equal("M3()", method.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M3()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.M3", method.Name);
-                Assert.Equal("Sub M3", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal("Sub M3()", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             // inheritance of Foo<T>
             {
@@ -694,16 +685,16 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[13];
                 Assert.NotNull(method);
-                Assert.Equal(">>(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.>>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">>(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>>(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_RightShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator >>(x As Foo, y As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[14];
                 Assert.NotNull(method);
-                Assert.Equal("<<(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.<<(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<<(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<<(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LeftShift(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <<(x As Foo, y As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -711,48 +702,48 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[15];
                 Assert.NotNull(method);
-                Assert.Equal("=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("=(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.=(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Equality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator =(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[16];
                 Assert.NotNull(method);
-                Assert.Equal("<>(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.<>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<>(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<>(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Inequality(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <>(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[17];
                 Assert.NotNull(method);
-                Assert.Equal(">(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.>(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_GreaterThan(Test1.Foo,System.Int32)", method.Name);
-                Assert.Equal(@"Public Shared Operator>(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Public Shared Operator >(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[18];
                 Assert.NotNull(method);
-                Assert.Equal("<(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.<(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LessThan(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[19];
                 Assert.NotNull(method);
-                Assert.Equal(">=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.>=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal(">=(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.>=(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_GreaterThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator >=(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[0].Items[20];
                 Assert.NotNull(method);
-                Assert.Equal("<=(Foo, Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.<=(Test1.Foo, System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("<=(Foo, Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.<=(Test1.Foo, Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_LessThanOrEqual(Test1.Foo,System.Int32)", method.Name);
                 Assert.Equal(@"Public Shared Operator <=(x As Foo, y As Integer) As Boolean", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -760,8 +751,8 @@ End Namespace
             {
                 var method = output.Items[0].Items[0].Items[21];
                 Assert.NotNull(method);
-                Assert.Equal("CType(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo.CType(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("CType(Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo.CType(Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo.op_Implicit(System.Int32)~Test1.Foo", method.Name);
                 Assert.Equal(@"Public Shared Widening Operator CType(x As Integer) As Foo", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -813,13 +804,13 @@ End Namespace
                 Assert.Equal("New()", method.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.New()", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.#ctor", method.Name);
-                Assert.Equal("Protected Sub New", method.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal("Protected Sub New()", method.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var method = output.Items[0].Items[1].Items[1];
                 Assert.NotNull(method);
                 Assert.Equal("New(String())", method.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.New(System.String())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.New(String())", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.#ctor(System.String[])", method.Name);
                 Assert.Equal("Public Sub New(x As String())", method.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -962,7 +953,7 @@ End Namespace
                 Assert.Equal("C", c.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo(Of T).C", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.C", c.Name);
-                Assert.Equal("Event C As EventHandler(Of T) Implements IFooBar(Of T).Bar", c.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal("Event C As EventHandler(Of T)", c.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var a = output.Items[0].Items[1].Items[0];
@@ -1063,7 +1054,7 @@ End Namespace
                 Assert.Equal("D", d.DisplayNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo(Of T).D", d.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.D", d.Name);
-                Assert.Equal(@"Protected ReadOnly Property D As Integer", d.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Protected Property D As Integer", d.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var e = output.Items[0].Items[0].Items[4];
@@ -1208,8 +1199,8 @@ End Namespace
             {
                 var a = output.Items[0].Items[0].Items[0];
                 Assert.NotNull(a);
-                Assert.Equal("A(Int32)", a.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).A(System.Int32)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("A(Integer)", a.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).A(Integer)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.A(System.Int32)", a.Name);
                 Assert.Equal("Public Property A(x As Integer) As Integer", a.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1217,7 +1208,7 @@ End Namespace
                 var b = output.Items[0].Items[0].Items[1];
                 Assert.NotNull(b);
                 Assert.Equal("B(String)", b.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).B(System.String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).B(String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.B(System.String)", b.Name);
                 Assert.Equal("Public Overridable ReadOnly Property B(x As String) As Integer", b.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1225,17 +1216,17 @@ End Namespace
                 var c = output.Items[0].Items[0].Items[2];
                 Assert.NotNull(c);
                 Assert.Equal("C(Object)", c.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).C(System.Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).C(Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.C(System.Object)", c.Name);
                 Assert.Equal("Public MustOverride WriteOnly Property C(x As Object) As Integer", c.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var d = output.Items[0].Items[0].Items[3];
                 Assert.NotNull(d);
-                Assert.Equal("D(DateTime)", d.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).D(System.DateTime)", d.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("D(Date)", d.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).D(Date)", d.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.D(System.DateTime)", d.Name);
-                Assert.Equal(@"Protected ReadOnly Property D(x As Date) As Integer", d.Syntax.Content[SyntaxLanguage.VB]);
+                Assert.Equal(@"Protected Property D(x As Date) As Integer", d.Syntax.Content[SyntaxLanguage.VB]);
             }
             {
                 var e = output.Items[0].Items[0].Items[4];
@@ -1248,8 +1239,8 @@ End Namespace
             {
                 var f = output.Items[0].Items[0].Items[5];
                 Assert.NotNull(f);
-                Assert.Equal("F(Int32, T)", f.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Foo(Of T).F(System.Int32, T)", f.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("F(Integer, T)", f.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Foo(Of T).F(Integer, T)", f.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Foo`1.F(System.Int32,`0)", f.Name);
                 Assert.Equal(@"Protected Shared Property F(x As Integer, t As T) As Integer", f.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1257,8 +1248,8 @@ End Namespace
             {
                 var a = output.Items[0].Items[1].Items[0];
                 Assert.NotNull(a);
-                Assert.Equal("A(Int32)", a.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.A(System.Int32)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("A(Integer)", a.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.A(Integer)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.A(System.Int32)", a.Name);
                 Assert.Equal("Public Overridable Property A(x As Integer) As Integer", a.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1266,7 +1257,7 @@ End Namespace
                 var b = output.Items[0].Items[1].Items[1];
                 Assert.NotNull(b);
                 Assert.Equal("B(String)", b.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.B(System.String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.B(String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.B(System.String)", b.Name);
                 Assert.Equal("Public Overrides ReadOnly Property B(x As String) As Integer", b.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1274,7 +1265,7 @@ End Namespace
                 var c = output.Items[0].Items[1].Items[2];
                 Assert.NotNull(c);
                 Assert.Equal("C(Object)", c.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.Bar.C(System.Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.Bar.C(Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.Bar.C(System.Object)", c.Name);
                 Assert.Equal("Public Overrides WriteOnly Property C(x As Object) As Integer", c.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1282,8 +1273,8 @@ End Namespace
             {
                 var a = output.Items[0].Items[2].Items[0];
                 Assert.NotNull(a);
-                Assert.Equal("A(Int32)", a.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.IFooBar.A(System.Int32)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("A(Integer)", a.DisplayNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.IFooBar.A(Integer)", a.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.A(System.Int32)", a.Name);
                 Assert.Equal("Property A(x As Integer) As Integer", a.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1291,7 +1282,7 @@ End Namespace
                 var b = output.Items[0].Items[2].Items[1];
                 Assert.NotNull(b);
                 Assert.Equal("B(String)", b.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.IFooBar.B(System.String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.IFooBar.B(String)", b.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.B(System.String)", b.Name);
                 Assert.Equal("ReadOnly Property B(x As String) As Integer", b.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1299,7 +1290,7 @@ End Namespace
                 var c = output.Items[0].Items[2].Items[2];
                 Assert.NotNull(c);
                 Assert.Equal("C(Object)", c.DisplayNames[SyntaxLanguage.VB]);
-                Assert.Equal("Test1.IFooBar.C(System.Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
+                Assert.Equal("Test1.IFooBar.C(Object)", c.DisplayQualifiedNames[SyntaxLanguage.VB]);
                 Assert.Equal("Test1.IFooBar.C(System.Object)", c.Name);
                 Assert.Equal("WriteOnly Property C(x As Object) As Integer", c.Syntax.Content[SyntaxLanguage.VB]);
             }
@@ -1329,10 +1320,10 @@ End Namespace
 
             var method = output.Items[0].Items[0].Items[0];
             Assert.NotNull(method);
-            Assert.Equal("Bar<K>(Int32)", method.DisplayNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("Bar(Of K)(Int32)", method.DisplayNames[SyntaxLanguage.VB]);
-            Assert.Equal("Test1.Foo<T>.Bar<K>(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("Test1.Foo(Of T).Bar(Of K)(System.Int32)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
+            Assert.Equal("Bar<K>(int)", method.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Bar(Of K)(Integer)", method.DisplayNames[SyntaxLanguage.VB]);
+            Assert.Equal("Test1.Foo<T>.Bar<K>(int)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("Test1.Foo(Of T).Bar(Of K)(Integer)", method.DisplayQualifiedNames[SyntaxLanguage.VB]);
             Assert.Equal("Test1.Foo`1.Bar``1(System.Int32)", method.Name);
             Assert.Single(output.Items);
             var parameter = method.Syntax.Parameters[0];
@@ -1376,11 +1367,10 @@ End Namespace
 <AttributeUsage(AttributeTargets.All, Inherited:=True, AllowMultiple:=True)>
 <TypeConverter(GetType(TestAttribute))>
 <Test(""test"")>
-<Test(New Integer() {1, 2, 3})>
-<Test(New Object() {Nothing, ""abc"", ""d""c, 1.1F, 1.2, CType(2, SByte), CType(3, Byte), CType(4, Short), CType(5, UShort), 6, 8L, 9UL, New Integer() {10, 11, 12}})>
-<Test(New Type() {GetType(Func(Of )), GetType(Func(Of , )), GetType(Func(Of String, String))})>
-Public Class TestAttribute
-    Inherits Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
+<Test(New Integer() { 1, 2, 3 })>
+<Test(New Object() { Nothing, ""abc"", ""d""c, 1.1, 1.2, 2, 3, 4, 5, 6, 8, 9, New Integer() { 10, 11, 12 } })>
+<Test(New Type() { GetType(Func(Of )), GetType(Func(Of ,)), GetType(Func(Of String, String)) })>
+Public Class TestAttribute Inherits Attribute", type.Syntax.Content[SyntaxLanguage.VB]);
             var ctor = type.Items[0];
             Assert.NotNull(type);
             Assert.Equal(@"<Test(1)>
@@ -1410,8 +1400,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Sub Bar(tuple As(prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Sub Bar(tuple As (prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1436,8 +1425,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Sub Bar(tuple As(String, String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Sub Bar(tuple As (String, String))", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1462,8 +1450,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before namespace
-            Assert.Equal("Public Sub Bar(tuple As(String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Sub Bar(tuple As (String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1488,8 +1475,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.ValueTuple{System.String,System.String}[])", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Sub Bar(tuples As(String, String)())", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Sub Bar(tuples As (String, String)())", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1516,8 +1502,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar(System.Collections.Generic.IEnumerable{System.ValueTuple{System.String,System.String}})", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Sub Bar(tuples As IEnumerable(Of(prefix As String, uri As String)))", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Sub Bar(tuples As IEnumerable(Of (prefix As String, uri As String)))", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1543,8 +1528,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Function Bar As(prefix As String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Function Bar() As (prefix As String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1570,8 +1554,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Function Bar As(String, String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Function Bar() As (String, String)", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1597,8 +1580,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Function Bar As(String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Function Bar() As (String, uri As String)", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         [Fact]
@@ -1626,8 +1608,7 @@ End Namespace
             Assert.Single(foo.Items);
             var bar = foo.Items[0];
             Assert.Equal("Test1.Foo.Bar", bar.Name);
-            // TODO: when https://github.com/dotnet/roslyn/issues/29390 will be fixed add space before tuple type
-            Assert.Equal("Public Function Bar As IEnumerable(Of(prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
+            Assert.Equal("Public Function Bar() As IEnumerable(Of (prefix As String, uri As String))", bar.Syntax.Content[SyntaxLanguage.VB]);
         }
 
         private static Compilation CreateCompilationFromVBCode(string code, params MetadataReference[] references)

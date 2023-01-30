@@ -11,17 +11,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class AppendStringPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
+    internal class AppendStringPostProcessor : IPostProcessor
     {
         public const string AppendString = " is processed";
         public const string AdditionalExtensionString = ".html.additional";
-
-        public IPostProcessorHost PostProcessorHost { get; set; }
-
-        public string GetIncrementalContextHash()
-        {
-            return null;
-        }
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {

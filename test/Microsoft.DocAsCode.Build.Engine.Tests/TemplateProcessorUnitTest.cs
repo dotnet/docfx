@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Extension = "html",
                 FileWithoutExtension = Path.GetFullPath(Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(fileName))),
                 LocalPathFromRoot = fileName,
-                Model = new ModelWithCache(content),
+                Content = content,
             };
             return processor.Process(new List<InternalManifestItem> { inputItem }, new ApplyTemplateSettings(_inputFolder, _outputFolder))[0];
         }

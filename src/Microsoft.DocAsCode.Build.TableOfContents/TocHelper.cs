@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             catch (Exception ex)
             {
-                throw new NotSupportedException($"{file} is not a valid TOC file, detail: {ex.Message}.", ex);
+                throw new NotSupportedException($"{file} is not a valid TOC file, detail: {ex.ToString()}.", ex);
             }
             if (obj is TocViewModel vm)
             {

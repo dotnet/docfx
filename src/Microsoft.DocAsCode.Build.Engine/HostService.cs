@@ -7,10 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
@@ -36,19 +33,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableList<string> InvalidSourceFiles { get; set; }
 
-        public ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; set; }
-
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
         public IMarkdownService MarkdownService { get; set; }
 
         public ImmutableList<IInputMetadataValidator> Validators { get; set; }
-
-        public DependencyGraph DependencyGraph { get; set; }
-
-        public bool ShouldTraceIncrementalInfo { get; set; }
-
-        public bool CanIncrementalBuild { get; set; }
 
         public ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
@@ -175,96 +164,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
-        {
-            ReportDependencyTo(currentFileModel, to, DependencyItemSourceType.File, type);
-        }
-
-        public void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type)
-        {
-            if (currentFileModel == null)
-            {
-                throw new ArgumentNullException(nameof(currentFileModel));
-            }
-            if (string.IsNullOrEmpty(to))
-            {
-                throw new ArgumentNullException(nameof(to));
-            }
-            if (toType == null)
-            {
-                throw new ArgumentNullException(nameof(toType));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (DependencyGraph == null)
-            {
-                return;
-            }
-            string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-            string toKey = toType == DependencyItemSourceType.File ?
-                IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to)) :
-                to;
-            ReportDependencyCore(fromKey, new DependencyItemSourceInfo(toType, toKey), fromKey, type);
-        }
-
-        public void ReportDependencyFrom(FileModel currentFileModel, string from, string type)
-        {
-            ReportDependencyFrom(currentFileModel, from, DependencyItemSourceType.File, type);
-        }
-
-        public void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type)
-        {
-            if (currentFileModel == null)
-            {
-                throw new ArgumentNullException(nameof(currentFileModel));
-            }
-            if (string.IsNullOrEmpty(from))
-            {
-                throw new ArgumentNullException(nameof(from));
-            }
-            if (fromType == null)
-            {
-                throw new ArgumentNullException(nameof(fromType));
-            }
-            if (type == null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (DependencyGraph == null)
-            {
-                return;
-            }
-            string fromKey = fromType == DependencyItemSourceType.File ?
-                IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from)) :
-                from;
-            string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-            ReportDependencyCore(new DependencyItemSourceInfo(fromType, fromKey), toKey, toKey, type);
-        }
-
-        public void ReportReference(FileModel currentFileModel, string reference, string referenceType)
-        {
-            if (currentFileModel == null)
-            {
-                throw new ArgumentNullException(nameof(currentFileModel));
-            }
-            if (string.IsNullOrEmpty(reference))
-            {
-                throw new ArgumentNullException(nameof(reference));
-            }
-            if (referenceType == null)
-            {
-                throw new ArgumentNullException(nameof(referenceType));
-            }
-            if (DependencyGraph == null)
-            {
-                return;
-            }
-            string file = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-            DependencyGraph.ReportReference(new ReferenceItem(new DependencyItemSourceInfo(referenceType, reference), file, file));
-        }
-
         public bool HasMetadataValidation => Validators.Count > 0;
 
         public string MarkdownServiceName => MarkdownService.Name;
@@ -333,173 +232,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        #region Incremental Build
-
-        public void RegisterDependencyType()
-        {
-            if (DependencyGraph == null)
-            {
-                return;
-            }
-            BuildPhaseUtility.RunBuildSteps(
-                Processor.BuildSteps,
-                buildStep =>
-                {
-                    if (buildStep is ISupportIncrementalBuildStep)
-                    {
-                        Logger.LogVerbose($"Processor {Processor.Name}, step {buildStep.Name}: Registering DependencyType...");
-                        using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic))
-                        {
-                            var types = (buildStep as ISupportIncrementalBuildStep).GetDependencyTypesToRegister();
-                            if (types == null)
-                            {
-                                return;
-                            }
-                            DependencyGraph.RegisterDependencyType(types);
-                        }
-                    }
-                });
-        }
-
-        public void ReloadModelsPerIncrementalChanges(IncrementalBuildContext incrementalContext, IEnumerable<string> changes, BuildPhase loadedAt)
-        {
-            if (changes == null)
-            {
-                return;
-            }
-            ReloadUnloadedModelsPerCondition(
-                incrementalContext,
-                loadedAt,
-                f =>
-                {
-                    var key = ((RelativePath)f).GetPathFromWorkingFolder().ToString();
-                    return changes.Contains(key);
-                });
-        }
-
-        public void ReloadUnloadedModels(IncrementalBuildContext incrementalContext, BuildPhase loadedAt)
-        {
-            var mi = incrementalContext.GetModelLoadInfo(this);
-            ReloadUnloadedModelsPerCondition(incrementalContext, loadedAt, f => mi[f] == null);
-        }
-
-        public void SaveIntermediateModel(IncrementalBuildContext incrementalContext)
-        {
-            if (!ShouldTraceIncrementalInfo)
-            {
-                return;
-            }
-            var processor = (ISupportIncrementalDocumentProcessor)Processor;
-            var mi = incrementalContext.GetModelLoadInfo(this);
-            var lmm = incrementalContext.GetLastIntermediateModelManifest(this);
-            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
-
-            Parallel.ForEach(mi, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, pair =>
-            {
-                IncrementalUtility.RetryIO(() =>
-                {
-                    var items = new List<ModelManifestItem>();
-                    if (pair.Value == null)
-                    {
-                        if (lmm == null)
-                        {
-                            throw new BuildCacheException($"Full build hasn't loaded model {pair.Key}");
-                        }
-                        if (!lmm.Models.TryGetValue(pair.Key, out List<ModelManifestItem> lfn))
-                        {
-                            throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
-                        }
-
-                        if (FilePathComparerWithEnvironmentVariable.OSPlatformSensitiveRelativePathComparer.Equals(
-                            incrementalContext.BaseDir,
-                            incrementalContext.LastBaseDir))
-                        {
-                            items.AddRange(lfn);
-                        }
-                        else
-                        {
-                            foreach (var item in lfn)
-                            {
-                                // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
-                                string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
-                                File.Copy(
-                                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
-                                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
-                                items.Add(new ModelManifestItem { SourceFilePath = item.SourceFilePath, FilePath = fileName });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var models = Models.Where(m => m.OriginalFileAndType.File == pair.Key).ToList();
-                        foreach (var model in models)
-                        {
-                            string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
-                            using (var stream = File.Create(
-                            Path.Combine(
-                                Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir),
-                                fileName)))
-                            {
-                                processor.SaveIntermediateModel(model, stream);
-                            }
-                            items.Add(new ModelManifestItem { SourceFilePath = model.FileAndType.File, FilePath = fileName });
-                        }
-                    }
-                    lock (cmm)
-                    {
-                        cmm.Models.Add(pair.Key, items);
-                    }
-                });
-            });
-        }
-
-        public IEnumerable<FileModel> LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)
-        {
-            if (!CanIncrementalBuild)
-            {
-                yield break;
-            }
-            var processor = (ISupportIncrementalDocumentProcessor)Processor;
-            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
-            if (!cmm.Models.TryGetValue(fileName, out List<ModelManifestItem> cfn))
-            {
-                throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
-            }
-            foreach (var item in cfn)
-            {
-                using var stream = File.OpenRead(
-                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath));
-                yield return processor.LoadIntermediateModel(stream);
-            }
-        }
-
-        public List<string> GetUnloadedModelFiles(IncrementalBuildContext incrementalContext)
-        {
-            if (!CanIncrementalBuild)
-            {
-                return new List<string>();
-            }
-            return (from pair in incrementalContext.GetModelLoadInfo(this)
-                    where pair.Value == null
-                    select pair.Key).ToList();
-        }
-
-        #endregion
-
         #region Private Methods
 
         private void LoadCore(IEnumerable<FileModel> models)
         {
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
-            EventHandler contentAccessedHandler = null;
             if (Models != null)
             {
                 foreach (var m in Models)
                 {
                     m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
                     m.UidsChanged -= uidsChangedHandler;
-                    m.ContentAccessed -= contentAccessedHandler;
                 }
             }
             Models = models.ToImmutableList();
@@ -509,7 +253,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
                 m.UidsChanged += uidsChangedHandler;
-                m.ContentAccessed += contentAccessedHandler;
                 foreach (var uid in m.Uids.Select(s => s.Name).Distinct())
                 {
                     if (!_uidIndex.TryGetValue(uid, out List<FileModel> list))
@@ -523,24 +266,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     FileMap[m.FileAndType] = m.FileAndType;
                 }
-            }
-        }
-
-        private void ReloadUnloadedModelsPerCondition(IncrementalBuildContext incrementalContext, BuildPhase phase, Func<string, bool> condition)
-        {
-            if (!CanIncrementalBuild)
-            {
-                return;
-            }
-            var mi = incrementalContext.GetModelLoadInfo(this);
-            var toLoadList = (from f in mi.Keys
-                              where condition(f)
-                              from m in LoadIntermediateModel(incrementalContext, f)
-                              select m).ToList();
-            if (toLoadList.Count > 0)
-            {
-                Reload(Models.Concat(toLoadList));
-                incrementalContext.ReportModelLoadInfo(this, toLoadList.Select(t => t.FileAndType.File), phase);
             }
         }
 
@@ -586,23 +311,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 FileMap[m.OriginalFileAndType] = m.FileAndType;
             }
-        }
-
-        private static void OnLruRemoving(ModelWithCache m)
-        {
-            try
-            {
-                m.Serialize();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Unable to serialize model, details:{ex.ToString()}", file: m.File);
-            }
-        }
-
-        private void ReportDependencyCore(DependencyItemSourceInfo from, DependencyItemSourceInfo to, DependencyItemSourceInfo reportedBy, string type)
-        {
-            DependencyGraph.ReportDependency(new DependencyItem(from, to, reportedBy, type));
         }
 
         #endregion

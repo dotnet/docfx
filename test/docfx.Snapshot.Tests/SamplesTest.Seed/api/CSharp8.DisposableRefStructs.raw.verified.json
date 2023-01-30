@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -88,11 +88,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose\" text=\"Dispose()\" alt=\"CSharp8.DisposableRefStructs.Dispose()\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose\" text=\"Dispose()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose\" text=\"Dispose()\" alt=\"CSharp8.DisposableRefStructs.Dispose()\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose\" text=\"Dispose()\"/>"
         }
       ],
       "syntax": {
@@ -103,7 +103,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Sub Dispose"
+            "value": "Public Sub Dispose()"
           }
         ]
       },
@@ -158,11 +158,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose*\" text=\"Dispose\" alt=\"CSharp8.DisposableRefStructs.Dispose\"/>"
+            "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose*\" text=\"Dispose\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose*\" text=\"Dispose\" alt=\"CSharp8.DisposableRefStructs.Dispose\"/>"
+            "value": "<xref uid=\"CSharp8.DisposableRefStructs.Dispose*\" text=\"Dispose\"/>"
           }
         ]
       },
@@ -210,11 +210,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething\" text=\"DoSomething()\" alt=\"CSharp8.DisposableRefStructs.DoSomething()\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething\" text=\"DoSomething()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething\" text=\"DoSomething()\" alt=\"CSharp8.DisposableRefStructs.DoSomething()\"/>"
+          "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething\" text=\"DoSomething()\"/>"
         }
       ],
       "syntax": {
@@ -225,7 +225,7 @@
           },
           {
             "lang": "vb",
-            "value": "Public Shared Sub DoSomething"
+            "value": "Public Shared Sub DoSomething()"
           }
         ]
       },
@@ -280,11 +280,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.DisposableRefStructs.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething*\" text=\"DoSomething\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething*\" text=\"DoSomething\" alt=\"CSharp8.DisposableRefStructs.DoSomething\"/>"
+            "value": "<xref uid=\"CSharp8.DisposableRefStructs.DoSomething*\" text=\"DoSomething\"/>"
           }
         ]
       },
@@ -381,11 +381,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -413,7 +413,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object)"
+          "value": "Equals(object)"
         },
         {
           "lang": "vb",
@@ -423,7 +423,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "ValueType.Equals(Object)"
+          "value": "ValueType.Equals(object)"
         },
         {
           "lang": "vb",
@@ -433,21 +433,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.ValueType.Equals(System.Object)"
+          "value": "System.ValueType.Equals(object)"
         },
         {
           "lang": "vb",
-          "value": "System.ValueType.Equals(System.Object)"
+          "value": "System.ValueType.Equals(Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\" alt=\"System.ValueType.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\" alt=\"System.ValueType.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.ValueType.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -491,11 +491,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\" alt=\"System.ValueType.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\" alt=\"System.ValueType.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.ValueType.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -539,11 +539,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\" alt=\"System.ValueType.ToString\"/>()"
+          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\" alt=\"System.ValueType.ToString\"/>()"
+          "value": "<xref uid=\"System.ValueType.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0
@@ -557,7 +557,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object, Object)"
+          "value": "Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -567,7 +567,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object, Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -577,21 +577,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "Object.Equals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -615,7 +615,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
@@ -625,21 +625,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetType()"
+          "value": "object.GetType()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetType()"
+          "value": "Object.GetType()"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\" alt=\"System.Object.GetType\"/>()"
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -653,7 +653,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
+          "value": "ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -663,7 +663,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -673,21 +673,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "Object.ReferenceEquals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0

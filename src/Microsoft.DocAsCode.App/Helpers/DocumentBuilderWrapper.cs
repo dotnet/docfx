@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
@@ -48,16 +47,10 @@ namespace Microsoft.DocAsCode.SubCommands
                 postProcessorNames = postProcessorNames.Add("SitemapGenerator");
             }
 
-            ChangeList changeList = null;
-            if (config.ChangesFile != null)
-            {
-                changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
-            }
-
-            using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory);
+            using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames);
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                var parameters = ConfigToParameter(config, options, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory);
+                var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
                 builder.Build(parameters, outputDirectory);
             }
         }
@@ -131,7 +124,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
+        private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDir)
         {
             using (new PerformanceScope("GenerateParameters"))
             {
@@ -282,7 +275,6 @@ namespace Microsoft.DocAsCode.SubCommands
                         GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
                         GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                     p.VersionName = pair.Key;
-                    p.Changes = GetIntersectChanges(p.Files, changeList);
                     p.RootTocPath = pair.Value.RootTocPath;
                     result.Add(p);
                 }
@@ -396,30 +388,6 @@ namespace Microsoft.DocAsCode.SubCommands
                         item.DestinationFolder);
                 }
             }
-        }
-
-        private static ImmutableDictionary<string, ChangeKindWithDependency> GetIntersectChanges(FileCollection files, ChangeList changeList)
-        {
-            if (changeList == null)
-            {
-                return null;
-            }
-
-            var dict = new OSPlatformSensitiveDictionary<ChangeKindWithDependency>();
-            foreach (var file in files.EnumerateFiles())
-            {
-                string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
-                dict[fileKey] = ChangeKindWithDependency.None;
-            }
-
-            foreach (ChangeItem change in changeList)
-            {
-                string fileKey = ((RelativePath)change.FilePath).GetPathFromWorkingFolder().ToString();
-
-                // always put the change into dict because docfx could access files outside its own scope, like tokens.
-                dict[fileKey] = change.Kind;
-            }
-            return dict.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer);
         }
 
         private class FileMappingParameters : Dictionary<FileMappingType, FileMapping>

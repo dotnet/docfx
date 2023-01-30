@@ -190,39 +190,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Parent = model.Value.Parent,
                 Definition = model.Value.Definition,
             };
-            if (model.Value.Parts != null && model.Value.Parts.Count > 0)
+            if (model.Value.NameParts != null && model.Value.NameParts.Count > 0)
             {
-                result.Name = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayName);
-                var nameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayName);
+                result.Name = GetName(model.Value.NameParts, SyntaxLanguage.Default);
+                var nameForCSharp = GetName(model.Value.NameParts, SyntaxLanguage.CSharp);
                 if (result.Name != nameForCSharp)
                 {
                     result.NameInDevLangs[Constants.DevLang.CSharp] = nameForCSharp;
                 }
-                var nameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayName);
+                var nameForVB = GetName(model.Value.NameParts, SyntaxLanguage.VB);
                 if (result.Name != nameForVB)
                 {
                     result.NameInDevLangs[Constants.DevLang.VB] = nameForVB;
                 }
 
-                result.NameWithType = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayNamesWithType);
-                var nameWithTypeForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayNamesWithType);
+                result.NameWithType = GetName(model.Value.NameWithTypeParts, SyntaxLanguage.Default);
+                var nameWithTypeForCSharp = GetName(model.Value.NameWithTypeParts, SyntaxLanguage.CSharp);
                 if (result.NameWithType != nameWithTypeForCSharp)
                 {
                     result.NameWithTypeInDevLangs[Constants.DevLang.CSharp] = nameWithTypeForCSharp;
                 }
-                var nameWithTypeForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayNamesWithType);
+                var nameWithTypeForVB = GetName(model.Value.NameWithTypeParts, SyntaxLanguage.VB);
                 if (result.NameWithType != nameWithTypeForVB)
                 {
                     result.NameWithTypeInDevLangs[Constants.DevLang.VB] = nameWithTypeForVB;
                 }
 
-                result.FullName = GetName(model.Value, SyntaxLanguage.Default, l => l.DisplayQualifiedNames);
-                var fullnameForCSharp = GetName(model.Value, SyntaxLanguage.CSharp, l => l.DisplayQualifiedNames);
+                result.FullName = GetName(model.Value.QualifiedNameParts, SyntaxLanguage.Default);
+                var fullnameForCSharp = GetName(model.Value.QualifiedNameParts, SyntaxLanguage.CSharp);
                 if (result.FullName != fullnameForCSharp)
                 {
                     result.FullNameInDevLangs[Constants.DevLang.CSharp] = fullnameForCSharp;
                 }
-                var fullnameForVB = GetName(model.Value, SyntaxLanguage.VB, l => l.DisplayQualifiedNames);
+                var fullnameForVB = GetName(model.Value.QualifiedNameParts, SyntaxLanguage.VB);
                 if (result.FullName != fullnameForVB)
                 {
                     result.FullNameInDevLangs[Constants.DevLang.VB] = fullnameForVB;
@@ -362,8 +362,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Uid = model.Name,
                 Name = model.DisplayName,
-                NameWithType = model.DisplayNamesWithType,
-                FullName = model.DisplayQualifiedNames,
                 IsExternal = model.IsExternalPath,
                 Href = model.Href,
             };
@@ -396,28 +394,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static string GetName(ReferenceItem reference, SyntaxLanguage language, Converter<LinkItem, string> getName)
+        private static string GetName(SortedList<SyntaxLanguage, List<LinkItem>> parts, SyntaxLanguage language)
         {
-            var list = reference.Parts.GetLanguageProperty(language);
+            var list = parts?.GetLanguageProperty(language);
             if (list == null)
             {
                 return null;
             }
             if (list.Count == 0)
             {
-                Debug.Fail("Unexpected reference.");
                 return null;
             }
             if (list.Count == 1)
             {
-                return getName(list[0]);
+                return list[0].DisplayName;
             }
-            return string.Concat(list.ConvertAll(getName).ToArray());
+            return string.Concat(list.Select(p => p.DisplayName));
         }
 
         private static List<SpecViewModel> GetSpec(ReferenceItem reference, SyntaxLanguage language)
         {
-            var list = reference.Parts.GetLanguageProperty(language);
+            var list = reference.NameParts.GetLanguageProperty(language);
             if (list == null || list.Count <= 1)
             {
                 return null;
@@ -439,7 +436,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 return true;
             }
-            foreach (var list in reference.Parts.Values)
+            foreach (var list in reference.NameParts.Values)
             {
                 foreach (var item in list)
                 {
@@ -454,7 +451,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetHref(ReferenceItem reference)
         {
-            foreach (var list in reference.Parts.Values)
+            foreach (var list in reference.NameParts.Values)
             {
                 foreach (var item in list)
                 {

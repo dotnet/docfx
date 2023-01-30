@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return result;
         }
 
-        public static string GetXref(string uid, string text = null, string alt = null)
+        public static string GetXref(string uid, string text = null)
         {
             var sb = new StringBuilder();
             sb.Append("<xref uid=\"")
@@ -113,16 +113,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             else
             {
                 sb.Append(" displayProperty=\"name\"");
-            }
-            if (!string.IsNullOrEmpty(alt))
-            {
-                sb.Append(" alt=\"")
-                    .Append(HttpUtility.HtmlEncode(alt))
-                    .Append("\"");
-            }
-            else
-            {
-                sb.Append(" altProperty=\"fullName\"");
             }
             sb.Append("/>");
             return sb.ToString();

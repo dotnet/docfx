@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }));
+            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }));
+            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }, item);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}));
+            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}, item);
         }
 
         [Fact]
@@ -153,7 +153,27 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }));
+            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }, item);
+        }
+
+        [Fact]
+        public void TestBlockTagsVsInlineTags()
+        {
+            var rawHtml = @"
+<html>
+    <body>
+        <article>
+            <div>Insert<br>space<div>in</div>block<p>level</p>html<li>tags</li></div>
+            <div>Do<a>not</a>insert<em>space</em>in<b>inline</b>html<i>tags</i></div>
+        </article>
+    </body>
+</html>
+";
+            var html = new HtmlDocument();
+            html.LoadHtml(rawHtml);
+            var href = "http://dotnet.github.io/docfx";
+            var item = _extractor.ExtractItem(html, href);
+            Assert.Equal(new SearchIndexItem { Href = href, Title = "", Keywords = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
         }
 
         [Fact]

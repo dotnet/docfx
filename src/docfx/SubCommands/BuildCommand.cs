@@ -227,14 +227,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.NoLangKeyword = options.NoLangKeyword.Value;
             }
-            if (options.IntermediateFolder != null)
-            {
-                config.IntermediateFolder = options.IntermediateFolder;
-            }
-            if (options.ChangesFile != null)
-            {
-                config.ChangesFile = options.ChangesFile;
-            }
             if (options.GlobalMetadataFilePaths != null && options.GlobalMetadataFilePaths.Any())
             {
                 config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);
@@ -252,7 +244,6 @@ namespace Microsoft.DocAsCode.SubCommands
             config.LruSize = options.LruSize ?? config.LruSize;
 
             config.KeepFileLink |= options.KeepFileLink;
-            config.CleanupCacheHistory |= options.CleanupCacheHistory;
             config.DisableGitFeatures |= options.DisableGitFeatures;
 
             config.FileMetadataFilePaths =

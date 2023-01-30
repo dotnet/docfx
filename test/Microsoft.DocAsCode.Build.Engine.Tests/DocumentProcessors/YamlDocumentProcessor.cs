@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -19,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Newtonsoft.Json;
 
     [Export(typeof(IDocumentProcessor))]
-    public class YamlDocumentProcessor : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+    public class YamlDocumentProcessor : DisposableDocumentProcessor
     {
         #region Fields
 
@@ -100,35 +99,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 DocumentType = model.DocumentType,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null)
             };
-        }
-
-        #endregion
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public virtual string GetIncrementalContextHash()
-        {
-            return null;
-        }
-
-        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            FileModelPropertySerialization.Serialize(
-                model,
-                stream,
-                SerializeModel,
-                SerializeProperties,
-                null);
-        }
-
-        public virtual FileModel LoadIntermediateModel(Stream stream)
-        {
-            return FileModelPropertySerialization.Deserialize(
-                stream,
-                new BinaryFormatter(),
-                DeserializeModel,
-                DeserializeProperties,
-                null);
         }
 
         #endregion

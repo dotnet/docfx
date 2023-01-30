@@ -14,15 +14,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal sealed class HtmlPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
+    internal sealed class HtmlPostProcessor : IPostProcessor
     {
-        public IPostProcessorHost PostProcessorHost { get; set; }
-
-        public string GetIncrementalContextHash()
-        {
-            return "v2";
-        }
-
         public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
 
         private bool _handlerInitialized;
@@ -59,10 +52,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(outputFolder));
             }
-            var context = new HtmlPostProcessContext(PostProcessorHost);
             foreach (var handler in Handlers)
             {
-                handler.LoadContext(context);
                 manifest = handler.PreHandle(manifest);
             }
             foreach (var tuple in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
@@ -102,9 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var handler in Handlers)
             {
                 manifest = handler.PostHandle(manifest);
-                handler.SaveContext(context);
             }
-            context.Save();
             return manifest;
         }
     }

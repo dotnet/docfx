@@ -33,14 +33,6 @@ jobs:
         name: nuget
         path: drop/nuget
 
-    - name: publish
-      uses: Azure/pipelines@v1.2
-      with:
-        azure-devops-project-url: https://dev.azure.com/ceapex/Engineering
-        azure-pipeline-name: 'dotnet.docfx'
-        azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
-        azure-pipeline-variables: '{"GH_RUNID": "${{github.run_id}}"}'
-
     - name: dotnet publish
       run: |
         dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
@@ -67,3 +59,12 @@ jobs:
         gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
+
+    # Run publish as the last step as `gh run download` does not download actions in running state
+    - name: publish
+      uses: Azure/pipelines@v1.2
+      with:
+        azure-devops-project-url: https://dev.azure.com/ceapex/Engineering
+        azure-pipeline-name: 'dotnet.docfx'
+        azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
+        azure-pipeline-variables: '{"GH_RUNID": "${{github.run_id}}"}'

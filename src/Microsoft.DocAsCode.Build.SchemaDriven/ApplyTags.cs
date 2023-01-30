@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyTags : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class ApplyTags : BaseDocumentBuildStep
     {
         [ImportMany]
         public IEnumerable<ITagInterpreter> TagInterpreters { get; set; }
@@ -36,15 +36,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 model.Content = schemaProcessor.Process(model.Content, model.Properties.Schema, new ProcessContext(host, model));
             });
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

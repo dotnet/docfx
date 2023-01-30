@@ -6,42 +6,24 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class FillReferenceInformation : BaseDocumentBuildStep, ICanTraceContextInfoBuildStep
+    public class FillReferenceInformation : BaseDocumentBuildStep
     {
-        private IEnumerable<SourceInfo> _lastContextInfo;
         private Dictionary<string, SourceInfo> _items = new Dictionary<string, SourceInfo>();
 
         public override string Name => nameof(FillReferenceInformation);
 
         public override int BuildOrder => 0x20;
 
-        public override void Build(FileModel model, IHostService host)
-        {
-            if (model.Type != DocumentType.Article)
-            {
-                return;
-            }
-            var pageViewModel = (PageViewModel)model.Content;
-
-            foreach (var uid in GetUidsToFill(pageViewModel))
-            {
-                host.ReportDependencyTo(model, uid, DependencyItemSourceType.Uid, DependencyTypeName.Children);
-            }
-        }
-
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
-            ApplyLastContextInfo(host);
             if (models.Count > 0)
             {
                 foreach (var model in models)
@@ -54,50 +36,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
-        {
-            new DependencyType
-            {
-                Name = DependencyTypeName.Children,
-                Phase = BuildPhase.Link,
-                Transitivity = DependencyTransitivity.All,
-            }
-        };
-
-        #endregion
-
-        #region ICanTraceContextInfoBuildStep Members
-
-        public void LoadContext(Stream stream)
-        {
-            if (stream == null)
-            {
-                return;
-            }
-
-            using var reader = new StreamReader(stream);
-            _lastContextInfo = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
-        }
-
-        public void SaveContext(Stream stream)
-        {
-            if (stream == null)
-            {
-                return;
-            }
-
-            using var writer = new StreamWriter(stream);
-            JsonUtility.Serialize(writer, _items.Values);
-        }
-
-        #endregion
 
         #region Private methods
 
@@ -155,28 +93,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             r.Additional["type"] = item.Type;
             r.Additional["platform"] = item.Platform;
             r.Additional[Constants.PropertyName.IsEii] = item.IsExplicitInterfaceImplementation;
-        }
-
-        private void ApplyLastContextInfo(IHostService hs)
-        {
-            if (_lastContextInfo == null)
-            {
-                return;
-            }
-
-            var increInfo = hs.IncrementalInfos;
-            if (increInfo == null)
-            {
-                return;
-            }
-
-            foreach (var c in _lastContextInfo)
-            {
-                if (increInfo.TryGetValue(c.File, out FileIncrementalInfo info) && info.IsIncremental)
-                {
-                    _items[c.Uid] = c;
-                }
-            }
         }
 
         private void TraceSourceInfo(PageViewModel model, string file)

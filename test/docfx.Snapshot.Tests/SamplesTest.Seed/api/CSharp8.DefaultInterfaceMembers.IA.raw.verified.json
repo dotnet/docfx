@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -88,22 +88,22 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M()\"/>"
+          "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
         }
       ],
       "syntax": {
         "content": [
           {
             "lang": "csharp",
-            "value": "virtual void M()"
+            "value": "void M()"
           },
           {
             "lang": "vb",
-            "value": "Overridable Sub M"
+            "value": "Sub M()"
           }
         ]
       },
@@ -158,11 +158,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\" alt=\"CSharp8.DefaultInterfaceMembers.IA.M\"/>"
+            "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
           }
         ]
       },
@@ -259,11 +259,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\" alt=\"CSharp8\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0
@@ -272,11 +272,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public interface IA"
+        "value": "public interface DefaultInterfaceMembers.IA"
       },
       {
         "lang": "vb",
-        "value": "Public Interface IA"
+        "value": "Public Interface DefaultInterfaceMembers.IA"
       }
     ]
   },

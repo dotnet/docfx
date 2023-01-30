@@ -39,11 +39,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -136,11 +136,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\" alt=\"CatLibrary\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
       }
     ],
     "level": 0
@@ -153,7 +153,7 @@
       },
       {
         "lang": "vb",
-        "value": "Public Class CatException(Of T)\n    Inherits Exception\n    Implements ISerializable"
+        "value": "Public Class CatException(Of T) Inherits Exception Implements ISerializable"
       }
     ],
     "typeParameters": [
@@ -172,7 +172,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -182,7 +182,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object"
+          "value": "object"
         },
         {
           "lang": "vb",
@@ -192,21 +192,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object"
+          "value": "object"
         },
         {
           "lang": "vb",
-          "value": "System.Object"
+          "value": "Object"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>"
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
         }
       ],
       "level": 0,
@@ -251,11 +251,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception\" text=\"Exception\" alt=\"System.Exception\"/>"
+          "value": "<xref uid=\"System.Exception\" text=\"Exception\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception\" text=\"Exception\" alt=\"System.Exception\"/>"
+          "value": "<xref uid=\"System.Exception\" text=\"Exception\"/>"
         }
       ],
       "level": 0,
@@ -299,11 +299,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\" alt=\"System.Runtime.Serialization.ISerializable\"/>"
+          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\" alt=\"System.Runtime.Serialization.ISerializable\"/>"
+          "value": "<xref uid=\"System.Runtime.Serialization.ISerializable\" text=\"ISerializable\"/>"
         }
       ]
     }
@@ -348,11 +348,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.GetBaseException\" text=\"GetBaseException\" alt=\"System.Exception.GetBaseException\"/>()"
+          "value": "<xref uid=\"System.Exception.GetBaseException\" text=\"GetBaseException\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.GetBaseException\" text=\"GetBaseException\" alt=\"System.Exception.GetBaseException\"/>()"
+          "value": "<xref uid=\"System.Exception.GetBaseException\" text=\"GetBaseException\"/>()"
         }
       ],
       "level": 0
@@ -396,11 +396,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)\" text=\"GetObjectData\" alt=\"System.Exception.GetObjectData\"/>(<xref uid=\"System.Runtime.Serialization.SerializationInfo\" text=\"SerializationInfo\" alt=\"System.Runtime.Serialization.SerializationInfo\"/>, <xref uid=\"System.Runtime.Serialization.StreamingContext\" text=\"StreamingContext\" alt=\"System.Runtime.Serialization.StreamingContext\"/>)"
+          "value": "<xref uid=\"System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)\" text=\"GetObjectData\"/>(<xref uid=\"System.Runtime.Serialization.SerializationInfo\" text=\"SerializationInfo\"/>, <xref uid=\"System.Runtime.Serialization.StreamingContext\" text=\"StreamingContext\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)\" text=\"GetObjectData\" alt=\"System.Exception.GetObjectData\"/>(<xref uid=\"System.Runtime.Serialization.SerializationInfo\" text=\"SerializationInfo\" alt=\"System.Runtime.Serialization.SerializationInfo\"/>, <xref uid=\"System.Runtime.Serialization.StreamingContext\" text=\"StreamingContext\" alt=\"System.Runtime.Serialization.StreamingContext\"/>)"
+          "value": "<xref uid=\"System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)\" text=\"GetObjectData\"/>(<xref uid=\"System.Runtime.Serialization.SerializationInfo\" text=\"SerializationInfo\"/>, <xref uid=\"System.Runtime.Serialization.StreamingContext\" text=\"StreamingContext\"/>)"
         }
       ],
       "level": 0
@@ -444,11 +444,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.GetType\" text=\"GetType\" alt=\"System.Exception.GetType\"/>()"
+          "value": "<xref uid=\"System.Exception.GetType\" text=\"GetType\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.GetType\" text=\"GetType\" alt=\"System.Exception.GetType\"/>()"
+          "value": "<xref uid=\"System.Exception.GetType\" text=\"GetType\"/>()"
         }
       ],
       "level": 0
@@ -492,11 +492,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.ToString\" text=\"ToString\" alt=\"System.Exception.ToString\"/>()"
+          "value": "<xref uid=\"System.Exception.ToString\" text=\"ToString\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.ToString\" text=\"ToString\" alt=\"System.Exception.ToString\"/>()"
+          "value": "<xref uid=\"System.Exception.ToString\" text=\"ToString\"/>()"
         }
       ],
       "level": 0
@@ -540,11 +540,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\" alt=\"System.Exception.Data\"/>"
+          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\" alt=\"System.Exception.Data\"/>"
+          "value": "<xref uid=\"System.Exception.Data\" text=\"Data\"/>"
         }
       ],
       "level": 0
@@ -588,11 +588,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\" alt=\"System.Exception.HelpLink\"/>"
+          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\" alt=\"System.Exception.HelpLink\"/>"
+          "value": "<xref uid=\"System.Exception.HelpLink\" text=\"HelpLink\"/>"
         }
       ],
       "level": 0
@@ -636,11 +636,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\" alt=\"System.Exception.HResult\"/>"
+          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\" alt=\"System.Exception.HResult\"/>"
+          "value": "<xref uid=\"System.Exception.HResult\" text=\"HResult\"/>"
         }
       ],
       "level": 0
@@ -684,11 +684,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\" alt=\"System.Exception.InnerException\"/>"
+          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\" alt=\"System.Exception.InnerException\"/>"
+          "value": "<xref uid=\"System.Exception.InnerException\" text=\"InnerException\"/>"
         }
       ],
       "level": 0
@@ -732,11 +732,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\" alt=\"System.Exception.Message\"/>"
+          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\" alt=\"System.Exception.Message\"/>"
+          "value": "<xref uid=\"System.Exception.Message\" text=\"Message\"/>"
         }
       ],
       "level": 0
@@ -780,11 +780,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\" alt=\"System.Exception.Source\"/>"
+          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\" alt=\"System.Exception.Source\"/>"
+          "value": "<xref uid=\"System.Exception.Source\" text=\"Source\"/>"
         }
       ],
       "level": 0
@@ -828,11 +828,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\" alt=\"System.Exception.StackTrace\"/>"
+          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\" alt=\"System.Exception.StackTrace\"/>"
+          "value": "<xref uid=\"System.Exception.StackTrace\" text=\"StackTrace\"/>"
         }
       ],
       "level": 0
@@ -876,11 +876,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\" alt=\"System.Exception.TargetSite\"/>"
+          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\" alt=\"System.Exception.TargetSite\"/>"
+          "value": "<xref uid=\"System.Exception.TargetSite\" text=\"TargetSite\"/>"
         }
       ],
       "level": 0
@@ -924,11 +924,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\" alt=\"System.Exception.SerializeObjectState\"/>"
+          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\" alt=\"System.Exception.SerializeObjectState\"/>"
+          "value": "<xref uid=\"System.Exception.SerializeObjectState\" text=\"SerializeObjectState\"/>"
         }
       ],
       "level": 0
@@ -942,7 +942,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object)"
+          "value": "Equals(object)"
         },
         {
           "lang": "vb",
@@ -952,7 +952,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
@@ -962,21 +962,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "object.Equals(object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object)"
+          "value": "Object.Equals(Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -990,7 +990,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "Equals(Object, Object)"
+          "value": "Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -1000,7 +1000,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.Equals(Object, Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
@@ -1010,21 +1010,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "object.Equals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.Equals(System.Object, System.Object)"
+          "value": "Object.Equals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\" alt=\"System.Object.Equals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0
@@ -1048,7 +1048,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
@@ -1058,21 +1058,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.GetHashCode()"
+          "value": "object.GetHashCode()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.GetHashCode()"
+          "value": "Object.GetHashCode()"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\" alt=\"System.Object.GetHashCode\"/>()"
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
         }
       ],
       "level": 0
@@ -1096,7 +1096,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
@@ -1106,21 +1106,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "object.MemberwiseClone()"
         },
         {
           "lang": "vb",
-          "value": "System.Object.MemberwiseClone()"
+          "value": "Object.MemberwiseClone()"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\" alt=\"System.Object.MemberwiseClone\"/>()"
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
         }
       ],
       "level": 0
@@ -1134,7 +1134,7 @@
       "name": [
         {
           "lang": "csharp",
-          "value": "ReferenceEquals(Object, Object)"
+          "value": "ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -1144,7 +1144,7 @@
       "nameWithType": [
         {
           "lang": "csharp",
-          "value": "Object.ReferenceEquals(Object, Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
@@ -1154,21 +1154,21 @@
       "fullName": [
         {
           "lang": "csharp",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "object.ReferenceEquals(object, object)"
         },
         {
           "lang": "vb",
-          "value": "System.Object.ReferenceEquals(System.Object, System.Object)"
+          "value": "Object.ReferenceEquals(Object, Object)"
         }
       ],
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\" alt=\"System.Object.ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>, <xref uid=\"System.Object\" text=\"Object\" alt=\"System.Object\"/>)"
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
         }
       ],
       "level": 0

@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System.Dynamic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Newtonsoft.Json;
@@ -20,8 +19,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class SchemaDrivenDocumentProcessor
-        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+    public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
     {
         #region Fields
 
@@ -145,10 +143,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                         var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-                        var fm = new FileModel(
-                            file,
-                            content,
-                            serializer: new BinaryFormatter())
+                        var fm = new FileModel(file, content)
                         {
                             LocalPathFromRoot = localPathFromRoot,
                         };
@@ -159,8 +154,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                 DocumentType.MarkdownFragments,
                                 file.SourceDir,
                                 file.DestinationDir),
-                            markdownFragmentsContent,
-                            serializer: new BinaryFormatter());
+                            markdownFragmentsContent);
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
                         fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;
@@ -223,43 +217,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 new FileInterpreter(false, true),
                 new XrefInterpreter(false, true)
                 ).Process(content, schema, pc);
-        }
-
-        #endregion
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public virtual string GetIncrementalContextHash() => _schema.Hash;
-
-        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            // no need to save schema
-            model.Properties.Schema = null;
-            model.Properties.Metadata = null;
-            model.Properties.MarkdigMarkdownService = null;
-            FileModelPropertySerialization.Serialize(
-                model,
-                stream,
-                SerializeModel,
-                SerializeProperties,
-                null);
-            model.Properties.Schema = _schema;
-            model.Properties.Metadata = _schema.MetadataReference.GetValue(model.Content);
-            model.Properties.MarkdigMarkdownService = _markdigMarkdownService;
-        }
-
-        public virtual FileModel LoadIntermediateModel(Stream stream)
-        {
-            var loaded = FileModelPropertySerialization.Deserialize(
-                stream,
-                new BinaryFormatter(),
-                DeserializeModel,
-                DeserializeProperties,
-                null);
-            loaded.Properties.Schema = _schema;
-            loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content);
-            loaded.Properties.MarkdigMarkdownService = _markdigMarkdownService;
-            return loaded;
         }
 
         #endregion

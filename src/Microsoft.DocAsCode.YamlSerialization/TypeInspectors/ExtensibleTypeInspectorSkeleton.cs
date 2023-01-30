@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using System.Runtime.Serialization;
 
     using YamlDotNet.Serialization;
 
@@ -36,7 +35,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
                     return null;
                 }
 
-                throw new SerializationException(
+                throw new InvalidOperationException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Property '{0}' not found on type '{1}'.",
@@ -50,7 +49,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
 
             if (enumerator.MoveNext())
             {
-                throw new SerializationException(
+                throw new InvalidOperationException(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Multiple properties with the name/alias '{0}' already exists on type '{1}', maybe you're misusing YamlAlias or maybe you are using the wrong naming convention? The matching properties are: {2}",

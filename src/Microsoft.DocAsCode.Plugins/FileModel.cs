@@ -6,18 +6,17 @@ namespace Microsoft.DocAsCode.Plugins
     using System;
     using System.Collections.Immutable;
     using System.Dynamic;
-    using System.Runtime.Serialization;
 
-    public sealed class FileModel : IDisposable
+    public sealed class FileModel
     {
         private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
 
-        public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
-            : this(ft, content, original, serializer, null)
+        public FileModel(FileAndType ft, object content, FileAndType original = null)
+            : this(ft, content, original, null)
         {
         }
 
-        public FileModel(FileAndType ft, object content, FileAndType original, IFormatter serializer, string key)
+        public FileModel(FileAndType ft, object content, FileAndType original, string key)
         {
             OriginalFileAndType = original ?? ft;
             Key = key;
@@ -34,26 +33,14 @@ namespace Microsoft.DocAsCode.Plugins
             }
 
             FileAndType = ft;
-            ModelWithCache = new ModelWithCache(content, serializer);
+            Content = content;
         }
 
         public FileAndType FileAndType { get; private set; }
 
         public FileAndType OriginalFileAndType { get; private set; }
 
-        public IFormatter Serializer
-        {
-            get { return ModelWithCache.Serializer; }
-            set { ModelWithCache.Serializer = value; }
-        }
-
-        public ModelWithCache ModelWithCache { get; }
-
-        public object Content
-        {
-            get { return ModelWithCache.Content; }
-            set { ModelWithCache.Content = value; }
-        }
+        public object Content { get; set; }
 
         public string BaseDir
         {
@@ -105,17 +92,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public FileModel MarkdownFragmentsModel { get; set; }
 
-        public string LocalPathFromRoot
-        {
-            get
-            {
-                return ModelWithCache.File;
-            }
-            set
-            {
-                ModelWithCache.File = value;
-            }
-        }
+        public string LocalPathFromRoot { get; set; }
 
         public string DocumentType { get; set; }
 
@@ -133,17 +110,6 @@ namespace Microsoft.DocAsCode.Plugins
         public event EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> UidsChanged;
 
         public event EventHandler FileOrBaseDirChanged;
-
-        public event EventHandler ContentAccessed
-        {
-            add { ModelWithCache.ContentAccessed += value; }
-            remove { ModelWithCache.ContentAccessed -= value; }
-        }
-
-        public void Dispose()
-        {
-            ModelWithCache.Dispose();
-        }
 
         private void OnUidsChanged(string propertyName, ImmutableArray<UidDefinition> original, ImmutableArray<UidDefinition> current)
         {

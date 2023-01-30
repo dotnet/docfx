@@ -40,11 +40,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>&lt;T, K&gt;"
+          "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\" alt=\"CatLibrary.Cat\"/>(Of T, K)"
+          "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
         }
       ],
       "level": 0,
@@ -89,11 +89,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>&lt;T&gt;"
+          "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>&lt;T&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\" alt=\"CatLibrary.CatException\"/>(Of T)"
+          "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>(Of T)"
         }
       ],
       "level": 0,
@@ -138,11 +138,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>&lt;T, J&gt;"
+          "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;T, J&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\" alt=\"CatLibrary.Complex\"/>(Of T, J)"
+          "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of T, J)"
         }
       ],
       "level": 0,
@@ -187,11 +187,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\" alt=\"CatLibrary.FakeDelegate\"/>&lt;T&gt;"
+          "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>&lt;T&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\" alt=\"CatLibrary.FakeDelegate\"/>(Of T)"
+          "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>(Of T)"
         }
       ],
       "level": 0,
@@ -237,11 +237,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\" alt=\"CatLibrary.IAnimal\"/>"
+          "value": "<xref uid=\"CatLibrary.IAnimal\" text=\"IAnimal\"/>"
         }
       ],
       "level": 0,
@@ -287,11 +287,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\" alt=\"CatLibrary.ICat\"/>"
+          "value": "<xref uid=\"CatLibrary.ICat\" text=\"ICat\"/>"
         }
       ],
       "level": 0,
@@ -337,11 +337,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\" alt=\"CatLibrary.ICatExtension\"/>"
+          "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\" alt=\"CatLibrary.ICatExtension\"/>"
+          "value": "<xref uid=\"CatLibrary.ICatExtension\" text=\"ICatExtension\"/>"
         }
       ],
       "level": 0,
@@ -386,11 +386,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\" alt=\"CatLibrary.MRefDelegate\"/>&lt;K, T, L&gt;"
+          "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>&lt;K, T, L&gt;"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\" alt=\"CatLibrary.MRefDelegate\"/>(Of K, T, L)"
+          "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>(Of K, T, L)"
         }
       ],
       "level": 0,
@@ -435,11 +435,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\" alt=\"CatLibrary.MRefNormalDelegate\"/>"
+          "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\" alt=\"CatLibrary.MRefNormalDelegate\"/>"
+          "value": "<xref uid=\"CatLibrary.MRefNormalDelegate\" text=\"MRefNormalDelegate\"/>"
         }
       ],
       "level": 0,
@@ -485,11 +485,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\" alt=\"CatLibrary.Tom\"/>"
+          "value": "<xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>"
         }
       ],
       "level": 0,
@@ -534,11 +534,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>"
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\" alt=\"CatLibrary.TomFromBaseClass\"/>"
+          "value": "<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>"
         }
       ],
       "level": 0,

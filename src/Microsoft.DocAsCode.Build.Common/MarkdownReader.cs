@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.Build.Common
         private static bool CheckRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredKeys, out string message)
         {
             var notExistsKeys = (from key in requiredKeys
-                                 where !properties.Keys.Contains(key)
+                                 where !properties.ContainsKey(key)
                                  select key).ToList();
             if (notExistsKeys.Count > 0)
             {

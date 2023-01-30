@@ -23,16 +23,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             _context = context;
         }
 
-        public virtual bool CanProcessorIncremental(IDocumentProcessor processor)
-        {
-            return false;
-        }
-
-        public virtual bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
-        {
-            return false;
-        }
-
         public virtual HostService CreateHostService(
             DocumentBuildParameters parameters,
             TemplateProcessor templateProcessor,
@@ -55,8 +45,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Processor = processor,
                 Template = templateProcessor,
                 Validators = metadataValidator?.ToImmutableList(),
-                ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
-                CanIncrementalBuild = CanProcessorIncremental(processor),
                 InvalidSourceFiles = invalidFiles.ToImmutableList(),
             };
             return hostService;

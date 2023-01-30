@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildSchemaBasedDocument : BuildReferenceDocumentBase, ISupportIncrementalBuildStep
+    public class BuildSchemaBasedDocument : BuildReferenceDocumentBase
     {
         private const string DocumentTypeKey = "documentType";
         private readonly SchemaProcessor _schemaProcessor = new SchemaProcessor(
@@ -43,11 +43,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             model.Properties.XRefSpecs = context.XRefSpecs;
             model.Properties.ExternalXRefSpecs = context.ExternalXRefSpecs;
 
-            foreach (var d in context.Dependency)
-            {
-                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
-            }
-
             if (content is IDictionary<string, object> eo)
             {
                 if (eo.TryGetValue(DocumentTypeKey, out object documentType) && documentType is string dt)
@@ -56,15 +51,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

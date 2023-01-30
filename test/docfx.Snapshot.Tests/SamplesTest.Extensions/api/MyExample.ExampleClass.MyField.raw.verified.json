@@ -8,11 +8,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\" altProperty=\"fullName\"/>"
+        "value": "<xref uid=\"MyExample.ExampleClass\" displayProperty=\"name\"/>"
       }
     ],
     "level": 0
@@ -99,11 +99,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"MyExample\" text=\"MyExample\" alt=\"MyExample\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0
@@ -125,7 +125,7 @@
         "name": [
           {
             "lang": "csharp",
-            "value": "String"
+            "value": "string"
           },
           {
             "lang": "vb",
@@ -135,7 +135,7 @@
         "nameWithType": [
           {
             "lang": "csharp",
-            "value": "String"
+            "value": "string"
           },
           {
             "lang": "vb",
@@ -145,21 +145,21 @@
         "fullName": [
           {
             "lang": "csharp",
-            "value": "System.String"
+            "value": "string"
           },
           {
             "lang": "vb",
-            "value": "System.String"
+            "value": "String"
           }
         ],
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+            "value": "<xref uid=\"System.String\" text=\"string\"/>"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.String\" text=\"String\" alt=\"System.String\"/>"
+            "value": "<xref uid=\"System.String\" text=\"string\"/>"
           }
         ]
       }

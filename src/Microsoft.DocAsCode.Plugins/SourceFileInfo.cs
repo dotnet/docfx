@@ -9,15 +9,12 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string SourceRelativePath { get; private set; }
 
-        public bool IsIncremental { get; private set; }
-
         public static SourceFileInfo FromManifestItem(ManifestItem manifestItem)
         {
             return new SourceFileInfo
             {
                 DocumentType = manifestItem.DocumentType,
                 SourceRelativePath = manifestItem.SourceRelativePath,
-                IsIncremental = manifestItem.IsIncremental,
             };
         }
     }

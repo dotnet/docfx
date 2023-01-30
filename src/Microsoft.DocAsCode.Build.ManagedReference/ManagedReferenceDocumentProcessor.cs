@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -22,8 +21,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Newtonsoft.Json;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ManagedReferenceDocumentProcessor
-        : ReferenceDocumentProcessorBase, ISupportIncrementalDocumentProcessor
+    public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
     {
         #region Fields
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
@@ -108,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(file, page, serializer: new BinaryFormatter())
+            return new FileModel(file, page)
             {
                 Uids = (from item in page.Items select item.Uid)
                 .Concat(from item in page.Items where item.Overload != null select item.Overload)
@@ -179,35 +177,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             UpdateModelContent(model);
 
             return result;
-        }
-
-        #endregion
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public virtual string GetIncrementalContextHash()
-        {
-            return null;
-        }
-
-        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            FileModelPropertySerialization.Serialize(
-                model,
-                stream,
-                SerializeModel,
-                SerializeProperties,
-                null);
-        }
-
-        public virtual FileModel LoadIntermediateModel(Stream stream)
-        {
-            return FileModelPropertySerialization.Deserialize(
-                stream,
-                new BinaryFormatter(),
-                DeserializeModel,
-                DeserializeProperties,
-                null);
         }
 
         #endregion

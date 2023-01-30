@@ -5,24 +5,29 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Composition;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
-    using System.Composition;
-    using System.Collections.Immutable;
-
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Plugins;
-
     using HtmlAgilityPack;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Newtonsoft.Json;
 
     [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
     public class ExtractSearchIndex : IPostProcessor
     {
-        private static readonly Regex RegexWhiteSpace = new Regex(@"\s+", RegexOptions.Compiled);
+        private static readonly Regex s_regexWhiteSpace = new(@"\s+", RegexOptions.Compiled);
+        private static readonly HashSet<string> s_htmlInlineTags = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "a", "area", "del", "ins", "link", "map", "meta", "abbr", "audio", "b", "bdo", "button", "canvas", "cite", "code", "command", "data",
+            "datalist", "dfn", "em", "embed", "i", "iframe", "img", "input", "kbd", "keygen", "label", "mark", "math", "meter", "noscript", "object",
+            "output", "picture", "progress", "q", "ruby", "samp", "script", "select", "small", "span", "strong", "sub", "sup", "svg", "textarea", "time",
+            "var", "video", "wbr",
+        };
 
         public string Name => nameof(ExtractSearchIndex);
         public const string IndexFileName = "index.json";
@@ -132,28 +137,34 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return string.Empty;
             }
-            str = StringHelper.HtmlDecode(str);
-            return RegexWhiteSpace.Replace(str, " ").Trim();
+            str = WebUtility.HtmlDecode(str);
+            return s_regexWhiteSpace.Replace(str, " ").Trim();
         }
 
-        private void ExtractTextFromNode(HtmlNode root, StringBuilder contentBuilder)
+        private void ExtractTextFromNode(HtmlNode node, StringBuilder contentBuilder)
         {
-            if (root == null)
+            if (node == null)
             {
                 return;
             }
 
-            if (!root.HasChildNodes)
+            if (node.NodeType is HtmlNodeType.Text or HtmlNodeType.Comment)
             {
-                contentBuilder.Append(root.InnerText);
-                contentBuilder.Append(" ");
+                contentBuilder.Append(node.InnerText);
+                return;
             }
-            else
+
+            if (node.NodeType is HtmlNodeType.Element or HtmlNodeType.Document)
             {
-                foreach (var node in root.ChildNodes)
-                {
-                    ExtractTextFromNode(node, contentBuilder);
-                }
+                var isBlock = !s_htmlInlineTags.Contains(node.Name);
+                if (isBlock)
+                    contentBuilder.Append(' ');
+
+                foreach (var childNode in node.ChildNodes)
+                    ExtractTextFromNode(childNode, contentBuilder);
+
+                if (isBlock)
+                    contentBuilder.Append(' ');
             }
         }
     }

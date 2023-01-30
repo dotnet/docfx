@@ -74,7 +74,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             public const string AssetId = "asset_id";
             public const string Monikers = "monikers";
             public const string Version = "version";
-            public const string IsIncremental = "is_incremental";
             public const string PdfName = "pdf_name";
         }
 
@@ -85,7 +84,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             public const string TypeMapping = "type_mapping";
             public const string PublishOnlyMetadata = "publish_only_metadata";
             public const string Files = "files";
-            public const string IncrementalInfo = "incremental_info";
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using HtmlAgilityPack;
 
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -34,35 +33,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             new OSPlatformSensitiveDictionary<List<LinkItem>>();
 
         #region IHtmlDocumentHandler members
-
-        public override void LoadContext(HtmlPostProcessContext context)
-        {
-            if (context.PostProcessorHost?.IsIncremental != true)
-            {
-                return;
-            }
-            var fileMapping = Deserialize<string>(context, nameof(_fileMapping)) ?? new OSPlatformSensitiveDictionary<string>();
-            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks)) ?? new OSPlatformSensitiveDictionary<HashSet<string>>();
-            var set = new HashSet<string>(
-                from sfi in context.PostProcessorHost.SourceFileInfos
-                where sfi.IsIncremental
-                select sfi.SourceRelativePath,
-                FilePathComparer.OSPlatformSensitiveStringComparer);
-            foreach (var pair in fileMapping)
-            {
-                if (set.Contains(pair.Value))
-                {
-                    _fileMapping[pair.Key] = pair.Value;
-                }
-            }
-            foreach (var pair in registeredBookmarks)
-            {
-                if (set.Contains(fileMapping[pair.Key]))
-                {
-                    _registeredBookmarks[pair.Key] = pair.Value;
-                }
-            }
-        }
 
         protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
@@ -134,12 +104,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifest;
         }
 
-        public override void SaveContext(HtmlPostProcessContext context)
-        {
-            context.Save(nameof(_registeredBookmarks), stream => Serialize(stream, _registeredBookmarks));
-            context.Save(nameof(_fileMapping), stream => Serialize(stream, _fileMapping));
-        }
-
         #endregion
 
         private static IEnumerable<string> GetNodeAttribute(HtmlDocument html, string attribute)
@@ -162,24 +126,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return ((RelativePath)basePathFromRoot).RemoveWorkingFolder();
             }
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
-        }
-
-        private static OSPlatformSensitiveDictionary<T> Deserialize<T>(HtmlPostProcessContext context, string name)
-            where T : class
-        {
-            return context.Load(
-                name,
-                stream =>
-                {
-                    using var sr = new StreamReader(stream);
-                    return JsonUtility.Deserialize<OSPlatformSensitiveDictionary<T>>(sr);
-                });
-        }
-
-        private static void Serialize(Stream stream, object obj)
-        {
-            using var sw = new StreamWriter(stream);
-            JsonUtility.Serialize(sw, obj);
         }
 
         private class LinkItem

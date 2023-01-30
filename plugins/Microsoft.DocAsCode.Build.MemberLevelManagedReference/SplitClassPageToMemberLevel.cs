@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
     {
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
@@ -148,16 +148,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return newFilePath;
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
 
         private SplittedResult SplitModelToOverloadLevel(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
         {
@@ -560,7 +550,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
 
-            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel)
+            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, keyForModel)
             {
                 LocalPathFromRoot = model.LocalPathFromRoot,
                 Uids = CalculateUids(newPage, model.LocalPathFromRoot)

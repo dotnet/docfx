@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Linq;
 
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -83,18 +82,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
-                    var model = m.Item.Model.Content;
+                    var model = m.Item.Content;
                     // Change file model to weak type
                     // Go through the convert even if it is IDictionary as the inner object might be of strong type
                     var modelAsObject = model == null ? new Dictionary<string, object>() : ConvertToObjectHelper.ConvertStrongTypeToObject(model);
                     if (modelAsObject is IDictionary<string, object>)
                     {
-                        m.Item.Model.Content = modelAsObject;
+                        m.Item.Content = modelAsObject;
                     }
                     else
                     {
                         Logger.LogWarning("Input model is not an Object model, it will be wrapped into an Object model. Please use --exportRawModel to view the wrapped model");
-                        m.Item.Model.Content = new Dictionary<string, object>
+                        m.Item.Content = new Dictionary<string, object>
                         {
                             ["model"] = modelAsObject
                         };
@@ -141,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     m.Processor.UpdateHref(m.FileModel, _context);
 
                     // reset model after updating href
-                    m.Item.Model = m.FileModel.ModelWithCache;
+                    m.Item.Content = m.FileModel.Content;
                 }
             },
             _context.MaxParallelism);
@@ -169,8 +168,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // TODO: use weak type for system attributes from the beginning
                     var systemAttrs = systemMetadataGenerator.Generate(m.Item);
                     var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
+                    var model = m.Item.Content as IDictionary<string, object>;
+                    if (model is null)
+                    {
+                        model = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(m.Item.Content);
+                        m.Item.Content = model;
+                    }
 
-                    var model = (IDictionary<string, object>)m.Item.Model.Content;
                     foreach (var (key, value) in metadata.OrderBy(item => item.Key))
                     {
                         model[key] = value;
@@ -182,7 +186,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         // Take a snapshot of current model as shared object
                         sharedObjects[m.Item.Key] = new Dictionary<string, object>(model);
                     }
-                    
                 }
             },
             _context.MaxParallelism);

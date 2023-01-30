@@ -893,7 +893,7 @@ test2
                     File.Create(item.ResourceFile).Dispose();
                 }
                 if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
-                item.Model = new ModelWithCache(model);
+                item.Content = model;
             }
             var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
             EnvironmentContext.SetBaseDirectory(inputFolder);

@@ -44,12 +44,6 @@
     href: ../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md
   - name: Add a Custom Post Processor
     href: ../tutorial/howto_add_a_customized_post_processor.md
-  - name: Validate Markdown Files
-    href: ../tutorial/validate_your_markdown_files.md
-  - name: Intro markdown lite
-    href: ../tutorial/intro_markdown_lite.md
-  - name: Customize Markdown
-    href: ../tutorial/howto_customize_docfx_flavored_markdown.md
   - name: "Advanced: Support Hyperlink"
     href: ../tutorial/advanced_support_hyperlink.md
 - name: "Additional Programming Languages"

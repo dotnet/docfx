@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -20,8 +19,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Newtonsoft.Json;
 
     [Export(typeof(IDocumentProcessor))]
-    public class ConceptualDocumentProcessor
-        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+    public class ConceptualDocumentProcessor : DisposableDocumentProcessor
     {
         #region Fields
 
@@ -94,10 +92,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(
-                file,
-                content,
-                serializer: new BinaryFormatter())
+            return new FileModel(file, content)
             {
                 LocalPathFromRoot = localPathFromRoot,
             };
@@ -125,35 +120,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
 
             return result;
-        }
-
-        #endregion
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public virtual string GetIncrementalContextHash()
-        {
-            return null;
-        }
-
-        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            FileModelPropertySerialization.Serialize(
-                model,
-                stream,
-                SerializeModel,
-                SerializeProperties,
-                null);
-        }
-
-        public virtual FileModel LoadIntermediateModel(Stream stream)
-        {
-            return FileModelPropertySerialization.Deserialize(
-                stream,
-                new BinaryFormatter(),
-                DeserializeModel,
-                DeserializeProperties,
-                null);
         }
 
         #endregion

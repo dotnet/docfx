@@ -10,17 +10,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public abstract class HtmlDocumentHandler : IHtmlDocumentHandler
     {
-        public HtmlPostProcessContext Context { get; private set; }
-        public virtual void LoadContext(HtmlPostProcessContext context) { }
         protected abstract void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile);
         protected virtual Manifest PostHandleCore(Manifest manifest) => manifest;
         protected virtual Manifest PreHandleCore(Manifest manifest) => manifest;
-        public virtual void SaveContext(HtmlPostProcessContext context) { }
-
-        public void SetContext(HtmlPostProcessContext context)
-        {
-            Context = context;
-        }
 
         public void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {

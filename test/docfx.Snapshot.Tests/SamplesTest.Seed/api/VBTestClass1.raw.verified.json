@@ -40,11 +40,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\" alt=\"VBTestClass1.BaseClass1\"/>"
+          "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\" alt=\"VBTestClass1.BaseClass1\"/>"
+          "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\"/>"
         }
       ],
       "level": 0,
@@ -90,11 +90,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
+          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\" alt=\"VBTestClass1.Class1\"/>"
+          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
         }
       ],
       "level": 0,
