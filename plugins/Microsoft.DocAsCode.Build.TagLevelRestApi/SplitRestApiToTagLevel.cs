@@ -153,7 +153,7 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
 
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var newKey = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
-            var newModel = new FileModel(newFileAndType, tagModel, model.OriginalFileAndType, model.Serializer, newKey)
+            var newModel = new FileModel(newFileAndType, tagModel, model.OriginalFileAndType, newKey)
             {
                 LocalPathFromRoot = model.LocalPathFromRoot,
                 Uids = CalculateUids(tagModel).Select(i => new UidDefinition(i, model.LocalPathFromRoot)).ToImmutableArray()

@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (template.ContainsGetOptions)
                 {
-                    var options = template.GetOptions(item.Model.Content);
+                    var options = template.GetOptions(item.Content);
                     if (options != null)
                     {
                         yield return options;

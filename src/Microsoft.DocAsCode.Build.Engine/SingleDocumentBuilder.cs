@@ -140,7 +140,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var item in hostServices)
                         {
-                            Cleanup(item);
                             item.Dispose();
                         }
                     }
@@ -151,11 +150,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
         {
             phaseProcessor.Process(hostServices, context.MaxParallelism);
-        }
-
-        private void Cleanup(HostService hostService)
-        {
-            hostService.Models.RunAll(m => m.Dispose());
         }
 
         private List<HostService> GetInnerContexts(

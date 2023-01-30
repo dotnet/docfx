@@ -162,7 +162,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
 
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var newKey = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
-            var newModel = new FileModel(newFileAndType, operationModel, model.OriginalFileAndType, model.Serializer, newKey)
+            var newModel = new FileModel(newFileAndType, operationModel, model.OriginalFileAndType, newKey)
             {
                 LocalPathFromRoot = model.LocalPathFromRoot,
                 Uids = new[] { new UidDefinition(operationModel.Uid, model.LocalPathFromRoot) }.ToImmutableArray()

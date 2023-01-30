@@ -550,7 +550,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
 
-            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel)
+            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, keyForModel)
             {
                 LocalPathFromRoot = model.LocalPathFromRoot,
                 Uids = CalculateUids(newPage, model.LocalPathFromRoot)

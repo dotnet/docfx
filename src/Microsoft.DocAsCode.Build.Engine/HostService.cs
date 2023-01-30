@@ -238,14 +238,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
-            EventHandler contentAccessedHandler = null;
             if (Models != null)
             {
                 foreach (var m in Models)
                 {
                     m.FileOrBaseDirChanged -= fileOrBaseDirChangedHandler;
                     m.UidsChanged -= uidsChangedHandler;
-                    m.ContentAccessed -= contentAccessedHandler;
                 }
             }
             Models = models.ToImmutableList();
@@ -255,7 +253,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
                 m.UidsChanged += uidsChangedHandler;
-                m.ContentAccessed += contentAccessedHandler;
                 foreach (var uid in m.Uids.Select(s => s.Name).Distinct())
                 {
                     if (!_uidIndex.TryGetValue(uid, out List<FileModel> list))

@@ -43,12 +43,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns></returns>
         internal ManifestItem Transform(InternalManifestItem item)
         {
-            if (item.Model == null || item.Model.Content == null)
+            if (item == null || item.Content == null)
             {
                 throw new ArgumentNullException("Content for item.Model should not be null!");
             }
 
-            var model = ConvertObjectToDictionary(item.Model.Content);
+            var model = ConvertObjectToDictionary(item.Content);
             AppendGlobalMetadata(model);
 
             if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            item.Model = null;
+            item.Content = null;
 
             LogInvalidXRefs(unresolvedXRefs);
 

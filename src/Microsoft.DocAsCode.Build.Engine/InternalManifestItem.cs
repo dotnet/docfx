@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Plugins;
-
     internal class InternalManifestItem
     {
         public string DocumentType { get; set; }
@@ -26,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string InputFolder { get; set; }
 
-        public ModelWithCache Model { get; set; }
+        public object Content { get; set; }
 
         public Dictionary<string, object> Metadata { get; set; }
     }

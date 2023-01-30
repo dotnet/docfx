@@ -215,7 +215,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ResourceFile = result.ResourceFile,
                 Key = model.Key,
                 LocalPathFromRoot = model.LocalPathFromRoot,
-                Model = model.ModelWithCache,
+                Content = model.Content,
                 InputFolder = model.OriginalFileAndType.BaseDir,
                 Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
             };

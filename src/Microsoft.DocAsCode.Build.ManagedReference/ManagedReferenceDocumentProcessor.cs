@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -107,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(file, page, serializer: new BinaryFormatter())
+            return new FileModel(file, page)
             {
                 Uids = (from item in page.Items select item.Uid)
                 .Concat(from item in page.Items where item.Overload != null select item.Overload)

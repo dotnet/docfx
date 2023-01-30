@@ -52,11 +52,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
-            var toc = ConvertFromObject(model.Content);
+            var toc = (TocItemViewModel)model.Content;
             UpdateTocItemHref(toc, model, context);
 
             RegisterTocToContext(toc, model, context);
-            model.Content = ConvertToObject(toc);
+            model.Content = toc;
         }
 
         #endregion
@@ -70,17 +70,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         #endregion
 
         #region Private methods
-
-        private TocItemViewModel ConvertFromObject(object model)
-        {
-            using var jr = new IgnoreStrongTypeObjectJsonReader(model);
-            return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
-        }
-
-        private object ConvertToObject(TocItemViewModel model)
-        {
-            return ConvertToObjectHelper.ConvertStrongTypeToObject(model);
-        }
 
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context, string includedFrom = null)
         {

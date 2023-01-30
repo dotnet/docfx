@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.RestApi.Swagger;
@@ -143,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-            return new FileModel(file, vm, serializer: new BinaryFormatter())
+            return new FileModel(file, vm)
             {
                 Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                     .Concat(from item in vm.Children

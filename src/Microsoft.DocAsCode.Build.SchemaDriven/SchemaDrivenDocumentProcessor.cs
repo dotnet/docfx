@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System.Dynamic;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Newtonsoft.Json;
@@ -144,10 +143,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                         var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-                        var fm = new FileModel(
-                            file,
-                            content,
-                            serializer: new BinaryFormatter())
+                        var fm = new FileModel(file, content)
                         {
                             LocalPathFromRoot = localPathFromRoot,
                         };
@@ -158,8 +154,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                 DocumentType.MarkdownFragments,
                                 file.SourceDir,
                                 file.DestinationDir),
-                            markdownFragmentsContent,
-                            serializer: new BinaryFormatter());
+                            markdownFragmentsContent);
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
                         fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;

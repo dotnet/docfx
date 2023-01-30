@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -93,10 +92,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(
-                file,
-                content,
-                serializer: new BinaryFormatter())
+            return new FileModel(file, content)
             {
                 LocalPathFromRoot = localPathFromRoot,
             };
