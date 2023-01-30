@@ -101,6 +101,7 @@ Name         | Type    | Description
 `_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
+`redirect_url`          | string  | Redirects the current page to the specified redirect URL. URLs can be relative.
 
 > [!TIP]
 > Docfx produces the right git links for major CI pipelines including [GitHub](https://github.com/features/actions), [GitLab](https://about.gitlab.com/gitlab-ci/), [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/), [AppVeyor](https://www.appveyor.com/), [TeamCity](https://www.jetbrains.com/teamcity/), [Jenkins](https://jenkins.io/). `_gitContribute` and `_gitUrlPattern` are optional on these platforms.
