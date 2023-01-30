@@ -58,7 +58,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 TocNamespaceStyle.Flattened => GenerateFlatToc(namespaces),
                 TocNamespaceStyle.Nested => GenerateNestedToc(namespaces),
-                TocNamespaceStyle.CompactNested => GenerateCompactNestedToc(namespaces),
                 _ => GenerateFlatToc(namespaces),
             };
         }
@@ -74,7 +73,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
         }
 
-        private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+        private static MetadataItem GenerateNestedTocStructure(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
         {
             MetadataItem root = new MetadataItem()
             {
@@ -118,9 +117,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return root;
         }
 
-        private static MetadataItem GenerateCompactNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+        private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
         {
-            var root = GenerateNestedToc(namespaces);
+            var root = GenerateNestedTocStructure(namespaces);
 
             Queue<MetadataItem> metadataItemQueue = new();
             metadataItemQueue.Enqueue(root);

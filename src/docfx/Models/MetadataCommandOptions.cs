@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode
         [Option("disableDefaultFilter", HelpText = "Disable the default API filter (default filter only generate public or protected APIs).")]
         public bool DisableDefaultFilter { get; set; }
 
-        [Option("tocNamespaceStyle", HelpText = "Determines the style to be used for generating the table-of-contents.")]
-        public TocNamespaceStyle TocNamespaceStyle { get; set; }
+        [Option("tocNamespaceStyle", HelpText = "Determines the style to be used for generating the table of contents.")]
+        public TocNamespaceStyle? TocNamespaceStyle { get; set; }
     }
 }

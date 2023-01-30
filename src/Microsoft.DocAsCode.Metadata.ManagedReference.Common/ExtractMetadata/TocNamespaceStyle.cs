@@ -14,11 +14,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// Renders the namespaces in a nested tree form
         /// </summary>
         Nested,
-
-        /// <summary>
-        /// Renders the namespaces in a nested tree form, compacting namespaces to only use the lowest level
-        /// </summary>
-        CompactNested,
     }
 
 }
