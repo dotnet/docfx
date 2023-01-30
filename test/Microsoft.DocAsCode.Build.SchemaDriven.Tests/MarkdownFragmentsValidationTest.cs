@@ -88,7 +88,7 @@ There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsV
                 TemplateManager = _templateManager,
             };
 
-            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, "obj");
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
             builder.Build(parameters);
         }
 

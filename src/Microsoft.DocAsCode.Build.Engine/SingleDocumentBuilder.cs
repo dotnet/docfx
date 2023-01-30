@@ -8,9 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Collections.Immutable;
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     public class SingleDocumentBuilder : IDisposable
@@ -22,9 +20,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
         public IMarkdownServiceProvider MarkdownServiceProvider { get; set; }
 
-        internal BuildInfo CurrentBuildInfo { get; set; }
-        internal BuildInfo LastBuildInfo { get; set; }
-        internal string IntermediateFolder { get; set; }
         private IMarkdownService MarkdownService { get; set; }
 
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
@@ -103,10 +98,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             }
                         }
                         Prepare(
-                            parameters,
                             context,
                             templateProcessor,
-                            (MarkdownService as IHasIncrementalContext)?.GetIncrementalContextHash(),
                             out hostServiceCreator,
                             out phaseProcessor);
                     }
@@ -122,7 +115,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Homepages = GetHomepages(context),
                         XRefMap = ExportXRefMap(parameters, context),
                         SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-                        IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                         VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
                             new Dictionary<string, VersionInfo>() :
                             new Dictionary<string, VersionInfo>
@@ -158,16 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
         {
-            try
-            {
-                phaseProcessor.Process(hostServices, context.MaxParallelism);
-            }
-            catch (BuildCacheException e)
-            {
-                var message = $"Build cache was corrupted, please try force rebuild `build --force` or clear the cache files in the path: {IntermediateFolder}. Detail error: {e.Message}.";
-                Logger.LogError(message);
-                throw new DocfxException(message, e);
-            }
+            phaseProcessor.Process(hostServices, context.MaxParallelism);
         }
 
         private void Cleanup(HostService hostService)
@@ -230,41 +213,20 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         private void Prepare(
-            DocumentBuildParameters parameters,
             DocumentBuildContext context,
             TemplateProcessor templateProcessor,
-            string markdownServiceContextHash,
             out IHostServiceCreator hostServiceCreator,
             out PhaseProcessor phaseProcessor)
         {
-            if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
+            hostServiceCreator = new HostServiceCreator(context);
+            phaseProcessor = new PhaseProcessor
             {
-                using (new LoggerPhaseScope("CreateIncrementalBuildContext", LogLevel.Verbose))
-                {
-                    context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
-                }
-                hostServiceCreator = new HostServiceCreatorWithIncremental(context);
-                phaseProcessor = new PhaseProcessor
-                {
-                    Handlers =
-                    {
-                        new CompilePhaseHandler(context).WithIncremental(),
-                        new LinkPhaseHandler(context, templateProcessor).WithIncremental(),
-                    }
-                };
-            }
-            else
-            {
-                hostServiceCreator = new HostServiceCreator(context);
-                phaseProcessor = new PhaseProcessor
-                {
-                    Handlers =
+                Handlers =
                     {
                         new CompilePhaseHandler(context),
                         new LinkPhaseHandler(context, templateProcessor),
                     }
-                };
-            }
+            };
         }
 
         private static List<HomepageInfo> GetHomepages(DocumentBuildContext context)

@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Immutable;
-    using System.IO;
 
     public interface IPostProcessorHost
     {
@@ -12,27 +11,5 @@ namespace Microsoft.DocAsCode.Plugins
         /// Source file information
         /// </summary>
         IImmutableList<SourceFileInfo> SourceFileInfos { get; }
-
-        /// <summary>
-        /// Whether the post processor should trace incremental information.
-        /// </summary>
-        bool ShouldTraceIncrementalInfo { get; }
-
-        /// <summary>
-        /// Whether the post processor can be incremental.
-        /// </summary>
-        bool IsIncremental { get; }
-
-        /// <summary>
-        /// Load context info from last post processing.
-        /// </summary>
-        /// <returns>Stream to be read, return null when there is no last info.</returns>
-        Stream LoadContextInfo();
-
-        /// <summary>
-        /// Save context information to current post processing.
-        /// </summary>
-        /// <returns>Stream to be written, return null when should not trace incremental information.</returns>
-        Stream SaveContextInfo();
     }
 }

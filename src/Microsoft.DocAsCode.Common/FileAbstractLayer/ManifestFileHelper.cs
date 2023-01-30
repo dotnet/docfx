@@ -217,33 +217,5 @@ namespace Microsoft.DocAsCode.Common
                     }
                 });
         }
-
-        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder, int parallism = 0)
-        {
-            Parallel.ForEach(
-                from m in items
-                from ofi in m.OutputFiles.Values
-                where ofi.Hash != null &&
-                    ofi.LinkToPath != null &&
-                    ofi.LinkToPath.Length > incrementalFolder.Length &&
-                    ofi.LinkToPath.StartsWith(incrementalFolder) &&
-                    (ofi.LinkToPath[incrementalFolder.Length] == '\\' || ofi.LinkToPath[incrementalFolder.Length] == '/')
-                group ofi by ofi.Hash into g
-                select g.ToList(),
-                new ParallelOptions { MaxDegreeOfParallelism = parallism > 0 ? parallism : Environment.ProcessorCount },
-                list =>
-                {
-                    var groups = from item in list group item by item.LinkToPath;
-                    var file = groups.First().First().LinkToPath;
-                    foreach (var g in groups.Skip(1))
-                    {
-                        File.Delete(Environment.ExpandEnvironmentVariables(g.First().LinkToPath));
-                        foreach (var item in g)
-                        {
-                            item.LinkToPath = file;
-                        }
-                    }
-                });
-        }
     }
 }

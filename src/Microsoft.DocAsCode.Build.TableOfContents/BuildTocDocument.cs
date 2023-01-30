@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildTocDocument : BuildTocDocumentStepBase, ISupportIncrementalBuildStep
+    public class BuildTocDocument : BuildTocDocumentStepBase
     {
         #region Override methods
 
@@ -37,13 +37,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return resolvedTocModels;
         }
 
-        public override void Build(FileModel model, IHostService host)
-        {
-            base.Build(model, host);
-            var item = (TocItemViewModel)model.Content;
-            ReportUidDependency(model, host, item);
-        }
-
         #endregion
 
         #region Private methods
@@ -60,18 +53,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             // handle not-in-toc items
             UpdateNearestTocForNotInTocItem(models, host, nearest, parallelism);
-
-            foreach (var item in nearest)
-            {
-                if (includedTocs.Contains(item.Key))
-                {
-                    host.ReportDependencyTo(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Include);
-                }
-                else
-                {
-                    host.ReportDependencyFrom(item.Value.TocInfo.Model, item.Key, DependencyTypeName.Metadata);
-                }
-            }
         }
 
         private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
@@ -210,16 +191,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             public RelativeInfo(FileModel tocModel, FileAndType article)
                 : this(new TocInfo(tocModel), article) { }
         }
-
-        #endregion
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
 
         #endregion
     }

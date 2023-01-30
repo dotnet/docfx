@@ -45,9 +45,6 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("files")]
         public ManifestItemCollection Files { get; }
 
-        [JsonProperty("incremental_info")]
-        public List<IncrementalInfo> IncrementalInfo { get; set; }
-
         [Obsolete("use groups")]
         [JsonProperty("version_info")]
         public Dictionary<string, VersionInfo> VersionInfo { get; set; }

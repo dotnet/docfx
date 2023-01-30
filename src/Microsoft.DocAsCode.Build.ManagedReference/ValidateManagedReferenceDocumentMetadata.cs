@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ValidateManagedReferenceDocumentMetadata : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class ValidateManagedReferenceDocumentMetadata : BaseDocumentBuildStep
     {
         public override string Name => nameof(ValidateManagedReferenceDocumentMetadata);
 
@@ -39,15 +39,5 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     throw new NotSupportedException();
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

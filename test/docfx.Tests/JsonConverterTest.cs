@@ -42,7 +42,6 @@ namespace Microsoft.DocAsCode.Tests
                 "}," +
                 "\"noLangKeyword\":false," +
                 "\"keepFileLink\":false," +
-                "\"cleanupCacheHistory\":false," +
                 "\"disableGitFeatures\":false" +
             "}";
 
@@ -138,10 +137,10 @@ namespace Microsoft.DocAsCode.Tests
             manifest.Files.Add(manifestItemA);
 
             Assert.Equal(
-                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{},\"is_incremental\":false},{\"source_relative_path\":\"b\",\"output\":{},\"is_incremental\":false}]}",
+                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
                 JsonUtility.Serialize(manifest));
             Assert.Equal(
-                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{},\"is_incremental\":false},{\"source_relative_path\":\"b\",\"output\":{},\"is_incremental\":false}]}",
+                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
                 JsonUtility.Serialize(JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest))));
         }
 

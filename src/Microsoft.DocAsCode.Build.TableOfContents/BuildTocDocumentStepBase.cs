@@ -25,25 +25,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #endregion
 
-        #region Virtual methods
-
-        public virtual void ReportUidDependency(FileModel model, IHostService host, TocItemViewModel item)
-        {
-            if (item.TopicUid != null)
-            {
-                host.ReportDependencyFrom(model, item.TopicUid, DependencyItemSourceType.Uid, DependencyTypeName.Metadata);
-            }
-            if (item.Items != null && item.Items.Count > 0)
-            {
-                foreach (var i in item.Items)
-                {
-                    ReportUidDependency(model, host, i);
-                }
-            }
-        }
-
-        #endregion
-
         #region Private methods
 
         private void BuildCore(TocItemViewModel item, FileModel model, IHostService hostService, string includedFrom = null)

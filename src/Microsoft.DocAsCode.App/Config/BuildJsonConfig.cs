@@ -135,12 +135,6 @@ namespace Microsoft.DocAsCode
         [JsonProperty("noLangKeyword")]
         public bool NoLangKeyword { get; set; }
 
-        [JsonProperty("intermediateFolder")]
-        public string IntermediateFolder { get; set; }
-
-        [JsonProperty("changesFile")]
-        public string ChangesFile { get; set; }
-
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
 
@@ -177,9 +171,6 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("keepFileLink")]
         public bool KeepFileLink { get; set; }
-
-        [JsonProperty("cleanupCacheHistory")]
-        public bool CleanupCacheHistory { get; set; }
 
         [JsonProperty("sitemap")]
         public SitemapOptions SitemapOptions { get; set; }

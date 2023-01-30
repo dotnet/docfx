@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -29,15 +28,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             _postProcessors = GetPostProcessor(container, postProcessorNames);
             _postProcessorsHandler = new PostProcessorsHandler();
-        }
-
-        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forcePostProcess, int maxParallelism)
-        {
-            if (intermediateFolder != null)
-            {
-                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forcePostProcess, maxParallelism);
-                _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
-            }
         }
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)

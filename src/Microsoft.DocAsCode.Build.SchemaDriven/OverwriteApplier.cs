@@ -129,11 +129,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             owModel.Uids = owModel.Uids.AddRange(context.Uids);
             owModel.Properties.XRefSpecs = context.XRefSpecs;
             owModel.Properties.ExternalXRefSpecs = context.ExternalXRefSpecs;
-
-            foreach (var d in context.Dependency)
-            {
-                _host.ReportDependencyTo(owModel, d, DependencyTypeName.Include);
-            }
             return transformed;
         }
 

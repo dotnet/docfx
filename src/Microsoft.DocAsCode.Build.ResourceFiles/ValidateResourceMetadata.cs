@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ResourceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ValidateResourceMetadata : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class ValidateResourceMetadata : BaseDocumentBuildStep
     {
         public override string Name => nameof(ValidateResourceMetadata);
 
@@ -31,15 +31,5 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
                     metadata.ToImmutableDictionary());
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

@@ -20,8 +20,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class SchemaDrivenDocumentProcessor
-        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+    public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
     {
         #region Fields
 
@@ -223,43 +222,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 new FileInterpreter(false, true),
                 new XrefInterpreter(false, true)
                 ).Process(content, schema, pc);
-        }
-
-        #endregion
-
-        #region ISupportIncrementalDocumentProcessor Members
-
-        public virtual string GetIncrementalContextHash() => _schema.Hash;
-
-        public virtual void SaveIntermediateModel(FileModel model, Stream stream)
-        {
-            // no need to save schema
-            model.Properties.Schema = null;
-            model.Properties.Metadata = null;
-            model.Properties.MarkdigMarkdownService = null;
-            FileModelPropertySerialization.Serialize(
-                model,
-                stream,
-                SerializeModel,
-                SerializeProperties,
-                null);
-            model.Properties.Schema = _schema;
-            model.Properties.Metadata = _schema.MetadataReference.GetValue(model.Content);
-            model.Properties.MarkdigMarkdownService = _markdigMarkdownService;
-        }
-
-        public virtual FileModel LoadIntermediateModel(Stream stream)
-        {
-            var loaded = FileModelPropertySerialization.Deserialize(
-                stream,
-                new BinaryFormatter(),
-                DeserializeModel,
-                DeserializeProperties,
-                null);
-            loaded.Properties.Schema = _schema;
-            loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content);
-            loaded.Properties.MarkdigMarkdownService = _markdigMarkdownService;
-            return loaded;
         }
 
         #endregion
