@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class BuildConceptualDocument : BaseDocumentBuildStep
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
@@ -66,11 +66,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     Name = string.IsNullOrEmpty(title) ? model.Uids[0].Name : title,
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
-            }
-
-            foreach (var d in result.Dependency)
-            {
-                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
             }
 
             void HandleYamlHeaderPair(string key, object value)
@@ -160,15 +155,5 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 }
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

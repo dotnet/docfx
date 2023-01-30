@@ -10,15 +10,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal interface IHostServiceCreator
     {
-        bool ShouldProcessorTraceInfo(IDocumentProcessor processor);
-
-        bool CanProcessorIncremental(IDocumentProcessor processor);
-
         /// <summary>
         /// Load file into model
         /// </summary>
         /// <returns>
-        /// model: the file Model, returns null if no need to load in incremental build or loading file failed
+        /// model: the file Model, returns null if loading file failed
         /// valid: whether loading file succeeds
         /// </returns>
         (FileModel model, bool valid) Load(

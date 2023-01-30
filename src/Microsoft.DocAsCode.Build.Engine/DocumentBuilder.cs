@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Newtonsoft.Json;
 
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
@@ -31,23 +30,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
 
-        private readonly string _intermediateFolder;
         private readonly CompositionHost _container;
         private readonly PostProcessorsManager _postProcessorsManager;
         private readonly List<Assembly> _assemblyList;
-        private readonly string _commitFromSHA;
-        private readonly string _commitToSHA;
-        private readonly string _templateHash;
-        private readonly bool _cleanupCacheHistory;
 
-        public DocumentBuilder(
-            IEnumerable<Assembly> assemblies,
-            ImmutableArray<string> postProcessorNames,
-            string templateHash,
-            string intermediateFolder = null,
-            string commitFromSHA = null,
-            string commitToSHA = null,
-            bool cleanupCacheHistory = false)
+        public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
         {
             Logger.LogVerbose("Loading plug-ins and post-processors...");
             using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
@@ -63,12 +50,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
-
-            _commitFromSHA = commitFromSHA;
-            _commitToSHA = commitToSHA;
-            _templateHash = templateHash;
-            _intermediateFolder = intermediateFolder;
-            _cleanupCacheHistory = cleanupCacheHistory;
             _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
         }
 
@@ -95,24 +76,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Load schema driven processor from template
             var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
 
-            BuildInfo lastBuildInfo = null;
-            var currentBuildInfo =
-                new BuildInfo
-                {
-                    BuildStartTime = DateTime.UtcNow,
-                    DocfxVersion = EnvironmentContext.Version,
-                };
-
             try
             {
-                using (new PerformanceScope("LoadLastBuildInfo"))
-                {
-                    lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
-                }
-                EnrichCurrentBuildInfo(currentBuildInfo, lastBuildInfo);
-
-                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, currentBuildInfo, lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
-
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
                 if (parameters.All(p => p.Files.Count == 0))
@@ -137,19 +102,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
-                    FileAbstractLayerBuilder falBuilder;
-                    if (_intermediateFolder == null)
-                    {
-                        falBuilder = FileAbstractLayerBuilder.Default
+                    FileAbstractLayerBuilder falBuilder = FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
                             .WriteToRealFileSystem(parameter.OutputBaseDir);
-                    }
-                    else
-                    {
-                        falBuilder = FileAbstractLayerBuilder.Default
-                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
-                    }
+
                     if (!string.IsNullOrEmpty(parameter.FALName))
                     {
                         if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
@@ -194,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         using (new LoggerPhaseScope("BuildCore"))
                         {
-                            manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+                            manifests.Add(BuildCore(parameter, markdownServiceProvider));
                         }
                     }
                 }
@@ -217,16 +173,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
                     ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                     ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
-
-                    // We can only globally shrink once to avoid invalid reference.
-                    // Shrink multiple times may remove files that are already linked in saved manifest.
-                    if (_intermediateFolder != null)
-                    {
-                        // TODO: shrink here is not safe as post processor may update it.
-                        //       should shrink once at last to handle everything, or make FAL support copy on writes
-                        generatedManifest.Files.Shrink(_intermediateFolder, parameters[0].MaxParallelism);
-                        currentBuildInfo.SaveVersionsManifet(_intermediateFolder);
-                    }
 
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
@@ -272,41 +218,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     using (new PerformanceScope("Cleanup"))
                     {
                         EnvironmentContext.FileAbstractLayerImpl = null;
-
-                        // overwrite intermediate cache files
-                        if (_intermediateFolder != null && transformDocument)
-                        {
-                            try
-                            {
-                                if (Logger.WarningCount >= Logger.WarningThrottling)
-                                {
-                                    currentBuildInfo.IsValid = false;
-                                    currentBuildInfo.Message = $"Warning count {Logger.WarningCount} exceeds throttling {Logger.WarningThrottling}";
-                                }
-                                currentBuildInfo.Save(_intermediateFolder);
-                                if (_cleanupCacheHistory)
-                                {
-                                    ClearCacheExcept(currentBuildInfo.DirectoryName);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.LogWarning($"Error happened while saving cache. Message: {ex.Message}.");
-                            }
-                        }
                     }
                 }
-            }
-            catch
-            {
-                // Leave cache folder there as it contains historical data
-                // exceptions happens in this build does not corrupt the cache theoretically
-                // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
-                if (_intermediateFolder != null && _cleanupCacheHistory)
-                {
-                    ClearCacheExcept(lastBuildInfo?.DirectoryName);
-                }
-                throw;
             }
             finally
             {
@@ -331,38 +244,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogError($"Unable to find markdown engine: {markdownEngineName}");
                     throw new DocfxException($"Unable to find markdown engine: {markdownEngineName}");
                     }
-                Logger.LogInfo($"Markdown engine is {markdownEngineName}", code: InfoCodes.Build.MarkdownEngineName);
+                Logger.LogInfo($"Markdown engine is {markdownEngineName}", code: "MarkdownEngineName");
                     return result;
-            }
-
-            void EnrichCurrentBuildInfo(BuildInfo current, BuildInfo last)
-            {
-                current.CommitFromSHA = _commitFromSHA;
-                current.CommitToSHA = _commitToSHA;
-                if (_intermediateFolder != null)
-                {
-                    current.PluginHash = ComputePluginHash(_assemblyList);
-                    current.TemplateHash = _templateHash;
-                    if (!_cleanupCacheHistory && last != null)
-                    {
-                        // Reuse the directory for last incremental if cleanup is disabled
-                        current.DirectoryName = last.DirectoryName;
-                    }
-                    else
-                    {
-                        current.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(_intermediateFolder));
-                    }
-                }
             }
         }
 
-        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo)
+        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider)
         {
             using var builder = new SingleDocumentBuilder
             {
-                CurrentBuildInfo = currentBuildInfo,
-                LastBuildInfo = lastBuildInfo,
-                IntermediateFolder = _intermediateFolder,
                 MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
                 Processors = Processors,
                 MarkdownServiceProvider = markdownServiceProvider,
@@ -439,27 +329,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 },
                 new CompositionContainer(CompositionContainer.DefaultContainer),
                 parameters.ConfigureMarkdig);
-        }
-
-        private void ClearCacheExcept(string subFolder)
-        {
-            string folder = Environment.ExpandEnvironmentVariables(_intermediateFolder);
-            string except = string.IsNullOrEmpty(subFolder) ? string.Empty : Path.Combine(folder, subFolder);
-            foreach (var f in Directory.EnumerateDirectories(folder))
-            {
-                if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, except))
-                {
-                    continue;
-                }
-                try
-                {
-                    Directory.Delete(f, true);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
-                }
-            }
         }
 
         private IEnumerable<IInputMetadataValidator> GetMetadataRules(DocumentBuildParameters parameter)

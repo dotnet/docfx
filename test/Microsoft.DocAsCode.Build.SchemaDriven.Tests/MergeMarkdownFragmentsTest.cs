@@ -411,7 +411,7 @@ With [!include[invalid](invalid.md)]",
                 TemplateManager = _templateManager,
             };
 
-            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, "obj");
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
             builder.Build(parameters);
         }
 

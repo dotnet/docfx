@@ -297,44 +297,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
-        public void ProcessMrefModelIsSupportIncremental()
-        {
-            var ft = _defaultFiles.EnumerateFiles().First();
-            var p = new ManagedReferenceDocumentProcessor();
-            var expected = p.Load(ft, ImmutableDictionary<string, object>.Empty);
-            var expectedVM = (PageViewModel)expected.Content;
-            expectedVM.Metadata["a"] = new List<string> { "b" };
-            expectedVM.Items[0].Metadata["a"] = new List<int> { 1 };
-            var actual = new Func<FileModel>(
-                () =>
-                {
-                    using var ms = new MemoryStream();
-                    p.SaveIntermediateModel(expected, ms);
-                    ms.Position = 0;
-                    return p.LoadIntermediateModel(ms);
-                })();
-            var actualVM = (PageViewModel)actual.Content;
-
-            Assert.NotSame(expected, actual);
-            Assert.NotSame(expectedVM, actualVM);
-
-            Assert.Equal(from uid in expected.Uids select uid.Name, from uid in actual.Uids select uid.Name);
-            Assert.Equal(expected.FileAndType, actual.FileAndType);
-            Assert.Equal(expected.DocumentType, actual.DocumentType);
-            Assert.Equal(expected.Key, actual.Key);
-            Assert.Equal(expected.LocalPathFromRoot, actual.LocalPathFromRoot);
-            Assert.Equal(expected.OriginalFileAndType, actual.OriginalFileAndType);
-
-            Assert.Equal(expectedVM.Metadata["a"].GetType(), actualVM.Metadata["a"].GetType());
-            Assert.Equal((List<string>)expectedVM.Metadata["a"], (List<string>)actualVM.Metadata["a"]);
-            Assert.Equal(expectedVM.Items[0].Metadata["a"].GetType(), actualVM.Items[0].Metadata["a"].GetType());
-            Assert.Equal((List<int>)expectedVM.Items[0].Metadata["a"], (List<int>)actualVM.Items[0].Metadata["a"]);
-            Assert.Equal(expectedVM.Items[0].Names, actualVM.Items[0].Names);
-            Assert.Equal(expectedVM.Items[0].NamesWithType, actualVM.Items[0].NamesWithType);
-            Assert.Equal(expectedVM.Items[0].FullNames, actualVM.Items[0].FullNames);
-        }
-
-        [Fact]
         public void SystemKeysListShouldBeComplete()
         {
             var files = new FileCollection(_defaultFiles);
@@ -396,7 +358,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 TemplateManager = _templateManager
             };
 
-            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null);
+            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
             builder.Build(parameters);
         }
 

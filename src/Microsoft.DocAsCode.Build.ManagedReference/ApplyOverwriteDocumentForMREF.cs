@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument, ISupportIncrementalBuildStep
+    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
     {
         public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
@@ -32,16 +32,5 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
-
     }
 }

@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         [Import]
         public ICompositionContainer Container { get; set; }
 
-        public sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
+        public sealed class DfmService : IMarkdownService, IDisposable
         {
             public string Name => "dfm";
 
@@ -76,8 +76,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             public object Renderer { get; }
 
             private readonly ImmutableDictionary<string, string> _tokens;
-
-            private readonly string _incrementalContextHash;
 
             public DfmService(
                 DfmServiceProvider provider,
@@ -111,49 +109,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     c.Customize(Builder, parameters);
                 }
-                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
-            }
-
-            private static string ComputeIncrementalContextHash(
-                string baseDir,
-                string templateDir,
-                IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
-                IReadOnlyDictionary<string, object> parameters)
-            {
-                var content = (StringBuffer)"dfm";
-                if (baseDir != null)
-                {
-                    if (File.Exists(Path.Combine(baseDir, "md.style")))
-                    {
-                        content += "::";
-                        content += File.ReadAllText(Path.Combine(baseDir, "md.style"));
-                    }
-                }
-                if (templateDir != null)
-                {
-                    var templateStylesFolder = Path.Combine(templateDir, "md.styles");
-                    if (Directory.Exists(templateStylesFolder))
-                    {
-                        foreach (var f in Directory.GetFiles(templateStylesFolder).OrderBy(f => f))
-                        {
-                            content += "::";
-                            content += f.Substring(templateStylesFolder.Length);
-                            content += "::";
-                            content += File.ReadAllText(f);
-                        }
-                    }
-                }
-                if (parameters.Count > 0)
-                {
-                    content += "::" + nameof(parameters) + "::";
-                    content += JsonUtility.Serialize(
-                        parameters
-                        .Where(p => p.Key != "fallbackFolders")
-                        .ToDictionary(p => p.Key, p => p.Value));
-                }
-                var contentText = content.ToString();
-                Logger.LogVerbose($"Dfm config content: {content}");
-                return HashUtility.GetSha256HashString(contentText);
             }
 
             public MarkupResult Markup(string src, string path)
@@ -175,8 +130,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new NotImplementedException();
             }
-
-            public string GetIncrementalContextHash() => _incrementalContextHash;
 
             public void Dispose()
             {

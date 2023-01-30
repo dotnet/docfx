@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Plugins;
 
-    // TODO: support incremental and update lastmod only when src file is changed, blocked by the postprocessor incremental framework
     [Export(nameof(SitemapGenerator), typeof(IPostProcessor))]
     public class SitemapGenerator : IPostProcessor
     {

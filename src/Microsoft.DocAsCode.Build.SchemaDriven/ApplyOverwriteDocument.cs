@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
         public override string Name => nameof(ApplyOverwriteDocument);
 
@@ -96,15 +96,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
             }
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
     }
 }

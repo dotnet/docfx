@@ -8,8 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Security.Cryptography;
-    using System.Text;
 
     using Microsoft.DocAsCode.Common;
 
@@ -35,36 +33,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
         {
             return new TemplateProcessor(CreateTemplateResource(_templates), context, maxParallelism);
-        }
-
-        public string GetTemplatesHash()
-        {
-            if (_templates == null)
-            {
-                return null;
-            }
-
-            Logger.LogVerbose("Calculating template hash...");
-
-            var sb = new StringBuilder();
-            using (var templateResource = CreateTemplateResource(_templates))
-            {
-                foreach (var name in from n in templateResource.Names ?? Enumerable.Empty<string>()
-                    orderby n
-                    select n)
-                {
-                    var hash = HashUtility.GetSha256HashString(templateResource.GetResourceStream(name));
-                    sb.Append(name);
-                    sb.Append(":");
-                    sb.Append(hash);
-                    sb.Append(";");
-                    Logger.LogVerbose($"New template resource info added, name: '{name}', hash: '{hash}'");
-                }
-            }
-
-            var result = HashUtility.GetSha256HashString(sb.ToString());
-            Logger.LogVerbose($"Template hash is '{result}'");
-            return result;
         }
 
         public CompositeResourceReader CreateTemplateResource() => CreateTemplateResource(_templates);

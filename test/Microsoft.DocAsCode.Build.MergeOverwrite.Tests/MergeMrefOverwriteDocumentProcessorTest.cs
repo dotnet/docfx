@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite.Tests
                 typeof(MergeMrefOverwriteDocumentProcessor).Assembly,
             };
 
-            using (var builder = new DocumentBuilder(assemblies, ImmutableArray<string>.Empty, null))
+            using (var builder = new DocumentBuilder(assemblies, ImmutableArray<string>.Empty))
             {
                 builder.Build(parameters);
             }
