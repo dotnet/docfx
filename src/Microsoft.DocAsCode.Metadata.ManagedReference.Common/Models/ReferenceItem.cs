@@ -140,7 +140,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             {
                                 for (int i = 0; i < sourceParts.Count; i++)
                                 {
-                                    Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
                                     targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
                                     targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
                                 }
