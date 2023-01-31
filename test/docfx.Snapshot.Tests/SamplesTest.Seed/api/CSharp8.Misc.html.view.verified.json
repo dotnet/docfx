@@ -1,0 +1,2250 @@
+﻿{
+  "uid": "CSharp8.Misc",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp8",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp8.Misc.AsynchronousStreams",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "AsynchronousStreams()"
+            },
+            {
+              "lang": "vb",
+              "value": "AsynchronousStreams()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.AsynchronousStreams()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.AsynchronousStreams()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.AsynchronousStreams()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.AsynchronousStreams()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.AsynchronousStreams\" text=\"AsynchronousStreams()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.AsynchronousStreams\" text=\"AsynchronousStreams()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static Task AsynchronousStreams()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function AsynchronousStreams() As Task"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Threading.Tasks.Task",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Task"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Task"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Task"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Task"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.Threading.Tasks.Task"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.Threading.Tasks.Task"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Threading.Tasks.Task\" text=\"Task\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Threading.Tasks.Task\" text=\"Task\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "AsynchronousStreams",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 97.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.AsynchronousStreams*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "AsynchronousStreams"
+              },
+              {
+                "lang": "vb",
+                "value": "AsynchronousStreams"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.AsynchronousStreams"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.AsynchronousStreams"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.AsynchronousStreams"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.AsynchronousStreams"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.AsynchronousStreams*\" text=\"AsynchronousStreams\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.AsynchronousStreams*\" text=\"AsynchronousStreams\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_AsynchronousStreams_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_AsynchronousStreams.md&value=---%0Auid%3A%20CSharp8.Misc.AsynchronousStreams%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L98",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_AsynchronousStreams",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.GenerateSequence",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "GenerateSequence()"
+            },
+            {
+              "lang": "vb",
+              "value": "GenerateSequence()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.GenerateSequence()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.GenerateSequence()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.GenerateSequence()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.GenerateSequence()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.GenerateSequence\" text=\"GenerateSequence()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.GenerateSequence\" text=\"GenerateSequence()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static IAsyncEnumerable<int> GenerateSequence()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function GenerateSequence() As IAsyncEnumerable(Of Integer)"
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Collections.Generic.IAsyncEnumerable{System.Int32}",
+                "definition": "System.Collections.Generic.IAsyncEnumerable`1",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "IAsyncEnumerable<int>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "IAsyncEnumerable(Of Integer)"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "IAsyncEnumerable<int>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "IAsyncEnumerable(Of Integer)"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.Collections.Generic.IAsyncEnumerable<int>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.Collections.Generic.IAsyncEnumerable(Of Integer)"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>&lt;<xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Collections.Generic.IAsyncEnumerable`1\" text=\"IAsyncEnumerable\"/>(Of <xref uid=\"System.Int32\" text=\"Integer\"/>)"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "GenerateSequence",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 105.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.GenerateSequence*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "GenerateSequence"
+              },
+              {
+                "lang": "vb",
+                "value": "GenerateSequence"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.GenerateSequence"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.GenerateSequence"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.GenerateSequence"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.GenerateSequence"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.GenerateSequence*\" text=\"GenerateSequence\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.GenerateSequence*\" text=\"GenerateSequence\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_GenerateSequence_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_GenerateSequence.md&value=---%0Auid%3A%20CSharp8.Misc.GenerateSequence%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L106",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_GenerateSequence",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.IndicesAndRanges",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "IndicesAndRanges()"
+            },
+            {
+              "lang": "vb",
+              "value": "IndicesAndRanges()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.IndicesAndRanges()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.IndicesAndRanges()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.IndicesAndRanges()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.IndicesAndRanges()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.IndicesAndRanges\" text=\"IndicesAndRanges()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.IndicesAndRanges\" text=\"IndicesAndRanges()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void IndicesAndRanges()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub IndicesAndRanges()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "IndicesAndRanges",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 119.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.IndicesAndRanges*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "IndicesAndRanges"
+              },
+              {
+                "lang": "vb",
+                "value": "IndicesAndRanges"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.IndicesAndRanges"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.IndicesAndRanges"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.IndicesAndRanges"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.IndicesAndRanges"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.IndicesAndRanges*\" text=\"IndicesAndRanges\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.IndicesAndRanges*\" text=\"IndicesAndRanges\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_IndicesAndRanges_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IndicesAndRanges.md&value=---%0Auid%3A%20CSharp8.Misc.IndicesAndRanges%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L120",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_IndicesAndRanges",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.IsExpression(System.DateTime)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "IsExpression(DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "IsExpression(Date)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.IsExpression(DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.IsExpression(Date)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.IsExpression(System.DateTime)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.IsExpression(Date)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.IsExpression(System.DateTime)\" text=\"IsExpression(DateTime)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.IsExpression(System.DateTime)\" text=\"IsExpression(DateTime)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static bool IsExpression(DateTime date)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function IsExpression([date] As Date) As Boolean"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "date",
+                "type": {
+                  "uid": "System.DateTime",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.DateTime"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Date"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Boolean",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "IsExpression",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 77.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.IsExpression*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "IsExpression"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.IsExpression"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.IsExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.IsExpression"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.IsExpression*\" text=\"IsExpression\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.IsExpression*\" text=\"IsExpression\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_IsExpression_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IsExpression_System_DateTime_.md&value=---%0Auid%3A%20CSharp8.Misc.IsExpression(System.DateTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L78",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_IsExpression_System_DateTime_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.NullCoalescingAssignment",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "NullCoalescingAssignment()"
+            },
+            {
+              "lang": "vb",
+              "value": "NullCoalescingAssignment()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.NullCoalescingAssignment()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.NullCoalescingAssignment()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.NullCoalescingAssignment()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.NullCoalescingAssignment()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.NullCoalescingAssignment\" text=\"NullCoalescingAssignment()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.NullCoalescingAssignment\" text=\"NullCoalescingAssignment()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void NullCoalescingAssignment()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub NullCoalescingAssignment()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "NullCoalescingAssignment",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 127.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.NullCoalescingAssignment*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "NullCoalescingAssignment"
+              },
+              {
+                "lang": "vb",
+                "value": "NullCoalescingAssignment"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.NullCoalescingAssignment"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.NullCoalescingAssignment"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.NullCoalescingAssignment"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.NullCoalescingAssignment"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.NullCoalescingAssignment*\" text=\"NullCoalescingAssignment\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.NullCoalescingAssignment*\" text=\"NullCoalescingAssignment\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_NullCoalescingAssignment_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_NullCoalescingAssignment.md&value=---%0Auid%3A%20CSharp8.Misc.NullCoalescingAssignment%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L128",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_NullCoalescingAssignment",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.StackallocInNestedExpressions",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "StackallocInNestedExpressions()"
+            },
+            {
+              "lang": "vb",
+              "value": "StackallocInNestedExpressions()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.StackallocInNestedExpressions()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.StackallocInNestedExpressions()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.StackallocInNestedExpressions()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.StackallocInNestedExpressions()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.StackallocInNestedExpressions\" text=\"StackallocInNestedExpressions()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.StackallocInNestedExpressions\" text=\"StackallocInNestedExpressions()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void StackallocInNestedExpressions()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub StackallocInNestedExpressions()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "StackallocInNestedExpressions",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 133.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.StackallocInNestedExpressions*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "StackallocInNestedExpressions"
+              },
+              {
+                "lang": "vb",
+                "value": "StackallocInNestedExpressions"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.StackallocInNestedExpressions"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.StackallocInNestedExpressions"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.StackallocInNestedExpressions"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.StackallocInNestedExpressions"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.StackallocInNestedExpressions*\" text=\"StackallocInNestedExpressions\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.StackallocInNestedExpressions*\" text=\"StackallocInNestedExpressions\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_StackallocInNestedExpressions_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_StackallocInNestedExpressions.md&value=---%0Auid%3A%20CSharp8.Misc.StackallocInNestedExpressions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L134",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_StackallocInNestedExpressions",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.StaticLocalFunctions(System.Int32)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "StaticLocalFunctions(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticLocalFunctions(Integer)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.StaticLocalFunctions(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.StaticLocalFunctions(Integer)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.StaticLocalFunctions(int)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.StaticLocalFunctions(Integer)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(int)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions(System.Int32)\" text=\"StaticLocalFunctions(int)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static int StaticLocalFunctions(int n)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function StaticLocalFunctions(n As Integer) As Integer"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "n",
+                "type": {
+                  "uid": "System.Int32",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "int"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "Integer"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Int32",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "int"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Integer"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "StaticLocalFunctions",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 88.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.StaticLocalFunctions*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "StaticLocalFunctions"
+              },
+              {
+                "lang": "vb",
+                "value": "StaticLocalFunctions"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.StaticLocalFunctions"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.StaticLocalFunctions"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.StaticLocalFunctions"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.StaticLocalFunctions"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions*\" text=\"StaticLocalFunctions\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.StaticLocalFunctions*\" text=\"StaticLocalFunctions\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_StaticLocalFunctions_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_StaticLocalFunctions_System_Int32_.md&value=---%0Auid%3A%20CSharp8.Misc.StaticLocalFunctions(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L89",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_StaticLocalFunctions_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.SwitchExpression(System.ConsoleColor)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "SwitchExpression(ConsoleColor)"
+            },
+            {
+              "lang": "vb",
+              "value": "SwitchExpression(ConsoleColor)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.SwitchExpression(ConsoleColor)"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.SwitchExpression(ConsoleColor)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.SwitchExpression(System.ConsoleColor)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.SwitchExpression(System.ConsoleColor)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.SwitchExpression(System.ConsoleColor)\" text=\"SwitchExpression(ConsoleColor)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.SwitchExpression(System.ConsoleColor)\" text=\"SwitchExpression(ConsoleColor)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static bool SwitchExpression(ConsoleColor color)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function SwitchExpression(color As ConsoleColor) As Boolean"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "color",
+                "type": {
+                  "uid": "System.ConsoleColor",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "ConsoleColor"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ConsoleColor"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "ConsoleColor"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "ConsoleColor"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.ConsoleColor"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.ConsoleColor"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.ConsoleColor\" text=\"ConsoleColor\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.ConsoleColor\" text=\"ConsoleColor\"/>"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Boolean",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "bool"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Boolean"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.Boolean\" text=\"bool\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "SwitchExpression",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 80.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.SwitchExpression*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "SwitchExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "SwitchExpression"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.SwitchExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.SwitchExpression"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.SwitchExpression"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.SwitchExpression"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.SwitchExpression*\" text=\"SwitchExpression\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.SwitchExpression*\" text=\"SwitchExpression\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_SwitchExpression_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_SwitchExpression_System_ConsoleColor_.md&value=---%0Auid%3A%20CSharp8.Misc.SwitchExpression(System.ConsoleColor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L81",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_SwitchExpression_System_ConsoleColor_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Misc.UsingDeclaration",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Misc",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "UsingDeclaration()"
+            },
+            {
+              "lang": "vb",
+              "value": "UsingDeclaration()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Misc.UsingDeclaration()"
+            },
+            {
+              "lang": "vb",
+              "value": "Misc.UsingDeclaration()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Misc.UsingDeclaration()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Misc.UsingDeclaration()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Misc.UsingDeclaration\" text=\"UsingDeclaration()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Misc.UsingDeclaration\" text=\"UsingDeclaration()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void UsingDeclaration()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub UsingDeclaration()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "UsingDeclaration",
+            "path": "src/DotnetNew/CSharp8.cs",
+            "startLine": 114.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "DotnetNew"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Misc.UsingDeclaration*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "UsingDeclaration"
+              },
+              {
+                "lang": "vb",
+                "value": "UsingDeclaration"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Misc.UsingDeclaration"
+              },
+              {
+                "lang": "vb",
+                "value": "Misc.UsingDeclaration"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Misc.UsingDeclaration"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Misc.UsingDeclaration"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Misc.UsingDeclaration*\" text=\"UsingDeclaration\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Misc.UsingDeclaration*\" text=\"UsingDeclaration\"/>"
+              }
+            ],
+            "id": "CSharp8_Misc_UsingDeclaration_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_UsingDeclaration.md&value=---%0Auid%3A%20CSharp8.Misc.UsingDeclaration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L115",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Misc_UsingDeclaration",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Misc"
+    },
+    {
+      "lang": "vb",
+      "value": "Misc"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Misc"
+    },
+    {
+      "lang": "vb",
+      "value": "Misc"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp8.Misc"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp8.Misc"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "remote": {
+      "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "Misc",
+    "path": "src/DotnetNew/CSharp8.cs",
+    "startLine": 75.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "DotnetNew"
+  ],
+  "namespace": {
+    "uid": "CSharp8",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp8"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp8"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class Misc"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class Misc"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0.0,
+      "index": 0.0
+    }
+  ],
+  "level": 1.0,
+  "inheritedMembers": [
+    {
+      "uid": "System.Object.Equals(System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.Equals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Equals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.Equals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.Equals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.GetHashCode",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetHashCode()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetHashCode()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetHashCode()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.GetType",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "GetType()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.GetType()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.GetType()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.MemberwiseClone",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "MemberwiseClone()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.MemberwiseClone()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.MemberwiseClone()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.ReferenceEquals(System.Object,System.Object)",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "ReferenceEquals(Object, Object)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ReferenceEquals(object, object)"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ReferenceEquals(Object, Object)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "System.Object.ToString",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System.Object",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "ToString()"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object.ToString()"
+        },
+        {
+          "lang": "vb",
+          "value": "Object.ToString()"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
+        }
+      ],
+      "level": 0.0
+    }
+  ],
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/CSharp8.Misc.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CSharp8.Misc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc.md&value=---%0Auid%3A%20CSharp8.Misc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L76",
+  "summary": "",
+  "remarks": null,
+  "conceptual": "",
+  "implements": null,
+  "example": null,
+  "seealso": null,
+  "id": "CSharp8_Misc",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false
+}

@@ -40,6 +40,6 @@
     "keepFileLink": false,
     "cleanupCacheHistory": false,
     "disableGitFeatures": false,
-    "exportRawModel": true
+    "exportViewModel": true
   }
 }
