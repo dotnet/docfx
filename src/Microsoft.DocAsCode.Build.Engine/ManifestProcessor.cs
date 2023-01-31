@@ -168,12 +168,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // TODO: use weak type for system attributes from the beginning
                     var systemAttrs = systemMetadataGenerator.Generate(m.Item);
                     var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
-                    var model = m.Item.Content as IDictionary<string, object>;
-                    if (model is null)
-                    {
-                        model = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(m.Item.Content);
-                        m.Item.Content = model;
-                    }
+                    var model = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(m.Item.Content);
+                    m.Item.Content = model;
 
                     foreach (var (key, value) in metadata.OrderBy(item => item.Key))
                     {

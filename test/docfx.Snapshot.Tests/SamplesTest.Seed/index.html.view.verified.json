@@ -7,8 +7,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0,
-    "endLine": 0,
+    "startLine": 0.0,
+    "endLine": 0.0,
     "isExternal": false
   },
   "path": "index.md",
@@ -18,8 +18,8 @@
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "startLine": 0,
-    "endLine": 0,
+    "startLine": 0.0,
+    "endLine": 0.0,
     "isExternal": false
   },
   "_appTitle": "docfx seed website",
@@ -111,5 +111,5 @@
     "_shared": {}
   },
   "_disableToc": true,
-  "docurl": ""
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/index.md/#L1"
 }
