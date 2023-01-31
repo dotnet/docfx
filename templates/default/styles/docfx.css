@@ -499,6 +499,10 @@ body .toc{
 .expand-stub {
   position: absolute;
   left: -10px;
+  font-weight: bold;
+}
+.expand-stub + a {
+  font-weight: bold;
 }
 .toc .nav > li > a.sidetoc-expand {
   position: absolute;

@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Tests
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.SubCommands;
     using Microsoft.DocAsCode.Tests.Common;
+    using Microsoft.DocAsCode.Metadata.ManagedReference;
 
     [Collection("docfx STA")]
     public class MetadataCommandTest : TestBase
@@ -282,6 +283,80 @@ namespace Microsoft.DocAsCode.Tests
             }).Exec(null);
 
             CheckResult();
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestMetadataCommandFromCSProjectWithMultipleNamespaces()
+        {
+            var projectFile = Path.Combine(_projectFolder, "test.csproj");
+            var sourceFile = Path.Combine(_projectFolder, "test.cs");
+            File.Copy("Assets/test.csproj.sample.1", projectFile);
+            File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
+
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                Projects = new List<string> { projectFile },
+                TocNamespaceStyle = TocNamespaceStyle.Nested
+            }).Exec(null);
+
+            var file = Path.Combine(_outputFolder, "toc.yml");
+            Assert.True(File.Exists(file));
+            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Name);
+
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
+
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
+
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[1].Items[0].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[1].Items[0].Items[0].Name);
+
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestMetadataCommandFromCSProjectWithMultipleNamespacesWithFlatToc()
+        {
+            var projectFile = Path.Combine(_projectFolder, "test.csproj");
+            var sourceFile = Path.Combine(_projectFolder, "test.cs");
+            File.Copy("Assets/test.csproj.sample.1", projectFile);
+            File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
+
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                Projects = new List<string> { projectFile },
+                TocNamespaceStyle = TocNamespaceStyle.Flattened
+            }).Exec(null);
+
+            var file = Path.Combine(_outputFolder, "toc.yml");
+            Assert.True(File.Exists(file));
+            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
+            Assert.Equal("OtherNamespace", tocViewModel[0].Name);
+
+            Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
+
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[0].Name);
+
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Uid);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[2].Name);
+
+            Assert.Equal("Samples.Foo.Sub.SubBar", tocViewModel[2].Items[0].Uid);
+            Assert.Equal("SubBar", tocViewModel[2].Items[0].Name);
         }
 
         private void CheckResult()

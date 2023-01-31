@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool DisableDefaultFilter { get; set; }
 
+        public TocNamespaceStyle TocNamespaceStyle { get; set; }
+
         [JsonIgnore]
         public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
 

@@ -72,6 +72,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
                 item.DisableGitFeatures |= options.DisableGitFeatures;
                 item.DisableDefaultFilter |= options.DisableDefaultFilter;
+                item.TocNamespaceStyle = options.TocNamespaceStyle ?? item.TocNamespaceStyle;
                 if (!string.IsNullOrEmpty(options.FilterConfigFile))
                 {
                     item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);

@@ -124,11 +124,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case MemberType.Toc:
                 case MemberType.Namespace:
                     var result = new List<TocItemViewModel>();
-                    foreach (var child in item.Items)
+                    foreach (var child in item.Items
+                        .OrderBy(x => x.Type == MemberType.Namespace ? 0 : 1)
+                        .ThenBy(x => x.Name)
+                    )
                     {
                         result.Add(child.ToTocItemViewModel());
                     }
-                    return new TocViewModel(result.OrderBy(s => s.Name));
+                    return new TocViewModel(result);
                 default:
                     return null;
             }
@@ -273,7 +276,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Attributes = model.Attributes,
             };
 
-            result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
+            if (model.Parent != null && model.Parent.Name != null && !model.Name.StartsWith(model.Parent.Name))
+            {
+                result.Id = model.Name.Substring(model.Name.LastIndexOf(".") + 1);
+            } else
+            {
+                result.Id = model.Name.Substring((model.Parent?.Name?.Length ?? -1) + 1);
+            }
 
             result.Name = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default);
             var nameForCSharp = model.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
