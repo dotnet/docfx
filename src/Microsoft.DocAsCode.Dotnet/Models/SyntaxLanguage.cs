@@ -7,9 +7,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     {
         Default,
         CSharp,
-        CPlusPlus,
-        FSharp,
-        Javascript,
         VB,
     }
 }

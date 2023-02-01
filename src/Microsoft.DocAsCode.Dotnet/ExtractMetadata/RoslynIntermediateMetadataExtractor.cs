@@ -5,35 +5,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
     using System.Linq;
-
     using Microsoft.CodeAnalysis;
 
-    public class RoslynIntermediateMetadataExtractor : IExtractor
+    internal class RoslynIntermediateMetadataExtractor
     {
-        private IRoslynBuildController _controller;
-        public RoslynIntermediateMetadataExtractor(IRoslynBuildController controller)
+        public static MetadataItem GenerateYamlMetadata(Compilation compilation, IAssemblySymbol assembly = null, ExtractMetadataOptions options = null)
         {
-            _controller = controller;
-        }
-
-        public MetadataItem Extract(IInputParameters key)
-        {
-            var compilation = _controller.GetCompilation(key);
-            var assembly = _controller.GetAssembly(key);
-
-            return GenerateYamlMetadata(compilation, assembly, key.Options);
-        }
-
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, IAssemblySymbol assembly = null, ExtractMetadataOptions options = null)
-        {
-            if (compilation == null)
-            {
-                return null;
-            }
-
-            options = options ?? new ExtractMetadataOptions();
-
-            return new RoslynMetadataExtractor(compilation, assembly).Extract(options);
+            options ??= new ExtractMetadataOptions();
+            assembly ??= compilation.Assembly;
+            return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), compilation, options));
         }
 
         public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)

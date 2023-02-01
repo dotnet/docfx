@@ -40,10 +40,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty(Constants.PropertyName.CommentId)]
         public string CommentId { get; set; }
 
-        [YamlMember(Alias = "language")]
-        [JsonProperty("language")]
-        public SyntaxLanguage Language { get; set; }
-
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
         public SortedList<SyntaxLanguage, string> DisplayNames { get; set; }
@@ -79,8 +75,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlMember(Alias = Constants.PropertyName.Documentation)]
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
-
-        public List<LayoutItem> Layout { get; set; }
 
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]

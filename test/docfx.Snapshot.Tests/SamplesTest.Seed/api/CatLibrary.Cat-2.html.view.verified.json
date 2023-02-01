@@ -3579,7 +3579,7 @@
               },
               {
                 "lang": "vb",
-                "value": "void IAnimal.Eat()"
+                "value": ""
               }
             ]
           },
@@ -3752,7 +3752,7 @@
               },
               {
                 "lang": "vb",
-                "value": "void IAnimal.Eat(string food)"
+                "value": ""
               }
             ],
             "parameters": [
@@ -3974,7 +3974,7 @@
               },
               {
                 "lang": "vb",
-                "value": "void IAnimal.Eat<Tool>(Tool a) where Tool : class"
+                "value": ""
               }
             ],
             "parameters": [

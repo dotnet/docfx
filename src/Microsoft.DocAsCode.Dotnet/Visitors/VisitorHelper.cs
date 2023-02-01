@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (!string.IsNullOrEmpty(item.RawComment))
             {
-                var commentModel = TripleSlashCommentModel.CreateModel(item.RawComment, item.Language, context);
+                var commentModel = TripleSlashCommentModel.CreateModel(item.RawComment, SyntaxLanguage.CSharp, context);
                 if (commentModel == null) return;
                 item.Summary = commentModel.Summary;
                 item.Remarks = commentModel.Remarks;

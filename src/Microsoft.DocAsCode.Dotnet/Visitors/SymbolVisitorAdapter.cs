@@ -14,8 +14,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
 
-    public class SymbolVisitorAdapter
-        : SymbolVisitor<MetadataItem>
+    internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         #region Fields
         private static readonly Regex MemberSigRegex = new Regex(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
@@ -32,10 +31,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, SyntaxLanguage language, Compilation compilation, ExtractMetadataOptions options)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, Compilation compilation, ExtractMetadataOptions options)
         {
             _generator = generator;
-            Language = language;
             _currentCompilation = compilation;
             _currentCompilationRef = compilation.ToMetadataReference();
             _preserveRawInlineComments = options.PreserveRawInlineComments;
@@ -69,7 +67,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Name = VisitorHelper.GetId(symbol),
                 CommentId = VisitorHelper.GetCommentId(symbol),
                 RawComment = symbol.GetDocumentationCommentXml(),
-                Language = Language,
             };
 
             item.DisplayNames = new SortedList<SyntaxLanguage, string>();
@@ -109,7 +106,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            _generator.DefaultVisit(symbol, item, this);
+            _generator.DefaultVisit(symbol, item);
             return item;
         }
 
@@ -119,7 +116,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Name = VisitorHelper.GetId(symbol),
                 RawComment = symbol.GetDocumentationCommentXml(),
-                Language = Language,
             };
 
             item.DisplayNames = new SortedList<SyntaxLanguage, string>
@@ -192,7 +188,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(item.Type, symbol, item.Syntax, this);
+            _generator.GenerateSyntax(symbol, item.Syntax, this);
 
             if (symbol.TypeParameters.Length > 0)
             {
@@ -213,8 +209,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var typeGenericParameters = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
                 AddMethodSyntax(symbol.DelegateInvokeMethod, item, typeGenericParameters, EmptyListOfString);
             }
-
-            _generator.GenerateNamedType(symbol, item, this);
 
             item.Items = new List<MetadataItem>();
             foreach (var member in symbol.GetMembers().Where(s => !(s is INamedTypeSymbol)))
@@ -269,9 +263,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
-
-            _generator.GenerateMethod(symbol, result, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, this);
 
             if (symbol.IsOverride && symbol.OverriddenMethod != null)
             {
@@ -305,8 +297,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
-            _generator.GenerateField(symbol, result, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, this);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -334,8 +325,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
-            _generator.GenerateEvent(symbol, result, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, this);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -376,7 +366,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(result.Type, symbol, result.Syntax, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, this);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -402,8 +392,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             result.Overload = AddOverloadReference(symbol.OriginalDefinition);
-
-            _generator.GenerateProperty(symbol, result, this);
 
             AddMemberImplements(symbol, result, typeGenericParameters);
 

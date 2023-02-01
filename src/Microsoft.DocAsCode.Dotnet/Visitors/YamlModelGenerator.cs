@@ -7,44 +7,56 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.IO;
 
     using Microsoft.CodeAnalysis;
-
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    public abstract class YamlModelGenerator
+    internal class YamlModelGenerator
     {
-        internal YamlModelGenerator()
+        public void DefaultVisit(ISymbol symbol, MetadataItem item)
         {
+            item.DisplayNames[SyntaxLanguage.CSharp] = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp);
+            item.DisplayNamesWithType[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
+            item.DisplayQualifiedNames[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedName(symbol, SyntaxLanguage.CSharp);
+
+            item.DisplayNames[SyntaxLanguage.VB] = SymbolFormatter.GetName(symbol, SyntaxLanguage.VB);
+            item.DisplayNamesWithType[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.VB);
+            item.DisplayQualifiedNames[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedName(symbol, SyntaxLanguage.VB);
         }
 
-        public virtual void DefaultVisit(ISymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        public void GenerateReference(ISymbol symbol, ReferenceItem reference, bool asOverload)
         {
+            if (!reference.NameParts.ContainsKey(SyntaxLanguage.CSharp))
+                reference.NameParts.Add(SyntaxLanguage.CSharp, new());
+            if (!reference.NameWithTypeParts.ContainsKey(SyntaxLanguage.CSharp))
+                reference.NameWithTypeParts.Add(SyntaxLanguage.CSharp, new());
+            if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
+                reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, new());
+
+            reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+            reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+            reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.CSharp, asOverload);
+
+            if (!reference.NameParts.ContainsKey(SyntaxLanguage.VB))
+                reference.NameParts.Add(SyntaxLanguage.VB, new());
+            if (!reference.NameWithTypeParts.ContainsKey(SyntaxLanguage.VB))
+                reference.NameWithTypeParts.Add(SyntaxLanguage.VB, new());
+            if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
+                reference.QualifiedNameParts.Add(SyntaxLanguage.VB, new());
+
+            reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
+            reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
+            reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
         }
 
-        public virtual void GenerateNamedType(INamedTypeSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
+        public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolVisitorAdapter adapter)
         {
+            syntax.Content[SyntaxLanguage.CSharp] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.CSharp, adapter.FilterVisitor);
+            syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, adapter.FilterVisitor);
         }
 
-        public virtual void GenerateMethod(IMethodSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
-        {
-        }
-
-        public virtual void GenerateField(IFieldSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
-        {
-        }
-
-        public virtual void GenerateEvent(IEventSymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
-        {
-        }
-
-        public virtual void GenerateProperty(IPropertySymbol symbol, MetadataItem item, SymbolVisitorAdapter adapter)
-        {
-        }
-
-        internal string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+        public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
         {
             var id = VisitorHelper.GetId(symbol);
-
-            ReferenceItem reference = new ReferenceItem
+            var reference = new ReferenceItem
             {
                 NameParts = new(),
                 NameWithTypeParts = new(),
@@ -52,7 +64,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 IsDefinition = symbol.IsDefinition,
                 CommentId = VisitorHelper.GetCommentId(symbol)
             };
-            GenerateReferenceInternal(symbol, reference, adapter);
+            GenerateReference(symbol, reference, false);
 
             if (!references.ContainsKey(id))
             {
@@ -66,7 +78,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return id;
         }
 
-        internal string AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
+        public string AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
         {
             if (!references.TryGetValue(id, out ReferenceItem reference))
             {
@@ -77,11 +89,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return id;
         }
 
-        internal string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+        public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
         {
-            string uidBody = VisitorHelper.GetOverloadIdBody(symbol);
-
-            ReferenceItem reference = new ReferenceItem
+            var uidBody = VisitorHelper.GetOverloadIdBody(symbol);
+            var reference = new ReferenceItem
             {
                 NameParts = new(),
                 NameWithTypeParts = new(),
@@ -89,7 +100,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 IsDefinition = true,
                 CommentId = "Overload:" + uidBody
             };
-            GenerateReferenceInternal(symbol, reference, adapter, true);
+
+            GenerateReference(symbol, reference, true);
 
             var uid = uidBody + "*";
             if (!references.ContainsKey(uid))
@@ -104,7 +116,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return uid;
         }
 
-        internal string AddSpecReference(
+        public string AddSpecReference(
             ISymbol symbol,
             IReadOnlyList<string> typeGenericParameters,
             IReadOnlyList<string> methodGenericParameters,
@@ -117,13 +129,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingSymbol?.MetadataName}.");
             }
-            ReferenceItem reference = new ReferenceItem
+            var reference = new ReferenceItem
             {
                 NameParts = new(),
                 NameWithTypeParts = new(),
                 QualifiedNameParts = new(),
             };
-            GenerateReferenceInternal(symbol, reference, adapter);
+            GenerateReference(symbol, reference, false);
             var originalSymbol = symbol;
             var reducedFrom = (symbol as IMethodSymbol)?.ReducedFrom;
             if (reducedFrom != null)
@@ -186,9 +198,5 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return (symbol as INamespaceSymbol)?.IsGlobalNamespace == true;
         }
-
-        internal abstract void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload = false);
-
-        internal abstract void GenerateSyntax(MemberType type, ISymbol symbol, SyntaxDetail syntax, SymbolVisitorAdapter adapter);
     }
 }

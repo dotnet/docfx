@@ -4,9 +4,6 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Common;
 
     public class ExtractMetadataInputModel
     {
@@ -35,12 +32,5 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public TocNamespaceStyle TocNamespaceStyle { get; set; }
 
         public Dictionary<string, string> MSBuildProperties { get; set; }
-
-        public override string ToString()
-        {
-            using StringWriter writer = new StringWriter();
-            JsonUtility.Serialize(writer, this);
-            return writer.ToString();
-        }
     }
 }
