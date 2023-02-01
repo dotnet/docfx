@@ -1264,7 +1264,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "explicit operator checked int"
+                "value": "explicit operator checked"
               },
               {
                 "lang": "vb",
@@ -1274,7 +1274,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "CheckedUserDefinedOperators<T>.explicit operator checked int"
+                "value": "CheckedUserDefinedOperators<T>.explicit operator checked"
               },
               {
                 "lang": "vb",
@@ -1284,7 +1284,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked int"
+                "value": "CSharp11.CheckedUserDefinedOperators<T>.explicit operator checked"
               },
               {
                 "lang": "vb",
@@ -1294,7 +1294,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "explicit operator checked <xref uid=\"System.Int32*\" text=\"int\"/>"
+                "value": "explicit operator checked"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit_"
@@ -2972,7 +2972,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "explicit operator int"
+                "value": "explicit operator"
               },
               {
                 "lang": "vb",
@@ -2982,7 +2982,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "CheckedUserDefinedOperators<T>.explicit operator int"
+                "value": "CheckedUserDefinedOperators<T>.explicit operator"
               },
               {
                 "lang": "vb",
@@ -2992,7 +2992,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp11.CheckedUserDefinedOperators<T>.explicit operator int"
+                "value": "CSharp11.CheckedUserDefinedOperators<T>.explicit operator"
               },
               {
                 "lang": "vb",
@@ -3002,7 +3002,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "explicit operator <xref uid=\"System.Int32*\" text=\"int\"/>"
+                "value": "explicit operator"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Explicit_"

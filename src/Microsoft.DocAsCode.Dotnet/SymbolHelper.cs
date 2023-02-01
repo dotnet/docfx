@@ -48,6 +48,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
         }
 
+        public static bool IsCastOperator(this ISymbol symbol)
+        {
+            return symbol.Kind is SymbolKind.Method && ((IMethodSymbol)symbol).MethodKind is MethodKind.Conversion;
+        }
+
         public static Accessibility? GetDisplayAccessibility(this ISymbol symbol)
         {
             // Hide internal or private APIs by default
