@@ -13,8 +13,7 @@
           "src": "dotnet"
         }
       ],
-      "dest": "obj/api",
-      "force": true
+      "dest": "obj/api"
     }
   ],
   "build": {

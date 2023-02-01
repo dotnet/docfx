@@ -67,7 +67,6 @@ namespace Microsoft.DocAsCode.SubCommands
             var msbuildProperties = ResolveMSBuildProperties(options);
             foreach (var item in config)
             {
-                item.Force |= options.ForceRebuild;
                 item.Raw |= options.PreserveRawInlineComments;
                 item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
                 item.DisableGitFeatures |= options.DisableGitFeatures;

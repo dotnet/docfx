@@ -12,9 +12,6 @@ namespace Microsoft.DocAsCode
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
     internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
     {
-        [Option('f', "force", HelpText = "Force re-generate all the metadata")]
-        public bool ForceRebuild { get; set; }
-
         [Option("shouldSkipMarkup", HelpText = "Skip to markup the triple slash comments")]
         public bool ShouldSkipMarkup { get; set; }
 

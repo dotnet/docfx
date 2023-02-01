@@ -133,8 +133,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 var parameters = new DocumentBuildParameters
                 {
                     OutputBaseDir = outputDirectory,
-                    ForceRebuild = config.Force ?? false,
-                    ForcePostProcess = config.ForcePostProcess ?? false,
                     SitemapOptions = config.SitemapOptions,
                     FALName = config.FALName,
                     DisableGitFeatures = config.DisableGitFeatures,

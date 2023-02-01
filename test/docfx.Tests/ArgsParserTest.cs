@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Tests
             var command = controller.Create();
             Assert.Equal(typeof(HelpCommand), command.GetType());
 
-            args = new string[] { "Assets/docfx.json_metadata_build/docfx.json", "-f", "--invalid", "InvalidInput" };
+            args = new string[] { "Assets/docfx.json_metadata_build/docfx.json", "--invalid", "InvalidInput" };
             controller = ArgsParser.Instance.Parse(args);
             command = controller.Create();
             Assert.Equal(typeof(CompositeCommand), command.GetType());
@@ -41,12 +41,9 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(typeof(MetadataCommand), commands[0].GetType());
             var metadataCommand = (MetadataCommand)commands[0];
             Assert.Equal(2, metadataCommand.Config.Count);
-            Assert.True(metadataCommand.Config[0].Force);
-            Assert.True(metadataCommand.Config[1].Force);
             Assert.Equal(@"Assets/docfx.json_metadata_build", metadataCommand.BaseDirectory.Replace('\\', '/'));
             Assert.Equal(typeof(BuildCommand), commands[1].GetType());
             var buildCommand = (BuildCommand)commands[1];
-            Assert.True(buildCommand.Config.Force);
             Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
 
             args = new string[] { "Assets/docfx.json_empty/docfx.json" };
@@ -81,14 +78,12 @@ namespace Microsoft.DocAsCode.Tests
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<OptionParserException>(() => controller.Create());
 
-            args = new string[] { "metadata", "Assets/docfx.json_metadata_build/docfx.json", "-f" };
+            args = new string[] { "metadata", "Assets/docfx.json_metadata_build/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);
             command = controller.Create();
             Assert.Equal(typeof(MetadataCommand), command.GetType());
             var metadataCommand = (MetadataCommand)command;
             Assert.Equal(2, metadataCommand.Config.Count);
-            Assert.True(metadataCommand.Config[0].Force);
-            Assert.True(metadataCommand.Config[1].Force);
             Assert.Equal(@"Assets/docfx.json_metadata_build",  metadataCommand.BaseDirectory.Replace('\\', '/'));
             Assert.Null(metadataCommand.OutputFolder);
 
@@ -96,13 +91,12 @@ namespace Microsoft.DocAsCode.Tests
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<DocumentException>(() => controller.Create());
 
-            args = new string[] { "metadata", "A.csproj", "-f" };
+            args = new string[] { "metadata", "A.csproj" };
             controller = ArgsParser.Instance.Parse(args);
             command = controller.Create();
             Assert.Equal(typeof(MetadataCommand), command.GetType());
             metadataCommand = (MetadataCommand)command;
             Assert.Single(metadataCommand.Config);
-            Assert.True(metadataCommand.Config[0].Force);
             Assert.True(metadataCommand.Config[0].Source.Expanded);
             Assert.Equal("A.csproj", metadataCommand.Config[0].Source.Items[0].Files[0]);
         }
@@ -120,13 +114,11 @@ namespace Microsoft.DocAsCode.Tests
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<OptionParserException>(() => controller.Create());
 
-            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "-f", "-o", "output" };
+            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "-o", "output" };
             controller = ArgsParser.Instance.Parse(args);
             command = controller.Create();
             Assert.Equal(typeof(BuildCommand), command.GetType());
             var buildCommand = (BuildCommand)command;
-            Assert.True(buildCommand.Config.Force);
-            Assert.True(buildCommand.Config.ForcePostProcess);
             Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
             Assert.Equal(@"output", buildCommand.Config.OutputFolder);
 
@@ -134,29 +126,11 @@ namespace Microsoft.DocAsCode.Tests
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<DocumentException>(() => controller.Create());
 
-            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "-f", "--forcePostProcess" };
-            controller = ArgsParser.Instance.Parse(args);
-            command = controller.Create();
-            Assert.Equal(typeof(BuildCommand), command.GetType());
-            buildCommand = (BuildCommand)command;
-            Assert.True(buildCommand.Config.Force);
-            Assert.True(buildCommand.Config.ForcePostProcess);
-
-            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "--forcePostProcess" };
-            controller = ArgsParser.Instance.Parse(args);
-            command = controller.Create();
-            Assert.Equal(typeof(BuildCommand), command.GetType());
-            buildCommand = (BuildCommand)command;
-            Assert.Null(buildCommand.Config.Force);
-            Assert.True(buildCommand.Config.ForcePostProcess);
-
             args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);
             command = controller.Create();
             Assert.Equal(typeof(BuildCommand), command.GetType());
             buildCommand = (BuildCommand)command;
-            Assert.Null(buildCommand.Config.Force);
-            Assert.Null(buildCommand.Config.ForcePostProcess);
         }
 
         [Fact]

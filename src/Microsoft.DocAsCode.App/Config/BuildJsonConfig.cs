@@ -86,17 +86,11 @@ namespace Microsoft.DocAsCode
         [JsonProperty("serve")]
         public bool? Serve { get; set; }
 
-        [JsonProperty("force")]
-        public bool? Force { get; set; }
-
         [JsonProperty("debug")]
         public bool? EnableDebugMode { get; set; }
 
         [JsonProperty("debugOutput")]
         public string OutputFolderForDebugFiles { get; set; }
-
-        [JsonProperty("forcePostProcess")]
-        public bool? ForcePostProcess { get; set; }
 
         [JsonProperty("host")]
         public string Host { get; set; }

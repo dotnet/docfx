@@ -49,17 +49,11 @@ namespace Microsoft.DocAsCode
         [Option('p', "port", HelpText = "Specify the port of the hosted website")]
         public int? Port { get; set; }
 
-        [Option('f', "force", HelpText = "Force re-build all the documentation")]
-        public bool ForceRebuild { get; set; }
-
         [Option("debug", HelpText = "Run in debug mode. With debug mode, raw model and view model will be exported automatically when it encounters error when applying templates. If not specified, it is false.")]
         public bool EnableDebugMode { get; set; }
 
         [Option("debugOutput", HelpText = "The output folder for files generated for debugging purpose when in debug mode. If not specified, it is ${TempPath}/docfx")]
         public string OutputFolderForDebugFiles { get; set; }
-
-        [Option("forcePostProcess", HelpText = "Force to re-process the documentation in post processors. It will be cascaded from force option.")]
-        public bool ForcePostProcess { get; set; }
 
         [Option("globalMetadata", HelpText = "Specify global metadata key-value pair in json format. It overrides the globalMetadata settings from the config file.")]
         public string GlobalMetadata { get; set; }

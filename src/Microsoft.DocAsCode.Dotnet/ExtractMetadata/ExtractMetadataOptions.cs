@@ -4,9 +4,7 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
-
     using Microsoft.CodeAnalysis;
-
     using Newtonsoft.Json;
 
     public class ExtractMetadataOptions
@@ -27,17 +25,5 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         [JsonIgnore]
         public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
-
-        public bool HasChanged(IncrementalCheck check, bool careMSBuildProperties)
-        {
-            return check.BuildInfo.Options == null ||
-                check.BuildInfo.Options.ShouldSkipMarkup != ShouldSkipMarkup ||
-                check.BuildInfo.Options.PreserveRawInlineComments != PreserveRawInlineComments ||
-                check.BuildInfo.Options.FilterConfigFile != FilterConfigFile ||
-                check.IsFileModified(FilterConfigFile) ||
-                (careMSBuildProperties && check.MSBuildPropertiesUpdated(MSBuildProperties)) ||
-                check.BuildInfo.Options.CodeSourceBasePath != CodeSourceBasePath
-                ;
-        }
     }
 }

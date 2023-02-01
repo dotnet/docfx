@@ -58,10 +58,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string TemplateDir { get; set; }
 
-        public bool ForceRebuild { get; set; }
-
-        public bool ForcePostProcess { get; set; }
-
         public string CustomLinkResolver { get; set; }
 
         public int LruSize { get; set; }

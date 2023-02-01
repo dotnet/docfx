@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly List<string> _references;
-        private readonly bool _rebuild;
         private readonly bool _useCompatibilityFileName;
         private readonly string _outputFolder;
         private readonly ExtractMetadataOptions _options;
@@ -56,7 +55,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 .Select(f => f.NormalizedPath)
                 .Distinct()
                 .ToList();
-            _rebuild = input.ForceRebuild;
 
             var msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
             if (!msbuildProperties.ContainsKey("Configuration"))
@@ -104,25 +102,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            var forceRebuild = _rebuild;
             var outputFolder = _outputFolder;
 
             var projectCache = new ConcurrentDictionary<string, Project>();
-
-            // Project<=>Documents
-            var documentCache = new ProjectDocumentCache();
-            var projectDependencyGraph = new ConcurrentDictionary<string, List<string>>();
-            DateTime triggeredTime = DateTime.UtcNow;
-
-            // Exclude not supported files from inputs
-            var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
 
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
                 // No matter is incremental or not, we have to load solutions into memory
                 foreach (var path in sln.Select(s => s.NormalizedPath))
                 {
-                    documentCache.AddDocument(path, path);
                     foreach (var project in SolutionFile.Parse(path).ProjectsInOrder)
                     {
                         if (project.ProjectType is not SolutionProjectType.KnownToBeMSBuildFormat)
@@ -148,16 +136,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            foreach (var item in projectCache)
-            {
-                var path = item.Key;
-                var project = item.Value;
-                documentCache.AddDocument(path, path);
-                documentCache.AddDocuments(path, project.Documents.Select(s => s.FilePath));
-                documentCache.AddDocuments(path, project.MetadataReferences.OfType<PortableExecutableReference>().Select(r => r.FilePath));
-                FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
-            }
-
             var csFiles = new List<string>();
             var vbFiles = new List<string>();
             var assemblyFiles = new List<string>();
@@ -165,80 +143,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (_files.TryGetValue(FileType.CSSourceCode, out var cs))
             {
                 csFiles.AddRange(cs.Select(s => s.NormalizedPath));
-                documentCache.AddDocuments(csFiles);
             }
 
             if (_files.TryGetValue(FileType.VBSourceCode, out var vb))
             {
                 vbFiles.AddRange(vb.Select(s => s.NormalizedPath));
-                documentCache.AddDocuments(vbFiles);
             }
 
             if (_files.TryGetValue(FileType.Assembly, out var asm))
             {
                 assemblyFiles.AddRange(asm.Select(s => s.NormalizedPath));
-                documentCache.AddDocuments(assemblyFiles);
             }
-
-            // Incremental check for inputs as a whole:
-            var applicationCache = ApplicationLevelCache.Get(cacheKey);
 
             var options = _options;
-
-            if (!forceRebuild)
-            {
-                var buildInfo = applicationCache.GetValidConfig(cacheKey);
-                if (buildInfo != null)
-                {
-                    IncrementalCheck check = new IncrementalCheck(buildInfo);
-                    if (!options.HasChanged(check, true))
-                    {
-                        // 1. Check if sln files/ project files and its contained documents/ source files are modified
-                        var projectModified = check.AreFilesModified(documentCache.Documents);
-
-                        if (!projectModified)
-                        {
-                            // 2. Check if documents/ assembly references are changed in a project
-                            // e.g. <Compile Include="*.cs* /> and file added/deleted
-                            foreach (var project in projectCache.Values)
-                            {
-                                var key = StringExtension.ToNormalizedFullPath(project.FilePath);
-                                IEnumerable<string> currentContainedFiles = documentCache.GetDocuments(project.FilePath);
-                                var previousDocumentCache = new ProjectDocumentCache(buildInfo.ContainedFiles);
-
-                                IEnumerable<string> previousContainedFiles = previousDocumentCache.GetDocuments(project.FilePath);
-                                if (previousContainedFiles != null && currentContainedFiles != null)
-                                {
-                                    projectModified = !previousContainedFiles.SequenceEqual(currentContainedFiles);
-                                }
-                                else
-                                {
-                                    // When one of them is not null, project is modified
-                                    if (!object.Equals(previousContainedFiles, currentContainedFiles))
-                                    {
-                                        projectModified = true;
-                                    }
-                                }
-                                if (projectModified) break;
-                            }
-                        }
-
-                        if (!projectModified)
-                        {
-                            // Nothing modified, use the result in cache
-                            try
-                            {
-                                CopyFromCachedResult(buildInfo, cacheKey, outputFolder);
-                                return;
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.Log(LogLevel.Warning, $"Unable to copy results from cache: {e.Message}. Rebuild starts.");
-                            }
-                        }
-                    }
-                }
-            }
 
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
@@ -246,33 +163,26 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
             var roslynProjects = compilationCache.Values;
             options.RoslynExtensionMethods = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects);
-            foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
+            foreach (var key in projectCache.Keys)
             {
-                var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
-                var k = documentCache.GetDocuments(key);
-                var input = new ProjectFileInputParameters(options, k, key, dependencyRebuilt);
-                var projectMetadataResult = GetMetadataFromProjectLevelCache(compilationCache[key], null, input);
-                var projectMetadata = projectMetadataResult.Item1;
+                var projectMetadata = GetMetadataFromProjectLevelCache(compilationCache[key], null);
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
-                projectRebuildInfo[key] = projectMetadataResult.Item2;
             }
 
             if (csFiles.Count > 0)
             {
                 var csContent = string.Join(Environment.NewLine, csFiles.Select(File.ReadAllText));
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
-                var input = new SourceFileInputParameters(options, csFiles);
-                var csMetadata = GetMetadataFromProjectLevelCache(csCompilation, null, input);
-                if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
+                var csMetadata = GetMetadataFromProjectLevelCache(csCompilation, null);
+                if (csMetadata != null) projectMetadataList.Add(csMetadata);
             }
 
             if (vbFiles.Count > 0)
             {
                 var vbContent = string.Join(Environment.NewLine, vbFiles.Select(File.ReadAllText));
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
-                var input = new SourceFileInputParameters(options, vbFiles);
-                var vbMetadata = GetMetadataFromProjectLevelCache(vbCompilation, null, input);
-                if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
+                var vbMetadata = GetMetadataFromProjectLevelCache(vbCompilation, null);
+                if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
             }
 
             if (assemblyFiles.Count > 0)
@@ -287,11 +197,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     options.RoslynExtensionMethods = assemblyExtension;
                     foreach (var (reference, assembly) in referencedAssemblyList)
                     {
-                        var input = new AssemblyFileInputParameters(options, reference.Display);
-                        var mta = GetMetadataFromProjectLevelCache(assemblyCompilation, assembly, input);
+                        var mta = GetMetadataFromProjectLevelCache(assemblyCompilation, assembly);
                         if (mta != null)
                         {
-                            projectMetadataList.Add(mta.Item1);
+                            projectMetadataList.Add(mta);
                         }
                     }
                 }
@@ -320,7 +229,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No .NET API detected for {value}.");
-                applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, options);
             }
             else
             {
@@ -331,8 +239,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName, options.TocNamespaceStyle).ToList();
                 }
-
-                applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
             }
         }
 
@@ -422,54 +328,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void CopyFromCachedResult(BuildInfo buildInfo, IEnumerable<string> inputs, string outputFolder)
+        private MetadataItem GetMetadataFromProjectLevelCache(Compilation compilation, IAssemblySymbol assembly)
         {
-            var outputFolderSource = buildInfo.OutputFolder;
-            var relativeFiles = buildInfo.RelativeOutputFiles;
-            if (relativeFiles == null)
-            {
-                Logger.Log(LogLevel.Warning, $"No metadata is generated for '{StringExtension.ToDelimitedString(inputs)}'.");
-                return;
-            }
-
-            Logger.Log(LogLevel.Info, $"'{StringExtension.ToDelimitedString(inputs)}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
-            PathUtility.CopyFilesToFolder(relativeFiles.Select(s => Path.Combine(outputFolderSource, s)), outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
-        }
-
-        private Tuple<MetadataItem, bool> GetMetadataFromProjectLevelCache(Compilation compilation, IAssemblySymbol assembly, IInputParameters key)
-        {
-            DateTime triggeredTime = DateTime.UtcNow;
-            var projectLevelCache = key.Cache;
-            var projectConfig = key.BuildInfo;
-            var rebuildProject = _rebuild || projectConfig == null || key.HasChanged(projectConfig);
-
-            MetadataItem projectMetadata;
-            if (!rebuildProject)
-            {
-                // Load from cache
-                var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelativeOutputFiles.First());
-                Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
-                if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
-                {
-                    return Tuple.Create(projectMetadata, rebuildProject);
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' is invalid, rebuild needed.");
-                }
-            }
-
-            projectMetadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation, assembly, key.Options);
-            var file = Path.GetRandomFileName();
-            var cacheOutputFolder = projectLevelCache.OutputFolder;
-            var path = Path.Combine(cacheOutputFolder, file);
-            YamlUtility.Serialize(path, projectMetadata);
-            Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
-
-            // Save to cache
-            projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string> { file }, key.Options);
-
-            return Tuple.Create(projectMetadata, rebuildProject);
+            return RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation, assembly, _options);
         }
 
         private static IEnumerable<string> ResolveAndExportYamlMetadata(
@@ -725,38 +586,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// use DFS to get topological sorted items
-        /// </summary>
-        private static IEnumerable<string> GetTopologicalSortedItems(IDictionary<string, List<string>> graph)
-        {
-            var visited = new HashSet<string>();
-            var result = new List<string>();
-            foreach (var node in graph.Keys)
-            {
-                DepthFirstTraverse(graph, node, visited, result);
-            }
-            return result;
-        }
-
-        private static void DepthFirstTraverse(IDictionary<string, List<string>> graph, string start, HashSet<string> visited, List<string> result)
-        {
-            if (!visited.Add(start))
-            {
-                return;
-            }
-            foreach (var presequisite in graph[start])
-            {
-                DepthFirstTraverse(graph, presequisite, visited, result);
-            }
-            result.Add(start);
-        }
-
-        private static IEnumerable<string> GetCacheKey(IEnumerable<FileInformation> files)
-        {
-            return files.Where(s => s.Type != FileType.NotSupported).OrderBy(s => s.Type).Select(s => s.NormalizedPath);
         }
     }
 }
