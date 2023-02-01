@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
@@ -151,11 +152,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             try
             {
-                return language switch
+                var result = language switch
                 {
                     SyntaxLanguage.VB => VB.SymbolDisplay.ToDisplayParts(symbol, format),
                     _ => CS.SymbolDisplay.ToDisplayParts(symbol, format),
                 };
+
+                if (overload && language is SyntaxLanguage.CSharp && symbol.IsCastOperator())
+                {
+                    // Convert from "explicit operator Bar" to "explicit operator"
+                    return result.SkipLast(2).ToImmutableArray();
+                }
+
+                return result;
             }
             catch (InvalidOperationException)
             {

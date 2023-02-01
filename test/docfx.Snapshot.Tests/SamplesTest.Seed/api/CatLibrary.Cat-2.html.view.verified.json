@@ -3201,7 +3201,7 @@
             "name": [
               {
                 "lang": "csharp",
-                "value": "explicit operator Tom"
+                "value": "explicit operator"
               },
               {
                 "lang": "vb",
@@ -3211,7 +3211,7 @@
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "Cat<T, K>.explicit operator Tom"
+                "value": "Cat<T, K>.explicit operator"
               },
               {
                 "lang": "vb",
@@ -3221,7 +3221,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CatLibrary.Cat<T, K>.explicit operator CatLibrary.Tom"
+                "value": "CatLibrary.Cat<T, K>.explicit operator CatLibrary"
               },
               {
                 "lang": "vb",
@@ -3231,7 +3231,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "explicit operator <xref uid=\"CatLibrary.Tom*\" text=\"Tom\"/>"
+                "value": "explicit operator"
               }
             ],
             "id": "CatLibrary_Cat_2_op_Explicit_"

@@ -3586,5 +3586,70 @@ namespace Test1
                 Assert.Null(type.Implements);
             }
         }
+
+        [Fact]
+        public void TestGenerateMetadataWithCastOperatorOverloads()
+        {
+            var code =
+                """
+                namespace Test
+                {
+                    public class Bar
+                    {
+                        public static implicit operator Bar(uint value) => new();
+                        public static implicit operator Bar(string value) => new();
+
+                        public static explicit operator uint(Bar value) => 0;
+                        public static explicit operator string(Bar value) => "";
+                    }
+                }
+                """;
+
+            var output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var type = output.Items[0].Items[0];
+
+            Assert.Equal(new[]
+            {
+                "Test.Bar.op_Implicit(System.UInt32)~Test.Bar",
+                "Test.Bar.op_Implicit(System.String)~Test.Bar",
+                "Test.Bar.op_Explicit(Test.Bar)~System.UInt32",
+                "Test.Bar.op_Explicit(Test.Bar)~System.String",
+            }, type.Items.Select(item => item.Name));
+
+            Assert.Equal(new[]
+            {
+                "implicit operator Bar(uint)",
+                "implicit operator Bar(string)",
+                "explicit operator uint(Bar)",
+                "explicit operator string(Bar)",
+            }, type.Items.Select(item => item.DisplayNames[SyntaxLanguage.CSharp]));
+
+            Assert.Equal(new[]
+            {
+                "Bar.implicit operator Bar(uint)",
+                "Bar.implicit operator Bar(string)",
+                "Bar.explicit operator uint(Bar)",
+                "Bar.explicit operator string(Bar)",
+            }, type.Items.Select(item => item.DisplayNamesWithType[SyntaxLanguage.CSharp]));
+
+            Assert.Equal(new[]
+            {
+                "Test.Bar.implicit operator Test.Bar(uint)",
+                "Test.Bar.implicit operator Test.Bar(string)",
+                "Test.Bar.explicit operator uint(Test.Bar)",
+                "Test.Bar.explicit operator string(Test.Bar)",
+            }, type.Items.Select(item => item.DisplayQualifiedNames[SyntaxLanguage.CSharp]));
+
+            Assert.Equal(new[]
+            {
+                "Test.Bar.op_Implicit*",
+                "Test.Bar.op_Implicit*",
+                "Test.Bar.op_Explicit*",
+                "Test.Bar.op_Explicit*",
+            }, type.Items.Select(item => item.Overload));
+
+            Assert.Equal("implicit operator", string.Concat(output.References["Test.Bar.op_Implicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
+            Assert.Equal("explicit operator", string.Concat(output.References["Test.Bar.op_Explicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
+        }
     }
 }
