@@ -282,7 +282,7 @@ references:
   commentId: Overload:CatLibrary.Cat`2.op_Explicit
   isSpec: "True"
   name.vb: CType
-  fullName: CatLibrary.Cat<T, K>.explicit operator CatLibrary
+  fullName: CatLibrary.Cat<T, K>.explicit operator
   fullName.vb: CatLibrary.Cat(Of T, K).CType
   nameWithType: Cat<T, K>.explicit operator
   nameWithType.vb: Cat(Of T, K).CType

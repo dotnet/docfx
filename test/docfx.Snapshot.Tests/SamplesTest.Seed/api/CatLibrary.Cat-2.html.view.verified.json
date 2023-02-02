@@ -3221,7 +3221,7 @@
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CatLibrary.Cat<T, K>.explicit operator CatLibrary"
+                "value": "CatLibrary.Cat<T, K>.explicit operator"
               },
               {
                 "lang": "vb",

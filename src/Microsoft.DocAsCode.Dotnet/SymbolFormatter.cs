@@ -159,16 +159,26 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 };
 
                 if (overload && language is SyntaxLanguage.CSharp && symbol.IsCastOperator())
-                {
-                    // Convert from "explicit operator Bar" to "explicit operator"
-                    return result.SkipLast(2).ToImmutableArray();
-                }
+                    return GetCastOperatorOverloadDisplayParts(result);
 
                 return result;
             }
             catch (InvalidOperationException)
             {
                 return ImmutableArray<SymbolDisplayPart>.Empty;
+            }
+
+            static ImmutableArray<SymbolDisplayPart> GetCastOperatorOverloadDisplayParts(ImmutableArray<SymbolDisplayPart> parts)
+            {
+                // Convert from "explicit operator Bar" to "explicit operator", for lack of disabling return type in SymbolDisplay.
+                var endIndex = parts.Length;
+                while (--endIndex >= 0)
+                {
+                    var part = parts[endIndex];
+                    if (part.Kind is SymbolDisplayPartKind.Keyword && part.ToString() is "operator" or "checked")
+                        break;
+                }
+                return parts.Take(endIndex + 1).ToImmutableArray();
             }
         }
 
