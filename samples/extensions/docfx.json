@@ -9,6 +9,7 @@
         }
       ],
       "dest": "api",
+      "force": true,
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }

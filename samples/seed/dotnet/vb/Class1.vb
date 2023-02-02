@@ -1,4 +1,6 @@
-﻿''' <summary>
+﻿Namespace BuildFromVBSourceCode 
+
+''' <summary>
 ''' This is summary from vb class...
 ''' </summary>
 Public Class Class1
@@ -43,3 +45,5 @@ End Class
 Public MustInherit Class BaseClass1
     Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As DateTime
 End Class
+
+EndNamespace

@@ -3,12 +3,18 @@
     {
       "src": [
         {
-          "files": [ "**/*.sln", "DotnetNew/*.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**" ],
-          "src": "src"
+          "files": [
+            "assembly/**/*.dll",
+            "project/**/*.csproj",
+            "solution/**/*.sln",
+            "csharp/**/*.cs",
+            "vb/**/*.vb"
+          ],
+          "src": "dotnet"
         }
       ],
-      "dest": "obj/api"
+      "dest": "obj/api",
+      "force": true
     }
   ],
   "build": {

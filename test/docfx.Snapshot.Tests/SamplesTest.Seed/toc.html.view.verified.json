@@ -21,10 +21,10 @@
     },
     {
       "name": "API Documentation",
-      "href": "api/CatLibrary.html",
+      "href": "api/BuildFromAssembly.html",
       "tocHref": "api/toc.html",
-      "topicHref": "api/CatLibrary.html",
-      "topicUid": "CatLibrary",
+      "topicHref": "api/BuildFromAssembly.html",
+      "topicUid": "BuildFromAssembly",
       "level": 2.0,
       "items": [],
       "leaf": true

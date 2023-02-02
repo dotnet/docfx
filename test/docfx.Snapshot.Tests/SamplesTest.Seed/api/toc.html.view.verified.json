@@ -1,6 +1,76 @@
 ﻿{
   "items": [
     {
+      "name": "BuildFromAssembly",
+      "href": "BuildFromAssembly.html",
+      "topicHref": "BuildFromAssembly.html",
+      "topicUid": "BuildFromAssembly",
+      "items": [
+        {
+          "name": "Class1",
+          "href": "BuildFromAssembly.Class1.html",
+          "topicHref": "BuildFromAssembly.Class1.html",
+          "topicUid": "BuildFromAssembly.Class1",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
+      "name": "BuildFromCSharpSourceCode",
+      "href": "BuildFromCSharpSourceCode.html",
+      "topicHref": "BuildFromCSharpSourceCode.html",
+      "topicUid": "BuildFromCSharpSourceCode",
+      "items": [
+        {
+          "name": "CSharp",
+          "href": "BuildFromCSharpSourceCode.CSharp.html",
+          "topicHref": "BuildFromCSharpSourceCode.CSharp.html",
+          "topicUid": "BuildFromCSharpSourceCode.CSharp",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
+      "name": "BuildFromVBSourceCode",
+      "href": "BuildFromVBSourceCode.html",
+      "topicHref": "BuildFromVBSourceCode.html",
+      "topicUid": "BuildFromVBSourceCode",
+      "items": [
+        {
+          "name": "BaseClass1",
+          "href": "BuildFromVBSourceCode.BaseClass1.html",
+          "topicHref": "BuildFromVBSourceCode.BaseClass1.html",
+          "topicUid": "BuildFromVBSourceCode.BaseClass1",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Class1",
+          "href": "BuildFromVBSourceCode.Class1.html",
+          "topicHref": "BuildFromVBSourceCode.Class1.html",
+          "topicUid": "BuildFromVBSourceCode.Class1",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
       "name": "CatLibrary",
       "href": "CatLibrary.html",
       "topicHref": "CatLibrary.html",
@@ -116,6 +186,76 @@
           "href": "CatLibrary.TomFromBaseClass.html",
           "topicHref": "CatLibrary.TomFromBaseClass.html",
           "topicUid": "CatLibrary.TomFromBaseClass",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
+      "name": "CatLibrary.Core",
+      "href": "CatLibrary.Core.html",
+      "topicHref": "CatLibrary.Core.html",
+      "topicUid": "CatLibrary.Core",
+      "items": [
+        {
+          "name": "ContainersRefType",
+          "href": "CatLibrary.Core.ContainersRefType.html",
+          "topicHref": "CatLibrary.Core.ContainersRefType.html",
+          "topicUid": "CatLibrary.Core.ContainersRefType",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ContainersRefType.ColorType",
+          "href": "CatLibrary.Core.ContainersRefType.ColorType.html",
+          "topicHref": "CatLibrary.Core.ContainersRefType.ColorType.html",
+          "topicUid": "CatLibrary.Core.ContainersRefType.ColorType",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeChild",
+          "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
+          "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
+          "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeChildInterface",
+          "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+          "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
+          "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ContainersRefType.ContainersRefTypeDelegate",
+          "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
+          "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
+          "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "ExplicitLayoutClass",
+          "href": "CatLibrary.Core.ExplicitLayoutClass.html",
+          "topicHref": "CatLibrary.Core.ExplicitLayoutClass.html",
+          "topicUid": "CatLibrary.Core.ExplicitLayoutClass",
           "tocHref": null,
           "level": 3.0,
           "items": [],
@@ -418,76 +558,6 @@
       "level": 2.0
     },
     {
-      "name": "Microsoft.DevDiv",
-      "href": "Microsoft.DevDiv.html",
-      "topicHref": "Microsoft.DevDiv.html",
-      "topicUid": "Microsoft.DevDiv",
-      "items": [
-        {
-          "name": "ContainersRefType",
-          "href": "Microsoft.DevDiv.ContainersRefType.html",
-          "topicHref": "Microsoft.DevDiv.ContainersRefType.html",
-          "topicUid": "Microsoft.DevDiv.ContainersRefType",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "ContainersRefType.ColorType",
-          "href": "Microsoft.DevDiv.ContainersRefType.ColorType.html",
-          "topicHref": "Microsoft.DevDiv.ContainersRefType.ColorType.html",
-          "topicUid": "Microsoft.DevDiv.ContainersRefType.ColorType",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "ContainersRefType.ContainersRefTypeChild",
-          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html",
-          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html",
-          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "ContainersRefType.ContainersRefTypeChildInterface",
-          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html",
-          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html",
-          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "ContainersRefType.ContainersRefTypeDelegate",
-          "href": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html",
-          "topicHref": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html",
-          "topicUid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "ExplicitLayoutClass",
-          "href": "Microsoft.DevDiv.ExplicitLayoutClass.html",
-          "topicHref": "Microsoft.DevDiv.ExplicitLayoutClass.html",
-          "topicUid": "Microsoft.DevDiv.ExplicitLayoutClass",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        }
-      ],
-      "tocHref": null,
-      "level": 2.0
-    },
-    {
       "name": "MRef.Demo.Enumeration",
       "href": "MRef.Demo.Enumeration.html",
       "topicHref": "MRef.Demo.Enumeration.html",
@@ -498,36 +568,6 @@
           "href": "MRef.Demo.Enumeration.ColorType.html",
           "topicHref": "MRef.Demo.Enumeration.ColorType.html",
           "topicUid": "MRef.Demo.Enumeration.ColorType",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        }
-      ],
-      "tocHref": null,
-      "level": 2.0
-    },
-    {
-      "name": "VBTestClass1",
-      "href": "VBTestClass1.html",
-      "topicHref": "VBTestClass1.html",
-      "topicUid": "VBTestClass1",
-      "items": [
-        {
-          "name": "BaseClass1",
-          "href": "VBTestClass1.BaseClass1.html",
-          "topicHref": "VBTestClass1.BaseClass1.html",
-          "topicUid": "VBTestClass1.BaseClass1",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
-        },
-        {
-          "name": "Class1",
-          "href": "VBTestClass1.Class1.html",
-          "topicHref": "VBTestClass1.Class1.html",
-          "topicUid": "VBTestClass1.Class1",
           "tocHref": null,
           "level": 3.0,
           "items": [],

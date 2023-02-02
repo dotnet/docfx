@@ -1,5 +1,5 @@
 ﻿{
-  "uid": "Microsoft.DevDiv",
+  "uid": "CatLibrary.Core",
   "isEii": false,
   "isExtensionMethod": false,
   "children": [
@@ -9,7 +9,7 @@
       "id": "classes",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild",
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
           "isExtensionMethod": false,
           "name": [
             {
@@ -34,21 +34,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
             }
           ],
           "level": 0.0,
@@ -64,12 +64,12 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeChild",
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChild",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "Microsoft.DevDiv.ExplicitLayoutClass",
+          "uid": "CatLibrary.Core.ExplicitLayoutClass",
           "isExtensionMethod": false,
           "name": [
             {
@@ -94,21 +94,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ExplicitLayoutClass"
+              "value": "CatLibrary.Core.ExplicitLayoutClass"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ExplicitLayoutClass"
+              "value": "CatLibrary.Core.ExplicitLayoutClass"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ExplicitLayoutClass\" text=\"ExplicitLayoutClass\"/>"
             }
           ],
           "level": 0.0,
@@ -124,7 +124,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ExplicitLayoutClass",
+          "id": "CatLibrary_Core_ExplicitLayoutClass",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -136,7 +136,7 @@
       "id": "structs",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType",
+          "uid": "CatLibrary.Core.ContainersRefType",
           "isExtensionMethod": false,
           "name": [
             {
@@ -161,25 +161,25 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType"
+              "value": "CatLibrary.Core.ContainersRefType"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType"
+              "value": "CatLibrary.Core.ContainersRefType"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
           "type": "struct",
           "platform": null,
           "isEii": false,
@@ -191,7 +191,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType",
+          "id": "CatLibrary_Core_ContainersRefType",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -203,7 +203,7 @@
       "id": "interfaces",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface",
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
           "isExtensionMethod": false,
           "name": [
             {
@@ -228,21 +228,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
             }
           ],
           "level": 0.0,
@@ -258,7 +258,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeChildInterface",
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -270,9 +270,9 @@
       "id": "enums",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ColorType",
+          "uid": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExtensionMethod": false,
-          "parent": "Microsoft.DevDiv",
+          "parent": "CatLibrary.Core",
           "name": [
             {
               "lang": "csharp",
@@ -296,25 +296,25 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
           "isEii": false,
@@ -326,7 +326,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ColorType",
+          "id": "CatLibrary_Core_ContainersRefType_ColorType",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -338,7 +338,7 @@
       "id": "delegates",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate",
+          "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
           "isExtensionMethod": false,
           "name": [
             {
@@ -363,25 +363,25 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate"
+              "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"2\">Delegate ContainersRefTypeDelegate</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"2\">Delegate ContainersRefTypeDelegate</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,
@@ -393,7 +393,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ContainersRefTypeDelegate",
+          "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeDelegate",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -407,36 +407,36 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     },
     {
       "lang": "vb",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     },
     {
       "lang": "vb",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     },
     {
       "lang": "vb",
-      "value": "Microsoft.DevDiv"
+      "value": "CatLibrary.Core"
     }
   ],
   "type": "namespace",
   "assemblies": [
-    "BaseClassForTestClass1"
+    "CatLibrary.Core"
   ],
   "level": 0.0,
   "_appTitle": "docfx seed website",
@@ -477,12 +477,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/Microsoft.DevDiv.yml",
+  "_key": "obj/api/CatLibrary.Core.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/Microsoft.DevDiv.html",
+  "_path": "api/CatLibrary.Core.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -559,7 +559,7 @@
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "Microsoft_DevDiv",
+  "id": "CatLibrary_Core",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isNamespace": true,

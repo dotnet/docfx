@@ -1,49 +1,49 @@
 ﻿{
-  "uid": "Microsoft.DevDiv.ExplicitLayoutClass",
+  "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "Microsoft.DevDiv",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
@@ -56,91 +56,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "ExplicitLayoutClass"
+      "value": "ContainersRefType.ContainersRefTypeChild"
     },
     {
       "lang": "vb",
-      "value": "ExplicitLayoutClass"
+      "value": "ContainersRefType.ContainersRefTypeChild"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "ExplicitLayoutClass"
+      "value": "ContainersRefType.ContainersRefTypeChild"
     },
     {
       "lang": "vb",
-      "value": "ExplicitLayoutClass"
+      "value": "ContainersRefType.ContainersRefTypeChild"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "Microsoft.DevDiv.ExplicitLayoutClass"
+      "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
     },
     {
       "lang": "vb",
-      "value": "Microsoft.DevDiv.ExplicitLayoutClass"
+      "value": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "ExplicitLayoutClass",
-    "path": "src/SampleClass1/BaseClass/BaseClass.cs",
-    "startLine": 93.0,
+    "id": "ContainersRefTypeChild",
+    "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+    "startLine": 79.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "BaseClassForTestClass1"
+    "CatLibrary.Core"
   ],
   "namespace": {
-    "uid": "Microsoft.DevDiv",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
@@ -149,11 +149,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class ExplicitLayoutClass"
+        "value": "public class ContainersRefType.ContainersRefTypeChild"
       },
       {
         "lang": "vb",
-        "value": "Public Class ExplicitLayoutClass"
+        "value": "Public Class ContainersRefType.ContainersRefTypeChild"
       }
     ]
   },
@@ -585,12 +585,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/Microsoft.DevDiv.ExplicitLayoutClass.yml",
+  "_key": "obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/Microsoft.DevDiv.ExplicitLayoutClass.html",
+  "_path": "api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -658,15 +658,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ExplicitLayoutClass.md&value=---%0Auid%3A%20Microsoft.DevDiv.ExplicitLayoutClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L94",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeChild.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeChild%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L80",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "Microsoft_DevDiv_ExplicitLayoutClass",
+  "id": "CatLibrary_Core_ContainersRefType_ContainersRefTypeChild",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

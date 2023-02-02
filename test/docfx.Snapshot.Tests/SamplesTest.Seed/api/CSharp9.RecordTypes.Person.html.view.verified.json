@@ -208,18 +208,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+              "path": "samples/seed/dotnet/project/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": ".ctor",
-            "path": "src/DotnetNew/CSharp9.cs",
+            "path": "dotnet/project/CSharp9.cs",
             "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp9",
           "overload": {
@@ -271,7 +271,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp9.cs/#L10",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -395,18 +395,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+              "path": "samples/seed/dotnet/project/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "FirstName",
-            "path": "src/DotnetNew/CSharp9.cs",
+            "path": "dotnet/project/CSharp9.cs",
             "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp9",
           "overload": {
@@ -458,7 +458,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person_FirstName.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp9.cs/#L10",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -575,18 +575,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+              "path": "samples/seed/dotnet/project/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "LastName",
-            "path": "src/DotnetNew/CSharp9.cs",
+            "path": "dotnet/project/CSharp9.cs",
             "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp9",
           "overload": {
@@ -638,7 +638,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person_LastName.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp9.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp9.cs/#L10",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -688,18 +688,18 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp9.cs",
+      "path": "samples/seed/dotnet/project/CSharp9.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "Person",
-    "path": "src/DotnetNew/CSharp9.cs",
+    "path": "dotnet/project/CSharp9.cs",
     "startLine": 9.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp9",
@@ -1325,7 +1325,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_RecordTypes_Person.md&value=---%0Auid%3A%20CSharp9.RecordTypes.Person%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp9.cs/#L10",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp9.cs/#L10",
   "summary": "",
   "remarks": null,
   "conceptual": "",

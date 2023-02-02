@@ -1,195 +1,54 @@
 ﻿{
-  "uid": "CSharp10.Issue7737",
+  "uid": "CatLibrary.Core.ExplicitLayoutClass",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "CSharp10",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
   },
-  "children": [
-    {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
-      "children": [
-        {
-          "uid": "CSharp10.Issue7737.Foo",
-          "isEii": false,
-          "isExtensionMethod": false,
-          "parent": "CSharp10.Issue7737",
-          "isExternal": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "Foo()"
-            },
-            {
-              "lang": "vb",
-              "value": "Foo()"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "Issue7737.Foo()"
-            },
-            {
-              "lang": "vb",
-              "value": "Issue7737.Foo()"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CSharp10.Issue7737.Foo()"
-            },
-            {
-              "lang": "vb",
-              "value": "CSharp10.Issue7737.Foo()"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CSharp10.Issue7737.Foo\" text=\"Foo()\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CSharp10.Issue7737.Foo\" text=\"Foo()\"/>"
-            }
-          ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public void Foo()"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Sub Foo()"
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/seed/dotnet/project/CSharp10.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "Foo",
-            "path": "dotnet/project/CSharp10.cs",
-            "startLine": 32.0,
-            "endLine": 0.0,
-            "isExternal": false
-          },
-          "assemblies": [
-            "BuildFromProject"
-          ],
-          "namespace": "CSharp10",
-          "example": [],
-          "overload": {
-            "uid": "CSharp10.Issue7737.Foo*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Foo"
-              },
-              {
-                "lang": "vb",
-                "value": "Foo"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "Issue7737.Foo"
-              },
-              {
-                "lang": "vb",
-                "value": "Issue7737.Foo"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CSharp10.Issue7737.Foo"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp10.Issue7737.Foo"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CSharp10.Issue7737.Foo*\" text=\"Foo\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CSharp10.Issue7737.Foo*\" text=\"Foo\"/>"
-              }
-            ],
-            "id": "CSharp10_Issue7737_Foo_"
-          },
-          "level": 0.0,
-          "type": "method",
-          "summary": "<p sourcefile=\"obj/api/CSharp10.Issue7737.yml\" sourcestartlinenumber=\"2\"><xref href=\"System.Exception\" data-throw-if-not-resolved=\"false\"></xref></p>\n",
-          "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_Issue7737_Foo.md&value=---%0Auid%3A%20CSharp10.Issue7737.Foo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L33",
-          "remarks": null,
-          "conceptual": "",
-          "implements": null,
-          "seealso": null,
-          "id": "CSharp10_Issue7737_Foo",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        }
-      ]
-    }
-  ],
+  "children": [],
   "langs": [
     "csharp",
     "vb"
@@ -197,91 +56,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "Issue7737"
+      "value": "ExplicitLayoutClass"
     },
     {
       "lang": "vb",
-      "value": "Issue7737"
+      "value": "ExplicitLayoutClass"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "Issue7737"
+      "value": "ExplicitLayoutClass"
     },
     {
       "lang": "vb",
-      "value": "Issue7737"
+      "value": "ExplicitLayoutClass"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp10.Issue7737"
+      "value": "CatLibrary.Core.ExplicitLayoutClass"
     },
     {
       "lang": "vb",
-      "value": "CSharp10.Issue7737"
+      "value": "CatLibrary.Core.ExplicitLayoutClass"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/project/CSharp10.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "Issue7737",
-    "path": "dotnet/project/CSharp10.cs",
-    "startLine": 27.0,
+    "id": "ExplicitLayoutClass",
+    "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
+    "startLine": 93.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "BuildFromProject"
+    "CatLibrary.Core"
   ],
   "namespace": {
-    "uid": "CSharp10",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "CSharp10"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
@@ -290,11 +149,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class Issue7737"
+        "value": "public class ExplicitLayoutClass"
       },
       {
         "lang": "vb",
-        "value": "Public Class Issue7737"
+        "value": "Public Class ExplicitLayoutClass"
       }
     ]
   },
@@ -726,12 +585,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/CSharp10.Issue7737.yml",
+  "_key": "obj/api/CatLibrary.Core.ExplicitLayoutClass.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/CSharp10.Issue7737.html",
+  "_path": "api/CatLibrary.Core.ExplicitLayoutClass.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -799,15 +658,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_Issue7737.md&value=---%0Auid%3A%20CSharp10.Issue7737%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L28",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ExplicitLayoutClass.md&value=---%0Auid%3A%20CatLibrary.Core.ExplicitLayoutClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L94",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "CSharp10_Issue7737",
+  "id": "CatLibrary_Core_ExplicitLayoutClass",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

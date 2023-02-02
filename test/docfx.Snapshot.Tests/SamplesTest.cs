@@ -98,10 +98,6 @@ namespace Microsoft.DocAsCode.Tests
 
             if (Directory.Exists($"{samplePath}/_site_pdf"))
                 Directory.Delete($"{samplePath}/_site_pdf", recursive: true);
-
-            foreach (var objPath in Directory.GetDirectories(samplePath, "obj", SearchOption.AllDirectories))
-                if (Directory.Exists(objPath))
-                    Directory.Delete(objPath, recursive: true);
         }
 
         private static bool IncludeFile(string file)

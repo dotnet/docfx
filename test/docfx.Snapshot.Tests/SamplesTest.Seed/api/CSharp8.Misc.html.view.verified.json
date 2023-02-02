@@ -159,18 +159,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "AsynchronousStreams",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 97.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -222,7 +222,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_AsynchronousStreams.md&value=---%0Auid%3A%20CSharp8.Misc.AsynchronousStreams%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L98",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L98",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -338,18 +338,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "GenerateSequence",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 105.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -401,7 +401,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_GenerateSequence.md&value=---%0Auid%3A%20CSharp8.Misc.GenerateSequence%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L106",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L106",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -471,18 +471,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "IndicesAndRanges",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 119.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -534,7 +534,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IndicesAndRanges.md&value=---%0Auid%3A%20CSharp8.Misc.IndicesAndRanges%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L120",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L120",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -697,18 +697,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "IsExpression",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 77.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -760,7 +760,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_IsExpression_System_DateTime_.md&value=---%0Auid%3A%20CSharp8.Misc.IsExpression(System.DateTime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L78",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L78",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -830,18 +830,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "NullCoalescingAssignment",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 127.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -893,7 +893,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_NullCoalescingAssignment.md&value=---%0Auid%3A%20CSharp8.Misc.NullCoalescingAssignment%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L128",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L128",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -963,18 +963,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "StackallocInNestedExpressions",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 133.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -1026,7 +1026,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_StackallocInNestedExpressions.md&value=---%0Auid%3A%20CSharp8.Misc.StackallocInNestedExpressions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L134",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L134",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1189,18 +1189,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "StaticLocalFunctions",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 88.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -1252,7 +1252,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_StaticLocalFunctions_System_Int32_.md&value=---%0Auid%3A%20CSharp8.Misc.StaticLocalFunctions(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L89",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L89",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1415,18 +1415,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "SwitchExpression",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 80.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -1478,7 +1478,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_SwitchExpression_System_ConsoleColor_.md&value=---%0Auid%3A%20CSharp8.Misc.SwitchExpression(System.ConsoleColor)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L81",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L81",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1548,18 +1548,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "UsingDeclaration",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 114.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -1611,7 +1611,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc_UsingDeclaration.md&value=---%0Auid%3A%20CSharp8.Misc.UsingDeclaration%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L115",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L115",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1661,18 +1661,18 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+      "path": "samples/seed/dotnet/project/CSharp8.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "Misc",
-    "path": "src/DotnetNew/CSharp8.cs",
+    "path": "dotnet/project/CSharp8.cs",
     "startLine": 75.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp8",
@@ -2234,7 +2234,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Misc.md&value=---%0Auid%3A%20CSharp8.Misc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L76",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L76",
   "summary": "",
   "remarks": null,
   "conceptual": "",

@@ -86,18 +86,18 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+      "path": "samples/seed/dotnet/project/CSharp11.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "StaticAbstractMembersInInterfaces",
-    "path": "src/DotnetNew/CSharp11.cs",
+    "path": "dotnet/project/CSharp11.cs",
     "startLine": 2.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp11",
@@ -659,7 +659,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L3",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L3",
   "summary": "",
   "remarks": null,
   "conceptual": "",

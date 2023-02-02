@@ -256,18 +256,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Addition",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 28.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -315,7 +315,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Addition__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Addition(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L29",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L29",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -527,18 +527,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedAddition",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 37.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -586,7 +586,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedAddition(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L38",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L38",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -751,18 +751,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedDecrement",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 35.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -810,7 +810,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedDecrement(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L36",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L36",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1022,18 +1022,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedDivision",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 40.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -1081,7 +1081,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedDivision(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L41",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L41",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1245,18 +1245,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedExplicit",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 41.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -1304,7 +1304,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedExplicit__0__System_Int32.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedExplicit(%600)~System.Int32%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L42",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L42",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1469,18 +1469,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedIncrement",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 34.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -1528,7 +1528,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedIncrement(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L35",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L35",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1740,18 +1740,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedMultiply",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 39.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -1799,7 +1799,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedMultiply(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L40",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L40",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -2011,18 +2011,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedSubtraction",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 38.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -2070,7 +2070,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedSubtraction(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L39",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L39",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -2235,18 +2235,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_CheckedUnaryNegation",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 36.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -2294,7 +2294,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_CheckedUnaryNegation(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L37",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L37",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -2459,18 +2459,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Decrement",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 26.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -2518,7 +2518,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Decrement__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Decrement(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L27",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L27",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -2730,18 +2730,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Division",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 31.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -2789,7 +2789,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Division__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Division(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L32",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L32",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -2953,18 +2953,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Explicit",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 32.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -3012,7 +3012,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Explicit__0__System_Int32.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Explicit(%600)~System.Int32%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L33",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L33",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -3177,18 +3177,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Increment",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 25.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -3236,7 +3236,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Increment__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Increment(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L26",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L26",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -3448,18 +3448,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Multiply",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 30.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -3507,7 +3507,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Multiply__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Multiply(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L31",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L31",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -3719,18 +3719,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_Subtraction",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 29.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -3778,7 +3778,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_Subtraction__0__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_Subtraction(%600%2C%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L30",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L30",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -3943,18 +3943,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+              "path": "samples/seed/dotnet/project/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "op_UnaryNegation",
-            "path": "src/DotnetNew/CSharp11.cs",
+            "path": "dotnet/project/CSharp11.cs",
             "startLine": 27.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp11",
           "overload": {
@@ -4002,7 +4002,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation__0_.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601.op_UnaryNegation(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L28",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L28",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -4052,18 +4052,18 @@
   "type": "interface",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp11.cs",
+      "path": "samples/seed/dotnet/project/CSharp11.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "CheckedUserDefinedOperators",
-    "path": "src/DotnetNew/CSharp11.cs",
+    "path": "dotnet/project/CSharp11.cs",
     "startLine": 23.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp11",
@@ -4241,7 +4241,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_CheckedUserDefinedOperators_1.md&value=---%0Auid%3A%20CSharp11.CheckedUserDefinedOperators%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp11.cs/#L24",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp11.cs/#L24",
   "summary": "",
   "remarks": null,
   "conceptual": "",

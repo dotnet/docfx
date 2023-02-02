@@ -338,7 +338,7 @@ namespace CatLibrary
         /// </summary>
         /// <param name="icat">Cat</param>
         /// <param name="toy">Something to play</param>
-        public static void Play(this ICat icat, string toy) { }
+        public static void Play(this ICat icat, Core.ContainersRefType.ColorType toy) { }
     }
 
     //delegate

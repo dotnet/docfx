@@ -1,7 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>BaseClassForTestClass1</RootNamespace>
-    <AssemblyName>BaseClassForTestClass1</AssemblyName>
-  </PropertyGroup>
-</Project>

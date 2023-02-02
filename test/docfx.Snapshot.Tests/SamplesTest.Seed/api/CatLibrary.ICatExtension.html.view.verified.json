@@ -55,7 +55,7 @@
       "id": "methods",
       "children": [
         {
-          "uid": "CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)",
+          "uid": "CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)",
           "isEii": false,
           "isExtensionMethod": true,
           "parent": "CatLibrary.ICatExtension",
@@ -63,52 +63,52 @@
           "name": [
             {
               "lang": "csharp",
-              "value": "Play(ICat, string)"
+              "value": "Play(ICat, ColorType)"
             },
             {
               "lang": "vb",
-              "value": "Play(ICat, String)"
+              "value": "Play(ICat, ColorType)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "ICatExtension.Play(ICat, string)"
+              "value": "ICatExtension.Play(ICat, ContainersRefType.ColorType)"
             },
             {
               "lang": "vb",
-              "value": "ICatExtension.Play(ICat, String)"
+              "value": "ICatExtension.Play(ICat, ContainersRefType.ColorType)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, string)"
+              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, CatLibrary.Core.ContainersRefType.ColorType)"
             },
             {
               "lang": "vb",
-              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, String)"
+              "value": "CatLibrary.ICatExtension.Play(CatLibrary.ICat, CatLibrary.Core.ContainersRefType.ColorType)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play(ICat, string)\"/>"
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)\" text=\"Play(ICat, ColorType)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)\" text=\"Play(ICat, string)\"/>"
+              "value": "<xref uid=\"CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)\" text=\"Play(ICat, ColorType)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Play(this ICat icat, string toy)"
+                "value": "public static void Play(this ICat icat, ContainersRefType.ColorType toy)"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Play(icat As ICat, toy As String)"
+                "value": "Public Shared Sub Play(icat As ICat, toy As ContainersRefType.ColorType)"
               }
             ],
             "parameters": [
@@ -162,45 +162,45 @@
               {
                 "id": "toy",
                 "type": {
-                  "uid": "System.String",
+                  "uid": "CatLibrary.Core.ContainersRefType.ColorType",
                   "name": [
                     {
                       "lang": "csharp",
-                      "value": "string"
+                      "value": "ContainersRefType.ColorType"
                     },
                     {
                       "lang": "vb",
-                      "value": "String"
+                      "value": "ContainersRefType.ColorType"
                     }
                   ],
                   "nameWithType": [
                     {
                       "lang": "csharp",
-                      "value": "string"
+                      "value": "ContainersRefType.ColorType"
                     },
                     {
                       "lang": "vb",
-                      "value": "String"
+                      "value": "ContainersRefType.ColorType"
                     }
                   ],
                   "fullName": [
                     {
                       "lang": "csharp",
-                      "value": "string"
+                      "value": "CatLibrary.Core.ContainersRefType.ColorType"
                     },
                     {
                       "lang": "vb",
-                      "value": "String"
+                      "value": "CatLibrary.Core.ContainersRefType.ColorType"
                     }
                   ],
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                      "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                      "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                     }
                   ]
                 },
@@ -210,12 +210,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Play",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 340.0,
             "endLine": 0.0,
             "isExternal": false
@@ -273,13 +273,13 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method to let cat play</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L341",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CCatLibrary.Core.ContainersRefType.ColorType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L341",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "seealso": null,
-          "id": "CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_",
+          "id": "CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_",
           "hideTitleType": false,
           "hideSubtitle": false
         },
@@ -439,12 +439,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Sleep",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 333.0,
             "endLine": 0.0,
             "isExternal": false
@@ -503,7 +503,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">Extension method hint that how long the cat can sleep.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Sleep(CatLibrary.ICat%2CSystem.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L334",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L334",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -552,12 +552,12 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "ICatExtension",
-    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 326.0,
     "endLine": 0.0,
     "isExternal": false
@@ -1127,7 +1127,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L327",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L327",
   "remarks": null,
   "conceptual": "",
   "implements": null,

@@ -161,18 +161,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Counter",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 20.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -224,7 +224,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Counter.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Counter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L21",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L21",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -341,18 +341,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "X",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -404,7 +404,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_X.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L10",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L10",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -521,18 +521,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Y",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 10.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -584,7 +584,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Y.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L11",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L11",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -706,18 +706,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Sum",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 12.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overload": {
@@ -769,7 +769,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Sum.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Sum%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L13",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L13",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -884,18 +884,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+              "path": "samples/seed/dotnet/project/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "ToString",
-            "path": "src/DotnetNew/CSharp8.cs",
+            "path": "dotnet/project/CSharp8.cs",
             "startLine": 17.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp8",
           "overridden": {
@@ -990,7 +990,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_ToString.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L18",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L18",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1040,18 +1040,18 @@
   "type": "struct",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp8.cs",
+      "path": "samples/seed/dotnet/project/CSharp8.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "ReadOnlyMembers",
-    "path": "src/DotnetNew/CSharp8.cs",
+    "path": "dotnet/project/CSharp8.cs",
     "startLine": 7.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp8",
@@ -1466,7 +1466,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp8.cs/#L8",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp8.cs/#L8",
   "summary": "",
   "remarks": null,
   "conceptual": "",

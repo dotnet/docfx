@@ -1,0 +1,602 @@
+﻿{
+  "uid": "BuildFromAssembly.Class1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "BuildFromAssembly",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "isExternal": true,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "BuildFromAssembly.Class1.#ctor",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromAssembly.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1()"
+            },
+            {
+              "lang": "vb",
+              "value": "New()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Class1()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.New()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromAssembly.Class1.Class1()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromAssembly.Class1.New()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromAssembly.Class1.#ctor\" text=\"Class1()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromAssembly.Class1.#ctor\" text=\"Class1()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public Class1()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New()"
+              }
+            ]
+          },
+          "source": {
+            "path": "BuildFromAssembly",
+            "startLine": 0.0,
+            "endLine": 0.0,
+            "isExternal": true
+          },
+          "assemblies": [
+            "BuildFromAssembly"
+          ],
+          "namespace": "BuildFromAssembly",
+          "overload": {
+            "uid": "BuildFromAssembly.Class1.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Class1"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Class1"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromAssembly.Class1.Class1"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromAssembly.Class1.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromAssembly.Class1.#ctor*\" text=\"Class1\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromAssembly.Class1.#ctor*\" text=\"Class1\"/>"
+              }
+            ],
+            "id": "BuildFromAssembly_Class1__ctor_"
+          },
+          "level": 0.0,
+          "type": "constructor",
+          "summary": "",
+          "platform": null,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "BuildFromAssembly_Class1__ctor",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "BuildFromAssembly.Class1.HelloWorld",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromAssembly.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "HelloWorld()"
+            },
+            {
+              "lang": "vb",
+              "value": "HelloWorld()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.HelloWorld()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.HelloWorld()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromAssembly.Class1.HelloWorld()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromAssembly.Class1.HelloWorld()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromAssembly.Class1.HelloWorld\" text=\"HelloWorld()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromAssembly.Class1.HelloWorld\" text=\"HelloWorld()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static void HelloWorld()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Sub HelloWorld()"
+              }
+            ]
+          },
+          "source": {
+            "path": "BuildFromAssembly",
+            "startLine": 0.0,
+            "endLine": 0.0,
+            "isExternal": true
+          },
+          "assemblies": [
+            "BuildFromAssembly"
+          ],
+          "namespace": "BuildFromAssembly",
+          "overload": {
+            "uid": "BuildFromAssembly.Class1.HelloWorld*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "HelloWorld"
+              },
+              {
+                "lang": "vb",
+                "value": "HelloWorld"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.HelloWorld"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.HelloWorld"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromAssembly.Class1.HelloWorld"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromAssembly.Class1.HelloWorld"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromAssembly.Class1.HelloWorld*\" text=\"HelloWorld\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromAssembly.Class1.HelloWorld*\" text=\"HelloWorld\"/>"
+              }
+            ],
+            "id": "BuildFromAssembly_Class1_HelloWorld_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "BuildFromAssembly_Class1_HelloWorld",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "Class1"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "BuildFromAssembly.Class1"
+    },
+    {
+      "lang": "vb",
+      "value": "BuildFromAssembly.Class1"
+    }
+  ],
+  "type": "class",
+  "source": {
+    "path": "BuildFromAssembly",
+    "startLine": 0.0,
+    "endLine": 0.0,
+    "isExternal": true
+  },
+  "assemblies": [
+    "BuildFromAssembly"
+  ],
+  "namespace": {
+    "uid": "BuildFromAssembly",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "isExternal": true,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "BuildFromAssembly"
+      },
+      {
+        "lang": "vb",
+        "value": "BuildFromAssembly"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"BuildFromAssembly\" text=\"BuildFromAssembly\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public class Class1 : Object"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Class Class1 Inherits Object"
+      }
+    ]
+  },
+  "inheritance": [
+    {
+      "uid": "System.Object",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "System",
+      "isExternal": true,
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "object"
+        },
+        {
+          "lang": "vb",
+          "value": "Object"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        },
+        {
+          "lang": "vb",
+          "value": "<xref uid=\"System.Object\" text=\"object\"/>"
+        }
+      ],
+      "level": 0.0,
+      "index": 0.0
+    }
+  ],
+  "level": 1.0,
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "obj/api/BuildFromAssembly.Class1.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/BuildFromAssembly.Class1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
+  "remarks": null,
+  "conceptual": "",
+  "implements": null,
+  "example": null,
+  "seealso": null,
+  "id": "BuildFromAssembly_Class1",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inClass": true,
+  "_disableToc": false
+}

@@ -1,49 +1,49 @@
 ﻿{
-  "uid": "Microsoft.DevDiv.ContainersRefType.ColorType",
+  "uid": "CatLibrary.Core.ContainersRefType.ColorType",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "Microsoft.DevDiv",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
@@ -55,10 +55,10 @@
       "id": "fields",
       "children": [
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ColorType.Blue",
+          "uid": "CatLibrary.Core.ContainersRefType.ColorType.Blue",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "Microsoft.DevDiv.ContainersRefType.ColorType",
+          "parent": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExternal": false,
           "name": [
             {
@@ -83,21 +83,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Blue"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Blue"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Blue"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Blue"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Blue\" text=\"Blue\"/>"
             }
           ],
           "syntax": {
@@ -114,7 +114,7 @@
             "return": null,
             "fieldValue": {
               "type": {
-                "uid": "Microsoft.DevDiv.ContainersRefType.ColorType",
+                "uid": "CatLibrary.Core.ContainersRefType.ColorType",
                 "name": [
                   {
                     "lang": "csharp",
@@ -138,21 +138,21 @@
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   },
                   {
                     "lang": "vb",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   }
                 ]
               }
@@ -160,40 +160,40 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Blue",
-            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 32.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "BaseClassForTestClass1"
+            "CatLibrary.Core"
           ],
-          "namespace": "Microsoft.DevDiv",
+          "namespace": "CatLibrary.Core",
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">blue</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">blue</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ColorType_Blue.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ColorType.Blue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L33",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Blue.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Blue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L33",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ColorType_Blue",
+          "id": "CatLibrary_Core_ContainersRefType_ColorType_Blue",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ColorType.Red",
+          "uid": "CatLibrary.Core.ContainersRefType.ColorType.Red",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "Microsoft.DevDiv.ContainersRefType.ColorType",
+          "parent": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExternal": false,
           "name": [
             {
@@ -218,21 +218,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Red"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Red"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Red"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Red"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Red\" text=\"Red\"/>"
             }
           ],
           "syntax": {
@@ -249,7 +249,7 @@
             "return": null,
             "fieldValue": {
               "type": {
-                "uid": "Microsoft.DevDiv.ContainersRefType.ColorType",
+                "uid": "CatLibrary.Core.ContainersRefType.ColorType",
                 "name": [
                   {
                     "lang": "csharp",
@@ -273,21 +273,21 @@
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   },
                   {
                     "lang": "vb",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   }
                 ]
               }
@@ -295,40 +295,40 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Red",
-            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 28.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "BaseClassForTestClass1"
+            "CatLibrary.Core"
           ],
-          "namespace": "Microsoft.DevDiv",
+          "namespace": "CatLibrary.Core",
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">red</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">red</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ColorType_Red.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ColorType.Red%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L29",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Red.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Red%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L29",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ColorType_Red",
+          "id": "CatLibrary_Core_ContainersRefType_ColorType_Red",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "Microsoft.DevDiv.ContainersRefType.ColorType.Yellow",
+          "uid": "CatLibrary.Core.ContainersRefType.ColorType.Yellow",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "Microsoft.DevDiv.ContainersRefType.ColorType",
+          "parent": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExternal": false,
           "name": [
             {
@@ -353,21 +353,21 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Yellow"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Yellow"
             },
             {
               "lang": "vb",
-              "value": "Microsoft.DevDiv.ContainersRefType.ColorType.Yellow"
+              "value": "CatLibrary.Core.ContainersRefType.ColorType.Yellow"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
+              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType.Yellow\" text=\"Yellow\"/>"
             }
           ],
           "syntax": {
@@ -384,7 +384,7 @@
             "return": null,
             "fieldValue": {
               "type": {
-                "uid": "Microsoft.DevDiv.ContainersRefType.ColorType",
+                "uid": "CatLibrary.Core.ContainersRefType.ColorType",
                 "name": [
                   {
                     "lang": "csharp",
@@ -408,21 +408,21 @@
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   },
                   {
                     "lang": "vb",
-                    "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+                    "value": "CatLibrary.Core.ContainersRefType.ColorType"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"Microsoft.DevDiv.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"Microsoft.DevDiv.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                    "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
                   }
                 ]
               }
@@ -430,32 +430,32 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Yellow",
-            "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+            "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 36.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "BaseClassForTestClass1"
+            "CatLibrary.Core"
           ],
-          "namespace": "Microsoft.DevDiv",
+          "namespace": "CatLibrary.Core",
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">yellow</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">yellow</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ColorType_Yellow.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ColorType.Yellow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L37",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Yellow.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Yellow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L37",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "seealso": null,
-          "id": "Microsoft_DevDiv_ContainersRefType_ColorType_Yellow",
+          "id": "CatLibrary_Core_ContainersRefType_ColorType_Yellow",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -489,76 +489,76 @@
   "fullName": [
     {
       "lang": "csharp",
-      "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+      "value": "CatLibrary.Core.ContainersRefType.ColorType"
     },
     {
       "lang": "vb",
-      "value": "Microsoft.DevDiv.ContainersRefType.ColorType"
+      "value": "CatLibrary.Core.ContainersRefType.ColorType"
     }
   ],
   "type": "enum",
   "source": {
     "remote": {
-      "path": "samples/seed/src/SampleClass1/BaseClass/BaseClass.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "ColorType",
-    "path": "src/SampleClass1/BaseClass/BaseClass.cs",
+    "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
     "startLine": 23.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "BaseClassForTestClass1"
+    "CatLibrary.Core"
   ],
   "namespace": {
-    "uid": "Microsoft.DevDiv",
+    "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       },
       {
         "lang": "vb",
-        "value": "Microsoft.DevDiv"
+        "value": "CatLibrary.Core"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"Microsoft\" text=\"Microsoft\"/>.<xref uid=\"Microsoft.DevDiv\" text=\"DevDiv\"/>"
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
       }
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
   "example": [],
   "syntax": {
     "content": [
@@ -611,12 +611,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/Microsoft.DevDiv.ContainersRefType.ColorType.yml",
+  "_key": "obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/Microsoft.DevDiv.ContainersRefType.ColorType.html",
+  "_path": "api/CatLibrary.Core.ContainersRefType.ColorType.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -684,13 +684,13 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=Microsoft_DevDiv_ContainersRefType_ColorType.md&value=---%0Auid%3A%20Microsoft.DevDiv.ContainersRefType.ColorType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/BaseClass/BaseClass.cs/#L24",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L24",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "seealso": null,
-  "id": "Microsoft_DevDiv_ContainersRefType_ColorType",
+  "id": "CatLibrary_Core_ContainersRefType_ColorType",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": false,

@@ -1,5 +1,5 @@
 ﻿{
-  "uid": "VBTestClass1",
+  "uid": "BuildFromVBSourceCode",
   "isEii": false,
   "isExtensionMethod": false,
   "children": [
@@ -9,9 +9,9 @@
       "id": "classes",
       "children": [
         {
-          "uid": "VBTestClass1.BaseClass1",
+          "uid": "BuildFromVBSourceCode.BaseClass1",
           "isExtensionMethod": false,
-          "parent": "VBTestClass1",
+          "parent": "BuildFromVBSourceCode",
           "name": [
             {
               "lang": "csharp",
@@ -35,25 +35,25 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "VBTestClass1.BaseClass1"
+              "value": "BuildFromVBSourceCode.BaseClass1"
             },
             {
               "lang": "vb",
-              "value": "VBTestClass1.BaseClass1"
+              "value": "BuildFromVBSourceCode.BaseClass1"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\"/>"
+              "value": "<xref uid=\"BuildFromVBSourceCode.BaseClass1\" text=\"BaseClass1\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"VBTestClass1.BaseClass1\" text=\"BaseClass1\"/>"
+              "value": "<xref uid=\"BuildFromVBSourceCode.BaseClass1\" text=\"BaseClass1\"/>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/VBTestClass1.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -65,14 +65,14 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "VBTestClass1_BaseClass1",
+          "id": "BuildFromVBSourceCode_BaseClass1",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "VBTestClass1.Class1",
+          "uid": "BuildFromVBSourceCode.Class1",
           "isExtensionMethod": false,
-          "parent": "VBTestClass1",
+          "parent": "BuildFromVBSourceCode",
           "name": [
             {
               "lang": "csharp",
@@ -96,25 +96,25 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "VBTestClass1.Class1"
+              "value": "BuildFromVBSourceCode.Class1"
             },
             {
               "lang": "vb",
-              "value": "VBTestClass1.Class1"
+              "value": "BuildFromVBSourceCode.Class1"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
+              "value": "<xref uid=\"BuildFromVBSourceCode.Class1\" text=\"Class1\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
+              "value": "<xref uid=\"BuildFromVBSourceCode.Class1\" text=\"Class1\"/>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/VBTestClass1.Class1.yml\" sourcestartlinenumber=\"2\">This is summary from vb class...</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">This is summary from vb class...</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -126,7 +126,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "VBTestClass1_Class1",
+          "id": "BuildFromVBSourceCode_Class1",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -140,36 +140,36 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     },
     {
       "lang": "vb",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     },
     {
       "lang": "vb",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     },
     {
       "lang": "vb",
-      "value": "VBTestClass1"
+      "value": "BuildFromVBSourceCode"
     }
   ],
   "type": "namespace",
   "assemblies": [
-    "VBTestClass1"
+    "vb.temp.dll"
   ],
   "level": 0.0,
   "_appTitle": "docfx seed website",
@@ -210,12 +210,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/VBTestClass1.yml",
+  "_key": "obj/api/BuildFromVBSourceCode.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/VBTestClass1.html",
+  "_path": "api/BuildFromVBSourceCode.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -292,7 +292,7 @@
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "VBTestClass1",
+  "id": "BuildFromVBSourceCode",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isNamespace": true,

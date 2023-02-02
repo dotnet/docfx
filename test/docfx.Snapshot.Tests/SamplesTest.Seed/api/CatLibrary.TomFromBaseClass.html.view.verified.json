@@ -163,12 +163,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": ".ctor",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 309.0,
             "endLine": 0.0,
             "isExternal": false
@@ -227,7 +227,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"2\">This is a #ctor with parameter</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_TomFromBaseClass__ctor_System_Int32_.md&value=---%0Auid%3A%20CatLibrary.TomFromBaseClass.%23ctor(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L310",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L310",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -276,12 +276,12 @@
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "TomFromBaseClass",
-    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 302.0,
     "endLine": 0.0,
     "isExternal": false
@@ -950,7 +950,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_TomFromBaseClass.md&value=---%0Auid%3A%20CatLibrary.TomFromBaseClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L303",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L303",
   "remarks": null,
   "conceptual": "",
   "implements": null,

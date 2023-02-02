@@ -254,18 +254,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp10.cs",
+              "path": "samples/seed/dotnet/project/CSharp10.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": ".ctor",
-            "path": "src/DotnetNew/CSharp10.cs",
+            "path": "dotnet/project/CSharp10.cs",
             "startLine": 2.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp10",
           "overload": {
@@ -317,7 +317,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct__ctor_System_Double_System_Double_System_Double_.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.%23ctor(System.Double%2CSystem.Double%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp10.cs/#L3",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L3",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -441,18 +441,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp10.cs",
+              "path": "samples/seed/dotnet/project/CSharp10.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "X",
-            "path": "src/DotnetNew/CSharp10.cs",
+            "path": "dotnet/project/CSharp10.cs",
             "startLine": 2.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp10",
           "overload": {
@@ -504,7 +504,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_X.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp10.cs/#L3",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L3",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -621,18 +621,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp10.cs",
+              "path": "samples/seed/dotnet/project/CSharp10.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Y",
-            "path": "src/DotnetNew/CSharp10.cs",
+            "path": "dotnet/project/CSharp10.cs",
             "startLine": 2.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp10",
           "overload": {
@@ -684,7 +684,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_Y.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp10.cs/#L3",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L3",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -801,18 +801,18 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/DotnetNew/CSharp10.cs",
+              "path": "samples/seed/dotnet/project/CSharp10.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Z",
-            "path": "src/DotnetNew/CSharp10.cs",
+            "path": "dotnet/project/CSharp10.cs",
             "startLine": 2.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "DotnetNew"
+            "BuildFromProject"
           ],
           "namespace": "CSharp10",
           "overload": {
@@ -864,7 +864,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct_Z.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct.Z%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp10.cs/#L3",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L3",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -914,18 +914,18 @@
   "type": "struct",
   "source": {
     "remote": {
-      "path": "samples/seed/src/DotnetNew/CSharp10.cs",
+      "path": "samples/seed/dotnet/project/CSharp10.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "ReadOnlyRecordStruct",
-    "path": "src/DotnetNew/CSharp10.cs",
+    "path": "dotnet/project/CSharp10.cs",
     "startLine": 2.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "namespace": {
     "uid": "CSharp10",
@@ -1434,7 +1434,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ReadOnlyRecordStruct.md&value=---%0Auid%3A%20CSharp10.ReadOnlyRecordStruct%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/DotnetNew/CSharp10.cs/#L3",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/CSharp10.cs/#L3",
   "summary": "",
   "remarks": null,
   "conceptual": "",

@@ -1,6 +1,155 @@
 ﻿### YamlMime:XRefMap
 sorted: true
 references:
+- uid: BuildFromAssembly
+  name: BuildFromAssembly
+  href: api/BuildFromAssembly.html
+  commentId: N:BuildFromAssembly
+  fullName: BuildFromAssembly
+  nameWithType: BuildFromAssembly
+- uid: BuildFromAssembly.Class1
+  name: Class1
+  href: api/BuildFromAssembly.Class1.html
+  commentId: T:BuildFromAssembly.Class1
+  fullName: BuildFromAssembly.Class1
+  nameWithType: Class1
+- uid: BuildFromAssembly.Class1.#ctor
+  name: Class1()
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1__ctor
+  commentId: M:BuildFromAssembly.Class1.#ctor
+  name.vb: New()
+  fullName: BuildFromAssembly.Class1.Class1()
+  fullName.vb: BuildFromAssembly.Class1.New()
+  nameWithType: Class1.Class1()
+  nameWithType.vb: Class1.New()
+- uid: BuildFromAssembly.Class1.#ctor*
+  name: Class1
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1__ctor_
+  commentId: Overload:BuildFromAssembly.Class1.#ctor
+  name.vb: New
+  fullName: BuildFromAssembly.Class1.Class1
+  fullName.vb: BuildFromAssembly.Class1.New
+  nameWithType: Class1.Class1
+  nameWithType.vb: Class1.New
+- uid: BuildFromAssembly.Class1.HelloWorld
+  name: HelloWorld()
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1_HelloWorld
+  commentId: M:BuildFromAssembly.Class1.HelloWorld
+  fullName: BuildFromAssembly.Class1.HelloWorld()
+  nameWithType: Class1.HelloWorld()
+- uid: BuildFromAssembly.Class1.HelloWorld*
+  name: HelloWorld
+  href: api/BuildFromAssembly.Class1.html#BuildFromAssembly_Class1_HelloWorld_
+  commentId: Overload:BuildFromAssembly.Class1.HelloWorld
+  fullName: BuildFromAssembly.Class1.HelloWorld
+  nameWithType: Class1.HelloWorld
+- uid: BuildFromCSharpSourceCode
+  name: BuildFromCSharpSourceCode
+  href: api/BuildFromCSharpSourceCode.html
+  commentId: N:BuildFromCSharpSourceCode
+  fullName: BuildFromCSharpSourceCode
+  nameWithType: BuildFromCSharpSourceCode
+- uid: BuildFromCSharpSourceCode.CSharp
+  name: CSharp
+  href: api/BuildFromCSharpSourceCode.CSharp.html
+  commentId: T:BuildFromCSharpSourceCode.CSharp
+  fullName: BuildFromCSharpSourceCode.CSharp
+  nameWithType: CSharp
+- uid: BuildFromCSharpSourceCode.CSharp.Main(System.String[])
+  name: Main(string[])
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_Main_System_String___
+  commentId: M:BuildFromCSharpSourceCode.CSharp.Main(System.String[])
+  name.vb: Main(String())
+  fullName: BuildFromCSharpSourceCode.CSharp.Main(string[])
+  fullName.vb: BuildFromCSharpSourceCode.CSharp.Main(String())
+  nameWithType: CSharp.Main(string[])
+  nameWithType.vb: CSharp.Main(String())
+- uid: BuildFromCSharpSourceCode.CSharp.Main*
+  name: Main
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_Main_
+  commentId: Overload:BuildFromCSharpSourceCode.CSharp.Main
+  isSpec: "True"
+  fullName: BuildFromCSharpSourceCode.CSharp.Main
+  nameWithType: CSharp.Main
+- uid: BuildFromVBSourceCode
+  name: BuildFromVBSourceCode
+  href: api/BuildFromVBSourceCode.html
+  commentId: N:BuildFromVBSourceCode
+  fullName: BuildFromVBSourceCode
+  nameWithType: BuildFromVBSourceCode
+- uid: BuildFromVBSourceCode.BaseClass1
+  name: BaseClass1
+  href: api/BuildFromVBSourceCode.BaseClass1.html
+  commentId: T:BuildFromVBSourceCode.BaseClass1
+  fullName: BuildFromVBSourceCode.BaseClass1
+  nameWithType: BaseClass1
+- uid: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_
+  commentId: M:BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  fullName: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  nameWithType: BaseClass1.WithDeclarationKeyword(Class1)
+- uid: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_
+  commentId: Overload:BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword
+  nameWithType: BaseClass1.WithDeclarationKeyword
+- uid: BuildFromVBSourceCode.Class1
+  name: Class1
+  href: api/BuildFromVBSourceCode.Class1.html
+  commentId: T:BuildFromVBSourceCode.Class1
+  fullName: BuildFromVBSourceCode.Class1
+  nameWithType: Class1
+- uid: BuildFromVBSourceCode.Class1.Keyword
+  name: Keyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Keyword
+  commentId: P:BuildFromVBSourceCode.Class1.Keyword
+  fullName: BuildFromVBSourceCode.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: BuildFromVBSourceCode.Class1.Keyword*
+  name: Keyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Keyword_
+  commentId: Overload:BuildFromVBSourceCode.Class1.Keyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.Keyword
+  nameWithType: Class1.Keyword
+- uid: BuildFromVBSourceCode.Class1.Value(System.String)
+  name: Value(string)
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Value_System_String_
+  commentId: M:BuildFromVBSourceCode.Class1.Value(System.String)
+  name.vb: Value(String)
+  fullName: BuildFromVBSourceCode.Class1.Value(string)
+  fullName.vb: BuildFromVBSourceCode.Class1.Value(String)
+  nameWithType: Class1.Value(string)
+  nameWithType.vb: Class1.Value(String)
+- uid: BuildFromVBSourceCode.Class1.Value*
+  name: Value
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_Value_
+  commentId: Overload:BuildFromVBSourceCode.Class1.Value
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.Value
+  nameWithType: Class1.Value
+- uid: BuildFromVBSourceCode.Class1.ValueClass
+  name: ValueClass
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_ValueClass
+  commentId: F:BuildFromVBSourceCode.Class1.ValueClass
+  fullName: BuildFromVBSourceCode.Class1.ValueClass
+  nameWithType: Class1.ValueClass
+- uid: BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  name: WithDeclarationKeyword(Class1)
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_
+  commentId: M:BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  fullName: BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)
+  nameWithType: Class1.WithDeclarationKeyword(Class1)
+- uid: BuildFromVBSourceCode.Class1.WithDeclarationKeyword*
+  name: WithDeclarationKeyword
+  href: api/BuildFromVBSourceCode.Class1.html#BuildFromVBSourceCode_Class1_WithDeclarationKeyword_
+  commentId: Overload:BuildFromVBSourceCode.Class1.WithDeclarationKeyword
+  isSpec: "True"
+  fullName: BuildFromVBSourceCode.Class1.WithDeclarationKeyword
+  nameWithType: Class1.WithDeclarationKeyword
 - uid: CatLibrary
   name: CatLibrary
   href: api/CatLibrary.html
@@ -331,6 +480,107 @@ references:
   fullName.vb: CatLibrary.Complex(Of T, J)
   nameWithType: Complex<T, J>
   nameWithType.vb: Complex(Of T, J)
+- uid: CatLibrary.Core
+  name: CatLibrary.Core
+  href: api/CatLibrary.Core.html
+  commentId: N:CatLibrary.Core
+  fullName: CatLibrary.Core
+  nameWithType: CatLibrary.Core
+- uid: CatLibrary.Core.ContainersRefType
+  name: ContainersRefType
+  href: api/CatLibrary.Core.ContainersRefType.html
+  commentId: T:CatLibrary.Core.ContainersRefType
+  fullName: CatLibrary.Core.ContainersRefType
+  nameWithType: ContainersRefType
+- uid: CatLibrary.Core.ContainersRefType.ColorCount
+  name: ColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ColorCount
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorCount
+  fullName: CatLibrary.Core.ContainersRefType.ColorCount
+  nameWithType: ContainersRefType.ColorCount
+- uid: CatLibrary.Core.ContainersRefType.ColorType
+  name: ContainersRefType.ColorType
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ColorType
+  fullName: CatLibrary.Core.ContainersRefType.ColorType
+  nameWithType: ContainersRefType.ColorType
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Blue
+  name: Blue
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Blue
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Blue
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Blue
+  nameWithType: ContainersRefType.ColorType.Blue
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Red
+  name: Red
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Red
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Red
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Red
+  nameWithType: ContainersRefType.ColorType.Red
+- uid: CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  name: Yellow
+  href: api/CatLibrary.Core.ContainersRefType.ColorType.html#CatLibrary_Core_ContainersRefType_ColorType_Yellow
+  commentId: F:CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  fullName: CatLibrary.Core.ContainersRefType.ColorType.Yellow
+  nameWithType: ContainersRefType.ColorType.Yellow
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  name: ContainersRefType.ContainersRefTypeChild
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild
+  nameWithType: ContainersRefType.ContainersRefTypeChild
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  name: ContainersRefType.ContainersRefTypeChildInterface
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface
+  nameWithType: ContainersRefType.ContainersRefTypeChildInterface
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  name: ContainersRefType.ContainersRefTypeDelegate
+  href: api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html
+  commentId: T:CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate
+  nameWithType: ContainersRefType.ContainersRefTypeDelegate
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  name: ContainersRefTypeEventHandler
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler
+  commentId: E:CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler
+  nameWithType: ContainersRefType.ContainersRefTypeEventHandler
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name: ContainersRefTypeNonRefMethod(params object[])
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
+  commentId: M:CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
+  name.vb: ContainersRefTypeNonRefMethod(ParamArray Object())
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
+  fullName.vb: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
+  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
+- uid: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod*
+  name: ContainersRefTypeNonRefMethod
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_
+  commentId: Overload:CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod
+  isSpec: "True"
+  fullName: CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod
+  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod
+- uid: CatLibrary.Core.ContainersRefType.GetColorCount
+  name: GetColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_GetColorCount
+  commentId: P:CatLibrary.Core.ContainersRefType.GetColorCount
+  fullName: CatLibrary.Core.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: CatLibrary.Core.ContainersRefType.GetColorCount*
+  name: GetColorCount
+  href: api/CatLibrary.Core.ContainersRefType.html#CatLibrary_Core_ContainersRefType_GetColorCount_
+  commentId: Overload:CatLibrary.Core.ContainersRefType.GetColorCount
+  isSpec: "True"
+  fullName: CatLibrary.Core.ContainersRefType.GetColorCount
+  nameWithType: ContainersRefType.GetColorCount
+- uid: CatLibrary.Core.ExplicitLayoutClass
+  name: ExplicitLayoutClass
+  href: api/CatLibrary.Core.ExplicitLayoutClass.html
+  commentId: T:CatLibrary.Core.ExplicitLayoutClass
+  fullName: CatLibrary.Core.ExplicitLayoutClass
+  nameWithType: ExplicitLayoutClass
 - uid: CatLibrary.FakeDelegate`1
   name: FakeDelegate<T>
   href: api/CatLibrary.FakeDelegate-1.html
@@ -427,15 +677,12 @@ references:
   commentId: T:CatLibrary.ICatExtension
   fullName: CatLibrary.ICatExtension
   nameWithType: ICatExtension
-- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
-  name: Play(ICat, string)
-  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_System_String_
-  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,System.String)
-  name.vb: Play(ICat, String)
-  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, string)
-  fullName.vb: CatLibrary.ICatExtension.Play(CatLibrary.ICat, String)
-  nameWithType: ICatExtension.Play(ICat, string)
-  nameWithType.vb: ICatExtension.Play(ICat, String)
+- uid: CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)
+  name: Play(ICat, ColorType)
+  href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_
+  commentId: M:CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)
+  fullName: CatLibrary.ICatExtension.Play(CatLibrary.ICat, CatLibrary.Core.ContainersRefType.ColorType)
+  nameWithType: ICatExtension.Play(ICat, ContainersRefType.ColorType)
 - uid: CatLibrary.ICatExtension.Play*
   name: Play
   href: api/CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_
@@ -1872,107 +2119,6 @@ references:
 - uid: graph.windows.net/myorganization/Contacts/1.6/update contact manager
   name: update contact manager
   href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact_manager
-- uid: Microsoft.DevDiv
-  name: Microsoft.DevDiv
-  href: api/Microsoft.DevDiv.html
-  commentId: N:Microsoft.DevDiv
-  fullName: Microsoft.DevDiv
-  nameWithType: Microsoft.DevDiv
-- uid: Microsoft.DevDiv.ContainersRefType
-  name: ContainersRefType
-  href: api/Microsoft.DevDiv.ContainersRefType.html
-  commentId: T:Microsoft.DevDiv.ContainersRefType
-  fullName: Microsoft.DevDiv.ContainersRefType
-  nameWithType: ContainersRefType
-- uid: Microsoft.DevDiv.ContainersRefType.ColorCount
-  name: ColorCount
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ColorCount
-  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorCount
-  fullName: Microsoft.DevDiv.ContainersRefType.ColorCount
-  nameWithType: ContainersRefType.ColorCount
-- uid: Microsoft.DevDiv.ContainersRefType.ColorType
-  name: ContainersRefType.ColorType
-  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html
-  commentId: T:Microsoft.DevDiv.ContainersRefType.ColorType
-  fullName: Microsoft.DevDiv.ContainersRefType.ColorType
-  nameWithType: ContainersRefType.ColorType
-- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Blue
-  name: Blue
-  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Blue
-  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Blue
-  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Blue
-  nameWithType: ContainersRefType.ColorType.Blue
-- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Red
-  name: Red
-  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Red
-  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Red
-  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Red
-  nameWithType: ContainersRefType.ColorType.Red
-- uid: Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
-  name: Yellow
-  href: api/Microsoft.DevDiv.ContainersRefType.ColorType.html#Microsoft_DevDiv_ContainersRefType_ColorType_Yellow
-  commentId: F:Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
-  fullName: Microsoft.DevDiv.ContainersRefType.ColorType.Yellow
-  nameWithType: ContainersRefType.ColorType.Yellow
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
-  name: ContainersRefType.ContainersRefTypeChild
-  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild.html
-  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChild
-  nameWithType: ContainersRefType.ContainersRefTypeChild
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
-  name: ContainersRefType.ContainersRefTypeChildInterface
-  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface.html
-  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeChildInterface
-  nameWithType: ContainersRefType.ContainersRefTypeChildInterface
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
-  name: ContainersRefType.ContainersRefTypeDelegate
-  href: api/Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate.html
-  commentId: T:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeDelegate
-  nameWithType: ContainersRefType.ContainersRefTypeDelegate
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
-  name: ContainersRefTypeEventHandler
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeEventHandler
-  commentId: E:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeEventHandler
-  nameWithType: ContainersRefType.ContainersRefTypeEventHandler
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  name: ContainersRefTypeNonRefMethod(params object[])
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___
-  commentId: M:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object[])
-  name.vb: ContainersRefTypeNonRefMethod(ParamArray Object())
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
-  fullName.vb: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
-  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod(params object[])
-  nameWithType.vb: ContainersRefType.ContainersRefTypeNonRefMethod(ParamArray Object())
-- uid: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod*
-  name: ContainersRefTypeNonRefMethod
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_ContainersRefTypeNonRefMethod_
-  commentId: Overload:Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod
-  isSpec: "True"
-  fullName: Microsoft.DevDiv.ContainersRefType.ContainersRefTypeNonRefMethod
-  nameWithType: ContainersRefType.ContainersRefTypeNonRefMethod
-- uid: Microsoft.DevDiv.ContainersRefType.GetColorCount
-  name: GetColorCount
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_GetColorCount
-  commentId: P:Microsoft.DevDiv.ContainersRefType.GetColorCount
-  fullName: Microsoft.DevDiv.ContainersRefType.GetColorCount
-  nameWithType: ContainersRefType.GetColorCount
-- uid: Microsoft.DevDiv.ContainersRefType.GetColorCount*
-  name: GetColorCount
-  href: api/Microsoft.DevDiv.ContainersRefType.html#Microsoft_DevDiv_ContainersRefType_GetColorCount_
-  commentId: Overload:Microsoft.DevDiv.ContainersRefType.GetColorCount
-  isSpec: "True"
-  fullName: Microsoft.DevDiv.ContainersRefType.GetColorCount
-  nameWithType: ContainersRefType.GetColorCount
-- uid: Microsoft.DevDiv.ExplicitLayoutClass
-  name: ExplicitLayoutClass
-  href: api/Microsoft.DevDiv.ExplicitLayoutClass.html
-  commentId: T:Microsoft.DevDiv.ExplicitLayoutClass
-  fullName: Microsoft.DevDiv.ExplicitLayoutClass
-  nameWithType: ExplicitLayoutClass
 - uid: MRef.Demo.Enumeration
   name: MRef.Demo.Enumeration
   href: api/MRef.Demo.Enumeration.html
@@ -2075,82 +2221,3 @@ references:
 - uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile
   name: uploadFile
   href: restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile
-- uid: VBTestClass1
-  name: VBTestClass1
-  href: api/VBTestClass1.html
-  commentId: N:VBTestClass1
-  fullName: VBTestClass1
-  nameWithType: VBTestClass1
-- uid: VBTestClass1.BaseClass1
-  name: BaseClass1
-  href: api/VBTestClass1.BaseClass1.html
-  commentId: T:VBTestClass1.BaseClass1
-  fullName: VBTestClass1.BaseClass1
-  nameWithType: BaseClass1
-- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
-  name: WithDeclarationKeyword(Class1)
-  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_VBTestClass1_Class1_
-  commentId: M:VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
-  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)
-  nameWithType: BaseClass1.WithDeclarationKeyword(Class1)
-- uid: VBTestClass1.BaseClass1.WithDeclarationKeyword*
-  name: WithDeclarationKeyword
-  href: api/VBTestClass1.BaseClass1.html#VBTestClass1_BaseClass1_WithDeclarationKeyword_
-  commentId: Overload:VBTestClass1.BaseClass1.WithDeclarationKeyword
-  isSpec: "True"
-  fullName: VBTestClass1.BaseClass1.WithDeclarationKeyword
-  nameWithType: BaseClass1.WithDeclarationKeyword
-- uid: VBTestClass1.Class1
-  name: Class1
-  href: api/VBTestClass1.Class1.html
-  commentId: T:VBTestClass1.Class1
-  fullName: VBTestClass1.Class1
-  nameWithType: Class1
-- uid: VBTestClass1.Class1.Keyword
-  name: Keyword
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Keyword
-  commentId: P:VBTestClass1.Class1.Keyword
-  fullName: VBTestClass1.Class1.Keyword
-  nameWithType: Class1.Keyword
-- uid: VBTestClass1.Class1.Keyword*
-  name: Keyword
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Keyword_
-  commentId: Overload:VBTestClass1.Class1.Keyword
-  isSpec: "True"
-  fullName: VBTestClass1.Class1.Keyword
-  nameWithType: Class1.Keyword
-- uid: VBTestClass1.Class1.Value(System.String)
-  name: Value(string)
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_System_String_
-  commentId: M:VBTestClass1.Class1.Value(System.String)
-  name.vb: Value(String)
-  fullName: VBTestClass1.Class1.Value(string)
-  fullName.vb: VBTestClass1.Class1.Value(String)
-  nameWithType: Class1.Value(string)
-  nameWithType.vb: Class1.Value(String)
-- uid: VBTestClass1.Class1.Value*
-  name: Value
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_Value_
-  commentId: Overload:VBTestClass1.Class1.Value
-  isSpec: "True"
-  fullName: VBTestClass1.Class1.Value
-  nameWithType: Class1.Value
-- uid: VBTestClass1.Class1.ValueClass
-  name: ValueClass
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_ValueClass
-  commentId: F:VBTestClass1.Class1.ValueClass
-  fullName: VBTestClass1.Class1.ValueClass
-  nameWithType: Class1.ValueClass
-- uid: VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
-  name: WithDeclarationKeyword(Class1)
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_VBTestClass1_Class1_
-  commentId: M:VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
-  fullName: VBTestClass1.Class1.WithDeclarationKeyword(VBTestClass1.Class1)
-  nameWithType: Class1.WithDeclarationKeyword(Class1)
-- uid: VBTestClass1.Class1.WithDeclarationKeyword*
-  name: WithDeclarationKeyword
-  href: api/VBTestClass1.Class1.html#VBTestClass1_Class1_WithDeclarationKeyword_
-  commentId: Overload:VBTestClass1.Class1.WithDeclarationKeyword
-  isSpec: "True"
-  fullName: VBTestClass1.Class1.WithDeclarationKeyword
-  nameWithType: Class1.WithDeclarationKeyword

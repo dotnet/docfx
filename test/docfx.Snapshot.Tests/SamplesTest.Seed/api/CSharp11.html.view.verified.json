@@ -362,7 +362,7 @@
   ],
   "type": "namespace",
   "assemblies": [
-    "DotnetNew"
+    "BuildFromProject"
   ],
   "level": 0.0,
   "_appTitle": "docfx seed website",

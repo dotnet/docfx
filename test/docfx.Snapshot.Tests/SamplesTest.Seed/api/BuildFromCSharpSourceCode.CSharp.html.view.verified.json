@@ -1,49 +1,49 @@
 ﻿{
-  "uid": "VBTestClass1.BaseClass1",
+  "uid": "BuildFromCSharpSourceCode.CSharp",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "VBTestClass1",
+    "uid": "BuildFromCSharpSourceCode",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\"/>"
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\"/>"
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
       }
     ],
     "level": 0.0
@@ -55,228 +55,178 @@
       "id": "methods",
       "children": [
         {
-          "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)",
+          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "VBTestClass1.BaseClass1",
+          "parent": "BuildFromCSharpSourceCode.CSharp",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "WithDeclarationKeyword(Class1)"
+              "value": "Main(string[])"
             },
             {
               "lang": "vb",
-              "value": "WithDeclarationKeyword(Class1)"
+              "value": "Main(String())"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "BaseClass1.WithDeclarationKeyword(Class1)"
+              "value": "CSharp.Main(string[])"
             },
             {
               "lang": "vb",
-              "value": "BaseClass1.WithDeclarationKeyword(Class1)"
+              "value": "CSharp.Main(String())"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)"
+              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
             },
             {
               "lang": "vb",
-              "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)"
+              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\" text=\"WithDeclarationKeyword(Class1)\"/>"
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)\" text=\"WithDeclarationKeyword(Class1)\"/>"
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public abstract DateTime WithDeclarationKeyword(Class1 keyword)"
+                "value": "public static void Main(string[] args)"
               },
               {
                 "lang": "vb",
-                "value": "Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As Date"
+                "value": "Public Shared Sub Main(args As String())"
               }
             ],
             "parameters": [
               {
-                "id": "keyword",
+                "id": "args",
                 "type": {
-                  "uid": "VBTestClass1.Class1",
+                  "uid": "System.String[]",
                   "name": [
                     {
                       "lang": "csharp",
-                      "value": "Class1"
+                      "value": "string[]"
                     },
                     {
                       "lang": "vb",
-                      "value": "Class1"
+                      "value": "String()"
                     }
                   ],
                   "nameWithType": [
                     {
                       "lang": "csharp",
-                      "value": "Class1"
+                      "value": "string[]"
                     },
                     {
                       "lang": "vb",
-                      "value": "Class1"
+                      "value": "String()"
                     }
                   ],
                   "fullName": [
                     {
                       "lang": "csharp",
-                      "value": "VBTestClass1.Class1"
+                      "value": "string[]"
                     },
                     {
                       "lang": "vb",
-                      "value": "VBTestClass1.Class1"
+                      "value": "String()"
                     }
                   ],
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
+                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
+                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
                     }
                   ]
                 }
               }
-            ],
-            "return": {
-              "type": {
-                "uid": "System.DateTime",
-                "name": [
-                  {
-                    "lang": "csharp",
-                    "value": "DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "nameWithType": [
-                  {
-                    "lang": "csharp",
-                    "value": "DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "fullName": [
-                  {
-                    "lang": "csharp",
-                    "value": "System.DateTime"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "Date"
-                  }
-                ],
-                "specName": [
-                  {
-                    "lang": "csharp",
-                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
-                  },
-                  {
-                    "lang": "vb",
-                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
-                  }
-                ]
-              }
-            }
+            ]
           },
           "source": {
-            "remote": {
-              "path": "samples/seed/src/SampleClass1/SomeVbClass/Class1.vb",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": "WithDeclarationKeyword",
-            "path": "src/SampleClass1/SomeVbClass/Class1.vb",
-            "startLine": 43.0,
+            "id": "Main",
+            "path": "",
+            "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "VBTestClass1"
+            "cs.temp.dll"
           ],
-          "namespace": "VBTestClass1",
+          "namespace": "BuildFromCSharpSourceCode",
           "overload": {
-            "uid": "VBTestClass1.BaseClass1.WithDeclarationKeyword*",
+            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "WithDeclarationKeyword"
+                "value": "Main"
               },
               {
                 "lang": "vb",
-                "value": "WithDeclarationKeyword"
+                "value": "Main"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "BaseClass1.WithDeclarationKeyword"
+                "value": "CSharp.Main"
               },
               {
                 "lang": "vb",
-                "value": "BaseClass1.WithDeclarationKeyword"
+                "value": "CSharp.Main"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword"
+                "value": "BuildFromCSharpSourceCode.CSharp.Main"
               },
               {
                 "lang": "vb",
-                "value": "VBTestClass1.BaseClass1.WithDeclarationKeyword"
+                "value": "BuildFromCSharpSourceCode.CSharp.Main"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword*\" text=\"WithDeclarationKeyword\"/>"
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"VBTestClass1.BaseClass1.WithDeclarationKeyword*\" text=\"WithDeclarationKeyword\"/>"
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
               }
             ],
-            "id": "VBTestClass1_BaseClass1_WithDeclarationKeyword_"
+            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
           },
           "level": 0.0,
           "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=VBTestClass1_BaseClass1_WithDeclarationKeyword_VBTestClass1_Class1_.md&value=---%0Auid%3A%20VBTestClass1.BaseClass1.WithDeclarationKeyword(VBTestClass1.Class1)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/SomeVbClass/Class1.vb/#L44",
+          "docurl": "",
+          "sourceurl": "",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "VBTestClass1_BaseClass1_WithDeclarationKeyword_VBTestClass1_Class1_",
+          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -290,106 +240,99 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "BaseClass1"
+      "value": "CSharp"
     },
     {
       "lang": "vb",
-      "value": "BaseClass1"
+      "value": "CSharp"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "BaseClass1"
+      "value": "CSharp"
     },
     {
       "lang": "vb",
-      "value": "BaseClass1"
+      "value": "CSharp"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "VBTestClass1.BaseClass1"
+      "value": "BuildFromCSharpSourceCode.CSharp"
     },
     {
       "lang": "vb",
-      "value": "VBTestClass1.BaseClass1"
+      "value": "BuildFromCSharpSourceCode.CSharp"
     }
   ],
   "type": "class",
   "source": {
-    "remote": {
-      "path": "samples/seed/src/SampleClass1/SomeVbClass/Class1.vb",
-      "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
-    },
-    "id": "BaseClass1",
-    "path": "src/SampleClass1/SomeVbClass/Class1.vb",
-    "startLine": 42.0,
+    "id": "CSharp",
+    "path": "",
+    "startLine": 7.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "VBTestClass1"
+    "cs.temp.dll"
   ],
   "namespace": {
-    "uid": "VBTestClass1",
+    "uid": "BuildFromCSharpSourceCode",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       },
       {
         "lang": "vb",
-        "value": "VBTestClass1"
+        "value": "BuildFromCSharpSourceCode"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\"/>"
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"VBTestClass1\" text=\"VBTestClass1\"/>"
+        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
       }
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/VBTestClass1.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
-  "example": [],
   "syntax": {
     "content": [
       {
         "lang": "csharp",
-        "value": "public abstract class BaseClass1"
+        "value": "public class CSharp"
       },
       {
         "lang": "vb",
-        "value": "Public MustInherit Class BaseClass1"
+        "value": "Public Class CSharp"
       }
     ]
   },
@@ -442,56 +385,6 @@
       ],
       "level": 0.0,
       "index": 0.0
-    }
-  ],
-  "derivedClasses": [
-    {
-      "uid": "VBTestClass1.Class1",
-      "isEii": false,
-      "isExtensionMethod": false,
-      "parent": "VBTestClass1",
-      "name": [
-        {
-          "lang": "csharp",
-          "value": "Class1"
-        },
-        {
-          "lang": "vb",
-          "value": "Class1"
-        }
-      ],
-      "nameWithType": [
-        {
-          "lang": "csharp",
-          "value": "Class1"
-        },
-        {
-          "lang": "vb",
-          "value": "Class1"
-        }
-      ],
-      "fullName": [
-        {
-          "lang": "csharp",
-          "value": "VBTestClass1.Class1"
-        },
-        {
-          "lang": "vb",
-          "value": "VBTestClass1.Class1"
-        }
-      ],
-      "specName": [
-        {
-          "lang": "csharp",
-          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
-        },
-        {
-          "lang": "vb",
-          "value": "<xref uid=\"VBTestClass1.Class1\" text=\"Class1\"/>"
-        }
-      ],
-      "level": 0.0,
-      "index": 2.0
     }
   ],
   "level": 1.0,
@@ -588,54 +481,6 @@
         {
           "lang": "vb",
           "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
-        }
-      ],
-      "level": 0.0
-    },
-    {
-      "uid": "System.Object.Finalize",
-      "isEii": false,
-      "isExtensionMethod": false,
-      "parent": "System.Object",
-      "isExternal": true,
-      "name": [
-        {
-          "lang": "csharp",
-          "value": "Finalize()"
-        },
-        {
-          "lang": "vb",
-          "value": "Finalize()"
-        }
-      ],
-      "nameWithType": [
-        {
-          "lang": "csharp",
-          "value": "object.Finalize()"
-        },
-        {
-          "lang": "vb",
-          "value": "Object.Finalize()"
-        }
-      ],
-      "fullName": [
-        {
-          "lang": "csharp",
-          "value": "object.Finalize()"
-        },
-        {
-          "lang": "vb",
-          "value": "Object.Finalize()"
-        }
-      ],
-      "specName": [
-        {
-          "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Finalize\" text=\"Finalize\"/>()"
-        },
-        {
-          "lang": "vb",
-          "value": "<xref uid=\"System.Object.Finalize\" text=\"Finalize\"/>()"
         }
       ],
       "level": 0.0
@@ -919,12 +764,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/VBTestClass1.BaseClass1.yml",
+  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/VBTestClass1.BaseClass1.html",
+  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -992,13 +837,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=VBTestClass1_BaseClass1.md&value=---%0Auid%3A%20VBTestClass1.BaseClass1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/SomeVbClass/Class1.vb/#L43",
+  "docurl": "",
+  "sourceurl": "",
+  "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
+  "example": null,
   "seealso": null,
-  "id": "VBTestClass1_BaseClass1",
+  "id": "BuildFromCSharpSourceCode_CSharp",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

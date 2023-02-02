@@ -210,12 +210,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "this[]",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 28.0,
             "endLine": 0.0,
             "isExternal": false
@@ -274,7 +274,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Return specific number animal's name.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Item_System_Int32_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Item(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L29",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L29",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -390,12 +390,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Name",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 21.0,
             "endLine": 0.0,
             "isExternal": false
@@ -454,7 +454,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Name of Animal.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Name.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L22",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L22",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -530,12 +530,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Eat",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 33.0,
             "endLine": 0.0,
             "isExternal": false
@@ -594,7 +594,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Animal's eat method.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L34",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L34",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -712,12 +712,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Eat",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 47.0,
             "endLine": 0.0,
             "isExternal": false
@@ -776,7 +776,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Feed the animal with some food</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat_System_String_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L48",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L48",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -901,12 +901,12 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
             "id": "Eat",
-            "path": "src/SampleClass1/CatLibrary/Class1.cs",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 40.0,
             "endLine": 0.0,
             "isExternal": false
@@ -965,7 +965,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">Overload method of eat. This define the animal eat by which tool.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_IAnimal_Eat__1___0_.md&value=---%0Auid%3A%20CatLibrary.IAnimal.Eat%60%601(%60%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L41",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L41",
           "remarks": null,
           "conceptual": "",
           "implements": null,
@@ -1014,12 +1014,12 @@
   "type": "interface",
   "source": {
     "remote": {
-      "path": "samples/seed/src/SampleClass1/CatLibrary/Class1.cs",
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
     "id": "IAnimal",
-    "path": "src/SampleClass1/CatLibrary/Class1.cs",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 15.0,
     "endLine": 0.0,
     "isExternal": false
@@ -1213,7 +1213,7 @@
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/CatLibrary.IAnimal.md/#L2",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/src/SampleClass1/CatLibrary/Class1.cs/#L16",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L16",
   "implements": null,
   "seealso": null,
   "id": "CatLibrary_IAnimal",

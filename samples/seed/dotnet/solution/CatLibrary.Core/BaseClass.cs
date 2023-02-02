@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 // Struct and Types Based on It
-namespace Microsoft.DevDiv
+namespace CatLibrary.Core
 {
     // Struct and Class
     /// <summary>
