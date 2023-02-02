@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode
             Logger.LogInfo($"Use {vs.Name} {vs.Version}");
         }
 
-        public static void Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
+        public static async Task Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
         {
             try
             {
@@ -45,9 +45,7 @@ namespace Microsoft.DocAsCode
 
                         // TODO: Use plugin to generate metadata for files with different extension?
                         using var worker = new ExtractMetadataWorker(inputModel);
-                        // Use task.run to get rid of current context (causing deadlock in xunit)
-                        var task = Task.Run(worker.ExtractMetadataAsync);
-                        task.Wait();
+                        await worker.ExtractMetadataAsync();
                     }
 
                     VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;

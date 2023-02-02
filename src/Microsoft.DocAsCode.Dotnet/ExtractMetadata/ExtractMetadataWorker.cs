@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly ExtractMetadataOptions _options;
 
         //Lacks UT for shared workspace
-        private readonly Lazy<MSBuildWorkspace> _workspace;
+        private readonly MSBuildWorkspace _workspace;
 
         internal const string IndexFileName = ".manifest";
 
@@ -76,15 +76,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _useCompatibilityFileName = input.UseCompatibilityFileName;
             _outputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, input.OutputFolder));
 
-            _workspace = new Lazy<MSBuildWorkspace>(() =>
+            _workspace = MSBuildWorkspace.Create(msbuildProperties);
+            _workspace.WorkspaceFailed += (s, e) =>
             {
-                var workspace = MSBuildWorkspace.Create(msbuildProperties);
-                workspace.WorkspaceFailed += (s, e) =>
-                {
-                    Logger.LogWarning($"Workspace failed with: {e.Diagnostic}");
-                };
-                return workspace;
-            });
+                Logger.LogWarning($"Workspace failed with: {e.Diagnostic}");
+            };
         }
 
         public async Task ExtractMetadataAsync()
@@ -116,6 +112,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public void Dispose()
         {
+            _workspace.Dispose();
         }
 
         #region Private
@@ -385,9 +382,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (ext == ".csproj" || ext == ".vbproj")
             {
                 Logger.LogVerbose("Loading project...");
-                var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
+                var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
                     p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
-                var result = project ?? _workspace.Value.OpenProjectAsync(path).Result;
+                var result = project ?? _workspace.OpenProjectAsync(path).Result;
                 Logger.LogVerbose($"Project {result.FilePath} loaded.");
                 return result;
             }
@@ -757,8 +754,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 Logger.LogVerbose("Loading solution...");
-                var solution = await _workspace.Value.OpenSolutionAsync(path);
-                _workspace.Value.CloseSolution();
+                var solution = await _workspace.OpenSolutionAsync(path);
+                _workspace.CloseSolution();
                 Logger.LogVerbose($"Solution {solution.FilePath} loaded.");
                 return solution;
             }

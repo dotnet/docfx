@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            RunMetadata.Exec(Config, BaseDirectory, OutputFolder);
+            RunMetadata.Exec(Config, BaseDirectory, OutputFolder).GetAwaiter().GetResult();
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)

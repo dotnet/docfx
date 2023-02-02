@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <param name="options">The build options.</param>
         /// <returns>A task to await for build completion.</returns>
-        public static Task Build(string configPath, BuildOptions options)
+        public static async Task Build(string configPath, BuildOptions options)
         {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);
@@ -41,15 +41,13 @@ namespace Microsoft.DocAsCode
 
                 var config = JObject.Parse(File.ReadAllText(configPath));
                 if (config.TryGetValue("metadata", out var value))
-                    RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), Path.GetDirectoryName(configPath));
+                    await RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), Path.GetDirectoryName(configPath));
                 if (config.TryGetValue("merge", out value))
                     RunMerge.Exec(value.ToObject<MergeJsonConfig>(JsonUtility.DefaultSerializer.Value));
                 if (config.TryGetValue("pdf", out value))
                     RunPdf.Exec(value.ToObject<PdfJsonConfig>(JsonUtility.DefaultSerializer.Value), options);
                 if (config.TryGetValue("build", out value))
                     RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value), options);
-
-                return Task.CompletedTask;
             }
             finally
             {
