@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "assembly/**/*.dll",
+            "assembly/bin/**/*.dll",
             "project/**/*.csproj",
             "solution/**/*.sln",
             "csharp/**/*.cs",
