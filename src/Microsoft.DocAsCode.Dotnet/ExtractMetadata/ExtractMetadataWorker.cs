@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Text;
     using System.Threading.Tasks;
 
+    using Microsoft.Build.Construction;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
 
@@ -142,24 +143,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     using (new LoggerFileScope(path))
                     {
                         documentCache.AddDocument(path, path);
-                        var solution = await GetSolutionAsync(path);
-                        if (solution != null)
+                        foreach (var project in SolutionFile.Parse(path).ProjectsInOrder)
                         {
-                            foreach (var project in solution.Projects)
-                            {
-                                var projectFile = new FileInformation(project.FilePath);
+                            if (project.ProjectType is not SolutionProjectType.KnownToBeMSBuildFormat)
+                                continue;
 
-                                // If the project is supported, add to project dictionary, otherwise, ignore
-                                if (projectFile.Type == FileType.Project)
-                                {
-                                    projectCache.GetOrAdd(projectFile.NormalizedPath, 
-                                                          s => LoadProject(projectFile.NormalizedPath));
-                                }
-                                else
-                                {
-                                    Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj, fsproj and vbproj.");
-                                }
+                            var projectFile = new FileInformation(project.AbsolutePath);
+                            if (projectFile.Type is not FileType.Project)
+                            {
+                                Logger.LogWarning($"Skip unsupported project {project.AbsolutePath}.");
+                                continue;
                             }
+
+                            projectCache.GetOrAdd(projectFile.NormalizedPath, LoadProject);
                         }
                     }
                 }
@@ -747,23 +743,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return result;
-        }
-
-        private async Task<Solution> GetSolutionAsync(string path)
-        {
-            try
-            {
-                Logger.LogVerbose("Loading solution...");
-                var solution = await _workspace.OpenSolutionAsync(path);
-                _workspace.CloseSolution();
-                Logger.LogVerbose($"Solution {solution.FilePath} loaded.");
-                return solution;
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error opening solution {path}: {e.Message}. Ignored.");
-                return null;
-            }
         }
 
         private Project GetProject(ConcurrentDictionary<string, Project> cache, string path)
