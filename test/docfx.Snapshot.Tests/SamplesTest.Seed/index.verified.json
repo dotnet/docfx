@@ -2,12 +2,12 @@
   "api/BuildFromAssembly.Class1.html": {
     "href": "api/BuildFromAssembly.Class1.html",
     "title": "Class Class1 | docfx seed website",
-    "keywords": "Class Class1 Inheritance object Class1 Namespace: BuildFromAssembly Assembly: BuildFromAssembly.dll Syntax public class Class1 : Object Constructors Class1() Declaration public Class1() Methods HelloWorld() Declaration public static void HelloWorld()"
+    "keywords": "Class Class1 This is a test class. Inheritance object Class1 Namespace: BuildFromAssembly Assembly: BuildFromAssembly.dll Syntax public class Class1 : Object Constructors Class1() Declaration public Class1() Methods HelloWorld() Declaration public static void HelloWorld()"
   },
   "api/BuildFromAssembly.html": {
     "href": "api/BuildFromAssembly.html",
     "title": "Namespace BuildFromAssembly | docfx seed website",
-    "keywords": "Namespace BuildFromAssembly Classes Class1"
+    "keywords": "Namespace BuildFromAssembly Classes Class1 This is a test class."
   },
   "api/BuildFromCSharpSourceCode.CSharp.html": {
     "href": "api/BuildFromCSharpSourceCode.CSharp.html",
