@@ -2,7 +2,7 @@
 
 Docfx converts [XML documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/) into rendered HTML documentations.
 
-## Build from DLL, csproj or Source Code
+## Generate .NET API Docs
 
 To add API docs for a .NET project, add a `metadata` section before the `build` section in `docfx.json` config:
 
@@ -17,19 +17,62 @@ To add API docs for a .NET project, add a `metadata` section before the `build` 
   },
   "build": {
     "content": [{
-      "files": [ "**/*.{md,yml}" ]
+      "files": [ "api/*.yml" ]
     }]
   }
 }
 ```
 
-The `docfx metadata` command uses `metadata` config to produce [.NET API YAML files](dotnet-yaml-format.md) at the `dest` directory for the `docfx build` command to turn into HTML files.
+Docfx generates .NET API docs in 2 stages:
+1. The _metadata_ stage uses the `metadata` config to produce [.NET API YAML files](dotnet-yaml-format.md) at the `metadata.dest` directory.
 
-The `src` property can be a glob pattern of DLL, csproj, or source code.
+2. The _build_ stage transforms the generated .NET API YAML files specified in `build.content` config into HTML files.
 
-When file extension is `.dll`, docfx produces API docs using the DLL and the side-by-side XML documentation file. Source code linking is not available in this mode.
+These 2 stages can run independently with the `docfx metadata` command and the `docfx build` command. The `docfx` root command runs both `metadata` and `build`.
 
-When file extension is `.csproj`, `.vbproj`, `.fsproj` or `.sln`, docfx builds the project and produces API docs based on project config and source code. Source code linking is available in this mode. Additional `msbuild` properties to build the projects can be specified in the `properties` config:
+> [!NOTE]
+> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src` property 
+
+Docfx supports several source formats to generate .NET API docs:
+
+## Generate from assemblies
+
+When the file extension is `.dll` or `.exe`, docfx produces API docs by reflecting the assembly and the side-by-side XML documentation file.
+
+This approach is build independent and language independent, if you are having trouble with msbuild or using an unsupported project format such as `.fsproj`, generating docs from assemblies is the recommended approach.
+
+Docfx examines the assembly and tries to load the reference assemblies from within the same directory or the global systems assembly directory. In case an reference assembly fails to resolve, use the `references` property to specify a list of additional reference assembly path:
+
+```json
+{
+  "metadata": {
+    "src": [{
+      "files": ["**/bin/Release/**.dll"],
+      "src": "../"
+    }],
+    "dest": "api",
+    "references": [
+      "path-to-reference-assembly.dll"
+    ]
+  },
+}
+```
+
+Features that needs source code information such as "Improve this doc" and "View source" is not available using this approach.
+
+## Generate from projects or solutions
+
+When the file extension is `.csproj`, `.vbproj` or `.sln`, docfx uses [`MSBuildWorkspace`](https://gist.github.com/DustinCampbell/32cd69d04ea1c08a16ae5c4cd21dd3a3) to perform a design-time build of the projects before generating API docs.
+
+In order to successfully load an MSBuild project, .NET Core SDK must be installed and available globally. The installation must have the necessary workloads and components to support the projects you'll be loading.
+
+Run `dotnet restore` before `docfx` to ensure that dependencies are available. Running `dotnet restore` is still needed even if your project does not have NuGet dependencies when Visual Studio is not installed.
+
+To troubleshoot MSBuild load problems, run `docfx metadata --logLevel verbose` to see MSBuild logs.
+
+Docfx build the project using `Release` config by default, additional MSBuild properties can be specified with `properties`.
+
+If your project targets multiple target frameworks, docfx internally builds each target framework of the project. Try specify the `TargetFramework` MSBuild property to speed up project build:
 
 ```json
 {
@@ -46,7 +89,9 @@ When file extension is `.csproj`, `.vbproj`, `.fsproj` or `.sln`, docfx builds t
 }
 ```
 
-When file extension is `.cs` or `.vb`, docfx uses the latest .NET Core SDK installed on the machine to build the source code. References provided by `Microsoft.NET.Sdk` are available to the source code, additional references can be specified in the `references` config:
+## Generate from source code
+
+When the file extension is `.cs` or `.vb`, docfx uses the latest supported .NET Core SDK installed on the machine to build the source code using `Microsoft.NET.Sdk`. Additional references can be specified in the `references` config:
 
 ```json
 {
@@ -57,7 +102,7 @@ When file extension is `.cs` or `.vb`, docfx uses the latest .NET Core SDK insta
     }],
     "dest": "api",
     "references": [
-      "path-to-my-library.dll"
+      "path-to-reference-assembly.dll"
     ]
   },
 }
