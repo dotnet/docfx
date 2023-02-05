@@ -54,6 +54,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
+            // Workaround: https://github.com/dotnet/roslyn/pull/66668
+            if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
+            {
+                xml = $"<member>{xml}</member>";
+            }
+
             // Transform triple slash comment
             XDocument doc = TripleSlashCommentTransformer.Transform(xml, language);
 
