@@ -8,17 +8,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
 
     using Microsoft.Build.Construction;
+    using Microsoft.Build.Framework;
+    using Microsoft.Build.Logging;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
@@ -30,6 +31,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly bool _useCompatibilityFileName;
         private readonly string _outputFolder;
         private readonly ExtractMetadataOptions _options;
+        private readonly ConsoleLogger _msbuildLogger;
 
         //Lacks UT for shared workspace
         private readonly MSBuildWorkspace _workspace;
@@ -77,38 +79,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _useCompatibilityFileName = input.UseCompatibilityFileName;
             _outputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, input.OutputFolder));
 
+            _msbuildLogger = new(Logger.LogLevelThreshold switch
+            {
+                LogLevel.Verbose => LoggerVerbosity.Normal,
+                LogLevel.Diagnostic => LoggerVerbosity.Diagnostic,
+                _ => LoggerVerbosity.Quiet,
+            });
+
             _workspace = MSBuildWorkspace.Create(msbuildProperties);
-            _workspace.WorkspaceFailed += (s, e) =>
-            {
-                Logger.LogWarning($"Workspace failed with: {e.Diagnostic}");
-            };
-        }
-
-        public async Task ExtractMetadataAsync()
-        {
-            if (_files == null || _files.Count == 0)
-            {
-                Logger.Log(LogLevel.Warning, "No project detected for extracting metadata.");
-                return;
-            }
-
-            try
-            {
-                if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
-                {
-                    Logger.LogWarning($"Projects {GetPrintableFileList(unsupportedFiles)} are not supported");
-                }
-                await SaveAllMembersFromCacheAsync();
-            }
-            catch (AggregateException e)
-            {
-                throw new ExtractMetadataException($"Error extracting metadata for {GetPrintableFileList(_files.SelectMany(s => s.Value))}: {e}", e);
-            }
-            catch (Exception e)
-            {
-                var files = GetPrintableFileList(_files.SelectMany(s => s.Value));
-                throw new ExtractMetadataException($"Error extracting metadata for {files}: {e}", e);
-            }
+            _workspace.WorkspaceFailed += (sender, e) => Logger.LogWarning($"{e.Diagnostic}");
         }
 
         public void Dispose()
@@ -116,10 +95,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _workspace.Dispose();
         }
 
-        #region Private
-
-        private async Task SaveAllMembersFromCacheAsync()
+        public async Task ExtractMetadataAsync()
         {
+            if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
+            {
+                foreach (var file in unsupportedFiles)
+                {
+                    Logger.LogWarning($"Skip unsupported file {file}");
+                }
+            }
+
             var forceRebuild = _rebuild;
             var outputFolder = _outputFolder;
 
@@ -133,30 +118,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Exclude not supported files from inputs
             var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
 
-            Logger.LogInfo("Loading projects...");
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
-                var solutions = sln.Select(s => s.NormalizedPath);
                 // No matter is incremental or not, we have to load solutions into memory
-                foreach (var path in solutions)
+                foreach (var path in sln.Select(s => s.NormalizedPath))
                 {
-                    using (new LoggerFileScope(path))
+                    documentCache.AddDocument(path, path);
+                    foreach (var project in SolutionFile.Parse(path).ProjectsInOrder)
                     {
-                        documentCache.AddDocument(path, path);
-                        foreach (var project in SolutionFile.Parse(path).ProjectsInOrder)
+                        if (project.ProjectType is not SolutionProjectType.KnownToBeMSBuildFormat)
+                            continue;
+
+                        var projectFile = new FileInformation(project.AbsolutePath);
+                        if (projectFile.Type is not FileType.Project)
                         {
-                            if (project.ProjectType is not SolutionProjectType.KnownToBeMSBuildFormat)
-                                continue;
-
-                            var projectFile = new FileInformation(project.AbsolutePath);
-                            if (projectFile.Type is not FileType.Project)
-                            {
-                                Logger.LogWarning($"Skip unsupported project {project.AbsolutePath}.");
-                                continue;
-                            }
-
-                            projectCache.GetOrAdd(projectFile.NormalizedPath, LoadProject);
+                            Logger.LogInfo($"Skip unsupported project {project.AbsolutePath}.");
+                            continue;
                         }
+
+                        projectCache.GetOrAdd(projectFile.NormalizedPath, LoadProject);
                     }
                 }
             }
@@ -165,7 +145,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 foreach (var pp in p)
                 {
-                    GetProject(projectCache, pp.NormalizedPath);
+                    projectCache.GetOrAdd(pp.NormalizedPath, LoadProject);
                 }
             }
 
@@ -174,14 +154,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = item.Key;
                 var project = item.Value;
                 documentCache.AddDocument(path, path);
-                if (project.HasDocuments)
-                {
-                    documentCache.AddDocuments(path, project.Documents.Select(s => s.FilePath));
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Warning, $"Project '{project.FilePath}' does not contain any documents.");
-                }
+                documentCache.AddDocuments(path, project.Documents.Select(s => s.FilePath));
                 documentCache.AddDocuments(path, project.MetadataReferences.OfType<PortableExecutableReference>().Select(r => r.FilePath));
                 FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
             }
@@ -268,15 +241,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            Logger.LogInfo("Generating metadata for each project...");
-
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
-            ConcurrentDictionary<string, Compilation> compilationCache = 
-                await GetProjectCompilationAsync(projectCache);
+            ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
             var roslynProjects = compilationCache.Values;
-            options.RoslynExtensionMethods = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects); 
+            options.RoslynExtensionMethods = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects);
             foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
                 var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
@@ -292,28 +262,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var csContent = string.Join(Environment.NewLine, csFiles.Select(File.ReadAllText));
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
-                if (csCompilation != null)
-                {
-                    var input = new SourceFileInputParameters(options, csFiles);
-                    var csMetadata = GetMetadataFromProjectLevelCache(csCompilation, null, input);
-                    if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
-                }
+                var input = new SourceFileInputParameters(options, csFiles);
+                var csMetadata = GetMetadataFromProjectLevelCache(csCompilation, null, input);
+                if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
             }
 
             if (vbFiles.Count > 0)
             {
                 var vbContent = string.Join(Environment.NewLine, vbFiles.Select(File.ReadAllText));
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
-                if (vbCompilation != null)
-                {
-                    var input = new SourceFileInputParameters(options, vbFiles);
-                    var vbMetadata = GetMetadataFromProjectLevelCache(vbCompilation, null, input);
-                    if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
-                }
+                var input = new SourceFileInputParameters(options, vbFiles);
+                var vbMetadata = GetMetadataFromProjectLevelCache(vbCompilation, null, input);
+                if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
             }
 
             if (assemblyFiles.Count > 0)
             {
+                Logger.LogInfo($"Processing assembly files");
                 var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles, _references);
                 if (assemblyCompilation != null)
                 {
@@ -330,7 +295,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         var input = new AssemblyFileInputParameters(options, reference.Display);
                         var mta = GetMetadataFromProjectLevelCache(assemblyCompilation, assembly, input);
-                        
+
                         if (mta != null)
                         {
                             MergeCommentsHelper.MergeComments(options, mta.Item1, commentFiles);
@@ -340,6 +305,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            if (projectMetadataList.Count <= 0)
+            {
+                Logger.LogWarning("No .NET API project detected.");
+                return;
+            }
+
+            Logger.LogInfo($"Creating output...");
             Dictionary<string, MetadataItem> allMembers;
             Dictionary<string, ReferenceItem> allReferences;
             using (new PerformanceScope("MergeMetadata"))
@@ -355,7 +327,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (allMembers == null || allMembers.Count == 0)
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
-                Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
+                Logger.Log(LogLevel.Warning, $"No .NET API detected for {value}.");
                 applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, options);
             }
             else
@@ -374,18 +346,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public Project LoadProject(string path)
         {
-            var ext = Path.GetExtension(path).ToLowerInvariant();
-            if (ext == ".csproj" || ext == ".vbproj")
+            var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
+                p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
+            if (project is null)
             {
-                Logger.LogVerbose("Loading project...");
-                var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
-                    p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
-                var result = project ?? _workspace.OpenProjectAsync(path).Result;
-                Logger.LogVerbose($"Project {result.FilePath} loaded.");
-                return result;
+                Logger.LogInfo($"Loading project {path}");
+                project = _workspace.OpenProjectAsync(path, _msbuildLogger).Result;
             }
-            else
-                return null;
+            return project;
         }
 
         private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
@@ -416,28 +384,50 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
         {
             var compilations = new ConcurrentDictionary<string, Compilation>();
-            var sb = new StringBuilder();
             foreach (var project in projectCache)
             {
-                try
-                {
-                    var compilation = await project.Value.GetCompilationAsync();
-                    compilations.TryAdd(project.Key, compilation);
-                }
-                catch (Exception e)
-                {
-                    if (sb.Length > 0)
-                    {
-                        sb.AppendLine();
-                    }
-                    sb.Append($"Error extracting metadata for project \"{project.Key}\": {e}");
-                }
-            }
-            if (sb.Length > 0)
-            {
-                throw new ExtractMetadataException(sb.ToString());
+                Logger.LogInfo($"Building project {project.Key}");
+                var compilation = await project.Value.GetCompilationAsync();
+                LogDeclarationDiagnostics(compilation);
+                compilations.TryAdd(project.Key, compilation);
             }
             return compilations;
+        }
+
+        private static void LogDeclarationDiagnostics(Compilation compilation)
+        {
+            foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
+            {
+                if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
+                    continue;
+
+                var level = diagnostic.Severity switch
+                {
+                    DiagnosticSeverity.Error => LogLevel.Error,
+                    DiagnosticSeverity.Warning => LogLevel.Warning,
+                    DiagnosticSeverity.Info => LogLevel.Info,
+                    _ => LogLevel.Verbose,
+                };
+
+                Logger.Log(level, $"{diagnostic}");
+            }
+
+            static bool IsKnownError(Diagnostic diagnostic)
+            {
+                // Ignore these VB errors on non-Windows platform:
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.Devices.Computer' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.ApplicationBase' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.MyServices.Internal.ContextValue' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
+                if (!OperatingSystem.IsWindows() && diagnostic.Id == "BC30002" &&
+                    diagnostic.GetMessage().Contains("Global.Microsoft.VisualBasic."))
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         private static void CopyFromCachedResult(BuildInfo buildInfo, IEnumerable<string> inputs, string outputFolder)
@@ -745,34 +735,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return result;
         }
 
-        private Project GetProject(ConcurrentDictionary<string, Project> cache, string path)
-        {
-            return cache.GetOrAdd(path.ToNormalizedFullPath(), s =>
-            {
-                using (new LoggerFileScope(s))
-                {
-                    try
-                    {
-                        Logger.LogVerbose("Loading project...");
-                        var result = LoadProject(s);
-                        if (result != null)
-                            Logger.LogVerbose($"Project {result.FilePath} loaded.");
-                        return result;
-                    }
-                    catch (AggregateException e)
-                    {
-                        Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.GetBaseException()?.Message}. Ignored.");
-                        return null;
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
-                        return null;
-                    }
-                }
-            });
-        }
-
         /// <summary>
         /// use DFS to get topological sorted items
         /// </summary>
@@ -800,16 +762,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             result.Add(start);
         }
 
-        private static string GetPrintableFileList(IEnumerable<FileInformation> files)
-        {
-            return files?.Select(s => s.RawPath).ToDelimitedString();
-        }
-
         private static IEnumerable<string> GetCacheKey(IEnumerable<FileInformation> files)
         {
             return files.Where(s => s.Type != FileType.NotSupported).OrderBy(s => s.Type).Select(s => s.NormalizedPath);
         }
-
-        #endregion
     }
 }

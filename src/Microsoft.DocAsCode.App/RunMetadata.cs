@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
             var vs = MSBuildLocator.RegisterDefaults() ?? throw new DocfxException(
                 $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
 
-            Logger.LogInfo($"Use {vs.Name} {vs.Version}");
+            Logger.LogInfo($"Using {vs.Name} {vs.Version}");
         }
 
         public static async Task Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)

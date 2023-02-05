@@ -18,58 +18,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         public static Compilation CreateCompilationFromCsharpCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
         {
-            try
-            {
-                var tree = CS.SyntaxFactory.ParseSyntaxTree(code);
-                return CS.CSharpCompilation.Create(
-                    name,
-                    options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    syntaxTrees: new[] { tree },
-                    references: GetDefaultMetadataReferences().Concat(references));
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error generating compilation for C# code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
-                return null;
-            }
+            return CS.CSharpCompilation.Create(
+                name,
+                options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                syntaxTrees: new[] { CS.SyntaxFactory.ParseSyntaxTree(code) },
+                references: GetDefaultMetadataReferences("C#").Concat(references));
         }
 
         public static Compilation CreateCompilationFromVBCode(string code, string name = "vb.temp.dll", params MetadataReference[] references)
         {
-            try
-            {
-                var tree = VB.SyntaxFactory.ParseSyntaxTree(code);
-                return VB.VisualBasicCompilation.Create(
-                    name,
-                    options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    syntaxTrees: new[] { tree },
-                    references: GetDefaultMetadataReferences().Concat(references));
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error generating compilation for VB code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
-                return null;
-            }
+            return VB.VisualBasicCompilation.Create(
+                name,
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                syntaxTrees: new[] { VB.SyntaxFactory.ParseSyntaxTree(code) },
+                references: GetDefaultMetadataReferences("VB").Concat(references));
         }
 
         public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths, IEnumerable<string> references = null)
         {
-            try
-            {
-                return CS.CSharpCompilation.Create(
-                    "EmptyProjectWithAssembly",
-                    options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                    syntaxTrees: Array.Empty<SyntaxTree>(),
-                    references: assemblyPaths
-                        .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
-                        .Concat(references ?? Enumerable.Empty<string>())
-                        .Select(file => MetadataReference.CreateFromFile(file)));
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error generating compilation from assemblies {string.Join(Environment.NewLine, assemblyPaths)}: {e.Message}. Ignored.");
-                return null;
-            }
+            return CS.CSharpCompilation.Create(
+                "EmptyProjectWithAssembly",
+                options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                syntaxTrees: Array.Empty<SyntaxTree>(),
+                references: assemblyPaths
+                    .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
+                    .Concat(references ?? Enumerable.Empty<string>())
+                    .Select(file => MetadataReference.CreateFromFile(file)));
         }
 
         public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
@@ -84,13 +58,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     continue;
                 }
 
-                //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
-                if (assembly.Identity?.Name == "mscorlib")
-                {
-                    Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
-                    continue;
-                }
-
                 if (reference is PortableExecutableReference portableReference &&
                     assemblyPaths.Any(path => portableReference.FilePath.Replace('\\', '/') == path.Replace('\\', '/')))
                 {
@@ -99,13 +66,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static string GetAbbreviateString(string input, int length = 20)
-        {
-            if (string.IsNullOrEmpty(input) || input.Length <= 20) return input;
-            return input.Substring(0, length) + "...";
-        }
-
-        private static IEnumerable<MetadataReference> GetDefaultMetadataReferences()
+        private static IEnumerable<MetadataReference> GetDefaultMetadataReferences(string language)
         {
             try
             {
@@ -115,7 +76,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var moniker = new DirectoryInfo(Path.Combine(refDirectory, version, "ref")).GetDirectories().Select(d => d.Name).Max();
                 var path = Path.Combine(refDirectory, version, "ref", moniker);
 
-                Logger.LogInfo($"Compile using .NET SDK {version} for {moniker}");
+                Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
                 return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                                 .Select(path => MetadataReference.CreateFromFile(path));
             }
