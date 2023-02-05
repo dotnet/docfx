@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 references: assemblyPaths
                     .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
                     .Concat(references ?? Enumerable.Empty<string>())
-                    .Select(file => MetadataReference.CreateFromFile(file)));
+                    .Select(CreateMetadataReference));
         }
 
         public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
                 return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
-                                .Select(path => MetadataReference.CreateFromFile(path));
+                                .Select(CreateMetadataReference);
             }
             catch
             {
@@ -95,6 +95,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (assemblyResolver.FindAssemblyFile(reference) is { } file)
                     yield return file;
             }
+        }
+
+        private static MetadataReference CreateMetadataReference(string assemblyPath)
+        {
+            var documentation = XmlDocumentationProvider.CreateFromFile(Path.ChangeExtension(assemblyPath, ".xml"));
+            return MetadataReference.CreateFromFile(assemblyPath, documentation: documentation);
         }
     }
 }

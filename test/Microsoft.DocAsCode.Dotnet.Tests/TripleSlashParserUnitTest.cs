@@ -367,6 +367,14 @@ This is an example using source reference.
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void ParseXmlCommentWithoutRootNode()
+        {
+            var input = @"<summary>A</summary>";
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, new TripleSlashCommentParserContext());
+            Assert.Equal("A", commentModel.Summary);
+        }
+
         /// <summary>
         /// Normalizes multiple whitespaces into 1 single whitespace to allow ignoring of insignificant whitespaces.
         /// </summary>

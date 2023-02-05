@@ -24,7 +24,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
-        private const string XmlCommentFileExtension = "xml";
         private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly List<string> _references;
         private readonly bool _rebuild;
@@ -282,11 +281,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles, _references);
                 if (assemblyCompilation != null)
                 {
-                    var commentFiles = (from file in assemblyFiles
-                                        select Path.ChangeExtension(file, XmlCommentFileExtension) into xmlFile
-                                        where File.Exists(xmlFile)
-                                        select xmlFile).ToList();
-
                     var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation, assemblyFiles).ToList();
                     // TODO: why not merge with compilation's extension methods?
                     var assemblyExtension = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.assembly));
@@ -295,10 +289,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         var input = new AssemblyFileInputParameters(options, reference.Display);
                         var mta = GetMetadataFromProjectLevelCache(assemblyCompilation, assembly, input);
-
                         if (mta != null)
                         {
-                            MergeCommentsHelper.MergeComments(options, mta.Item1, commentFiles);
                             projectMetadataList.Add(mta.Item1);
                         }
                     }
