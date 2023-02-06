@@ -21,17 +21,11 @@ namespace Microsoft.DocAsCode.Common
 
         public string ExpandedOutputFolder { get; }
 
-        #region IFileWriter
-
         public abstract void Copy(PathMapping sourceFileName, RelativePath destFileName);
 
         public abstract Stream Create(RelativePath filePath);
 
         public abstract IFileReader CreateReader();
-
-        #endregion
-
-        #region Help Methods
 
         protected internal static void EnsureFolder(string folder)
         {
@@ -44,67 +38,5 @@ namespace Microsoft.DocAsCode.Common
                 Directory.CreateDirectory(folder);
             }
         }
-
-        protected string GetRandomEntry()
-        {
-            string name;
-            string path;
-            do
-            {
-                name = Path.GetRandomFileName();
-                path = Path.Combine(ExpandedOutputFolder, name);
-            } while (Directory.Exists(path) || File.Exists(path));
-            return name;
-        }
-
-        protected Tuple<string, FileStream> CreateRandomFileStream()
-        {
-            return RetryIO(() =>
-            {
-                var file = GetRandomEntry();
-                return Tuple.Create(file, File.Create(Path.Combine(ExpandedOutputFolder, file)));
-            });
-        }
-
-        protected static T RetryIO<T>(Func<T> func)
-        {
-            var count = 0;
-            while (true)
-            {
-                try
-                {
-                    return func();
-                }
-                catch (IOException)
-                {
-                    if (count++ >= MaxRetry)
-                    {
-                        throw;
-                    }
-                }
-            }
-        }
-
-        protected static void RetryIO(Action action)
-        {
-            var count = 0;
-            while (true)
-            {
-                try
-                {
-                    action();
-                    return;
-                }
-                catch (IOException)
-                {
-                    if (count++ >= MaxRetry)
-                    {
-                        throw;
-                    }
-                }
-            }
-        }
-
-        #endregion
     }
 }

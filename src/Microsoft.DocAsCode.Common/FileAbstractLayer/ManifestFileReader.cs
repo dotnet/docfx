@@ -22,8 +22,6 @@ namespace Microsoft.DocAsCode.Common
             ManifestFolder = manifestFolder;
         }
 
-        #region IFileReader Members
-
         public PathMapping? FindFile(RelativePath file)
         {
             OutputFileInfo entry;
@@ -61,8 +59,6 @@ namespace Microsoft.DocAsCode.Common
             }
             return new[] { entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath) };
         }
-
-        #endregion
 
         private OutputFileInfo FindEntryInManifest(string file)
         {

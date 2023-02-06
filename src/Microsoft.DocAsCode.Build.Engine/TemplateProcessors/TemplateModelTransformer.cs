@@ -270,15 +270,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
             var outputFolder = settings.OutputFolder ?? string.Empty;
-            string modelPath;
-            try
-            {
-                modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
-            }
-            catch (PathTooLongException)
-            {
-                modelPath = Path.GetFullPath(Path.Combine(outputFolder, Path.GetRandomFileName()));
-            }
+            var modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
 
             JsonUtility.Serialize(modelPath, model, Formatting.Indented);
             return StringExtension.ToDisplayPath(modelPath);

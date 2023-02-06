@@ -579,7 +579,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 model.Uid.TrimEnd(OverloadLastChar),
                 $"{parentUid}.{model.Name}",
                 $"{parentUid}.{model.Name.Split(Separator).Last()}",
-                $"{parentUid}.{Path.GetRandomFileName()}"
+                $"{parentUid}.{Guid.NewGuid()}"
                 );
         }
 

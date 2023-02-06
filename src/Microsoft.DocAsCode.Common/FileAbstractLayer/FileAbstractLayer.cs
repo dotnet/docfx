@@ -122,35 +122,6 @@ namespace Microsoft.DocAsCode.Common
             return Reader.GetExpectedPhysicalPath(file);
         }
 
-        public string CreateRandomFileName()
-        {
-            EnsureNotDisposed();
-            if (!CanWrite)
-            {
-                throw new InvalidOperationException();
-            }
-            if (!(Writer is ISupportRandomFileWriter srfw))
-            {
-                throw new NotSupportedException();
-            }
-            return srfw.CreateRandomFileName();
-        }
-
-        public Tuple<string, Stream> CreateRandomFile()
-        {
-            EnsureNotDisposed();
-            if (!CanWrite)
-            {
-                throw new InvalidOperationException();
-            }
-
-            if (!(Writer is ISupportRandomFileWriter srfw))
-            {
-                throw new NotSupportedException();
-            }
-            return srfw.CreateRandomFile();
-        }
-
         #endregion
 
         #region IFileAbstractLayer Members

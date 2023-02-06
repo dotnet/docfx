@@ -35,7 +35,6 @@ namespace Microsoft.DocAsCode.Common
                 {
                     throw new InvalidOperationException("File entry not found.");
                 }
-                var pair = CreateRandomFileStream();
                 entry.LinkToPath = sourceFileName.PhysicalPath;
             }
         }
@@ -59,9 +58,11 @@ namespace Microsoft.DocAsCode.Common
                 }
                 else
                 {
-                    var pair = CreateRandomFileStream();
-                    entry.LinkToPath = Path.Combine(OutputFolder, pair.Item1);
-                    return pair.Item2;
+                    var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    var result = File.Create(path);
+                    entry.LinkToPath = path;
+                    return result;
                 }
             }
         }

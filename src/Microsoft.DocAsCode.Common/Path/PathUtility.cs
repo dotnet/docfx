@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -32,62 +31,6 @@ namespace Microsoft.DocAsCode.Common
             }
 
             return true;
-        }
-
-        public static string ToValidFilePath(this string input, char replacement = '_')
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return Path.GetRandomFileName();
-            }
-
-            string validPath = new string(input.Select(s => InvalidFileNameChars.Contains(s) ? replacement : s).ToArray());
-
-            return validPath;
-        }
-
-        public static string ToCleanUrlFileName(this string input, string replacement = "-")
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return Path.GetRandomFileName();
-            }
-
-            return InvalidOrNeedUrlEncodeFileNameCharsRegex.Replace(input, replacement);
-        }
-
-        public static void SaveFileListToFile(List<string> fileList, string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath) || fileList == null || fileList.Count == 0)
-            {
-                return;
-            }
-
-            using StreamWriter writer = new StreamWriter(filePath);
-            fileList.ForEach(s => writer.WriteLine(s));
-        }
-
-        public const string ListFileExtension = ".list";
-
-        public static List<string> GetFileListFromFile(string filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-            {
-                return null;
-            }
-
-            List<string> fileList = new List<string>();
-
-            if (Path.GetExtension(filePath) == ListFileExtension)
-            {
-                using StreamReader reader = new StreamReader(filePath);
-                while (!reader.EndOfStream)
-                {
-                    fileList.Add(reader.ReadLine());
-                }
-            }
-
-            return fileList;
         }
 
         /// <summary>
@@ -158,99 +101,9 @@ namespace Microsoft.DocAsCode.Common
             return relativePath.BackSlashToForwardSlash();
         }
 
-        public static IEnumerable<string> CopyFilesToFolder(this IEnumerable<string> files, string sourceFolder, string destinationFolder, bool overwrite, Action<string> messageHandler, Func<string, bool> errorHandler)
+        public static string ToCleanUrlFileName(this string input, string replacement = "-")
         {
-            IList<string> targetFiles = new List<string>();
-            if (files == null)
-            {
-                return null;
-            }
-            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(sourceFolder, destinationFolder))
-            {
-                return null;
-            }
-
-            foreach (var file in files)
-            {
-                try
-                {
-                    var relativePath = MakeRelativePath(sourceFolder, file);
-                    var destinationPath = string.IsNullOrEmpty(destinationFolder) ? relativePath : Path.Combine(destinationFolder, relativePath);
-
-                    if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(file, destinationPath))
-                    {
-                        messageHandler?.Invoke($"Copying file from '{file}' to '{destinationPath}'");
-                        var targetDirectory = Path.GetDirectoryName(destinationPath);
-                        if (!string.IsNullOrEmpty(targetDirectory))
-                        {
-                            Directory.CreateDirectory(targetDirectory);
-                        }
-
-                        File.Copy(file, destinationPath, overwrite);
-                        targetFiles.Add(destinationPath);
-                    }
-                    else
-                    {
-                        messageHandler?.Invoke($"{destinationPath} is already latest.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    if (!overwrite)
-                    {
-                        if (e is IOException)
-                        {
-                            continue;
-                        }
-                    }
-                    if (errorHandler?.Invoke(e.Message) ?? false)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }
-
-            if (targetFiles.Count == 0)
-            {
-                return null;
-            }
-            return targetFiles;
-        }
-
-        public static string GetFullPath(string folder, string href)
-        {
-            if (string.IsNullOrEmpty(href))
-            {
-                return null;
-            }
-            if (string.IsNullOrEmpty(folder))
-            {
-                return href;
-            }
-            return Path.GetFullPath(Path.Combine(folder, href));
-        }
-
-        public static void CopyFile(string path, string targetPath, bool overwrite = false)
-        {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(targetPath))
-            {
-                return;
-            }
-            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(path, targetPath))
-            {
-                return;
-            }
-            var targetFolder = Path.GetDirectoryName(targetPath);
-            if (!string.IsNullOrEmpty(targetFolder))
-            {
-                Directory.CreateDirectory(targetFolder);
-            }
-
-            File.Copy(path, targetPath, overwrite);
+            return InvalidOrNeedUrlEncodeFileNameCharsRegex.Replace(input, replacement);
         }
 
         public static bool IsRelativePath(string path)
@@ -310,15 +163,6 @@ namespace Microsoft.DocAsCode.Common
             }
 
             return null;
-        }
-
-        public static bool IsPathUnderSpecificFolder(string path, string folder)
-        {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(folder))
-            {
-                return false;
-            }
-            return NormalizePath(path).StartsWith(NormalizePath(folder) + Path.AltDirectorySeparatorChar, StringComparison.Ordinal);
         }
 
         public static string NormalizePath(string path)
