@@ -29,9 +29,6 @@ namespace Microsoft.DocAsCode
         [Option('p', "port", HelpText = "Specify the port of the hosted website")]
         public int? Port { get; set; }
 
-        [Option('f', "force")]
-        public bool ForceRebuild { get; set; }
-
         [Option('l', "log", HelpText = "Specify the file name to save processing log")]
         public string Log { get; set; }
 

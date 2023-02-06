@@ -69,7 +69,6 @@ namespace Microsoft.DocAsCode
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
-                ForceRebuild = configModel?.Force ?? false,
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
                 FilterConfigFile = configModel?.FilterConfigFile,
                 GlobalNamespaceId = configModel?.GlobalNamespaceId,

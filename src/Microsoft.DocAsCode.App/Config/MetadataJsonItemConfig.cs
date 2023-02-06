@@ -15,9 +15,6 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string Destination { get; set; }
 
-        [JsonProperty("force")]
-        public bool? Force { get; set; }
-
         [JsonProperty("shouldSkipMarkup")]
         public bool? ShouldSkipMarkup { get; set; }
 

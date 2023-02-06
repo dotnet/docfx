@@ -182,10 +182,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.Port = options.Port.Value.ToString();
             }
-            config.Force |= options.ForceRebuild;
             config.EnableDebugMode |= options.EnableDebugMode;
-            // When force to rebuild, should force to post process as well
-            config.ForcePostProcess = config.ForcePostProcess | options.ForcePostProcess | config.Force;
             config.ExportRawModel |= options.ExportRawModel;
             config.ExportViewModel |= options.ExportViewModel;
 

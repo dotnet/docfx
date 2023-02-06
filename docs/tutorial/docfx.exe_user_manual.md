@@ -172,7 +172,6 @@ Key                      | Description
 -------------------------|-----------------------------
 src                      | Defines the source projects to have metadata generated, which is in `File Mapping Format`. Relative paths are relative to the docfx.json file being used. To go up a folder use `../`.
 dest                     | Defines the output folder of the generated metadata files. Relative paths are relative to the docfx.json file being used. To go up a folder use `../`.
-force                    | If set to true, it would disable incremental build.
 shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
 filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](./howto_filter_out_unwanted_apis_attributes.md) for more details.
 useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment id instead of replacing it with `-`.
@@ -222,7 +221,6 @@ Key                      | Description
 content                  | Contains all the files to generate documentation, including metadata `yml` files and conceptual `md` files. `name-files` file mapping with several ways to define it, as to be described in **Section4**. The `files` contains all the project files to have API generated.
 resource                 | Contains all the resource files that conceptual and metadata files dependent on, e.g. image files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
 overwrite                | Contains all the conceptual files which contains yaml header with `uid` and is intended to override the existing metadata `yml` files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
-force                    | Force rebuilds all the documentation.
 globalMetadata           | Contains metadata that will be applied to every file, in key-value pair format. For example, you can define `"_appTitle": "This is the title"` in this section, and when applying template `default`, it will be part of the page title as defined in the template.
 fileMetadata             | Contains metadata that will be applied to specific files. `name-files` file mapping with several ways to define it, as to be described in **Section4**.
 globalMetadataFiles      | Specify a list of JSON file path containing globalMetadata settings, as similar to `{"key":"value"}`. Please read **Section3.2.3** for detail.

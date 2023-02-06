@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool PreserveRawInlineComments { get; set; }
 
-        public bool ForceRebuild { get; set; }
-
         public bool ShouldSkipMarkup { get; set; }
 
         public string FilterConfigFile { get; set; }
