@@ -161,8 +161,13 @@
             ]
           },
           "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
             "id": "Main",
-            "path": "",
+            "path": "dotnet/csharp/CSharp.cs",
             "startLine": 9.0,
             "endLine": 0.0,
             "isExternal": false
@@ -219,14 +224,147 @@
           "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "",
-          "sourceurl": "",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
           "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "XmlCommentIncludeTag()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CSharp.XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp.XmlCommentIncludeTag()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void XmlCommentIncludeTag()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub XmlCommentIncludeTag()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "XmlCommentIncludeTag",
+            "path": "dotnet/csharp/CSharp.cs",
+            "startLine": 18.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "cs.temp.dll"
+          ],
+          "namespace": "BuildFromCSharpSourceCode",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromCSharpSourceCode.CSharp.yml\" sourcestartlinenumber=\"2\">This is remarks.</p>\n",
+          "example": [],
+          "overload": {
+            "uid": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "XmlCommentIncludeTag"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "CSharp.XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp.XmlCommentIncludeTag"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
+              }
+            ],
+            "id": "BuildFromCSharpSourceCode_CSharp_XmlCommentIncludeTag_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "<p sourcefile=\"obj/api/BuildFromCSharpSourceCode.CSharp.yml\" sourcestartlinenumber=\"2\">This method should do something...</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_XmlCommentIncludeTag.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L19",
+          "conceptual": "",
+          "implements": null,
+          "seealso": null,
+          "id": "BuildFromCSharpSourceCode_CSharp_XmlCommentIncludeTag",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -269,8 +407,13 @@
   ],
   "type": "class",
   "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
     "id": "CSharp",
-    "path": "",
+    "path": "dotnet/csharp/CSharp.cs",
     "startLine": 7.0,
     "endLine": 0.0,
     "isExternal": false
@@ -837,8 +980,8 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "",
-  "sourceurl": "",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
   "summary": "",
   "remarks": null,
   "conceptual": "",

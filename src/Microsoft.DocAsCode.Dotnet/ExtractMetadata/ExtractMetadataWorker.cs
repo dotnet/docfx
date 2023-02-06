@@ -171,18 +171,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (csFiles.Count > 0)
             {
-                var csContent = string.Join(Environment.NewLine, csFiles.Select(File.ReadAllText));
-                var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
-                var csMetadata = GetMetadataFromProjectLevelCache(csCompilation, null);
-                if (csMetadata != null) projectMetadataList.Add(csMetadata);
+                var compilation = CompilationUtility.CreateCompilationFromCSharpFiles(csFiles);
+                var metadata = GetMetadataFromProjectLevelCache(compilation, null);
+                if (metadata != null) projectMetadataList.Add(metadata);
             }
 
             if (vbFiles.Count > 0)
             {
-                var vbContent = string.Join(Environment.NewLine, vbFiles.Select(File.ReadAllText));
-                var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
-                var vbMetadata = GetMetadataFromProjectLevelCache(vbCompilation, null);
-                if (vbMetadata != null) projectMetadataList.Add(vbMetadata);
+                var compilation = CompilationUtility.CreateCompilationFromVBFiles(vbFiles);
+                var metadata = GetMetadataFromProjectLevelCache(compilation, null);
+                if (metadata != null) projectMetadataList.Add(metadata);
             }
 
             if (assemblyFiles.Count > 0)

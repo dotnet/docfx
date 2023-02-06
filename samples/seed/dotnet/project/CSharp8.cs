@@ -142,6 +142,7 @@ namespace CSharp8
     /// This works: <see cref="SomeMethod"/>.
     /// This does not work: <see cref="Issue4007.SomeOtherMethod"/>.
     /// </summary>
+    /// <include file='../docs.xml' path='docs/members[@name="MyTests"]/Test/*'/>
     public class Issue4007
     {
         public void SomeMethod(int a)

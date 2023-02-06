@@ -258,7 +258,7 @@ namespace Test1
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
-            return CompilationUtility.CreateCompilationFromCsharpCode(code, "test.dll", references);
+            return CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll", references);
         }
     }
 }

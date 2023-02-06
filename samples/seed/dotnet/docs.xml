@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<docs>
+  <members name="MyTests">
+    <Test>
+      <remarks>
+        This is remarks.
+      </remarks>
+    </Test>
+  </members>
+</docs>

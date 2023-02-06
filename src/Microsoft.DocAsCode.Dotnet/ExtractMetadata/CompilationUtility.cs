@@ -16,20 +16,38 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     internal static class CompilationUtility
     {
-        public static Compilation CreateCompilationFromCsharpCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
+        public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files)
+        {
+            return CS.CSharpCompilation.Create(
+                assemblyName: "cs.temp.dll",
+                options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                syntaxTrees: files.Select(path => CS.SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path), path: path)),
+                references: GetDefaultMetadataReferences("C#"));
+        }
+
+        public static Compilation CreateCompilationFromCSharpCode(string code, string name = "cs.temp.dll", params MetadataReference[] references)
         {
             return CS.CSharpCompilation.Create(
                 name,
-                options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: new[] { CS.SyntaxFactory.ParseSyntaxTree(code) },
                 references: GetDefaultMetadataReferences("C#").Concat(references));
+        }
+
+        public static Compilation CreateCompilationFromVBFiles(IEnumerable<string> files)
+        {
+            return VB.VisualBasicCompilation.Create(
+                assemblyName: "vb.temp.dll",
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                syntaxTrees: files.Select(path => VB.SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path), path: path)),
+                references: GetDefaultMetadataReferences("VB"));
         }
 
         public static Compilation CreateCompilationFromVBCode(string code, string name = "vb.temp.dll", params MetadataReference[] references)
         {
             return VB.VisualBasicCompilation.Create(
                 name,
-                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: new[] { VB.SyntaxFactory.ParseSyntaxTree(code) },
                 references: GetDefaultMetadataReferences("VB").Concat(references));
         }

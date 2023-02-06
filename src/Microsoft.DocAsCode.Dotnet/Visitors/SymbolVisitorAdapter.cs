@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 Name = VisitorHelper.GetId(symbol),
                 CommentId = VisitorHelper.GetCommentId(symbol),
-                RawComment = symbol.GetDocumentationCommentXml(),
+                RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
             };
 
             item.DisplayNames = new SortedList<SyntaxLanguage, string>();
@@ -115,7 +115,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var item = new MetadataItem
             {
                 Name = VisitorHelper.GetId(symbol),
-                RawComment = symbol.GetDocumentationCommentXml(),
+                RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
             };
 
             item.DisplayNames = new SortedList<SyntaxLanguage, string>
