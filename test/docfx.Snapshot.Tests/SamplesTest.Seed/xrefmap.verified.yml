@@ -71,6 +71,19 @@ references:
   isSpec: "True"
   fullName: BuildFromCSharpSourceCode.CSharp.Main
   nameWithType: CSharp.Main
+- uid: BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag
+  name: XmlCommentIncludeTag()
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_XmlCommentIncludeTag
+  commentId: M:BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag
+  fullName: BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag()
+  nameWithType: CSharp.XmlCommentIncludeTag()
+- uid: BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag*
+  name: XmlCommentIncludeTag
+  href: api/BuildFromCSharpSourceCode.CSharp.html#BuildFromCSharpSourceCode_CSharp_XmlCommentIncludeTag_
+  commentId: Overload:BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag
+  isSpec: "True"
+  fullName: BuildFromCSharpSourceCode.CSharp.XmlCommentIncludeTag
+  nameWithType: CSharp.XmlCommentIncludeTag
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html
