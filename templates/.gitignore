@@ -1,8 +1,7 @@
+dist
 node_modules
-sample
-.tmp
 
-*.vendor.css
-*.vendor.js
-*.min.js
+default/**/*.vendor.css
+default/**/*.vendor.js
+default/**/*.min.js
 fonts
