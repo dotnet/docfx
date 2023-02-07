@@ -11,11 +11,60 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
+
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 
-    internal static class CompilationUtility
+    internal static class CompilationHelper
     {
+        // Bootstrap code to ensure essential types like `System.Object` is loaded for assemblies
+        private static readonly SyntaxTree[] s_assemblyBootstrap = new[]
+        {
+            CS.SyntaxFactory.ParseSyntaxTree(
+                """
+                class Bootstrap
+                {
+                    public static void Main(string[] foo) { }
+                }
+                """),
+        };
+
+        public static void LogDeclarationDiagnostics(this Compilation compilation)
+        {
+            foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
+            {
+                if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
+                    continue;
+
+                var level = diagnostic.Severity switch
+                {
+                    DiagnosticSeverity.Error => LogLevel.Error,
+                    DiagnosticSeverity.Warning => LogLevel.Warning,
+                    DiagnosticSeverity.Info => LogLevel.Info,
+                    _ => LogLevel.Verbose,
+                };
+
+                Logger.Log(level, $"{diagnostic}");
+            }
+
+            static bool IsKnownError(Diagnostic diagnostic)
+            {
+                // Ignore these VB errors on non-Windows platform:
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.Devices.Computer' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.ApplicationBase' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.MyServices.Internal.ContextValue' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
+                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
+                if (!OperatingSystem.IsWindows() && diagnostic.Id == "BC30002" &&
+                    diagnostic.GetMessage().Contains("Global.Microsoft.VisualBasic."))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files)
         {
             return CS.CSharpCompilation.Create(
@@ -38,7 +87,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return VB.VisualBasicCompilation.Create(
                 assemblyName: "vb.temp.dll",
-                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: files.Select(path => VB.SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path), path: path)),
                 references: GetDefaultMetadataReferences("VB"));
         }
@@ -47,41 +96,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return VB.VisualBasicCompilation.Create(
                 name,
-                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: new[] { VB.SyntaxFactory.ParseSyntaxTree(code) },
                 references: GetDefaultMetadataReferences("VB").Concat(references));
         }
 
-        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths, IEnumerable<string> references = null)
+        public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, IEnumerable<string> references = null)
         {
-            return CS.CSharpCompilation.Create(
+            var metadataReference = CreateMetadataReference(assemblyPath);
+            var compilation = CS.CSharpCompilation.Create(
                 "EmptyProjectWithAssembly",
                 options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: Array.Empty<SyntaxTree>(),
-                references: assemblyPaths
-                    .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
+                syntaxTrees: s_assemblyBootstrap,
+                references: GetReferenceAssemblies(assemblyPath)
                     .Concat(references ?? Enumerable.Empty<string>())
-                    .Select(CreateMetadataReference));
+                    .Select(CreateMetadataReference)
+                    .Append(metadataReference));
+
+            var assembly = (IAssemblySymbol)compilation.GetAssemblyOrModuleSymbol(metadataReference);
+            return (compilation, assembly);
         }
 
-        public static IEnumerable<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
+        private static IEnumerable<VB.GlobalImport> GetVBGlobalImports()
         {
-            foreach (var reference in assemblyCompilation.References)
-            {
-                Logger.LogVerbose($"Loading assembly {reference.Display}...");
-                var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
-                if (assembly == null)
-                {
-                    Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
-                    continue;
-                }
-
-                if (reference is PortableExecutableReference portableReference &&
-                    assemblyPaths.Any(path => portableReference.FilePath.Replace('\\', '/') == path.Replace('\\', '/')))
-                {
-                    yield return assembly;
-                }
-            }
+            // See default global imports in project properties panel for a default VB classlib.
+            return VB.GlobalImport.Parse(
+                "Microsoft.VisualBasic",
+                "System",
+                "System.Collections",
+                "System.Collections.Generic",
+                "System.Diagnostics",
+                "System.Linq",
+                "System.Xml.Linq",
+                "System.Threading.Tasks");
         }
 
         private static IEnumerable<MetadataReference> GetDefaultMetadataReferences(string language)
@@ -95,11 +142,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = Path.Combine(refDirectory, version, "ref", moniker);
 
                 Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
+                Logger.LogVerbose($"Reference assembly directory {path}");
                 return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                                 .Select(CreateMetadataReference);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogVerbose(ex.ToString());
                 throw new DocfxException("Cannot find .NET Core SDK to compile the project.");
             }
         }

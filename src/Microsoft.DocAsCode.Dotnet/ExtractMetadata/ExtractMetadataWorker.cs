@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -102,111 +101,85 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            var outputFolder = _outputFolder;
+            var assemblySymbols = new List<IAssemblySymbol>();
 
-            var projectCache = new ConcurrentDictionary<string, Project>();
-
-            if (_files.TryGetValue(FileType.Solution, out var sln))
+            if (_files.TryGetValue(FileType.Solution, out var solutionFiles))
             {
-                // No matter is incremental or not, we have to load solutions into memory
-                foreach (var path in sln.Select(s => s.NormalizedPath))
+                foreach (var solution in solutionFiles.Select(s => s.NormalizedPath))
                 {
-                    foreach (var project in SolutionFile.Parse(path).ProjectsInOrder)
+                    Logger.LogInfo($"Loading solution {solution}");
+                    foreach (var project in SolutionFile.Parse(solution).ProjectsInOrder)
                     {
-                        if (project.ProjectType is not SolutionProjectType.KnownToBeMSBuildFormat)
-                            continue;
-
-                        var projectFile = new FileInformation(project.AbsolutePath);
-                        if (projectFile.Type is not FileType.Project)
+                        if (project.ProjectType is SolutionProjectType.KnownToBeMSBuildFormat)
                         {
-                            Logger.LogInfo($"Skip unsupported project {project.AbsolutePath}.");
-                            continue;
-                        }
-
-                        projectCache.GetOrAdd(projectFile.NormalizedPath, LoadProject);
-                    }
-                }
-            }
-
-            if (_files.TryGetValue(FileType.Project, out var p))
-            {
-                foreach (var pp in p)
-                {
-                    projectCache.GetOrAdd(pp.NormalizedPath, LoadProject);
-                }
-            }
-
-            var csFiles = new List<string>();
-            var vbFiles = new List<string>();
-            var assemblyFiles = new List<string>();
-
-            if (_files.TryGetValue(FileType.CSSourceCode, out var cs))
-            {
-                csFiles.AddRange(cs.Select(s => s.NormalizedPath));
-            }
-
-            if (_files.TryGetValue(FileType.VBSourceCode, out var vb))
-            {
-                vbFiles.AddRange(vb.Select(s => s.NormalizedPath));
-            }
-
-            if (_files.TryGetValue(FileType.Assembly, out var asm))
-            {
-                assemblyFiles.AddRange(asm.Select(s => s.NormalizedPath));
-            }
-
-            var options = _options;
-
-            // Build all the projects to get the output and save to cache
-            List<MetadataItem> projectMetadataList = new List<MetadataItem>();
-            ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
-            ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
-            var roslynProjects = compilationCache.Values;
-            options.RoslynExtensionMethods = roslynProjects.SelectMany(c => c.Assembly.FindExtensionMethods()).ToArray();
-            foreach (var key in projectCache.Keys)
-            {
-                var projectMetadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilationCache[key].Assembly, _options);
-                if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
-            }
-
-            if (csFiles.Count > 0)
-            {
-                var compilation = CompilationUtility.CreateCompilationFromCSharpFiles(csFiles);
-                var metadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation.Assembly, _options);
-                if (metadata != null) projectMetadataList.Add(metadata);
-            }
-
-            if (vbFiles.Count > 0)
-            {
-                var compilation = CompilationUtility.CreateCompilationFromVBFiles(vbFiles);
-                var metadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation.Assembly, _options);
-                if (metadata != null) projectMetadataList.Add(metadata);
-            }
-
-            if (assemblyFiles.Count > 0)
-            {
-                Logger.LogInfo($"Processing assembly files");
-                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles, _references);
-                if (assemblyCompilation != null)
-                {
-                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation, assemblyFiles).ToList();
-                    // TODO: why not merge with compilation's extension methods?
-                    options.RoslynExtensionMethods = referencedAssemblyList.SelectMany(assembly => assembly.FindExtensionMethods()).ToArray();
-                    foreach (var assembly in referencedAssemblyList)
-                    {
-                        var mta = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(assembly, _options);
-                        if (mta != null)
-                        {
-                            projectMetadataList.Add(mta);
+                            await LoadProject(project.AbsolutePath);
                         }
                     }
                 }
             }
 
-            if (projectMetadataList.Count <= 0)
+            if (_files.TryGetValue(FileType.Project, out var projectFiles))
+            {
+                foreach (var projectFile in projectFiles)
+                {
+                    await LoadProject(projectFile.NormalizedPath);
+                }
+            }
+
+            foreach (var project in _workspace.CurrentSolution.Projects)
+            {
+                if (!project.SupportsCompilation)
+                {
+                    Logger.LogInfo($"Skip unsupported project {project.FilePath}.");
+                    continue;
+                }
+
+                Logger.LogInfo($"Compiling project {project.FilePath}");
+                var compilation = await project.GetCompilationAsync();
+                compilation.LogDeclarationDiagnostics();
+                assemblySymbols.Add(compilation.Assembly);
+            }
+
+            if (_files.TryGetValue(FileType.CSSourceCode, out var csFiles))
+            {
+                var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath));
+                compilation.LogDeclarationDiagnostics();
+                assemblySymbols.Add(compilation.Assembly);
+            }
+
+            if (_files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
+            {
+                var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath));
+                compilation.LogDeclarationDiagnostics();
+                assemblySymbols.Add(compilation.Assembly);
+            }
+
+            if (_files.TryGetValue(FileType.Assembly, out var assemblyFiles))
+            {
+                foreach (var assemblyFile in assemblyFiles)
+                {
+                    Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
+                    var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _references);
+                    compilation.LogDeclarationDiagnostics();
+                    assemblySymbols.Add(assembly);
+                }
+            }
+
+            if (assemblySymbols.Count <= 0)
             {
                 Logger.LogWarning("No .NET API project detected.");
                 return;
+            }
+
+            var projectMetadataList = new List<MetadataItem>();
+            var extensionMethods = assemblySymbols.SelectMany(assembly => assembly.FindExtensionMethods()).ToArray();
+
+            foreach (var assembly in assemblySymbols)
+            {
+                Logger.LogInfo($"Processing {assembly.Name}");
+                var projectMetadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(assembly, _options, extensionMethods);
+                if (projectMetadata != null)
+                    projectMetadataList.Add(projectMetadata);
             }
 
             Logger.LogInfo($"Creating output...");
@@ -234,95 +207,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 List<string> outputFiles;
                 using (new PerformanceScope("ResolveAndExport"))
                 {
-                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName, options.TocNamespaceStyle).ToList();
+                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, _outputFolder, _options.PreserveRawInlineComments, _options.ShouldSkipMarkup, _useCompatibilityFileName, _options.TocNamespaceStyle).ToList();
                 }
             }
         }
 
-        public Project LoadProject(string path)
+        private async Task LoadProject(string path)
         {
             var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
                 p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
-            if (project is null)
-            {
-                Logger.LogInfo($"Loading project {path}");
-                project = _workspace.OpenProjectAsync(path, _msbuildLogger).Result;
-            }
-            return project;
-        }
+            if (project is not null)
+                return;
 
-        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
-        {
-            projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), _ => GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
-        }
-
-        private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, Project> projectCache, Project project)
-        {
-            foreach (var pr in project.ProjectReferences)
-            {
-                var projectReference = project.Solution.GetProject(pr.ProjectId);
-                var path = StringExtension.ToNormalizedFullPath(projectReference.FilePath);
-                if (projectCache.ContainsKey(path))
-                {
-                    yield return path;
-                }
-                else
-                {
-                    foreach (var rpr in GetTransitiveProjectReferences(projectCache, projectReference))
-                    {
-                        yield return rpr;
-                    }
-                }
-            }
-        }
-
-        private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
-        {
-            var compilations = new ConcurrentDictionary<string, Compilation>();
-            foreach (var project in projectCache)
-            {
-                Logger.LogInfo($"Building project {project.Key}");
-                var compilation = await project.Value.GetCompilationAsync();
-                LogDeclarationDiagnostics(compilation);
-                compilations.TryAdd(project.Key, compilation);
-            }
-            return compilations;
-        }
-
-        private static void LogDeclarationDiagnostics(Compilation compilation)
-        {
-            foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
-            {
-                if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
-                    continue;
-
-                var level = diagnostic.Severity switch
-                {
-                    DiagnosticSeverity.Error => LogLevel.Error,
-                    DiagnosticSeverity.Warning => LogLevel.Warning,
-                    DiagnosticSeverity.Info => LogLevel.Info,
-                    _ => LogLevel.Verbose,
-                };
-
-                Logger.Log(level, $"{diagnostic}");
-            }
-
-            static bool IsKnownError(Diagnostic diagnostic)
-            {
-                // Ignore these VB errors on non-Windows platform:
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.Devices.Computer' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.ApplicationBase' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.MyServices.Internal.ContextValue' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
-                if (!OperatingSystem.IsWindows() && diagnostic.Id == "BC30002" &&
-                    diagnostic.GetMessage().Contains("Global.Microsoft.VisualBasic."))
-                {
-                    return true;
-                }
-
-                return false;
-            }
+            Logger.LogInfo($"Loading project {path}");
+            await _workspace.OpenProjectAsync(path, _msbuildLogger);
         }
 
         private static IEnumerable<string> ResolveAndExportYamlMetadata(

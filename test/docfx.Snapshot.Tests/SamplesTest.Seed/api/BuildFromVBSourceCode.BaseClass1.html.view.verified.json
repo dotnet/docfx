@@ -108,7 +108,7 @@
               },
               {
                 "lang": "vb",
-                "value": "Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As DateTime"
+                "value": "Public MustOverride Function WithDeclarationKeyword(keyword As Class1) As Date"
               }
             ],
             "parameters": [
@@ -161,7 +161,7 @@
             ],
             "return": {
               "type": {
-                "uid": "DateTime",
+                "uid": "System.DateTime",
                 "name": [
                   {
                     "lang": "csharp",
@@ -169,7 +169,7 @@
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "nameWithType": [
@@ -179,27 +179,27 @@
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "DateTime"
+                    "value": "System.DateTime"
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"DateTime\" text=\"DateTime\"/>"
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"DateTime\" text=\"DateTime\"/>"
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                   }
                 ]
               }

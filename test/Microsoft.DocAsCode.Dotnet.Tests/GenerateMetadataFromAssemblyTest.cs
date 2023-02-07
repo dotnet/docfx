@@ -14,34 +14,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromAssemblyTest
     {
-        public readonly string[] AssemblyFiles =
-            new[]
-            {
-                @"TestData/BaseClassForTestClass1.dll",
-                @"TestData/CatLibrary.dll",
-                @"TestData/CatLibrary2.dll",
-            };
-
-        public readonly string[] TupleAssemblyFiles =
-            new[]
-            {
-                @"TestData/TupleLibrary.dll",
-            };
-
-        public readonly string[] TupleReferencesFiles =
-            new[]
-            {
-                @"TestDataReferences/System.ValueTuple.dll",
-            };
-
         [Fact]
         public void TestGenerateMetadataFromAssembly()
         {
-            var compilation = CompilationUtility.CreateCompilationFromAssembly(AssemblyFiles);
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, AssemblyFiles).ToList();
-            
             {
-                var output = GenerateYamlMetadata(referenceAssembly[2]);
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary.dll");
+                Assert.Empty(compilation.GetDeclarationDiagnostics());
+
+                var output = GenerateYamlMetadata(assembly);
                 var @class = output.Items[0].Items[2];
                 Assert.NotNull(@class);
                 Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
@@ -50,7 +30,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             }
 
             {
-                var output = GenerateYamlMetadata(referenceAssembly[1]);
+                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary2.dll");
+                Assert.Empty(compilation.GetDeclarationDiagnostics());
+
+                var output = GenerateYamlMetadata(assembly);
                 var @class = output.Items[0].Items[0];
                 Assert.NotNull(@class);
                 Assert.Equal("CarLibrary2.Cat2", @class.Name);
@@ -61,10 +44,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         [Fact]
         public void TestGenerateMetadataFromAssemblyWithReferences()
         {
-            var compilation = CompilationUtility.CreateCompilationFromAssembly(TupleAssemblyFiles.Concat(TupleReferencesFiles));
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, TupleAssemblyFiles).ToList();
+            var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/TupleLibrary.dll");
+            Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-            var output = GenerateYamlMetadata(referenceAssembly[0]);
+            var output = GenerateYamlMetadata(assembly);
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("XmlTasks", @class.DisplayNames[SyntaxLanguage.CSharp]);
@@ -77,16 +60,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
                 Assert.Equal("XmlTasks.ToNamespace(string, string)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
                 Assert.Equal("TupleLibrary.XmlTasks.ToNamespace(string, string)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-                Assert.Equal("public (string prefix, string uri) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public (string, string) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
 
             {
                 var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.XmlPeek(System.String,System.ValueTuple{System.String,System.String}[])");
-                Assert.Equal("XmlPeek(string, params (string prefix, string uri)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("XmlTasks.XmlPeek(string, params (string prefix, string uri)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string prefix, string uri)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("XmlPeek(string, params (string, string)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+                Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-                Assert.Equal("public string XmlPeek(string xpath, params (string prefix, string uri)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal("public string XmlPeek(string xpath, params (string, string)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
             }
         }
     }

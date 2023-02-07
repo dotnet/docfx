@@ -246,11 +246,11 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "public Class1 Keyword { get; }"
+                "value": "[Obsolete(\"This member is obsolete.\", true)]\npublic Class1 Keyword { get; }"
               },
               {
                 "lang": "vb",
-                "value": "Public ReadOnly Property Keyword As Class1"
+                "value": "<Obsolete(\"This member is obsolete.\", True)>\nPublic ReadOnly Property Keyword As Class1"
               }
             ],
             "parameters": [],
@@ -362,6 +362,22 @@
             "id": "BuildFromVBSourceCode_Class1_Keyword_"
           },
           "level": 0.0,
+          "attributes": [
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor(System.String,System.Boolean)",
+              "arguments": [
+                {
+                  "type": "System.String",
+                  "value": "This member is obsolete."
+                },
+                {
+                  "type": "System.Boolean",
+                  "value": true
+                }
+              ]
+            }
+          ],
           "type": "property",
           "summary": "",
           "platform": null,
@@ -665,7 +681,7 @@
               },
               {
                 "lang": "vb",
-                "value": "Public Overrides Function WithDeclarationKeyword(keyword As Class1) As DateTime"
+                "value": "Public Overrides Function WithDeclarationKeyword(keyword As Class1) As Date"
               }
             ],
             "parameters": [
@@ -718,7 +734,7 @@
             ],
             "return": {
               "type": {
-                "uid": "DateTime",
+                "uid": "System.DateTime",
                 "name": [
                   {
                     "lang": "csharp",
@@ -726,7 +742,7 @@
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "nameWithType": [
@@ -736,27 +752,27 @@
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "DateTime"
+                    "value": "System.DateTime"
                   },
                   {
                     "lang": "vb",
-                    "value": "DateTime"
+                    "value": "Date"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"DateTime\" text=\"DateTime\"/>"
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"DateTime\" text=\"DateTime\"/>"
+                    "value": "<xref uid=\"System.DateTime\" text=\"DateTime\"/>"
                   }
                 ]
               }

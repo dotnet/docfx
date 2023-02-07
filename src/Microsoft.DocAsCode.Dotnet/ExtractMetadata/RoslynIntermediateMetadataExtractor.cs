@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     internal class RoslynIntermediateMetadataExtractor
     {
-        public static MetadataItem GenerateYamlMetadata(IAssemblySymbol assembly = null, ExtractMetadataOptions options = null)
+        public static MetadataItem GenerateYamlMetadata(IAssemblySymbol assembly = null, ExtractMetadataOptions options = null, IMethodSymbol[] extensionMethods = null)
         {
-            return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), options ?? new()));
+            return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), options ?? new(), extensionMethods));
         }
     }
 }
