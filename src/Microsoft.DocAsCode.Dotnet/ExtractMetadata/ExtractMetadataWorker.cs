@@ -162,24 +162,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
             ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
             var roslynProjects = compilationCache.Values;
-            options.RoslynExtensionMethods = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects);
+            options.RoslynExtensionMethods = roslynProjects.SelectMany(c => c.Assembly.FindExtensionMethods()).ToArray();
             foreach (var key in projectCache.Keys)
             {
-                var projectMetadata = GetMetadataFromProjectLevelCache(compilationCache[key], null);
+                var projectMetadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilationCache[key].Assembly, _options);
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
             }
 
             if (csFiles.Count > 0)
             {
                 var compilation = CompilationUtility.CreateCompilationFromCSharpFiles(csFiles);
-                var metadata = GetMetadataFromProjectLevelCache(compilation, null);
+                var metadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation.Assembly, _options);
                 if (metadata != null) projectMetadataList.Add(metadata);
             }
 
             if (vbFiles.Count > 0)
             {
                 var compilation = CompilationUtility.CreateCompilationFromVBFiles(vbFiles);
-                var metadata = GetMetadataFromProjectLevelCache(compilation, null);
+                var metadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation.Assembly, _options);
                 if (metadata != null) projectMetadataList.Add(metadata);
             }
 
@@ -191,11 +191,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation, assemblyFiles).ToList();
                     // TODO: why not merge with compilation's extension methods?
-                    var assemblyExtension = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.assembly));
-                    options.RoslynExtensionMethods = assemblyExtension;
-                    foreach (var (reference, assembly) in referencedAssemblyList)
+                    options.RoslynExtensionMethods = referencedAssemblyList.SelectMany(assembly => assembly.FindExtensionMethods()).ToArray();
+                    foreach (var assembly in referencedAssemblyList)
                     {
-                        var mta = GetMetadataFromProjectLevelCache(assemblyCompilation, assembly);
+                        var mta = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(assembly, _options);
                         if (mta != null)
                         {
                             projectMetadataList.Add(mta);
@@ -324,11 +323,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 return false;
             }
-        }
-
-        private MetadataItem GetMetadataFromProjectLevelCache(Compilation compilation, IAssemblySymbol assembly)
-        {
-            return RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(compilation, assembly, _options);
         }
 
         private static IEnumerable<string> ResolveAndExportYamlMetadata(

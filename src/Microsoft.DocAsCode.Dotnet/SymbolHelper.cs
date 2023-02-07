@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
@@ -64,6 +67,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Accessibility.ProtectedOrInternal => Accessibility.Protected,
                 _ => null,
             };
+        }
+
+        public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)
+        {
+            if (!assembly.MightContainExtensionMethods)
+                return Array.Empty<IMethodSymbol>();
+
+            return
+                from type in assembly.GlobalNamespace.GetTypeMembers()
+                where type.MightContainExtensionMethods
+                from member in type.GetMembers()
+                where member.Kind is SymbolKind.Method && ((IMethodSymbol)member).IsExtensionMethod
+                select (IMethodSymbol)member;
         }
     }
 }
