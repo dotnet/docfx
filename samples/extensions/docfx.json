@@ -18,13 +18,12 @@
       {
         "files": [
           "api/**.yml",
-          "api/index.md"
-        ]
-      },
-      {
-        "files": [
-          "toc.yml",
-          "*.md"
+          "api/index.md",
+          "*.md",
+          "toc.yml"
+        ],
+        "exclude": [
+          "README.md"
         ]
       }
     ],
