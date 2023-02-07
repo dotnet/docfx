@@ -84,4 +84,4 @@ For more information see the [.NET Foundation Code of Conduct](http://www.dotnet
 
 ## License
 
-This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE.txt) License.
+This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
