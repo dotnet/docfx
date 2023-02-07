@@ -1,7 +1,9 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 const esbuild = require('esbuild')
-const { minify } = require('terser')
 const CleanCSS = require('clean-css')
-const { readFileSync, writeFileSync, cpSync } = require('fs')
+const { writeFileSync, cpSync } = require('fs')
 
 async function build() {
 
@@ -10,13 +12,13 @@ async function build() {
     minify: true,
     outfile: 'default/styles/docfx.vendor.js',
     entryPoints: [
-      'src/docfx.vendor.js'
+      'src/main.js'
     ]
   })
 
   await minifyCss('default/styles/docfx.vendor.css', [
     'node_modules/bootstrap/dist/css/bootstrap.css',
-    'node_modules/highlightjs/styles/github-gist.css'
+    'node_modules/highlight.js/styles/github.css'
   ])
 
   cpSync('node_modules/bootstrap/dist/fonts', 'default/fonts', { recursive: true })
@@ -45,13 +47,6 @@ function copyToDist() {
   function staticTocFilter(src) {
     return filter(src) && !src.includes('toc.html');
   }
-}
-
-async function minifyJs(outputFile, inputFiles) {
-  const code = Object.fromEntries(
-    inputFiles.map(file => [file, readFileSync(file).toString()]))
-  const result = await minify(code)
-  writeFileSync(outputFile, result.code)
 }
 
 async function minifyCss(outputFile, inputFiles) {

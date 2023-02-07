@@ -139,6 +139,8 @@ Code Snippets typically include more code than necessary in order to provide con
 
 The example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.
 
+[!code-csharp[](media/Program.cs?highlight=2,5-7,9-)]
+
 ## Tabs
 
 Tabs enable content that is multi-faceted. They allow sections of a document to contain variant content renderings and eliminates duplicate content.
