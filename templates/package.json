@@ -15,7 +15,7 @@
     "@websanova/url": "2.6.3",
     "anchor-js": "^4.0.0",
     "bootstrap": "~3.4.1",
-    "highlightjs": "~9.12.0",
+    "highlight.js": "^11.7.0",
     "jquery": "~3.5.1",
     "lunr": "2.1.2",
     "mark.js": "^8.4.0",
@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "clean-css": "^5.3.0",
-    "esbuild": "^0.17.6",
-    "terser": "^5.7.1"
+    "esbuild": "^0.17.6"
   }
 }

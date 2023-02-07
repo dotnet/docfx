@@ -1,7 +1,6 @@
 dist
 node_modules
-
-default/**/*.vendor.css
-default/**/*.vendor.js
-default/**/*.min.js
+*.vendor.css
+*.vendor.js
+*.min.js
 fonts

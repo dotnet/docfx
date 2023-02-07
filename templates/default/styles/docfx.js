@@ -82,7 +82,7 @@ $(function () {
   // Enable highlight.js
   function highlight() {
     $('pre code').each(function (i, block) {
-      hljs.highlightBlock(block);
+      hljs.highlightElement(block);
     });
     $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
