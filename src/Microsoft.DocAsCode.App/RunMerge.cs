@@ -15,11 +15,11 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunMerge
     {
-        public static void Exec(MergeJsonConfig config)
+        public static void Exec(MergeJsonConfig config, string configDirectory)
         {
             foreach (var round in config)
             {
-                var baseDirectory = round.BaseDirectory ?? Directory.GetCurrentDirectory();
+                var baseDirectory = configDirectory ?? Directory.GetCurrentDirectory();
                 var intermediateOutputFolder = round.Destination ?? Path.Combine(baseDirectory, "obj");
                 EnvironmentContext.SetBaseDirectory(baseDirectory);
                 EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);

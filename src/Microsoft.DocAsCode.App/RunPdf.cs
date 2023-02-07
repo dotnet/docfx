@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunPdf
     {
-        public static void Exec(PdfJsonConfig config, BuildOptions buildOptions)
+        public static void Exec(PdfJsonConfig config, BuildOptions buildOptions, string configDirectory, string outputDirectory = null)
         {
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
 
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode
                 config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
             }
 
-            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
+            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(outputDirectory) ? baseDirectory : outputDirectory, config.Destination ?? string.Empty));
             var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;
             var options = new PdfOptions
             {
@@ -61,8 +61,7 @@ namespace Microsoft.DocAsCode
 
             // 1. call BuildCommand to generate html files first
             // Output build command exec result to temp folder
-            config.OutputFolder = rawOutputFolder;
-            RunBuild.Exec(config, buildOptions);
+            RunBuild.Exec(config, buildOptions, configDirectory, rawOutputFolder);
 
             // 2. call html2pdf converter
             var converter = new ConvertWrapper(options);

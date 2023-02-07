@@ -41,10 +41,9 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(typeof(MetadataCommand), commands[0].GetType());
             var metadataCommand = (MetadataCommand)commands[0];
             Assert.Equal(2, metadataCommand.Config.Count);
-            Assert.Equal(@"Assets/docfx.json_metadata_build", metadataCommand.BaseDirectory.Replace('\\', '/'));
+            Assert.Equal(Path.GetFullPath(@"Assets/docfx.json_metadata_build"), metadataCommand.BaseDirectory);
             Assert.Equal(typeof(BuildCommand), commands[1].GetType());
             var buildCommand = (BuildCommand)commands[1];
-            Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
 
             args = new string[] { "Assets/docfx.json_empty/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);
@@ -84,7 +83,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(typeof(MetadataCommand), command.GetType());
             var metadataCommand = (MetadataCommand)command;
             Assert.Equal(2, metadataCommand.Config.Count);
-            Assert.Equal(@"Assets/docfx.json_metadata_build",  metadataCommand.BaseDirectory.Replace('\\', '/'));
+            Assert.Equal(Path.GetFullPath(@"Assets/docfx.json_metadata_build"),  metadataCommand.BaseDirectory);
             Assert.Null(metadataCommand.OutputFolder);
 
             args = new string[] { "metadata", "Assets/docfx.json_empty/docfx.json", "A.csproj" };
@@ -119,8 +118,6 @@ namespace Microsoft.DocAsCode.Tests
             command = controller.Create();
             Assert.Equal(typeof(BuildCommand), command.GetType());
             var buildCommand = (BuildCommand)command;
-            Assert.Equal(@"Assets/docfx.json_metadata_build", buildCommand.Config.BaseDirectory.Replace('\\', '/'));
-            Assert.Equal(@"output", buildCommand.Config.OutputFolder);
 
             args = new string[] { "build", "Assets/docfx.json_empty/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);

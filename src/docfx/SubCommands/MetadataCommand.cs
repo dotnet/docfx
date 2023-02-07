@@ -7,11 +7,9 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Metadata.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
@@ -50,7 +48,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     throw new DocumentException(message);
                 }
 
-                baseDirectory = Path.GetDirectoryName(configFile);
+                baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
             }
             else
             {

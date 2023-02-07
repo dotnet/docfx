@@ -16,29 +16,29 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class BuildCommand : ISubCommand
     {
+        internal readonly string BaseDirectory;
+        internal readonly string OutputFolder;
+
         public string Name { get; } = nameof(BuildCommand);
 
         public BuildJsonConfig Config { get; }
 
         public bool AllowReplay => true;
 
-        public BuildCommand(BuildJsonConfig config)
+        public BuildCommand(BuildCommandOptions options)
         {
-            Config = config;
-        }
-
-        public BuildCommand(BuildCommandOptions options) : this(ParseOptions(options))
-        {
+            Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            RunBuild.Exec(Config, new());
+            RunBuild.Exec(Config, new(), BaseDirectory, OutputFolder);
         }
 
-        private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
+        private static BuildJsonConfig ParseOptions(BuildCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             var configFile = GetConfigFilePath(options);
+
             BuildJsonConfig config;
             if (configFile == null)
             {
@@ -48,7 +48,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
 
                 config = new BuildJsonConfig();
-                MergeOptionsToConfig(options, config);
+                baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
+                outputFolder = options.OutputFolder;
+                MergeOptionsToConfig(options, config, baseDirectory);
                 return config;
             }
 
@@ -59,9 +61,10 @@ namespace Microsoft.DocAsCode.SubCommands
                 Logger.LogError(message, code: ErrorCodes.Config.BuildConfigNotFound);
                 throw new DocumentException(message);
             }
-            config.BaseDirectory = Path.GetDirectoryName(configFile);
 
-            MergeOptionsToConfig(options, config);
+            baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+            outputFolder = options.OutputFolder;
+            MergeOptionsToConfig(options, config, baseDirectory);
             return config;
         }
 
@@ -84,14 +87,12 @@ namespace Microsoft.DocAsCode.SubCommands
             return configFile;
         }
 
-        internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config)
+        internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config, string configDirectory)
         {
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
             // for `--content "*.cs*`, base directory should be `C:\folder1`
             string optionsBaseDirectory = Directory.GetCurrentDirectory();
-
-            config.OutputFolder = options.OutputFolder;
 
             // Override config file with options from command line
             if (options.Templates != null && options.Templates.Count > 0)
@@ -231,7 +232,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.GlobalMetadataFilePaths =
                 new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
-                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+                    path => PathUtility.IsRelativePath(path) ? Path.Combine(configDirectory, path) : path).Reverse());
 
             if (options.FileMetadataFilePaths != null && options.FileMetadataFilePaths.Any())
             {
@@ -245,7 +246,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
-                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+                    path => PathUtility.IsRelativePath(path) ? Path.Combine(configDirectory, path) : path).Reverse());
 
             config.FileMetadata = GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, config.FileMetadataFilePaths);
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);

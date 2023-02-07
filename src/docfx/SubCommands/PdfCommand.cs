@@ -12,29 +12,28 @@ namespace Microsoft.DocAsCode.SubCommands
 {
     internal sealed class PdfCommand : ISubCommand
     {
-        private readonly PdfJsonConfig _config;
+        internal readonly string BaseDirectory;
+        internal readonly string OutputFolder;
 
         public string Name { get; } = nameof(PdfCommand);
         public bool AllowReplay => true;
 
+        public PdfJsonConfig Config { get; }
+
         public PdfCommand(PdfCommandOptions options)
         {
-            _config = ParseOptions(options);
+            Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            Exec(_config);
+            RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
         }
 
-        public static void Exec(PdfJsonConfig config)
-        {
-            RunPdf.Exec(config, new());
-        }
-
-        private static PdfJsonConfig ParseOptions(PdfCommandOptions options)
+        private static PdfJsonConfig ParseOptions(PdfCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             var configFile = BuildCommand.GetConfigFilePath(options);
+
             PdfJsonConfig config;
             if (configFile == null)
             {
@@ -43,11 +42,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
                 }
 
-                config = new PdfJsonConfig
-                {
-                    BaseDirectory = EnvironmentContext.BaseDirectory
-                };
-                MergeOptionsToConfig(options, config);
+                config = new PdfJsonConfig();
+                baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
+                outputFolder = options.OutputFolder;
+                MergeOptionsToConfig(options, config, baseDirectory);
                 return config;
             }
 
@@ -59,15 +57,15 @@ namespace Microsoft.DocAsCode.SubCommands
                 throw new DocumentException(message);
             }
 
-            config.BaseDirectory = Path.GetDirectoryName(configFile);
-
-            MergeOptionsToConfig(options, config);
+            baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+            outputFolder = options.OutputFolder;
+            MergeOptionsToConfig(options, config, baseDirectory);
             return config;
         }
 
-        private static void MergeOptionsToConfig(PdfCommandOptions options, PdfJsonConfig config)
+        private static void MergeOptionsToConfig(PdfCommandOptions options, PdfJsonConfig config, string configDirectory)
         {
-            BuildCommand.MergeOptionsToConfig(options, config);
+            BuildCommand.MergeOptionsToConfig(options, config, configDirectory);
 
             if (options.ExcludedTocs?.Count > 0)
             {

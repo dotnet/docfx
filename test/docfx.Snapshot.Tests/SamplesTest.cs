@@ -73,17 +73,15 @@ namespace Microsoft.DocAsCode.Tests
             var samplePath = $"{SamplesDir}/csharp";
             Clean(samplePath);
 
-            if (Debugger.IsAttached)
+            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+
+            try
             {
-                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-                Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
+                await Docset.Build($"{samplePath}/docfx.json");
             }
-            else
+            finally
             {
-                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-                Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
             }
 
             await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile)

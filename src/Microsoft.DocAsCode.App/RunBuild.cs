@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
 {
     internal static class RunBuild
     {
-        public static void Exec(BuildJsonConfig config, BuildOptions options)
+        public static void Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
         {
             if (config.Templates == null || config.Templates.Count == 0)
             {
@@ -20,13 +20,13 @@ namespace Microsoft.DocAsCode
             }
 
             var assembly = typeof(Docset).Assembly;
-            var templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, config.Templates, config.Themes, config.BaseDirectory);
+            var templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, config.Templates, config.Themes, configDirectory);
 
             EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory));
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
-            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(config.OutputFolder) ? baseDirectory : config.OutputFolder, config.Destination ?? string.Empty));
+            var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(outputDirectory) ? baseDirectory : outputDirectory, config.Destination ?? string.Empty));
 
             try
             {

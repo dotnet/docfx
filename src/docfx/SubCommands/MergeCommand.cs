@@ -4,13 +4,9 @@
 namespace Microsoft.DocAsCode.SubCommands
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -18,6 +14,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class MergeCommand : ISubCommand
     {
+        internal readonly string BaseDirectory;
+        internal readonly string OutputFolder;
+
         private static JsonSerializer GetSerializer() =>
             new JsonSerializer
             {
@@ -35,17 +34,17 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public MergeCommand(MergeCommandOptions options)
         {
-            Config = ParseOptions(options);
+            Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            RunMerge.Exec(Config);
+            RunMerge.Exec(Config, BaseDirectory);
         }
 
         #region MergeCommand ctor related
 
-        private static MergeJsonConfig ParseOptions(MergeCommandOptions options)
+        private static MergeJsonConfig ParseOptions(MergeCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             var configFile = options.ConfigFile;
             MergeJsonConfig config;
@@ -63,6 +62,9 @@ namespace Microsoft.DocAsCode.SubCommands
                         var item = new MergeJsonItemConfig();
                         MergeOptionsToConfig(options, ref item);
                         config.Add(item);
+
+                        baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
+                        outputFolder = options.OutputFolder;
                         return config;
                     }
                 }
@@ -84,11 +86,11 @@ namespace Microsoft.DocAsCode.SubCommands
             for (int i = 0; i < config.Count; i++)
             {
                 var round = config[i];
-                round.BaseDirectory = Path.GetDirectoryName(configFile);
-
                 MergeOptionsToConfig(options, ref round);
             }
 
+            baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+            outputFolder = options.OutputFolder;
             return config;
         }
 
@@ -98,8 +100,6 @@ namespace Microsoft.DocAsCode.SubCommands
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
             // for `--content "*.cs*`, base directory should be `C:\folder1`
             string optionsBaseDirectory = Directory.GetCurrentDirectory();
-
-            config.OutputFolder = options.OutputFolder;
 
             if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
             if (options.Content != null)
