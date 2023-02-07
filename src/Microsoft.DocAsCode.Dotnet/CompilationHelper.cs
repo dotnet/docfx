@@ -157,11 +157,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             using var assembly = new PEFile(assemblyPath);
             var assemblyResolver = new UniversalAssemblyResolver(assemblyPath, false, assembly.DetectTargetFrameworkId());
-            foreach (var reference in assembly.AssemblyReferences)
+            var result = new Dictionary<string, string>();
+
+            GetReferenceAssembliesCore(assembly);
+
+            void GetReferenceAssembliesCore(PEFile assembly)
             {
-                if (assemblyResolver.FindAssemblyFile(reference) is { } file)
-                    yield return file;
+                foreach (var reference in assembly.AssemblyReferences)
+                {
+                    var file = assemblyResolver.FindAssemblyFile(reference);
+                    if (file is null)
+                    {
+                        Logger.LogWarning($"Unable to resolve assembly reference {reference}");
+                        continue;
+                    }
+
+                    Logger.LogVerbose($"Loaded {reference.Name} from {file}");
+
+                    using var referenceAssembly = new PEFile(file);
+                    if (result.TryAdd(referenceAssembly.Name, file))
+                    {
+                        GetReferenceAssembliesCore(referenceAssembly);
+                    }
+                }
             }
+
+            return result.Values;
         }
 
         private static MetadataReference CreateMetadataReference(string assemblyPath)
