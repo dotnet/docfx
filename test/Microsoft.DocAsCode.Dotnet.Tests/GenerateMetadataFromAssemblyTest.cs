@@ -38,11 +38,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         public void TestGenerateMetadataFromAssembly()
         {
             var compilation = CompilationUtility.CreateCompilationFromAssembly(AssemblyFiles);
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, AssemblyFiles)
-                .Select(s => s.assembly).OrderBy(s => s.Name).ToList();
+            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, AssemblyFiles).ToList();
             
             {
-                var output = GenerateYamlMetadata(compilation, referenceAssembly[2]);
+                var output = GenerateYamlMetadata(referenceAssembly[2]);
                 var @class = output.Items[0].Items[2];
                 Assert.NotNull(@class);
                 Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
@@ -51,7 +50,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             }
 
             {
-                var output = GenerateYamlMetadata(compilation, referenceAssembly[1]);
+                var output = GenerateYamlMetadata(referenceAssembly[1]);
                 var @class = output.Items[0].Items[0];
                 Assert.NotNull(@class);
                 Assert.Equal("CarLibrary2.Cat2", @class.Name);
@@ -63,9 +62,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         public void TestGenerateMetadataFromAssemblyWithReferences()
         {
             var compilation = CompilationUtility.CreateCompilationFromAssembly(TupleAssemblyFiles.Concat(TupleReferencesFiles));
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, TupleAssemblyFiles).Select(s => s.assembly).ToList();
+            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation, TupleAssemblyFiles).ToList();
 
-            var output = GenerateYamlMetadata(compilation, referenceAssembly[0]);
+            var output = GenerateYamlMetadata(referenceAssembly[0]);
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("XmlTasks", @class.DisplayNames[SyntaxLanguage.CSharp]);

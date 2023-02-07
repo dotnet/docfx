@@ -24,6 +24,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public TocNamespaceStyle TocNamespaceStyle { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
+        public IMethodSymbol[] RoslynExtensionMethods { get; set; }
     }
 }

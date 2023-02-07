@@ -18,6 +18,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
+        private static MetadataItem Verify(string code)
+        {
+            var compilation = CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll");
+            var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
+            return GenerateYamlMetadata(compilation.Assembly, new() { RoslynExtensionMethods = extensionMethods });
+        }
+
         [Fact]
         [Trait("Related", "Attribute")]
         public void TestGenerateMetadataAsyncWithFuncVoidReturn()
@@ -46,7 +53,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("Class1", @class.DisplayNames.First().Value);
@@ -90,7 +97,7 @@ namespace Test1.Test2
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -126,8 +133,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, options: new ExtractMetadataOptions { PreserveRawInlineComments = true });
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -259,7 +265,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -313,7 +319,7 @@ namespace Test1
     public interface IFooBar : IBar { }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var ifoo = output.Items[0].Items[0];
@@ -348,7 +354,7 @@ namespace Test1
     internal interface IFoo { }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
@@ -372,7 +378,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var subFoo = output.Items[0].Items[2];
@@ -398,7 +404,7 @@ namespace Test1
     public class Foo : FooInternal.IFoo { }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
@@ -427,7 +433,7 @@ namespace Test1
     public interface IFooBar : IFoo, IBar { }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
@@ -543,7 +549,7 @@ namespace Test1
     public enum XYZ:int{X,Y,Z}
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -591,7 +597,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -646,7 +652,7 @@ namespace Test1
     public delegate ref readonly int RefReadonly();
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -754,7 +760,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo<T>
             {
@@ -917,7 +923,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -1048,7 +1054,7 @@ namespace Test
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.Equal(2, ns.Items.Count);
@@ -1116,8 +1122,7 @@ namespace Test1
     }
 }
 ";
-            var compilation = CreateCompilationFromCSharpCode(code);
-            MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { RoslynExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // FooImple<T>
             {
@@ -1232,7 +1237,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // unary
             {
@@ -1495,7 +1500,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var constructor = output.Items[0].Items[0].Items[0];
@@ -1567,7 +1572,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
@@ -1671,7 +1676,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
@@ -1790,7 +1795,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
@@ -1953,7 +1958,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo<T>
             {
@@ -2093,7 +2098,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -2144,7 +2149,7 @@ namespace Test1
             var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, $"{nameof(TestGenerateMetadataAsyncWithAssemblyInfoAndCrossReference)}/reference.dll");
             var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(referencedAssembly.Location));
             Assert.Equal("test.dll", compilation.AssemblyName);
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Null(output.AssemblyNameList);
             Assert.Null(output.NamespaceName);
             Assert.Equal("test.dll", output.Items[0].AssemblyNameList.First());
@@ -2173,7 +2178,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
             Assert.Equal("Foo<T>", type.DisplayNames[SyntaxLanguage.CSharp]);
@@ -2241,7 +2246,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -2287,7 +2292,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
@@ -2357,7 +2362,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -2389,7 +2394,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             {
                 var type = output.Items[0].Items[0];
                 Assert.NotNull(type);
@@ -2459,7 +2464,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("TestAttribute", @class.DisplayNames[SyntaxLanguage.CSharp]);
@@ -2550,7 +2555,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             var defined = output.Items[0].Items[0].Items[0];
             Assert.NotNull(defined);
@@ -2576,7 +2581,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             var defined = output.Items[0].Items[0].Items[0];
             Assert.NotNull(defined);
@@ -2603,7 +2608,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             var primitiveNull = output.Items[0].Items[0].Items[0];
             Assert.NotNull(primitiveNull);
@@ -2636,7 +2641,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             var flagsNull = output.Items[0].Items[0].Items[0];
             Assert.NotNull(flagsNull);
@@ -2677,7 +2682,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             var enumNull = output.Items[0].Items[0].Items[0];
             Assert.NotNull(enumNull);
@@ -2720,7 +2725,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
 
             Assert.Collection(
                 output.Items[0].Items[0].Items,
@@ -2743,7 +2748,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
@@ -2765,7 +2770,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
@@ -2789,7 +2794,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2814,7 +2819,7 @@ namespace Test1
     public interface I2<T> : I1<string>, I1<T> {}
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2855,7 +2860,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2883,7 +2888,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2912,7 +2917,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2938,7 +2943,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2964,7 +2969,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -2992,7 +2997,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -3018,7 +3023,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -3044,7 +3049,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -3070,7 +3075,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -3098,7 +3103,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -3148,7 +3153,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -3176,7 +3181,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3228,7 +3233,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3280,7 +3285,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3332,7 +3337,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3384,7 +3389,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3433,7 +3438,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var fnptr = output.Items[0].Items[0].Items[0];
@@ -3477,7 +3482,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var method = output.Items[0].Items[0].Items[0];
@@ -3547,7 +3552,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -3573,7 +3578,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -3605,7 +3610,7 @@ namespace Test1
                 }
                 """;
 
-            var output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            var output = Verify(code);
             var type = output.Items[0].Items[0];
 
             Assert.Equal(new[]

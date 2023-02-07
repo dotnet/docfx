@@ -15,6 +15,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
     {
+        private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
+        {
+            var compilation = CompilationUtility.CreateCompilationFromVBCode(code, "test.dll", references);
+            return GenerateYamlMetadata(compilation.Assembly, options);
+        }
+
         [Trait("Related", "Generic")]
         [Fact]
         public void TestGenereateMetadataWithClass()
@@ -33,7 +39,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -82,7 +88,7 @@ Namespace Test1
     End Enum
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -125,7 +131,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -172,7 +178,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -211,7 +217,7 @@ Namespace Test1
     Internal Interface IFoo
     End Interface
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
@@ -237,7 +243,7 @@ Namespace Test1
     End Class
 
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var subFoo = output.Items[0].Items[2];
@@ -263,7 +269,7 @@ Namespace Test1
        Implements FooInternal.IFoo 
     End Class
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
 
             var foo = output.Items[0].Items[0];
@@ -286,7 +292,7 @@ Namespace Test1
     Public Delegate Function D3(Of T1 As Class, T2 As {T1, New})(ByRef x As T1) As T2
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -323,7 +329,7 @@ Namespace Test1
     End Module
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -369,7 +375,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo<T>
             {
@@ -574,7 +580,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // unary
             {
@@ -786,7 +792,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo<T>
             {
@@ -836,7 +842,7 @@ Namespace Test1
     End Enum
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var field = output.Items[0].Items[0].Items[0];
@@ -929,7 +935,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];
@@ -1021,7 +1027,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo
             {
@@ -1193,7 +1199,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             // Foo
             {
@@ -1309,7 +1315,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
             Assert.Equal("Foo<T>", type.DisplayNames[SyntaxLanguage.CSharp]);
@@ -1359,7 +1365,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var type = output.Items[0].Items[0];
             Assert.NotNull(type);
@@ -1390,7 +1396,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1415,7 +1421,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1440,7 +1446,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1465,7 +1471,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1492,7 +1498,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1518,7 +1524,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1544,7 +1550,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1570,7 +1576,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);
@@ -1598,7 +1604,7 @@ Namespace Test1
     End Class
 End Namespace
 ";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromVBCode(code));
+            MetadataItem output = Verify(code);
             Assert.Single(output.Items);
             var ns = output.Items[0];
             Assert.NotNull(ns);

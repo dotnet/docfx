@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .Select(CreateMetadataReference));
         }
 
-        public static IEnumerable<(MetadataReference reference, IAssemblySymbol assembly)> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
+        public static IEnumerable<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
         {
             foreach (var reference in assemblyCompilation.References)
             {
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (reference is PortableExecutableReference portableReference &&
                     assemblyPaths.Any(path => portableReference.FilePath.Replace('\\', '/') == path.Replace('\\', '/')))
                 {
-                    yield return (reference, assembly);
+                    yield return assembly;
                 }
             }
         }
