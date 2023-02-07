@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Tests
             return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
         }
 
+#if NET7_0_OR_GREATER
         [Fact]
         public void Pdf()
         {
@@ -63,6 +64,31 @@ namespace Microsoft.DocAsCode.Tests
             }
 
             Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
+        }
+#endif
+
+        [Fact]
+        public async Task CSharp()
+        {
+            var samplePath = $"{SamplesDir}/csharp";
+            Clean(samplePath);
+
+            if (Debugger.IsAttached)
+            {
+                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
+                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
+                Assert.Equal(0, Program.Main(new[] { "build", $"{samplePath}/docfx.json" }));
+            }
+            else
+            {
+                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
+                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
+                Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
+            }
+
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile)
+                          .UniqueForTargetFrameworkAndVersion()
+                          .AutoVerify(includeBuildServer: false);
         }
 
         [Fact]

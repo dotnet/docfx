@@ -1,0 +1,25 @@
+{
+  "metadata": [
+    {
+      "src": [
+        "src/*.csproj"
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**/*.yml",
+          "toc.yml"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "exportViewModel": true,
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ]
+  }
+}

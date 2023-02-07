@@ -1,237 +1,613 @@
 ﻿{
-  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "uid": "CSharp8.NullableReferenceTypes",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0.0
   },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
       "children": [
         {
-          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "uid": "CSharp8.NullableReferenceTypes.Field",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "parent": "CSharp8.NullableReferenceTypes",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Main(string[])"
+              "value": "Field"
             },
             {
               "lang": "vb",
-              "value": "Main(String())"
+              "value": "Field"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CSharp.Main(string[])"
+              "value": "NullableReferenceTypes.Field"
             },
             {
               "lang": "vb",
-              "value": "CSharp.Main(String())"
+              "value": "NullableReferenceTypes.Field"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+              "value": "CSharp8.NullableReferenceTypes.Field"
             },
             {
               "lang": "vb",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+              "value": "CSharp8.NullableReferenceTypes.Field"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Field\" text=\"Field\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Main(string[] args)"
+                "value": "public string? Field"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Main(args As String())"
+                "value": "Public Field As String"
               }
             ],
-            "parameters": [
-              {
-                "id": "args",
-                "type": {
-                  "uid": "System.String[]",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
-                    }
-                  ]
-                }
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
               }
-            ]
+            }
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Main",
-            "path": "dotnet/csharp/CSharp.cs",
-            "startLine": 9.0,
+            "id": "Field",
+            "path": "src/CSharp8.cs",
+            "startLine": 70.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "cs.temp.dll"
+            "CSharp"
           ],
-          "namespace": "BuildFromCSharpSourceCode",
-          "overload": {
-            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Main"
-              },
-              {
-                "lang": "vb",
-                "value": "Main"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp.Main"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              }
-            ],
-            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
-          },
+          "namespace": "CSharp8",
           "level": 0.0,
-          "type": "method",
+          "type": "field",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_NullableReferenceTypes_Field.md&value=---%0Auid%3A%20CSharp8.NullableReferenceTypes.Field%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L71",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "id": "CSharp8_NullableReferenceTypes_Field",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
+      "children": [
+        {
+          "uid": "CSharp8.NullableReferenceTypes.Property",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.NullableReferenceTypes",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Property"
+            },
+            {
+              "lang": "vb",
+              "value": "Property"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "NullableReferenceTypes.Property"
+            },
+            {
+              "lang": "vb",
+              "value": "NullableReferenceTypes.Property"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.NullableReferenceTypes.Property"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.NullableReferenceTypes.Property"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property\" text=\"Property\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public string? Property { get; set; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property [Property] As String"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Property",
+            "path": "src/CSharp8.cs",
+            "startLine": 68.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.NullableReferenceTypes.Property*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Property"
+              },
+              {
+                "lang": "vb",
+                "value": "Property"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "NullableReferenceTypes.Property"
+              },
+              {
+                "lang": "vb",
+                "value": "NullableReferenceTypes.Property"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.NullableReferenceTypes.Property"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.NullableReferenceTypes.Property"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.NullableReferenceTypes.Property*\" text=\"Property\"/>"
+              }
+            ],
+            "id": "CSharp8_NullableReferenceTypes_Property_"
+          },
+          "level": 0.0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_NullableReferenceTypes_Property.md&value=---%0Auid%3A%20CSharp8.NullableReferenceTypes.Property%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L69",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_NullableReferenceTypes_Property",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inMethod": true,
+      "typePropertyName": "inMethod",
+      "id": "methods",
+      "children": [
+        {
+          "uid": "CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.NullableReferenceTypes",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "DoSomething(List<string?>?)"
+            },
+            {
+              "lang": "vb",
+              "value": "DoSomething(List(Of String))"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "NullableReferenceTypes.DoSomething(List<string?>?)"
+            },
+            {
+              "lang": "vb",
+              "value": "NullableReferenceTypes.DoSomething(List(Of String))"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List<string?>?)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List(Of String))"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;string?&gt;?)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List{System.String})\" text=\"DoSomething(List&lt;string?&gt;?)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static (string?, object?)? DoSomething(List<string?>? name = null)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared Function DoSomething(name As List(Of String) = Nothing) As (String, Object)?"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "name",
+                "type": {
+                  "uid": "System.Collections.Generic.List{System.String}",
+                  "definition": "System.Collections.Generic.List`1",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "List<string>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "List(Of String)"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "List<string>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "List(Of String)"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "System.Collections.Generic.List<string>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "System.Collections.Generic.List(Of String)"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"string\"/>&gt;"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "System.Nullable{System.ValueTuple{System.String,System.Object}}",
+                "definition": "System.Nullable`1",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "(string, object)?"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "(String, Object)?"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "(string, object)?"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "(String, Object)?"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "(string, object)?"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "(String, Object)?"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "(<xref uid=\"System.String\" text=\"string\"/>, <xref uid=\"System.Object\" text=\"object\"/>)?"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "(<xref uid=\"System.String\" text=\"String\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)?"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "DoSomething",
+            "path": "src/CSharp8.cs",
+            "startLine": 72.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.NullableReferenceTypes.DoSomething*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "DoSomething"
+              },
+              {
+                "lang": "vb",
+                "value": "DoSomething"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "NullableReferenceTypes.DoSomething"
+              },
+              {
+                "lang": "vb",
+                "value": "NullableReferenceTypes.DoSomething"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.NullableReferenceTypes.DoSomething"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.NullableReferenceTypes.DoSomething"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.NullableReferenceTypes.DoSomething*\" text=\"DoSomething\"/>"
+              }
+            ],
+            "id": "CSharp8_NullableReferenceTypes_DoSomething_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__.md&value=---%0Auid%3A%20CSharp8.NullableReferenceTypes.DoSomething(System.Collections.Generic.List%7BSystem.String%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L73",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_NullableReferenceTypes_DoSomething_System_Collections_Generic_List_System_String__",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -245,91 +621,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "NullableReferenceTypes"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "NullableReferenceTypes"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "NullableReferenceTypes"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "NullableReferenceTypes"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp8.NullableReferenceTypes"
     },
     {
       "lang": "vb",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp8.NullableReferenceTypes"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "path": "samples/csharp/src/CSharp8.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CSharp",
-    "path": "dotnet/csharp/CSharp.cs",
-    "startLine": 7.0,
+    "id": "NullableReferenceTypes",
+    "path": "src/CSharp8.cs",
+    "startLine": 66.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "cs.temp.dll"
+    "CSharp"
   ],
   "namespace": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0.0
@@ -338,11 +714,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CSharp"
+        "value": "public class NullableReferenceTypes"
       },
       {
         "lang": "vb",
-        "value": "Public Class CSharp"
+        "value": "Public Class NullableReferenceTypes"
       }
     ]
   },
@@ -736,8 +1112,6 @@
       "level": 0.0
     }
   ],
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
   "_systemKeys": [
     "uid",
     "isEii",
@@ -774,14 +1148,11 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_key": "api/CSharp8.NullableReferenceTypes.yml",
   "_lang": "csharp",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_path": "api/CSharp8.NullableReferenceTypes.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
@@ -847,15 +1218,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_NullableReferenceTypes.md&value=---%0Auid%3A%20CSharp8.NullableReferenceTypes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L67",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "BuildFromCSharpSourceCode_CSharp",
+  "id": "CSharp8_NullableReferenceTypes",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

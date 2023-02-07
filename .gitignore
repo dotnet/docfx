@@ -8,6 +8,7 @@ node_modules
 _site
 _site_pdf
 docs/api
+samples/**/api
 
 *.user
 *.log

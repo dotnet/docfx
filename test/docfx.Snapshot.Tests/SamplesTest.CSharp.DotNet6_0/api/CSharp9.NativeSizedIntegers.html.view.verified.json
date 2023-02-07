@@ -1,237 +1,326 @@
 ﻿{
-  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "uid": "CSharp9.NativeSizedIntegers",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp9",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
     "level": 0.0
   },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
       "children": [
         {
-          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "uid": "CSharp9.NativeSizedIntegers.X",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "parent": "CSharp9.NativeSizedIntegers",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Main(string[])"
+              "value": "X"
             },
             {
               "lang": "vb",
-              "value": "Main(String())"
+              "value": "X"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CSharp.Main(string[])"
+              "value": "NativeSizedIntegers.X"
             },
             {
               "lang": "vb",
-              "value": "CSharp.Main(String())"
+              "value": "NativeSizedIntegers.X"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+              "value": "CSharp9.NativeSizedIntegers.X"
             },
             {
               "lang": "vb",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+              "value": "CSharp9.NativeSizedIntegers.X"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Main(string[] args)"
+                "value": "public nint X"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Main(args As String())"
+                "value": "Public X As IntPtr"
               }
             ],
-            "parameters": [
-              {
-                "id": "args",
-                "type": {
-                  "uid": "System.String[]",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
-                    }
-                  ]
-                }
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.IntPtr",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "nint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "IntPtr"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "nint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "IntPtr"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "nint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.IntPtr"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
+                  }
+                ]
               }
-            ]
+            }
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "path": "samples/csharp/src/CSharp9.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Main",
-            "path": "dotnet/csharp/CSharp.cs",
-            "startLine": 9.0,
+            "id": "X",
+            "path": "src/CSharp9.cs",
+            "startLine": 23.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "cs.temp.dll"
+            "CSharp"
           ],
-          "namespace": "BuildFromCSharpSourceCode",
-          "overload": {
-            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Main"
-              },
-              {
-                "lang": "vb",
-                "value": "Main"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp.Main"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              }
-            ],
-            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
-          },
+          "namespace": "CSharp9",
           "level": 0.0,
-          "type": "method",
+          "type": "field",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers_X.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L24",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "id": "CSharp9_NativeSizedIntegers_X",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp9.NativeSizedIntegers.Y",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp9.NativeSizedIntegers",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Y"
+            },
+            {
+              "lang": "vb",
+              "value": "Y"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "NativeSizedIntegers.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "NativeSizedIntegers.Y"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp9.NativeSizedIntegers.Y"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp9.NativeSizedIntegers.Y"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public nuint Y"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Y As UIntPtr"
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.UIntPtr",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "nuint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "UIntPtr"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "nuint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "UIntPtr"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "nuint"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.UIntPtr"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp9.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Y",
+            "path": "src/CSharp9.cs",
+            "startLine": 24.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp9",
+          "level": 0.0,
+          "type": "field",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers_Y.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L25",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp9_NativeSizedIntegers_Y",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -245,91 +334,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "NativeSizedIntegers"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "NativeSizedIntegers"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "NativeSizedIntegers"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "NativeSizedIntegers"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp9.NativeSizedIntegers"
     },
     {
       "lang": "vb",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp9.NativeSizedIntegers"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "path": "samples/csharp/src/CSharp9.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CSharp",
-    "path": "dotnet/csharp/CSharp.cs",
-    "startLine": 7.0,
+    "id": "NativeSizedIntegers",
+    "path": "src/CSharp9.cs",
+    "startLine": 21.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "cs.temp.dll"
+    "CSharp"
   ],
   "namespace": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp9",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp9"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
       }
     ],
     "level": 0.0
@@ -338,11 +427,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CSharp"
+        "value": "public class NativeSizedIntegers"
       },
       {
         "lang": "vb",
-        "value": "Public Class CSharp"
+        "value": "Public Class NativeSizedIntegers"
       }
     ]
   },
@@ -736,8 +825,6 @@
       "level": 0.0
     }
   ],
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
   "_systemKeys": [
     "uid",
     "isEii",
@@ -774,14 +861,11 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_key": "api/CSharp9.NativeSizedIntegers.yml",
   "_lang": "csharp",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_path": "api/CSharp9.NativeSizedIntegers.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
@@ -847,15 +931,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L22",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "BuildFromCSharpSourceCode_CSharp",
+  "id": "CSharp9_NativeSizedIntegers",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

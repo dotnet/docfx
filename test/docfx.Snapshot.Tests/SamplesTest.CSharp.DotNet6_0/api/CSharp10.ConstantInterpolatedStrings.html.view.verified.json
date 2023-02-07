@@ -1,237 +1,461 @@
 ﻿{
-  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "uid": "CSharp10.ConstantInterpolatedStrings",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
     "level": 0.0
   },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inField": true,
+      "typePropertyName": "inField",
+      "id": "fields",
       "children": [
         {
-          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "uid": "CSharp10.ConstantInterpolatedStrings.S1",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "parent": "CSharp10.ConstantInterpolatedStrings",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Main(string[])"
+              "value": "S1"
             },
             {
               "lang": "vb",
-              "value": "Main(String())"
+              "value": "S1"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CSharp.Main(string[])"
+              "value": "ConstantInterpolatedStrings.S1"
             },
             {
               "lang": "vb",
-              "value": "CSharp.Main(String())"
+              "value": "ConstantInterpolatedStrings.S1"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+              "value": "CSharp10.ConstantInterpolatedStrings.S1"
             },
             {
               "lang": "vb",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+              "value": "CSharp10.ConstantInterpolatedStrings.S1"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S1\" text=\"S1\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S1\" text=\"S1\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Main(string[] args)"
+                "value": "public const string S1 = \"Hello world\""
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Main(args As String())"
+                "value": "Public Const S1 As String = \"Hello world\""
               }
             ],
-            "parameters": [
-              {
-                "id": "args",
-                "type": {
-                  "uid": "System.String[]",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
-                    }
-                  ]
-                }
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
               }
-            ]
+            }
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Main",
-            "path": "dotnet/csharp/CSharp.cs",
-            "startLine": 9.0,
+            "id": "S1",
+            "path": "src/CSharp10.cs",
+            "startLine": 22.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "cs.temp.dll"
+            "CSharp"
           ],
-          "namespace": "BuildFromCSharpSourceCode",
-          "overload": {
-            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Main"
-              },
-              {
-                "lang": "vb",
-                "value": "Main"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "CSharp.Main"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              },
-              {
-                "lang": "vb",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
-              }
-            ],
-            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
-          },
+          "namespace": "CSharp10",
           "level": 0.0,
-          "type": "method",
+          "type": "field",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ConstantInterpolatedStrings_S1.md&value=---%0Auid%3A%20CSharp10.ConstantInterpolatedStrings.S1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L23",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "id": "CSharp10_ConstantInterpolatedStrings_S1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.ConstantInterpolatedStrings.S2",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ConstantInterpolatedStrings",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "S2"
+            },
+            {
+              "lang": "vb",
+              "value": "S2"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ConstantInterpolatedStrings.S2"
+            },
+            {
+              "lang": "vb",
+              "value": "ConstantInterpolatedStrings.S2"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ConstantInterpolatedStrings.S2"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ConstantInterpolatedStrings.S2"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S2\" text=\"S2\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S2\" text=\"S2\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public const string S2 = \"Hello World\""
+              },
+              {
+                "lang": "vb",
+                "value": "Public Const S2 As String = \"Hello World\""
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "S2",
+            "path": "src/CSharp10.cs",
+            "startLine": 23.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "level": 0.0,
+          "type": "field",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ConstantInterpolatedStrings_S2.md&value=---%0Auid%3A%20CSharp10.ConstantInterpolatedStrings.S2%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L24",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp10_ConstantInterpolatedStrings_S2",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp10.ConstantInterpolatedStrings.S3",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp10.ConstantInterpolatedStrings",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "S3"
+            },
+            {
+              "lang": "vb",
+              "value": "S3"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ConstantInterpolatedStrings.S3"
+            },
+            {
+              "lang": "vb",
+              "value": "ConstantInterpolatedStrings.S3"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp10.ConstantInterpolatedStrings.S3"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp10.ConstantInterpolatedStrings.S3"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S3\" text=\"S3\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp10.ConstantInterpolatedStrings.S3\" text=\"S3\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public const string S3 = \"Hello world Kevin, welcome to the team!\""
+              },
+              {
+                "lang": "vb",
+                "value": "Public Const S3 As String = \"Hello world Kevin, welcome to the team!\""
+              }
+            ],
+            "return": null,
+            "fieldValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp10.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "S3",
+            "path": "src/CSharp10.cs",
+            "startLine": 24.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp10",
+          "level": 0.0,
+          "type": "field",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ConstantInterpolatedStrings_S3.md&value=---%0Auid%3A%20CSharp10.ConstantInterpolatedStrings.S3%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L25",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp10_ConstantInterpolatedStrings_S3",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -245,91 +469,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "ConstantInterpolatedStrings"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "ConstantInterpolatedStrings"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "ConstantInterpolatedStrings"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "ConstantInterpolatedStrings"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp10.ConstantInterpolatedStrings"
     },
     {
       "lang": "vb",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp10.ConstantInterpolatedStrings"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "path": "samples/csharp/src/CSharp10.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CSharp",
-    "path": "dotnet/csharp/CSharp.cs",
-    "startLine": 7.0,
+    "id": "ConstantInterpolatedStrings",
+    "path": "src/CSharp10.cs",
+    "startLine": 20.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "cs.temp.dll"
+    "CSharp"
   ],
   "namespace": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp10"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp10\" text=\"CSharp10\"/>"
       }
     ],
     "level": 0.0
@@ -338,11 +562,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CSharp"
+        "value": "public class ConstantInterpolatedStrings"
       },
       {
         "lang": "vb",
-        "value": "Public Class CSharp"
+        "value": "Public Class ConstantInterpolatedStrings"
       }
     ]
   },
@@ -736,8 +960,6 @@
       "level": 0.0
     }
   ],
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
   "_systemKeys": [
     "uid",
     "isEii",
@@ -774,14 +996,11 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_key": "api/CSharp10.ConstantInterpolatedStrings.yml",
   "_lang": "csharp",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_path": "api/CSharp10.ConstantInterpolatedStrings.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
@@ -847,15 +1066,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ConstantInterpolatedStrings.md&value=---%0Auid%3A%20CSharp10.ConstantInterpolatedStrings%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L21",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "BuildFromCSharpSourceCode_CSharp",
+  "id": "CSharp10_ConstantInterpolatedStrings",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

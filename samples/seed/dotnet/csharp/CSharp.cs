@@ -11,13 +11,4 @@ public class CSharp
     {
         Console.WriteLine("Hello World!");
     }
-
-    /// <summary>
-    /// This method should do something...
-    /// </summary>
-    /// <include file='../docs.xml' path='docs/members[@name="MyTests"]/Test/*'/>
-    public void XmlCommentIncludeTag()
-    {
-
-    }
 }

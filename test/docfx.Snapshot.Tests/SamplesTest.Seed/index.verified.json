@@ -12,12 +12,22 @@
   "api/BuildFromCSharpSourceCode.CSharp.html": {
     "href": "api/BuildFromCSharpSourceCode.CSharp.html",
     "title": "Class CSharp | docfx seed website",
-    "keywords": "Class CSharp Inheritance object CSharp Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromCSharpSourceCode Assembly: cs.temp.dll.dll Syntax public class CSharp Methods | Improve this Doc View Source Main(string[]) Declaration public static void Main(string[] args) Parameters Type Name Description string[] args | Improve this Doc View Source XmlCommentIncludeTag() This method should do something... Declaration public void XmlCommentIncludeTag() Remarks This is remarks."
+    "keywords": "Class CSharp Inheritance object CSharp Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromCSharpSourceCode Assembly: cs.temp.dll.dll Syntax public class CSharp Methods | Improve this Doc View Source Main(string[]) Declaration public static void Main(string[] args) Parameters Type Name Description string[] args"
   },
   "api/BuildFromCSharpSourceCode.html": {
     "href": "api/BuildFromCSharpSourceCode.html",
     "title": "Namespace BuildFromCSharpSourceCode | docfx seed website",
     "keywords": "Namespace BuildFromCSharpSourceCode Classes CSharp"
+  },
+  "api/BuildFromProject.Class1.html": {
+    "href": "api/BuildFromProject.Class1.html",
+    "title": "Class Class1 | docfx seed website",
+    "keywords": "Class Class1 Inheritance object Class1 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromProject Assembly: BuildFromProject.dll Syntax public class Class1 Methods | Improve this Doc View Source XmlCommentIncludeTag() This method should do something... Declaration public void XmlCommentIncludeTag() Remarks This is remarks."
+  },
+  "api/BuildFromProject.html": {
+    "href": "api/BuildFromProject.html",
+    "title": "Namespace BuildFromProject | docfx seed website",
+    "keywords": "Namespace BuildFromProject Classes Class1"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -128,151 +138,6 @@
     "href": "api/CatLibrary.TomFromBaseClass.html",
     "title": "Class TomFromBaseClass | docfx seed website",
     "keywords": "Class TomFromBaseClass TomFromBaseClass inherits from @ Inheritance object Tom TomFromBaseClass Inherited Members Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CatLibrary Assembly: CatLibrary.dll Syntax public class TomFromBaseClass : Tom Constructors | Improve this Doc View Source TomFromBaseClass(int) This is a #ctor with parameter Declaration public TomFromBaseClass(int k) Parameters Type Name Description int k"
-  },
-  "api/CSharp10.ConstantInterpolatedStrings.html": {
-    "href": "api/CSharp10.ConstantInterpolatedStrings.html",
-    "title": "Class ConstantInterpolatedStrings | docfx seed website",
-    "keywords": "Class ConstantInterpolatedStrings Inheritance object ConstantInterpolatedStrings Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public class ConstantInterpolatedStrings Fields | Improve this Doc View Source S1 Declaration public const string S1 = \"Hello world\" Field Value Type Description string | Improve this Doc View Source S2 Declaration public const string S2 = \"Hello World\" Field Value Type Description string | Improve this Doc View Source S3 Declaration public const string S3 = \"Hello world Kevin, welcome to the team!\" Field Value Type Description string"
-  },
-  "api/CSharp10.html": {
-    "href": "api/CSharp10.html",
-    "title": "Namespace CSharp10 | docfx seed website",
-    "keywords": "Namespace CSharp10 Classes ConstantInterpolatedStrings Issue7737 RecordClass Structs ParameterlessStructConstructors ReadOnlyRecordStruct RecordStruct"
-  },
-  "api/CSharp10.Issue7737.html": {
-    "href": "api/CSharp10.Issue7737.html",
-    "title": "Class Issue7737 | docfx seed website",
-    "keywords": "Class Issue7737 Inheritance object Issue7737 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public class Issue7737 Methods | Improve this Doc View Source Foo() Exception Declaration public void Foo()"
-  },
-  "api/CSharp10.ParameterlessStructConstructors.html": {
-    "href": "api/CSharp10.ParameterlessStructConstructors.html",
-    "title": "Struct ParameterlessStructConstructors | docfx seed website",
-    "keywords": "Struct ParameterlessStructConstructors Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public struct ParameterlessStructConstructors Constructors | Improve this Doc View Source ParameterlessStructConstructors() Declaration public ParameterlessStructConstructors() Fields | Improve this Doc View Source X Declaration public int X Field Value Type Description int Properties | Improve this Doc View Source Description Declaration public string Description { readonly get; init; } Property Value Type Description string | Improve this Doc View Source Y Declaration public int Y { readonly get; set; } Property Value Type Description int"
-  },
-  "api/CSharp10.ReadOnlyRecordStruct.html": {
-    "href": "api/CSharp10.ReadOnlyRecordStruct.html",
-    "title": "Struct ReadOnlyRecordStruct | docfx seed website",
-    "keywords": "Struct ReadOnlyRecordStruct Implements IEquatable<ReadOnlyRecordStruct> Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public readonly record struct ReadOnlyRecordStruct : IEquatable<ReadOnlyRecordStruct> Constructors | Improve this Doc View Source ReadOnlyRecordStruct(double, double, double) Declaration public ReadOnlyRecordStruct(double X, double Y, double Z) Parameters Type Name Description double X double Y double Z Properties | Improve this Doc View Source X Declaration public double X { get; init; } Property Value Type Description double | Improve this Doc View Source Y Declaration public double Y { get; init; } Property Value Type Description double | Improve this Doc View Source Z Declaration public double Z { get; init; } Property Value Type Description double Implements System.IEquatable<T>"
-  },
-  "api/CSharp10.RecordClass.html": {
-    "href": "api/CSharp10.RecordClass.html",
-    "title": "Class RecordClass | docfx seed website",
-    "keywords": "Class RecordClass Inheritance object RecordClass Implements IEquatable<RecordClass> Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public record RecordClass : IEquatable<RecordClass> Constructors | Improve this Doc View Source RecordClass(string, string) Declaration public RecordClass(string FirstName, string LastName) Parameters Type Name Description string FirstName string LastName Properties | Improve this Doc View Source FirstName Declaration public string FirstName { get; init; } Property Value Type Description string | Improve this Doc View Source LastName Declaration public string LastName { get; init; } Property Value Type Description string Implements System.IEquatable<T>"
-  },
-  "api/CSharp10.RecordStruct.html": {
-    "href": "api/CSharp10.RecordStruct.html",
-    "title": "Struct RecordStruct | docfx seed website",
-    "keywords": "Struct RecordStruct Implements IEquatable<RecordStruct> Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp10 Assembly: BuildFromProject.dll Syntax public record struct RecordStruct : IEquatable<RecordStruct> Constructors | Improve this Doc View Source RecordStruct(DateTime, double) Declaration public RecordStruct(DateTime TakenAt, double Measurement) Parameters Type Name Description DateTime TakenAt double Measurement Properties | Improve this Doc View Source Measurement Declaration public double Measurement { readonly get; set; } Property Value Type Description double | Improve this Doc View Source TakenAt Declaration public DateTime TakenAt { readonly get; set; } Property Value Type Description DateTime Implements System.IEquatable<T>"
-  },
-  "api/CSharp11.CheckedUserDefinedOperators-1.html": {
-    "href": "api/CSharp11.CheckedUserDefinedOperators-1.html",
-    "title": "Interface CheckedUserDefinedOperators<T> | docfx seed website",
-    "keywords": "Interface CheckedUserDefinedOperators<T> Namespace: CSharp11 Assembly: BuildFromProject.dll Syntax public interface CheckedUserDefinedOperators<T> where T : CheckedUserDefinedOperators<T> Type Parameters Name Description T Operators | Improve this Doc View Source operator +(T, T) Declaration public static abstract T operator +(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator checked +(T, T) Declaration public static abstract T operator checked +(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator checked --(T) Declaration public static abstract T operator checked --(T x) Parameters Type Name Description T x Returns Type Description T | Improve this Doc View Source operator checked /(T, T) Declaration public static abstract T operator checked /(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source explicit operator checked int(T) Declaration public static abstract explicit operator checked int(T x) Parameters Type Name Description T x Returns Type Description int | Improve this Doc View Source operator checked ++(T) Declaration public static abstract T operator checked ++(T x) Parameters Type Name Description T x Returns Type Description T | Improve this Doc View Source operator checked *(T, T) Declaration public static abstract T operator checked *(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator checked -(T, T) Declaration public static abstract T operator checked -(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator checked -(T) Declaration public static abstract T operator checked -(T x) Parameters Type Name Description T x Returns Type Description T | Improve this Doc View Source operator --(T) Declaration public static abstract T operator --(T x) Parameters Type Name Description T x Returns Type Description T | Improve this Doc View Source operator /(T, T) Declaration public static abstract T operator /(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source explicit operator int(T) Declaration public static abstract explicit operator int(T x) Parameters Type Name Description T x Returns Type Description int | Improve this Doc View Source operator ++(T) Declaration public static abstract T operator ++(T x) Parameters Type Name Description T x Returns Type Description T | Improve this Doc View Source operator *(T, T) Declaration public static abstract T operator *(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator -(T, T) Declaration public static abstract T operator -(T lhs, T rhs) Parameters Type Name Description T lhs T rhs Returns Type Description T | Improve this Doc View Source operator -(T) Declaration public static abstract T operator -(T x) Parameters Type Name Description T x Returns Type Description T"
-  },
-  "api/CSharp11.html": {
-    "href": "api/CSharp11.html",
-    "title": "Namespace CSharp11 | docfx seed website",
-    "keywords": "Namespace CSharp11 Classes RequiredModifier StaticAbstractMembersInInterfaces Structs StaticAbstractMembersInInterfaces.RepeatSequence Interfaces CheckedUserDefinedOperators<T> StaticAbstractMembersInInterfaces.IGetNext<T>"
-  },
-  "api/CSharp11.RequiredModifier.html": {
-    "href": "api/CSharp11.RequiredModifier.html",
-    "title": "Class RequiredModifier | docfx seed website",
-    "keywords": "Class RequiredModifier Inheritance object RequiredModifier Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp11 Assembly: BuildFromProject.dll Syntax public class RequiredModifier Properties | Improve this Doc View Source FirstName Declaration public required string FirstName { get; init; } Property Value Type Description string | Improve this Doc View Source LastName Declaration public required string LastName { get; init; } Property Value Type Description string | Improve this Doc View Source MiddleName Declaration public string MiddleName { get; init; } Property Value Type Description string"
-  },
-  "api/CSharp11.StaticAbstractMembersInInterfaces.html": {
-    "href": "api/CSharp11.StaticAbstractMembersInInterfaces.html",
-    "title": "Class StaticAbstractMembersInInterfaces | docfx seed website",
-    "keywords": "Class StaticAbstractMembersInInterfaces Inheritance object StaticAbstractMembersInInterfaces Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp11 Assembly: BuildFromProject.dll Syntax public class StaticAbstractMembersInInterfaces"
-  },
-  "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html": {
-    "href": "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
-    "title": "Interface StaticAbstractMembersInInterfaces.IGetNext<T> | docfx seed website",
-    "keywords": "Interface StaticAbstractMembersInInterfaces.IGetNext<T> Namespace: CSharp11 Assembly: BuildFromProject.dll Syntax public interface StaticAbstractMembersInInterfaces.IGetNext<T> where T : StaticAbstractMembersInInterfaces.IGetNext<T> Type Parameters Name Description T Operators | Improve this Doc View Source operator ++(T) Declaration public static abstract T operator ++(T other) Parameters Type Name Description T other Returns Type Description T"
-  },
-  "api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html": {
-    "href": "api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
-    "title": "Struct StaticAbstractMembersInInterfaces.RepeatSequence | docfx seed website",
-    "keywords": "Struct StaticAbstractMembersInInterfaces.RepeatSequence Implements StaticAbstractMembersInInterfaces.IGetNext<StaticAbstractMembersInInterfaces.RepeatSequence> Inherited Members ValueType.Equals(object) ValueType.GetHashCode() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp11 Assembly: BuildFromProject.dll Syntax public struct StaticAbstractMembersInInterfaces.RepeatSequence : StaticAbstractMembersInInterfaces.IGetNext<StaticAbstractMembersInInterfaces.RepeatSequence> Constructors | Improve this Doc View Source RepeatSequence() Declaration public RepeatSequence() Fields | Improve this Doc View Source Text Declaration public string Text Field Value Type Description string Methods | Improve this Doc View Source ToString() Declaration public override string ToString() Returns Type Description string Overrides ValueType.ToString() Operators | Improve this Doc View Source operator ++(RepeatSequence) Declaration public static StaticAbstractMembersInInterfaces.RepeatSequence operator ++(StaticAbstractMembersInInterfaces.RepeatSequence other) Parameters Type Name Description StaticAbstractMembersInInterfaces.RepeatSequence other Returns Type Description StaticAbstractMembersInInterfaces.RepeatSequence Implements StaticAbstractMembersInInterfaces.IGetNext<T>"
-  },
-  "api/CSharp8.DefaultInterfaceMembers.html": {
-    "href": "api/CSharp8.DefaultInterfaceMembers.html",
-    "title": "Interface DefaultInterfaceMembers | docfx seed website",
-    "keywords": "Interface DefaultInterfaceMembers Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public interface DefaultInterfaceMembers Fields | Improve this Doc View Source GravitationalConstant Declaration public const double GravitationalConstant = 6.673E-11 Field Value Type Description double | Improve this Doc View Source X Declaration public const int X = 0 Field Value Type Description int Methods | Improve this Doc View Source DoSomething() Declaration public static void DoSomething() | Improve this Doc View Source DoSomethingElse() Declaration public static void DoSomethingElse() Operators | Improve this Doc View Source operator +(DefaultInterfaceMembers) Declaration public static DefaultInterfaceMembers operator +(DefaultInterfaceMembers a) Parameters Type Name Description DefaultInterfaceMembers a Returns Type Description DefaultInterfaceMembers"
-  },
-  "api/CSharp8.DefaultInterfaceMembers.IA.html": {
-    "href": "api/CSharp8.DefaultInterfaceMembers.IA.html",
-    "title": "Interface DefaultInterfaceMembers.IA | docfx seed website",
-    "keywords": "Interface DefaultInterfaceMembers.IA Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public interface DefaultInterfaceMembers.IA Methods | Improve this Doc View Source M() Declaration void M()"
-  },
-  "api/CSharp8.DefaultInterfaceMembers.Nested.html": {
-    "href": "api/CSharp8.DefaultInterfaceMembers.Nested.html",
-    "title": "Class DefaultInterfaceMembers.Nested | docfx seed website",
-    "keywords": "Class DefaultInterfaceMembers.Nested Inheritance object DefaultInterfaceMembers.Nested Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public class DefaultInterfaceMembers.Nested"
-  },
-  "api/CSharp8.DisposableRefStructs.html": {
-    "href": "api/CSharp8.DisposableRefStructs.html",
-    "title": "Struct DisposableRefStructs | docfx seed website",
-    "keywords": "Struct DisposableRefStructs Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public ref struct DisposableRefStructs Methods | Improve this Doc View Source Dispose() Declaration public void Dispose() | Improve this Doc View Source DoSomething() Declaration public static void DoSomething()"
-  },
-  "api/CSharp8.html": {
-    "href": "api/CSharp8.html",
-    "title": "Namespace CSharp8 | docfx seed website",
-    "keywords": "Namespace CSharp8 Classes DefaultInterfaceMembers.Nested Issue4007 This works: SomeMethod(int). This does not work: SomeOtherMethod(). Misc NullableReferenceTypes Structs DisposableRefStructs ReadOnlyMembers Interfaces DefaultInterfaceMembers DefaultInterfaceMembers.IA"
-  },
-  "api/CSharp8.Issue4007.html": {
-    "href": "api/CSharp8.Issue4007.html",
-    "title": "Class Issue4007 | docfx seed website",
-    "keywords": "Class Issue4007 This works: SomeMethod(int). This does not work: SomeOtherMethod(). Inheritance object Issue4007 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public class Issue4007 Remarks This is remarks. Methods | Improve this Doc View Source SomeMethod(int) Declaration public void SomeMethod(int a) Parameters Type Name Description int a Remarks This is remarks. | Improve this Doc View Source SomeOtherMethod() Declaration public void SomeOtherMethod() Remarks This is remarks."
-  },
-  "api/CSharp8.Misc.html": {
-    "href": "api/CSharp8.Misc.html",
-    "title": "Class Misc | docfx seed website",
-    "keywords": "Class Misc Inheritance object Misc Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public class Misc Methods | Improve this Doc View Source AsynchronousStreams() Declaration public static Task AsynchronousStreams() Returns Type Description Task | Improve this Doc View Source GenerateSequence() Declaration public static IAsyncEnumerable<int> GenerateSequence() Returns Type Description IAsyncEnumerable<int> | Improve this Doc View Source IndicesAndRanges() Declaration public static void IndicesAndRanges() | Improve this Doc View Source IsExpression(DateTime) Declaration public static bool IsExpression(DateTime date) Parameters Type Name Description DateTime date Returns Type Description bool | Improve this Doc View Source NullCoalescingAssignment() Declaration public static void NullCoalescingAssignment() | Improve this Doc View Source StackallocInNestedExpressions() Declaration public static void StackallocInNestedExpressions() | Improve this Doc View Source StaticLocalFunctions(int) Declaration public static int StaticLocalFunctions(int n) Parameters Type Name Description int n Returns Type Description int | Improve this Doc View Source SwitchExpression(ConsoleColor) Declaration public static bool SwitchExpression(ConsoleColor color) Parameters Type Name Description ConsoleColor color Returns Type Description bool | Improve this Doc View Source UsingDeclaration() Declaration public static void UsingDeclaration()"
-  },
-  "api/CSharp8.NullableReferenceTypes.html": {
-    "href": "api/CSharp8.NullableReferenceTypes.html",
-    "title": "Class NullableReferenceTypes | docfx seed website",
-    "keywords": "Class NullableReferenceTypes Inheritance object NullableReferenceTypes Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public class NullableReferenceTypes Fields | Improve this Doc View Source Field Declaration public string? Field Field Value Type Description string Properties | Improve this Doc View Source Property Declaration public string? Property { get; set; } Property Value Type Description string Methods | Improve this Doc View Source DoSomething(List<string?>?) Declaration public static (string?, object?)? DoSomething(List<string?>? name = null) Parameters Type Name Description List<string> name Returns Type Description (string, object)?"
-  },
-  "api/CSharp8.ReadOnlyMembers.html": {
-    "href": "api/CSharp8.ReadOnlyMembers.html",
-    "title": "Struct ReadOnlyMembers | docfx seed website",
-    "keywords": "Struct ReadOnlyMembers Inherited Members ValueType.Equals(object) ValueType.GetHashCode() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Namespace: CSharp8 Assembly: BuildFromProject.dll Syntax public struct ReadOnlyMembers Properties | Improve this Doc View Source Counter Declaration public int Counter { readonly get; set; } Property Value Type Description int | Improve this Doc View Source X Declaration public readonly int X { get; } Property Value Type Description int | Improve this Doc View Source Y Declaration public readonly int Y { get; } Property Value Type Description int Methods | Improve this Doc View Source Sum() Declaration public readonly double Sum() Returns Type Description double | Improve this Doc View Source ToString() Declaration public override readonly string ToString() Returns Type Description string Overrides ValueType.ToString()"
-  },
-  "api/CSharp9.FunctionPointers.html": {
-    "href": "api/CSharp9.FunctionPointers.html",
-    "title": "Class FunctionPointers | docfx seed website",
-    "keywords": "Class FunctionPointers Inheritance object FunctionPointers Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public class FunctionPointers Methods | Improve this Doc View Source Example(Action<int>, delegate*<int, void>, delegate*<int, int>, delegate* unmanaged<int, int>, delegate* unmanaged[Cdecl]<int, int>, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int>) Declaration public static void Example(Action<int> a, delegate*<int, void> b, delegate*<int, int> c, delegate* unmanaged<int, int> d, delegate* unmanaged[Cdecl]<int, int> e, delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f) Parameters Type Name Description Action<int> a delegate*<int, void> b delegate*<int, int> c delegate* unmanaged<int, int> d delegate* unmanaged[Cdecl]<int, int> e delegate* unmanaged[Stdcall, SuppressGCTransition]<int, int> f"
-  },
-  "api/CSharp9.html": {
-    "href": "api/CSharp9.html",
-    "title": "Namespace CSharp9 | docfx seed website",
-    "keywords": "Namespace CSharp9 Classes FunctionPointers InitOnlySetters NativeSizedIntegers RecordTypes RecordTypes.Person RecordTypes.Teacher"
-  },
-  "api/CSharp9.InitOnlySetters.html": {
-    "href": "api/CSharp9.InitOnlySetters.html",
-    "title": "Class InitOnlySetters | docfx seed website",
-    "keywords": "Class InitOnlySetters Inheritance object InitOnlySetters Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public class InitOnlySetters Properties | Improve this Doc View Source PressureInMillibars Declaration public decimal PressureInMillibars { get; init; } Property Value Type Description decimal | Improve this Doc View Source RecordedAt Declaration public DateTime RecordedAt { get; init; } Property Value Type Description DateTime | Improve this Doc View Source TemperatureInCelsius Declaration public decimal TemperatureInCelsius { get; init; } Property Value Type Description decimal"
-  },
-  "api/CSharp9.NativeSizedIntegers.html": {
-    "href": "api/CSharp9.NativeSizedIntegers.html",
-    "title": "Class NativeSizedIntegers | docfx seed website",
-    "keywords": "Class NativeSizedIntegers Inheritance object NativeSizedIntegers Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public class NativeSizedIntegers Fields | Improve this Doc View Source X Declaration public nint X Field Value Type Description nint | Improve this Doc View Source Y Declaration public nuint Y Field Value Type Description nuint"
-  },
-  "api/CSharp9.RecordTypes.html": {
-    "href": "api/CSharp9.RecordTypes.html",
-    "title": "Class RecordTypes | docfx seed website",
-    "keywords": "Class RecordTypes Inheritance object RecordTypes Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public class RecordTypes"
-  },
-  "api/CSharp9.RecordTypes.Person.html": {
-    "href": "api/CSharp9.RecordTypes.Person.html",
-    "title": "Class RecordTypes.Person | docfx seed website",
-    "keywords": "Class RecordTypes.Person Inheritance object RecordTypes.Person RecordTypes.Teacher Implements IEquatable<RecordTypes.Person> Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public record RecordTypes.Person : IEquatable<RecordTypes.Person> Constructors | Improve this Doc View Source Person(string, string) Declaration public Person(string FirstName, string LastName) Parameters Type Name Description string FirstName string LastName Properties | Improve this Doc View Source FirstName Declaration public string FirstName { get; init; } Property Value Type Description string | Improve this Doc View Source LastName Declaration public string LastName { get; init; } Property Value Type Description string Implements System.IEquatable<T>"
-  },
-  "api/CSharp9.RecordTypes.Teacher.html": {
-    "href": "api/CSharp9.RecordTypes.Teacher.html",
-    "title": "Class RecordTypes.Teacher | docfx seed website",
-    "keywords": "Class RecordTypes.Teacher Inheritance object RecordTypes.Person RecordTypes.Teacher Implements IEquatable<RecordTypes.Person> IEquatable<RecordTypes.Teacher> Inherited Members RecordTypes.Person.FirstName RecordTypes.Person.LastName object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: CSharp9 Assembly: BuildFromProject.dll Syntax public record RecordTypes.Teacher : RecordTypes.Person, IEquatable<RecordTypes.Person>, IEquatable<RecordTypes.Teacher> Constructors | Improve this Doc View Source Teacher(string, string, int) Declaration public Teacher(string FirstName, string LastName, int Grade) Parameters Type Name Description string FirstName string LastName int Grade Properties | Improve this Doc View Source Grade Declaration public int Grade { get; init; } Property Value Type Description int Implements System.IEquatable<T> System.IEquatable<T>"
   },
   "api/MRef.Demo.Enumeration.ColorType.html": {
     "href": "api/MRef.Demo.Enumeration.ColorType.html",

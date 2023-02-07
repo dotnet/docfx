@@ -1,49 +1,49 @@
 ﻿{
-  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "uid": "BuildFromProject.Class1",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
     "level": 0.0
@@ -55,183 +55,135 @@
       "id": "methods",
       "children": [
         {
-          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "uid": "BuildFromProject.Class1.XmlCommentIncludeTag",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "parent": "BuildFromProject.Class1",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Main(string[])"
+              "value": "XmlCommentIncludeTag()"
             },
             {
               "lang": "vb",
-              "value": "Main(String())"
+              "value": "XmlCommentIncludeTag()"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CSharp.Main(string[])"
+              "value": "Class1.XmlCommentIncludeTag()"
             },
             {
               "lang": "vb",
-              "value": "CSharp.Main(String())"
+              "value": "Class1.XmlCommentIncludeTag()"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+              "value": "BuildFromProject.Class1.XmlCommentIncludeTag()"
             },
             {
               "lang": "vb",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+              "value": "BuildFromProject.Class1.XmlCommentIncludeTag()"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag\" text=\"XmlCommentIncludeTag()\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Main(string[] args)"
+                "value": "public void XmlCommentIncludeTag()"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Main(args As String())"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "args",
-                "type": {
-                  "uid": "System.String[]",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "string[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "String()"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
-                    }
-                  ]
-                }
+                "value": "Public Sub XmlCommentIncludeTag()"
               }
             ]
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "path": "samples/seed/dotnet/project/Class1.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Main",
-            "path": "dotnet/csharp/CSharp.cs",
-            "startLine": 9.0,
+            "id": "XmlCommentIncludeTag",
+            "path": "dotnet/project/Class1.cs",
+            "startLine": 8.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "cs.temp.dll"
+            "BuildFromProject"
           ],
-          "namespace": "BuildFromCSharpSourceCode",
+          "namespace": "BuildFromProject",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">This is remarks.</p>\n",
+          "example": [],
           "overload": {
-            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
+            "uid": "BuildFromProject.Class1.XmlCommentIncludeTag*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "Main"
+                "value": "XmlCommentIncludeTag"
               },
               {
                 "lang": "vb",
-                "value": "Main"
+                "value": "XmlCommentIncludeTag"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "CSharp.Main"
+                "value": "Class1.XmlCommentIncludeTag"
               },
               {
                 "lang": "vb",
-                "value": "CSharp.Main"
+                "value": "Class1.XmlCommentIncludeTag"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+                "value": "BuildFromProject.Class1.XmlCommentIncludeTag"
               },
               {
                 "lang": "vb",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+                "value": "BuildFromProject.Class1.XmlCommentIncludeTag"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+                "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+                "value": "<xref uid=\"BuildFromProject.Class1.XmlCommentIncludeTag*\" text=\"XmlCommentIncludeTag\"/>"
               }
             ],
-            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
+            "id": "BuildFromProject_Class1_XmlCommentIncludeTag_"
           },
           "level": 0.0,
           "type": "method",
-          "summary": "",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">This method should do something...</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
-          "remarks": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_XmlCommentIncludeTag.md&value=---%0Auid%3A%20BuildFromProject.Class1.XmlCommentIncludeTag%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Class1.cs/#L9",
           "conceptual": "",
           "implements": null,
-          "example": null,
           "seealso": null,
-          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "id": "BuildFromProject_Class1_XmlCommentIncludeTag",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -245,91 +197,91 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "Class1"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "Class1"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "Class1"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "Class1"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "BuildFromProject.Class1"
     },
     {
       "lang": "vb",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "BuildFromProject.Class1"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "path": "samples/seed/dotnet/project/Class1.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CSharp",
-    "path": "dotnet/csharp/CSharp.cs",
-    "startLine": 7.0,
+    "id": "Class1",
+    "path": "dotnet/project/Class1.cs",
+    "startLine": 2.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "cs.temp.dll"
+    "BuildFromProject"
   ],
   "namespace": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "BuildFromProject"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"BuildFromProject\" text=\"BuildFromProject\"/>"
       }
     ],
     "level": 0.0
@@ -338,11 +290,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CSharp"
+        "value": "public class Class1"
       },
       {
         "lang": "vb",
-        "value": "Public Class CSharp"
+        "value": "Public Class Class1"
       }
     ]
   },
@@ -774,12 +726,12 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_key": "obj/api/BuildFromProject.Class1.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
-  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_path": "api/BuildFromProject.Class1.html",
   "_rel": "../",
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -847,15 +799,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1.md&value=---%0Auid%3A%20BuildFromProject.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Class1.cs/#L3",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "BuildFromCSharpSourceCode_CSharp",
+  "id": "BuildFromProject_Class1",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

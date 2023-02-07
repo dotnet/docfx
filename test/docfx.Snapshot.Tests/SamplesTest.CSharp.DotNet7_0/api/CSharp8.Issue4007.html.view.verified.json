@@ -1,49 +1,49 @@
 ﻿{
-  "uid": "BuildFromCSharpSourceCode.CSharp",
+  "uid": "CSharp8.Issue4007",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0.0
@@ -55,105 +55,105 @@
       "id": "methods",
       "children": [
         {
-          "uid": "BuildFromCSharpSourceCode.CSharp.Main(System.String[])",
+          "uid": "CSharp8.Issue4007.SomeMethod(System.Int32)",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "BuildFromCSharpSourceCode.CSharp",
+          "parent": "CSharp8.Issue4007",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Main(string[])"
+              "value": "SomeMethod(int)"
             },
             {
               "lang": "vb",
-              "value": "Main(String())"
+              "value": "SomeMethod(Integer)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "CSharp.Main(string[])"
+              "value": "Issue4007.SomeMethod(int)"
             },
             {
               "lang": "vb",
-              "value": "CSharp.Main(String())"
+              "value": "Issue4007.SomeMethod(Integer)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(string[])"
+              "value": "CSharp8.Issue4007.SomeMethod(int)"
             },
             {
               "lang": "vb",
-              "value": "BuildFromCSharpSourceCode.CSharp.Main(String())"
+              "value": "CSharp8.Issue4007.SomeMethod(Integer)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" text=\"SomeMethod(int)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main(System.String[])\" text=\"Main(string[])\"/>"
+              "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" text=\"SomeMethod(int)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public static void Main(string[] args)"
+                "value": "public void SomeMethod(int a)"
               },
               {
                 "lang": "vb",
-                "value": "Public Shared Sub Main(args As String())"
+                "value": "Public Sub SomeMethod(a As Integer)"
               }
             ],
             "parameters": [
               {
-                "id": "args",
+                "id": "a",
                 "type": {
-                  "uid": "System.String[]",
+                  "uid": "System.Int32",
                   "name": [
                     {
                       "lang": "csharp",
-                      "value": "string[]"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "String()"
+                      "value": "Integer"
                     }
                   ],
                   "nameWithType": [
                     {
                       "lang": "csharp",
-                      "value": "string[]"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "String()"
+                      "value": "Integer"
                     }
                   ],
                   "fullName": [
                     {
                       "lang": "csharp",
-                      "value": "string[]"
+                      "value": "int"
                     },
                     {
                       "lang": "vb",
-                      "value": "String()"
+                      "value": "Integer"
                     }
                   ],
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"System.String\" text=\"string\"/>[]"
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"System.String\" text=\"String\"/>()"
+                      "value": "<xref uid=\"System.Int32\" text=\"int\"/>"
                     }
                   ]
                 }
@@ -162,76 +162,209 @@
           },
           "source": {
             "remote": {
-              "path": "samples/seed/dotnet/csharp/CSharp.cs",
+              "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Main",
-            "path": "dotnet/csharp/CSharp.cs",
-            "startLine": 9.0,
+            "id": "SomeMethod",
+            "path": "src/CSharp8.cs",
+            "startLine": 147.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "cs.temp.dll"
+            "CSharp"
           ],
-          "namespace": "BuildFromCSharpSourceCode",
+          "namespace": "CSharp8",
           "overload": {
-            "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
+            "uid": "CSharp8.Issue4007.SomeMethod*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "Main"
+                "value": "SomeMethod"
               },
               {
                 "lang": "vb",
-                "value": "Main"
+                "value": "SomeMethod"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "CSharp.Main"
+                "value": "Issue4007.SomeMethod"
               },
               {
                 "lang": "vb",
-                "value": "CSharp.Main"
+                "value": "Issue4007.SomeMethod"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+                "value": "CSharp8.Issue4007.SomeMethod"
               },
               {
                 "lang": "vb",
-                "value": "BuildFromCSharpSourceCode.CSharp.Main"
+                "value": "CSharp8.Issue4007.SomeMethod"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+                "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod*\" text=\"SomeMethod\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"BuildFromCSharpSourceCode.CSharp.Main*\" text=\"Main\"/>"
+                "value": "<xref uid=\"CSharp8.Issue4007.SomeMethod*\" text=\"SomeMethod\"/>"
               }
             ],
-            "id": "BuildFromCSharpSourceCode_CSharp_Main_"
+            "id": "CSharp8_Issue4007_SomeMethod_"
           },
           "level": 0.0,
           "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp_Main_System_String___.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp.Main(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L10",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007_SomeMethod_System_Int32_.md&value=---%0Auid%3A%20CSharp8.Issue4007.SomeMethod(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L148",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "BuildFromCSharpSourceCode_CSharp_Main_System_String___",
+          "id": "CSharp8_Issue4007_SomeMethod_System_Int32_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp8.Issue4007.SomeOtherMethod",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp8.Issue4007",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "SomeOtherMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "SomeOtherMethod()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue4007.SomeOtherMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue4007.SomeOtherMethod()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp8.Issue4007.SomeOtherMethod()"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp8.Issue4007.SomeOtherMethod()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod\" text=\"SomeOtherMethod()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod\" text=\"SomeOtherMethod()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void SomeOtherMethod()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub SomeOtherMethod()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp8.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "SomeOtherMethod",
+            "path": "src/CSharp8.cs",
+            "startLine": 157.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp8",
+          "overload": {
+            "uid": "CSharp8.Issue4007.SomeOtherMethod*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "SomeOtherMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "SomeOtherMethod"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Issue4007.SomeOtherMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue4007.SomeOtherMethod"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp8.Issue4007.SomeOtherMethod"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp8.Issue4007.SomeOtherMethod"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod*\" text=\"SomeOtherMethod\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp8.Issue4007.SomeOtherMethod*\" text=\"SomeOtherMethod\"/>"
+              }
+            ],
+            "id": "CSharp8_Issue4007_SomeOtherMethod_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007_SomeOtherMethod.md&value=---%0Auid%3A%20CSharp8.Issue4007.SomeOtherMethod%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L158",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp8_Issue4007_SomeOtherMethod",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -245,104 +378,106 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "Issue4007"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "Issue4007"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp"
+      "value": "Issue4007"
     },
     {
       "lang": "vb",
-      "value": "CSharp"
+      "value": "Issue4007"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp8.Issue4007"
     },
     {
       "lang": "vb",
-      "value": "BuildFromCSharpSourceCode.CSharp"
+      "value": "CSharp8.Issue4007"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/seed/dotnet/csharp/CSharp.cs",
+      "path": "samples/csharp/src/CSharp8.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "CSharp",
-    "path": "dotnet/csharp/CSharp.cs",
-    "startLine": 7.0,
+    "id": "Issue4007",
+    "path": "src/CSharp8.cs",
+    "startLine": 145.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "cs.temp.dll"
+    "CSharp"
   ],
   "namespace": {
-    "uid": "BuildFromCSharpSourceCode",
+    "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       },
       {
         "lang": "vb",
-        "value": "BuildFromCSharpSourceCode"
+        "value": "CSharp8"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"BuildFromCSharpSourceCode\" text=\"BuildFromCSharpSourceCode\"/>"
+        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
       }
     ],
     "level": 0.0
   },
+  "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"2\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
+  "example": [],
   "syntax": {
     "content": [
       {
         "lang": "csharp",
-        "value": "public class CSharp"
+        "value": "public class Issue4007"
       },
       {
         "lang": "vb",
-        "value": "Public Class CSharp"
+        "value": "Public Class Issue4007"
       }
     ]
   },
@@ -736,8 +871,6 @@
       "level": 0.0
     }
   ],
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
   "_systemKeys": [
     "uid",
     "isEii",
@@ -774,14 +907,11 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "obj/api/BuildFromCSharpSourceCode.CSharp.yml",
+  "_key": "api/CSharp8.Issue4007.yml",
   "_lang": "csharp",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/BuildFromCSharpSourceCode.CSharp.html",
+  "_path": "api/CSharp8.Issue4007.html",
   "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
+  "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "__global": {
@@ -847,15 +977,13 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromCSharpSourceCode_CSharp.md&value=---%0Auid%3A%20BuildFromCSharpSourceCode.CSharp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/csharp/CSharp.cs/#L8",
-  "summary": "",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_Issue4007.md&value=---%0Auid%3A%20CSharp8.Issue4007%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L146",
   "remarks": null,
   "conceptual": "",
   "implements": null,
-  "example": null,
   "seealso": null,
-  "id": "BuildFromCSharpSourceCode_CSharp",
+  "id": "CSharp8_Issue4007",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,
