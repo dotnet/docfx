@@ -3,12 +3,9 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
     using Xunit;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Related", "Filter")]
@@ -117,7 +114,7 @@ namespace Test1
 }
 ";
             string configFile = "TestData/filterconfig.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
+            MetadataItem output = Verify(code, options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             Assert.Equal(2, output.Items.Count);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
@@ -180,7 +177,7 @@ namespace Test1
     }
 }";
             string configFile = "TestData/filterconfig_attribute.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
+            MetadataItem output = Verify(code, options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             var @namespace = output.Items[0];
             var class1 = @namespace.Items[0];
             Assert.Single(class1.Attributes);
@@ -213,7 +210,7 @@ namespace Test1
         void Bar();
     }
 }";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             var @namespace = output.Items[0];
             Assert.Single(@namespace.Items);
             var class1 = @namespace.Items[0];
@@ -250,15 +247,16 @@ namespace Test1
     {
     }
 }";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            MetadataItem output = Verify(code);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
             Assert.Equal(3, @namespace.Items.Count);
         }
 
-        private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
+        private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
         {
-            return CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll", references);
+            var compilation = CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll", references);
+            return GenerateYamlMetadata(compilation.Assembly, options);
         }
     }
 }

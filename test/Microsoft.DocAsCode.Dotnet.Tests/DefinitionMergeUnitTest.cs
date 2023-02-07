@@ -3,10 +3,6 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Xunit;
 
     public class DefinitionMergeUnitTest
@@ -35,7 +31,8 @@ namespace A {
 
 ";
             // act
-            MetadataItem output = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll"));
+            MetadataItem output = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(
+                CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll").Assembly);
 
             // assert
             Assert.NotNull(output);

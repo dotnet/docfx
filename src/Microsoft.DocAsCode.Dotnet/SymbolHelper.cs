@@ -75,11 +75,26 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return Array.Empty<IMethodSymbol>();
 
             return
-                from type in assembly.GlobalNamespace.GetTypeMembers()
+                from ns in assembly.GetAllNamespaces()
+                from type in ns.GetTypeMembers()
                 where type.MightContainExtensionMethods
                 from member in type.GetMembers()
                 where member.Kind is SymbolKind.Method && ((IMethodSymbol)member).IsExtensionMethod
                 select (IMethodSymbol)member;
+        }
+
+        public static IEnumerable<INamespaceSymbol> GetAllNamespaces(this IAssemblySymbol assembly)
+        {
+            var stack = new Stack<INamespaceSymbol>();
+            stack.Push(assembly.GlobalNamespace);
+            while (stack.TryPop(out var ns))
+            {
+                yield return ns;
+                foreach (var child in ns.GetNamespaceMembers())
+                {
+                    stack.Push(child);
+                }
+            }
         }
     }
 }
