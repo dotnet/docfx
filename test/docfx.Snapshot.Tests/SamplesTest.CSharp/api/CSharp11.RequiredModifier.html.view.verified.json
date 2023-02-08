@@ -1,158 +1,159 @@
 ﻿{
-  "uid": "CSharp9.NativeSizedIntegers",
+  "uid": "CSharp11.RequiredModifier",
   "isEii": false,
   "isExtensionMethod": false,
   "parent": {
-    "uid": "CSharp9",
+    "uid": "CSharp11",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
     "level": 0.0
   },
   "children": [
     {
-      "inField": true,
-      "typePropertyName": "inField",
-      "id": "fields",
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
       "children": [
         {
-          "uid": "CSharp9.NativeSizedIntegers.X",
+          "uid": "CSharp11.RequiredModifier.FirstName",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp9.NativeSizedIntegers",
+          "parent": "CSharp11.RequiredModifier",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "X"
+              "value": "FirstName"
             },
             {
               "lang": "vb",
-              "value": "X"
+              "value": "FirstName"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "NativeSizedIntegers.X"
+              "value": "RequiredModifier.FirstName"
             },
             {
               "lang": "vb",
-              "value": "NativeSizedIntegers.X"
+              "value": "RequiredModifier.FirstName"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp9.NativeSizedIntegers.X"
+              "value": "CSharp11.RequiredModifier.FirstName"
             },
             {
               "lang": "vb",
-              "value": "CSharp9.NativeSizedIntegers.X"
+              "value": "CSharp11.RequiredModifier.FirstName"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName\" text=\"FirstName\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.X\" text=\"X\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName\" text=\"FirstName\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public nint X"
+                "value": "public required string FirstName { get; init; }"
               },
               {
                 "lang": "vb",
-                "value": "Public X As IntPtr"
+                "value": "Public Property FirstName As String"
               }
             ],
+            "parameters": [],
             "return": null,
-            "fieldValue": {
+            "propertyValue": {
               "type": {
-                "uid": "System.IntPtr",
+                "uid": "System.String",
                 "name": [
                   {
                     "lang": "csharp",
-                    "value": "nint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "IntPtr"
+                    "value": "String"
                   }
                 ],
                 "nameWithType": [
                   {
                     "lang": "csharp",
-                    "value": "nint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "IntPtr"
+                    "value": "String"
                   }
                 ],
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "nint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "System.IntPtr"
+                    "value": "String"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.IntPtr\" text=\"nint\"/>"
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
                   }
                 ]
               }
@@ -160,134 +161,179 @@
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
+              "path": "samples/csharp/src/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "X",
-            "path": "src/CSharp9.cs",
-            "startLine": 23.0,
+            "id": "FirstName",
+            "path": "src/CSharp11.cs",
+            "startLine": 46.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
             "CSharp"
           ],
-          "namespace": "CSharp9",
+          "namespace": "CSharp11",
+          "overload": {
+            "uid": "CSharp11.RequiredModifier.FirstName*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "FirstName"
+              },
+              {
+                "lang": "vb",
+                "value": "FirstName"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RequiredModifier.FirstName"
+              },
+              {
+                "lang": "vb",
+                "value": "RequiredModifier.FirstName"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp11.RequiredModifier.FirstName"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp11.RequiredModifier.FirstName"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.FirstName*\" text=\"FirstName\"/>"
+              }
+            ],
+            "id": "CSharp11_RequiredModifier_FirstName_"
+          },
           "level": 0.0,
-          "type": "field",
+          "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers_X.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L24",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_FirstName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L47",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp9_NativeSizedIntegers_X",
+          "id": "CSharp11_RequiredModifier_FirstName",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "CSharp9.NativeSizedIntegers.Y",
+          "uid": "CSharp11.RequiredModifier.LastName",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp9.NativeSizedIntegers",
+          "parent": "CSharp11.RequiredModifier",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Y"
+              "value": "LastName"
             },
             {
               "lang": "vb",
-              "value": "Y"
+              "value": "LastName"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "NativeSizedIntegers.Y"
+              "value": "RequiredModifier.LastName"
             },
             {
               "lang": "vb",
-              "value": "NativeSizedIntegers.Y"
+              "value": "RequiredModifier.LastName"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp9.NativeSizedIntegers.Y"
+              "value": "CSharp11.RequiredModifier.LastName"
             },
             {
               "lang": "vb",
-              "value": "CSharp9.NativeSizedIntegers.Y"
+              "value": "CSharp11.RequiredModifier.LastName"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier.LastName\" text=\"LastName\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp9.NativeSizedIntegers.Y\" text=\"Y\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier.LastName\" text=\"LastName\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public nuint Y"
+                "value": "public required string LastName { get; init; }"
               },
               {
                 "lang": "vb",
-                "value": "Public Y As UIntPtr"
+                "value": "Public Property LastName As String"
               }
             ],
+            "parameters": [],
             "return": null,
-            "fieldValue": {
+            "propertyValue": {
               "type": {
-                "uid": "System.UIntPtr",
+                "uid": "System.String",
                 "name": [
                   {
                     "lang": "csharp",
-                    "value": "nuint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "UIntPtr"
+                    "value": "String"
                   }
                 ],
                 "nameWithType": [
                   {
                     "lang": "csharp",
-                    "value": "nuint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "UIntPtr"
+                    "value": "String"
                   }
                 ],
                 "fullName": [
                   {
                     "lang": "csharp",
-                    "value": "nuint"
+                    "value": "string"
                   },
                   {
                     "lang": "vb",
-                    "value": "System.UIntPtr"
+                    "value": "String"
                   }
                 ],
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.UIntPtr\" text=\"nuint\"/>"
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
                   }
                 ]
               }
@@ -295,32 +341,256 @@
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp9.cs",
+              "path": "samples/csharp/src/CSharp11.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "Y",
-            "path": "src/CSharp9.cs",
-            "startLine": 24.0,
+            "id": "LastName",
+            "path": "src/CSharp11.cs",
+            "startLine": 48.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
             "CSharp"
           ],
-          "namespace": "CSharp9",
+          "namespace": "CSharp11",
+          "overload": {
+            "uid": "CSharp11.RequiredModifier.LastName*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "LastName"
+              },
+              {
+                "lang": "vb",
+                "value": "LastName"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RequiredModifier.LastName"
+              },
+              {
+                "lang": "vb",
+                "value": "RequiredModifier.LastName"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp11.RequiredModifier.LastName"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp11.RequiredModifier.LastName"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.LastName*\" text=\"LastName\"/>"
+              }
+            ],
+            "id": "CSharp11_RequiredModifier_LastName_"
+          },
           "level": 0.0,
-          "type": "field",
+          "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers_Y.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L25",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_LastName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L49",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp9_NativeSizedIntegers_Y",
+          "id": "CSharp11_RequiredModifier_LastName",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CSharp11.RequiredModifier.MiddleName",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp11.RequiredModifier",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "MiddleName"
+            },
+            {
+              "lang": "vb",
+              "value": "MiddleName"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "RequiredModifier.MiddleName"
+            },
+            {
+              "lang": "vb",
+              "value": "RequiredModifier.MiddleName"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.RequiredModifier.MiddleName"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.RequiredModifier.MiddleName"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName\" text=\"MiddleName\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName\" text=\"MiddleName\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public string MiddleName { get; init; }"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Property MiddleName As String"
+              }
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp11.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "MiddleName",
+            "path": "src/CSharp11.cs",
+            "startLine": 47.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp11",
+          "overload": {
+            "uid": "CSharp11.RequiredModifier.MiddleName*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "MiddleName"
+              },
+              {
+                "lang": "vb",
+                "value": "MiddleName"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "RequiredModifier.MiddleName"
+              },
+              {
+                "lang": "vb",
+                "value": "RequiredModifier.MiddleName"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp11.RequiredModifier.MiddleName"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp11.RequiredModifier.MiddleName"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CSharp11.RequiredModifier.MiddleName*\" text=\"MiddleName\"/>"
+              }
+            ],
+            "id": "CSharp11_RequiredModifier_MiddleName_"
+          },
+          "level": 0.0,
+          "type": "property",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier_MiddleName.md&value=---%0Auid%3A%20CSharp11.RequiredModifier.MiddleName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L48",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp11_RequiredModifier_MiddleName",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -334,43 +604,43 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "NativeSizedIntegers"
+      "value": "RequiredModifier"
     },
     {
       "lang": "vb",
-      "value": "NativeSizedIntegers"
+      "value": "RequiredModifier"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "NativeSizedIntegers"
+      "value": "RequiredModifier"
     },
     {
       "lang": "vb",
-      "value": "NativeSizedIntegers"
+      "value": "RequiredModifier"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp9.NativeSizedIntegers"
+      "value": "CSharp11.RequiredModifier"
     },
     {
       "lang": "vb",
-      "value": "CSharp9.NativeSizedIntegers"
+      "value": "CSharp11.RequiredModifier"
     }
   ],
   "type": "class",
   "source": {
     "remote": {
-      "path": "samples/csharp/src/CSharp9.cs",
+      "path": "samples/csharp/src/CSharp11.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "NativeSizedIntegers",
-    "path": "src/CSharp9.cs",
-    "startLine": 21.0,
+    "id": "RequiredModifier",
+    "path": "src/CSharp11.cs",
+    "startLine": 44.0,
     "endLine": 0.0,
     "isExternal": false
   },
@@ -378,47 +648,47 @@
     "CSharp"
   ],
   "namespace": {
-    "uid": "CSharp9",
+    "uid": "CSharp11",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp9"
+        "value": "CSharp11"
       },
       {
         "lang": "vb",
-        "value": "CSharp9"
+        "value": "CSharp11"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp9\" text=\"CSharp9\"/>"
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
       }
     ],
     "level": 0.0
@@ -427,11 +697,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class NativeSizedIntegers"
+        "value": "public class RequiredModifier"
       },
       {
         "lang": "vb",
-        "value": "Public Class NativeSizedIntegers"
+        "value": "Public Class RequiredModifier"
       }
     ]
   },
@@ -861,9 +1131,9 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp9.NativeSizedIntegers.yml",
+  "_key": "api/CSharp11.RequiredModifier.yml",
   "_lang": "csharp",
-  "_path": "api/CSharp9.NativeSizedIntegers.html",
+  "_path": "api/CSharp11.RequiredModifier.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -931,15 +1201,15 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp9_NativeSizedIntegers.md&value=---%0Auid%3A%20CSharp9.NativeSizedIntegers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp9.cs/#L22",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_RequiredModifier.md&value=---%0Auid%3A%20CSharp11.RequiredModifier%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L45",
   "summary": "",
   "remarks": null,
   "conceptual": "",
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "CSharp9_NativeSizedIntegers",
+  "id": "CSharp11_RequiredModifier",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isClass": true,

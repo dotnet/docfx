@@ -1,6 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-
-namespace CSharp11;
+﻿namespace CSharp11;
 
 public class StaticAbstractMembersInInterfaces
 {
@@ -55,5 +53,3 @@ file class FileScopedType
 {
 
 }
-
-#endif

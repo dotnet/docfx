@@ -38,18 +38,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
                     continue;
 
-                var level = diagnostic.Severity switch
+                if (diagnostic.Severity is DiagnosticSeverity.Warning)
                 {
-                    DiagnosticSeverity.Error => LogLevel.Error,
-                    DiagnosticSeverity.Warning => LogLevel.Warning,
-                    DiagnosticSeverity.Info => LogLevel.Info,
-                    _ => LogLevel.Verbose,
-                };
+                    Logger.LogWarning(diagnostic.ToString());
+                    continue;
+                }
 
-                if (level is LogLevel.Error && ++errorCount >= 20)
-                    break;
+                if (diagnostic.Severity is DiagnosticSeverity.Error)
+                {
+                    Logger.LogError(diagnostic.ToString());
 
-                Logger.Log(level, $"{diagnostic}");
+                    if (++errorCount >= 20)
+                        break;
+                }
             }
 
             return errorCount > 0;
