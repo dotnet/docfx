@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
             {
-                if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
+                if (diagnostic.IsSuppressed)
                     continue;
 
                 if (diagnostic.Severity is DiagnosticSeverity.Warning)
@@ -54,23 +54,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return errorCount > 0;
-
-            static bool IsKnownError(Diagnostic diagnostic)
-            {
-                // Ignore these VB errors on non-Windows platform:
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.Devices.Computer' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.ApplicationBase' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.MyServices.Internal.ContextValue' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
-                //   error BC30002: Type 'Global.Microsoft.VisualBasic.ApplicationServices.User' is not defined.
-                if (!OperatingSystem.IsWindows() && diagnostic.Id == "BC30002" &&
-                    diagnostic.GetMessage().Contains("Global.Microsoft.VisualBasic."))
-                {
-                    return true;
-                }
-
-                return false;
-            }
         }
 
         public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files)
@@ -150,7 +133,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = Path.Combine(refDirectory, version, "ref", moniker);
 
                 Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
-                Logger.LogVerbose($"Reference assembly directory {path}");
+                Logger.LogVerbose($"Using SDK reference assemblies in {path}");
                 return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                                 .Select(CreateMetadataReference);
             }
