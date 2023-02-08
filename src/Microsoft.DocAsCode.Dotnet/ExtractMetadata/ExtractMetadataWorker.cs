@@ -169,7 +169,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (hasCompilationError)
             {
-                throw new DocfxException("Abort .NET API generation due to compilation errors");
+                return;
             }
 
             if (assemblySymbols.Count <= 0)

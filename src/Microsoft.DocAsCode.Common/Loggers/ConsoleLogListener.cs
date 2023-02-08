@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Text;
     using Microsoft.DocAsCode.Plugins;
@@ -34,7 +33,6 @@ namespace Microsoft.DocAsCode.Common
 
             message.Append(item.Message);
 
-            Debug.WriteLine(message);
             ConsoleUtility.WriteLine(message.ToString(), consoleColor);
         }
 
