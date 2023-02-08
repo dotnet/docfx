@@ -71,6 +71,68 @@
       "level": 2.0
     },
     {
+      "name": "CSharp11",
+      "href": "CSharp11.html",
+      "topicHref": "CSharp11.html",
+      "topicUid": "CSharp11",
+      "items": [
+        {
+          "name": "CheckedUserDefinedOperators<T>",
+          "href": "CSharp11.CheckedUserDefinedOperators-1.html",
+          "topicHref": "CSharp11.CheckedUserDefinedOperators-1.html",
+          "topicUid": "CSharp11.CheckedUserDefinedOperators`1",
+          "name.vb": "CheckedUserDefinedOperators(Of T)",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "RequiredModifier",
+          "href": "CSharp11.RequiredModifier.html",
+          "topicHref": "CSharp11.RequiredModifier.html",
+          "topicUid": "CSharp11.RequiredModifier",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.html",
+          "topicUid": "CSharp11.StaticAbstractMembersInInterfaces",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces.IGetNext<T>",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
+          "topicUid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
+          "name.vb": "StaticAbstractMembersInInterfaces.IGetNext(Of T)",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "StaticAbstractMembersInInterfaces.RepeatSequence",
+          "href": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
+          "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html",
+          "topicUid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
       "name": "CSharp8",
       "href": "CSharp8.html",
       "topicHref": "CSharp8.html",

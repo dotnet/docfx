@@ -29,8 +29,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 """),
         };
 
-        public static void LogDeclarationDiagnostics(this Compilation compilation)
+        public static bool CheckDiagnostics(this Compilation compilation)
         {
+            var errorCount = 0;
+
             foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
             {
                 if (diagnostic.IsSuppressed || IsKnownError(diagnostic))
@@ -44,8 +46,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     _ => LogLevel.Verbose,
                 };
 
+                if (level is LogLevel.Error && ++errorCount >= 20)
+                    break;
+
                 Logger.Log(level, $"{diagnostic}");
             }
+
+            return errorCount > 0;
 
             static bool IsKnownError(Diagnostic diagnostic)
             {

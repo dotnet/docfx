@@ -1,0 +1,518 @@
+﻿{
+  "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [
+    {
+      "inOperator": true,
+      "typePropertyName": "inOperator",
+      "id": "operators",
+      "children": [
+        {
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "operator ++(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "op_Increment(T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment(T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\" text=\"operator ++(T)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public static abstract T operator ++(T other)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Shared MustInherit Function op_Increment(other As T) As T"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "other",
+                "type": {
+                  "uid": "{T}",
+                  "definition": "T",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                    }
+                  ]
+                }
+              }
+            ],
+            "return": {
+              "type": {
+                "uid": "{T}",
+                "definition": "T",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "T"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "T"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "T"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "T"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "T"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "T"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                  }
+                ]
+              }
+            }
+          },
+          "source": {
+            "remote": {
+              "path": "samples/csharp/src/CSharp11.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "op_Increment",
+            "path": "src/CSharp11.cs",
+            "startLine": 8.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CSharp"
+          ],
+          "namespace": "CSharp11",
+          "overload": {
+            "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "operator ++"
+              },
+              {
+                "lang": "vb",
+                "value": "op_Increment"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++"
+              },
+              {
+                "lang": "vb",
+                "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>.operator ++"
+              },
+              {
+                "lang": "vb",
+                "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T).op_Increment"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "operator <xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"++\"/>"
+              }
+            ],
+            "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_"
+          },
+          "level": 0.0,
+          "type": "operator",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.IGetNext%601.op_Increment(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L9",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>"
+    },
+    {
+      "lang": "vb",
+      "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T)"
+    }
+  ],
+  "type": "interface",
+  "source": {
+    "remote": {
+      "path": "samples/csharp/src/CSharp11.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "IGetNext",
+    "path": "src/CSharp11.cs",
+    "startLine": 6.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CSharp"
+  ],
+  "namespace": {
+    "uid": "CSharp11",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CSharp11"
+      },
+      {
+        "lang": "vb",
+        "value": "CSharp11"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CSharp11\" text=\"CSharp11\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public interface StaticAbstractMembersInInterfaces.IGetNext<T> where T : StaticAbstractMembersInInterfaces.IGetNext<T>"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Interface StaticAbstractMembersInInterfaces.IGetNext(Of T As StaticAbstractMembersInInterfaces.IGetNext(Of T))"
+      }
+    ],
+    "typeParameters": [
+      {
+        "id": "T"
+      }
+    ]
+  },
+  "level": 0.0,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_key": "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.yml",
+  "_lang": "csharp",
+  "_path": "api/CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "backToTop": "Back to top",
+    "_shared": {}
+  },
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1.md&value=---%0Auid%3A%20CSharp11.StaticAbstractMembersInInterfaces.IGetNext%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L7",
+  "summary": "",
+  "remarks": null,
+  "conceptual": "",
+  "implements": null,
+  "example": null,
+  "seealso": null,
+  "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inInterface": true,
+  "_disableToc": false
+}

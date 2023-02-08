@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
@@ -101,6 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            var hasCompilationError = false;
             var assemblySymbols = new List<IAssemblySymbol>();
 
             if (_files.TryGetValue(FileType.Solution, out var solutionFiles))
@@ -136,21 +138,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 Logger.LogInfo($"Compiling project {project.FilePath}");
                 var compilation = await project.GetCompilationAsync();
-                compilation.LogDeclarationDiagnostics();
+                hasCompilationError |= compilation.CheckDiagnostics();
                 assemblySymbols.Add(compilation.Assembly);
             }
 
             if (_files.TryGetValue(FileType.CSSourceCode, out var csFiles))
             {
                 var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath));
-                compilation.LogDeclarationDiagnostics();
+                hasCompilationError |= compilation.CheckDiagnostics();
                 assemblySymbols.Add(compilation.Assembly);
             }
 
             if (_files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
             {
                 var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath));
-                compilation.LogDeclarationDiagnostics();
+                hasCompilationError |= compilation.CheckDiagnostics();
                 assemblySymbols.Add(compilation.Assembly);
             }
 
@@ -160,9 +162,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
                     var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _references);
-                    compilation.LogDeclarationDiagnostics();
+                    hasCompilationError |= compilation.CheckDiagnostics();
                     assemblySymbols.Add(assembly);
                 }
+            }
+
+            if (hasCompilationError)
+            {
+                throw new DocfxException("Abort .NET API generation due to compilation errors");
             }
 
             if (assemblySymbols.Count <= 0)
