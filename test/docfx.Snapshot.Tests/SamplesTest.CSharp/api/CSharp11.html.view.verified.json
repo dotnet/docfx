@@ -1,5 +1,5 @@
 ﻿{
-  "uid": "CSharp8",
+  "uid": "CSharp11",
   "isEii": false,
   "isExtensionMethod": false,
   "children": [
@@ -9,46 +9,46 @@
       "id": "classes",
       "children": [
         {
-          "uid": "CSharp8.DefaultInterfaceMembers.Nested",
+          "uid": "CSharp11.RequiredModifier",
           "isExtensionMethod": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers.Nested"
+              "value": "RequiredModifier"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers.Nested"
+              "value": "RequiredModifier"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers.Nested"
+              "value": "RequiredModifier"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers.Nested"
+              "value": "RequiredModifier"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.DefaultInterfaceMembers.Nested"
+              "value": "CSharp11.RequiredModifier"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.DefaultInterfaceMembers.Nested"
+              "value": "CSharp11.RequiredModifier"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
+              "value": "<xref uid=\"CSharp11.RequiredModifier\" text=\"RequiredModifier\"/>"
             }
           ],
           "level": 0.0,
@@ -64,111 +64,51 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_DefaultInterfaceMembers_Nested",
+          "id": "CSharp11_RequiredModifier",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "CSharp8.Issue4007",
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces",
           "isExtensionMethod": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "Issue4007"
+              "value": "StaticAbstractMembersInInterfaces"
             },
             {
               "lang": "vb",
-              "value": "Issue4007"
+              "value": "StaticAbstractMembersInInterfaces"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "Issue4007"
+              "value": "StaticAbstractMembersInInterfaces"
             },
             {
               "lang": "vb",
-              "value": "Issue4007"
+              "value": "StaticAbstractMembersInInterfaces"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.Issue4007"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.Issue4007"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.Issue4007\" text=\"Issue4007\"/>"
-            }
-          ],
-          "level": 0.0,
-          "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"2\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
-          "type": "class",
-          "platform": null,
-          "isEii": false,
-          "docurl": "",
-          "sourceurl": "",
-          "remarks": null,
-          "conceptual": "",
-          "syntax": null,
-          "implements": null,
-          "example": null,
-          "seealso": null,
-          "id": "CSharp8_Issue4007",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "CSharp8.Misc",
-          "isExtensionMethod": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "Misc"
-            },
-            {
-              "lang": "vb",
-              "value": "Misc"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "Misc"
-            },
-            {
-              "lang": "vb",
-              "value": "Misc"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CSharp8.Misc"
-            },
-            {
-              "lang": "vb",
-              "value": "CSharp8.Misc"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CSharp8.Misc\" text=\"Misc\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>"
             }
           ],
           "level": 0.0,
@@ -184,67 +124,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_Misc",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "CSharp8.NullableReferenceTypes",
-          "isExtensionMethod": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "NullableReferenceTypes"
-            },
-            {
-              "lang": "vb",
-              "value": "NullableReferenceTypes"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "NullableReferenceTypes"
-            },
-            {
-              "lang": "vb",
-              "value": "NullableReferenceTypes"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CSharp8.NullableReferenceTypes"
-            },
-            {
-              "lang": "vb",
-              "value": "CSharp8.NullableReferenceTypes"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CSharp8.NullableReferenceTypes\" text=\"NullableReferenceTypes\"/>"
-            }
-          ],
-          "level": 0.0,
-          "summary": "",
-          "type": "class",
-          "platform": null,
-          "isEii": false,
-          "docurl": "",
-          "sourceurl": "",
-          "remarks": null,
-          "conceptual": "",
-          "syntax": null,
-          "implements": null,
-          "example": null,
-          "seealso": null,
-          "id": "CSharp8_NullableReferenceTypes",
+          "id": "CSharp11_StaticAbstractMembersInInterfaces",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -256,46 +136,47 @@
       "id": "structs",
       "children": [
         {
-          "uid": "CSharp8.DisposableRefStructs",
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence",
           "isExtensionMethod": false,
+          "parent": "CSharp11",
           "name": [
             {
               "lang": "csharp",
-              "value": "DisposableRefStructs"
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
             },
             {
               "lang": "vb",
-              "value": "DisposableRefStructs"
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "DisposableRefStructs"
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
             },
             {
               "lang": "vb",
-              "value": "DisposableRefStructs"
+              "value": "StaticAbstractMembersInInterfaces.RepeatSequence"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.DisposableRefStructs"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.DisposableRefStructs"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>.<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"RepeatSequence\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DisposableRefStructs\" text=\"DisposableRefStructs\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>.<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence\" text=\"RepeatSequence\"/>"
             }
           ],
           "level": 0.0,
@@ -311,67 +192,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_DisposableRefStructs",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "CSharp8.ReadOnlyMembers",
-          "isExtensionMethod": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "ReadOnlyMembers"
-            },
-            {
-              "lang": "vb",
-              "value": "ReadOnlyMembers"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "ReadOnlyMembers"
-            },
-            {
-              "lang": "vb",
-              "value": "ReadOnlyMembers"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CSharp8.ReadOnlyMembers"
-            },
-            {
-              "lang": "vb",
-              "value": "CSharp8.ReadOnlyMembers"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CSharp8.ReadOnlyMembers\" text=\"ReadOnlyMembers\"/>"
-            }
-          ],
-          "level": 0.0,
-          "summary": "",
-          "type": "struct",
-          "platform": null,
-          "isEii": false,
-          "docurl": "",
-          "sourceurl": "",
-          "remarks": null,
-          "conceptual": "",
-          "syntax": null,
-          "implements": null,
-          "example": null,
-          "seealso": null,
-          "id": "CSharp8_ReadOnlyMembers",
+          "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -383,47 +204,46 @@
       "id": "interfaces",
       "children": [
         {
-          "uid": "CSharp8.DefaultInterfaceMembers",
+          "uid": "CSharp11.CheckedUserDefinedOperators`1",
           "isExtensionMethod": false,
-          "parent": "CSharp8",
           "name": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers"
+              "value": "CheckedUserDefinedOperators<T>"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers"
+              "value": "CheckedUserDefinedOperators(Of T)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers"
+              "value": "CheckedUserDefinedOperators<T>"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers"
+              "value": "CheckedUserDefinedOperators(Of T)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.DefaultInterfaceMembers"
+              "value": "CSharp11.CheckedUserDefinedOperators<T>"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.DefaultInterfaceMembers"
+              "value": "CSharp11.CheckedUserDefinedOperators(Of T)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
+              "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\"/>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>"
+              "value": "<xref uid=\"CSharp11.CheckedUserDefinedOperators`1\" text=\"CheckedUserDefinedOperators\"/>(Of T)"
             }
           ],
           "level": 0.0,
@@ -439,51 +259,51 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_DefaultInterfaceMembers",
+          "id": "CSharp11_CheckedUserDefinedOperators_1",
           "hideTitleType": false,
           "hideSubtitle": false
         },
         {
-          "uid": "CSharp8.DefaultInterfaceMembers.IA",
+          "uid": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1",
           "isExtensionMethod": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers.IA"
+              "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers.IA"
+              "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers.IA"
+              "value": "StaticAbstractMembersInInterfaces.IGetNext<T>"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers.IA"
+              "value": "StaticAbstractMembersInInterfaces.IGetNext(Of T)"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.DefaultInterfaceMembers.IA"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext<T>"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.DefaultInterfaceMembers.IA"
+              "value": "CSharp11.StaticAbstractMembersInInterfaces.IGetNext(Of T)"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>.<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"IGetNext\"/>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
+              "value": "<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces\" text=\"StaticAbstractMembersInInterfaces\"/>.<xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1\" text=\"IGetNext\"/>(Of T)"
             }
           ],
           "level": 0.0,
@@ -499,7 +319,7 @@
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_DefaultInterfaceMembers_IA",
+          "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -513,31 +333,31 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "CSharp8"
+      "value": "CSharp11"
     },
     {
       "lang": "vb",
-      "value": "CSharp8"
+      "value": "CSharp11"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "CSharp8"
+      "value": "CSharp11"
     },
     {
       "lang": "vb",
-      "value": "CSharp8"
+      "value": "CSharp11"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp8"
+      "value": "CSharp11"
     },
     {
       "lang": "vb",
-      "value": "CSharp8"
+      "value": "CSharp11"
     }
   ],
   "type": "namespace",
@@ -581,9 +401,9 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp8.yml",
+  "_key": "api/CSharp11.yml",
   "_lang": "csharp",
-  "_path": "api/CSharp8.html",
+  "_path": "api/CSharp11.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -660,7 +480,7 @@
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "CSharp8",
+  "id": "CSharp11",
   "hideTitleType": false,
   "hideSubtitle": false,
   "isNamespace": true,

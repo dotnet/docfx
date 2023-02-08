@@ -1,3 +1,5 @@
+using System;
+
 namespace MyExample
 {
     public class ExampleClass
@@ -6,7 +8,7 @@ namespace MyExample
 
         public string MyField;
 
-        public string Myroperty { get; set; }
+        public string MyProperty { get; set; }
 
         public ExampleClass()
         {

@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             // Create source file
             var sourceCode = @"
-public namespace Hello{
+namespace Hello{
 /// <summary>
 /// The class &lt; &gt; > description goes here...
 /// </summary>

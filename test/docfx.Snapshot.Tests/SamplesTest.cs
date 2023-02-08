@@ -65,7 +65,6 @@ namespace Microsoft.DocAsCode.Tests
 
             Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
         }
-#endif
 
         [Fact]
         public async Task CSharp()
@@ -84,10 +83,9 @@ namespace Microsoft.DocAsCode.Tests
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
             }
 
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile)
-                          .UniqueForTargetFrameworkAndVersion()
-                          .AutoVerify(includeBuildServer: false);
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
         }
+#endif
 
         [Fact]
         public Task Extensions()

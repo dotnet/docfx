@@ -1,189 +1,190 @@
 ﻿{
-  "uid": "CSharp8.DefaultInterfaceMembers.IA",
+  "uid": "MyExample.ExampleClass.MyProperty*",
   "isEii": false,
   "isExtensionMethod": false,
-  "parent": {
-    "uid": "CSharp8",
-    "isEii": false,
-    "isExtensionMethod": false,
-    "name": [
-      {
-        "lang": "csharp",
-        "value": "CSharp8"
-      },
-      {
-        "lang": "vb",
-        "value": "CSharp8"
-      }
-    ],
-    "nameWithType": [
-      {
-        "lang": "csharp",
-        "value": "CSharp8"
-      },
-      {
-        "lang": "vb",
-        "value": "CSharp8"
-      }
-    ],
-    "fullName": [
-      {
-        "lang": "csharp",
-        "value": "CSharp8"
-      },
-      {
-        "lang": "vb",
-        "value": "CSharp8"
-      }
-    ],
-    "specName": [
-      {
-        "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
-      },
-      {
-        "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
-      }
-    ],
-    "level": 0.0
-  },
   "children": [
     {
-      "inMethod": true,
-      "typePropertyName": "inMethod",
-      "id": "methods",
+      "inProperty": true,
+      "typePropertyName": "inProperty",
+      "id": "properties",
       "children": [
         {
-          "uid": "CSharp8.DefaultInterfaceMembers.IA.M",
+          "uid": "MyExample.ExampleClass.MyProperty",
           "isEii": false,
           "isExtensionMethod": false,
-          "parent": "CSharp8.DefaultInterfaceMembers.IA",
+          "parent": "MyExample.ExampleClass",
           "isExternal": false,
           "name": [
             {
               "lang": "csharp",
-              "value": "M()"
+              "value": "MyProperty"
             },
             {
               "lang": "vb",
-              "value": "M()"
+              "value": "MyProperty"
             }
           ],
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "DefaultInterfaceMembers.IA.M()"
+              "value": "ExampleClass.MyProperty"
             },
             {
               "lang": "vb",
-              "value": "DefaultInterfaceMembers.IA.M()"
+              "value": "ExampleClass.MyProperty"
             }
           ],
           "fullName": [
             {
               "lang": "csharp",
-              "value": "CSharp8.DefaultInterfaceMembers.IA.M()"
+              "value": "MyExample.ExampleClass.MyProperty"
             },
             {
               "lang": "vb",
-              "value": "CSharp8.DefaultInterfaceMembers.IA.M()"
+              "value": "MyExample.ExampleClass.MyProperty"
             }
           ],
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
+              "value": "<xref uid=\"MyExample.ExampleClass.MyProperty\" text=\"MyProperty\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M\" text=\"M()\"/>"
+              "value": "<xref uid=\"MyExample.ExampleClass.MyProperty\" text=\"MyProperty\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "void M()"
+                "value": "public string MyProperty { get; set; }"
               },
               {
                 "lang": "vb",
-                "value": "Sub M()"
+                "value": "Public Property MyProperty As String"
               }
-            ]
+            ],
+            "parameters": [],
+            "return": null,
+            "propertyValue": {
+              "type": {
+                "uid": "System.String",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "string"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "String"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.String\" text=\"string\"/>"
+                  }
+                ]
+              }
+            }
           },
           "source": {
             "remote": {
-              "path": "samples/csharp/src/CSharp8.cs",
+              "path": "samples/extensions/src/ExampleClass.cs",
               "branch": "main",
               "repo": "https://github.com/dotnet/docfx"
             },
-            "id": "M",
-            "path": "src/CSharp8.cs",
-            "startLine": 50.0,
+            "id": "MyProperty",
+            "path": "src/ExampleClass.cs",
+            "startLine": 10.0,
             "endLine": 0.0,
             "isExternal": false
           },
           "assemblies": [
-            "CSharp"
+            "cs.temp.dll"
           ],
-          "namespace": "CSharp8",
+          "namespace": "MyExample",
           "overload": {
-            "uid": "CSharp8.DefaultInterfaceMembers.IA.M*",
+            "uid": "MyExample.ExampleClass.MyProperty*",
             "name": [
               {
                 "lang": "csharp",
-                "value": "M"
+                "value": "MyProperty"
               },
               {
                 "lang": "vb",
-                "value": "M"
+                "value": "MyProperty"
               }
             ],
             "nameWithType": [
               {
                 "lang": "csharp",
-                "value": "DefaultInterfaceMembers.IA.M"
+                "value": "ExampleClass.MyProperty"
               },
               {
                 "lang": "vb",
-                "value": "DefaultInterfaceMembers.IA.M"
+                "value": "ExampleClass.MyProperty"
               }
             ],
             "fullName": [
               {
                 "lang": "csharp",
-                "value": "CSharp8.DefaultInterfaceMembers.IA.M"
+                "value": "MyExample.ExampleClass.MyProperty"
               },
               {
                 "lang": "vb",
-                "value": "CSharp8.DefaultInterfaceMembers.IA.M"
+                "value": "MyExample.ExampleClass.MyProperty"
               }
             ],
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
+                "value": "<xref uid=\"MyExample.ExampleClass.MyProperty*\" text=\"MyProperty\"/>"
               },
               {
                 "lang": "vb",
-                "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers.IA.M*\" text=\"M\"/>"
+                "value": "<xref uid=\"MyExample.ExampleClass.MyProperty*\" text=\"MyProperty\"/>"
               }
             ],
-            "id": "CSharp8_DefaultInterfaceMembers_IA_M_"
+            "id": "MyExample_ExampleClass_MyProperty_"
           },
           "level": 0.0,
-          "type": "method",
+          "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_IA_M.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.IA.M%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L51",
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass_MyProperty.md&value=---%0Auid%3A%20MyExample.ExampleClass.MyProperty%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L11",
           "remarks": null,
           "conceptual": "",
           "implements": null,
           "example": null,
           "seealso": null,
-          "id": "CSharp8_DefaultInterfaceMembers_IA_M",
+          "id": "MyExample_ExampleClass_MyProperty",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -197,108 +198,97 @@
   "name": [
     {
       "lang": "csharp",
-      "value": "DefaultInterfaceMembers.IA"
+      "value": "MyProperty"
     },
     {
       "lang": "vb",
-      "value": "DefaultInterfaceMembers.IA"
+      "value": "MyProperty"
     }
   ],
   "nameWithType": [
     {
       "lang": "csharp",
-      "value": "DefaultInterfaceMembers.IA"
+      "value": "ExampleClass.MyProperty"
     },
     {
       "lang": "vb",
-      "value": "DefaultInterfaceMembers.IA"
+      "value": "ExampleClass.MyProperty"
     }
   ],
   "fullName": [
     {
       "lang": "csharp",
-      "value": "CSharp8.DefaultInterfaceMembers.IA"
+      "value": "MyExample.ExampleClass.MyProperty"
     },
     {
       "lang": "vb",
-      "value": "CSharp8.DefaultInterfaceMembers.IA"
+      "value": "MyExample.ExampleClass.MyProperty"
     }
   ],
-  "type": "interface",
+  "type": "property",
   "source": {
     "remote": {
-      "path": "samples/csharp/src/CSharp8.cs",
+      "path": "samples/extensions/src/ExampleClass.cs",
       "branch": "main",
       "repo": "https://github.com/dotnet/docfx"
     },
-    "id": "IA",
-    "path": "src/CSharp8.cs",
-    "startLine": 48.0,
+    "id": "MyProperty",
+    "path": "src/ExampleClass.cs",
+    "startLine": 10.0,
     "endLine": 0.0,
     "isExternal": false
   },
   "assemblies": [
-    "CSharp"
+    "cs.temp.dll"
   ],
   "namespace": {
-    "uid": "CSharp8",
+    "uid": "MyExample",
     "isEii": false,
     "isExtensionMethod": false,
     "name": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "MyExample"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "MyExample"
       }
     ],
     "nameWithType": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "MyExample"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "MyExample"
       }
     ],
     "fullName": [
       {
         "lang": "csharp",
-        "value": "CSharp8"
+        "value": "MyExample"
       },
       {
         "lang": "vb",
-        "value": "CSharp8"
+        "value": "MyExample"
       }
     ],
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CSharp8\" text=\"CSharp8\"/>"
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
       }
     ],
     "level": 0.0
   },
-  "syntax": {
-    "content": [
-      {
-        "lang": "csharp",
-        "value": "public interface DefaultInterfaceMembers.IA"
-      },
-      {
-        "lang": "vb",
-        "value": "Public Interface DefaultInterfaceMembers.IA"
-      }
-    ]
-  },
   "level": 0.0,
+  "_isOverload": true,
   "_systemKeys": [
     "uid",
     "isEii",
@@ -335,9 +325,13 @@
     "attributes",
     "additionalNotes"
   ],
-  "_key": "api/CSharp8.DefaultInterfaceMembers.IA.yml",
+  "_splitReference": true,
+  "_key": "api/MyExample.ExampleClass.MyProperty.yml",
   "_lang": "csharp",
-  "_path": "api/CSharp8.DefaultInterfaceMembers.IA.html",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MyExample.ExampleClass.MyProperty.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
   "_tocPath": "api/toc.html",
@@ -405,18 +399,19 @@
     "backToTop": "Back to top",
     "_shared": {}
   },
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_DefaultInterfaceMembers_IA.md&value=---%0Auid%3A%20CSharp8.DefaultInterfaceMembers.IA%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L49",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass_MyProperty_.md&value=---%0Auid%3A%20MyExample.ExampleClass.MyProperty*%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L11",
   "summary": "",
   "remarks": null,
   "conceptual": "",
+  "syntax": null,
   "implements": null,
   "example": null,
   "seealso": null,
-  "id": "CSharp8_DefaultInterfaceMembers_IA",
+  "id": "MyExample_ExampleClass_MyProperty_",
   "hideTitleType": false,
   "hideSubtitle": false,
-  "isClass": true,
-  "inInterface": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "inProperty": true,
+  "isCollection": true
 }

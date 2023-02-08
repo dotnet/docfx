@@ -11,11 +11,51 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
+
     using CS = Microsoft.CodeAnalysis.CSharp;
     using VB = Microsoft.CodeAnalysis.VisualBasic;
 
-    internal static class CompilationUtility
+    internal static class CompilationHelper
     {
+        // Bootstrap code to ensure essential types like `System.Object` is loaded for assemblies
+        private static readonly SyntaxTree[] s_assemblyBootstrap = new[]
+        {
+            CS.SyntaxFactory.ParseSyntaxTree(
+                """
+                class Bootstrap
+                {
+                    public static void Main(string[] foo) { }
+                }
+                """),
+        };
+
+        public static bool CheckDiagnostics(this Compilation compilation)
+        {
+            var errorCount = 0;
+
+            foreach (var diagnostic in compilation.GetDeclarationDiagnostics())
+            {
+                if (diagnostic.IsSuppressed)
+                    continue;
+
+                if (diagnostic.Severity is DiagnosticSeverity.Warning)
+                {
+                    Logger.LogWarning(diagnostic.ToString());
+                    continue;
+                }
+
+                if (diagnostic.Severity is DiagnosticSeverity.Error)
+                {
+                    Logger.LogError(diagnostic.ToString());
+
+                    if (++errorCount >= 20)
+                        break;
+                }
+            }
+
+            return errorCount > 0;
+        }
+
         public static Compilation CreateCompilationFromCSharpFiles(IEnumerable<string> files)
         {
             return CS.CSharpCompilation.Create(
@@ -38,7 +78,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return VB.VisualBasicCompilation.Create(
                 assemblyName: "vb.temp.dll",
-                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: files.Select(path => VB.SyntaxFactory.ParseSyntaxTree(File.ReadAllText(path), path: path)),
                 references: GetDefaultMetadataReferences("VB"));
         }
@@ -47,41 +87,39 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return VB.VisualBasicCompilation.Create(
                 name,
-                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, xmlReferenceResolver: XmlFileResolver.Default),
+                options: new VB.VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, globalImports: GetVBGlobalImports(), xmlReferenceResolver: XmlFileResolver.Default),
                 syntaxTrees: new[] { VB.SyntaxFactory.ParseSyntaxTree(code) },
                 references: GetDefaultMetadataReferences("VB").Concat(references));
         }
 
-        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths, IEnumerable<string> references = null)
+        public static (Compilation, IAssemblySymbol) CreateCompilationFromAssembly(string assemblyPath, IEnumerable<string> references = null)
         {
-            return CS.CSharpCompilation.Create(
+            var metadataReference = CreateMetadataReference(assemblyPath);
+            var compilation = CS.CSharpCompilation.Create(
                 "EmptyProjectWithAssembly",
                 options: new CS.CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
-                syntaxTrees: Array.Empty<SyntaxTree>(),
-                references: assemblyPaths
-                    .Concat(assemblyPaths.SelectMany(GetReferenceAssemblies))
+                syntaxTrees: s_assemblyBootstrap,
+                references: GetReferenceAssemblies(assemblyPath)
                     .Concat(references ?? Enumerable.Empty<string>())
-                    .Select(CreateMetadataReference));
+                    .Select(CreateMetadataReference)
+                    .Append(metadataReference));
+
+            var assembly = (IAssemblySymbol)compilation.GetAssemblyOrModuleSymbol(metadataReference);
+            return (compilation, assembly);
         }
 
-        public static IEnumerable<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation, IReadOnlyCollection<string> assemblyPaths)
+        private static IEnumerable<VB.GlobalImport> GetVBGlobalImports()
         {
-            foreach (var reference in assemblyCompilation.References)
-            {
-                Logger.LogVerbose($"Loading assembly {reference.Display}...");
-                var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
-                if (assembly == null)
-                {
-                    Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
-                    continue;
-                }
-
-                if (reference is PortableExecutableReference portableReference &&
-                    assemblyPaths.Any(path => portableReference.FilePath.Replace('\\', '/') == path.Replace('\\', '/')))
-                {
-                    yield return assembly;
-                }
-            }
+            // See default global imports in project properties panel for a default VB classlib.
+            return VB.GlobalImport.Parse(
+                "Microsoft.VisualBasic",
+                "System",
+                "System.Collections",
+                "System.Collections.Generic",
+                "System.Diagnostics",
+                "System.Linq",
+                "System.Xml.Linq",
+                "System.Threading.Tasks");
         }
 
         private static IEnumerable<MetadataReference> GetDefaultMetadataReferences(string language)
@@ -95,11 +133,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = Path.Combine(refDirectory, version, "ref", moniker);
 
                 Logger.LogInfo($"Compiling {language} files using .NET SDK {version} for {moniker}");
+                Logger.LogVerbose($"Using SDK reference assemblies in {path}");
                 return Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly)
                                 .Select(CreateMetadataReference);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogVerbose(ex.ToString());
                 throw new DocfxException("Cannot find .NET Core SDK to compile the project.");
             }
         }
@@ -108,11 +148,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             using var assembly = new PEFile(assemblyPath);
             var assemblyResolver = new UniversalAssemblyResolver(assemblyPath, false, assembly.DetectTargetFrameworkId());
-            foreach (var reference in assembly.AssemblyReferences)
+            var result = new Dictionary<string, string>();
+
+            GetReferenceAssembliesCore(assembly);
+
+            void GetReferenceAssembliesCore(PEFile assembly)
             {
-                if (assemblyResolver.FindAssemblyFile(reference) is { } file)
-                    yield return file;
+                foreach (var reference in assembly.AssemblyReferences)
+                {
+                    var file = assemblyResolver.FindAssemblyFile(reference);
+                    if (file is null)
+                    {
+                        Logger.LogWarning($"Unable to resolve assembly reference {reference}");
+                        continue;
+                    }
+
+                    Logger.LogVerbose($"Loaded {reference.Name} from {file}");
+
+                    using var referenceAssembly = new PEFile(file);
+                    if (result.TryAdd(referenceAssembly.Name, file))
+                    {
+                        GetReferenceAssembliesCore(referenceAssembly);
+                    }
+                }
             }
+
+            return result.Values;
         }
 
         private static MetadataReference CreateMetadataReference(string assemblyPath)

@@ -55,15 +55,15 @@ references:
   commentId: Overload:MyExample.ExampleClass.MyMethod
   fullName: MyExample.ExampleClass.MyMethod
   nameWithType: ExampleClass.MyMethod
-- uid: MyExample.ExampleClass.Myroperty
-  name: Myroperty
-  href: api/MyExample.ExampleClass.Myroperty.html#MyExample_ExampleClass_Myroperty
-  commentId: P:MyExample.ExampleClass.Myroperty
-  fullName: MyExample.ExampleClass.Myroperty
-  nameWithType: ExampleClass.Myroperty
-- uid: MyExample.ExampleClass.Myroperty*
-  name: Myroperty
-  href: api/MyExample.ExampleClass.Myroperty.html
-  commentId: Overload:MyExample.ExampleClass.Myroperty
-  fullName: MyExample.ExampleClass.Myroperty
-  nameWithType: ExampleClass.Myroperty
+- uid: MyExample.ExampleClass.MyProperty
+  name: MyProperty
+  href: api/MyExample.ExampleClass.MyProperty.html#MyExample_ExampleClass_MyProperty
+  commentId: P:MyExample.ExampleClass.MyProperty
+  fullName: MyExample.ExampleClass.MyProperty
+  nameWithType: ExampleClass.MyProperty
+- uid: MyExample.ExampleClass.MyProperty*
+  name: MyProperty
+  href: api/MyExample.ExampleClass.MyProperty.html
+  commentId: Overload:MyExample.ExampleClass.MyProperty
+  fullName: MyExample.ExampleClass.MyProperty
+  nameWithType: ExampleClass.MyProperty

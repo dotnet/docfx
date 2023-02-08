@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.Diagnostics;
     using System.Threading;
 
     public static class Logger
@@ -91,6 +92,7 @@ namespace Microsoft.DocAsCode.Common
                 Interlocked.Increment(ref _errorCount);
             }
 
+            Debug.WriteLine(item.Message);
             _syncListener.WriteLine(item);
         }
 

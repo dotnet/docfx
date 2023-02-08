@@ -20,9 +20,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     {
         private static MetadataItem Verify(string code)
         {
-            var compilation = CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll");
+            var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
             var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
-            return GenerateYamlMetadata(compilation.Assembly, new() { RoslynExtensionMethods = extensionMethods });
+            return GenerateYamlMetadata(compilation.Assembly, new(), extensionMethods);
         }
 
         [Fact]
@@ -3118,7 +3118,7 @@ namespace Test1
 
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
-            return CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll", references);
+            return CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll", references);
         }
 
         private static Assembly CreateAssemblyFromCSharpCode(string code, string assemblyName)

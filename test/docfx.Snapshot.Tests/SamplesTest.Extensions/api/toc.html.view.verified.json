@@ -65,12 +65,12 @@
               "name": "Properties",
               "items": [
                 {
-                  "name": "Myroperty",
-                  "href": "MyExample.ExampleClass.Myroperty.html",
-                  "topicHref": "MyExample.ExampleClass.Myroperty.html",
-                  "topicUid": "MyExample.ExampleClass.Myroperty*",
-                  "fullName": "MyExample.ExampleClass.Myroperty",
-                  "nameWithType": "ExampleClass.Myroperty",
+                  "name": "MyProperty",
+                  "href": "MyExample.ExampleClass.MyProperty.html",
+                  "topicHref": "MyExample.ExampleClass.MyProperty.html",
+                  "topicUid": "MyExample.ExampleClass.MyProperty*",
+                  "fullName": "MyExample.ExampleClass.MyProperty",
+                  "nameWithType": "ExampleClass.MyProperty",
                   "type": "Property",
                   "isEii": false,
                   "tocHref": null,

@@ -255,7 +255,7 @@ namespace Test1
 
         private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
         {
-            var compilation = CompilationUtility.CreateCompilationFromCSharpCode(code, "test.dll", references);
+            var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll", references);
             return GenerateYamlMetadata(compilation.Assembly, options);
         }
     }

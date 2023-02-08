@@ -107,6 +107,9 @@ namespace Microsoft.DocAsCode.Tests
         [Trait("Related", "docfx")]
         public void TestMetadataCommandFromVBProject()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             // Create default project
             var projectFile = Path.Combine(_projectFolder, "test.vbproj");
             var sourceFile = Path.Combine(_projectFolder, "test.vb");

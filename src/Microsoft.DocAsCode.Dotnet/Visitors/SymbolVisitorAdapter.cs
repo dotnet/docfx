@@ -29,14 +29,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataOptions options)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataOptions options, IMethodSymbol[] extensionMethods)
         {
             _generator = generator;
             _preserveRawInlineComments = options.PreserveRawInlineComments;
             var configFilterRule = ConfigFilterRule.LoadWithDefaults(options.FilterConfigFile);
             var filterVisitor = options.DisableDefaultFilter ? (IFilterVisitor)new AllMemberFilterVisitor() : new DefaultFilterVisitor();
             FilterVisitor = filterVisitor.WithConfig(configFilterRule).WithCache();
-            _extensionMethods = options.RoslynExtensionMethods?.Where(e => FilterVisitor.CanVisitApi(e)).ToArray() ?? Array.Empty<IMethodSymbol>();
+            _extensionMethods = extensionMethods?.Where(e => FilterVisitor.CanVisitApi(e)).ToArray() ?? Array.Empty<IMethodSymbol>();
             _codeSourceBasePath = options.CodeSourceBasePath;
         }
 
