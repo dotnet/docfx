@@ -4,6 +4,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Dotnet;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.DocAsCode
@@ -37,18 +38,10 @@ namespace Microsoft.DocAsCode
 
             try
             {
-                using var _ = new PerformanceScope(string.Empty, LogLevel.Info);
-
                 var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
 
                 var config = JObject.Parse(File.ReadAllText(configPath));
-                if (config.TryGetValue("metadata", out var value))
-                    await RunMetadata.Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), configDirectory);
-                if (config.TryGetValue("merge", out value))
-                    RunMerge.Exec(value.ToObject<MergeJsonConfig>(JsonUtility.DefaultSerializer.Value), configDirectory);
-                if (config.TryGetValue("pdf", out value))
-                    RunPdf.Exec(value.ToObject<PdfJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
-                if (config.TryGetValue("build", out value))
+                if (config.TryGetValue("build", out var value))
                     RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
             }
             finally

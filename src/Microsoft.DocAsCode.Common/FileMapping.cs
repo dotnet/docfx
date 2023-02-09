@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode
     /// </summary>
     [JsonConverter(typeof(FileMappingConverter))]
     [Serializable]
-    internal class FileMapping
+    public class FileMapping
     {
         private List<FileMappingItem> _items = new List<FileMappingItem>();
 

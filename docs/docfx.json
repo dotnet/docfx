@@ -3,7 +3,10 @@
     {
       "src": [
         {
-          "files": ["src/Microsoft.DocAsCode.App/*.csproj"],
+          "files": [
+            "src/Microsoft.DocAsCode.App/*.csproj",
+            "src/Microsoft.DocAsCode.Dotnet/*.csproj"
+          ],
           "src": "../"
         }
       ],

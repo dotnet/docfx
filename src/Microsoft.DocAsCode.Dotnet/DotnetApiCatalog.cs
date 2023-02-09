@@ -8,22 +8,51 @@ using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Exceptions;
-using Microsoft.DocAsCode.Dotnet;
 using Microsoft.DocAsCode.Plugins;
+using Newtonsoft.Json.Linq;
 
-namespace Microsoft.DocAsCode
+namespace Microsoft.DocAsCode.Dotnet
 {
-    internal static class RunMetadata
+    /// <summary>
+    /// Provides access to a .NET API definitions and their associated documentation.
+    /// </summary>
+    public static class DotnetApiCatalog
     {
-        static RunMetadata()
+        static DotnetApiCatalog()
         {
-            var vs = MSBuildLocator.RegisterDefaults() ?? throw new DocfxException(
+            var vs = MSBuildLocator.RegisterDefaults() ?? throw new ExtractMetadataException(
                 $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
 
             Logger.LogInfo($"Using {vs.Name} {vs.Version}");
         }
 
-        public static async Task Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
+        /// <summary>
+        /// Generates metadata reference YANL files using docfx.json config.
+        /// </summary>
+        /// <param name="configPath">The path to docfx.json config file.</param>
+        /// <returns>A task to await for build completion.</returns>
+        public static async Task GenerateManagedReferenceYamlFiles(string configPath)
+        {
+            var consoleLogListener = new ConsoleLogListener();
+            Logger.RegisterListener(consoleLogListener);
+
+            try
+            {
+                var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
+
+                var config = JObject.Parse(File.ReadAllText(configPath));
+                if (config.TryGetValue("metadata", out var value))
+                    await Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), configDirectory);
+            }
+            finally
+            {
+                Logger.Flush();
+                Logger.PrintSummary();
+                Logger.UnregisterAllListeners();
+            }
+        }
+
+        internal static async Task Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
         {
             try
             {
@@ -63,7 +92,7 @@ namespace Microsoft.DocAsCode
         {
             var projects = configModel.Source;
             var references = configModel.References;
-            var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
+            var outputFolder = configModel.Destination ?? "_api";
 
             var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
             var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
