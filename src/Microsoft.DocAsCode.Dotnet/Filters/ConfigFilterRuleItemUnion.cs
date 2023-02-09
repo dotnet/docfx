@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.IO;
@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using YamlDotNet.Serialization;
 
     [Serializable]
-    public class ConfigFilterRuleItemUnion
+    internal class ConfigFilterRuleItemUnion
     {
         private ConfigFilterRuleIncludeItem _include;
         private ConfigFilterRuleExcludeItem _exclude;

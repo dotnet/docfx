@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     internal static partial class SymbolFormatter
     {

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
-    public enum TocNamespaceStyle
+    internal enum TocNamespaceStyle
     {
         /// <summary>
         /// Renders the namespaces as a single flat list
@@ -15,5 +15,4 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// </summary>
         Nested,
     }
-
 }

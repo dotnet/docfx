@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Exceptions
 {
     using System;
 
-    public class ExtractMetadataException : DocfxException
+    internal class ExtractMetadataException : DocfxException
     {
         public ExtractMetadataException(string message) : base(message)
         {

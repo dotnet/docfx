@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.Collections.Generic;
@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    public class MetadataItem : ICloneable
+    internal class MetadataItem : ICloneable
     {
         [YamlIgnore]
         [JsonIgnore]

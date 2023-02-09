@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.Collections.Generic;
 
     using Microsoft.CodeAnalysis;
 
-    public class CachedFilterVisitor : DelegatingFilterVisitor
+    internal class CachedFilterVisitor : DelegatingFilterVisitor
     {
         private readonly Dictionary<CachedKey, bool> _cache;
         private readonly Dictionary<CachedKey, bool> _attributeCache;

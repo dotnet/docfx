@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
-    public enum ExtendedSymbolKind
+    internal enum ExtendedSymbolKind
     {
         Assembly = 0x100,
         Namespace = 0x110,
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         Property,
     }
 
-    public static class ExtendedSymbolKindHelper
+    internal static class ExtendedSymbolKindHelper
     {
         public static bool Contains(this ExtendedSymbolKind kind, SymbolFilterData symbol)
         {

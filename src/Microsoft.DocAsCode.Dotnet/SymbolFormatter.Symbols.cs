@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 
 #pragma warning disable RS1009
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     partial class SymbolFormatter
     {

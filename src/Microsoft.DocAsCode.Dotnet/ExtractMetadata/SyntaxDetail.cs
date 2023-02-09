@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.Collections.Generic;
@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    public class SyntaxDetail
+    internal class SyntaxDetail
     {
         [YamlMember(Alias = "content")]
         [JsonProperty("content")]
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("return")]
         public ApiParameter Return { get; set; }
 
-        public void CopyInheritedData(SyntaxDetail src)
+        internal void CopyInheritedData(SyntaxDetail src)
         {
             if (src == null)
                 throw new ArgumentNullException(nameof(src));

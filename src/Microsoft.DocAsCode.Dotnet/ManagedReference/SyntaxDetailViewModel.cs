@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.DataContracts.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet.ManagedReference
 {
     using System;
     using System.Collections.Generic;
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonExtensionData]
         [UniqueIdentityReferenceIgnore]
         [MarkdownContentIgnore]
-        public CompositeDictionary ExtensionData =>
+        public IDictionary<string, object> ExtensionData =>
             CompositeDictionary
                 .CreateBuilder()
                 .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)

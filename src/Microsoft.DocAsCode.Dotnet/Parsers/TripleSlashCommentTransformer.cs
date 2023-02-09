@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System.IO;
     using System.Net;
@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Xml.Xsl;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    public static class TripleSlashCommentTransformer
+    internal static class TripleSlashCommentTransformer
     {
         private static readonly XslCompiledTransform _transform;
 

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
+namespace Microsoft.DocAsCode.Dotnet.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using System.Xml.Linq;
     
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
     using Xunit;
 

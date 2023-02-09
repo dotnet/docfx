@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.Collections.Generic;
@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    public class ReferenceItem
+    internal class ReferenceItem
     {
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty(Constants.PropertyName.CommentId)]
         public string CommentId { get; set; }
 
-        public ReferenceItem Clone()
+        internal ReferenceItem Clone()
         {
             var result = (ReferenceItem)MemberwiseClone();
             result.NameParts = CloneParts(result.NameParts);
@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return null;
         }
 
-        public void Merge(ReferenceItem other)
+        internal void Merge(ReferenceItem other)
         {
             if (other == null)
             {
@@ -161,7 +161,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
     }
 
-    public class LinkItem
+    internal class LinkItem
     {
         [YamlMember(Alias = "id")]
         [JsonProperty("id")]

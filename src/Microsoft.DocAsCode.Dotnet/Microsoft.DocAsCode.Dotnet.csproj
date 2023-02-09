@@ -1,10 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <EmbeddedResource Include="Transform\**" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
     <EmbeddedResource Include="Filters\defaultfilterconfig.yml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="docfx" />
+    <InternalsVisibleTo Include="docfx.Tests" />
+    <InternalsVisibleTo Include="Microsoft.DocAsCode.App" />
     <InternalsVisibleTo Include="Microsoft.DocAsCode.Dotnet.Tests" />
   </ItemGroup>
 

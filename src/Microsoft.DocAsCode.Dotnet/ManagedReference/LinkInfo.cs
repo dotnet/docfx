@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.DataContracts.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet.ManagedReference
 {
     using System;
     using YamlDotNet.Serialization;
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("altText")]
         public string AltText { get; set; }
 
-        public LinkInfo Clone()
+        internal LinkInfo Clone()
         {
             return (LinkInfo)MemberwiseClone();
         }

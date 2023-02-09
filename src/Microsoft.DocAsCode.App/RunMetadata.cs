@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Exceptions;
-using Microsoft.DocAsCode.Metadata.ManagedReference;
+using Microsoft.DocAsCode.Dotnet;
 using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode

@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode
 {
     using System.Collections.Generic;
-    using Microsoft.DocAsCode.Metadata.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet;
     using Newtonsoft.Json;
 
     internal class MetadataJsonItemConfig

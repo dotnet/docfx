@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
+namespace Microsoft.DocAsCode.Dotnet.Tests
 {
     using System.IO;
     using System.Linq;
@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Emit;
 
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
+    using static Microsoft.DocAsCode.Dotnet.RoslynIntermediateMetadataExtractor;
 
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest

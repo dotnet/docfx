@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 
 #nullable enable
 
-namespace Microsoft.DocAsCode.Metadata.ManagedReference
+namespace Microsoft.DocAsCode.Dotnet
 {
     partial class SymbolFormatter
     {
