@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
-        public class YamlSerializationTest
+    public class YamlSerializationTest
     {
         [Theory]
         [InlineData(" Add --globalMetadata, --globalMetadataFile and --fileMetadataFile\n")]
@@ -341,8 +341,8 @@ bar: bar
         [Fact]
         public void TestInternalClass()
         {
-            Assert.Throws<YamlException>(() => YamlUtility.Serialize(new StringWriter(), new InternalClass { }));
-            Assert.Throws<YamlException>(() => YamlUtility.Deserialize<InternalClass>(new StringReader("A: a")));
+            YamlUtility.Serialize(new StringWriter(), new InternalClass { });
+            YamlUtility.Deserialize<InternalClass>(new StringReader("A: a"));
         }
 
         internal class InternalClass

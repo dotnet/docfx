@@ -80,11 +80,6 @@ namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
             {
                 var result = new CachingItem();
 
-                if (!type.IsVisible)
-                {
-                    result.Error = new YamlException($"Type {type.FullName} is invisible.");
-                    return result;
-                }
                 foreach (var prop in type.GetPublicProperties())
                 {
                     if (prop.GetIndexParameters().Length > 0)
