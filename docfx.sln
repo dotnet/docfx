@@ -132,7 +132,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{560F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildFromAssembly", "samples\seed\dotnet\assembly\BuildFromAssembly.csproj", "{55D62927-01F0-446B-B1E9-CF9142608FD0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildFromProject", "samples\seed\dotnet\project\BuildFromProject.csproj", "{310C66C8-C260-4AA2-828F-91B5D8E0F2C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildFromProject", "samples\seed\dotnet\project\Project\BuildFromProject.csproj", "{310C66C8-C260-4AA2-828F-91B5D8E0F2C9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatLibrary", "samples\seed\dotnet\solution\CatLibrary\CatLibrary.csproj", "{81ECD832-9665-4258-9FC4-345E6EE204B6}"
 EndProject

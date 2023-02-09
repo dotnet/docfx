@@ -10,6 +10,9 @@
             "csharp/**/*.cs",
             "vb/**/*.vb"
           ],
+          "exclude": [
+            "project/Project.Core/**"
+          ],
           "src": "dotnet"
         }
       ],

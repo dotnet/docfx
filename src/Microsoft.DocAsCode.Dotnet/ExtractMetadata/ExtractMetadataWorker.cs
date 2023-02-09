@@ -71,6 +71,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             var hasCompilationError = false;
+            var projectCompilations = new HashSet<Compilation>();
             var assemblySymbols = new List<IAssemblySymbol>();
 
             if (_files.TryGetValue(FileType.Solution, out var solutionFiles))
@@ -80,9 +81,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Logger.LogInfo($"Loading solution {solution}");
                     foreach (var project in SolutionFile.Parse(solution).ProjectsInOrder)
                     {
-                        if (project.ProjectType is SolutionProjectType.KnownToBeMSBuildFormat)
+                        if (project.ProjectType is SolutionProjectType.KnownToBeMSBuildFormat &&
+                            await LoadCompilationFromProject(project.AbsolutePath) is { } compilation)
                         {
-                            await LoadProject(project.AbsolutePath);
+                            projectCompilations.Add(compilation);
                         }
                     }
                 }
@@ -92,20 +94,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 foreach (var projectFile in projectFiles)
                 {
-                    await LoadProject(projectFile.NormalizedPath);
+                    if (await LoadCompilationFromProject(projectFile.NormalizedPath) is { } compilation)
+                    {
+                        projectCompilations.Add(compilation);
+                    }
                 }
             }
 
-            foreach (var project in _workspace.CurrentSolution.Projects)
+            foreach (var compilation in projectCompilations)
             {
-                if (!project.SupportsCompilation)
-                {
-                    Logger.LogInfo($"Skip unsupported project {project.FilePath}.");
-                    continue;
-                }
-
-                Logger.LogInfo($"Compiling project {project.FilePath}");
-                var compilation = await project.GetCompilationAsync();
                 hasCompilationError |= compilation.CheckDiagnostics();
                 assemblySymbols.Add(compilation.Assembly);
             }
@@ -187,15 +184,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private async Task LoadProject(string path)
+        private async Task<Compilation> LoadCompilationFromProject(string path)
         {
             var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
                 p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
-            if (project is not null)
-                return;
 
-            Logger.LogInfo($"Loading project {path}");
-            await _workspace.OpenProjectAsync(path, _msbuildLogger);
+            if (project is null)
+            {
+                Logger.LogInfo($"Loading project {path}");
+                project = await _workspace.OpenProjectAsync(path, _msbuildLogger);
+            }
+
+            if (!project.SupportsCompilation)
+            {
+                Logger.LogInfo($"Skip unsupported project {project.FilePath}.");
+                return null;
+            }
+
+            return await project.GetCompilationAsync();
         }
 
         private IEnumerable<string> ResolveAndExportYamlMetadata(
