@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
@@ -32,19 +33,16 @@ namespace Microsoft.DocAsCode
 
                     EnvironmentContext.SetBaseDirectory(configDirectory);
 
-                    // If Root Output folder is specified from command line, use it instead of the base directory
-                    EnvironmentContext.SetOutputDirectory(outputDirectory ?? configDirectory);
-
                     foreach (var item in config)
                     {
                         VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
 
-                        var inputModel = ConvertToInputModel(item);
+                        var options = ConvertToOptions(item, outputDirectory ?? configDirectory);
 
                         EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
                         // TODO: Use plugin to generate metadata for files with different extension?
-                        using var worker = new ExtractMetadataWorker(inputModel);
+                        using var worker = new ExtractMetadataWorker(options);
                         await worker.ExtractMetadataAsync();
                     }
 
@@ -61,32 +59,30 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
+        private static ExtractMetadataOptions ConvertToOptions(MetadataJsonItemConfig configModel, string outputDirectory)
         {
             var projects = configModel.Source;
             var references = configModel.References;
             var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
-            var inputModel = new ExtractMetadataInputModel
-            {
-                PreserveRawInlineComments = configModel?.Raw ?? false,
-                ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
-                FilterConfigFile = configModel?.FilterConfigFile,
-                GlobalNamespaceId = configModel?.GlobalNamespaceId,
-                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
-                MSBuildProperties = configModel?.MSBuildProperties,
-                OutputFolder = outputFolder,
-                CodeSourceBasePath = configModel?.CodeSourceBasePath,
-                DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
-                TocNamespaceStyle = configModel?.TocNamespaceStyle ?? TocNamespaceStyle.Flattened,
-            };
 
             var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
             var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
-            inputModel.Files = expandedFiles.Items.SelectMany(s => s.Files).ToList();
-            inputModel.References = expandedReferences?.Items.SelectMany(s => s.Files).ToList();
-
-            return inputModel;
+            return new ExtractMetadataOptions
+            {
+                PreserveRawInlineComments = configModel?.Raw ?? false,
+                ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
+                FilterConfigFile = configModel?.FilterConfigFile is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.FilterConfigFile)),
+                GlobalNamespaceId = configModel?.GlobalNamespaceId,
+                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
+                MSBuildProperties = configModel?.MSBuildProperties,
+                OutputFolder = Path.GetFullPath(Path.Combine(outputDirectory, outputFolder)),
+                CodeSourceBasePath = configModel?.CodeSourceBasePath,
+                DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
+                TocNamespaceStyle = configModel?.TocNamespaceStyle ?? TocNamespaceStyle.Flattened,
+                Files = expandedFiles.Items.SelectMany(s => s.Files).ToList(),
+                References = expandedReferences?.Items.SelectMany(s => s.Files).ToList(),
+            };
         }
     }
 }

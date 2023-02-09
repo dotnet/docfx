@@ -19,15 +19,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Exceptions;
-    using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private readonly Dictionary<FileType, List<FileInformation>> _files;
-        private readonly List<string> _references;
-        private readonly bool _useCompatibilityFileName;
-        private readonly string _outputFolder;
         private readonly ExtractMetadataOptions _options;
         private readonly ConsoleLogger _msbuildLogger;
 
@@ -36,45 +31,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         internal const string IndexFileName = ".manifest";
 
-        public ExtractMetadataWorker(ExtractMetadataInputModel input)
+        public ExtractMetadataWorker(ExtractMetadataOptions options)
         {
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
-
-            if (string.IsNullOrEmpty(input.OutputFolder))
-            {
-                throw new ArgumentNullException(nameof(input.OutputFolder), "Output folder must be specified");
-            }
-
-            _files = input.Files?.Select(s => new FileInformation(s))
+            _options = options;
+            _files = options.Files?.Select(s => new FileInformation(s))
                 .GroupBy(f => f.Type)
                 .ToDictionary(s => s.Key, s => s.Distinct().ToList());
-            _references = input.References?.Select(s => new FileInformation(s))
-                .Select(f => f.NormalizedPath)
-                .Distinct()
-                .ToList();
 
-            var msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
+            var msbuildProperties = options.MSBuildProperties ?? new Dictionary<string, string>();
             if (!msbuildProperties.ContainsKey("Configuration"))
             {
                 msbuildProperties["Configuration"] = "Release";
             }
-
-            _options = new ExtractMetadataOptions
-            {
-                ShouldSkipMarkup = input.ShouldSkipMarkup,
-                PreserveRawInlineComments = input.PreserveRawInlineComments,
-                FilterConfigFile = input.FilterConfigFile != null ? new FileInformation(input.FilterConfigFile).NormalizedPath : null,
-                MSBuildProperties = msbuildProperties,
-                CodeSourceBasePath = input.CodeSourceBasePath,
-                DisableDefaultFilter = input.DisableDefaultFilter,
-                TocNamespaceStyle = input.TocNamespaceStyle
-            };
-
-            _useCompatibilityFileName = input.UseCompatibilityFileName;
-            _outputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, input.OutputFolder));
 
             _msbuildLogger = new(Logger.LogLevelThreshold switch
             {
@@ -161,7 +129,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 foreach (var assemblyFile in assemblyFiles)
                 {
                     Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                    var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _references);
+                    var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _options.References);
                     hasCompilationError |= compilation.CheckDiagnostics();
                     assemblySymbols.Add(assembly);
                 }
@@ -214,7 +182,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 List<string> outputFiles;
                 using (new PerformanceScope("ResolveAndExport"))
                 {
-                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, _outputFolder, _options.PreserveRawInlineComments, _options.ShouldSkipMarkup, _useCompatibilityFileName, _options.TocNamespaceStyle).ToList();
+                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences).ToList();
                 }
             }
         }
@@ -230,28 +198,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             await _workspace.OpenProjectAsync(path, _msbuildLogger);
         }
 
-        private static IEnumerable<string> ResolveAndExportYamlMetadata(
-            Dictionary<string, MetadataItem> allMembers,
-            Dictionary<string, ReferenceItem> allReferences,
-            string folder,
-            bool preserveRawInlineComments,
-            bool shouldSkipMarkup,
-            bool useCompatibilityFileName,
-            TocNamespaceStyle tocNamespaceStyle)
+        private IEnumerable<string> ResolveAndExportYamlMetadata(
+            Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences)
         {
             var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, preserveRawInlineComments, tocNamespaceStyle);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _options.PreserveRawInlineComments, _options.TocNamespaceStyle);
 
             var tocFileName = Constants.TocYamlFileName;
             // 0. load last Manifest and remove files
-            CleanupHistoricalFile(folder);
+            CleanupHistoricalFile(_options.OutputFolder);
 
             // 1. generate toc.yml
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
             var tocViewModel = model.TocYamlViewModel.ToTocViewModel();
-            string tocFilePath = Path.Combine(folder, tocFileName);
+            string tocFilePath = Path.Combine(_options.OutputFolder, tocFileName);
 
             YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
             outputFileNames.Add(tocFilePath, 1);
@@ -263,11 +225,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var members = model.Members;
             foreach (var memberModel in members)
             {
-                var fileName = useCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
+                var fileName = _options.UseCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
                 var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
-                string itemFilePath = Path.Combine(folder, outputFileName);
+                string itemFilePath = Path.Combine(_options.OutputFolder, outputFileName);
                 var memberViewModel = memberModel.ToPageViewModel();
-                memberViewModel.ShouldSkipMarkup = shouldSkipMarkup;
+                memberViewModel.ShouldSkipMarkup = _options.ShouldSkipMarkup;
                 YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
                 Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
                 AddMemberToIndexer(memberModel, outputFileName, indexer);
@@ -275,7 +237,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // 3. generate manifest file
-            string indexFilePath = Path.Combine(folder, IndexFileName);
+            var indexFilePath = Path.Combine(_options.OutputFolder, IndexFileName);
 
             JsonUtility.Serialize(indexFilePath, indexer, Newtonsoft.Json.Formatting.Indented);
             yield return IndexFileName;
@@ -324,8 +286,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     newFileName = $"{fileName.Substring(0, extensionIndex)}_{suffix}.{fileName.Substring(extensionIndex + 1)}";
                 }
-                var extension = Path.GetExtension(fileName);
-                var name = Path.GetFileNameWithoutExtension(fileName);
                 return GetUniqueFileNameWithSuffix(newFileName, existingFileNames);
             }
             else
@@ -437,22 +397,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return allMembers;
-        }
-
-        private static bool TryParseYamlMetadataFile(string metadataFileName, out MetadataItem projectMetadata)
-        {
-            projectMetadata = null;
-            try
-            {
-                using StreamReader reader = new StreamReader(metadataFileName);
-                projectMetadata = YamlUtility.Deserialize<MetadataItem>(reader);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Logger.LogInfo($"Error parsing yaml metadata file: {e.Message}");
-                return false;
-            }
         }
 
         private static Dictionary<string, ReferenceItem> MergeYamlProjectReferences(List<MetadataItem> projectMetadataList)
