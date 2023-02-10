@@ -83,6 +83,28 @@ references:
   commentId: T:BuildFromProject.Class1
   fullName: BuildFromProject.Class1
   nameWithType: Class1
+- uid: BuildFromProject.Class1.Issue896
+  name: Issue896()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896
+  commentId: M:BuildFromProject.Class1.Issue896
+  fullName: BuildFromProject.Class1.Issue896()
+  nameWithType: Class1.Issue896()
+- uid: BuildFromProject.Class1.Issue896*
+  name: Issue896
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896_
+  commentId: Overload:BuildFromProject.Class1.Issue896
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue896
+  nameWithType: Class1.Issue896
+- uid: BuildFromProject.Class1.Test`1
+  name: Class1.Test<T>
+  href: api/BuildFromProject.Class1.Test-1.html
+  commentId: T:BuildFromProject.Class1.Test`1
+  name.vb: Class1.Test(Of T)
+  fullName: BuildFromProject.Class1.Test<T>
+  fullName.vb: BuildFromProject.Class1.Test(Of T)
+  nameWithType: Class1.Test<T>
+  nameWithType.vb: Class1.Test(Of T)
 - uid: BuildFromProject.Class1.XmlCommentIncludeTag
   name: XmlCommentIncludeTag()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_XmlCommentIncludeTag

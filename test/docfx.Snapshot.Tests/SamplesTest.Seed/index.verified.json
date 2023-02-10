@@ -22,12 +22,17 @@
   "api/BuildFromProject.Class1.html": {
     "href": "api/BuildFromProject.Class1.html",
     "title": "Class Class1 | docfx seed website",
-    "keywords": "Class Class1 Inheritance object Class1 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromProject Assembly: BuildFromProject.dll Syntax public class Class1 Methods | Improve this Doc View Source XmlCommentIncludeTag() This method should do something... Declaration public void XmlCommentIncludeTag() Remarks This is remarks."
+    "keywords": "Class Class1 Inheritance object Class1 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromProject Assembly: BuildFromProject.dll Syntax public class Class1 Methods | Improve this Doc View Source Issue896() Test Declaration public void Issue896() See Also Class1.Test<T> | Improve this Doc View Source XmlCommentIncludeTag() This method should do something... Declaration public void XmlCommentIncludeTag() Remarks This is remarks."
+  },
+  "api/BuildFromProject.Class1.Test-1.html": {
+    "href": "api/BuildFromProject.Class1.Test-1.html",
+    "title": "Class Class1.Test<T> | docfx seed website",
+    "keywords": "Class Class1.Test<T> Inheritance object Class1.Test<T> Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Namespace: BuildFromProject Assembly: BuildFromProject.dll Syntax public class Class1.Test<T> Type Parameters Name Description T"
   },
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Classes Class1"
+    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Test<T>"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",

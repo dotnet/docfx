@@ -67,6 +67,66 @@
           "id": "BuildFromProject_Class1",
           "hideTitleType": false,
           "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Class1.Test`1",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Test<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Test(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Test<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Test(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Test<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Test(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>.<xref uid=\"BuildFromProject.Class1.Test`1\" text=\"Test\"/>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>.<xref uid=\"BuildFromProject.Class1.Test`1\" text=\"Test\"/>(Of T)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": null,
+          "conceptual": "",
+          "syntax": null,
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "BuildFromProject_Class1_Test_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
         }
       ]
     }
