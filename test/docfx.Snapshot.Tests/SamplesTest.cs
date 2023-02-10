@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
     using VerifyXunit;
     using VerifyTests;
+    using Microsoft.DocAsCode.Dotnet;
 
     [UsesVerify]
     public class SamplesTest
@@ -76,6 +77,7 @@ namespace Microsoft.DocAsCode.Tests
 
             try
             {
+                await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
                 await Docset.Build($"{samplePath}/docfx.json");
             }
             finally

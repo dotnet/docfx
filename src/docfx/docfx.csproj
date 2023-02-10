@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Dotnet\Microsoft.DocAsCode.Dotnet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Dotnet;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
@@ -31,7 +32,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            RunMetadata.Exec(Config, BaseDirectory, OutputFolder).GetAwaiter().GetResult();
+            DotnetApiCatalog.Exec(Config, BaseDirectory, OutputFolder).GetAwaiter().GetResult();
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)

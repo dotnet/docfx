@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>2.60.0</PackageValidationBaselineVersion>
@@ -37,7 +37,6 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.HtmlToPdf\Microsoft.DocAsCode.HtmlToPdf.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Dotnet\Microsoft.DocAsCode.Dotnet.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />
   </ItemGroup>
 </Project>

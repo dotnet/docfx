@@ -11,8 +11,7 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Glob;
 
-
-    internal class GlobUtility
+    public class GlobUtility
     {
         public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping)
         {

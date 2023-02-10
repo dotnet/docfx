@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode
     /// Data model for a file-mapping item
     /// </summary>
     [Serializable]
-    internal class FileMappingItem
+    public class FileMappingItem
     {
         private string _sourceFolder;
         private string _cwd;
