@@ -58,7 +58,7 @@ jobs:
     - name: Dotnet Setup
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.x
+        dotnet-version: 7.x
 
     - run: dotnet tool update -g docfx
     - run: docfx docfx_project/docfx.json
