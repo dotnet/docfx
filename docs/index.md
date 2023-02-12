@@ -53,13 +53,15 @@ jobs:
   publish-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-dotnet@v3
-    with:
-        dotnet-version: 6.x
+    - name: Chekout
+      uses: actions/checkout@v3
+    - name: Dotnet Setup
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.x
 
-    - run: dotnet install -g docfx
-    - run: docfx docs/docfx.json
+    - run: dotnet tool update -g docfx
+    - run: docfx docfx_project/docfx.json
 
     - name: Deploy
     uses: peaceiris/actions-gh-pages@v3
