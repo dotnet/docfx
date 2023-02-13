@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using Xunit;
 
     using Microsoft.CodeAnalysis;
-    using static Microsoft.DocAsCode.Dotnet.RoslynIntermediateMetadataExtractor;
 
     [Trait("Related", "Filter")]
     [Collection("docfx STA")]
@@ -256,7 +255,7 @@ namespace Test1
         private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll", references);
-            return GenerateYamlMetadata(compilation.Assembly, options);
+            return compilation.Assembly.GenerateMetadataItem(options);
         }
     }
 }

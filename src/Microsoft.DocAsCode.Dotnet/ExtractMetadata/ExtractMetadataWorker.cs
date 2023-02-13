@@ -23,7 +23,8 @@ namespace Microsoft.DocAsCode.Dotnet
     internal class ExtractMetadataWorker : IDisposable
     {
         private readonly Dictionary<FileType, List<FileInformation>> _files;
-        private readonly ExtractMetadataOptions _options;
+        private readonly ExtractMetadataOptions _config;
+        private readonly DotnetApiCatalogOptions _options;
         private readonly ConsoleLogger _msbuildLogger;
 
         //Lacks UT for shared workspace
@@ -31,14 +32,15 @@ namespace Microsoft.DocAsCode.Dotnet
 
         internal const string IndexFileName = ".manifest";
 
-        public ExtractMetadataWorker(ExtractMetadataOptions options)
+        public ExtractMetadataWorker(ExtractMetadataOptions config, DotnetApiCatalogOptions options)
         {
+            _config = config;
             _options = options;
-            _files = options.Files?.Select(s => new FileInformation(s))
+            _files = config.Files?.Select(s => new FileInformation(s))
                 .GroupBy(f => f.Type)
                 .ToDictionary(s => s.Key, s => s.Distinct().ToList());
 
-            var msbuildProperties = options.MSBuildProperties ?? new Dictionary<string, string>();
+            var msbuildProperties = config.MSBuildProperties ?? new Dictionary<string, string>();
             if (!msbuildProperties.ContainsKey("Configuration"))
             {
                 msbuildProperties["Configuration"] = "Release";
@@ -126,7 +128,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 foreach (var assemblyFile in assemblyFiles)
                 {
                     Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
-                    var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _options.References);
+                    var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _config.References);
                     hasCompilationError |= compilation.CheckDiagnostics();
                     assemblySymbols.Add(assembly);
                 }
@@ -145,11 +147,12 @@ namespace Microsoft.DocAsCode.Dotnet
 
             var projectMetadataList = new List<MetadataItem>();
             var extensionMethods = assemblySymbols.SelectMany(assembly => assembly.FindExtensionMethods()).ToArray();
+            var filter = new SymbolFilter(_config, _options);
 
             foreach (var assembly in assemblySymbols)
             {
                 Logger.LogInfo($"Processing {assembly.Name}");
-                var projectMetadata = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(assembly, _options, extensionMethods);
+                var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), _config, filter, extensionMethods));
                 if (projectMetadata != null)
                     projectMetadataList.Add(projectMetadata);
             }
@@ -208,18 +211,18 @@ namespace Microsoft.DocAsCode.Dotnet
             Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences)
         {
             var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _options.PreserveRawInlineComments, _options.TocNamespaceStyle);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _config.PreserveRawInlineComments, _config.TocNamespaceStyle);
 
             var tocFileName = Constants.TocYamlFileName;
             // 0. load last Manifest and remove files
-            CleanupHistoricalFile(_options.OutputFolder);
+            CleanupHistoricalFile(_config.OutputFolder);
 
             // 1. generate toc.yml
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
             var tocViewModel = model.TocYamlViewModel.ToTocViewModel();
-            string tocFilePath = Path.Combine(_options.OutputFolder, tocFileName);
+            string tocFilePath = Path.Combine(_config.OutputFolder, tocFileName);
 
             YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
             outputFileNames.Add(tocFilePath, 1);
@@ -231,11 +234,11 @@ namespace Microsoft.DocAsCode.Dotnet
             var members = model.Members;
             foreach (var memberModel in members)
             {
-                var fileName = _options.UseCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
+                var fileName = _config.UseCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
                 var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
-                string itemFilePath = Path.Combine(_options.OutputFolder, outputFileName);
+                string itemFilePath = Path.Combine(_config.OutputFolder, outputFileName);
                 var memberViewModel = memberModel.ToPageViewModel();
-                memberViewModel.ShouldSkipMarkup = _options.ShouldSkipMarkup;
+                memberViewModel.ShouldSkipMarkup = _config.ShouldSkipMarkup;
                 YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
                 Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
                 AddMemberToIndexer(memberModel, outputFileName, indexer);
@@ -243,7 +246,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
 
             // 3. generate manifest file
-            var indexFilePath = Path.Combine(_options.OutputFolder, IndexFileName);
+            var indexFilePath = Path.Combine(_config.OutputFolder, IndexFileName);
 
             JsonUtility.Serialize(indexFilePath, indexer, Newtonsoft.Json.Formatting.Indented);
             yield return IndexFileName;

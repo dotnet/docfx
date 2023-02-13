@@ -31,7 +31,17 @@ namespace Microsoft.DocAsCode.Dotnet
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>A task to await for build completion.</returns>
-        public static async Task GenerateManagedReferenceYamlFiles(string configPath)
+        public static Task GenerateManagedReferenceYamlFiles(string configPath)
+        {
+            return GenerateManagedReferenceYamlFiles(configPath, new());
+        }
+
+        /// <summary>
+        /// Generates metadata reference YANL files using docfx.json config.
+        /// </summary>
+        /// <param name="configPath">The path to docfx.json config file.</param>
+        /// <returns>A task to await for build completion.</returns>
+        public static async Task GenerateManagedReferenceYamlFiles(string configPath, DotnetApiCatalogOptions options)
         {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);
@@ -42,7 +52,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
                 var config = JObject.Parse(File.ReadAllText(configPath));
                 if (config.TryGetValue("metadata", out var value))
-                    await Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), configDirectory);
+                    await Exec(value.ToObject<MetadataJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
             }
             finally
             {
@@ -52,7 +62,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        internal static async Task Exec(MetadataJsonConfig config, string configDirectory, string outputDirectory = null)
+        internal static async Task Exec(MetadataJsonConfig config, DotnetApiCatalogOptions options, string configDirectory, string outputDirectory = null)
         {
             try
             {
@@ -65,13 +75,10 @@ namespace Microsoft.DocAsCode.Dotnet
                     foreach (var item in config)
                     {
                         VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
-
-                        var options = ConvertToOptions(item, outputDirectory ?? configDirectory);
-
                         EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
                         // TODO: Use plugin to generate metadata for files with different extension?
-                        using var worker = new ExtractMetadataWorker(options);
+                        using var worker = new ExtractMetadataWorker(ConvertConfig(item, outputDirectory ?? configDirectory), options);
                         await worker.ExtractMetadataAsync();
                     }
 
@@ -88,7 +95,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        private static ExtractMetadataOptions ConvertToOptions(MetadataJsonItemConfig configModel, string outputDirectory)
+        private static ExtractMetadataOptions ConvertConfig(MetadataJsonItemConfig configModel, string outputDirectory)
         {
             var projects = configModel.Source;
             var references = configModel.References;

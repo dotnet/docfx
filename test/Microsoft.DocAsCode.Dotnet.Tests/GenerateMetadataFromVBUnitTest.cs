@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    using static Microsoft.DocAsCode.Dotnet.RoslynIntermediateMetadataExtractor;
-
     [Trait("EntityType", "Model")]
     [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
@@ -18,7 +16,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
         private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
         {
             var compilation = CompilationHelper.CreateCompilationFromVBCode(code, "test.dll", references);
-            return GenerateYamlMetadata(compilation.Assembly, options);
+            return compilation.Assembly.GenerateMetadataItem(options);
         }
 
         [Trait("Related", "Generic")]

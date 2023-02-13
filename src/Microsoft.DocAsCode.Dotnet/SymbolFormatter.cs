@@ -94,16 +94,16 @@ namespace Microsoft.DocAsCode.Dotnet
             });
         }
 
-        public static string GetSyntax(ISymbol symbol, SyntaxLanguage language, IFilterVisitor apiFilter)
+        public static string GetSyntax(ISymbol symbol, SyntaxLanguage language, SymbolFilter filter)
         {
-            return GetSyntaxParts(symbol, language, apiFilter).ToDisplayString();
+            return GetSyntaxParts(symbol, language, filter).ToDisplayString();
         }
 
-        public static ImmutableArray<SymbolDisplayPart> GetSyntaxParts(ISymbol symbol, SyntaxLanguage language, IFilterVisitor apiFilter)
+        public static ImmutableArray<SymbolDisplayPart> GetSyntaxParts(ISymbol symbol, SyntaxLanguage language, SymbolFilter filter)
         {
             try
             {
-                return new SyntaxFormatter { Language = language, ApiFilter = apiFilter }.GetSyntax(symbol);
+                return new SyntaxFormatter { Language = language, Filter = filter }.GetSyntax(symbol);
             }
             catch (InvalidOperationException)
             {

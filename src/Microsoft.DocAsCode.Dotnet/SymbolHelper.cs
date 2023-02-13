@@ -3,12 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
+#nullable enable
+
 namespace Microsoft.DocAsCode.Dotnet
 {
     internal static class SymbolHelper
     {
+        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataOptions? config = null, DotnetApiCatalogOptions? options = null, IMethodSymbol[]? extensionMethods = null)
+        {
+            config ??= new();
+            return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
+        }
+
         public static bool IncludeSymbol(this ISymbol symbol)
         {
+            if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
+                return false;
+
             if (symbol.GetDisplayAccessibility() is null)
                 return false;
 
