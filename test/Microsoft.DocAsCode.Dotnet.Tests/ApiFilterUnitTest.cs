@@ -262,11 +262,11 @@ namespace Test1
         public void M2() { }
     }
 
-    public class A1 : Attribute {}
-    public class A2 : Attribute {}
+    public class A1 : Attribute { public A1() {} }
+    public class A2 : Attribute { public A2() {} }
     public class C
     {
-        public class A3 : Attribute {}
+        public class A3 : Attribute { public A3() {} }
     }
 
     interface IClass1 { }
@@ -281,7 +281,7 @@ namespace Test1
                     "Test1.A2",
                 },
                 class1.Attributes.Select(a => a.Type));
-            Assert.Equal(new[] { "Test1.Class1.M2", "Test1.Class1.#ctor" }, class1.Items.Select(m => m.Name));
+            Assert.Equal(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name));
             Assert.Equal(new[] { "System.Object" }, class1.Inheritance);
 
             SymbolIncludeState IncludeAttribute(ISymbol symbol)
