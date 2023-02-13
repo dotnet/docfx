@@ -14,23 +14,23 @@ namespace Microsoft.DocAsCode.Dotnet
     public enum SymbolIncludeState
     {
         /// <summary>
-        /// The symbol should be included in the API catalog based on the default configuration.
+        /// Determines whether to include or not using the default configuration.
         /// </summary>
         Default,
 
         /// <summary>
-        /// The symbol should be included in the API catalog.
+        /// Ignore default rules and include the symbol in the API catalog.
         /// </summary>
         Include,
 
         /// <summary>
-        /// The symbol should not be included in the API catalog.
+        /// Ignores default rules and exclude the symbol from the API catalog.
         /// </summary>
         Exclude,
     }
 
     /// <summary>
-    /// Provides options to be used with <see cref="DotnetApiCatalog.GenerateManagedReferenceYamlFiles(string)(string, DotnetApiCatalogOptions)"/>.
+    /// Provides options to be used with <see cref="DotnetApiCatalog.GenerateManagedReferenceYamlFiles(string, DotnetApiOptions)"/>.
     /// </summary>
     public class DotnetApiOptions
     {

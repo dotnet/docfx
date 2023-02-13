@@ -70,9 +70,6 @@ namespace Microsoft.DocAsCode.Dotnet
 
         private static bool IsSymbolAccessible(ISymbol symbol)
         {
-            if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
-                return false;
-
             if (symbol.GetDisplayAccessibility() is null)
                 return false;
 

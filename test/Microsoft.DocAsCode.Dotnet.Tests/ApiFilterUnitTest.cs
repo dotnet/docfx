@@ -277,10 +277,11 @@ namespace Test1
                 new[]
                 {
                     "System.SerializableAttribute",
-                    "System.Runtime.InteropServices.ComVisibleAttribute"
+                    "System.Runtime.InteropServices.ComVisibleAttribute",
+                    "Test1.A2",
                 },
                 class1.Attributes.Select(a => a.Type));
-            Assert.Equal(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name));
+            Assert.Equal(new[] { "Test1.Class1.M2", "Test1.Class1.#ctor" }, class1.Items.Select(m => m.Name));
             Assert.Equal(new[] { "System.Object" }, class1.Inheritance);
 
             SymbolIncludeState IncludeAttribute(ISymbol symbol)
