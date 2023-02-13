@@ -14,24 +14,24 @@ namespace Microsoft.DocAsCode.Dotnet
             Inner = inner;
         }
 
-        public bool CanVisitApi(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        public bool CanVisitApi(ISymbol symbol, IFilterVisitor outer)
         {
-            return CanVisitApiCore(symbol, wantProtectedMember, outer ?? this);
+            return CanVisitApiCore(symbol, outer ?? this);
         }
 
-        public bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        public bool CanVisitAttribute(ISymbol symbol, IFilterVisitor outer)
         {
-            return CanVisitAttributeCore(symbol, wantProtectedMember, outer ?? this);
+            return CanVisitAttributeCore(symbol, outer ?? this);
         }
 
-        protected virtual bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected virtual bool CanVisitApiCore(ISymbol symbol, IFilterVisitor outer)
         {
-            return Inner.CanVisitApi(symbol, wantProtectedMember, outer);
+            return Inner.CanVisitApi(symbol, outer);
         }
 
-        protected virtual bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected virtual bool CanVisitAttributeCore(ISymbol symbol, IFilterVisitor outer)
         {
-            return Inner.CanVisitAttribute(symbol, wantProtectedMember, outer);
+            return Inner.CanVisitAttribute(symbol, outer);
         }
     }
 }

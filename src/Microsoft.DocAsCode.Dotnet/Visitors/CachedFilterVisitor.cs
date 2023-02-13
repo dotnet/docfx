@@ -3,80 +3,39 @@
 
 namespace Microsoft.DocAsCode.Dotnet
 {
-    using System;
     using System.Collections.Generic;
 
     using Microsoft.CodeAnalysis;
 
     internal class CachedFilterVisitor : DelegatingFilterVisitor
     {
-        private readonly Dictionary<CachedKey, bool> _cache;
-        private readonly Dictionary<CachedKey, bool> _attributeCache;
+        private readonly Dictionary<ISymbol, bool> _cache;
+        private readonly Dictionary<ISymbol, bool> _attributeCache;
 
         public CachedFilterVisitor(IFilterVisitor inner) : base(inner)
         {
-            _cache = new Dictionary<CachedKey, bool>();
-            _attributeCache = new Dictionary<CachedKey, bool>();
+            _cache = new Dictionary<ISymbol, bool>();
+            _attributeCache = new Dictionary<ISymbol, bool>();
         }
 
-        protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected override bool CanVisitApiCore(ISymbol symbol, IFilterVisitor outer)
         {
-            var key = new CachedKey(symbol, wantProtectedMember);
-            if (_cache.TryGetValue(key, out bool result))
+            if (_cache.TryGetValue(symbol, out bool result))
             {
                 return result;
             }
-            result = _cache[key] = Inner.CanVisitApi(symbol, wantProtectedMember, outer);
+            result = _cache[symbol] = Inner.CanVisitApi(symbol, outer);
             return result;
         }
 
-        protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected override bool CanVisitAttributeCore(ISymbol symbol, IFilterVisitor outer)
         {
-            var key = new CachedKey(symbol, wantProtectedMember);
-            if (_attributeCache.TryGetValue(key, out bool result))
+            if (_attributeCache.TryGetValue(symbol, out bool result))
             {
                 return result;
             }
-            result = _attributeCache[key] = Inner.CanVisitAttribute(symbol, wantProtectedMember, outer);
+            result = _attributeCache[symbol] = Inner.CanVisitAttribute(symbol, outer);
             return result;
-        }
-
-        private sealed class CachedKey : IEquatable<CachedKey>
-        {
-            public ISymbol Symbol { get; set; }
-
-            public bool WantProtectedMember { get; set; }
-
-            public CachedKey(ISymbol symbol, bool wantProtectedMember)
-            {
-                Symbol = symbol;
-                WantProtectedMember = wantProtectedMember;
-            }
-
-            public bool Equals(CachedKey other)
-            {
-                if (other == null)
-                {
-                    return false;
-                }
-
-                if (object.ReferenceEquals(this, other))
-                {
-                    return true;
-                }
-
-                return Symbol.Equals(other.Symbol) && WantProtectedMember == other.WantProtectedMember;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return Equals(obj as CachedKey);
-            }
-
-            public override int GetHashCode()
-            {
-                return Symbol.GetHashCode() + (WantProtectedMember ? 0 : 12234345);
-            }
         }
     }
 }

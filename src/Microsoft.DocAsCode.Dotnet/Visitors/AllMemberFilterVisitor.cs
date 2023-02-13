@@ -9,32 +9,32 @@ namespace Microsoft.DocAsCode.Dotnet
 
     internal class AllMemberFilterVisitor : IFilterVisitor
     {
-        public bool CanVisitApi(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        public bool CanVisitApi(ISymbol symbol, IFilterVisitor outer)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
-            return CanVisitCore(symbol, (outer ?? this).CanVisitApi, wantProtectedMember, outer ?? this);
+            return CanVisitCore(symbol, (outer ?? this).CanVisitApi, outer ?? this);
         }
 
-        public bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        public bool CanVisitAttribute(ISymbol symbol, IFilterVisitor outer)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
-            return CanVisitCore(symbol, (outer ?? this).CanVisitAttribute, wantProtectedMember, outer ?? this);
+            return CanVisitCore(symbol, (outer ?? this).CanVisitAttribute, outer ?? this);
         }
 
-        private static bool CanVisitCore(ISymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(ISymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, IFilterVisitor outer)
         {
             // check parent visibility
             var current = symbol;
             var parent = symbol.ContainingSymbol;
             while (!(current is INamespaceSymbol) && parent != null)
             {
-                if (!visitFunc(parent, wantProtectedMember, outer))
+                if (!visitFunc(parent, outer))
                 {
                     return false;
                 }
@@ -55,27 +55,27 @@ namespace Microsoft.DocAsCode.Dotnet
 
             if (symbol is IMethodSymbol methodSymbol)
             {
-                return CanVisitCore(methodSymbol, visitFunc, wantProtectedMember, outer);
+                return CanVisitCore(methodSymbol, visitFunc, outer);
             }
 
             if (symbol is IPropertySymbol propertySymbol)
             {
-                return CanVisitCore(propertySymbol, visitFunc, wantProtectedMember, outer);
+                return CanVisitCore(propertySymbol, visitFunc, outer);
             }
 
             if (symbol is IEventSymbol eventSymbol)
             {
-                return CanVisitCore(eventSymbol, visitFunc, wantProtectedMember, outer);
+                return CanVisitCore(eventSymbol, visitFunc, outer);
             }
 
             if (symbol is IFieldSymbol fieldSymbol)
             {
-                return CanVisitCore(fieldSymbol, visitFunc, wantProtectedMember, outer);
+                return CanVisitCore(fieldSymbol, visitFunc, outer);
             }
 
             if (symbol is INamedTypeSymbol namedTypeSymbol)
             {
-                return CanVisitCore(namedTypeSymbol, visitFunc, wantProtectedMember, outer);
+                return CanVisitCore(namedTypeSymbol, visitFunc, outer);
             }
 
             if (symbol is ITypeSymbol ts)
@@ -89,9 +89,9 @@ namespace Microsoft.DocAsCode.Dotnet
                     case TypeKind.Error:
                         return false;
                     case TypeKind.Array:
-                        return visitFunc(((IArrayTypeSymbol)ts).ElementType, wantProtectedMember, outer);
+                        return visitFunc(((IArrayTypeSymbol)ts).ElementType, outer);
                     case TypeKind.Pointer:
-                        return visitFunc(((IPointerTypeSymbol)ts).PointedAtType, wantProtectedMember, outer);
+                        return visitFunc(((IPointerTypeSymbol)ts).PointedAtType, outer);
                     default:
                         break;
                 }
@@ -105,31 +105,31 @@ namespace Microsoft.DocAsCode.Dotnet
             return true;
         }
 
-        private static bool CanVisitCore(INamedTypeSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(INamedTypeSymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, IFilterVisitor outer)
         {
             if (symbol.ContainingType != null)
             {
-                return visitFunc(symbol.ContainingType, wantProtectedMember, outer);
+                return visitFunc(symbol.ContainingType, outer);
             }
             return true;
         }
 
-        private static bool CanVisitCore(IMethodSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IMethodSymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, IFilterVisitor outer)
         {
             return true;
         }
 
-        private static bool CanVisitCore(IPropertySymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IPropertySymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, IFilterVisitor outer)
         {
             return true;
         }
 
-        private static bool CanVisitCore(IEventSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtectedMember, IFilterVisitor outer)
+        private static bool CanVisitCore(IEventSymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, IFilterVisitor outer)
         {
             return true;
         }
 
-        private static bool CanVisitCore(IFieldSymbol symbol, Func<ISymbol, bool, IFilterVisitor, bool> visitFunc, bool wantProtected, IFilterVisitor outer)
+        private static bool CanVisitCore(IFieldSymbol symbol, Func<ISymbol, IFilterVisitor, bool> visitFunc, bool wantProtected, IFilterVisitor outer)
         {
             return true;
         }

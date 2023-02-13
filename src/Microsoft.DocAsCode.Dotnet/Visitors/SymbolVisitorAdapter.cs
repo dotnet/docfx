@@ -696,7 +696,8 @@ namespace Microsoft.DocAsCode.Dotnet
         {
             foreach (var m in from m in type.GetMembers()
                               where !(m is INamedTypeSymbol)
-                              where FilterVisitor.CanVisitApi(m, symbol == type || !symbol.IsSealed || symbol.TypeKind != TypeKind.Struct)
+                              where FilterVisitor.CanVisitApi(m)
+                              where m.DeclaredAccessibility is Accessibility.Public || !(symbol.IsSealed || symbol.TypeKind is TypeKind.Struct)
                               where IsInheritable(m)
                               select m)
             {

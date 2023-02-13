@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.Dotnet
 
     internal interface IFilterVisitor
     {
-        bool CanVisitApi(ISymbol symbol, bool wantProtectedMember = true, IFilterVisitor outer = null);
+        bool CanVisitApi(ISymbol symbol, IFilterVisitor outer = null);
 
-        bool CanVisitAttribute(ISymbol symbol, bool wantProtectedMember = true, IFilterVisitor outer = null);
+        bool CanVisitAttribute(ISymbol symbol, IFilterVisitor outer = null);
     }
 }

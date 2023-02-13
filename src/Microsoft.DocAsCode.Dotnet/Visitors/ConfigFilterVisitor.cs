@@ -23,14 +23,14 @@ namespace Microsoft.DocAsCode.Dotnet
             _configRule = rule;
         }
 
-        protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected override bool CanVisitApiCore(ISymbol symbol, IFilterVisitor outer)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
 
-            if (!Inner.CanVisitApi(symbol, wantProtectedMember, outer))
+            if (!Inner.CanVisitApi(symbol, outer))
             {
                 return false;
             }
@@ -39,14 +39,14 @@ namespace Microsoft.DocAsCode.Dotnet
             return _configRule.CanVisitApi(symbolFilterData);
         }
 
-        protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
+        protected override bool CanVisitAttributeCore(ISymbol symbol, IFilterVisitor outer)
         {
             if (symbol == null)
             {
                 throw new ArgumentNullException("symbol");
             }
 
-            if (!Inner.CanVisitAttribute(symbol, wantProtectedMember, outer))
+            if (!Inner.CanVisitAttribute(symbol, outer))
             {
                 return false;
             }
