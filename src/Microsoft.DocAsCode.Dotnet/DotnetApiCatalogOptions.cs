@@ -9,9 +9,9 @@ using Microsoft.CodeAnalysis;
 namespace Microsoft.DocAsCode.Dotnet
 {
     /// <summary>
-    /// Return state of the <see cref="DotnetApiCatalogOptions.ShowApi"/> and <see cref="DotnetApiCatalogOptions.ShowAttribute"/> callbacks.
+    /// Return state of the <see cref="DotnetApiCatalogOptions.IncludeApi"/> and <see cref="DotnetApiCatalogOptions.IncludeAttribute"/> callbacks.
     /// </summary>
-    public enum SymbolShowState
+    public enum SymbolIncludeState
     {
         /// <summary>
         /// The symbol should be included in the API catalog based on the default configuration.
@@ -21,12 +21,12 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <summary>
         /// The symbol should be included in the API catalog.
         /// </summary>
-        Show,
+        Include,
 
         /// <summary>
         /// The symbol should not be included in the API catalog.
         /// </summary>
-        Hide,
+        Exclude,
     }
 
     /// <summary>
@@ -36,18 +36,20 @@ namespace Microsoft.DocAsCode.Dotnet
     {
         /// <summary>
         /// Customizes the namespaces and types to include in the API catalog.
+        /// Excluding a parent symbol exclude all child symbols underneath it.
         /// </summary>
         /// <remarks>
         /// Show private or internal symbols are not supported in this version.
         /// </remarks>
-        public Func<ISymbol, SymbolShowState>? ShowApi { get; init; }
+        public Func<ISymbol, SymbolIncludeState>? IncludeApi { get; init; }
 
         /// <summary>
         /// Customizes the attributes to include in the API catalog.
+        /// Excluding a parent symbol exclude all child symbols underneath it.
         /// </summary>
         /// <remarks>
         /// Show private or internal symbols are not supported in this version.
         /// </remarks>
-        public Func<IMethodSymbol, SymbolShowState>? ShowAttribute { get; init; }
+        public Func<ISymbol, SymbolIncludeState>? IncludeAttribute { get; init; }
     }
 }

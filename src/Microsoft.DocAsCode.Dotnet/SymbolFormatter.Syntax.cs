@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
                     foreach (var @interface in type.AllInterfaces)
                     {
-                        if (SymbolHelper.IncludeSymbol(@interface) && Filter.IncludeApi(@interface))
+                        if (Filter.IncludeApi(@interface))
                             baseTypes.Add(@interface);
                     }
                 }

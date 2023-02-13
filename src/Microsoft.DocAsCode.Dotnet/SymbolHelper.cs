@@ -15,17 +15,6 @@ namespace Microsoft.DocAsCode.Dotnet
             return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
         }
 
-        public static bool IncludeSymbol(this ISymbol symbol)
-        {
-            if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
-                return false;
-
-            if (symbol.GetDisplayAccessibility() is null)
-                return false;
-
-            return symbol.ContainingSymbol is null || IncludeSymbol(symbol.ContainingSymbol);
-        }
-
         public static bool IsInstanceInterfaceMember(this ISymbol symbol)
         {
             return symbol.ContainingType?.TypeKind is TypeKind.Interface && !symbol.IsStatic && IsMember(symbol);

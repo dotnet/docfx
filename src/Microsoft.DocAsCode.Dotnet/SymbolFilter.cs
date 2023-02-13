@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Concurrent;
 using Microsoft.CodeAnalysis;
 
@@ -25,38 +24,59 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public bool IncludeApi(ISymbol symbol)
         {
-            return _options.ShowApi?.Invoke(symbol) switch
+            return IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
+
+            bool IncludeApiCore(ISymbol symbol)
             {
-                SymbolShowState.Show => true,
-                SymbolShowState.Hide => false,
-                _ => symbol.IncludeSymbol() && IncludeApiCore(symbol),
-            };
+                return _cache.GetOrAdd(symbol, _ => _options.IncludeApi?.Invoke(_) switch
+                {
+                    SymbolIncludeState.Include => true,
+                    SymbolIncludeState.Exclude => false,
+                    _ => IncludeApiDefault(symbol),
+                });
+            }
+
+            bool IncludeApiDefault(ISymbol symbol)
+            {
+                if (_filterRule is not null && !_filterRule.CanVisitApi(RoslynFilterData.GetSymbolFilterData(symbol)))
+                    return false;
+
+                return symbol.ContainingSymbol is null || IncludeApiCore(symbol.ContainingSymbol);
+            }
         }
 
-        public bool IncludeAttribute(IMethodSymbol symbol)
+        public bool IncludeAttribute(ISymbol symbol)
         {
-            return _options.ShowAttribute?.Invoke(symbol) switch
+            return IsSymbolAccessible(symbol) && IncludeAttributeCore(symbol);
+
+            bool IncludeAttributeCore(ISymbol symbol)
             {
-                SymbolShowState.Show => true,
-                SymbolShowState.Hide => false,
-                _ => symbol.IncludeSymbol() && IncludeAttributeCore(symbol),
-            };
+                return _attributeCache.GetOrAdd(symbol, _ => _options.IncludeAttribute?.Invoke(_) switch
+                {
+                    SymbolIncludeState.Include => true,
+                    SymbolIncludeState.Exclude => false,
+                    _ => IncludeAttributeDefault(symbol),
+                });
+            }
+
+            bool IncludeAttributeDefault(ISymbol symbol)
+            {
+                if (_filterRule is not null && !_filterRule.CanVisitAttribute(RoslynFilterData.GetSymbolFilterData(symbol)))
+                    return false;
+
+                return symbol.ContainingSymbol is null || IncludeAttributeCore(symbol.ContainingSymbol);
+            }
         }
 
-        private bool IncludeApiCore(ISymbol symbol)
+        private static bool IsSymbolAccessible(ISymbol symbol)
         {
-            if (_filterRule is null)
+            if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
                 return false;
 
-            return _cache.GetOrAdd(symbol, _ => _filterRule.CanVisitApi(RoslynFilterData.GetSymbolFilterData(_)));
-        }
-
-        private bool IncludeAttributeCore(ISymbol symbol)
-        {
-            if (_filterRule is null)
+            if (symbol.GetDisplayAccessibility() is null)
                 return false;
 
-            return _attributeCache.GetOrAdd(symbol, _ => _filterRule.CanVisitAttribute(RoslynFilterData.GetSymbolFilterData(_)));
+            return symbol.ContainingSymbol is null || IsSymbolAccessible(symbol.ContainingSymbol);
         }
     }
 }
