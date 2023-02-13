@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using Xunit;
 
     using Microsoft.CodeAnalysis;
+    using System.Linq;
 
     [Trait("Related", "Filter")]
     [Collection("docfx STA")]
@@ -113,7 +114,7 @@ namespace Test1
 }
 ";
             string configFile = "TestData/filterconfig.yml";
-            MetadataItem output = Verify(code, options: new ExtractMetadataOptions { FilterConfigFile = configFile });
+            MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
             Assert.Single(output.Items);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
@@ -167,7 +168,7 @@ namespace Test1
     }
 }";
             string configFile = "TestData/filterconfig_attribute.yml";
-            MetadataItem output = Verify(code, options: new ExtractMetadataOptions { FilterConfigFile = configFile });
+            MetadataItem output = Verify(code, new() { FilterConfigFile = configFile });
             var @namespace = output.Items[0];
             var class1 = @namespace.Items[0];
             Assert.Single(class1.Attributes);
@@ -243,10 +244,70 @@ namespace Test1
             Assert.Equal(3, @namespace.Items.Count);
         }
 
-        private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
+        [Fact]
+        public void TestSymbolFilterOptions()
         {
-            var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll", references);
-            return compilation.Assembly.GenerateMetadataItem(options);
+            var code = @"
+using System;
+using System.Runtime.InteropServices;
+
+namespace Test1
+{
+    [Serializable]
+    [ComVisible(true)]
+    [A1, A2, C.A3]
+    public class Class1 : IClass1
+    {
+        public void M1() { }
+        public void M2() { }
+    }
+
+    public class A1 : Attribute {}
+    public class A2 : Attribute {}
+    public class C
+    {
+        public class A3 : Attribute {}
+    }
+
+    interface IClass1 { }
+}";
+            var output = Verify(code, new(), new() { IncludeApi = IncludeApi, IncludeAttribute = IncludeAttribute });
+            var class1 = output.Items[0].Items[0];
+            Assert.Equal(
+                new[]
+                {
+                    "System.SerializableAttribute",
+                    "System.Runtime.InteropServices.ComVisibleAttribute"
+                },
+                class1.Attributes.Select(a => a.Type));
+            Assert.Equal(new[] { "Test1.Class1.M2" }, class1.Items.Select(m => m.Name));
+            Assert.Equal(new[] { "System.Object" }, class1.Inheritance);
+
+            SymbolIncludeState IncludeAttribute(ISymbol symbol)
+            {
+                return symbol.Name switch
+                {
+                    "A1" or "C" => SymbolIncludeState.Exclude,
+                    "ComVisibleAttribute" => SymbolIncludeState.Include,
+                    _ => default,
+                };
+            }
+
+            SymbolIncludeState IncludeApi(ISymbol symbol)
+            {
+                return symbol.Name switch
+                {
+                    "M1" or "IClass1" => SymbolIncludeState.Exclude,
+                    _ => default,
+                };
+            }
+        }
+
+        private static MetadataItem Verify(string code, ExtractMetadataOptions config = null, DotnetApiCatalogOptions options = null)
+        {
+            var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
+            Assert.Empty(compilation.GetDeclarationDiagnostics());
+            return compilation.Assembly.GenerateMetadataItem(config, options);
         }
     }
 }

@@ -888,7 +888,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
-        [Fact]
+        [Fact(Skip = "No EII until supporting private APIs")]
         public void TestGenerateMetadataWithEii()
         {
             string code = @"

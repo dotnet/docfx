@@ -909,7 +909,7 @@ End Namespace
         }
 
         [Trait("Related", "Generic")]
-        [Fact]
+        [Fact(Skip = "No EII until supporting private APIs")]
         public void TestGenereateMetadataWithEvent()
         {
             string code = @"
