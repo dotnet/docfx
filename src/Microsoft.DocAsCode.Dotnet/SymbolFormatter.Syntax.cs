@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 .WithMemberOptions(s_syntaxFormat.MemberOptions | SymbolDisplayMemberOptions.IncludeContainingType);
 
             public SyntaxLanguage Language { get; init; }
-            public IFilterVisitor ApiFilter { get; init; } = default!;
+            public SymbolFilter Filter { get; init; } = default!;
 
             private ImmutableArray<SymbolDisplayPart>.Builder _parts = ImmutableArray.CreateBuilder<SymbolDisplayPart>();
 
@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
                     foreach (var @interface in type.AllInterfaces)
                     {
-                        if (SymbolHelper.IncludeSymbol(@interface) && ApiFilter.CanVisitApi(@interface))
+                        if (Filter.IncludeApi(@interface))
                             baseTypes.Add(@interface);
                     }
                 }
@@ -255,7 +255,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 {
                     if (attribute.AttributeConstructor is null ||
                         attribute.AttributeClass is null ||
-                        !ApiFilter.CanVisitAttribute(attribute.AttributeConstructor))
+                        !Filter.IncludeAttribute(attribute.AttributeConstructor))
                     {
                         continue;
                     }

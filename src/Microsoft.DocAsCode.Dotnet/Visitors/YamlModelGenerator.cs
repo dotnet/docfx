@@ -47,10 +47,10 @@ namespace Microsoft.DocAsCode.Dotnet
             reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(SyntaxLanguage.VB, asOverload);
         }
 
-        public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolVisitorAdapter adapter)
+        public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolFilter filter)
         {
-            syntax.Content[SyntaxLanguage.CSharp] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.CSharp, adapter.FilterVisitor);
-            syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, adapter.FilterVisitor);
+            syntax.Content[SyntaxLanguage.CSharp] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.CSharp, filter);
+            syntax.Content[SyntaxLanguage.VB] = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.VB, filter);
         }
 
         public string AddReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)

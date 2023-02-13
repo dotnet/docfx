@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
+#nullable enable
+
 namespace Microsoft.DocAsCode.Dotnet
 {
     internal static class SymbolHelper
     {
-        public static bool IncludeSymbol(this ISymbol symbol)
+        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataOptions? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
         {
-            if (symbol.GetDisplayAccessibility() is null)
-                return false;
-
-            return symbol.ContainingSymbol is null || IncludeSymbol(symbol.ContainingSymbol);
+            config ??= new();
+            return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
         }
 
         public static bool IsInstanceInterfaceMember(this ISymbol symbol)

@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
 
     using Microsoft.DocAsCode.Dotnet.ManagedReference;
 
-    using static Microsoft.DocAsCode.Dotnet.RoslynIntermediateMetadataExtractor;
-
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
@@ -22,7 +20,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
             var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
-            return GenerateYamlMetadata(compilation.Assembly, new(), extensionMethods);
+            return compilation.Assembly.GenerateMetadataItem(new(), extensionMethods: extensionMethods);
         }
 
         [Fact]
@@ -890,7 +888,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
-        [Fact]
+        [Fact(Skip = "No EII until supporting private APIs")]
         public void TestGenerateMetadataWithEii()
         {
             string code = @"

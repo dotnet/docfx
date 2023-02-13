@@ -24,29 +24,20 @@ namespace Microsoft.DocAsCode.Dotnet
         private bool _preserveRawInlineComments;
         private readonly IMethodSymbol[] _extensionMethods;
         private readonly string _codeSourceBasePath;
+        private readonly SymbolFilter _filter;
 
         #endregion
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataOptions options, IMethodSymbol[] extensionMethods)
+        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataOptions options, SymbolFilter filter, IMethodSymbol[] extensionMethods )
         {
             _generator = generator;
             _preserveRawInlineComments = options.PreserveRawInlineComments;
-            var configFilterRule = ConfigFilterRule.LoadWithDefaults(options.FilterConfigFile);
-            var filterVisitor = options.DisableDefaultFilter ? (IFilterVisitor)new AllMemberFilterVisitor() : new DefaultFilterVisitor();
-            FilterVisitor = filterVisitor.WithConfig(configFilterRule).WithCache();
-            _extensionMethods = extensionMethods?.Where(e => FilterVisitor.CanVisitApi(e)).ToArray() ?? Array.Empty<IMethodSymbol>();
+            _filter = filter;
+            _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
             _codeSourceBasePath = options.CodeSourceBasePath;
         }
-
-        #endregion
-
-        #region Properties
-
-        public SyntaxLanguage Language { get; private set; }
-
-        public IFilterVisitor FilterVisitor { get; private set; }
 
         #endregion
 
@@ -54,7 +45,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public override MetadataItem DefaultVisit(ISymbol symbol)
         {
-            if (!FilterVisitor.CanVisitApi(symbol))
+            if (!_filter.IncludeApi(symbol))
             {
                 return null;
             }
@@ -139,7 +130,7 @@ namespace Microsoft.DocAsCode.Dotnet
             item.Items = VisitDescendants(
                 namespaces,
                 ns => ns.GetMembers().OfType<INamespaceSymbol>(),
-                ns => ns.GetMembers().OfType<INamedTypeSymbol>().Any(t => FilterVisitor.CanVisitApi(t)));
+                ns => ns.GetMembers().OfType<INamedTypeSymbol>().Any(t => _filter.IncludeApi(t)));
             item.References = _references;
             return item;
         }
@@ -184,7 +175,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(symbol, item.Syntax, this);
+            _generator.GenerateSyntax(symbol, item.Syntax, _filter);
 
             if (symbol.TypeParameters.Length > 0)
             {
@@ -259,7 +250,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(symbol, result.Syntax, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
             if (symbol.IsOverride && symbol.OverriddenMethod != null)
             {
@@ -293,7 +284,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(symbol, result.Syntax, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -321,7 +312,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(symbol, result.Syntax, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -362,7 +353,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
             }
-            _generator.GenerateSyntax(symbol, result.Syntax, this);
+            _generator.GenerateSyntax(symbol, result.Syntax, _filter);
 
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
@@ -607,7 +598,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 if (symbol.AllInterfaces.Length > 0)
                 {
                     item.Implements = (from t in symbol.AllInterfaces
-                                       where FilterVisitor.CanVisitApi(t)
+                                       where _filter.IncludeApi(t)
                                        select AddSpecReference(t, typeParamterNames)).ToList();
                     if (item.Implements.Count == 0)
                     {
@@ -636,9 +627,9 @@ namespace Microsoft.DocAsCode.Dotnet
         {
             if (symbol.ContainingType.AllInterfaces.Length <= 0) return;
             item.Implements = (from type in symbol.ContainingType.AllInterfaces
-                               where FilterVisitor.CanVisitApi(type)
+                               where _filter.IncludeApi(type)
                                from member in type.GetMembers()
-                               where FilterVisitor.CanVisitApi(member)
+                               where _filter.IncludeApi(member)
                                where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
                                select AddSpecReference(member, typeGenericParameters)).ToList();
             if (item.Implements.Count == 0)
@@ -651,9 +642,9 @@ namespace Microsoft.DocAsCode.Dotnet
         {
             if (symbol.ContainingType.AllInterfaces.Length <= 0) return;
             item.Implements = (from type in symbol.ContainingType.AllInterfaces
-                               where FilterVisitor.CanVisitApi(type)
+                               where _filter.IncludeApi(type)
                                from member in type.GetMembers()
-                               where FilterVisitor.CanVisitApi(member)
+                               where _filter.IncludeApi(member)
                                where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
                                select AddSpecReference(
                                    symbol.TypeParameters.Length == 0 ? member : ((IMethodSymbol)member).Construct(symbol.TypeParameters.ToArray<ITypeSymbol>()),
@@ -696,7 +687,7 @@ namespace Microsoft.DocAsCode.Dotnet
         {
             foreach (var m in from m in type.GetMembers()
                               where !(m is INamedTypeSymbol)
-                              where FilterVisitor.CanVisitApi(m)
+                              where _filter.IncludeApi(m)
                               where m.DeclaredAccessibility is Accessibility.Public || !(symbol.IsSealed || symbol.TypeKind is TypeKind.Struct)
                               where IsInheritable(m)
                               select m)
@@ -757,7 +748,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 (from attr in attributes
                  where !(attr.AttributeClass is IErrorTypeSymbol)
                  where attr.AttributeConstructor != null
-                 where FilterVisitor.CanVisitAttribute(attr.AttributeConstructor)
+                 where _filter.IncludeAttribute(attr.AttributeConstructor)
                  select new AttributeInfo
                  {
                      Type = AddSpecReference(attr.AttributeClass),
@@ -801,7 +792,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 if (arg.Value is ITypeSymbol type)
                 {
-                    if (!FilterVisitor.CanVisitApi(type))
+                    if (!_filter.IncludeApi(type))
                     {
                         return null;
                     }
@@ -861,7 +852,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 if (arg.Value is ITypeSymbol type)
                 {
-                    if (!FilterVisitor.CanVisitApi(type))
+                    if (!_filter.IncludeApi(type))
                     {
                         return null;
                     }
