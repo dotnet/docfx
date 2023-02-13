@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>A task to await for build completion.</returns>
-        public static async Task GenerateManagedReferenceYamlFiles(string configPath, DotnetApiCatalogOptions options)
+        public static async Task GenerateManagedReferenceYamlFiles(string configPath, DotnetApiOptions options)
         {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        internal static async Task Exec(MetadataJsonConfig config, DotnetApiCatalogOptions options, string configDirectory, string outputDirectory = null)
+        internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
         {
             try
             {

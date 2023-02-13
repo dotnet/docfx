@@ -10,13 +10,13 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     internal class SymbolFilter
     {
-        private readonly DotnetApiCatalogOptions _options;
+        private readonly DotnetApiOptions _options;
         private readonly ConfigFilterRule? _filterRule;
 
         private readonly ConcurrentDictionary<ISymbol, bool> _cache = new(SymbolEqualityComparer.Default);
         private readonly ConcurrentDictionary<ISymbol, bool> _attributeCache = new(SymbolEqualityComparer.Default);
 
-        public SymbolFilter(ExtractMetadataOptions config, DotnetApiCatalogOptions options)
+        public SymbolFilter(ExtractMetadataOptions config, DotnetApiOptions options)
         {
             _options = options;
             _filterRule = config.DisableDefaultFilter ? null : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);

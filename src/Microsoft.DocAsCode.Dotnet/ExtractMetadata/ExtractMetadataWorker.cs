@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Dotnet
     {
         private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly ExtractMetadataOptions _config;
-        private readonly DotnetApiCatalogOptions _options;
+        private readonly DotnetApiOptions _options;
         private readonly ConsoleLogger _msbuildLogger;
 
         //Lacks UT for shared workspace
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         internal const string IndexFileName = ".manifest";
 
-        public ExtractMetadataWorker(ExtractMetadataOptions config, DotnetApiCatalogOptions options)
+        public ExtractMetadataWorker(ExtractMetadataOptions config, DotnetApiOptions options)
         {
             _config = config;
             _options = options;

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     internal static class SymbolHelper
     {
-        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataOptions? config = null, DotnetApiCatalogOptions? options = null, IMethodSymbol[]? extensionMethods = null)
+        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataOptions? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
         {
             config ??= new();
             return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 namespace Microsoft.DocAsCode.Dotnet
 {
     /// <summary>
-    /// Return state of the <see cref="DotnetApiCatalogOptions.IncludeApi"/> and <see cref="DotnetApiCatalogOptions.IncludeAttribute"/> callbacks.
+    /// Return state of the <see cref="DotnetApiOptions.IncludeApi"/> and <see cref="DotnetApiOptions.IncludeAttribute"/> callbacks.
     /// </summary>
     public enum SymbolIncludeState
     {
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dotnet
     /// <summary>
     /// Provides options to be used with <see cref="DotnetApiCatalog.GenerateManagedReferenceYamlFiles(string)(string, DotnetApiCatalogOptions)"/>.
     /// </summary>
-    public class DotnetApiCatalogOptions
+    public class DotnetApiOptions
     {
         /// <summary>
         /// Customizes the namespaces and types to include in the API catalog.
