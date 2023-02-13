@@ -9,6 +9,7 @@
         }
       ],
       "dest": "api",
+      "includePrivateMembers": true,
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }

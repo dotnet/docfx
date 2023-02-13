@@ -37,12 +37,6 @@ references:
   commentId: E:MyExample.ExampleClass.MyEvent
   fullName: MyExample.ExampleClass.MyEvent
   nameWithType: ExampleClass.MyEvent
-- uid: MyExample.ExampleClass.MyField
-  name: MyField
-  href: api/MyExample.ExampleClass.MyField.html
-  commentId: F:MyExample.ExampleClass.MyField
-  fullName: MyExample.ExampleClass.MyField
-  nameWithType: ExampleClass.MyField
 - uid: MyExample.ExampleClass.MyMethod
   name: MyMethod()
   href: api/MyExample.ExampleClass.MyMethod.html#MyExample_ExampleClass_MyMethod

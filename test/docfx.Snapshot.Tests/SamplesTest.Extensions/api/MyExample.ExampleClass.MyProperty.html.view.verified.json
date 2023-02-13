@@ -58,7 +58,7 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "public string MyProperty { get; set; }"
+                "value": "public string MyProperty { get; internal set; }"
               },
               {
                 "lang": "vb",

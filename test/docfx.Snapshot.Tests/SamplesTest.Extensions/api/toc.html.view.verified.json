@@ -39,29 +39,6 @@
               "leaf": false
             },
             {
-              "name": "Fields",
-              "items": [
-                {
-                  "name": "MyField",
-                  "href": "MyExample.ExampleClass.MyField.html",
-                  "topicHref": "MyExample.ExampleClass.MyField.html",
-                  "topicUid": "MyExample.ExampleClass.MyField",
-                  "fullName": "MyExample.ExampleClass.MyField",
-                  "nameWithType": "ExampleClass.MyField",
-                  "type": "Field",
-                  "isEii": false,
-                  "tocHref": null,
-                  "level": 5.0,
-                  "items": [],
-                  "leaf": true
-                }
-              ],
-              "topicHref": null,
-              "tocHref": null,
-              "level": 4.0,
-              "leaf": false
-            },
-            {
               "name": "Properties",
               "items": [
                 {

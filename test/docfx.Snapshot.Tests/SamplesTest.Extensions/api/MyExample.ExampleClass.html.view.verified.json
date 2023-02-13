@@ -118,74 +118,6 @@
       ]
     },
     {
-      "inField": true,
-      "typePropertyName": "inField",
-      "id": "fields",
-      "children": [
-        {
-          "uid": "MyExample.ExampleClass.MyField",
-          "isExtensionMethod": false,
-          "parent": "MyExample.ExampleClass",
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "MyField"
-            },
-            {
-              "lang": "vb",
-              "value": "MyField"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "ExampleClass.MyField"
-            },
-            {
-              "lang": "vb",
-              "value": "ExampleClass.MyField"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "MyExample.ExampleClass.MyField"
-            },
-            {
-              "lang": "vb",
-              "value": "MyExample.ExampleClass.MyField"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"MyExample.ExampleClass.MyField\" text=\"MyField\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"MyExample.ExampleClass.MyField\" text=\"MyField\"/>"
-            }
-          ],
-          "level": 0.0,
-          "summary": "",
-          "type": "field",
-          "platform": null,
-          "isEii": false,
-          "docurl": "",
-          "sourceurl": "",
-          "remarks": null,
-          "conceptual": "",
-          "syntax": null,
-          "implements": null,
-          "example": null,
-          "seealso": null,
-          "id": "MyExample_ExampleClass_MyField",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        }
-      ]
-    },
-    {
       "inProperty": true,
       "typePropertyName": "inProperty",
       "id": "properties",
@@ -490,11 +422,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "public class ExampleClass"
+        "value": "internal class ExampleClass"
       },
       {
         "lang": "vb",
-        "value": "Public Class ExampleClass"
+        "value": "Friend Class ExampleClass"
       }
     ]
   },
