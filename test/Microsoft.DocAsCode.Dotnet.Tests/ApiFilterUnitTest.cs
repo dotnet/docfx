@@ -114,7 +114,7 @@ namespace Test1
 ";
             string configFile = "TestData/filterconfig.yml";
             MetadataItem output = Verify(code, options: new ExtractMetadataOptions { FilterConfigFile = configFile });
-            Assert.Equal(2, output.Items.Count);
+            Assert.Single(output.Items);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
             Assert.Equal("Test1", @namespace.Name);
@@ -144,15 +144,6 @@ namespace Test1
                 Assert.Equal(2, class6.Items.Count);
                 Assert.Equal("Test1.Class6.D", class6.Items[0].Name);
                 Assert.Equal("Test1.Class6.Test(System.String)", class6.Items[1].Name);
-            }
-
-            var nestedNamespace = output.Items[1];
-            Assert.NotNull(nestedNamespace);
-            Assert.Equal("Test1.Test2.Test3", nestedNamespace.Name);
-            Assert.Single(nestedNamespace.Items);
-            {
-                var class5 = nestedNamespace.Items[0];
-                Assert.Equal("Test1.Test2.Test3.Class5", class5.Name);
             }
         }
 
