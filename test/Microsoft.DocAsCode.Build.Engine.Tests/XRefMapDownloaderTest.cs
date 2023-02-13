@@ -14,9 +14,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.Linq;
 
-        public class XRefMapDownloadTest
+    public class XRefMapDownloadTest
     {
-        [Fact]
+        [Fact(Skip = "Flakly SSL connection problems on GH windows CI")]
         public async Task BaseUrlIsSet()
         {
             // GitHub doesn't support TLS 1.1 since Feb 23, 2018. See: https://github.com/blog/2507-weak-cryptographic-standards-removed
