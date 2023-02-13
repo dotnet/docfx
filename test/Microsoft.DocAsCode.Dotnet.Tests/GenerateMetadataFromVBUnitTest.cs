@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromVBUnitTest
     {
-        private static MetadataItem Verify(string code, ExtractMetadataOptions options = null, params MetadataReference[] references)
+        private static MetadataItem Verify(string code, ExtractMetadataConfig options = null, params MetadataReference[] references)
         {
             var compilation = CompilationHelper.CreateCompilationFromVBCode(code, "test.dll", references);
             return compilation.Assembly.GenerateMetadataItem(options);
@@ -909,7 +909,7 @@ End Namespace
         }
 
         [Trait("Related", "Generic")]
-        [Fact(Skip = "No EII until supporting private APIs")]
+        [Fact]
         public void TestGenereateMetadataWithEvent()
         {
             string code = @"
@@ -933,7 +933,7 @@ Namespace Test1
     End Interface
 End Namespace
 ";
-            MetadataItem output = Verify(code);
+            MetadataItem output = Verify(code, new() { IncludePrivateMembers = true });
             Assert.Single(output.Items);
             {
                 var a = output.Items[0].Items[0].Items[0];

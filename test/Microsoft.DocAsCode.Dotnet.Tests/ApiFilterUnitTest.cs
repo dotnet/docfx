@@ -304,7 +304,7 @@ namespace Test1
             }
         }
 
-        private static MetadataItem Verify(string code, ExtractMetadataOptions config = null, DotnetApiOptions options = null)
+        private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
             Assert.Empty(compilation.GetDeclarationDiagnostics());

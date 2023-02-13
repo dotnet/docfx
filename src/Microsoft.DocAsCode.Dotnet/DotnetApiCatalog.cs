@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        private static ExtractMetadataOptions ConvertConfig(MetadataJsonItemConfig configModel, string outputDirectory)
+        private static ExtractMetadataConfig ConvertConfig(MetadataJsonItemConfig configModel, string outputDirectory)
         {
             var projects = configModel.Source;
             var references = configModel.References;
@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Dotnet
             var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
             var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
-            return new ExtractMetadataOptions
+            return new ExtractMetadataConfig
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,

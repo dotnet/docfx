@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     internal static class SymbolHelper
     {
-        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataOptions? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
+        public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
         {
             config ??= new();
             return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
@@ -54,19 +54,6 @@ namespace Microsoft.DocAsCode.Dotnet
         public static bool IsCastOperator(this ISymbol symbol)
         {
             return symbol.Kind is SymbolKind.Method && ((IMethodSymbol)symbol).MethodKind is MethodKind.Conversion;
-        }
-
-        public static Accessibility? GetDisplayAccessibility(this ISymbol symbol)
-        {
-            // Hide internal or private APIs by default
-            return symbol.DeclaredAccessibility switch
-            {
-                Accessibility.NotApplicable => Accessibility.NotApplicable,
-                Accessibility.Public => Accessibility.Public,
-                Accessibility.Protected => Accessibility.Protected,
-                Accessibility.ProtectedOrInternal => Accessibility.Protected,
-                _ => null,
-            };
         }
 
         public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)

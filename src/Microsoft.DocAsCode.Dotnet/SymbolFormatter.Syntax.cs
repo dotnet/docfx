@@ -93,15 +93,39 @@ namespace Microsoft.DocAsCode.Dotnet
                 if (symbol.IsEnumMember() || symbol.IsInstanceInterfaceMember() || symbol.IsExplicitInterfaceImplementation())
                     return;
 
-                switch (symbol.GetDisplayAccessibility())
+                switch (Filter.GetDisplayAccessibility(symbol))
                 {
-                    case Accessibility.Protected or Accessibility.ProtectedOrInternal:
+                    case Accessibility.Public:
+                        AddKeyword("public", "Public");
+                        AddSpace();
+                        break;
+
+                    case Accessibility.Protected:
                         AddKeyword("protected", "Protected");
                         AddSpace();
                         break;
 
-                    case Accessibility.Public:
-                        AddKeyword("public", "Public");
+                    case Accessibility.ProtectedOrInternal:
+                        AddKeyword("protected", "Protected");
+                        AddSpace();
+                        AddKeyword("internal", "Friend");
+                        AddSpace();
+                        break;
+
+                    case Accessibility.ProtectedAndInternal:
+                        AddKeyword("private", "Private");
+                        AddSpace();
+                        AddKeyword("protected", "Protected");
+                        AddSpace();
+                        break;
+
+                    case Accessibility.Internal:
+                        AddKeyword("internal", "Friend");
+                        AddSpace();
+                        break;
+
+                    case Accessibility.Private:
+                        AddKeyword("private", "Private");
                         AddSpace();
                         break;
                 }
@@ -455,7 +479,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 if (symbol is not IPropertySymbol property)
                     return symbol;
 
-                var accessibility = property.GetDisplayAccessibility();
+                var accessibility = Filter.GetDisplayAccessibility(property);
                 if (accessibility is null)
                     return symbol;
 
@@ -472,7 +496,7 @@ namespace Microsoft.DocAsCode.Dotnet
                     if (method is null)
                         return null;
 
-                    var accessibility = method.GetDisplayAccessibility();
+                    var accessibility = Filter.GetDisplayAccessibility(method);
                     if (accessibility is null)
                         return null;
 
