@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Verify.DiffPlex" Version="2.1.0" />
-    <PackageReference Include="Verify.Xunit" Version="19.9.0" />
+    <PackageReference Include="Verify.Xunit" Version="19.9.2" />
   </ItemGroup>
 
   <ItemGroup>
