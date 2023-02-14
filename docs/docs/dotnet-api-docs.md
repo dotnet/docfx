@@ -132,7 +132,49 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
 
 ## Filter APIs
 
-Docfx hides generated code or members marked as `[EditorBrowsableAttribute]` from API docs using filters. The [default filter config](https://github.com/dotnet/docfx/blob/main/src/Microsoft.DocAsCode.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) contains common API patterns to exclude from docs. 
+Docfx shows only the public accessible types and methods callable from another assembly. It also has a set of [default filtering rules](https://github.com/dotnet/docfx/blob/main/src/Microsoft.DocAsCode.Metadata.ManagedReference.Common/Filters/defaultfilterconfig.yml) that excludes common API patterns based on attributes such as `[EditorBrowsableAttribute]`.
+
+To disable the default filtering rules, set the `disableDefaultFilter` property to `true`.
+
+To show private methods, set the `includePrivateMembers` config to `true`. When enabled, internal only langauge keywords such as `private` or `internal` starts to appear in the declaration of all APIs, to accurately reflect API accessibility.
+
+There are two ways of customizing the API filters:
+
+### Custom with Code
+
+To use a custom filtering with code:
+
+1. Use docfx .NET API generation as a NuGet library:
+
+```xml
+<PackageReference Include="Microsoft.DocAsCode.Dotnet" Version="2.62.0" />
+```
+
+2. Configure the filter options:
+
+```cs
+var options = new DotnetApiOptions
+{
+    // Filter based on types
+    IncludeApi = symbol => ...
+
+    // Filter based on attributes
+    IncludeAttribute = symbol => ...
+}
+
+await DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json", options);
+```
+
+The filter callbacks takes an [`ISymbol`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.isymbol?view=roslyn-dotnet) interface and produces an [`SymbolIncludeState`](../api/Microsoft.Docascode.Dotnet.SymbolIncludeState.yml) enum to choose between include the API, exclude the API or use the default filtering behavior.
+
+The callbacks are raised before applying the default rules but after processing type accessibility rules. Private types and members cannot be marked as include unless `includePrivateMembers` is true.
+
+Hiding the parent symbol also hides all of its child symbols, e.g.:
+- If a namespace is hidden, all child namespaces and types underneath it are hidden.
+- If a class is hidden, all nested types underneath it are hidden.
+- If an interface is hidden, explicit implementations of that interface are also hidden.
+
+### Custom with Filter Rules
 
 To add additional filter rules, add a custom YAML file and set the `filter` property in `docfx.json` to point to the custom YAML filter:
 
@@ -151,7 +193,7 @@ To add additional filter rules, add a custom YAML file and set the `filter` prop
 
 The filter config is a list of rules. A rule can include or exclude a set of APIs based on a pattern. The rules are processed sequentially and would stop when a rule matches.
 
-### Filter by UID
+#### Filter by UID
 
 Every item in the generated API docs has a [`UID`](dotnet-yaml-format.md) (a unique identifier calculated for each API) to filter against using regular expression. This example uses `uidRegex` to excludes all APIs whose uids start with `Microsoft.DevDiv` but not `Microsoft.DevDiv.SpecialCase`.
 
@@ -163,7 +205,7 @@ apiRules:
     uidRegex: ^Microsoft\.DevDiv
 ```
 
-### Filter by Type
+#### Filter by Type
 
 This example exclude APIs whose uid starts with `Microsoft.DevDiv` and type is `Type`:
 
@@ -191,7 +233,7 @@ Supported value for `type` are:
 
 API filter are hierarchical, if a namespace is excluded, all types/members defined in the namespace would also be excluded. Similarly, if a type is excluded, all members defined in the type would also be excluded.
 
-### Filter by Attribute
+#### Filter by Attribute
 
  This example excludes all APIs which have `AttributeUsageAttribute` set to `System.AttributeTargets.Class` and the `Inherited` argument set to `true`:
 
