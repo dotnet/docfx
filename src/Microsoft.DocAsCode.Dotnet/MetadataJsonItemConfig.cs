@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode
         [JsonProperty("disableDefaultFilter")]
         public bool DisableDefaultFilter { get; set; }
 
-        [JsonProperty("tocNamespaceStyle")]
-        public TocNamespaceStyle TocNamespaceStyle{  get; set; }
+        [JsonProperty("namespaceLayout")]
+        public NamespaceLayout NamespaceLayout{  get; set; }
     }
 }

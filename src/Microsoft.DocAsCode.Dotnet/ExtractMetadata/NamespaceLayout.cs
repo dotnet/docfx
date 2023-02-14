@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dotnet
 {
-    internal enum TocNamespaceStyle
+    internal enum NamespaceLayout
     {
         /// <summary>
         /// Renders the namespaces as a single flat list

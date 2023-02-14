@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.Dotnet
             Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences)
         {
             var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _config.PreserveRawInlineComments, _config.TocNamespaceStyle);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _config.PreserveRawInlineComments, _config.NamespaceLayout);
 
             var tocFileName = Constants.TocYamlFileName;
             // 0. load last Manifest and remove files

@@ -33,10 +33,10 @@ namespace Microsoft.DocAsCode.Dotnet
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             bool preserveRawInlineComments,
-            TocNamespaceStyle tocNamespaceStyle)
+            NamespaceLayout namespaceLayout)
         {
             MetadataModel viewModel = new MetadataModel();
-            viewModel.TocYamlViewModel = GenerateToc(allMembers, tocNamespaceStyle);
+            viewModel.TocYamlViewModel = GenerateToc(allMembers, namespaceLayout);
             viewModel.Members = new List<MetadataItem>();
             ResolverContext context = new ResolverContext
             {
@@ -50,14 +50,14 @@ namespace Microsoft.DocAsCode.Dotnet
             return viewModel;
         }
 
-        private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, TocNamespaceStyle tocNamespaceStyle)
+        private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, NamespaceLayout namespaceLayout)
         {
             var namespaces = allMembers.Where(s => s.Value.Type == MemberType.Namespace);
 
-            return tocNamespaceStyle switch
+            return namespaceLayout switch
             {
-                TocNamespaceStyle.Flattened => GenerateFlatToc(namespaces),
-                TocNamespaceStyle.Nested => GenerateNestedToc(namespaces),
+                NamespaceLayout.Flattened => GenerateFlatToc(namespaces),
+                NamespaceLayout.Nested => GenerateNestedToc(namespaces),
                 _ => GenerateFlatToc(namespaces),
             };
         }

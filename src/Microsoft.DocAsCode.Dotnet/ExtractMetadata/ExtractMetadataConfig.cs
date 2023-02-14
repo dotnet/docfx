@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public bool DisableDefaultFilter { get; init; }
 
-        public TocNamespaceStyle TocNamespaceStyle { get; init; }
+        public NamespaceLayout NamespaceLayout { get; init; }
 
         public Dictionary<string, string> MSBuildProperties { get; init; }
     }

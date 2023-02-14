@@ -301,7 +301,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Projects = new List<string> { projectFile },
-                TocNamespaceStyle = TocNamespaceStyle.Nested
+                NamespaceLayout = NamespaceLayout.Nested
             }).Exec(null);
 
             var file = Path.Combine(_outputFolder, "toc.yml");
@@ -338,7 +338,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Projects = new List<string> { projectFile },
-                TocNamespaceStyle = TocNamespaceStyle.Flattened
+                NamespaceLayout = NamespaceLayout.Flattened
             }).Exec(null);
 
             var file = Path.Combine(_outputFolder, "toc.yml");
