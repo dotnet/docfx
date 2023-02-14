@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dotnet
         }
 
         /// <summary>
-        /// Generates metadata reference YANL files using docfx.json config.
+        /// Generates metadata reference YAML files using docfx.json config.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>A task to await for build completion.</returns>
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Dotnet
         }
 
         /// <summary>
-        /// Generates metadata reference YANL files using docfx.json config.
+        /// Generates metadata reference YAML files using docfx.json config.
         /// </summary>
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <returns>A task to await for build completion.</returns>
