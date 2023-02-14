@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataOptions options, SymbolFilter filter, IMethodSymbol[] extensionMethods )
+        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods )
         {
             _generator = generator;
             _preserveRawInlineComments = options.PreserveRawInlineComments;

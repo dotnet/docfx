@@ -58,11 +58,11 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "public string MyMethod()"
+                "value": "private string MyMethod()"
               },
               {
                 "lang": "vb",
-                "value": "Public Function MyMethod() As String"
+                "value": "Private Function MyMethod() As String"
               }
             ],
             "return": {

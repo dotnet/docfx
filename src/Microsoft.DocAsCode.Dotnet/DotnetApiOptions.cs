@@ -38,18 +38,12 @@ namespace Microsoft.DocAsCode.Dotnet
         /// Customizes the namespaces and types to include in the API catalog.
         /// Excluding a parent symbol exclude all child symbols underneath it.
         /// </summary>
-        /// <remarks>
-        /// Show private or internal symbols are not supported in this version.
-        /// </remarks>
         public Func<ISymbol, SymbolIncludeState>? IncludeApi { get; init; }
 
         /// <summary>
         /// Customizes the attributes to include in the API catalog.
         /// Excluding a parent symbol exclude all child symbols underneath it.
         /// </summary>
-        /// <remarks>
-        /// Show private or internal symbols are not supported in this version.
-        /// </remarks>
         public Func<ISymbol, SymbolIncludeState>? IncludeAttribute { get; init; }
     }
 }

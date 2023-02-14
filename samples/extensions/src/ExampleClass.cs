@@ -2,20 +2,20 @@ using System;
 
 namespace MyExample
 {
-    public class ExampleClass
+    internal class ExampleClass
     {
         public event Action<string> MyEvent;
 
         public string MyField;
 
-        public string MyProperty { get; set; }
+        public string MyProperty { get; internal set; }
 
         public ExampleClass()
         {
             
         }
 
-        public string MyMethod()
+        private string MyMethod()
         {
             return "Hello World!";
         }

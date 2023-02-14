@@ -16,11 +16,11 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest
     {
-        private static MetadataItem Verify(string code)
+        private static MetadataItem Verify(string code, ExtractMetadataConfig config = null)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
             var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
-            return compilation.Assembly.GenerateMetadataItem(new(), extensionMethods: extensionMethods);
+            return compilation.Assembly.GenerateMetadataItem(config, extensionMethods: extensionMethods);
         }
 
         [Fact]
@@ -888,7 +888,7 @@ namespace Test1
 
         [Trait("Related", "Generic")]
         [Trait("Related", "EII")]
-        [Fact(Skip = "No EII until supporting private APIs")]
+        [Fact]
         public void TestGenerateMetadataWithEii()
         {
             string code = @"
@@ -921,7 +921,7 @@ namespace Test1
     }
 }
 ";
-            MetadataItem output = Verify(code);
+            MetadataItem output = Verify(code, new() { IncludePrivateMembers = true });
             Assert.Single(output.Items);
             {
                 var type = output.Items[0].Items[0];
@@ -3653,6 +3653,37 @@ namespace Test1
 
             Assert.Equal("implicit operator", string.Concat(output.References["Test.Bar.op_Implicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
             Assert.Equal("explicit operator checked", string.Concat(output.References["Test.Bar.op_CheckedExplicit*"].NameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName)));
+        }
+
+        [Fact]
+        public void TestGenerateMetadataWithPrivateMembers()
+        {
+            var code =
+                """
+                namespace Test
+                {
+                    internal class Foo : IFoo
+                    {
+                        internal void M1();
+                        protected internal void M2();
+                        private protected void M3();
+                        private void M4();
+                    }
+
+                    internal interface IFoo { }
+                }
+                """;
+
+            var output = Verify(code, new() { IncludePrivateMembers = true });
+            var foo = output.Items[0].Items[0];
+            Assert.Equal("internal class Foo : IFoo", foo.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(new[]
+            {
+                "internal void M1()",
+                "protected internal void M2()",
+                "private protected void M3()",
+                "private void M4()",
+            }, foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]));
         }
     }
 }

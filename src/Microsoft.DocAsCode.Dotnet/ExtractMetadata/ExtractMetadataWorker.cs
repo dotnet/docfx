@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dotnet
     internal class ExtractMetadataWorker : IDisposable
     {
         private readonly Dictionary<FileType, List<FileInformation>> _files;
-        private readonly ExtractMetadataOptions _config;
+        private readonly ExtractMetadataConfig _config;
         private readonly DotnetApiOptions _options;
         private readonly ConsoleLogger _msbuildLogger;
 
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         internal const string IndexFileName = ".manifest";
 
-        public ExtractMetadataWorker(ExtractMetadataOptions config, DotnetApiOptions options)
+        public ExtractMetadataWorker(ExtractMetadataConfig config, DotnetApiOptions options)
         {
             _config = config;
             _options = options;

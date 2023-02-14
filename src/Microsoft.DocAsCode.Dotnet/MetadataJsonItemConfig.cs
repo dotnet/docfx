@@ -27,6 +27,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("filter")]
         public string FilterConfigFile { get; set; }
 
+        [JsonProperty("includePrivateMembers")]
+        public bool IncludePrivateMembers { get; set; }
+
         [JsonProperty("globalNamespaceId")]
         public string GlobalNamespaceId { get; set; }
 

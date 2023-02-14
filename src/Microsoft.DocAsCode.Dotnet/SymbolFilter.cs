@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -10,15 +12,17 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     internal class SymbolFilter
     {
+        private readonly ExtractMetadataConfig _config;
         private readonly DotnetApiOptions _options;
         private readonly ConfigFilterRule? _filterRule;
 
         private readonly ConcurrentDictionary<ISymbol, bool> _cache = new(SymbolEqualityComparer.Default);
         private readonly ConcurrentDictionary<ISymbol, bool> _attributeCache = new(SymbolEqualityComparer.Default);
 
-        public SymbolFilter(ExtractMetadataOptions config, DotnetApiOptions options)
+        public SymbolFilter(ExtractMetadataConfig config, DotnetApiOptions options)
         {
             _options = options;
+            _config = config;
             _filterRule = config.DisableDefaultFilter ? null : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);
         }
 
@@ -68,16 +72,48 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        private static bool IsSymbolAccessible(ISymbol symbol)
+        public Accessibility? GetDisplayAccessibility(ISymbol symbol)
+        {
+            if (_config.IncludePrivateMembers)
+                return symbol.DeclaredAccessibility;
+
+            // Hide internal or private APIs
+            return symbol.DeclaredAccessibility switch
+            {
+                Accessibility.NotApplicable => Accessibility.NotApplicable,
+                Accessibility.Public => Accessibility.Public,
+                Accessibility.Protected => Accessibility.Protected,
+                Accessibility.ProtectedOrInternal => Accessibility.Protected,
+                _ => null,
+            };
+        }
+
+        private bool IsSymbolAccessible(ISymbol symbol)
         {
             // TODO: should we include implicitly declared members like constructors? They are part of the API contract.
             if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
                 return false;
 
-            if (symbol.GetDisplayAccessibility() is null)
+            if (_config.IncludePrivateMembers)
+            {
+                return symbol.Kind switch
+                {
+                    SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
+                    _ => true,
+                };
+            }
+
+            if (GetDisplayAccessibility(symbol) is null)
                 return false;
 
             return symbol.ContainingSymbol is null || IsSymbolAccessible(symbol.ContainingSymbol);
+
+            bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
+            {
+                return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
+            }
         }
     }
 }

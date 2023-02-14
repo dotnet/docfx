@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     using System.Collections.Generic;
 
-    internal class ExtractMetadataOptions
+    internal class ExtractMetadataConfig
     {
         public List<string> Files { get; init; }
 
@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Dotnet
         public bool ShouldSkipMarkup { get; init; }
 
         public string FilterConfigFile { get; init; }
+
+        public bool IncludePrivateMembers { get; init; }
 
         public bool UseCompatibilityFileName { get; init; }
 
