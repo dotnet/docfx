@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.Linq;
 
-        public class XRefMapDownloadTest
+    public class XRefMapDownloadTest
     {
         [Fact]
         public async Task BaseUrlIsSet()

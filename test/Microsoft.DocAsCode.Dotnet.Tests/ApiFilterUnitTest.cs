@@ -304,6 +304,31 @@ namespace Test1
             }
         }
 
+        [Fact]
+        public void TestExcludeInterface_ExcludesExplicitInterfaceImplementations()
+        {
+            var code = @"
+namespace Test1
+{
+    public class Class1 : IClass1
+    {
+        void IClass1.M() { }
+    }
+
+    public interface IClass1
+    {
+        void M();
+    }
+}";
+            var output = Verify(
+                code,
+                new() { IncludePrivateMembers = true },
+                new() { IncludeApi = symbol => symbol.Name is "IClass1" ? SymbolIncludeState.Exclude : default });
+
+            var class1 = output.Items[0].Items[0];
+            Assert.Empty(class1.Items);
+        }
+
         private static MetadataItem Verify(string code, ExtractMetadataConfig config = null, DotnetApiOptions options = null)
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");

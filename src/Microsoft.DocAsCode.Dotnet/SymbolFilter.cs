@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
@@ -93,12 +95,25 @@ namespace Microsoft.DocAsCode.Dotnet
                 return false;
 
             if (_config.IncludePrivateMembers)
-                return true;
+            {
+                return symbol.Kind switch
+                {
+                    SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
+                    _ => true,
+                };
+            }
 
             if (GetDisplayAccessibility(symbol) is null)
                 return false;
 
             return symbol.ContainingSymbol is null || IsSymbolAccessible(symbol.ContainingSymbol);
+
+            bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
+            {
+                return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
+            }
         }
     }
 }
