@@ -64,6 +64,11 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public async Task ExtractMetadataAsync()
         {
+            if (_config.NamespaceLayout is NamespaceLayout.Nested)
+            {
+                Logger.LogSuggestion($"Nested namespace is experimental and may produce undesired result.");
+            }
+
             if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
             {
                 foreach (var file in unsupportedFiles)
