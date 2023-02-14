@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Emit;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     [Collection("docfx STA")]
     public class GenerateMetadataFromCSUnitTest

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.IO;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal class YamlModelGenerator
     {

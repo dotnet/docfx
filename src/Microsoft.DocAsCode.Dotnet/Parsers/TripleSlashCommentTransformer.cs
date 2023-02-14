@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Xml.Xsl;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal static class TripleSlashCommentTransformer
     {

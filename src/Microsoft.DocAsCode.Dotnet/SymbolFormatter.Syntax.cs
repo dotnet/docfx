@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.DocAsCode.Dotnet.ManagedReference;
+using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;

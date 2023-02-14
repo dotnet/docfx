@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using Xunit;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     [Trait("EntityType", "Model")]
     [Collection("docfx STA")]

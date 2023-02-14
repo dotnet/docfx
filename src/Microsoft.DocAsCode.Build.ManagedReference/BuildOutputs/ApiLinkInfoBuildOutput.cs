@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     [Serializable]
     public class ApiLinkInfoBuildOutput

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
     using System.Xml.Linq;
     
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     using Xunit;
 

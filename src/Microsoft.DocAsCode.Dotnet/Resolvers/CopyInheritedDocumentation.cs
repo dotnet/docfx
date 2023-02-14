@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Diagnostics;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     /// <summary>
     /// Copies doc comments to items marked with 'inheritdoc' from interfaces and base classes.

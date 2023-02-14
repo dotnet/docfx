@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal class ExtractMetadataWorker : IDisposable
     {

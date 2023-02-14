@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal class ResolveReference : IResolverPipeline
     {

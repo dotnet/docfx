@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Linq;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal class SetDerivedClass: IResolverPipeline
     {

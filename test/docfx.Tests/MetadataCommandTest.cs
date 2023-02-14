@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Tests
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.SubCommands;
     using Microsoft.DocAsCode.Tests.Common;
     using Microsoft.DocAsCode.Dotnet;

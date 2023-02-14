@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System.Globalization;
 
     internal class TripleSlashCommentModel

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
 
     using Xunit;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     [Collection("docfx STA")]
     public class GenerateMetadataFromAssemblyTest

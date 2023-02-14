@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal static class YamlMetadataResolver
     {

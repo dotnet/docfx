@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     internal class MetadataMerger

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal class SyntaxDetail
     {

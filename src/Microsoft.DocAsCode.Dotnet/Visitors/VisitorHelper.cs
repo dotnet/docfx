@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     internal static class VisitorHelper

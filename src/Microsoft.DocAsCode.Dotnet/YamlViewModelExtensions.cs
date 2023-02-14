@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Linq;
 
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     internal static class YamlViewModelExtensions
     {

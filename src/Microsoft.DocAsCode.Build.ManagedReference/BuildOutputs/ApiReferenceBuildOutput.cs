@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]

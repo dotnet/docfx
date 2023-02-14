@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Dotnet.ManagedReference;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
 
     internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
