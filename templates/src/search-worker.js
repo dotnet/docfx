@@ -1,5 +1,5 @@
 (function () {
-  importScripts('lunr.min.js');
+  const lunr = require('lunr');
 
   var lunrIndex;
 

@@ -127,7 +127,7 @@ $(function () {
       return;
     }
     try {
-      var worker = new Worker(relHref + 'styles/search-worker.js');
+      var worker = new Worker(relHref + 'styles/search-worker.min.js');
       if (!worker && !window.worker) {
         localSearch();
       } else {
