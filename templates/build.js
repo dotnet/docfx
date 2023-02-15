@@ -16,6 +16,15 @@ async function build() {
     ]
   })
 
+  esbuild.build({
+    bundle: true,
+    minify: true,
+    outfile: 'default/styles/search-worker.min.js',
+    entryPoints: [
+      'src/search-worker.js'
+    ]
+  })
+
   await minifyCss('default/styles/docfx.vendor.css', [
     'node_modules/bootstrap/dist/css/bootstrap.css',
     'node_modules/highlight.js/styles/github.css'
