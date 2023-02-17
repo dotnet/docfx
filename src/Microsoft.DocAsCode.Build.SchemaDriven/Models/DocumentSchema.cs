@@ -80,6 +80,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
             }
 
+            ResolveRef(schema);
+
             schema.MetadataReference = pointer;
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
 
@@ -87,6 +89,55 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             return schema;
         }
 
+        private static void ResolveRef(DocumentSchema root)
+        {
+            if (root.Definitions is null)
+                return;
+
+            ResolveRefCore(root);
+
+            BaseSchema ResolveRefCore(BaseSchema schema)
+            {
+                if (schema is null)
+                    return schema;
+
+                if (!string.IsNullOrEmpty(schema.Ref))
+                {
+                    if (!schema.Ref.StartsWith("#/definitions/"))
+                    {
+                        Logger.LogError($"JSON schema $ref {schema.Ref} must start with #/definitions/", code: ErrorCodes.Build.ViolateSchema);
+                    }
+                    else if (!root.Definitions.TryGetValue(schema.Ref.Substring("#/definitions/".Length), out var definition))
+                    {
+                        Logger.LogError($"Cannot resolve JSON schema $ref: {schema.Ref}", code: ErrorCodes.Build.ViolateSchema);
+                    }
+                    else
+                    {
+                        return definition;
+                    }
+                }
+
+                schema.Items = ResolveRefCore(schema.Items);
+
+                if (schema.Properties != null)
+                {
+                    foreach (var (key, value) in schema.Properties)
+                    {
+                        schema.Properties[key] = ResolveRefCore(value);
+                    }
+                }
+
+                if (schema.Definitions != null)
+                {
+                    foreach (var (key, value) in schema.Definitions)
+                    {
+                        schema.Definitions[key] = ResolveRefCore(value);
+                    }
+                }
+
+                return schema;
+            }
+        }
 
         private static bool CheckOverwriteAbility(BaseSchema schema)
         {
