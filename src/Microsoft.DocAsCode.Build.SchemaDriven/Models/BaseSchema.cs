@@ -4,19 +4,13 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System.Collections.Generic;
-
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Schema;
+    using Json.Schema;
 
     public class BaseSchema
     {
         public string Title { get; set; }
 
-        public string Description { get; set; }
-
-        public JSchemaType? Type { get; set; }
-
-        public JToken Default { get; set; }
+        public SchemaValueType? Type { get; set; }
 
         public Dictionary<string, BaseSchema> Properties { get; set; }
 

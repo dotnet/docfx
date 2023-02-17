@@ -13,22 +13,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Common;
+    using Json.Schema;
 
     public class DocumentSchema : BaseSchema
     {
-        public Uri SchemaVersion { get; set; }
-
-        public string Version { get; set; }
-
-        public Uri Id { get; set; }
-
         public string Metadata { get; set; }
 
         public JsonPointer MetadataReference { get; private set; }
 
         public SchemaValidator Validator { get; private set; }
-
-        public string Hash { get; private set; }
 
         /// <summary>
         /// Overwrites are only allowed when the schema contains "uid" definition
@@ -61,9 +54,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             try
             {
                 schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
-                schema.SchemaVersion = jSchema.SchemaVersion;
-                schema.Id = jSchema.Id;
-                schema.Version = GetValueFromJSchemaExtensionData<string>(jSchema, "version");
                 schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
                 schema.Validator = validator;
             }
@@ -85,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 schema.Title = title;
             }
 
-            if (schema.Type != JSchemaType.Object)
+            if (schema.Type != SchemaValueType.Object)
             {
                 var message = "Type for the root schema object must be object";
                 Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
@@ -100,14 +90,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             var metadataSchema = pointer.FindSchema(schema);
-            if (metadataSchema != null && metadataSchema.Type != JSchemaType.Object)
+            if (metadataSchema != null && metadataSchema.Type != SchemaValueType.Object)
             {
                 throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
             }
 
             schema.MetadataReference = pointer;
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
-            schema.Hash = HashUtility.GetSha256HashString(JsonUtility.Serialize(jObject));
 
             return schema;
         }
@@ -122,9 +111,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             bs = new T
             {
                 Title = schema.Title,
-                Description = schema.Description,
-                Type = schema.Type,
-                Default = schema.Default,
+                Type = schema.Type is null ? null : Enum.Parse<SchemaValueType>(schema.Type.ToString(), ignoreCase: true),
                 ContentType = GetValueFromJSchemaExtensionData<ContentType>(schema, "contentType"),
                 Tags = GetValueFromJSchemaExtensionData<List<string>>(schema, "tags"),
                 MergeType = GetValueFromJSchemaExtensionData<MergeType>(schema, "mergeType"),

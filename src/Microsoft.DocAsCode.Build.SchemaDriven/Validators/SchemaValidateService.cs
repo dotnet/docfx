@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
-    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -21,24 +20,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         private SchemaValidateService()
         {
-        }
-
-        public static void RegisterLicense(string license)
-        {
-            if (string.IsNullOrEmpty(license))
-            {
-                return;
-            }
-
-            try
-            {
-                License.RegisterLicense(license);
-                Instance = new SchemaValidateService();
-            }
-            catch (Exception e)
-            {
-                Logger.LogWarning($"Encountered issue registering license for NewtonsoftJson.Schema: {e.Message}");
-            }
         }
 
         public void Validate(object obj, JSchema schema)
