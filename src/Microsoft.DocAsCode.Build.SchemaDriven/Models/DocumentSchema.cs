@@ -5,15 +5,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Text.Json;
 
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Common;
     using Json.Schema;
+    using System.Text.Json.Serialization;
 
     public class DocumentSchema : BaseSchema
     {
@@ -28,18 +28,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         /// </summary>
         public bool AllowOverwrite { get; private set; }
 
-        public static DocumentSchema Load(TextReader reader, string title)
+        public static DocumentSchema Load(string content, string title)
         {
             DocumentSchema schema;
-            using var jtr = new JsonTextReader(reader);
             JSchema jSchema;
             JObject jObject;
             try
             {
-                jObject = JObject.Load(jtr);
+                jObject = JObject.Parse(content);
                 jSchema = JSchema.Load(jObject.CreateReader());
             }
-            catch (Exception e) when (e is JSchemaException || e is JsonException)
+            catch (Exception e)
             {
                 var message = ($"{title} is not a valid schema: {e.Message}");
                 Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
@@ -53,8 +52,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             try
             {
-                schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
-                schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
+                schema = JsonSerializer.Deserialize<DocumentSchema>(
+                    content,
+                    new JsonSerializerOptions()
+                    {
+                        AllowTrailingCommas = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        Converters = {
+                            new JsonStringEnumConverter()
+                        }
+                    });
+
                 schema.Validator = validator;
             }
             catch (Exception e)
@@ -99,97 +107,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
 
             return schema;
-        }
-
-        private static T LoadSchema<T>(JSchema schema, Dictionary<JSchema, BaseSchema> cache) where T : BaseSchema, new()
-        {
-            if (cache.TryGetValue(schema, out var bs))
-            {
-                return (T)bs;
-            }
-
-            bs = new T
-            {
-                Title = schema.Title,
-                Type = schema.Type is null ? null : Enum.Parse<SchemaValueType>(schema.Type.ToString(), ignoreCase: true),
-                ContentType = GetValueFromJSchemaExtensionData<ContentType>(schema, "contentType"),
-                Tags = GetValueFromJSchemaExtensionData<List<string>>(schema, "tags"),
-                MergeType = GetValueFromJSchemaExtensionData<MergeType>(schema, "mergeType"),
-                Reference = GetValueFromJSchemaExtensionData<ReferenceType>(schema, "reference"),
-                XrefProperties = GetValueFromJSchemaExtensionData<List<string>>(schema, "xrefProperties"),
-            };
-
-            cache[schema] = bs;
-
-            /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
-            CheckForNotSupportedKeyword(schema.OneOf, nameof(schema.OneOf));
-            CheckForNotSupportedKeyword(schema.AllOf, nameof(schema.AllOf));
-            CheckForNotSupportedKeyword(schema.AnyOf, nameof(schema.AnyOf));
-            CheckForNotSupportedKeyword(schema.AdditionalItems, nameof(schema.AdditionalItems));
-            CheckForNotSupportedKeyword(schema.AdditionalProperties, nameof(schema.AdditionalProperties));
-            CheckForNotSupportedKeyword(schema.PatternProperties, nameof(schema.PatternProperties));
-            */
-
-            if (schema.Properties != null)
-            {
-                bs.Properties = new Dictionary<string, BaseSchema>();
-                foreach (var pair in schema.Properties)
-                {
-                    bs.Properties[pair.Key] = LoadSchema<BaseSchema>(pair.Value, cache);
-                }
-            }
-
-            if (schema.Items != null && schema.Items.Count > 0)
-            {
-                /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
-                if (schema.Items.Count > 1)
-                {
-                    throw new SchemaFeatureNotSupportedException("Multiple item definition is not supported in current schema driven document processor");
-                }
-                */
-
-                bs.Items = LoadSchema<BaseSchema>(schema.Items[0], cache);
-            }
-
-            return (T)bs;
-        }
-
-        private static T GetValueFromJSchemaExtensionData<T>(JSchema schema, string key)
-        {
-            if (schema.ExtensionData != null
-                && schema.ExtensionData.TryGetValue(key, out var value))
-            {
-                return value.ToObject<T>();
-            }
-
-            return default;
-        }
-
-        private static void CheckForNotSupportedKeyword(object keyword, string name)
-        {
-            if (keyword == null)
-            {
-                return;
-            }
-
-            if (keyword is IList<JSchema> list)
-            {
-                if (list.Count > 0)
-                {
-                    throw new SchemaKeywordNotSupportedException(name);
-                }
-            }
-            else if (keyword is IDictionary<string, JSchema> dict)
-            {
-                if (dict.Count > 0)
-                {
-                    throw new SchemaKeywordNotSupportedException(name);
-                }
-            }
-            else
-            {
-                throw new SchemaKeywordNotSupportedException(name);
-            }
         }
 
         private static bool CheckOverwriteAbility(BaseSchema schema)

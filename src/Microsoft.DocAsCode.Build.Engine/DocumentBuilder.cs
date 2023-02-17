@@ -275,24 +275,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     var siteHostName = TryGetPublishTargetSiteHostNameFromEnvironment();
                     var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
-                    foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                    foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
                     {
-                        var fileName = Path.GetFileName(pair.Key);
+                        var fileName = Path.GetFileName(pair.Path);
 
                         using (new LoggerFileScope(fileName))
                         {
-                            using var stream = pair.Value;
-                            using var sr = new StreamReader(stream);
-                            DocumentSchema schema;
-                            try
-                            {
-                                schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.LogError(e.Message);
-                                throw;
-                            }
+                            var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
                             var sdp = new SchemaDrivenDocumentProcessor(
                                 schema,
                                 new CompositionContainer(CompositionContainer.DefaultContainer),

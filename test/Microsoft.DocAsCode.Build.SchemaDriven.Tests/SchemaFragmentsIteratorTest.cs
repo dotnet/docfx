@@ -19,11 +19,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             // arrange
             var counter = new UidPropertyCounter();
             var iterator = new SchemaFragmentsIterator(counter);
-            DocumentSchema schema;
-            using (var sr = new StreamReader("TestData/schemas/rest.mixed.schema.json"))
-            {
-                schema = DocumentSchema.Load(sr, "rest.mixed");
-            }
+            var schema = DocumentSchema.Load(File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), "rest.mixed");
             var yamlStream = new YamlStream();
             using (var sr = new StreamReader("TestData/inputs/Suppressions.yml"))
             {
