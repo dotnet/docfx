@@ -6,14 +6,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System;
     using System.Collections.Generic;
     using System.Text.Json;
-
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Schema;
+    using System.Text.Json.Serialization;
 
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Common;
     using Json.Schema;
-    using System.Text.Json.Serialization;
 
     public class DocumentSchema : BaseSchema
     {
@@ -31,24 +28,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public static DocumentSchema Load(string content, string title)
         {
             DocumentSchema schema;
-            JSchema jSchema;
-            JObject jObject;
-            try
-            {
-                jObject = JObject.Parse(content);
-                jSchema = JSchema.Load(jObject.CreateReader());
-            }
-            catch (Exception e)
-            {
-                var message = ($"{title} is not a valid schema: {e.Message}");
-                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
-                throw new InvalidSchemaException(message, e);
-            }
-
-            var validator = new SchemaValidator(jObject, jSchema);
-
-            // validate schema here
-            validator.ValidateMetaSchema();
 
             try
             {
@@ -62,8 +41,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             new JsonStringEnumConverter()
                         }
                     });
-
-                schema.Validator = validator;
             }
             catch (Exception e)
             {
@@ -106,8 +83,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             schema.MetadataReference = pointer;
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
 
+            schema.Validator = new(content);
             return schema;
         }
+
 
         private static bool CheckOverwriteAbility(BaseSchema schema)
         {
