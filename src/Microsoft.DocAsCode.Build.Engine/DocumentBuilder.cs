@@ -266,7 +266,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var result = new List<IDocumentProcessor>();
 
-                SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
                 using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
                 {
                     if (resource == null || resource.IsEmpty)
