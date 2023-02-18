@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         private static MetadataItem GenerateNestedTocStructure(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
         {
-            MetadataItem root = new MetadataItem()
+            var root = new MetadataItem()
             {
                 Type = MemberType.Toc,
                 Items = new()
@@ -88,12 +88,40 @@ namespace Microsoft.DocAsCode.Dotnet
                 .Select(x => x.Value)
             )
             {
-                namespacedItems[member.Name] = member;
-
                 if (member.Name.Contains('.'))
                 {
-                    var parentNamespace = member.Name.Substring(0, member.Name.LastIndexOf('.'));
-                    if (namespacedItems.TryGetValue(parentNamespace, out var parent))
+                    var parents = GetParentNamespaces(member.Name);
+                    foreach (var partialParentNamespace in parents)
+                    {
+                        if (!namespacedItems.ContainsKey(partialParentNamespace))
+                        {
+                            var missingNamespace = new MetadataItem()
+                            {
+                                Type = MemberType.Namespace,
+                                Name = partialParentNamespace,
+                                Items = new(),
+                                DisplayNames = new(),
+                                DisplayNamesWithType = new(),
+                                DisplayQualifiedNames = new()
+                            };
+                            namespacedItems[partialParentNamespace] = missingNamespace;
+
+                            if (!partialParentNamespace.Contains('.'))
+                            {
+                                root.Items.Add(missingNamespace);
+                                missingNamespace.Parent = root;
+                            }
+                            else
+                            {
+                                var parentNamespace = namespacedItems[partialParentNamespace.Substring(0, partialParentNamespace.LastIndexOf('.'))];
+                                missingNamespace.Parent = parentNamespace;
+                                parentNamespace.Items.Add(missingNamespace);                                    
+                            }
+                        }
+                    }
+
+                    var directParentNamespace = parents.Last();
+                    if (namespacedItems.TryGetValue(directParentNamespace, out var parent))
                     {
                         parent.Items.Add(member);
                         member.Parent = parent;
@@ -106,6 +134,8 @@ namespace Microsoft.DocAsCode.Dotnet
                 }
                 else
                     root.Items.Add(member);
+
+                namespacedItems[member.Name] = member;
             }
 
             foreach (var member in namespacedItems.Values)
@@ -115,6 +145,18 @@ namespace Microsoft.DocAsCode.Dotnet
                     .ToList();
 
             return root;
+        }
+
+        private static IEnumerable<string> GetParentNamespaces(string originalNamespace)
+        {
+            var namespaces = originalNamespace.Split(".");
+            var fullNamespace = "";
+            foreach (var @namespace in namespaces)
+            {
+                fullNamespace += $".{@namespace}";
+                if (fullNamespace.TrimStart('.') != originalNamespace)
+                    yield return fullNamespace.TrimStart('.');
+            }
         }
 
         private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
@@ -135,7 +177,8 @@ namespace Microsoft.DocAsCode.Dotnet
                             metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(metadataItem.Parent.Name.Length + 1));
                         else if (lastIndex >= 0 && metadataItem.Parent != root)
                             metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
-                    } 
+                    } else if (!metadataItem.DisplayNames.ContainsKey(SyntaxLanguage.Default))
+                        metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name);
                 }
 
                 if (metadataItem.Items != null)
