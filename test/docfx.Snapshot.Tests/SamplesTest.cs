@@ -69,6 +69,9 @@ namespace Microsoft.DocAsCode.Tests
         [Fact]
         public async Task SeedHtml()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             var samplePath = $"{s_samplesDir}/seed";
             Clean(samplePath);
 
