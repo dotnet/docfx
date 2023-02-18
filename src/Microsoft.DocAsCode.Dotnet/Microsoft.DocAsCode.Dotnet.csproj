@@ -34,7 +34,5 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0" />
-    <PackageReference Include="NuGet.ProjectModel" Version="6.4.0" />
-    <PackageReference Include="NuGet.Packaging.Core" Version="6.4.0" />
   </ItemGroup>
 </Project>

@@ -53,6 +53,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("disableDefaultFilter")]
         public bool DisableDefaultFilter { get; set; }
 
+        [JsonProperty("noRestore")]
+        public bool NoRestore { get; set; }
+
         [JsonProperty("namespaceLayout")]
         public NamespaceLayout NamespaceLayout{  get; set; }
     }

@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dotnet
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -200,6 +201,10 @@ namespace Microsoft.DocAsCode.Dotnet
             if (project is null)
             {
                 Logger.LogInfo($"Loading project {path}");
+                if (!_config.NoRestore)
+                {
+                    await Process.Start("dotnet", $"restore \"{path}\"").WaitForExitAsync();
+                }
                 project = await _workspace.OpenProjectAsync(path, _msbuildLogger);
             }
 
