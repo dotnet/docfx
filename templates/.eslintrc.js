@@ -6,8 +6,11 @@ module.exports = {
     browser: true
   },
   ignorePatterns: ['**/*.js'],
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  extends: ['standard', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  root: true
+  root: true,
+  rules: {
+    'space-before-function-paren': ['warn', 'never'],
+  }
 };
