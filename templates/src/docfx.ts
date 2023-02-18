@@ -5,9 +5,9 @@ import $ from 'jquery'
 
 declare global {
   interface Window { 
-    $: any;
-    jQuery: any;
-    _docfxReady: any;
+    $: object;
+    jQuery: object;
+    _docfxReady: boolean;
   }
 }
 
@@ -92,36 +92,41 @@ $(function () {
 
   // Enable highlight.js
   function highlight() {
-    $('pre code').each(function (i, block) {
+    $('pre code').each(function (_, block) {
       hljs.highlightElement(block);
     });
-    $('pre code[highlight-lines]').each(function (i, block) {
+    $('pre code[highlight-lines]').each(function (_, block) {
       if (block.innerHTML === "") return;
       const lines = block.innerHTML.split('\n');
 
       const queryString = block.getAttribute('highlight-lines');
       if (!queryString) return;
 
+      console.log(queryString)
       const ranges = queryString.split(',');
-      for (let j = 0, range; range = ranges[j++];) {
-        const found = range.match(/^(\d+)\\-(\d+)?$/);
+      for (const range of ranges) {
+        let start = 0;
+        let end = 0;
+        console.log(range)
+        const found = range.match(/^(\d+)-(\d+)?$/);
         if (found) {
           // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-          const start = +found[1];
-          let end = +found[2];
+          start = +found[1];
+          end = +found[2];
           if (isNaN(end) || end > lines.length) {
             end = lines.length;
           }
         } else {
           // consider region as a sigine line number
           if (isNaN(range)) continue;
-          var start = +range;
-          var end = start;
+          start = +range;
+          end = start;
         }
         if (start <= 0 || end <= 0 || start > end || start > lines.length) {
           // skip current region if invalid
           continue;
         }
+        console.log(`${start} ${end}`)
         lines[start - 1] = '<span class="line-highlight">' + lines[start - 1];
         lines[end - 1] = lines[end - 1] + '</span>';
       }
