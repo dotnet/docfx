@@ -3,6 +3,10 @@
 
 const $ = require('jquery')
 
+require('../node_modules/bootstrap/dist/css/bootstrap.css')
+require('../node_modules/highlight.js/scss/github.scss')
+require('./docfx.scss')
+
 window.$ = window.jQuery = require('jquery')
 
 require('bootstrap')

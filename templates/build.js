@@ -2,8 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 const esbuild = require('esbuild')
+const { sassPlugin } = require('esbuild-sass-plugin')
 const bs = require('browser-sync')
-const CleanCSS = require('clean-css')
 const { writeFileSync, cpSync } = require('fs')
 const { join } = require('path')
 const { spawnSync } = require('child_process')
@@ -28,18 +28,29 @@ async function build() {
       '.js': '.min.js'
     },
     entryPoints: [
-      'src/docfx.js',
-      'src/search-worker.js'
-    ]
+      'src/docfx.ts',
+      'src/search-worker.ts'
+    ],
+    plugins: [
+      sassPlugin()
+    ],
+    loader: {
+      '.eot': 'file',
+      '.svg': 'file',
+      '.ttf': 'file',
+      '.woff': 'file',
+      '.woff2': 'file'
+    },
+    watch: watch && {
+      onRebuild(error, result) {
+        if (error) {
+          console.error('watch build failed:', error)
+        } else {
+          console.log('watch build succeeded:', result)
+        }
+      }
+    }
   })
-
-  await minifyCss('default/styles/docfx.min.css', [
-    'src/docfx.css',
-    'node_modules/bootstrap/dist/css/bootstrap.css',
-    'node_modules/highlight.js/styles/github.css'
-  ])
-
-  cpSync('node_modules/bootstrap/dist/fonts', 'default/fonts', { recursive: true })
 
   copyToDist()
 
@@ -71,11 +82,6 @@ function copyToDist() {
   }
 }
 
-async function minifyCss(outputFile, inputFiles) {
-  var result = new CleanCSS().minify(inputFiles);
-  writeFileSync(outputFile, result.styles)
-}
-
 function buildContent() {
   exec(`dotnet run -f net7.0 --project ../src/docfx/docfx.csproj -- metadata ${project}/docfx.json`)
   exec(`dotnet run -f net7.0 --project ../src/docfx/docfx.csproj --no-build -- build ${project}/docfx.json`)
@@ -94,7 +100,7 @@ function serve() {
     open: true,
     startPath: '/test',
     files: [
-      'src/**',
+      'default/styles/**',
       join(project, '_site', '**')
     ],
     server: {
