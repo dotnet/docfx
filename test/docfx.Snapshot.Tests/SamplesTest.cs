@@ -9,18 +9,27 @@ namespace Microsoft.DocAsCode.Tests
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
+    using Microsoft.DocAsCode.Dotnet;
+    using Microsoft.Playwright;
+
     using Xunit;
     using VerifyXunit;
     using VerifyTests;
-    using Microsoft.DocAsCode.Dotnet;
+    using VerifyTests.Playwright;
 
     [UsesVerify]
     public class SamplesTest
     {
         private const string SamplesDir = "../../../../../samples";
+        private static readonly string[] s_screenshotUrls = new[]
+        {
+            "/",
+            "/articles/seed.html",
+            "/articles/seed/seed.html",
+        };
 
         [Fact]
-        public Task Seed()
+        public async Task Seed()
         {
             var samplePath = $"{SamplesDir}/seed";
             Clean(samplePath);
@@ -40,7 +49,23 @@ namespace Microsoft.DocAsCode.Tests
                 Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
             }
 
-            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+            await VerifyScreenshots(samplePath, s_screenshotUrls);
+        }
+
+        private static async Task VerifyScreenshots(string path, string[] urls)
+        {
+            var port = 5000;
+            await SocketWaiter.Wait(port);
+            using var playwright = await Playwright.CreateAsync();
+            var browser = await playwright.Chromium.LaunchAsync();
+            var page = await browser.NewPageAsync();
+
+            foreach (var url in urls)
+            {
+                await page.GotoAsync($"http://localhost:{port}{url}");
+                await Verifier.Verify(page).AutoVerify(includeBuildServer: false);
+            }
         }
 
 #if NET7_0_OR_GREATER
@@ -144,6 +169,9 @@ namespace Microsoft.DocAsCode.Tests
         {
             // Enable compact diff output
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
+
+            // Enable screenshot testing
+            VerifyPlaywright.Initialize(installPlaywright: true);
         }
     }
 }

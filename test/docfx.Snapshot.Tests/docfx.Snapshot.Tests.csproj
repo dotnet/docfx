@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <PackageReference Include="Verify.DiffPlex" Version="2.2.0" />
+    <PackageReference Include="Verify.Playwright" Version="2.2.0" />
     <PackageReference Include="Verify.Xunit" Version="19.9.2" />
   </ItemGroup>
 
