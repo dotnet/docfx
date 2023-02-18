@@ -1240,5 +1240,7 @@ $(function () {
         // Exclude tabbed content case
         $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
     });
+
+    window._docfxReady = true;
   }
 });
