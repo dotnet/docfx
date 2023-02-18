@@ -38,6 +38,13 @@ jobs:
     - run: dotnet build -c Release
 
     - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
+
+    - uses: actions/upload-artifact@v3
+      if: failure() && matrix.os == 'windows-latest'
+      with:
+        name: screenshots
+        path: tests/**/*.received.png
+
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
 
     - uses: codecov/codecov-action@v3
