@@ -13,7 +13,6 @@
     "start": "node build.js --watch"
   },
   "dependencies": {
-    "@websanova/url": "2.6.3",
     "anchor-js": "^4.0.0",
     "bootstrap": "~3.4.1",
     "highlight.js": "^11.7.0",

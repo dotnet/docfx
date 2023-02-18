@@ -17,8 +17,6 @@ const AnchorJS = require('anchor-js')
 const anchors = new AnchorJS()
 
 const hljs = require('highlight.js')
-require('@websanova/url/src/url.js')
-
 
 $(function () {
   var active = 'active';
@@ -252,7 +250,7 @@ $(function () {
 
     // Highlight the searching keywords
     function highlightKeywords() {
-      var q = url('?q');
+      var q = new URLSearchParams(window.location.search).get('q')
       if (q) {
         var keywords = q.split("%20");
         keywords.forEach(function (keyword) {
@@ -1011,48 +1009,22 @@ $(function () {
     }
 
     function readTabsQueryStringParam() {
-      var qs = parseQueryString(window.location.search);
-      var t = qs.tabs;
-      if (t === undefined || t === '') {
+      var qs = new URLSearchParams(window.location.search)
+      var t = qs.get('tabs')
+      if (!t) {
         return [];
       }
       return t.split(',');
     }
 
     function updateTabsQueryStringParam(state) {
-      var qs = parseQueryString(window.location.search);
-      qs.tabs = state.selectedTabs.join();
-      var url = location.protocol + "//" + location.host + location.pathname + "?" + toQueryString(qs) + location.hash;
+      var qs = new URLSearchParams(window.location.search)
+      qs.set('tabs', state.selectedTabs.join())
+      var url = location.protocol + "//" + location.host + location.pathname + "?" + qs.toString() + location.hash;
       if (location.href === url) {
         return;
       }
       history.replaceState({}, document.title, url);
-    }
-
-    function toQueryString(args) {
-      var parts = [];
-      for (var name_1 in args) {
-        if (args.hasOwnProperty(name_1) && args[name_1] !== '' && args[name_1] !== null && args[name_1] !== undefined) {
-          parts.push(encodeURIComponent(name_1) + '=' + encodeURIComponent(args[name_1]));
-        }
-      }
-      return parts.join('&');
-    }
-
-    function parseQueryString(queryString) {
-      var match;
-      var pl = /\+/g;
-      var search = /([^&=]+)=?([^&]*)/g;
-      var decode = function (s) { return decodeURIComponent(s.replace(pl, ' ')); };
-      if (queryString === undefined) {
-        queryString = '';
-      }
-      queryString = queryString.substring(1);
-      var urlParams = {};
-      while (match = search.exec(queryString)) {
-        urlParams[decode(match[1])] = decode(match[2]);
-      }
-      return urlParams;
     }
 
     function arraysIntersect(a, b) {
