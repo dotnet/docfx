@@ -26,6 +26,9 @@ jobs:
     - run: npm install
       working-directory: templates
 
+    - run: npm run lint
+      working-directory: templates
+
     - run: npm run build
       working-directory: templates
 
