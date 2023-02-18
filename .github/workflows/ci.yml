@@ -33,7 +33,9 @@ jobs:
       if: matrix.os == 'windows-latest'
 
     - run: dotnet build -c Release
-    - run: dotnet test -c Release --no-build --collect:"XPlat Code Coverage"
+
+    - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
 
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'
