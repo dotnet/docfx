@@ -1,0 +1,1505 @@
+﻿<!DOCTYPE html><html><head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Pet Store APIs | docfx seed website </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Pet Store APIs | docfx seed website ">
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <style class="anchorjs"></style><link rel="stylesheet" href="../styles/docfx.vendor.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="38.000000pt" height="38.000000pt" viewBox="0 0 172.000000 172.000000" preserveAspectRatio="xMidYMid meet" id="logo" class="svg replaced-svg">
+<metadata>
+Created by Docfx
+</metadata>
+<g transform="translate(0.000000,172.000000) scale(0.100000,-0.100000)" fill="#dddddd" stroke="none">
+<path d="M230 1359 c0 -18 11 -30 44 -48 80 -42 81 -45 81 -441 0 -400 -1 -404 -79 -436 -36 -15 -46 -24 -46 -43 0 -23 2 -24 61 -17 34 3 88 6 120 6 l59 0 0 495 0 495 -82 0 c-46 0 -100 3 -120 6 -35 6 -38 5 -38 -17z"></path>
+<path d="M618 1373 l-118 -4 0 -493 0 -494 154 -7 c181 -9 235 -3 313 34 68 33 168 130 207 202 75 136 75 384 1 536 -71 145 -234 240 -399 231 -23 -1 -94 -4 -158 -5z m287 -119 c68 -24 144 -101 176 -179 22 -54 24 -75 24 -210 0 -141 -2 -153 -26 -206 -36 -76 -89 -132 -152 -160 -45 -21 -68 -24 -164 -24 -71 0 -116 4 -123 11 -22 22 -31 175 -28 463 2 208 6 293 15 302 32 32 188 33 278 3z"></path>
+<path d="M1170 1228 c75 -104 110 -337 76 -508 -21 -100 -56 -178 -105 -233 l-36 -41 34 20 c75 43 160 133 198 212 37 75 38 78 38 191 -1 129 -18 191 -75 270 -28 38 -136 131 -153 131 -4 0 6 -19 23 -42z"></path>
+</g>
+</svg>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search" style="display: block;">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            <ul class="nav level1 navbar-nav">
+                <li>
+                    <a href="../index.html" name="" title="Home">Home</a>
+                </li>
+                <li>
+                    <a href="../articles/docfx_getting_started.html" name="articles/toc.html" title="Articles">Articles</a>
+                </li>
+                <li>
+                    <a href="../api/BuildFromAssembly.html" name="api/toc.html" title="API Documentation">API Documentation</a>
+                </li>
+                <li class="active">
+                    <a href="../restapi/petstore.html" name="restapi/toc.html" title="REST API" class="active">REST API</a>
+                </li>
+          </ul></div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb"><ul class="level1 breadcrumb"><li><a href="http://localhost:5059/restapi/petstore.html">REST API</a></li><li><a href="http://localhost:5059/restapi/petstore.html">Pet Store API</a></li></ul></div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"><div>
+    <div class="sidefilter">
+      <form class="toc-filter">
+        <span class="glyphicon glyphicon-filter filter-icon"></span>
+        <span class="glyphicon glyphicon-remove clear-icon" id="toc_filter_clear" style="display: none;"></span>
+        <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+      </form>
+    </div>
+    <div class="sidetoc">
+      <div class="toc" id="toc">
+
+          <ul class="nav level1">
+                <li class="active in">
+                    <a href="petstore.html" name="" title="Pet Store API" class="active">Pet Store API</a>
+                </li>
+                <li>
+                    <a href="contacts.html" name="" title="Contacts API">Contacts API</a>
+                </li>
+          </ul>
+      </div>
+    </div>
+  </div></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0">
+
+<h1 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0" class="text-capitalize text-break">Swagger Petstore</h1>
+  <div class="markdown level0 conceptual">
+<p>Describe APIs in Pet Store</p>
+</div>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>pet</h2>
+<div class="markdown level0 description"><p>Description for pet tag</p>
+</div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>addPet</h3>
+  <div class="markdown level1 summary"><p>Add a new pet to the store</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /pet</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>Pet object that needs to be added to the store</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">405</span></td>
+        <td><p>Invalid input</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="markdown level1 api-footer">
+<blockquote>
+<p>NOTE: Add pet only when you needs.</p>
+</blockquote>
+</div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePet%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>updatePet</h3>
+  <div class="markdown level1 summary"><p>Update an existing pet</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">PUT /pet</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>Pet object that needs to be added to the store</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid ID supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>Pet not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">405</span></td>
+        <td><p>Validation exception</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByStatus%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByStatus" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>findPetsByStatus</h3>
+  <div class="markdown level1 summary"><p>Finds Pets by status</p>
+</div>
+  <div class="markdown level1 description"><p>Multiple status values can be provided with comma separated strings</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /pet/findByStatus?status</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*status</span></td>
+        <td>array</td>
+        <td></td>
+        <td><p>Status values that need to be considered for filter</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid status value</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FfindPetsByTags%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByTags" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>findPetsByTags</h3>
+  <div class="markdown level1 summary"><p>Finds Pets by tags</p>
+</div>
+  <div class="markdown level1 description"><p>Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /pet/findByTags?tags</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*tags</span></td>
+        <td>array</td>
+        <td></td>
+        <td><p>Tags to filter by</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid tag value</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeletePet%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deletePet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>deletePet</h3>
+  <div class="markdown level1 summary"><p>Deletes a pet</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">DELETE /pet/{petId}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">api_key</span></td>
+        <td>string</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="parametername">*petId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>Pet id to delete</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid ID supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>Pet not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetPetById%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getPetById" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>getPetById</h3>
+  <div class="markdown level1 summary"><p>Find pet by ID</p>
+</div>
+  <div class="markdown level1 description"><p>Returns a single pet</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /pet/{petId}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*petId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>ID of pet to return</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid ID supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>Pet not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdatePetWithForm%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePetWithForm" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>updatePetWithForm</h3>
+  <div class="markdown level1 summary"><p>Updates a pet in the store with form data</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /pet/{petId}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*petId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>ID of pet that needs to be updated</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">name</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>Updated name of the pet</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">status</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>Updated status of the pet</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">405</span></td>
+        <td><p>Invalid input</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FuploadFile%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>uploadFile</h3>
+  <div class="markdown level1 summary"><p>uploads an image</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /pet/{petId}/uploadImage</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*petId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>ID of pet to update</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">additionalMetadata</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>Additional data to pass to server</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">file</span></td>
+        <td>file</td>
+        <td></td>
+        <td><p>file to upload</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>store</h2>
+<div class="markdown level0 description"><p>Access to Petstore orders</p>
+</div>
+  <div class="markdown level0 conceptual"><p>Additional description for store tag</p>
+</div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FaddPet%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>addPet</h3>
+  <div class="markdown level1 summary"><p>Add a new pet to the store</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /pet</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>Pet object that needs to be added to the store</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">405</span></td>
+        <td><p>Invalid input</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="markdown level1 api-footer">
+<blockquote>
+<p>NOTE: Add pet only when you needs.</p>
+</blockquote>
+</div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetInventory%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getInventory" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>getInventory</h3>
+  <div class="markdown level1 summary"><p>Returns pet inventories by status</p>
+</div>
+  <div class="markdown level1 description"><p>Returns a map of status codes to quantities</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /store/inventory</code></pre>
+  </div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FplaceOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/placeOrder" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>placeOrder</h3>
+  <div class="markdown level1 summary"><p>Place an order for a pet</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /store/order</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>order placed for purchasing the pet</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid Order</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>deleteOrder</h3>
+  <div class="markdown level1 summary"><p>Delete purchase order by ID</p>
+</div>
+  <div class="markdown level1 description"><p>For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">DELETE /store/order/{orderId}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*orderId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>ID of the order that needs to be deleted</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid ID supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>Order not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetOrderById%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getOrderById" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>getOrderById</h3>
+  <div class="markdown level1 summary"><p>Find purchase order by ID</p>
+</div>
+  <div class="markdown level1 description"><p>For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /store/order/{orderId}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*orderId</span></td>
+        <td>integer</td>
+        <td></td>
+        <td><p>ID of pet that needs to be fetched</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid ID supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>Order not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>user</h2>
+<div class="markdown level0 description"><p>Operations about user</p>
+</div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>createUser</h3>
+  <div class="markdown level1 summary"><p>Create user</p>
+</div>
+  <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /user</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>Created user object</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">default</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithArrayInput%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithArrayInput" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>createUsersWithArrayInput</h3>
+  <div class="markdown level1 summary"><p>Creates list of users with given input array</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /user/createWithArray</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>List of user object</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">default</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FcreateUsersWithListInput%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithListInput" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>createUsersWithListInput</h3>
+  <div class="markdown level1 summary"><p>Creates list of users with given input array</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">POST /user/createWithList</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>List of user object</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">default</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FloginUser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/loginUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>loginUser</h3>
+  <div class="markdown level1 summary"><p>Logs user into the system</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /user/login?username&amp;password</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*username</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>The user name for login</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">*password</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>The password for login in clear text</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid username/password supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FlogoutUser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/logoutUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>logoutUser</h3>
+  <div class="markdown level1 summary"><p>Logs out current logged in user session</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /user/logout</code></pre>
+  </div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">default</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FdeleteUser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>deleteUser</h3>
+  <div class="markdown level1 summary"><p>Delete user</p>
+</div>
+  <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">DELETE /user/{username}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*username</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>The name that needs to be deleted</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid username supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>User not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FgetUserByName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getUserByName" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>getUserByName</h3>
+  <div class="markdown level1 summary"><p>Get user by user name</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">GET /user/{username}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*username</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>The name that needs to be fetched. Use user1 for testing.</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">200</span></td>
+        <td><p>successful operation</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid username supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>User not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+<h2 id="other-apis"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#other-apis" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Other APIs</h2>
+
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%2FupdateUser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
+  </span>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updateUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>updateUser</h3>
+  <div class="markdown level1 summary"><p>Updated user</p>
+</div>
+  <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
+</div>
+  <h5>Request</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-restApi hljs">PUT /user/{username}</code></pre>
+  </div>
+  <h5>Parameters</h5>
+  <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">*username</span></td>
+        <td>string</td>
+        <td></td>
+        <td><p>name that need to be updated</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="parametername">*body</span></td>
+        <td></td>
+        <td></td>
+        <td><p>Updated user object</p>
+</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <div class="responses">
+    <h5>Responses</h5>
+    <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <th>Status Code</th>
+          <th>Description</th>
+          <th>Samples</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="status">400</span></td>
+        <td><p>Invalid user supplied</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      <tr>
+        <td><span class="status">404</span></td>
+        <td><p>User not found</p>
+</td>
+        <td class="sample-response">
+        </td>
+      </tr>
+      </tbody>
+    </table></div>
+  </div>
+<div class="markdown level0 api-footer"><h3 id="see-alsos"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#see-alsos" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>See Alsos</h3>
+<p>See other REST APIs:</p>
+<ul>
+<li><a href="contacts.html">Contacts API</a></li>
+</ul>
+</div>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix" style="bottom: 70px;">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div><ul class="level1 nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet</a><ul class="level2 nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet">addPet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet">updatePet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus">findPetsByStatus</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags">findPetsByTags</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet">deletePet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById">getPetById</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm">updatePetWithForm</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile">uploadFile</a></li></ul></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store</a><ul class="level3 nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet">addPet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory">getInventory</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder">placeOrder</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder">deleteOrder</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById">getOrderById</a></li></ul></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user</a><ul class="level4 nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser">createUser</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput">createUsersWithArrayInput</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput">createUsersWithListInput</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser">loginUser</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser">logoutUser</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser">deleteUser</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName">getUserByName</a></li></ul></li><li><a href="#other-apis">Other APIs</a><ul class="level5 nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser">updateUser</a></li><li><a href="#see-alsos">See Alsos</a></li></ul></li></ul></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer style="display: none;">
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  
+
+</body></html>
