@@ -1,31 +1,32 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-const $ = require('jquery')
+import $ from 'jquery'
+import lunr from 'lunr'
 
-require('../node_modules/bootstrap/dist/css/bootstrap.css')
-require('../node_modules/highlight.js/scss/github.scss')
-require('./docfx.scss')
+require('../node_modules/bootstrap/dist/css/bootstrap.css');
+require('../node_modules/highlight.js/scss/github.scss');
+require('./docfx.scss');
 
-window.$ = window.jQuery = require('jquery')
+window.$ = window.jQuery = require('jquery');
 
-require('bootstrap')
-require('twbs-pagination')
-require('mark.js/src/jquery.js')
+require('bootstrap');
+require('twbs-pagination');
+require('mark.js/src/jquery.js');
 
-const AnchorJS = require('anchor-js')
-const anchors = new AnchorJS()
+import AnchorJS from 'anchor-js'
+import hljs from 'highlight.js'
 
-const hljs = require('highlight.js')
+const anchors = new AnchorJS();
 
 $(function () {
-  var active = 'active';
-  var expanded = 'in';
-  var collapsed = 'collapsed';
-  var filtered = 'filtered';
-  var show = 'show';
-  var hide = 'hide';
-  var util = new utility();
+  const active = 'active';
+  const expanded = 'in';
+  const collapsed = 'collapsed';
+  const filtered = 'filtered';
+  const show = 'show';
+  const hide = 'hide';
+  const util = new utility();
 
   workAroundFixedHeaderForAnchors();
   highlight();
@@ -43,25 +44,9 @@ $(function () {
   breakText();
   renderTabs();
 
-  window.refresh = function (article) {
-    // Update markup result
-    if (typeof article == 'undefined' || typeof article.content == 'undefined')
-      console.error("Null Argument");
-    $("article.content").html(article.content);
-
-    highlight();
-    renderTables();
-    renderAlerts();
-    renderAffix();
-    renderTabs();
-  }
-
-  // Add this event listener when needed
-  // window.addEventListener('content-update', contentUpdate);
-
   function breakText() {
     $(".xref").addClass("text-break");
-    var texts = $(".text-break");
+    const texts = $(".text-break");
     texts.each(function () {
       $(this).breakWord();
     });
@@ -70,7 +55,7 @@ $(function () {
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
-    $('table').addClass('table table-bordered table-striped table-condensed').wrap('<div class=\"table-responsive\"></div>');
+    $('table').addClass('table table-bordered table-striped table-condensed').wrap('<div class=\\"table-responsive\\"></div>');
   }
 
   // Styling for alerts.
@@ -105,18 +90,18 @@ $(function () {
     });
     $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
-      var lines = block.innerHTML.split('\n');
+      const lines = block.innerHTML.split('\n');
 
-      queryString = block.getAttribute('highlight-lines');
+      const queryString = block.getAttribute('highlight-lines');
       if (!queryString) return;
 
-      var ranges = queryString.split(',');
-      for (var j = 0, range; range = ranges[j++];) {
-        var found = range.match(/^(\d+)\-(\d+)?$/);
+      const ranges = queryString.split(',');
+      for (let j = 0, range; range = ranges[j++];) {
+        const found = range.match(/^(\d+)\\-(\d+)?$/);
         if (found) {
           // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-          var start = +found[1];
-          var end = +found[2];
+          let start = +found[1];
+          let end = +found[2];
           if (isNaN(end) || end > lines.length) {
             end = lines.length;
           }
@@ -140,14 +125,14 @@ $(function () {
 
   // Support full-text-search
   function enableSearch() {
-    var query;
-    var relHref = $("meta[property='docfx\\:rel']").attr("content");
+    let query;
+    const relHref = $("meta[property='docfx\\:rel']").attr("content");
     if (typeof relHref === 'undefined') {
       return;
     }
     try {
-      var worker = new Worker(relHref + 'styles/search-worker.min.js');
-      if (!worker && !window.worker) {
+      var worker = window.Worker ? new Worker(relHref + 'styles/search-worker.min.js') : null;
+      if (!worker) {
         localSearch();
       } else {
         webWorkerSearch();
@@ -171,7 +156,7 @@ $(function () {
       });
 
       function autoCollapse() {
-        var navbar = $('#autocollapse');
+        const navbar = $('#autocollapse');
         if (navbar.height() === null) {
           setTimeout(autoCollapse, 300);
         }
@@ -185,16 +170,16 @@ $(function () {
     // Search factory
     function localSearch() {
       console.log("using local search");
-      var lunrIndex = lunr(function () {
+      const lunrIndex = lunr(function () {
         this.ref('href');
         this.field('title', { boost: 50 });
         this.field('keywords', { boost: 20 });
       });
       lunr.tokenizer.seperator = /[\s\-\.]+/;
-      var searchData = {};
-      var searchDataRequest = new XMLHttpRequest();
+      let searchData = {};
+      const searchDataRequest = new XMLHttpRequest();
 
-      var indexPath = relHref + "index.json";
+      const indexPath = relHref + "index.json";
       if (indexPath) {
         searchDataRequest.open('GET', indexPath);
         searchDataRequest.onload = function () {
@@ -202,20 +187,20 @@ $(function () {
             return;
           }
           searchData = JSON.parse(this.responseText);
-          for (var prop in searchData) {
-            if (searchData.hasOwnProperty(prop)) {
+          for (const prop in searchData) {
+            if (Object.prototype.hasOwnProperty.call(searchData, prop)) {
               lunrIndex.add(searchData[prop]);
             }
           }
-        }
+        };
         searchDataRequest.send();
       }
 
       $("body").bind("queryReady", function () {
-        var hits = lunrIndex.search(query);
-        var results = [];
+        const hits = lunrIndex.search(query);
+        const results = [];
         hits.forEach(function (hit) {
-          var item = searchData[hit.ref];
+          const item = searchData[hit.ref];
           results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
         });
         handleSearchResults(results);
@@ -224,7 +209,7 @@ $(function () {
 
     function webWorkerSearch() {
       console.log("using Web Worker");
-      var indexReady = $.Deferred();
+      const indexReady = $.Deferred();
 
       worker.onmessage = function (oEvent) {
         switch (oEvent.data.e) {
@@ -236,7 +221,7 @@ $(function () {
             handleSearchResults(hits);
             break;
         }
-      }
+      };
 
       indexReady.promise().done(function () {
         $("body").bind("queryReady", function () {
@@ -250,9 +235,9 @@ $(function () {
 
     // Highlight the searching keywords
     function highlightKeywords() {
-      var q = new URLSearchParams(window.location.search).get('q')
+      const q = new URLSearchParams(window.location.search).get('q');
       if (q) {
-        var keywords = q.split("%20");
+        const keywords = q.split("%20");
         keywords.forEach(function (keyword) {
           if (keyword !== "") {
             $('.data-searchable *').mark(keyword);
@@ -292,11 +277,11 @@ $(function () {
     }
 
     function relativeUrlToAbsoluteUrl(currentUrl, relativeUrl) {
-      var currentItems = currentUrl.split(/\/+/);
-      var relativeItems = relativeUrl.split(/\/+/);
-      var depth = currentItems.length - 1;
-      var items = [];
-      for (var i = 0; i < relativeItems.length; i++) {
+      const currentItems = currentUrl.split(/\/+/);
+      const relativeItems = relativeUrl.split(/\/+/);
+      let depth = currentItems.length - 1;
+      const items = [];
+      for (let i = 0; i < relativeItems.length; i++) {
         if (relativeItems[i] === '..') {
           depth--;
         } else if (relativeItems[i] !== '.') {
@@ -307,10 +292,10 @@ $(function () {
     }
 
     function extractContentBrief(content) {
-      var briefOffset = 512;
-      var words = query.split(/\s+/g);
-      var queryIndex = content.indexOf(words[0]);
-      var briefContent;
+      const briefOffset = 512;
+      const words = query.split(/\s+/g);
+      const queryIndex = content.indexOf(words[0]);
+      let briefContent;
       if (queryIndex > briefOffset) {
         return "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "...";
       } else if (queryIndex <= briefOffset) {
@@ -319,8 +304,8 @@ $(function () {
     }
 
     function handleSearchResults(hits) {
-      var numPerPage = 10;
-      var pagination = $('#pagination');
+      const numPerPage = 10;
+      const pagination = $('#pagination');
       pagination.empty();
       pagination.removeData("twbs-pagination");
       if (hits.length === 0) {
@@ -334,20 +319,20 @@ $(function () {
           totalPages: Math.ceil(hits.length / numPerPage),
           visiblePages: 5,
           onPageClick: function (event, page) {
-            var start = (page - 1) * numPerPage;
-            var curHits = hits.slice(start, start + numPerPage);
+            const start = (page - 1) * numPerPage;
+            const curHits = hits.slice(start, start + numPerPage);
             $('#search-results>.sr-items').empty().append(
               curHits.map(function (hit) {
-                var currentUrl = window.location.href;
-                var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-                var itemHref = relHref + hit.href + "?q=" + query;
-                var itemTitle = hit.title;
-                var itemBrief = extractContentBrief(hit.keywords);
+                const currentUrl = window.location.href;
+                const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
+                const itemHref = relHref + hit.href + "?q=" + query;
+                const itemTitle = hit.title;
+                const itemBrief = extractContentBrief(hit.keywords);
 
-                var itemNode = $('<div>').attr('class', 'sr-item');
-                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").attr("rel", "noopener noreferrer").text(itemTitle));
-                var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-                var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
+                const itemNode = $('<div>').attr('class', 'sr-item');
+                const itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").attr("rel", "noopener noreferrer").text(itemTitle));
+                const itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
+                const itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
                 itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
                 return itemNode;
               })
@@ -361,11 +346,11 @@ $(function () {
         });
       }
     }
-  };
+  }
 
   // Update href in navbar
   function renderNavbar() {
-    var navbar = $('#navbar ul')[0];
+    const navbar = $('#navbar ul')[0];
     if (typeof (navbar) === 'undefined') {
       loadNavbar();
     } else {
@@ -382,32 +367,32 @@ $(function () {
     }
 
     function loadNavbar() {
-      var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
+      let navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
       if (!navbarPath) {
         return;
       }
       navbarPath = navbarPath.replace(/\\/g, '/');
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
+      let tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
         showSearch();
-        var index = navbarPath.lastIndexOf('/');
-        var navrel = '';
+        const index = navbarPath.lastIndexOf('/');
+        let navrel = '';
         if (index > -1) {
           navrel = navbarPath.substr(0, index + 1);
         }
         $('#navbar>ul').addClass('navbar-nav');
-        var currentAbsPath = util.getCurrentWindowAbsolutePath();
+        const currentAbsPath = util.getCurrentWindowAbsolutePath();
         // set active item
         $('#navbar').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
+          let href = $(e).attr("href");
           if (util.isRelativePath(href)) {
             href = navrel + href;
             $(e).attr("href", href);
 
-            var isActive = false;
-            var originalHref = e.name;
+            let isActive = false;
+            let originalHref = e.name;
             if (originalHref) {
               originalHref = navrel + originalHref;
               if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
@@ -415,7 +400,7 @@ $(function () {
               }
             } else {
               if (util.getAbsolutePath(href) === currentAbsPath) {
-                var dropdown = $(e).attr('data-toggle') == "dropdown"
+                const dropdown = $(e).attr('data-toggle') == "dropdown";
                 if (!dropdown) {
                   isActive = true;
                 }
@@ -432,7 +417,7 @@ $(function () {
   }
 
   function renderSidebar() {
-    var sidetoc = $('#sidetoggle .sidetoc')[0];
+    const sidetoc = $('#sidetoggle .sidetoc')[0];
     if (typeof (sidetoc) === 'undefined') {
       loadToc();
     } else {
@@ -442,14 +427,14 @@ $(function () {
       }
 
       // Scroll to active item
-      var top = 0;
+      let top = 0;
       $('#toc a.active').parents('li').each(function (i, e) {
         $(e).addClass(active).addClass(expanded);
         $(e).children('a').addClass(active);
-      })
+      });
       $('#toc a.active').parents('li').each(function (i, e) {
         top += $(e).position().top;
-      })
+      });
       $('.sidetoc').scrollTop(top - 50);
 
       if ($('footer').is(':visible')) {
@@ -460,8 +445,8 @@ $(function () {
     }
 
     function registerTocEvents() {
-      var tocFilterInput = $('#toc_filter_input');
-      var tocFilterClearButton = $('#toc_filter_clear');
+      const tocFilterInput = $('#toc_filter_input');
+      const tocFilterClearButton = $('#toc_filter_clear');
         
       $('.toc .nav > li > .expand-stub').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
@@ -470,7 +455,7 @@ $(function () {
         $(e.target).parent().toggleClass(expanded);
       });
       tocFilterInput.on('input', function (e) {
-        var val = this.value;
+        const val = this.value;
         //Save filter string to local session storage
         if (typeof(Storage) !== "undefined") {
           try {
@@ -489,25 +474,25 @@ $(function () {
 
         // set all parent nodes status
         $('#toc li>a').filter(function (i, e) {
-          return $(e).siblings().length > 0
+          return $(e).siblings().length > 0;
         }).each(function (i, anchor) {
-          var parent = $(anchor).parent();
+          const parent = $(anchor).parent();
           parent.addClass(hide);
           parent.removeClass(show);
           parent.removeClass(filtered);
-        })
+        });
         
         // Get leaf nodes
         $('#toc li>a').filter(function (i, e) {
-          return $(e).siblings().length === 0
+          return $(e).siblings().length === 0;
         }).each(function (i, anchor) {
-          var text = $(anchor).attr('title');
-          var parent = $(anchor).parent();
-          var parentNodes = parent.parents('ul>li');
+          let text = $(anchor).attr('title');
+          const parent = $(anchor).parent();
+          const parentNodes = parent.parents('ul>li');
           for (var i = 0; i < parentNodes.length; i++) {
-            var parentText = $(parentNodes[i]).children('a').attr('title');
+            const parentText = $(parentNodes[i]).children('a').attr('title');
             if (parentText) text = parentText + '.' + text;
-          };
+          }
           if (filterNavItem(text, val)) {
             parent.addClass(show);
             parent.removeClass(hide);
@@ -517,9 +502,9 @@ $(function () {
           }
         });
         $('#toc li>a').filter(function (i, e) {
-          return $(e).siblings().length > 0
+          return $(e).siblings().length > 0;
         }).each(function (i, anchor) {
-          var parent = $(anchor).parent();
+          const parent = $(anchor).parent();
           if (parent.find('li.show').length > 0) {
             parent.addClass(show);
             parent.addClass(filtered);
@@ -529,7 +514,7 @@ $(function () {
             parent.removeClass(show);
             parent.removeClass(filtered);
           }
-        })
+        });
 
         function filterNavItem(name, text) {
           if (!text) return true;
@@ -564,23 +549,23 @@ $(function () {
     }
 
     function loadToc() {
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      let tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (!tocPath) {
         return;
       }
       tocPath = tocPath.replace(/\\/g, '/');
       $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
-        var index = tocPath.lastIndexOf('/');
-        var tocrel = '';
+        const index = tocPath.lastIndexOf('/');
+        let tocrel = '';
         if (index > -1) {
           tocrel = tocPath.substr(0, index + 1);
         }
-        var currentHref = util.getCurrentWindowAbsolutePath();
+        let currentHref = util.getCurrentWindowAbsolutePath();
         if(!currentHref.endsWith('.html')) {
           currentHref += '.html';
         }
         $('#sidetoc').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
+          let href = $(e).attr("href");
           if (util.isRelativePath(href)) {
             href = tocrel + href;
             $(e).attr("href", href);
@@ -599,39 +584,39 @@ $(function () {
   }
 
   function renderBreadcrumb() {
-    var breadcrumb = [];
+    const breadcrumb = [];
     $('#navbar a.active').each(function (i, e) {
       breadcrumb.push({
         href: e.href,
         name: e.innerHTML
       });
-    })
+    });
     $('#toc a.active').each(function (i, e) {
       breadcrumb.push({
         href: e.href,
         name: e.innerHTML
       });
-    })
+    });
 
-    var html = util.formList(breadcrumb, 'breadcrumb');
+    const html = util.formList(breadcrumb, 'breadcrumb');
     $('#breadcrumb').html(html);
   }
 
   //Setup Affix
   function renderAffix() {
-    var hierarchy = getHierarchy();
+    const hierarchy = getHierarchy();
     if (!hierarchy || hierarchy.length <= 0) {
       $("#affix").hide();
     }
     else {
-      var html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
+      const html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix>div").empty().append(html);
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
       $('#affix a').click(function(e) {
-        var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
-        var target = e.target.hash;
+        const scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
+        const target = e.target.hash;
         if (scrollspy && target) {
           scrollspy.activate(target);
         }
@@ -640,16 +625,16 @@ $(function () {
 
     function getHierarchy() {
       // supported headers are h1, h2, h3, and h4
-      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", "));
+      const $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", "));
 
       // a stack of hierarchy items that are currently being built
-      var stack = [];
+      const stack = [];
       $headers.each(function (i, e) {
         if (!e.id) {
           return;
         }
 
-        var item = {
+        const item = {
           name: htmlEncode($(e).text()),
           href: "#" + e.id,
           items: []
@@ -660,7 +645,7 @@ $(function () {
           return;
         }
 
-        var frame = stack[stack.length - 1];
+        const frame = stack[stack.length - 1];
         if (e.tagName === frame.type) {
           frame.siblings.push(item);
         } else if (e.tagName[1] > frame.type[1]) {
@@ -686,16 +671,16 @@ $(function () {
       }
 
       function buildParent() {
-        var childrenToAttach = stack.pop();
-        var parentFrame = stack[stack.length - 1];
-        var parent = parentFrame.siblings[parentFrame.siblings.length - 1];
+        const childrenToAttach = stack.pop();
+        const parentFrame = stack[stack.length - 1];
+        const parent = parentFrame.siblings[parentFrame.siblings.length - 1];
         $.each(childrenToAttach.siblings, function (i, child) {
           parent.items.push(child);
         });
       }
       if (stack.length > 0) {
 
-        var topLevel = stack.pop().siblings;
+        const topLevel = stack.pop().siblings;
         if (topLevel.length === 1) {  // if there's only one topmost header, dump it
           return topLevel[0].items;
         }
@@ -712,23 +697,6 @@ $(function () {
         .replace(/'/g, '&#39;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-    }
-
-    function htmlDecode(value) {
-      if (!str) return str;
-      return value
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&');
-    }
-
-    function cssEscape(str) {
-      // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
-      if (!str) return str;
-      return str
-        .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
   }
 
@@ -758,8 +726,8 @@ $(function () {
     }
 
     function needFooter() {
-      var scrollHeight = $(document).height();
-      var scrollPosition = $(window).height() + $(window).scrollTop();
+      const scrollHeight = $(document).height();
+      const scrollPosition = $(window).height() + $(window).scrollTop();
       return (scrollHeight - scrollPosition) < 1;
     }
 
@@ -778,15 +746,15 @@ $(function () {
     // For LOGO SVG
     // Replace SVG with inline SVG
     // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-    jQuery('img.svg').each(function () {
-      var $img = jQuery(this);
-      var imgID = $img.attr('id');
-      var imgClass = $img.attr('class');
-      var imgURL = $img.attr('src');
+    $('img.svg').each(function () {
+      const $img = $(this);
+      const imgID = $img.attr('id');
+      const imgClass = $img.attr('class');
+      const imgURL = $img.attr('src');
 
-      jQuery.get(imgURL, function (data) {
+      $.get(imgURL, function (data) {
         // Get the SVG tag, ignore the rest
-        var $svg = jQuery(data).find('svg');
+        let $svg = $(data).find('svg');
 
         // Add replaced image's ID to the new SVG
         if (typeof imgID !== 'undefined') {
@@ -808,13 +776,13 @@ $(function () {
   }
 
   function renderTabs() {
-    var contentAttrs = {
+    const contentAttrs = {
       id: 'data-bi-id',
       name: 'data-bi-name',
       type: 'data-bi-type'
     };
 
-    var Tab = (function () {
+    const Tab = (function () {
       function Tab(li, a, section) {
         this.li = li;
         this.a = a;
@@ -873,11 +841,11 @@ $(function () {
     initTabs(document.body);
 
     function initTabs(container) {
-      var queryStringTabs = readTabsQueryStringParam();
-      var elements = container.querySelectorAll('.tabGroup');
-      var state = { groups: [], selectedTabs: [] };
-      for (var i = 0; i < elements.length; i++) {
-        var group = initTabGroup(elements.item(i));
+      const queryStringTabs = readTabsQueryStringParam();
+      const elements = container.querySelectorAll('.tabGroup');
+      const state = { groups: [], selectedTabs: [] };
+      for (let i = 0; i < elements.length; i++) {
+        const group = initTabGroup(elements.item(i));
         if (!group.independent) {
           updateVisibilityAndSelection(group, state);
           state.groups.push(group);
@@ -887,25 +855,25 @@ $(function () {
       if (state.groups.length === 0) {
         return state;
       }
-      selectTabs(queryStringTabs, container);
+      selectTabs(queryStringTabs);
       updateTabsQueryStringParam(state);
       notifyContentUpdated();
       return state;
     }
 
     function initTabGroup(element) {
-      var group = {
+      const group = {
         independent: element.hasAttribute('data-tab-group-independent'),
         tabs: []
       };
-      var li = element.firstElementChild.firstElementChild;
+      let li = element.firstElementChild.firstElementChild;
       while (li) {
-        var a = li.firstElementChild;
+        const a = li.firstElementChild;
         a.setAttribute(contentAttrs.name, 'tab');
-        var dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ');
+        const dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ');
         a.setAttribute('data-tab', dataTab);
-        var section = element.querySelector("[id=\"" + a.getAttribute('aria-controls') + "\"]");
-        var tab = new Tab(li, a, section);
+        const section = element.querySelector("[id=\"" + a.getAttribute('aria-controls') + "\"]");
+        const tab = new Tab(li, a, section);
         group.tabs.push(tab);
         li = li.nextElementSibling;
       }
@@ -915,10 +883,10 @@ $(function () {
     }
 
     function updateVisibilityAndSelection(group, state) {
-      var anySelected = false;
-      var firstVisibleTab;
-      for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
-        var tab = _a[_i];
+      let anySelected = false;
+      let firstVisibleTab;
+      for (let _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+        const tab = _a[_i];
         tab.visible = tab.condition === null || state.selectedTabs.indexOf(tab.condition) !== -1;
         if (tab.visible) {
           if (!firstVisibleTab) {
@@ -929,18 +897,18 @@ $(function () {
         anySelected = anySelected || tab.selected;
       }
       if (!anySelected) {
-        for (var _b = 0, _c = group.tabs; _b < _c.length; _b++) {
-          var tabIds = _c[_b].tabIds;
-          for (var _d = 0, tabIds_1 = tabIds; _d < tabIds_1.length; _d++) {
-            var tabId = tabIds_1[_d];
-            var index = state.selectedTabs.indexOf(tabId);
+        for (let _b = 0, _c = group.tabs; _b < _c.length; _b++) {
+          const tabIds = _c[_b].tabIds;
+          for (let _d = 0, tabIds_1 = tabIds; _d < tabIds_1.length; _d++) {
+            const tabId = tabIds_1[_d];
+            const index = state.selectedTabs.indexOf(tabId);
             if (index === -1) {
               continue;
             }
             state.selectedTabs.splice(index, 1);
           }
         }
-        var tab = firstVisibleTab;
+        const tab = firstVisibleTab;
         tab.selected = true;
         state.selectedTabs.push(tab.tabIds[0]);
       }
@@ -950,12 +918,12 @@ $(function () {
       if (!(event.target instanceof HTMLElement)) {
         return null;
       }
-      var anchor = event.target.closest('a[data-tab]');
+      const anchor = event.target.closest('a[data-tab]');
       if (anchor === null) {
         return null;
       }
-      var tabIds = anchor.getAttribute('data-tab').split(' ');
-      var group = anchor.parentElement.parentElement.parentElement.tabGroup;
+      const tabIds = anchor.getAttribute('data-tab').split(' ');
+      const group = anchor.parentElement.parentElement.parentElement.tabGroup;
       if (group === undefined) {
         return null;
       }
@@ -963,18 +931,18 @@ $(function () {
     }
 
     function handleClick(event, state) {
-      var info = getTabInfoFromEvent(event);
+      const info = getTabInfoFromEvent(event);
       if (info === null) {
         return;
       }
       event.preventDefault();
       info.anchor.href = 'javascript:';
       setTimeout(function () { return info.anchor.href = '#' + info.anchor.getAttribute('aria-controls'); });
-      var tabIds = info.tabIds, group = info.group;
-      var originalTop = info.anchor.getBoundingClientRect().top;
+      const tabIds = info.tabIds, group = info.group;
+      const originalTop = info.anchor.getBoundingClientRect().top;
       if (group.independent) {
-        for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
-          var tab = _a[_i];
+        for (let _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+          const tab = _a[_i];
           tab.selected = arraysIntersect(tab.tabIds, tabIds);
         }
       }
@@ -982,25 +950,25 @@ $(function () {
         if (arraysIntersect(state.selectedTabs, tabIds)) {
           return;
         }
-        var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabIds[0];
+        const previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabIds[0];
         state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0]);
-        for (var _b = 0, _c = state.groups; _b < _c.length; _b++) {
-          var group_1 = _c[_b];
+        for (let _b = 0, _c = state.groups; _b < _c.length; _b++) {
+          const group_1 = _c[_b];
           updateVisibilityAndSelection(group_1, state);
         }
         updateTabsQueryStringParam(state);
       }
       notifyContentUpdated();
-      var top = info.anchor.getBoundingClientRect().top;
+      const top = info.anchor.getBoundingClientRect().top;
       if (top !== originalTop && event instanceof MouseEvent) {
         window.scrollTo(0, window.pageYOffset + top - originalTop);
       }
     }
 
     function selectTabs(tabIds) {
-      for (var _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
-        var tabId = tabIds_1[_i];
-        var a = document.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
+      for (let _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
+        const tabId = tabIds_1[_i];
+        const a = document.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
         if (a === null) {
           return;
         }
@@ -1009,8 +977,8 @@ $(function () {
     }
 
     function readTabsQueryStringParam() {
-      var qs = new URLSearchParams(window.location.search)
-      var t = qs.get('tabs')
+      const qs = new URLSearchParams(window.location.search);
+      const t = qs.get('tabs');
       if (!t) {
         return [];
       }
@@ -1018,9 +986,9 @@ $(function () {
     }
 
     function updateTabsQueryStringParam(state) {
-      var qs = new URLSearchParams(window.location.search)
-      qs.set('tabs', state.selectedTabs.join())
-      var url = location.protocol + "//" + location.host + location.pathname + "?" + qs.toString() + location.hash;
+      const qs = new URLSearchParams(window.location.search);
+      qs.set('tabs', state.selectedTabs.join());
+      const url = location.protocol + "//" + location.host + location.pathname + "?" + qs.toString() + location.hash;
       if (location.href === url) {
         return;
       }
@@ -1028,10 +996,10 @@ $(function () {
     }
 
     function arraysIntersect(a, b) {
-      for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
-        var itemA = a_1[_i];
-        for (var _a = 0, b_1 = b; _a < b_1.length; _a++) {
-          var itemB = b_1[_a];
+      for (let _i = 0, a_1 = a; _i < a_1.length; _i++) {
+        const itemA = a_1[_i];
+        for (let _a = 0, b_1 = b; _a < b_1.length; _a++) {
+          const itemB = b_1[_a];
           if (itemA === itemB) {
             return true;
           }
@@ -1056,18 +1024,18 @@ $(function () {
 
     function getAbsolutePath(href) {
       if (isAbsolutePath(href)) return href;
-      var currentAbsPath = getCurrentWindowAbsolutePath();
-      var stack = currentAbsPath.split("/");
+      const currentAbsPath = getCurrentWindowAbsolutePath();
+      const stack = currentAbsPath.split("/");
       stack.pop();
-      var parts = href.split("/");
-      for (var i=0; i< parts.length; i++) {
+      const parts = href.split("/");
+      for (let i=0; i< parts.length; i++) {
         if (parts[i] == ".") continue;
         if (parts[i] == ".." && stack.length > 0)
           stack.pop();
         else
           stack.push(parts[i]);
       }
-      var p = stack.join("/");
+      const p = stack.join("/");
       return p;
     }
 
@@ -1087,7 +1055,7 @@ $(function () {
     }
     function getDirectory(href) {
       if (!href) return '';
-      var index = href.lastIndexOf('/');
+      const index = href.lastIndexOf('/');
       if (index == -1) return '';
       if (index > -1) {
         return href.substr(0, index);
@@ -1095,23 +1063,23 @@ $(function () {
     }
 
     function formList(item, classes) {
-      var level = 1;
-      var model = {
+      let level = 1;
+      const model = {
         items: item
       };
-      var cls = [].concat(classes).join(" ");
+      const cls = [].concat(classes).join(" ");
       return getList(model, cls);
 
       function getList(model, cls) {
         if (!model || !model.items) return null;
-        var l = model.items.length;
+        const l = model.items.length;
         if (l === 0) return null;
-        var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
+        let html = '<ul class="level' + level + ' ' + (cls || '') + '">';
         level++;
-        for (var i = 0; i < l; i++) {
-          var item = model.items[i];
-          var href = item.href;
-          var name = item.name;
+        for (let i = 0; i < l; i++) {
+          const item = model.items[i];
+          const href = item.href;
+          const name = item.name;
           if (!name) continue;
           html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
           html += getList(item, cls) || '';
@@ -1128,7 +1096,7 @@ $(function () {
      */
     function breakPlainText(text) {
       if (!text) return text;
-      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4')
+      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4');
     }
 
     /**
@@ -1139,16 +1107,16 @@ $(function () {
       if (!this.html().match(/(<\w*)((\s\/>)|(.*<\/\w*>))/g)) {
         this.html(function (index, text) {
           return breakPlainText(text);
-        })
+        });
       }
       return this;
-    }
+    };
   }
 
   // adjusted from https://stackoverflow.com/a/13067009/1523776
   function workAroundFixedHeaderForAnchors() {
-    var HISTORY_SUPPORT = !!(history && history.pushState);
-    var ANCHOR_REGEX = /^#[^ ]+$/;
+    const HISTORY_SUPPORT = !!(history && history.pushState);
+    const ANCHOR_REGEX = /^#[^ ]+$/;
 
     function getFixedOffset() {
       return $('header').first().height();
@@ -1161,13 +1129,13 @@ $(function () {
      * @return {Boolean} - Was the href an anchor.
      */
     function scrollIfAnchor(href, pushToHistory) {
-      var match, rect, anchorOffset;
+      let rect, anchorOffset;
 
       if (!ANCHOR_REGEX.test(href)) {
         return false;
       }
 
-      match = document.getElementById(href.slice(1));
+      const match = document.getElementById(href.slice(1));
 
       if (match) {
         rect = match.getBoundingClientRect();
@@ -1187,14 +1155,14 @@ $(function () {
      * Attempt to scroll to the current location's hash.
      */
     function scrollToCurrent() {
-      scrollIfAnchor(window.location.hash);
+      scrollIfAnchor(window.location.hash, false);
     }
 
     /**
      * If the click event's target was an anchor, fix the scroll position.
      */
     function delegateAnchors(e) {
-      var elem = e.target;
+      const elem = e.target;
 
       if (scrollIfAnchor(elem.getAttribute('href'), true)) {
         e.preventDefault();

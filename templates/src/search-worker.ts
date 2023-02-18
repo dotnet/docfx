@@ -1,14 +1,14 @@
+import lunr from 'lunr'
+
 (function () {
-  const lunr = require('lunr');
+  let lunrIndex;
 
-  var lunrIndex;
+  let stopWords = null;
+  let searchData = {};
 
-  var stopWords = null;
-  var searchData = {};
+  lunr.tokenizer.separator = /[\s\-\\.\\(\\)]+/;
 
-  lunr.tokenizer.separator = /[\s\-\.\(\)]+/;
-
-  var stopWordsRequest = new XMLHttpRequest();
+  const stopWordsRequest = new XMLHttpRequest();
   stopWordsRequest.open('GET', '../search-stopwords.json');
   stopWordsRequest.onload = function () {
     if (this.status != 200) {
@@ -16,10 +16,10 @@
     }
     stopWords = JSON.parse(this.responseText);
     buildIndex();
-  }
+  };
   stopWordsRequest.send();
 
-  var searchDataRequest = new XMLHttpRequest();
+  const searchDataRequest = new XMLHttpRequest();
 
   searchDataRequest.open('GET', '../index.json');
   searchDataRequest.onload = function () {
@@ -31,19 +31,19 @@
     buildIndex();
 
     postMessage({ e: 'index-ready' });
-  }
+  };
   searchDataRequest.send();
 
   onmessage = function (oEvent) {
-    var q = oEvent.data.q;
-    var hits = lunrIndex.search(q);
-    var results = [];
+    const q = oEvent.data.q;
+    const hits = lunrIndex.search(q);
+    const results = [];
     hits.forEach(function (hit) {
-      var item = searchData[hit.ref];
+      const item = searchData[hit.ref];
       results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
     });
     postMessage({ e: 'query-ready', q: q, d: results });
-  }
+  };
 
   function buildIndex() {
     if (stopWords !== null && !isEmpty(searchData)) {
@@ -53,13 +53,13 @@
         this.field('title', { boost: 50 });
         this.field('keywords', { boost: 20 });
 
-        for (var prop in searchData) {
-          if (searchData.hasOwnProperty(prop)) {
+        for (const prop in searchData) {
+          if (Object.prototype.hasOwnProperty.call(searchData, prop)) {
             this.add(searchData[prop]);
           }
         }
 
-        var docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
+        const docfxStopWordFilter = lunr.generateStopWordFilter(stopWords);
         lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter');
         this.pipeline.add(docfxStopWordFilter);
         this.searchPipeline.add(docfxStopWordFilter);
@@ -70,8 +70,8 @@
   function isEmpty(obj) {
     if(!obj) return true;
 
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop))
+    for (const prop in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, prop))
         return false;
     }
 
