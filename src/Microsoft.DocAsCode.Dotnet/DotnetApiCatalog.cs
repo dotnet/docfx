@@ -116,6 +116,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 OutputFolder = Path.GetFullPath(Path.Combine(outputDirectory, outputFolder)),
                 CodeSourceBasePath = configModel?.CodeSourceBasePath,
                 DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
+                NoRestore = configModel?.NoRestore ?? false,
                 NamespaceLayout = configModel?.NamespaceLayout ?? NamespaceLayout.Flattened,
                 Files = expandedFiles.Items.SelectMany(s => s.Files).ToList(),
                 References = expandedReferences?.Items.SelectMany(s => s.Files).ToList(),

@@ -29,6 +29,8 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public bool DisableDefaultFilter { get; init; }
 
+        public bool NoRestore { get; init; }
+
         public NamespaceLayout NamespaceLayout { get; init; }
 
         public Dictionary<string, string> MSBuildProperties { get; init; }
