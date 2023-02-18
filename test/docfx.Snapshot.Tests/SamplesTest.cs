@@ -86,7 +86,6 @@ namespace Microsoft.DocAsCode.Tests
 
             try
             {
-                await SocketWaiter.Wait(port);
                 await VerifyScreenshots();
                 Assert.False(serve.HasExited);
             }
@@ -104,7 +103,7 @@ namespace Microsoft.DocAsCode.Tests
                 {
                     var page = await browser.NewPageAsync(new()
                     {
-                        ScreenSize = new() { Width = width, Height = height },
+                        ViewportSize = new() { Width = width, Height = height },
                         IsMobile = width < 500,
                         HasTouch = width < 500,
                     });
@@ -115,7 +114,7 @@ namespace Microsoft.DocAsCode.Tests
                         await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
 
                         await Verifier.Verify(page)
-                            .PageScreenshotOptions(new() { Clip = new() { Width = width, Height = height } })
+                            .PageScreenshotOptions(new() { FullPage = false })
                             .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}")
                             .UseFileName($"{url.Replace('/', '-')}")
                             .AutoVerify(includeBuildServer: false);
