@@ -3,52 +3,47 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
-    using System;
-    using System.IO;
+    using System.Text.Json;
+    using Json.Schema;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
-
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Schema;
 
     public class SchemaValidator
     {
-        private static readonly Uri SupportedMetaSchemaUri = new Uri("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#");
-        private readonly JSchema _jSchema;
-        private readonly object _schemaObject;
-        private readonly SchemaValidateService _validateService = SchemaValidateService.Instance;
+        private readonly JsonSchema _schema;
 
-        public SchemaValidator(JObject schemaObj, JSchema schema)
+        static SchemaValidator()
         {
-            _schemaObject = schemaObj;
-            _jSchema = schema;
+            SchemaRegistry.Global.Register(new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
+            SchemaRegistry.Global.Register(new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
+        }
+
+        public SchemaValidator(string json)
+        {
+            _schema = JsonSchema.FromText(json, new() { AllowTrailingCommas = true });
         }
 
         public void Validate(object obj)
         {
-            _validateService.Validate(obj, _jSchema);
-        }
-
-        public void ValidateMetaSchema()
-        {
-            if (!ValidateSchemaUrl(_jSchema.SchemaVersion))
+            var json = JsonSerializer.Serialize(obj);
+            var result = _schema.Evaluate(JsonDocument.Parse(json), new EvaluationOptions
             {
-                var message = $"Schema {_jSchema.SchemaVersion} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.";
-                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
-                throw new InvalidSchemaException(message);
+                ValidateAgainstMetaSchema = false,
+                OutputFormat = OutputFormat.List,
+            });
+
+            if (result.IsValid)
+                return;
+
+            foreach (var detail in result.Details)
+            {
+                if (detail.HasErrors)
+                {
+                    foreach (var (type, message) in detail.Errors)
+                    {
+                        Logger.LogError($"[{detail.InstanceLocation}] {type}: {message} ", code: "ViolateSchema");
+                    }
+                }
             }
-
-            using var stream = typeof(DocumentSchema).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json");
-            using var sr = new StreamReader(stream);
-            var metaSchema = JSchema.Parse(sr.ReadToEnd());
-            _validateService.Validate(_schemaObject, metaSchema);
-        }
-
-        private static bool ValidateSchemaUrl(Uri uri)
-        {
-            return uri.Host == SupportedMetaSchemaUri.Host
-                && uri.LocalPath == SupportedMetaSchemaUri.LocalPath
-                && (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment == "#");
         }
     }
 }

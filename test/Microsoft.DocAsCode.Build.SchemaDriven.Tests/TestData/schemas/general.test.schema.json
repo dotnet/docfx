@@ -5,7 +5,7 @@
   "title": "General",
   "description": "A test schema for simple managed reference",
   "type": "object",
-  "definition": {
+  "definitions": {
     "exceptionType": {
       "type": "object",
       "properties": {
@@ -14,7 +14,7 @@
           "contentType": "markdown"
         },
         "inner": {
-          "$ref": "#/definition/exceptionType"
+          "$ref": "#/definitions/exceptionType"
         }
       }
     }
@@ -25,12 +25,12 @@
         "properties": {
           "aggregatedExceptions": {
             "items": {
-              "$ref": "#/definition/exceptionType"
+              "$ref": "#/definitions/exceptionType"
             },
             "type": "array"
           },
           "exception": {
-            "$ref": "#/definition/exceptionType"
+            "$ref": "#/definitions/exceptionType"
           },
           "description": {
             "contentType": "markdown"

@@ -136,7 +136,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     SitemapOptions = config.SitemapOptions,
                     FALName = config.FALName,
                     DisableGitFeatures = config.DisableGitFeatures,
-                    SchemaLicense = config.SchemaLicense,
                     TagParameters = config.TagParameters,
                     ConfigureMarkdig = options.ConfigureMarkdig,
                 };

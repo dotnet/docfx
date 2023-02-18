@@ -6,11 +6,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    using Json.Schema;
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
     using Microsoft.DocAsCode.Common;
 
-    using Newtonsoft.Json.Schema;
     using YamlDotNet.RepresentationModel;
 
     public class SchemaFragmentsIterator
@@ -71,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 foreach (var key in keys)
                 {
                     var propSchema = schema.Properties[key];
-                    if (propSchema.Type == JSchemaType.Object || propSchema.Type == JSchemaType.Array)
+                    if (propSchema.Type == SchemaValueType.Object || propSchema.Type == SchemaValueType.Array)
                     {
                         if (map.Children.ContainsKey(key))
                         {
@@ -91,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     Logger.LogError("Cannot find Uid");
                     return;
                 }
-                if (schema.Items != null && schema.Items.Properties.Any(s => s.Value.ContentType == ContentType.Markdown || s.Value.Type == JSchemaType.Object || s.Value.Type == JSchemaType.Array))
+                if (schema.Items != null && schema.Items.Properties.Any(s => s.Value.ContentType == ContentType.Markdown || s.Value.Type == SchemaValueType.Object || s.Value.Type == SchemaValueType.Array))
                 {
                     var mergeKey = schema.Items.Properties.Keys.FirstOrDefault(k => schema.Items.Properties[k].MergeType == MergeType.Key);
                     if (mergeKey == null)

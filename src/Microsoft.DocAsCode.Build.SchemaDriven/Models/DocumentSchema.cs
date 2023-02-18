@@ -5,67 +5,42 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Schema;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Common;
+    using Json.Schema;
 
     public class DocumentSchema : BaseSchema
     {
-        public Uri SchemaVersion { get; set; }
-
-        public string Version { get; set; }
-
-        public Uri Id { get; set; }
-
         public string Metadata { get; set; }
 
         public JsonPointer MetadataReference { get; private set; }
 
         public SchemaValidator Validator { get; private set; }
 
-        public string Hash { get; private set; }
-
         /// <summary>
         /// Overwrites are only allowed when the schema contains "uid" definition
         /// </summary>
         public bool AllowOverwrite { get; private set; }
 
-        public static DocumentSchema Load(TextReader reader, string title)
+        public static DocumentSchema Load(string content, string title)
         {
             DocumentSchema schema;
-            using var jtr = new JsonTextReader(reader);
-            JSchema jSchema;
-            JObject jObject;
-            try
-            {
-                jObject = JObject.Load(jtr);
-                jSchema = JSchema.Load(jObject.CreateReader());
-            }
-            catch (Exception e) when (e is JSchemaException || e is JsonException)
-            {
-                var message = ($"{title} is not a valid schema: {e.Message}");
-                Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
-                throw new InvalidSchemaException(message, e);
-            }
-
-            var validator = new SchemaValidator(jObject, jSchema);
-
-            // validate schema here
-            validator.ValidateMetaSchema();
 
             try
             {
-                schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
-                schema.SchemaVersion = jSchema.SchemaVersion;
-                schema.Id = jSchema.Id;
-                schema.Version = GetValueFromJSchemaExtensionData<string>(jSchema, "version");
-                schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
-                schema.Validator = validator;
+                schema = JsonSerializer.Deserialize<DocumentSchema>(
+                    content,
+                    new JsonSerializerOptions()
+                    {
+                        AllowTrailingCommas = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        Converters = {
+                            new JsonStringEnumConverter()
+                        }
+                    });
             }
             catch (Exception e)
             {
@@ -85,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 schema.Title = title;
             }
 
-            if (schema.Type != JSchemaType.Object)
+            if (schema.Type != SchemaValueType.Object)
             {
                 var message = "Type for the root schema object must be object";
                 Logger.LogError(message, code: ErrorCodes.Build.ViolateSchema);
@@ -100,108 +75,67 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             var metadataSchema = pointer.FindSchema(schema);
-            if (metadataSchema != null && metadataSchema.Type != JSchemaType.Object)
+            if (metadataSchema != null && metadataSchema.Type != SchemaValueType.Object)
             {
                 throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
             }
 
+            ResolveRef(schema);
+
             schema.MetadataReference = pointer;
             schema.AllowOverwrite = CheckOverwriteAbility(schema);
-            schema.Hash = HashUtility.GetSha256HashString(JsonUtility.Serialize(jObject));
 
+            schema.Validator = new(content);
             return schema;
         }
 
-        private static T LoadSchema<T>(JSchema schema, Dictionary<JSchema, BaseSchema> cache) where T : BaseSchema, new()
+        private static void ResolveRef(DocumentSchema root)
         {
-            if (cache.TryGetValue(schema, out var bs))
-            {
-                return (T)bs;
-            }
-
-            bs = new T
-            {
-                Title = schema.Title,
-                Description = schema.Description,
-                Type = schema.Type,
-                Default = schema.Default,
-                ContentType = GetValueFromJSchemaExtensionData<ContentType>(schema, "contentType"),
-                Tags = GetValueFromJSchemaExtensionData<List<string>>(schema, "tags"),
-                MergeType = GetValueFromJSchemaExtensionData<MergeType>(schema, "mergeType"),
-                Reference = GetValueFromJSchemaExtensionData<ReferenceType>(schema, "reference"),
-                XrefProperties = GetValueFromJSchemaExtensionData<List<string>>(schema, "xrefProperties"),
-            };
-
-            cache[schema] = bs;
-
-            /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
-            CheckForNotSupportedKeyword(schema.OneOf, nameof(schema.OneOf));
-            CheckForNotSupportedKeyword(schema.AllOf, nameof(schema.AllOf));
-            CheckForNotSupportedKeyword(schema.AnyOf, nameof(schema.AnyOf));
-            CheckForNotSupportedKeyword(schema.AdditionalItems, nameof(schema.AdditionalItems));
-            CheckForNotSupportedKeyword(schema.AdditionalProperties, nameof(schema.AdditionalProperties));
-            CheckForNotSupportedKeyword(schema.PatternProperties, nameof(schema.PatternProperties));
-            */
-
-            if (schema.Properties != null)
-            {
-                bs.Properties = new Dictionary<string, BaseSchema>();
-                foreach (var pair in schema.Properties)
-                {
-                    bs.Properties[pair.Key] = LoadSchema<BaseSchema>(pair.Value, cache);
-                }
-            }
-
-            if (schema.Items != null && schema.Items.Count > 0)
-            {
-                /* Disable these checks temporarily as v3 supports these, but v2 is also reading these schemas in docs
-                if (schema.Items.Count > 1)
-                {
-                    throw new SchemaFeatureNotSupportedException("Multiple item definition is not supported in current schema driven document processor");
-                }
-                */
-
-                bs.Items = LoadSchema<BaseSchema>(schema.Items[0], cache);
-            }
-
-            return (T)bs;
-        }
-
-        private static T GetValueFromJSchemaExtensionData<T>(JSchema schema, string key)
-        {
-            if (schema.ExtensionData != null
-                && schema.ExtensionData.TryGetValue(key, out var value))
-            {
-                return value.ToObject<T>();
-            }
-
-            return default;
-        }
-
-        private static void CheckForNotSupportedKeyword(object keyword, string name)
-        {
-            if (keyword == null)
-            {
+            if (root.Definitions is null)
                 return;
-            }
 
-            if (keyword is IList<JSchema> list)
+            ResolveRefCore(root);
+
+            BaseSchema ResolveRefCore(BaseSchema schema)
             {
-                if (list.Count > 0)
+                if (schema is null)
+                    return schema;
+
+                if (!string.IsNullOrEmpty(schema.Ref))
                 {
-                    throw new SchemaKeywordNotSupportedException(name);
+                    if (!schema.Ref.StartsWith("#/definitions/"))
+                    {
+                        Logger.LogError($"JSON schema $ref {schema.Ref} must start with #/definitions/", code: ErrorCodes.Build.ViolateSchema);
+                    }
+                    else if (!root.Definitions.TryGetValue(schema.Ref.Substring("#/definitions/".Length), out var definition))
+                    {
+                        Logger.LogError($"Cannot resolve JSON schema $ref: {schema.Ref}", code: ErrorCodes.Build.ViolateSchema);
+                    }
+                    else
+                    {
+                        return definition;
+                    }
                 }
-            }
-            else if (keyword is IDictionary<string, JSchema> dict)
-            {
-                if (dict.Count > 0)
+
+                schema.Items = ResolveRefCore(schema.Items);
+
+                if (schema.Properties != null)
                 {
-                    throw new SchemaKeywordNotSupportedException(name);
+                    foreach (var (key, value) in schema.Properties)
+                    {
+                        schema.Properties[key] = ResolveRefCore(value);
+                    }
                 }
-            }
-            else
-            {
-                throw new SchemaKeywordNotSupportedException(name);
+
+                if (schema.Definitions != null)
+                {
+                    foreach (var (key, value) in schema.Definitions)
+                    {
+                        schema.Definitions[key] = ResolveRefCore(value);
+                    }
+                }
+
+                return schema;
             }
         }
 
