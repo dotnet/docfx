@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
     using VerifyXunit;
     using VerifyTests;
-    using VerifyTests.Playwright;
 
     [UsesVerify]
     public class SamplesTest
@@ -31,12 +30,12 @@ namespace Microsoft.DocAsCode.Tests
             "restapi/petstore.html",
         };
 
-        private static readonly (int width, int height)[] s_viewports = new[]
+        private static readonly (int width, int height, bool fullPage)[] s_viewports = new[]
         {
-            (1920, 1080),
-            (1152, 648),
-            (768, 600),
-            (375, 812),
+            (1920, 1080, true),
+            (1152, 648, false),
+            (768, 600, false),
+            (375, 812, true),
         };
 
         static SamplesTest()
@@ -99,22 +98,23 @@ namespace Microsoft.DocAsCode.Tests
                 using var playwright = await Playwright.CreateAsync();
                 var browser = await playwright.Chromium.LaunchAsync();
 
-                foreach (var (width, height) in s_viewports)
+                foreach (var (width, height, fullPage) in s_viewports)
                 {
+                    var isMobile = width < 500;
                     var page = await browser.NewPageAsync(new()
                     {
                         ViewportSize = new() { Width = width, Height = height },
-                        IsMobile = width < 500,
-                        HasTouch = width < 500,
+                        IsMobile = isMobile,
+                        HasTouch = isMobile,
                     });
 
                     foreach (var url in s_screenshotUrls)
                     {
                         await page.GotoAsync($"http://localhost:{port}/{url}");
-                        await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
+                        await page.WaitForFunctionAsync("window._docfxReady");
 
                         await Verifier.Verify(page)
-                            .PageScreenshotOptions(new() { FullPage = false })
+                            .PageScreenshotOptions(new() { FullPage = fullPage })
                             .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}")
                             .UseFileName($"{url.Replace('/', '-')}")
                             .AutoVerify(includeBuildServer: false);
