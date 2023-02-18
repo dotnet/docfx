@@ -2,13 +2,20 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import $ from 'jquery'
-import lunr from 'lunr'
 
-require('../node_modules/bootstrap/dist/css/bootstrap.css');
-require('../node_modules/highlight.js/scss/github.scss');
-require('./docfx.scss');
+declare global {
+  interface Window { 
+    $: any;
+    jQuery: any;
+    _docfxReady: any;
+  }
+}
 
-window.$ = window.jQuery = require('jquery');
+import '../node_modules/bootstrap/dist/css/bootstrap.css'
+import '../node_modules/highlight.js/scss/github.scss'
+import './docfx.scss'
+
+window.$ = window.jQuery = $
 
 require('bootstrap');
 require('twbs-pagination');
@@ -100,7 +107,7 @@ $(function () {
         const found = range.match(/^(\d+)\\-(\d+)?$/);
         if (found) {
           // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-          let start = +found[1];
+          const start = +found[1];
           let end = +found[2];
           if (isNaN(end) || end > lines.length) {
             end = lines.length;
@@ -131,13 +138,7 @@ $(function () {
       return;
     }
     try {
-      var worker = window.Worker ? new Worker(relHref + 'styles/search-worker.min.js') : null;
-      if (!worker) {
-        localSearch();
-      } else {
-        webWorkerSearch();
-      }
-
+      webWorkerSearch();
       renderSearchBox();
       highlightKeywords();
       addSearchEvent();
@@ -167,58 +168,18 @@ $(function () {
       }
     }
 
-    // Search factory
-    function localSearch() {
-      console.log("using local search");
-      const lunrIndex = lunr(function () {
-        this.ref('href');
-        this.field('title', { boost: 50 });
-        this.field('keywords', { boost: 20 });
-      });
-      lunr.tokenizer.seperator = /[\s\-\.]+/;
-      let searchData = {};
-      const searchDataRequest = new XMLHttpRequest();
-
-      const indexPath = relHref + "index.json";
-      if (indexPath) {
-        searchDataRequest.open('GET', indexPath);
-        searchDataRequest.onload = function () {
-          if (this.status != 200) {
-            return;
-          }
-          searchData = JSON.parse(this.responseText);
-          for (const prop in searchData) {
-            if (Object.prototype.hasOwnProperty.call(searchData, prop)) {
-              lunrIndex.add(searchData[prop]);
-            }
-          }
-        };
-        searchDataRequest.send();
-      }
-
-      $("body").bind("queryReady", function () {
-        const hits = lunrIndex.search(query);
-        const results = [];
-        hits.forEach(function (hit) {
-          const item = searchData[hit.ref];
-          results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
-        });
-        handleSearchResults(results);
-      });
-    }
-
     function webWorkerSearch() {
       console.log("using Web Worker");
       const indexReady = $.Deferred();
 
+      const worker = new Worker(relHref + 'styles/search-worker.min.js')
       worker.onmessage = function (oEvent) {
         switch (oEvent.data.e) {
           case 'index-ready':
             indexReady.resolve();
             break;
           case 'query-ready':
-            var hits = oEvent.data.d;
-            handleSearchResults(hits);
+            handleSearchResults(oEvent.data.d);
             break;
         }
       };
@@ -295,7 +256,6 @@ $(function () {
       const briefOffset = 512;
       const words = query.split(/\s+/g);
       const queryIndex = content.indexOf(words[0]);
-      let briefContent;
       if (queryIndex > briefOffset) {
         return "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "...";
       } else if (queryIndex <= briefOffset) {
@@ -454,15 +414,11 @@ $(function () {
       $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
         $(e.target).parent().toggleClass(expanded);
       });
-      tocFilterInput.on('input', function (e) {
+      tocFilterInput.on('input', function () {
         const val = this.value;
         //Save filter string to local session storage
         if (typeof(Storage) !== "undefined") {
-          try {
-            sessionStorage.filterString = val;
-            }
-          catch(e)
-            {}
+          sessionStorage.filterString = val;
         }
         if (val === '') {
           // Clear 'filtered' class
@@ -485,11 +441,11 @@ $(function () {
         // Get leaf nodes
         $('#toc li>a').filter(function (i, e) {
           return $(e).siblings().length === 0;
-        }).each(function (i, anchor) {
+        }).each(function (_, anchor) {
           let text = $(anchor).attr('title');
           const parent = $(anchor).parent();
           const parentNodes = parent.parents('ul>li');
-          for (var i = 0; i < parentNodes.length; i++) {
+          for (let i = 0; i < parentNodes.length; i++) {
             const parentText = $(parentNodes[i]).children('a').attr('title');
             if (parentText) text = parentText + '.' + text;
           }
@@ -525,26 +481,18 @@ $(function () {
       
       // toc filter clear button
       tocFilterClearButton.hide();
-      tocFilterClearButton.on("click", function(e){
+      tocFilterClearButton.on("click", function(){
         tocFilterInput.val("");
         tocFilterInput.trigger('input');
         if (typeof(Storage) !== "undefined") {
-          try {
-            sessionStorage.filterString = "";
-            }
-          catch(e)
-            {}
+          sessionStorage.filterString = "";
         }
       });
 
       //Set toc filter from local session storage on page load
       if (typeof(Storage) !== "undefined") {
-        try {
-          tocFilterInput.val(sessionStorage.filterString);
-          tocFilterInput.trigger('input');
-          }
-        catch(e)
-          {}
+        tocFilterInput.val(sessionStorage.filterString);
+        tocFilterInput.trigger('input');
       }
     }
 
