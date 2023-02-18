@@ -12,8 +12,7 @@
     <meta name="title" content="{{#title}}{{title}}{{/title}}{{^title}}{{>partials/title}}{{/title}} {{#_appTitle}}| {{_appTitle}} {{/_appTitle}}">
     {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
     <link rel="shortcut icon" href="{{_rel}}{{{_appFaviconPath}}}{{^_appFaviconPath}}favicon.ico{{/_appFaviconPath}}">
-    <link rel="stylesheet" href="{{_rel}}styles/docfx.vendor.css">
-    <link rel="stylesheet" href="{{_rel}}styles/docfx.css">
+    <link rel="stylesheet" href="{{_rel}}styles/docfx.min.css">
     <link rel="stylesheet" href="{{_rel}}styles/main.css">
     <meta property="docfx:navrel" content="{{_navRel}}">
     <meta property="docfx:tocrel" content="{{_tocRel}}">
