@@ -4,7 +4,7 @@
 const esbuild = require('esbuild')
 const { sassPlugin } = require('esbuild-sass-plugin')
 const bs = require('browser-sync')
-const { writeFileSync, cpSync } = require('fs')
+const { cpSync } = require('fs')
 const { join } = require('path')
 const { spawnSync } = require('child_process')
 const yargs = require('yargs/yargs')
@@ -18,7 +18,7 @@ build()
 
 async function build() {
 
-  esbuild.build({
+  await esbuild.build({
     bundle: true,
     minify: true,
     sourcemap: true,
