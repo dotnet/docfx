@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
             Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
 
-            var port = 5059;
+            var port = 8089;
             var serve = Process.Start(new ProcessStartInfo
             {
                 FileName = docfxPath,
