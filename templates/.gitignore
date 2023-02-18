@@ -3,4 +3,6 @@ node_modules
 *.vendor.css
 *.vendor.js
 *.min.js
+*.min.css
+*.map
 fonts

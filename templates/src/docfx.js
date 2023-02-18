@@ -1,4 +1,21 @@
-// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+const $ = require('jquery')
+
+window.$ = window.jQuery = require('jquery')
+
+require('bootstrap')
+require('twbs-pagination')
+require('mark.js/src/jquery.js')
+
+const AnchorJS = require('anchor-js')
+const anchors = new AnchorJS()
+
+const hljs = require('highlight.js')
+require('@websanova/url/src/url.js')
+
+
 $(function () {
   var active = 'active';
   var expanded = 'in';
