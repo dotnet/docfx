@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Tests
         private static readonly string[] s_screenshotUrls = new[]
         {
             "index.html",
+            "docs/markdown.html",
             "articles/csharp_coding_standards.html",
             "api/CatLibrary.html",
             "api/CatLibrary.Cat-2.html",
