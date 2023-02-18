@@ -112,6 +112,7 @@ namespace Microsoft.DocAsCode.Tests
                     foreach (var url in s_screenshotUrls)
                     {
                         await page.GotoAsync($"http://localhost:{port}/{url}");
+                        await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
 
                         await Verifier.Verify(page)
                             .PageScreenshotOptions(new() { Clip = new() { Width = width, Height = height } })
