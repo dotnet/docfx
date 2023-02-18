@@ -170,6 +170,13 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 if (metadataItem.Type == MemberType.Namespace)
                 {
+                    if (metadataItem.Parent?.Items.Count == 1 && metadataItem.Parent.Parent != null)
+                    {
+                        metadataItem.Parent.Parent.Items.Add(metadataItem);
+                        metadataItem.Parent.Parent.Items.Remove(metadataItem.Parent);
+                        metadataItem.Parent = metadataItem.Parent.Parent;
+                    }
+
                     var lastIndex = metadataItem.Name?.LastIndexOf('.');
                     if (metadataItem.Parent != root)
                     {

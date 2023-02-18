@@ -387,26 +387,23 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal("OtherNamespace.OtherBar", tocViewModel[0].Items[0].Uid);
             Assert.Equal("OtherBar", tocViewModel[0].Items[0].Name);
 
-            Assert.Equal("Samples", tocViewModel[1].Uid);
-            Assert.Equal("Samples", tocViewModel[1].Name);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Uid);
+            Assert.Equal("Samples.Foo", tocViewModel[1].Name);
 
-            Assert.Equal("Samples.Foo", tocViewModel[1].Items[0].Uid);
-            Assert.Equal("Foo", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Uid);
+            Assert.Equal("Sub", tocViewModel[1].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.Subber1", tocViewModel[1].Items[0].Items[0].Uid);
+            Assert.Equal("Subber1", tocViewModel[1].Items[0].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.Subber1.SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Uid);
+            Assert.Equal("SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Name);
 
-            Assert.Equal("Samples.Foo.Sub", tocViewModel[1].Items[0].Items[0].Uid);
-            Assert.Equal("Sub", tocViewModel[1].Items[0].Items[0].Name);
-            Assert.Equal("Samples.Foo.Sub.Subber1", tocViewModel[1].Items[0].Items[0].Items[0].Uid);
-            Assert.Equal("Subber1", tocViewModel[1].Items[0].Items[0].Items[0].Name);
-            Assert.Equal("Samples.Foo.Sub.Subber1.SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Items[0].Uid);
-            Assert.Equal("SubberBar", tocViewModel[1].Items[0].Items[0].Items[0].Items[0].Name);
+            Assert.Equal("Samples.Foo.Sub.Subber2", tocViewModel[1].Items[0].Items[1].Uid);
+            Assert.Equal("Subber2", tocViewModel[1].Items[0].Items[1].Name);
+            Assert.Equal("Samples.Foo.Sub.Subber2.Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Uid);
+            Assert.Equal("Subber2Bar", tocViewModel[1].Items[0].Items[1].Items[0].Name);
 
-            Assert.Equal("Samples.Foo.Sub.Subber2", tocViewModel[1].Items[0].Items[0].Items[1].Uid);
-            Assert.Equal("Subber2", tocViewModel[1].Items[0].Items[0].Items[1].Name);
-            Assert.Equal("Samples.Foo.Sub.Subber2.Subber2Bar", tocViewModel[1].Items[0].Items[0].Items[1].Items[0].Uid);
-            Assert.Equal("Subber2Bar", tocViewModel[1].Items[0].Items[0].Items[1].Items[0].Name);
-
-            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[0].Items[1].Uid);
-            Assert.Equal("Bar", tocViewModel[1].Items[0].Items[1].Name);
+            Assert.Equal("Samples.Foo.Bar", tocViewModel[1].Items[1].Uid);
+            Assert.Equal("Bar", tocViewModel[1].Items[1].Name);
         }
 
         private void CheckResult()
