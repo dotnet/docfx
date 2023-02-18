@@ -40,6 +40,10 @@ namespace Microsoft.DocAsCode.Tests
 
         static SamplesTest()
         {
+            if (OperatingSystem.IsWindows())
+            {
+                Microsoft.Playwright.Program.Main(new[] { "install" });
+            }
             Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
         }
 
@@ -114,10 +118,12 @@ namespace Microsoft.DocAsCode.Tests
                     foreach (var url in s_screenshotUrls)
                     {
                         await page.GotoAsync($"http://localhost:{port}/{url}");
+                        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                         await page.WaitForFunctionAsync("window._docfxReady");
 
-                        await Verifier.Verify(page)
-                            .PageScreenshotOptions(new() { FullPage = fullPage })
+                        var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+
+                        await Verifier.Verify(new Target("png", new MemoryStream(bytes)))
                             .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}")
                             .UseFileName($"{url.Replace('/', '-')}")
                             .AutoVerify(includeBuildServer: false);
@@ -218,20 +224,6 @@ namespace Microsoft.DocAsCode.Tests
                 ".yml" => true,
                 _ => false,
             };
-        }
-    }
-    
-    public static class ModuleInitializer
-    {
-        [ModuleInitializer]
-        public static void Initialize()
-        {
-            VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
-
-            VerifyPlaywright.Initialize(installPlaywright: OperatingSystem.IsWindows());
-
-            VerifyImageMagick.Initialize();
-            VerifyImageMagick.RegisterComparers(0.05);
         }
     }
 }
