@@ -226,11 +226,12 @@ namespace Microsoft.DocAsCode.Tests
         [ModuleInitializer]
         public static void Initialize()
         {
-            // Enable compact diff output
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
 
-            // Enable screenshot testing
-            VerifyPlaywright.Initialize(installPlaywright: true);
+            VerifyPlaywright.Initialize(installPlaywright: OperatingSystem.IsWindows());
+
+            VerifyImageMagick.Initialize();
+            VerifyImageMagick.RegisterComparers(0.05);
         }
     }
 }
