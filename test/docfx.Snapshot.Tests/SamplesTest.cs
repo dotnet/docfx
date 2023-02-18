@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.Tests
             var samplePath = $"{SamplesDir}/seed";
             Clean(samplePath);
 
+            Process.Start("dotnet", $"build \"{samplePath}/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
+
             if (Debugger.IsAttached)
             {
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
