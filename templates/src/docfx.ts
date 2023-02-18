@@ -1,331 +1,278 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-const $ = require('jquery')
+import $ from 'jquery'
 
-require('../node_modules/bootstrap/dist/css/bootstrap.css')
-require('../node_modules/highlight.js/scss/github.scss')
-require('./docfx.scss')
+import '../node_modules/bootstrap/dist/css/bootstrap.css'
+import '../node_modules/highlight.js/scss/github.scss'
+import './docfx.scss'
 
-window.$ = window.jQuery = require('jquery')
+import AnchorJS from 'anchor-js'
+import hljs from 'highlight.js'
+
+declare global {
+  interface Window {
+    $: object;
+    jQuery: object;
+    _docfxReady: boolean;
+  }
+}
+
+window.$ = window.jQuery = $
 
 require('bootstrap')
 require('twbs-pagination')
 require('mark.js/src/jquery.js')
 
-const AnchorJS = require('anchor-js')
 const anchors = new AnchorJS()
 
-const hljs = require('highlight.js')
+$(function() {
+  const active = 'active'
+  const expanded = 'in'
+  const collapsed = 'collapsed'
+  const filtered = 'filtered'
+  const show = 'show'
+  const hide = 'hide'
+  const util = new Utility()
 
-$(function () {
-  var active = 'active';
-  var expanded = 'in';
-  var collapsed = 'collapsed';
-  var filtered = 'filtered';
-  var show = 'show';
-  var hide = 'hide';
-  var util = new utility();
+  workAroundFixedHeaderForAnchors()
+  highlight()
+  enableSearch()
 
-  workAroundFixedHeaderForAnchors();
-  highlight();
-  enableSearch();
+  renderTables()
+  renderAlerts()
+  renderLinks()
+  renderNavbar()
+  renderSidebar()
+  renderAffix()
+  renderFooter()
+  renderLogo()
 
-  renderTables();
-  renderAlerts();
-  renderLinks();
-  renderNavbar();
-  renderSidebar();
-  renderAffix();
-  renderFooter();
-  renderLogo();
-
-  breakText();
-  renderTabs();
-
-  window.refresh = function (article) {
-    // Update markup result
-    if (typeof article == 'undefined' || typeof article.content == 'undefined')
-      console.error("Null Argument");
-    $("article.content").html(article.content);
-
-    highlight();
-    renderTables();
-    renderAlerts();
-    renderAffix();
-    renderTabs();
-  }
-
-  // Add this event listener when needed
-  // window.addEventListener('content-update', contentUpdate);
+  breakText()
+  renderTabs()
 
   function breakText() {
-    $(".xref").addClass("text-break");
-    var texts = $(".text-break");
-    texts.each(function () {
-      $(this).breakWord();
-    });
+    $('.xref').addClass('text-break')
+    const texts = $('.text-break')
+    texts.each(function() {
+      $(this).breakWord()
+    })
   }
 
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
-    $('table').addClass('table table-bordered table-striped table-condensed').wrap('<div class=\"table-responsive\"></div>');
+    $('table').addClass('table table-bordered table-striped table-condensed').wrap('<div class="table-responsive"></div>')
   }
 
   // Styling for alerts.
   function renderAlerts() {
-    $('.NOTE, .TIP').addClass('alert alert-info');
-    $('.WARNING').addClass('alert alert-warning');
-    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
+    $('.NOTE, .TIP').addClass('alert alert-info')
+    $('.WARNING').addClass('alert alert-warning')
+    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger')
   }
 
   // Enable anchors for headings.
-  (function () {
+  (function() {
     anchors.options = {
       placement: 'left',
       visible: 'hover'
-    };
-    anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)');
-  })();
+    }
+    anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
+  })()
 
   // Open links to different host in a new window.
   function renderLinks() {
-    if ($("meta[property='docfx:newtab']").attr("content") === "true") {
-      $(document.links).filter(function () {
-        return this.hostname !== window.location.hostname;
-      }).attr('target', '_blank');
+    if ($("meta[property='docfx:newtab']").attr('content') === 'true') {
+      $(document.links).filter(function() {
+        return this.hostname !== window.location.hostname
+      }).attr('target', '_blank')
     }
   }
 
   // Enable highlight.js
   function highlight() {
-    $('pre code').each(function (i, block) {
-      hljs.highlightElement(block);
-    });
-    $('pre code[highlight-lines]').each(function (i, block) {
-      if (block.innerHTML === "") return;
-      var lines = block.innerHTML.split('\n');
+    $('pre code').each(function(_, block) {
+      hljs.highlightElement(block)
+    })
+    $('pre code[highlight-lines]').each(function(_, block) {
+      if (block.innerHTML === '') return
+      const lines = block.innerHTML.split('\n')
 
-      queryString = block.getAttribute('highlight-lines');
-      if (!queryString) return;
+      const queryString = block.getAttribute('highlight-lines')
+      if (!queryString) return
 
-      var ranges = queryString.split(',');
-      for (var j = 0, range; range = ranges[j++];) {
-        var found = range.match(/^(\d+)\-(\d+)?$/);
+      const ranges = queryString.split(',')
+      for (const range of ranges) {
+        let start = 0
+        let end = 0
+        const found = range.match(/^(\d+)-(\d+)?$/)
         if (found) {
           // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-          var start = +found[1];
-          var end = +found[2];
+          start = +found[1]
+          end = +found[2]
           if (isNaN(end) || end > lines.length) {
-            end = lines.length;
+            end = lines.length
           }
         } else {
           // consider region as a sigine line number
-          if (isNaN(range)) continue;
-          var start = +range;
-          var end = start;
+          if (isNaN(range)) continue
+          start = +range
+          end = start
         }
         if (start <= 0 || end <= 0 || start > end || start > lines.length) {
           // skip current region if invalid
-          continue;
+          continue
         }
-        lines[start - 1] = '<span class="line-highlight">' + lines[start - 1];
-        lines[end - 1] = lines[end - 1] + '</span>';
+        lines[start - 1] = '<span class="line-highlight">' + lines[start - 1]
+        lines[end - 1] = lines[end - 1] + '</span>'
       }
 
-      block.innerHTML = lines.join('\n');
-    });
+      block.innerHTML = lines.join('\n')
+    })
   }
 
   // Support full-text-search
   function enableSearch() {
-    var query;
-    var relHref = $("meta[property='docfx\\:rel']").attr("content");
+    let query
+    const relHref = $("meta[property='docfx\\:rel']").attr('content')
     if (typeof relHref === 'undefined') {
-      return;
+      return
     }
     try {
-      var worker = new Worker(relHref + 'styles/search-worker.min.js');
-      if (!worker && !window.worker) {
-        localSearch();
-      } else {
-        webWorkerSearch();
-      }
-
-      renderSearchBox();
-      highlightKeywords();
-      addSearchEvent();
+      webWorkerSearch()
+      renderSearchBox()
+      highlightKeywords()
+      addSearchEvent()
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
 
-    //Adjust the position of search box in navbar
+    // Adjust the position of search box in navbar
     function renderSearchBox() {
-      autoCollapse();
-      $(window).on('resize', autoCollapse);
-      $(document).on('click', '.navbar-collapse.in', function (e) {
+      autoCollapse()
+      $(window).on('resize', autoCollapse)
+      $(document).on('click', '.navbar-collapse.in', function(e) {
         if ($(e.target).is('a')) {
-          $(this).collapse('hide');
+          $(this).collapse('hide')
         }
-      });
+      })
 
       function autoCollapse() {
-        var navbar = $('#autocollapse');
+        const navbar = $('#autocollapse')
         if (navbar.height() === null) {
-          setTimeout(autoCollapse, 300);
+          setTimeout(autoCollapse, 300)
         }
-        navbar.removeClass(collapsed);
+        navbar.removeClass(collapsed)
         if (navbar.height() > 60) {
-          navbar.addClass(collapsed);
+          navbar.addClass(collapsed)
         }
       }
-    }
-
-    // Search factory
-    function localSearch() {
-      console.log("using local search");
-      var lunrIndex = lunr(function () {
-        this.ref('href');
-        this.field('title', { boost: 50 });
-        this.field('keywords', { boost: 20 });
-      });
-      lunr.tokenizer.seperator = /[\s\-\.]+/;
-      var searchData = {};
-      var searchDataRequest = new XMLHttpRequest();
-
-      var indexPath = relHref + "index.json";
-      if (indexPath) {
-        searchDataRequest.open('GET', indexPath);
-        searchDataRequest.onload = function () {
-          if (this.status != 200) {
-            return;
-          }
-          searchData = JSON.parse(this.responseText);
-          for (var prop in searchData) {
-            if (searchData.hasOwnProperty(prop)) {
-              lunrIndex.add(searchData[prop]);
-            }
-          }
-        }
-        searchDataRequest.send();
-      }
-
-      $("body").bind("queryReady", function () {
-        var hits = lunrIndex.search(query);
-        var results = [];
-        hits.forEach(function (hit) {
-          var item = searchData[hit.ref];
-          results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
-        });
-        handleSearchResults(results);
-      });
     }
 
     function webWorkerSearch() {
-      console.log("using Web Worker");
-      var indexReady = $.Deferred();
+      console.log('using Web Worker')
+      const indexReady = $.Deferred()
 
-      worker.onmessage = function (oEvent) {
+      const worker = new Worker(relHref + 'styles/search-worker.min.js')
+      worker.onmessage = function(oEvent) {
         switch (oEvent.data.e) {
           case 'index-ready':
-            indexReady.resolve();
-            break;
+            indexReady.resolve()
+            break
           case 'query-ready':
-            var hits = oEvent.data.d;
-            handleSearchResults(hits);
-            break;
+            handleSearchResults(oEvent.data.d)
+            break
         }
       }
 
-      indexReady.promise().done(function () {
-        $("body").bind("queryReady", function () {
-          worker.postMessage({ q: query });
-        });
+      indexReady.promise().done(function() {
+        $('body').bind('queryReady', function() {
+          worker.postMessage({ q: query })
+        })
         if (query && (query.length >= 3)) {
-          worker.postMessage({ q: query });
+          worker.postMessage({ q: query })
         }
-      });
+      })
     }
 
     // Highlight the searching keywords
     function highlightKeywords() {
-      var q = new URLSearchParams(window.location.search).get('q')
+      const q = new URLSearchParams(window.location.search).get('q')
       if (q) {
-        var keywords = q.split("%20");
-        keywords.forEach(function (keyword) {
-          if (keyword !== "") {
-            $('.data-searchable *').mark(keyword);
-            $('article *').mark(keyword);
+        const keywords = q.split('%20')
+        keywords.forEach(function(keyword) {
+          if (keyword !== '') {
+            $('.data-searchable *').mark(keyword)
+            $('article *').mark(keyword)
           }
-        });
+        })
       }
     }
 
     function addSearchEvent() {
-      $('body').bind("searchEvent", function () {
-        $('#search-query').keypress(function (e) {
-          return e.which !== 13;
-        });
+      $('body').bind('searchEvent', function() {
+        $('#search-query').keypress(function(e) {
+          return e.which !== 13
+        })
 
-        $('#search-query').keyup(function () {
-          query = $(this).val();
+        $('#search-query').keyup(function() {
+          query = $(this).val()
           if (query.length < 3) {
-            flipContents("show");
+            flipContents('show')
           } else {
-            flipContents("hide");
-            $("body").trigger("queryReady");
-            $('#search-results>.search-list>span').text('"' + query + '"');
+            flipContents('hide')
+            $('body').trigger('queryReady')
+            $('#search-results>.search-list>span').text('"' + query + '"')
           }
-        }).off("keydown");
-      });
+        }).off('keydown')
+      })
     }
 
     function flipContents(action) {
-      if (action === "show") {
-        $('.hide-when-search').show();
-        $('#search-results').hide();
+      if (action === 'show') {
+        $('.hide-when-search').show()
+        $('#search-results').hide()
       } else {
-        $('.hide-when-search').hide();
-        $('#search-results').show();
+        $('.hide-when-search').hide()
+        $('#search-results').show()
       }
     }
 
     function relativeUrlToAbsoluteUrl(currentUrl, relativeUrl) {
-      var currentItems = currentUrl.split(/\/+/);
-      var relativeItems = relativeUrl.split(/\/+/);
-      var depth = currentItems.length - 1;
-      var items = [];
-      for (var i = 0; i < relativeItems.length; i++) {
+      const currentItems = currentUrl.split(/\/+/)
+      const relativeItems = relativeUrl.split(/\/+/)
+      let depth = currentItems.length - 1
+      const items = []
+      for (let i = 0; i < relativeItems.length; i++) {
         if (relativeItems[i] === '..') {
-          depth--;
+          depth--
         } else if (relativeItems[i] !== '.') {
-          items.push(relativeItems[i]);
+          items.push(relativeItems[i])
         }
       }
-      return currentItems.slice(0, depth).concat(items).join('/');
+      return currentItems.slice(0, depth).concat(items).join('/')
     }
 
     function extractContentBrief(content) {
-      var briefOffset = 512;
-      var words = query.split(/\s+/g);
-      var queryIndex = content.indexOf(words[0]);
-      var briefContent;
+      const briefOffset = 512
+      const words = query.split(/\s+/g)
+      const queryIndex = content.indexOf(words[0])
       if (queryIndex > briefOffset) {
-        return "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "...";
+        return '...' + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + '...'
       } else if (queryIndex <= briefOffset) {
-        return content.slice(0, queryIndex + briefOffset) + "...";
+        return content.slice(0, queryIndex + briefOffset) + '...'
       }
     }
 
     function handleSearchResults(hits) {
-      var numPerPage = 10;
-      var pagination = $('#pagination');
-      pagination.empty();
-      pagination.removeData("twbs-pagination");
+      const numPerPage = 10
+      const pagination = $('#pagination')
+      pagination.empty()
+      pagination.removeData('twbs-pagination')
       if (hits.length === 0) {
-        $('#search-results>.sr-items').html('<p>No results found</p>');
-      } else {        
+        $('#search-results>.sr-items').html('<p>No results found</p>')
+      } else {
         pagination.twbsPagination({
           first: pagination.data('first'),
           prev: pagination.data('prev'),
@@ -333,444 +280,413 @@ $(function () {
           last: pagination.data('last'),
           totalPages: Math.ceil(hits.length / numPerPage),
           visiblePages: 5,
-          onPageClick: function (event, page) {
-            var start = (page - 1) * numPerPage;
-            var curHits = hits.slice(start, start + numPerPage);
+          onPageClick: function(event, page) {
+            const start = (page - 1) * numPerPage
+            const curHits = hits.slice(start, start + numPerPage)
             $('#search-results>.sr-items').empty().append(
-              curHits.map(function (hit) {
-                var currentUrl = window.location.href;
-                var itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href);
-                var itemHref = relHref + hit.href + "?q=" + query;
-                var itemTitle = hit.title;
-                var itemBrief = extractContentBrief(hit.keywords);
+              curHits.map(function(hit) {
+                const currentUrl = window.location.href
+                const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
+                const itemHref = relHref + hit.href + '?q=' + query
+                const itemTitle = hit.title
+                const itemBrief = extractContentBrief(hit.keywords)
 
-                var itemNode = $('<div>').attr('class', 'sr-item');
-                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").attr("rel", "noopener noreferrer").text(itemTitle));
-                var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
-                var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
-                itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
-                return itemNode;
+                const itemNode = $('<div>').attr('class', 'sr-item')
+                const itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr('target', '_blank').attr('rel', 'noopener noreferrer').text(itemTitle))
+                const itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref)
+                const itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief)
+                itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode)
+                return itemNode
               })
-            );
-            query.split(/\s+/).forEach(function (word) {
+            )
+            query.split(/\s+/).forEach(function(word) {
               if (word !== '') {
-                $('#search-results>.sr-items *').mark(word);
+                $('#search-results>.sr-items *').mark(word)
               }
-            });
+            })
           }
-        });
+        })
       }
     }
-  };
+  }
 
   // Update href in navbar
   function renderNavbar() {
-    var navbar = $('#navbar ul')[0];
+    const navbar = $('#navbar ul')[0]
     if (typeof (navbar) === 'undefined') {
-      loadNavbar();
+      loadNavbar()
     } else {
-      $('#navbar ul a.active').parents('li').addClass(active);
-      renderBreadcrumb();
-      showSearch();
+      $('#navbar ul a.active').parents('li').addClass(active)
+      renderBreadcrumb()
+      showSearch()
     }
-    
+
     function showSearch() {
       if ($('#search-results').length !== 0) {
-          $('#search').show();
-          $('body').trigger("searchEvent");
+        $('#search').show()
+        $('body').trigger('searchEvent')
       }
     }
 
     function loadNavbar() {
-      var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
+      let navbarPath = $("meta[property='docfx\\:navrel']").attr('content')
       if (!navbarPath) {
-        return;
+        return
       }
-      navbarPath = navbarPath.replace(/\\/g, '/');
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      $.get(navbarPath, function (data) {
-        $(data).find("#toc>ul").appendTo("#navbar");
-        showSearch();
-        var index = navbarPath.lastIndexOf('/');
-        var navrel = '';
+      navbarPath = navbarPath.replace(/\\/g, '/')
+      let tocPath = $("meta[property='docfx\\:tocrel']").attr('content') || ''
+      if (tocPath) tocPath = tocPath.replace(/\\/g, '/')
+      $.get(navbarPath, function(data) {
+        $(data).find('#toc>ul').appendTo('#navbar')
+        showSearch()
+        const index = navbarPath.lastIndexOf('/')
+        let navrel = ''
         if (index > -1) {
-          navrel = navbarPath.substr(0, index + 1);
+          navrel = navbarPath.substr(0, index + 1)
         }
-        $('#navbar>ul').addClass('navbar-nav');
-        var currentAbsPath = util.getCurrentWindowAbsolutePath();
+        $('#navbar>ul').addClass('navbar-nav')
+        const currentAbsPath = util.getCurrentWindowAbsolutePath()
         // set active item
-        $('#navbar').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
+        $('#navbar').find('a[href]').each(function(i, e) {
+          let href = $(e).attr('href')
           if (util.isRelativePath(href)) {
-            href = navrel + href;
-            $(e).attr("href", href);
+            href = navrel + href
+            $(e).attr('href', href)
 
-            var isActive = false;
-            var originalHref = e.name;
+            let isActive = false
+            let originalHref = e.name
             if (originalHref) {
-              originalHref = navrel + originalHref;
+              originalHref = navrel + originalHref
               if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
-                isActive = true;
+                isActive = true
               }
             } else {
               if (util.getAbsolutePath(href) === currentAbsPath) {
-                var dropdown = $(e).attr('data-toggle') == "dropdown"
+                const dropdown = $(e).attr('data-toggle') === 'dropdown'
                 if (!dropdown) {
-                  isActive = true;
+                  isActive = true
                 }
               }
             }
             if (isActive) {
-              $(e).addClass(active);
+              $(e).addClass(active)
             }
           }
-        });
-        renderNavbar();
-      });
+        })
+        renderNavbar()
+      })
     }
   }
 
   function renderSidebar() {
-    var sidetoc = $('#sidetoggle .sidetoc')[0];
+    const sidetoc = $('#sidetoggle .sidetoc')[0]
     if (typeof (sidetoc) === 'undefined') {
-      loadToc();
+      loadToc()
     } else {
-      registerTocEvents();
+      registerTocEvents()
       if ($('footer').is(':visible')) {
-        $('.sidetoc').addClass('shiftup');
+        $('.sidetoc').addClass('shiftup')
       }
 
       // Scroll to active item
-      var top = 0;
-      $('#toc a.active').parents('li').each(function (i, e) {
-        $(e).addClass(active).addClass(expanded);
-        $(e).children('a').addClass(active);
+      let top = 0
+      $('#toc a.active').parents('li').each(function(i, e) {
+        $(e).addClass(active).addClass(expanded)
+        $(e).children('a').addClass(active)
       })
-      $('#toc a.active').parents('li').each(function (i, e) {
-        top += $(e).position().top;
+      $('#toc a.active').parents('li').each(function(i, e) {
+        top += $(e).position().top
       })
-      $('.sidetoc').scrollTop(top - 50);
+      $('.sidetoc').scrollTop(top - 50)
 
       if ($('footer').is(':visible')) {
-        $('.sidetoc').addClass('shiftup');
+        $('.sidetoc').addClass('shiftup')
       }
 
-      renderBreadcrumb();
+      renderBreadcrumb()
     }
 
     function registerTocEvents() {
-      var tocFilterInput = $('#toc_filter_input');
-      var tocFilterClearButton = $('#toc_filter_clear');
-        
-      $('.toc .nav > li > .expand-stub').click(function (e) {
-        $(e.target).parent().toggleClass(expanded);
-      });
-      $('.toc .nav > li > .expand-stub + a:not([href])').click(function (e) {
-        $(e.target).parent().toggleClass(expanded);
-      });
-      tocFilterInput.on('input', function (e) {
-        var val = this.value;
-        //Save filter string to local session storage
-        if (typeof(Storage) !== "undefined") {
-          try {
-            sessionStorage.filterString = val;
-            }
-          catch(e)
-            {}
+      const tocFilterInput = $('#toc_filter_input')
+      const tocFilterClearButton = $('#toc_filter_clear')
+
+      $('.toc .nav > li > .expand-stub').click(function(e) {
+        $(e.target).parent().toggleClass(expanded)
+      })
+      $('.toc .nav > li > .expand-stub + a:not([href])').click(function(e) {
+        $(e.target).parent().toggleClass(expanded)
+      })
+      tocFilterInput.on('input', function() {
+        const val = this.value
+        // Save filter string to local session storage
+        if (typeof (Storage) !== 'undefined') {
+          sessionStorage.filterString = val
         }
         if (val === '') {
           // Clear 'filtered' class
-          $('#toc li').removeClass(filtered).removeClass(hide);
-          tocFilterClearButton.fadeOut();
-          return;
+          $('#toc li').removeClass(filtered).removeClass(hide)
+          tocFilterClearButton.fadeOut()
+          return
         }
-        tocFilterClearButton.fadeIn();
+        tocFilterClearButton.fadeIn()
 
         // set all parent nodes status
-        $('#toc li>a').filter(function (i, e) {
+        $('#toc li>a').filter(function(i, e) {
           return $(e).siblings().length > 0
-        }).each(function (i, anchor) {
-          var parent = $(anchor).parent();
-          parent.addClass(hide);
-          parent.removeClass(show);
-          parent.removeClass(filtered);
+        }).each(function(i, anchor) {
+          const parent = $(anchor).parent()
+          parent.addClass(hide)
+          parent.removeClass(show)
+          parent.removeClass(filtered)
         })
-        
+
         // Get leaf nodes
-        $('#toc li>a').filter(function (i, e) {
+        $('#toc li>a').filter(function(i, e) {
           return $(e).siblings().length === 0
-        }).each(function (i, anchor) {
-          var text = $(anchor).attr('title');
-          var parent = $(anchor).parent();
-          var parentNodes = parent.parents('ul>li');
-          for (var i = 0; i < parentNodes.length; i++) {
-            var parentText = $(parentNodes[i]).children('a').attr('title');
-            if (parentText) text = parentText + '.' + text;
-          };
-          if (filterNavItem(text, val)) {
-            parent.addClass(show);
-            parent.removeClass(hide);
-          } else {
-            parent.addClass(hide);
-            parent.removeClass(show);
+        }).each(function(_, anchor) {
+          let text = $(anchor).attr('title')
+          const parent = $(anchor).parent()
+          const parentNodes = parent.parents('ul>li')
+          for (let i = 0; i < parentNodes.length; i++) {
+            const parentText = $(parentNodes[i]).children('a').attr('title')
+            if (parentText) text = parentText + '.' + text
           }
-        });
-        $('#toc li>a').filter(function (i, e) {
-          return $(e).siblings().length > 0
-        }).each(function (i, anchor) {
-          var parent = $(anchor).parent();
-          if (parent.find('li.show').length > 0) {
-            parent.addClass(show);
-            parent.addClass(filtered);
-            parent.removeClass(hide);
+          if (filterNavItem(text, val)) {
+            parent.addClass(show)
+            parent.removeClass(hide)
           } else {
-            parent.addClass(hide);
-            parent.removeClass(show);
-            parent.removeClass(filtered);
+            parent.addClass(hide)
+            parent.removeClass(show)
+          }
+        })
+        $('#toc li>a').filter(function(i, e) {
+          return $(e).siblings().length > 0
+        }).each(function(i, anchor) {
+          const parent = $(anchor).parent()
+          if (parent.find('li.show').length > 0) {
+            parent.addClass(show)
+            parent.addClass(filtered)
+            parent.removeClass(hide)
+          } else {
+            parent.addClass(hide)
+            parent.removeClass(show)
+            parent.removeClass(filtered)
           }
         })
 
         function filterNavItem(name, text) {
-          if (!text) return true;
-          if (name && name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true;
-          return false;
+          if (!text) return true
+          if (name && name.toLowerCase().indexOf(text.toLowerCase()) > -1) return true
+          return false
         }
-      });
-      
-      // toc filter clear button
-      tocFilterClearButton.hide();
-      tocFilterClearButton.on("click", function(e){
-        tocFilterInput.val("");
-        tocFilterInput.trigger('input');
-        if (typeof(Storage) !== "undefined") {
-          try {
-            sessionStorage.filterString = "";
-            }
-          catch(e)
-            {}
-        }
-      });
+      })
 
-      //Set toc filter from local session storage on page load
-      if (typeof(Storage) !== "undefined") {
-        try {
-          tocFilterInput.val(sessionStorage.filterString);
-          tocFilterInput.trigger('input');
-          }
-        catch(e)
-          {}
+      // toc filter clear button
+      tocFilterClearButton.hide()
+      tocFilterClearButton.on('click', function() {
+        tocFilterInput.val('')
+        tocFilterInput.trigger('input')
+        if (typeof (Storage) !== 'undefined') {
+          sessionStorage.filterString = ''
+        }
+      })
+
+      // Set toc filter from local session storage on page load
+      if (typeof (Storage) !== 'undefined') {
+        tocFilterInput.val(sessionStorage.filterString)
+        tocFilterInput.trigger('input')
       }
     }
 
     function loadToc() {
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      let tocPath = $("meta[property='docfx\\:tocrel']").attr('content')
       if (!tocPath) {
-        return;
+        return
       }
-      tocPath = tocPath.replace(/\\/g, '/');
-      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
-        var index = tocPath.lastIndexOf('/');
-        var tocrel = '';
+      tocPath = tocPath.replace(/\\/g, '/')
+      $('#sidetoc').load(tocPath + ' #sidetoggle > div', function() {
+        const index = tocPath.lastIndexOf('/')
+        let tocrel = ''
         if (index > -1) {
-          tocrel = tocPath.substr(0, index + 1);
+          tocrel = tocPath.substr(0, index + 1)
         }
-        var currentHref = util.getCurrentWindowAbsolutePath();
-        if(!currentHref.endsWith('.html')) {
-          currentHref += '.html';
+        let currentHref = util.getCurrentWindowAbsolutePath()
+        if (!currentHref.endsWith('.html')) {
+          currentHref += '.html'
         }
-        $('#sidetoc').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
+        $('#sidetoc').find('a[href]').each(function(i, e) {
+          let href = $(e).attr('href')
           if (util.isRelativePath(href)) {
-            href = tocrel + href;
-            $(e).attr("href", href);
+            href = tocrel + href
+            $(e).attr('href', href)
           }
 
           if (util.getAbsolutePath(e.href) === currentHref) {
-            $(e).addClass(active);
+            $(e).addClass(active)
           }
 
-          $(e).breakWord();
-        });
+          $(e).breakWord()
+        })
 
-        renderSidebar();
-      });
+        renderSidebar()
+      })
     }
   }
 
   function renderBreadcrumb() {
-    var breadcrumb = [];
-    $('#navbar a.active').each(function (i, e) {
+    const breadcrumb = []
+    $('#navbar a.active').each(function(i, e) {
       breadcrumb.push({
         href: e.href,
         name: e.innerHTML
-      });
+      })
     })
-    $('#toc a.active').each(function (i, e) {
+    $('#toc a.active').each(function(i, e) {
       breadcrumb.push({
         href: e.href,
         name: e.innerHTML
-      });
+      })
     })
 
-    var html = util.formList(breadcrumb, 'breadcrumb');
-    $('#breadcrumb').html(html);
+    const html = util.formList(breadcrumb, 'breadcrumb')
+    $('#breadcrumb').html(html)
   }
 
-  //Setup Affix
+  // Setup Affix
   function renderAffix() {
-    var hierarchy = getHierarchy();
+    const hierarchy = getHierarchy()
     if (!hierarchy || hierarchy.length <= 0) {
-      $("#affix").hide();
-    }
-    else {
-      var html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
-      $("#affix>div").empty().append(html);
+      $('#affix').hide()
+    } else {
+      const html = util.formList(hierarchy, ['nav', 'bs-docs-sidenav'])
+      $('#affix>div').empty().append(html)
       if ($('footer').is(':visible')) {
-        $(".sideaffix").css("bottom", "70px");
+        $('.sideaffix').css('bottom', '70px')
       }
       $('#affix a').click(function(e) {
-        var scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy'];
-        var target = e.target.hash;
+        const scrollspy = $('[data-spy="scroll"]').data()['bs.scrollspy']
+        const target = e.target.hash
         if (scrollspy && target) {
-          scrollspy.activate(target);
+          scrollspy.activate(target)
         }
-      });
+      })
     }
 
     function getHierarchy() {
       // supported headers are h1, h2, h3, and h4
-      var $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function (h) { return ".article article " + h; }).join(", "));
+      const $headers = $($.map(['h1', 'h2', 'h3', 'h4'], function(h) { return '.article article ' + h }).join(', '))
 
       // a stack of hierarchy items that are currently being built
-      var stack = [];
-      $headers.each(function (i, e) {
+      const stack = []
+      $headers.each(function(i, e) {
         if (!e.id) {
-          return;
+          return
         }
 
-        var item = {
+        const item = {
           name: htmlEncode($(e).text()),
-          href: "#" + e.id,
+          href: '#' + e.id,
           items: []
-        };
+        }
 
         if (!stack.length) {
-          stack.push({ type: e.tagName, siblings: [item] });
-          return;
+          stack.push({ type: e.tagName, siblings: [item] })
+          return
         }
 
-        var frame = stack[stack.length - 1];
+        const frame = stack[stack.length - 1]
         if (e.tagName === frame.type) {
-          frame.siblings.push(item);
+          frame.siblings.push(item)
         } else if (e.tagName[1] > frame.type[1]) {
           // we are looking at a child of the last element of frame.siblings.
           // push a frame onto the stack. After we've finished building this item's children,
           // we'll attach it as a child of the last element
-          stack.push({ type: e.tagName, siblings: [item] });
-        } else {  // e.tagName[1] < frame.type[1]
+          stack.push({ type: e.tagName, siblings: [item] })
+        } else { // e.tagName[1] < frame.type[1]
           // we are looking at a sibling of an ancestor of the current item.
           // pop frames from the stack, building items as we go, until we reach the correct level at which to attach this item.
           while (e.tagName[1] < stack[stack.length - 1].type[1]) {
-            buildParent();
+            buildParent()
           }
           if (e.tagName === stack[stack.length - 1].type) {
-            stack[stack.length - 1].siblings.push(item);
+            stack[stack.length - 1].siblings.push(item)
           } else {
-            stack.push({ type: e.tagName, siblings: [item] });
+            stack.push({ type: e.tagName, siblings: [item] })
           }
         }
-      });
+      })
       while (stack.length > 1) {
-        buildParent();
+        buildParent()
       }
 
       function buildParent() {
-        var childrenToAttach = stack.pop();
-        var parentFrame = stack[stack.length - 1];
-        var parent = parentFrame.siblings[parentFrame.siblings.length - 1];
-        $.each(childrenToAttach.siblings, function (i, child) {
-          parent.items.push(child);
-        });
+        const childrenToAttach = stack.pop()
+        const parentFrame = stack[stack.length - 1]
+        const parent = parentFrame.siblings[parentFrame.siblings.length - 1]
+        $.each(childrenToAttach.siblings, function(i, child) {
+          parent.items.push(child)
+        })
       }
       if (stack.length > 0) {
-
-        var topLevel = stack.pop().siblings;
-        if (topLevel.length === 1) {  // if there's only one topmost header, dump it
-          return topLevel[0].items;
+        const topLevel = stack.pop().siblings
+        if (topLevel.length === 1) { // if there's only one topmost header, dump it
+          return topLevel[0].items
         }
-        return topLevel;
+        return topLevel
       }
-      return undefined;
+      return undefined
     }
 
     function htmlEncode(str) {
-      if (!str) return str;
+      if (!str) return str
       return str
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    function htmlDecode(value) {
-      if (!str) return str;
-      return value
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&');
-    }
-
-    function cssEscape(str) {
-      // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
-      if (!str) return str;
-      return str
-        .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
+        .replace(/>/g, '&gt;')
     }
   }
 
   // Show footer
   function renderFooter() {
-    initFooter();
-    $(window).on("scroll", showFooterCore);
+    initFooter()
+    $(window).on('scroll', showFooterCore)
 
     function initFooter() {
       if (needFooter()) {
-        shiftUpBottomCss();
-        $("footer").show();
+        shiftUpBottomCss()
+        $('footer').show()
       } else {
-        resetBottomCss();
-        $("footer").hide();
+        resetBottomCss()
+        $('footer').hide()
       }
     }
 
     function showFooterCore() {
       if (needFooter()) {
-        shiftUpBottomCss();
-        $("footer").fadeIn();
+        shiftUpBottomCss()
+        $('footer').fadeIn()
       } else {
-        resetBottomCss();
-        $("footer").fadeOut();
+        resetBottomCss()
+        $('footer').fadeOut()
       }
     }
 
     function needFooter() {
-      var scrollHeight = $(document).height();
-      var scrollPosition = $(window).height() + $(window).scrollTop();
-      return (scrollHeight - scrollPosition) < 1;
+      const scrollHeight = $(document).height()
+      const scrollPosition = $(window).height() + $(window).scrollTop()
+      return (scrollHeight - scrollPosition) < 1
     }
 
     function resetBottomCss() {
-      $(".sidetoc").removeClass("shiftup");
-      $(".sideaffix").removeClass("shiftup");
+      $('.sidetoc').removeClass('shiftup')
+      $('.sideaffix').removeClass('shiftup')
     }
 
     function shiftUpBottomCss() {
-      $(".sidetoc").addClass("shiftup");
-      $(".sideaffix").addClass("shiftup");
+      $('.sidetoc').addClass('shiftup')
+      $('.sideaffix').addClass('shiftup')
     }
   }
 
@@ -778,266 +694,264 @@ $(function () {
     // For LOGO SVG
     // Replace SVG with inline SVG
     // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-    jQuery('img.svg').each(function () {
-      var $img = jQuery(this);
-      var imgID = $img.attr('id');
-      var imgClass = $img.attr('class');
-      var imgURL = $img.attr('src');
+    $('img.svg').each(function() {
+      const $img = $(this)
+      const imgID = $img.attr('id')
+      const imgClass = $img.attr('class')
+      const imgURL = $img.attr('src')
 
-      jQuery.get(imgURL, function (data) {
+      $.get(imgURL, function(data) {
         // Get the SVG tag, ignore the rest
-        var $svg = jQuery(data).find('svg');
+        let $svg = $(data).find('svg')
 
         // Add replaced image's ID to the new SVG
         if (typeof imgID !== 'undefined') {
-          $svg = $svg.attr('id', imgID);
+          $svg = $svg.attr('id', imgID)
         }
         // Add replaced image's classes to the new SVG
         if (typeof imgClass !== 'undefined') {
-          $svg = $svg.attr('class', imgClass + ' replaced-svg');
+          $svg = $svg.attr('class', imgClass + ' replaced-svg')
         }
 
         // Remove any invalid XML tags as per http://validator.w3.org
-        $svg = $svg.removeAttr('xmlns:a');
+        $svg = $svg.removeAttr('xmlns:a')
 
         // Replace image with new SVG
-        $img.replaceWith($svg);
-
-      }, 'xml');
-    });
+        $img.replaceWith($svg)
+      }, 'xml')
+    })
   }
 
   function renderTabs() {
-    var contentAttrs = {
+    const contentAttrs = {
       id: 'data-bi-id',
       name: 'data-bi-name',
       type: 'data-bi-type'
-    };
+    }
 
-    var Tab = (function () {
+    const Tab = (function() {
       function Tab(li, a, section) {
-        this.li = li;
-        this.a = a;
-        this.section = section;
+        this.li = li
+        this.a = a
+        this.section = section
       }
-      Object.defineProperty(Tab.prototype, "tabIds", {
-        get: function () { return this.a.getAttribute('data-tab').split(' '); },
+      Object.defineProperty(Tab.prototype, 'tabIds', {
+        get: function() { return this.a.getAttribute('data-tab').split(' ') },
         enumerable: true,
         configurable: true
-      });
-      Object.defineProperty(Tab.prototype, "condition", {
-        get: function () { return this.a.getAttribute('data-condition'); },
+      })
+      Object.defineProperty(Tab.prototype, 'condition', {
+        get: function() { return this.a.getAttribute('data-condition') },
         enumerable: true,
         configurable: true
-      });
-      Object.defineProperty(Tab.prototype, "visible", {
-        get: function () { return !this.li.hasAttribute('hidden'); },
-        set: function (value) {
+      })
+      Object.defineProperty(Tab.prototype, 'visible', {
+        get: function() { return !this.li.hasAttribute('hidden') },
+        set: function(value) {
           if (value) {
-            this.li.removeAttribute('hidden');
-            this.li.removeAttribute('aria-hidden');
-          }
-          else {
-            this.li.setAttribute('hidden', 'hidden');
-            this.li.setAttribute('aria-hidden', 'true');
+            this.li.removeAttribute('hidden')
+            this.li.removeAttribute('aria-hidden')
+          } else {
+            this.li.setAttribute('hidden', 'hidden')
+            this.li.setAttribute('aria-hidden', 'true')
           }
         },
         enumerable: true,
         configurable: true
-      });
-      Object.defineProperty(Tab.prototype, "selected", {
-        get: function () { return !this.section.hasAttribute('hidden'); },
-        set: function (value) {
+      })
+      Object.defineProperty(Tab.prototype, 'selected', {
+        get: function() { return !this.section.hasAttribute('hidden') },
+        set: function(value) {
           if (value) {
-            this.a.setAttribute('aria-selected', 'true');
-            this.a.tabIndex = 0;
-            this.section.removeAttribute('hidden');
-            this.section.removeAttribute('aria-hidden');
-          }
-          else {
-            this.a.setAttribute('aria-selected', 'false');
-            this.a.tabIndex = -1;
-            this.section.setAttribute('hidden', 'hidden');
-            this.section.setAttribute('aria-hidden', 'true');
+            this.a.setAttribute('aria-selected', 'true')
+            this.a.tabIndex = 0
+            this.section.removeAttribute('hidden')
+            this.section.removeAttribute('aria-hidden')
+          } else {
+            this.a.setAttribute('aria-selected', 'false')
+            this.a.tabIndex = -1
+            this.section.setAttribute('hidden', 'hidden')
+            this.section.setAttribute('aria-hidden', 'true')
           }
         },
         enumerable: true,
         configurable: true
-      });
-      Tab.prototype.focus = function () {
-        this.a.focus();
-      };
-      return Tab;
-    }());
+      })
+      Tab.prototype.focus = function() {
+        this.a.focus()
+      }
+      return Tab
+    }())
 
-    initTabs(document.body);
+    initTabs(document.body)
 
     function initTabs(container) {
-      var queryStringTabs = readTabsQueryStringParam();
-      var elements = container.querySelectorAll('.tabGroup');
-      var state = { groups: [], selectedTabs: [] };
-      for (var i = 0; i < elements.length; i++) {
-        var group = initTabGroup(elements.item(i));
+      const queryStringTabs = readTabsQueryStringParam()
+      const elements = container.querySelectorAll('.tabGroup')
+      const state = { groups: [], selectedTabs: [] }
+      for (let i = 0; i < elements.length; i++) {
+        const group = initTabGroup(elements.item(i))
         if (!group.independent) {
-          updateVisibilityAndSelection(group, state);
-          state.groups.push(group);
+          updateVisibilityAndSelection(group, state)
+          state.groups.push(group)
         }
       }
-      container.addEventListener('click', function (event) { return handleClick(event, state); });
+      container.addEventListener('click', function(event) { return handleClick(event, state) })
       if (state.groups.length === 0) {
-        return state;
+        return state
       }
-      selectTabs(queryStringTabs, container);
-      updateTabsQueryStringParam(state);
-      notifyContentUpdated();
-      return state;
+      selectTabs(queryStringTabs)
+      updateTabsQueryStringParam(state)
+      notifyContentUpdated()
+      return state
     }
 
     function initTabGroup(element) {
-      var group = {
+      const group = {
         independent: element.hasAttribute('data-tab-group-independent'),
         tabs: []
-      };
-      var li = element.firstElementChild.firstElementChild;
-      while (li) {
-        var a = li.firstElementChild;
-        a.setAttribute(contentAttrs.name, 'tab');
-        var dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ');
-        a.setAttribute('data-tab', dataTab);
-        var section = element.querySelector("[id=\"" + a.getAttribute('aria-controls') + "\"]");
-        var tab = new Tab(li, a, section);
-        group.tabs.push(tab);
-        li = li.nextElementSibling;
       }
-      element.setAttribute(contentAttrs.name, 'tab-group');
-      element.tabGroup = group;
-      return group;
+      let li = element.firstElementChild.firstElementChild
+      while (li) {
+        const a = li.firstElementChild
+        a.setAttribute(contentAttrs.name, 'tab')
+        const dataTab = a.getAttribute('data-tab').replace(/\+/g, ' ')
+        a.setAttribute('data-tab', dataTab)
+        const section = element.querySelector('[id="' + a.getAttribute('aria-controls') + '"]')
+        const tab = new Tab(li, a, section)
+        group.tabs.push(tab)
+        li = li.nextElementSibling
+      }
+      element.setAttribute(contentAttrs.name, 'tab-group')
+      element.tabGroup = group
+      return group
     }
 
     function updateVisibilityAndSelection(group, state) {
-      var anySelected = false;
-      var firstVisibleTab;
-      for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
-        var tab = _a[_i];
-        tab.visible = tab.condition === null || state.selectedTabs.indexOf(tab.condition) !== -1;
+      let anySelected = false
+      let firstVisibleTab
+      for (let _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+        const tab = _a[_i]
+        tab.visible = tab.condition === null || state.selectedTabs.indexOf(tab.condition) !== -1
         if (tab.visible) {
           if (!firstVisibleTab) {
-            firstVisibleTab = tab;
+            firstVisibleTab = tab
           }
         }
-        tab.selected = tab.visible && arraysIntersect(state.selectedTabs, tab.tabIds);
-        anySelected = anySelected || tab.selected;
+        tab.selected = tab.visible && arraysIntersect(state.selectedTabs, tab.tabIds)
+        anySelected = anySelected || tab.selected
       }
       if (!anySelected) {
-        for (var _b = 0, _c = group.tabs; _b < _c.length; _b++) {
-          var tabIds = _c[_b].tabIds;
-          for (var _d = 0, tabIds_1 = tabIds; _d < tabIds_1.length; _d++) {
-            var tabId = tabIds_1[_d];
-            var index = state.selectedTabs.indexOf(tabId);
+        for (let _b = 0, _c = group.tabs; _b < _c.length; _b++) {
+          const tabIds = _c[_b].tabIds
+          for (let _d = 0, tabIds1 = tabIds; _d < tabIds1.length; _d++) {
+            const tabId = tabIds1[_d]
+            const index = state.selectedTabs.indexOf(tabId)
             if (index === -1) {
-              continue;
+              continue
             }
-            state.selectedTabs.splice(index, 1);
+            state.selectedTabs.splice(index, 1)
           }
         }
-        var tab = firstVisibleTab;
-        tab.selected = true;
-        state.selectedTabs.push(tab.tabIds[0]);
+        const tab = firstVisibleTab
+        tab.selected = true
+        state.selectedTabs.push(tab.tabIds[0])
       }
     }
 
     function getTabInfoFromEvent(event) {
       if (!(event.target instanceof HTMLElement)) {
-        return null;
+        return null
       }
-      var anchor = event.target.closest('a[data-tab]');
+      const anchor = event.target.closest('a[data-tab]')
       if (anchor === null) {
-        return null;
+        return null
       }
-      var tabIds = anchor.getAttribute('data-tab').split(' ');
-      var group = anchor.parentElement.parentElement.parentElement.tabGroup;
+      const tabIds = anchor.getAttribute('data-tab').split(' ')
+      const group = anchor.parentElement.parentElement.parentElement.tabGroup
       if (group === undefined) {
-        return null;
+        return null
       }
-      return { tabIds: tabIds, group: group, anchor: anchor };
+      return { tabIds, group, anchor }
     }
 
     function handleClick(event, state) {
-      var info = getTabInfoFromEvent(event);
+      const info = getTabInfoFromEvent(event)
       if (info === null) {
-        return;
+        return
       }
-      event.preventDefault();
-      info.anchor.href = 'javascript:';
-      setTimeout(function () { return info.anchor.href = '#' + info.anchor.getAttribute('aria-controls'); });
-      var tabIds = info.tabIds, group = info.group;
-      var originalTop = info.anchor.getBoundingClientRect().top;
+      event.preventDefault()
+      info.anchor.href = 'javascript:'
+      setTimeout(function() {
+        info.anchor.href = '#' + info.anchor.getAttribute('aria-controls')
+      })
+      const tabIds = info.tabIds; const group = info.group
+      const originalTop = info.anchor.getBoundingClientRect().top
       if (group.independent) {
-        for (var _i = 0, _a = group.tabs; _i < _a.length; _i++) {
-          var tab = _a[_i];
-          tab.selected = arraysIntersect(tab.tabIds, tabIds);
+        for (let _i = 0, _a = group.tabs; _i < _a.length; _i++) {
+          const tab = _a[_i]
+          tab.selected = arraysIntersect(tab.tabIds, tabIds)
         }
-      }
-      else {
+      } else {
         if (arraysIntersect(state.selectedTabs, tabIds)) {
-          return;
+          return
         }
-        var previousTabId = group.tabs.filter(function (t) { return t.selected; })[0].tabIds[0];
-        state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0]);
-        for (var _b = 0, _c = state.groups; _b < _c.length; _b++) {
-          var group_1 = _c[_b];
-          updateVisibilityAndSelection(group_1, state);
+        const previousTabId = group.tabs.filter(function(t) { return t.selected })[0].tabIds[0]
+        state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0])
+        for (let _b = 0, _c = state.groups; _b < _c.length; _b++) {
+          const group1 = _c[_b]
+          updateVisibilityAndSelection(group1, state)
         }
-        updateTabsQueryStringParam(state);
+        updateTabsQueryStringParam(state)
       }
-      notifyContentUpdated();
-      var top = info.anchor.getBoundingClientRect().top;
+      notifyContentUpdated()
+      const top = info.anchor.getBoundingClientRect().top
       if (top !== originalTop && event instanceof MouseEvent) {
-        window.scrollTo(0, window.pageYOffset + top - originalTop);
+        window.scrollTo(0, window.pageYOffset + top - originalTop)
       }
     }
 
     function selectTabs(tabIds) {
-      for (var _i = 0, tabIds_1 = tabIds; _i < tabIds_1.length; _i++) {
-        var tabId = tabIds_1[_i];
-        var a = document.querySelector(".tabGroup > ul > li > a[data-tab=\"" + tabId + "\"]:not([hidden])");
+      for (let _i = 0, tabIds1 = tabIds; _i < tabIds1.length; _i++) {
+        const tabId = tabIds1[_i]
+        const a = document.querySelector('.tabGroup > ul > li > a[data-tab="' + tabId + '"]:not([hidden])')
         if (a === null) {
-          return;
+          return
         }
-        a.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+        a.dispatchEvent(new CustomEvent('click', { bubbles: true }))
       }
     }
 
     function readTabsQueryStringParam() {
-      var qs = new URLSearchParams(window.location.search)
-      var t = qs.get('tabs')
+      const qs = new URLSearchParams(window.location.search)
+      const t = qs.get('tabs')
       if (!t) {
-        return [];
+        return []
       }
-      return t.split(',');
+      return t.split(',')
     }
 
     function updateTabsQueryStringParam(state) {
-      var qs = new URLSearchParams(window.location.search)
+      const qs = new URLSearchParams(window.location.search)
       qs.set('tabs', state.selectedTabs.join())
-      var url = location.protocol + "//" + location.host + location.pathname + "?" + qs.toString() + location.hash;
+      const url = location.protocol + '//' + location.host + location.pathname + '?' + qs.toString() + location.hash
       if (location.href === url) {
-        return;
+        return
       }
-      history.replaceState({}, document.title, url);
+      history.replaceState({}, document.title, url)
     }
 
     function arraysIntersect(a, b) {
-      for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
-        var itemA = a_1[_i];
-        for (var _a = 0, b_1 = b; _a < b_1.length; _a++) {
-          var itemB = b_1[_a];
+      for (let _i = 0, a1 = a; _i < a1.length; _i++) {
+        const itemA = a1[_i]
+        for (let _a = 0, b1 = b; _a < b1.length; _a++) {
+          const itemB = b1[_a]
           if (itemA === itemB) {
-            return true;
+            return true
           }
         }
       }
-      return false;
+      return false
     }
 
     function notifyContentUpdated() {
@@ -1046,79 +960,76 @@ $(function () {
     }
   }
 
-  function utility() {
-    this.getAbsolutePath = getAbsolutePath;
-    this.isRelativePath = isRelativePath;
-    this.isAbsolutePath = isAbsolutePath;
-    this.getCurrentWindowAbsolutePath = getCurrentWindowAbsolutePath;
-    this.getDirectory = getDirectory;
-    this.formList = formList;
+  function Utility() {
+    this.getAbsolutePath = getAbsolutePath
+    this.isRelativePath = isRelativePath
+    this.isAbsolutePath = isAbsolutePath
+    this.getCurrentWindowAbsolutePath = getCurrentWindowAbsolutePath
+    this.getDirectory = getDirectory
+    this.formList = formList
 
     function getAbsolutePath(href) {
-      if (isAbsolutePath(href)) return href;
-      var currentAbsPath = getCurrentWindowAbsolutePath();
-      var stack = currentAbsPath.split("/");
-      stack.pop();
-      var parts = href.split("/");
-      for (var i=0; i< parts.length; i++) {
-        if (parts[i] == ".") continue;
-        if (parts[i] == ".." && stack.length > 0)
-          stack.pop();
-        else
-          stack.push(parts[i]);
+      if (isAbsolutePath(href)) return href
+      const currentAbsPath = getCurrentWindowAbsolutePath()
+      const stack = currentAbsPath.split('/')
+      stack.pop()
+      const parts = href.split('/')
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i] === '.') continue
+        if (parts[i] === '..' && stack.length > 0) { stack.pop() } else { stack.push(parts[i]) }
       }
-      var p = stack.join("/");
-      return p;
+      const p = stack.join('/')
+      return p
     }
 
     function isRelativePath(href) {
       if (href === undefined || href === '' || href[0] === '/') {
-        return false;
+        return false
       }
-      return !isAbsolutePath(href);
+      return !isAbsolutePath(href)
     }
 
     function isAbsolutePath(href) {
-      return (/^(?:[a-z]+:)?\/\//i).test(href);
+      return (/^(?:[a-z]+:)?\/\//i).test(href)
     }
 
     function getCurrentWindowAbsolutePath() {
-      return window.location.origin + window.location.pathname;
+      return window.location.origin + window.location.pathname
     }
     function getDirectory(href) {
-      if (!href) return '';
-      var index = href.lastIndexOf('/');
-      if (index == -1) return '';
+      if (!href) return ''
+      const index = href.lastIndexOf('/')
+      if (index === -1) return ''
       if (index > -1) {
-        return href.substr(0, index);
+        return href.substr(0, index)
       }
     }
 
     function formList(item, classes) {
-      var level = 1;
-      var model = {
+      let level = 1
+      const model = {
         items: item
-      };
-      var cls = [].concat(classes).join(" ");
-      return getList(model, cls);
+      }
+      const cls = [].concat(classes).join(' ')
+      return getList(model, cls)
 
       function getList(model, cls) {
-        if (!model || !model.items) return null;
-        var l = model.items.length;
-        if (l === 0) return null;
-        var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
-        level++;
-        for (var i = 0; i < l; i++) {
-          var item = model.items[i];
-          var href = item.href;
-          var name = item.name;
-          if (!name) continue;
-          html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
-          html += getList(item, cls) || '';
-          html += '</li>';
+        if (!model || !model.items) return null
+        const l = model.items.length
+        if (l === 0) return null
+        let html = '<ul class="level' + level + ' ' + (cls || '') + '">'
+        level++
+        for (let i = 0; i < l; i++) {
+          const item = model.items[i]
+          const href = item.href
+          const name = item.name
+          if (!name) continue
+          html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name
+          html += getList(item, cls) || ''
+          html += '</li>'
         }
-        html += '</ul>';
-        return html;
+        html += '</ul>'
+        return html
       }
     }
 
@@ -1127,7 +1038,7 @@ $(function () {
      * @param {String} text - The word to break. It should be in plain text without HTML tags.
      */
     function breakPlainText(text) {
-      if (!text) return text;
+      if (!text) return text
       return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4')
     }
 
@@ -1135,23 +1046,23 @@ $(function () {
      * Add <wbr> into long word. The jQuery element should contain no html tags.
      * If the jQuery element contains tags, this function will not change the element.
      */
-    $.fn.breakWord = function () {
+    $.fn.breakWord = function() {
       if (!this.html().match(/(<\w*)((\s\/>)|(.*<\/\w*>))/g)) {
-        this.html(function (index, text) {
-          return breakPlainText(text);
+        this.html(function(index, text) {
+          return breakPlainText(text)
         })
       }
-      return this;
+      return this
     }
   }
 
   // adjusted from https://stackoverflow.com/a/13067009/1523776
   function workAroundFixedHeaderForAnchors() {
-    var HISTORY_SUPPORT = !!(history && history.pushState);
-    var ANCHOR_REGEX = /^#[^ ]+$/;
+    const HISTORY_SUPPORT = !!(history && history.pushState)
+    const ANCHOR_REGEX = /^#[^ ]+$/
 
     function getFixedOffset() {
-      return $('header').first().height();
+      return $('header').first().height()
     }
 
     /**
@@ -1161,58 +1072,58 @@ $(function () {
      * @return {Boolean} - Was the href an anchor.
      */
     function scrollIfAnchor(href, pushToHistory) {
-      var match, rect, anchorOffset;
+      let rect, anchorOffset
 
       if (!ANCHOR_REGEX.test(href)) {
-        return false;
+        return false
       }
 
-      match = document.getElementById(href.slice(1));
+      const match = document.getElementById(href.slice(1))
 
       if (match) {
-        rect = match.getBoundingClientRect();
-        anchorOffset = window.pageYOffset + rect.top - getFixedOffset();
-        window.scrollTo(window.pageXOffset, anchorOffset);
+        rect = match.getBoundingClientRect()
+        anchorOffset = window.pageYOffset + rect.top - getFixedOffset()
+        window.scrollTo(window.pageXOffset, anchorOffset)
 
         // Add the state to history as-per normal anchor links
         if (HISTORY_SUPPORT && pushToHistory) {
-          history.pushState({}, document.title, location.pathname + href);
+          history.pushState({}, document.title, location.pathname + href)
         }
       }
 
-      return !!match;
+      return !!match
     }
 
     /**
      * Attempt to scroll to the current location's hash.
      */
     function scrollToCurrent() {
-      scrollIfAnchor(window.location.hash);
+      scrollIfAnchor(window.location.hash, false)
     }
 
     /**
      * If the click event's target was an anchor, fix the scroll position.
      */
     function delegateAnchors(e) {
-      var elem = e.target;
+      const elem = e.target
 
       if (scrollIfAnchor(elem.getAttribute('href'), true)) {
-        e.preventDefault();
+        e.preventDefault()
       }
     }
 
-    $(window).on('hashchange', scrollToCurrent);
+    $(window).on('hashchange', scrollToCurrent)
 
-    $(window).on('load', function () {
-        // scroll to the anchor if present, offset by the header
-        scrollToCurrent();
-    });
+    $(window).on('load', function() {
+      // scroll to the anchor if present, offset by the header
+      scrollToCurrent()
+    })
 
-    $(document).ready(function () {
-        // Exclude tabbed content case
-        $('a:not([data-tab])').click(function (e) { delegateAnchors(e); });
-    });
+    $(document).ready(function() {
+      // Exclude tabbed content case
+      $('a:not([data-tab])').click(function(e) { delegateAnchors(e) })
+    })
 
-    window._docfxReady = true;
+    window._docfxReady = true
   }
-});
+})
