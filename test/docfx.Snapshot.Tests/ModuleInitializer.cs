@@ -12,9 +12,6 @@ namespace Microsoft.DocAsCode.Tests
         public static void Initialize()
         {
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
-
-            VerifyImageMagick.Initialize();
-            VerifyImageMagick.RegisterComparers(0.05);
         }
     }
 }

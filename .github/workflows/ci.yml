@@ -43,7 +43,9 @@ jobs:
       if: failure() && matrix.os == 'windows-latest'
       with:
         name: screenshots
-        path: tests/**/*.received.png
+        path: |
+          tests/**/*.received.png
+          tests/**/*.diff.png
 
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
 

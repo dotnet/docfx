@@ -6,15 +6,14 @@ namespace Microsoft.DocAsCode.Tests
     using System;
     using System.Diagnostics;
     using System.IO;
-    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-
+    using ImageMagick;
     using Microsoft.DocAsCode.Dotnet;
     using Microsoft.Playwright;
-
-    using Xunit;
-    using VerifyXunit;
     using VerifyTests;
+    using VerifyXunit;
+    using Xunit;
 
     [UsesVerify]
     public class SamplesTest
@@ -24,10 +23,10 @@ namespace Microsoft.DocAsCode.Tests
         private static readonly string[] s_screenshotUrls = new[]
         {
             "index.html",
-            "docs/markdown.html",
+            "docs/markdown.html?tabs=windows%2Ctypescript",
             "articles/csharp_coding_standards.html",
             "api/CatLibrary.html",
-            "api/CatLibrary.Cat-2.html",
+            "api/CatLibrary.Cat-2.html?q=cat",
             "restapi/petstore.html",
         };
 
@@ -123,15 +122,36 @@ namespace Microsoft.DocAsCode.Tests
                         await page.WaitForFunctionAsync("window._docfxReady");
 
                         var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+                        var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
+                        var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
 
                         await Verifier.Verify(new Target("png", new MemoryStream(bytes)))
-                            .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}")
-                            .UseFileName($"{url.Replace('/', '-')}")
+                            .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
+                            .UseDirectory(directory)
+                            .UseFileName(fileName)
                             .AutoVerify(includeBuildServer: false);
                     }
 
                     await page.CloseAsync();
                 }
+            }
+
+            Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
+            {
+                using var receivedImage = new MagickImage(received);
+                using var verifiedImage = new MagickImage(verified);
+                using var diffImage = new MagickImage();
+                var diff = receivedImage.Compare(verifiedImage, ErrorMetric.Fuzz, diffImage);
+                var compare = diff < 0.02;
+                if (compare)
+                {
+                    return Task.FromResult(CompareResult.Equal);
+                }
+
+                var diffFile = Path.GetFullPath(Path.Combine("../../../", directory, $"{fileName}.diff.png"));
+                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
+                diffImage.Write(diffFile);
+                return Task.FromResult(new CompareResult(false));
             }
         }
 
