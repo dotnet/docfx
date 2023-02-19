@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Text.RegularExpressions;
@@ -16,6 +17,7 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
 
     [UsesVerify]
+    [Trait("Stage", "Snapshot")]
     public class SamplesTest
     {
         private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
@@ -40,10 +42,7 @@ namespace Microsoft.DocAsCode.Tests
 
         static SamplesTest()
         {
-            if (OperatingSystem.IsWindows())
-            {
-                Microsoft.Playwright.Program.Main(new[] { "install" });
-            }
+            Microsoft.Playwright.Program.Main(new[] { "install" });
             Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
         }
 
@@ -73,9 +72,6 @@ namespace Microsoft.DocAsCode.Tests
         [Fact]
         public async Task SeedHtml()
         {
-            if (!OperatingSystem.IsWindows())
-                return;
-
             var samplePath = $"{s_samplesDir}/seed";
             Clean(samplePath);
 
@@ -104,6 +100,7 @@ namespace Microsoft.DocAsCode.Tests
             {
                 using var playwright = await Playwright.CreateAsync();
                 var browser = await playwright.Chromium.LaunchAsync();
+                var htmlUrls = new HashSet<string>();
 
                 foreach (var (width, height, fullPage) in s_viewports)
                 {
@@ -121,11 +118,27 @@ namespace Microsoft.DocAsCode.Tests
                         await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                         await page.WaitForFunctionAsync("window._docfxReady");
 
-                        var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
                         var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
                         var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
 
-                        await Verifier.Verify(new Target("png", new MemoryStream(bytes)))
+                        // Verify HTML files once
+                        if (htmlUrls.Add(url))
+                        {
+                            var html = await page.ContentAsync();
+                            await Verifier
+                                .Verify(new Target("html", html))
+                                .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
+                                .UseFileName(fileName)
+                                .AutoVerify(includeBuildServer: false);
+                        }
+
+                        // Verify screenshots only on windows
+                        if (!OperatingSystem.IsWindows())
+                            continue;
+
+                        var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+                        await Verifier
+                            .Verify(new Target("png", new MemoryStream(bytes)))
                             .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
                             .UseDirectory(directory)
                             .UseFileName(fileName)
