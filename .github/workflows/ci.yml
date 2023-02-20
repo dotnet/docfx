@@ -45,8 +45,8 @@ jobs:
       with:
         name: screenshots
         path: |
-          tests/**/*.received.png
-          tests/**/*.diff.png
+          test/docfx.Snapshot.Tests/**/*.received.png
+          test/docfx.Snapshot.Tests/**/*.diff.png
 
     - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
 

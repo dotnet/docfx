@@ -14,10 +14,10 @@
     <link rel="shortcut icon" href="{{_rel}}{{{_appFaviconPath}}}{{^_appFaviconPath}}favicon.ico{{/_appFaviconPath}}">
     <link rel="stylesheet" href="{{_rel}}styles/docfx.min.css">
     <link rel="stylesheet" href="{{_rel}}styles/main.css">
-    <meta property="docfx:navrel" content="{{_navRel}}">
-    <meta property="docfx:tocrel" content="{{_tocRel}}">
+    <meta name="docfx:navrel" content="{{_navRel}}">
+    <meta name="docfx:tocrel" content="{{_tocRel}}">
     {{#_noindex}}<meta name="searchOption" content="noindex">{{/_noindex}}
-    {{#_enableSearch}}<meta property="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
-    {{#_enableNewTab}}<meta property="docfx:newtab" content="true">{{/_enableNewTab}}
+    {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
+    {{#_enableNewTab}}<meta name="docfx:newtab" content="true">{{/_enableNewTab}}
   {{/redirect_url}}
 </head>
