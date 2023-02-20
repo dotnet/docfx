@@ -1,4 +1,3 @@
-/* eslint-disable space-before-function-paren */
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
@@ -30,7 +29,7 @@ export function enableSearch() {
   function renderSearchBox() {
     autoCollapse()
     $(window).on('resize', autoCollapse)
-    $(document).on('click', '.navbar-collapse.in', function (e) {
+    $(document).on('click', '.navbar-collapse.in', function(e) {
       if ($(e.target).is('a')) {
         $(this).collapse('hide')
       }
@@ -49,11 +48,10 @@ export function enableSearch() {
   }
 
   function webWorkerSearch() {
-    console.log('using Web Worker')
     const indexReady = $.Deferred()
 
     const worker = new Worker(relHref + 'styles/search-worker.min.js')
-    worker.onmessage = function (oEvent) {
+    worker.onmessage = function(oEvent) {
       switch (oEvent.data.e) {
         case 'index-ready':
           indexReady.resolve()
@@ -64,8 +62,8 @@ export function enableSearch() {
       }
     }
 
-    indexReady.promise().done(function () {
-      $('body').bind('queryReady', function () {
+    indexReady.promise().done(function() {
+      $('body').bind('queryReady', function() {
         worker.postMessage({ q: query })
       })
       if (query && (query.length >= 3)) {
@@ -79,7 +77,7 @@ export function enableSearch() {
     const q = new URLSearchParams(window.location.search).get('q')
     if (q) {
       const keywords = q.split('%20')
-      keywords.forEach(function (keyword) {
+      keywords.forEach(function(keyword) {
         if (keyword !== '') {
           mark('.data-searchable *', keyword)
           mark('article *', keyword)
@@ -90,11 +88,11 @@ export function enableSearch() {
 
   function addSearchEvent() {
     $('body').bind('searchEvent', function() {
-      $('#search-query').keypress(function (e) {
+      $('#search-query').keypress(function(e) {
         return e.which !== 13
       })
 
-      $('#search-query').keyup(function () {
+      $('#search-query').keyup(function() {
         query = $(this).val()
         if (query.length < 3) {
           flipContents('show')
@@ -158,11 +156,11 @@ export function enableSearch() {
         last: pagination.data('last'),
         totalPages: Math.ceil(hits.length / numPerPage),
         visiblePages: 5,
-        onPageClick: function (event, page) {
+        onPageClick: function(event, page) {
           const start = (page - 1) * numPerPage
           const curHits = hits.slice(start, start + numPerPage)
           $('#search-results>.sr-items').empty().append(
-            curHits.map(function (hit) {
+            curHits.map(function(hit) {
               const currentUrl = window.location.href
               const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
               const itemHref = relHref + hit.href + '?q=' + query
@@ -177,7 +175,7 @@ export function enableSearch() {
               return itemNode
             })
           )
-          query.split(/\s+/).forEach(function (word) {
+          query.split(/\s+/).forEach(function(word) {
             if (word !== '') {
               mark('#search-results>.sr-items *', word)
             }

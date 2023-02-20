@@ -1,4 +1,6 @@
-/* eslint-disable space-before-function-paren */
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 import lunr from 'lunr'
 
 let lunrIndex
@@ -10,7 +12,7 @@ lunr.tokenizer.separator = /[\s\-.()]+/
 
 const stopWordsRequest = new XMLHttpRequest()
 stopWordsRequest.open('GET', '../search-stopwords.json')
-stopWordsRequest.onload = function () {
+stopWordsRequest.onload = function() {
   if (this.status !== 200) {
     return
   }
@@ -22,7 +24,7 @@ stopWordsRequest.send()
 const searchDataRequest = new XMLHttpRequest()
 
 searchDataRequest.open('GET', '../index.json')
-searchDataRequest.onload = function () {
+searchDataRequest.onload = function() {
   if (this.status !== 200) {
     return
   }
@@ -34,11 +36,11 @@ searchDataRequest.onload = function () {
 }
 searchDataRequest.send()
 
-onmessage = function (oEvent) {
+onmessage = function(oEvent) {
   const q = oEvent.data.q
   const hits = lunrIndex.search(q)
   const results = []
-  hits.forEach(function (hit) {
+  hits.forEach(function(hit) {
     const item = searchData[hit.ref]
     results.push({ href: item.href, title: item.title, keywords: item.keywords })
   })
@@ -47,7 +49,7 @@ onmessage = function (oEvent) {
 
 function buildIndex() {
   if (stopWords !== null && !isEmpty(searchData)) {
-    lunrIndex = lunr(function () {
+    lunrIndex = lunr(function() {
       this.pipeline.remove(lunr.stopWordFilter)
       this.ref('href')
       this.field('title', { boost: 50 })
