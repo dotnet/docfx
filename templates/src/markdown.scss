@@ -1,0 +1,126 @@
+/**
+ * Copyright (c) Microsoft Corporation. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+*/
+
+/* Alerts */
+.alert h5 {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+.alert h5::before {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: "Glyphicons Halflings", sans-serif;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin-right: 5px;
+  font-weight: normal;
+}
+
+.alert-info h5::before {
+  content: "\e086";
+}
+
+.alert-warning h5::before {
+  content: "\e127";
+}
+
+.alert-danger h5::before {
+  content: "\e107";
+}
+
+/* For Embedded Video */
+div.embeddedvideo {
+  padding-top: 56.25%;
+  position: relative;
+  width: 100%;
+}
+
+div.embeddedvideo iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* For tabbed content */
+
+.tabGroup {
+  margin-top: 1rem;
+}
+
+.tabGroup ul[role="tablist"] {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tabGroup ul[role="tablist"] > li {
+  list-style: none;
+  display: inline-block;
+}
+
+.tabGroup a[role="tab"] {
+  color: #6e6e6e;
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 5px 7.5px;
+  text-decoration: none;
+  border-bottom: 2px solid #fff;
+}
+
+.tabGroup a[role="tab"]:hover,
+.tabGroup a[role="tab"]:focus,
+.tabGroup a[role="tab"][aria-selected="true"] {
+  border-bottom: 2px solid #0050c5;
+}
+
+.tabGroup a[role="tab"][aria-selected="true"] {
+  color: #222;
+}
+
+.tabGroup a[role="tab"]:hover,
+.tabGroup a[role="tab"]:focus {
+  color: #0050c5;
+}
+
+.tabGroup a[role="tab"]:focus {
+  outline: 1px solid #0050c5;
+  outline-offset: -1px;
+}
+
+@media (min-width: 768px) {
+  .tabGroup a[role="tab"] {
+    padding: 5px 15px;
+  }
+}
+
+.tabGroup section[role="tabpanel"] {
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.tabGroup section[role="tabpanel"] > .codeHeader,
+.tabGroup section[role="tabpanel"] > pre {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.tabGroup section[role="tabpanel"] > :first-child {
+  margin-top: 0;
+}
+
+.tabGroup section[role="tabpanel"] > pre:last-child {
+  display: block;
+  margin-bottom: -16px;
+}
