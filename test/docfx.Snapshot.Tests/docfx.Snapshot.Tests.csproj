@@ -3,7 +3,7 @@
     <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="12.3.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.30.0" />
     <PackageReference Include="Verify.DiffPlex" Version="2.2.0" />
-    <PackageReference Include="Verify.Xunit" Version="19.9.2" />
+    <PackageReference Include="Verify.Xunit" Version="19.10.0" />
   </ItemGroup>
 
   <ItemGroup>
