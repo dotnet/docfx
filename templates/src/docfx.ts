@@ -18,11 +18,15 @@ declare global {
   interface Window {
     $: object;
     jQuery: object;
-    _docfxReady: boolean;
+    docfx: {
+      ready?: boolean,
+      searchResultReady?: boolean,
+    };
   }
 }
 
 window.$ = window.jQuery = $
+window.docfx = {}
 
 require('bootstrap')
 require('twbs-pagination')
@@ -149,6 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
       $('a:not([data-tab])').click(function(e) { delegateAnchors(e) })
     })
 
-    window._docfxReady = true
+    window.docfx.ready = true
   }
 })

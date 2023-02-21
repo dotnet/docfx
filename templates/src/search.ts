@@ -183,6 +183,8 @@ export function enableSearch() {
         }
       })
     }
+
+    window.docfx.searchResultReady = true
   }
 }
 

@@ -1,21 +1,23 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using ImageMagick;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Dotnet;
+using Microsoft.Playwright;
+using VerifyTests;
+using VerifyXunit;
+using Xunit;
+
 namespace Microsoft.DocAsCode.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
-    using ImageMagick;
-    using Microsoft.DocAsCode.Dotnet;
-    using Microsoft.Playwright;
-    using VerifyTests;
-    using VerifyXunit;
-    using Xunit;
-
     [UsesVerify]
     [Trait("Stage", "Snapshot")]
     public class SamplesTest
@@ -28,6 +30,7 @@ namespace Microsoft.DocAsCode.Tests
             "docs/markdown.html?tabs=windows%2Ctypescript",
             "articles/csharp_coding_standards.html",
             "api/CatLibrary.html",
+            "api/CatLibrary.html?term=cat",
             "api/CatLibrary.Cat-2.html?q=cat",
             "restapi/petstore.html",
         };
@@ -42,7 +45,7 @@ namespace Microsoft.DocAsCode.Tests
 
         static SamplesTest()
         {
-            Microsoft.Playwright.Program.Main(new[] { "install" });
+            Playwright.Program.Main(new[] { "install" });
             Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
         }
 
@@ -79,75 +82,71 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
             Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
 
-            var port = 8089;
-            var serve = Process.Start(new ProcessStartInfo
-            {
-                FileName = docfxPath,
-                Arguments = $"serve --port {port} {samplePath}/_site",
-            });
+            const int port = 8089;
+            var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }));
 
-            try
-            {
-                await VerifyScreenshots();
-                Assert.False(serve.HasExited);
-            }
-            finally
-            {
-                serve.Kill(entireProcessTree: true);
-            }
+            using var playwright = await Playwright.Playwright.CreateAsync();
+            var browser = await playwright.Chromium.LaunchAsync();
+            var htmlUrls = new ConcurrentDictionary<string, string>();
 
-            async Task VerifyScreenshots()
+            await s_viewports.ForEachInParallelAsync(async viewport =>
             {
-                using var playwright = await Playwright.CreateAsync();
-                var browser = await playwright.Chromium.LaunchAsync();
-                var htmlUrls = new HashSet<string>();
-
-                foreach (var (width, height, fullPage) in s_viewports)
+                var (width, height, fullPage) = viewport;
+                var isMobile = width < 500;
+                var page = await browser.NewPageAsync(new()
                 {
-                    var isMobile = width < 500;
-                    var page = await browser.NewPageAsync(new()
+                    ViewportSize = new() { Width = width, Height = height },
+                    IsMobile = isMobile,
+                    HasTouch = isMobile,
+                });
+
+                foreach (var url in s_screenshotUrls)
+                {
+                    await page.GotoAsync($"http://localhost:{port}/{url}");
+                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                    await page.WaitForFunctionAsync("window.docfx.ready");
+
+                    if (url.Contains("?term=cat"))
                     {
-                        ViewportSize = new() { Width = width, Height = height },
-                        IsMobile = isMobile,
-                        HasTouch = isMobile,
-                    });
-
-                    foreach (var url in s_screenshotUrls)
-                    {
-                        await page.GotoAsync($"http://localhost:{port}/{url}");
-                        await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                        await page.WaitForFunctionAsync("window._docfxReady");
-
-                        var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
-                        var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
-
-                        // Verify HTML files once
-                        if (htmlUrls.Add(url))
+                        if (isMobile)
                         {
-                            var html = await page.ContentAsync();
-                            await Verifier
-                                .Verify(new Target("html", html))
-                                .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
-                                .UseFileName(fileName)
-                                .AutoVerify(includeBuildServer: false);
+                            await (await page.QuerySelectorAsync(".navbar-toggle")).ClickAsync();
+                            await page.WaitForSelectorAsync("#navbar.in");
                         }
 
-                        // Verify screenshots only on windows
-                        if (!OperatingSystem.IsWindows())
-                            continue;
+                        await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
+                        await page.WaitForFunctionAsync("window.docfx.searchResultReady");
+                    }
 
-                        var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+                    var directory = $"{nameof(SamplesTest)}.{nameof(SeedHtml)}/{width}x{height}";
+                    var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
+
+                    // Verify HTML files once
+                    if (htmlUrls.TryAdd(url, url))
+                    {
+                        var html = await page.ContentAsync();
                         await Verifier
-                            .Verify(new Target("png", new MemoryStream(bytes)))
-                            .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
-                            .UseDirectory(directory)
+                            .Verify(new Target("html", html))
+                            .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
                             .UseFileName(fileName)
                             .AutoVerify(includeBuildServer: false);
                     }
 
-                    await page.CloseAsync();
+                    // Verify screenshots only on windows
+                    if (!OperatingSystem.IsWindows())
+                        continue;
+
+                    var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
+                    await Verifier
+                        .Verify(new Target("png", new MemoryStream(bytes)))
+                        .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
+                        .UseDirectory(directory)
+                        .UseFileName(fileName)
+                        .AutoVerify(includeBuildServer: false);
                 }
-            }
+
+                await page.CloseAsync();
+            });
 
             Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
             {
@@ -173,7 +172,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             if (!OperatingSystem.IsWindows())
                 return;
-            
+
             var samplePath = $"{s_samplesDir}/seed";
             Clean(samplePath);
 
@@ -235,7 +234,7 @@ namespace Microsoft.DocAsCode.Tests
             var psi = new ProcessStartInfo(filename, args);
             psi.EnvironmentVariables.Add("DOCFX_SOURCE_BRANCH_NAME", "main");
             if (workingDirectory != null)
-                psi.WorkingDirectory= Path.GetFullPath(workingDirectory);
+                psi.WorkingDirectory = Path.GetFullPath(workingDirectory);
             var process = Process.Start(psi);
             process.WaitForExit();
             return process.ExitCode;
