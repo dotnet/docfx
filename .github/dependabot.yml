@@ -5,6 +5,11 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+- package-ecosystem: npm
+  target-branch: main
+  directory: "/templates"
+  schedule:
+    interval: weekly
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 
