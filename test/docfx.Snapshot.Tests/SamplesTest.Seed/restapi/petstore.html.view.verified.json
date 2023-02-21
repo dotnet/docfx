@@ -2540,7 +2540,6 @@
     "pageNext": "Next",
     "pageLast": "Last",
     "inThisArticle": "In This Article",
-    "backToTop": "Back to top",
     "_shared": {}
   },
   "_jsonPath": "petstore.swagger.json",

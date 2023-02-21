@@ -1209,7 +1209,6 @@
     "pageNext": "Next",
     "pageLast": "Last",
     "inThisArticle": "In This Article",
-    "backToTop": "Back to top",
     "_shared": {}
   },
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/CatLibrary.IAnimal.md/#L2",

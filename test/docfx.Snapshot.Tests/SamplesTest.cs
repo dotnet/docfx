@@ -115,6 +115,8 @@ namespace Microsoft.DocAsCode.Tests
                         }
 
                         await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
+                        // Wait for input box focus animation
+                        await page.WaitForTimeoutAsync(200);
                         await page.WaitForFunctionAsync("window.docfx.searchResultReady");
                     }
 
@@ -154,8 +156,7 @@ namespace Microsoft.DocAsCode.Tests
                 using var verifiedImage = new MagickImage(verified);
                 using var diffImage = new MagickImage();
                 var diff = receivedImage.Compare(verifiedImage, ErrorMetric.Fuzz, diffImage);
-                var compare = diff < 0.02;
-                if (compare)
+                if (diff <= 0.001)
                 {
                     return Task.FromResult(CompareResult.Equal);
                 }
@@ -163,7 +164,7 @@ namespace Microsoft.DocAsCode.Tests
                 var diffFile = Path.GetFullPath(Path.Combine("../../../", directory, $"{fileName}.diff.png"));
                 Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
                 diffImage.Write(diffFile);
-                return Task.FromResult(new CompareResult(false));
+                return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
             }
         }
 

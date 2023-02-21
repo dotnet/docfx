@@ -324,10 +324,6 @@ article section {
   z-index: 1;
 }
 
-.sidetoc.shiftup {
-  bottom: 70px;
-}
-
 body .toc {
   background-color: #f1f1f1;
   overflow-x: hidden;
@@ -518,12 +514,8 @@ body .toc {
   max-height: 100%;
   overflow: hidden;
   top: 100px;
-  bottom: 10px;
+  bottom: 0;
   position: fixed;
-}
-
-.sideaffix.shiftup {
-  bottom: 70px;
 }
 
 .affix {

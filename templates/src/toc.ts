@@ -16,9 +16,6 @@ export function renderToc() {
     loadToc()
   } else {
     registerTocEvents()
-    if ($('footer').is(':visible')) {
-      $('.sidetoc').addClass('shiftup')
-    }
 
     // Scroll to active item
     let top = 0
@@ -30,10 +27,6 @@ export function renderToc() {
       top += $(e).position().top
     })
     $('.sidetoc').scrollTop(top - 50)
-
-    if ($('footer').is(':visible')) {
-      $('.sidetoc').addClass('shiftup')
-    }
 
     renderBreadcrumb()
   }
