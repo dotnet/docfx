@@ -17,7 +17,7 @@
     "start": "node build.js --watch"
   },
   "dependencies": {
-    "anchor-js": "^4.0.0",
+    "anchor-js": "^5.0.0",
     "bootstrap": "~3.4.1",
     "highlight.js": "^11.7.0",
     "jquery": "~3.6.3",
