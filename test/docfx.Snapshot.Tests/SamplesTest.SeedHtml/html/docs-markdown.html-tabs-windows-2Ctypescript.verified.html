@@ -119,7 +119,7 @@ Created by Docfx
 <h1 id="markdown">Markdown</h1>
 
 <p><a href="https://daringfireball.net/projects/markdown/">Markdown</a> is a lightweight markup language with plain text formatting syntax. Docfx supports <a href="https://commonmark.org/">CommonMark</a> compliant Markdown parsed through the <a href="https://github.com/xoofx/markdig">Markdig</a> parsing engine.</p>
-<h2 id="markdown-extensions"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#markdown-extensions" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Markdown Extensions</h2>
+<h2 id="markdown-extensions"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#markdown-extensions" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Markdown Extensions</h2>
 <p>Docfx supports additional markdown syntax that provide richer content. These syntax are specific to docfx and won't be rendered elsewhere like GitHub.</p>
 <p>To use a custom markdown extension:</p>
 <ol>
@@ -139,7 +139,7 @@ Created by Docfx
 <span class="hljs-keyword">await</span> Docset.Build(<span class="hljs-string">"docfx.json"</span>, options);
 </code></pre>
 <p>Here is a list of markdown extensions provided by docfx by default.</p>
-<h2 id="alerts"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#alerts" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Alerts</h2>
+<h2 id="alerts"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#alerts" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Alerts</h2>
 <p>Alerts are block quotes that render with colors and icons that indicate the significance of the content.</p>
 <p>The following alert types are supported:</p>
 <pre><code class="lang-markdown hljs language-markdown"><span class="hljs-quote">&gt; [!NOTE]</span>
@@ -178,7 +178,7 @@ Created by Docfx
 <h5>Warning</h5>
 <p>Dangerous certain consequences of an action.</p>
 </div>
-<h2 id="video"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#video" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Video</h2>
+<h2 id="video"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#video" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Video</h2>
 <p>You can embed a video in your page by using the following Markdown syntax:</p>
 <pre><code class="lang-md hljs language-markdown"><span class="hljs-quote">&gt; [!Video embed<span class="hljs-emphasis">_link]
 </span></span></code></pre>
@@ -187,7 +187,7 @@ Created by Docfx
 </code></pre>
 <p>This will be rendered as:</p>
 <div class="embeddedvideo"><iframe src="https://www.youtube-nocookie.com/embed/Sz1lCeedcPI" frameborder="0" allowfullscreen="true"></iframe></div>
-<h2 id="include-markdown-files"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#include-markdown-files" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Include Markdown Files</h2>
+<h2 id="include-markdown-files"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#include-markdown-files" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Include Markdown Files</h2>
 <p>Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.</p>
 <p>You can reuse a common text snippet within a sentence using inline include:</p>
 <pre><code class="lang-markdown hljs language-markdown">Text before [<span class="hljs-string">!INCLUDE [&lt;title&gt;</span>](<span class="hljs-link">&lt;filepath&gt;</span>)] and after.
@@ -197,7 +197,7 @@ Created by Docfx
 </code></pre>
 <p>Where <code>&lt;title&gt;</code> is the name of the file and <code>&lt;filepath&gt;</code> is the relative path to the file.</p>
 <p>Included markdown files needs to be excluded from build, they are usually placed in the <code>/includes</code> folder.</p>
-<h2 id="code-snippet"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#code-snippet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Code Snippet</h2>
+<h2 id="code-snippet"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#code-snippet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Code Snippet</h2>
 <p>There are several ways to include code in an article. The code snippet syntax replaces code from another file:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs</span>)]
 </code></pre>
@@ -209,7 +209,7 @@ Created by Docfx
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-&lt;language&gt;[</span>](<span class="hljs-link">&lt;filepath&gt;&lt;query-options&gt;</span>)]
 </code></pre>
 <p>Where <code>&lt;language&gt;</code> is the syntax highlighting language of the code and <code>&lt;filepath&gt;</code> is the relative path to the markdown file.</p>
-<h3 id="highlight-selected-lines"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#highlight-selected-lines" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Highlight Selected Lines</h3>
+<h3 id="highlight-selected-lines"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#highlight-selected-lines" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Highlight Selected Lines</h3>
 <p>Code Snippets typically include more code than necessary in order to provide context. It helps readability when you highlight the key lines that you're focusing on. To highlight key lines, use the <code>highlight</code> query options:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs?highlight=2,5-7,9-</span>)]
 </code></pre>
@@ -246,7 +246,7 @@ Created by Docfx
         }
     }
 }
-</span></code></pre><h2 id="tabs"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#tabs" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Tabs</h2>
+</span></code></pre><h2 id="tabs"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#tabs" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Tabs</h2>
 <p>Tabs enable content that is multi-faceted. They allow sections of a document to contain variant content renderings and eliminates duplicate content.</p>
 <p>Here's an example of the tab experience:</p>
 <div class="tabGroup" id="tabgroup_bHGHmlrG6S" data-bi-name="tab-group">
@@ -283,7 +283,7 @@ Content for Windows...
 <pre><code class="lang-markdown hljs language-markdown"><span class="hljs-section"># [<span class="hljs-string">Tab Display Name</span>](<span class="hljs-link">#tab/tab-id</span>)</span>
 </code></pre>
 <p>A tab starts with a Markdown header, <code>#</code>, and is followed by a Markdown link <code>[]()</code>. The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with <code>#tab/</code> and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a user selects a tab with the link <code>#tab/windows</code>, all tabs with the link <code>#tab/windows</code> on the page will be selected.</p>
-<h3 id="dependent-tabs"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#dependent-tabs" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Dependent tabs</h3>
+<h3 id="dependent-tabs"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#dependent-tabs" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Dependent tabs</h3>
 <p>It's possible to make the selection in one set of tabs dependent on the selection in another set of tabs. Here's an example of that in action:</p>
 <div class="tabGroup" id="tabgroup_bHGHmlrG6S-1" data-bi-name="tab-group">
 <ul role="tablist">
