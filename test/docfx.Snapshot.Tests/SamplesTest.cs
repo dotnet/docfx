@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using ImageMagick;
@@ -68,7 +71,7 @@ namespace Microsoft.DocAsCode.Tests
                 Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
             }
 
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
         }
 
 #if NET7_0_OR_GREATER
@@ -258,6 +261,21 @@ namespace Microsoft.DocAsCode.Tests
                 ".yml" => true,
                 _ => false,
             };
+        }
+
+        private void ScrubFile(string path, StringBuilder builder)
+        {
+            if (Path.GetExtension(path) is ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
+            {
+                obj.Remove("__global");
+                obj.Remove("_systemKeys");
+                builder.Clear();
+                builder.Append(JsonSerializer.Serialize(obj, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                }));
+            }
         }
     }
 }
