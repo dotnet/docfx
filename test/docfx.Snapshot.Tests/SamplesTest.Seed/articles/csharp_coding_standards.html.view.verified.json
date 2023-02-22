@@ -22,6 +22,7 @@
     "endLine": 0.0,
     "isExternal": false
   },
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_systemKeys": [

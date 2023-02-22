@@ -4191,6 +4191,7 @@
       "arguments": []
     }
   ],
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_systemKeys": [

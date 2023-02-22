@@ -110,6 +110,7 @@
     "cs.temp.dll"
   ],
   "level": 0.0,
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_systemKeys": [
