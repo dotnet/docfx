@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
   renderNavbar()
   renderToc()
   renderAffix()
-  renderLogo()
 
   breakText()
 
@@ -49,38 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const texts = $('.text-break')
     texts.each(function() {
       breakWord($(this))
-    })
-  }
-
-  function renderLogo() {
-    // For LOGO SVG
-    // Replace SVG with inline SVG
-    // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-    $('img.svg').each(function() {
-      const $img = $(this)
-      const imgID = $img.attr('id')
-      const imgClass = $img.attr('class')
-      const imgURL = $img.attr('src')
-
-      $.get(imgURL, function(data) {
-        // Get the SVG tag, ignore the rest
-        let $svg = $(data).find('svg')
-
-        // Add replaced image's ID to the new SVG
-        if (typeof imgID !== 'undefined') {
-          $svg = $svg.attr('id', imgID)
-        }
-        // Add replaced image's classes to the new SVG
-        if (typeof imgClass !== 'undefined') {
-          $svg = $svg.attr('class', imgClass + ' replaced-svg')
-        }
-
-        // Remove any invalid XML tags as per http://validator.w3.org
-        $svg = $svg.removeAttr('xmlns:a')
-
-        // Replace image with new SVG
-        $img.replaceWith($svg)
-      }, 'xml')
     })
   }
 

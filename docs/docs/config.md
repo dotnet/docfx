@@ -88,6 +88,7 @@ Here is a list of predefined metadata recognized by the default docfx site templ
 Name         | Type    | Description
 ----------------------|---------|---------------------------
 `_appTitle`             | string  | A string append to every page title.
+`_appName`              | string  | The name of the site displayed after logo.
 `_appFooter`            | string  | The footer HTML.
 `_appLogoPath`          | string  | App logo URL path.
 `_appFaviconPath`       | string  | Favicon URL path.

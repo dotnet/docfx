@@ -3,3 +3,13 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    padding-left: 0;
+    margin-right: 1rem;
+}
+
+#autocollapse .navbar-brand {
+  margin-left: 0;
+}

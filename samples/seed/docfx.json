@@ -42,6 +42,7 @@
     "overwrite": "specs/*.md",
     "globalMetadata": {
       "_appTitle": "docfx seed website",
+      "_appName": "Seed",
       "_enableSearch": true
     },
     "dest": "_site",
