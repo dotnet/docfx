@@ -103,7 +103,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         /// <summary>
         /// Transform from view model to the final result using template
-        /// Supported template languages are mustache and liquid
         /// </summary>
         /// <param name="model">The input view model</param>
         /// <returns>The output after applying template</returns>
