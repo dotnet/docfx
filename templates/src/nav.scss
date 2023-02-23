@@ -4,12 +4,99 @@
 */
 
 .navbar-brand {
-    display: flex;
-    align-items: center;
-    padding-left: 0;
-    margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  padding-left: 0;
+  margin-right: 1rem;
 }
 
 #autocollapse .navbar-brand {
   margin-left: 0;
+}
+
+.sideaffix {
+  margin-top: 50px;
+  font-size: 12px;
+  max-height: 100%;
+  overflow: hidden;
+  top: 100px;
+  bottom: 0;
+  position: fixed;
+}
+
+.affix {
+  position: relative;
+  height: 100%;
+}
+
+.sideaffix > div.contribution {
+  margin-bottom: 20px;
+}
+
+.sideaffix > div.contribution > ul > li > a.contribution-link {
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.sideaffix > div.contribution > ul > li > a.contribution-link:hover {
+  background-color: #fff;
+}
+
+.affix h5 {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-left: 10px;
+  font-size: 12px;
+}
+
+.affix > ul {
+  overflow: hidden;
+  padding-bottom: 10px;
+  height: calc(100% - 100px);
+}
+
+.affix ul > li > a {
+  padding: 5px 12px;
+  color: #666;
+}
+
+.affix ul > li > a:focus {
+  background: none;
+}
+
+.affix ul > li > a:hover {
+  background: none;
+  color: #666;
+}
+
+.affix ul > li > a::before {
+  display: none;
+  content: "|";
+  font-size: 16px;
+  top: 1px;
+  left: 0;
+  color: #ccc;
+  position: absolute;
+}
+
+.affix ul > li.active > a,
+.affix ul > li.active > a::before {
+  color: #337ab7;
+}
+
+.affix > ul > li.active:last-child {
+  margin-bottom: 50px;
+}
+
+.affix > ul > li.active > a,
+.affix > ul > li.active > a::before {
+  color: #337ab7;
+  font-weight: bold;
+}
+
+.affix ul > li.active > a::before,
+.affix ul > li > a:hover::before {
+  display: block;
+  white-space: nowrap;
 }

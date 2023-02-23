@@ -12,7 +12,7 @@ import { breakWord } from './helper'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
-import { renderAffix, renderNavbar } from './nav'
+import { renderInThisArticle, renderNavbar } from './nav'
 
 declare global {
   interface Window {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderMarkdown()
   renderNavbar()
   renderToc()
-  renderAffix()
+  renderInThisArticle()
 
   breakText()
 

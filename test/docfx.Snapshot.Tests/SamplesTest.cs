@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Tests
                     {
                         var html = await page.ContentAsync();
                         await Verifier
-                            .Verify(new Target("html", html))
+                            .Verify(new Target("html", NormalizeHtml(html)))
                             .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
                             .UseFileName(fileName)
                             .AutoVerify(includeBuildServer: false);
@@ -168,6 +168,11 @@ namespace Microsoft.DocAsCode.Tests
                 Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
                 diffImage.Write(diffFile);
                 return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
+            }
+
+            static string NormalizeHtml(string html)
+            {
+                return Regex.Replace(html, "<!--.*?-->", "");
             }
         }
 
