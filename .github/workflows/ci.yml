@@ -32,20 +32,25 @@ jobs:
     - run: npm run build
       working-directory: templates
 
+    - run: dotnet build -c Release
+
     - run: choco install wkhtmltopdf
       if: matrix.os == 'windows-latest'
 
-    - run: dotnet build -c Release
-
-    - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release --filter Stage=Snapshot --no-build --collect:"XPlat Code Coverage"
+      working-directory: test/docfx.Snapshot.Tests
 
     - uses: actions/upload-artifact@v3
       if: failure() && matrix.os == 'windows-latest'
       with:
         name: screenshots
-        path: tests/**/*.received.png
+        path: |
+          test/docfx.Snapshot.Tests/**/*.received.png
+          test/docfx.Snapshot.Tests/**/*.diff.png
 
-    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
+
+    - run: dotnet test -c Release -f net6.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
 
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'

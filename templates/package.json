@@ -8,17 +8,20 @@
   ],
   "author": "docfx",
   "license": "MIT",
+  "browserslist": [
+    "defaults"
+  ],
   "scripts": {
     "build": "node build.js",
-    "lint": "eslint .",
+    "lint": "eslint src && stylelint src",
     "start": "node build.js --watch"
   },
   "dependencies": {
-    "anchor-js": "^4.0.0",
+    "anchor-js": "^5.0.0",
     "bootstrap": "~3.4.1",
     "highlight.js": "^11.7.0",
-    "jquery": "~3.5.1",
-    "lunr": "2.1.2",
+    "jquery": "~3.6.3",
+    "lunr": "2.3.9",
     "mark.js": "^8.4.0",
     "twbs-pagination": "josecebe/twbs-pagination#1.3.1"
   },
@@ -30,6 +33,8 @@
     "esbuild-sass-plugin": "^2.5.0",
     "eslint": "^8.34.0",
     "eslint-config-standard": "^17.0.0",
+    "stylelint": "^15.1.0",
+    "stylelint-config-standard-scss": "^7.0.1",
     "typescript": "^4.9.5",
     "yargs": "^17.6.2"
   }

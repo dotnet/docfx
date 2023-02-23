@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IEnumerable<ITemplateRenderer> LoadAll()
         {
             // Only files under root folder are allowed
-            foreach (var res in _reader.GetResources($@"^[^/]*({Regex.Escape(MustacheTemplateRenderer.Extension)}|{Regex.Escape(LiquidTemplateRenderer.Extension)})$"))
+            foreach (var res in _reader.GetResources($@"^[^/]*({Regex.Escape(MustacheTemplateRenderer.Extension)})$"))
             {
                 var renderer = Load(res);
                 if (renderer != null)
@@ -57,10 +57,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (extension.Equals(MustacheTemplateRenderer.Extension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     return new RendererWithResourcePool(() => new MustacheTemplateRenderer(_reader, res), _maxParallelism);
-                }
-                else if (extension.Equals(LiquidTemplateRenderer.Extension, System.StringComparison.OrdinalIgnoreCase))
-                {
-                    return new RendererWithResourcePool(() => LiquidTemplateRenderer.Create(_reader, res), _maxParallelism);
                 }
                 else
                 {

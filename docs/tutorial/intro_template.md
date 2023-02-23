@@ -15,21 +15,16 @@ For a specific *Template*, each *document type* can have several *Renderer*s. Fo
 
 *Renderer*
 ------------------
-*Renderer*s are files written in a specific templating language. It is used to transform the input data model into output files.
-
-Currently DocFX supports the following templating languages:
-1. [Mustache](http://mustache.github.io) templating language
-2. [Liquid](https://github.com/Shopify/liquid) templating language
+*Renderer*s are files written in [Mustache](http://mustache.github.io). It is used to transform the input data model into output files.
 
 ### Naming rule for a *Renderer* file
 
 The naming rule for a *Renderer* file is:
-`<document_type>.<output_extension>[.primary].<template_extension>`.
+`<document_type>.<output_extension>[.primary].tmpl`.
 
 * `<document_type>` is the *document type* current *Renderer* responsible to.
 * `<output_extension>` defines the extension of the output files going through current *Renderer*. For example, `conceptual.html.tmpl` transforms `file1.md` into output file `file1.html`, and `toc.json.tmpl` transforms `toc.md` into output file `toc.json`.
 * `[.primary]` is optional. It is used when there are multiple *Renderer*s with different extension for one particular document type. The output file transformed by the `.primary` *Renderer* is used as the file to be linked. The below example describes the behavior in detail.
-* `<template_extension>` is the extension of the *Renderer* file based on the templating language it uses. For Mustache *Renderer*, it is `.tmpl`, while for Liquid *Renderer*, it is `.liquid`.
 
 Here is an example.
 
@@ -134,53 +129,6 @@ Hello World
 
 renders as the same as:
 ```mustache
-<html>
-    <head></head>
-    <body>
-        Hello World
-    <body>
-</html>
-```
-
-### *Renderer* in Liquid syntax
-
-#### Naming rule
-*Renderer*s in [Liquid](https://github.com/Shopify/liquid) syntax **MUST** end with `.liquid` extension. Liquid contains [include](https://help.shopify.com/themes/liquid/tags/theme-tags#include) tag to support partials, we follow the ruby partials naming convention to have `_<partialName>.liquid` as partial template. 
-
-#### Extended syntax for Dependencies
-DocFX introduces a custom tag `ref`, e.g. `{% ref file1 %}`, to specify the resource files that current template depends on.
-
-#### Extended syntax for Master page
-DocFX introduces custom tags `master` and `body` to use master page:
-
-```liquid
-{% master <master_page_name> %}
-```
-
-Inside the master page, the following syntax is used for pages to place their content body:
-
-```liquid
-{% body %}
-```
-
-For example, with the following master page `_master.html`:
-```html with liquid
-<html>
-    <head></head>
-    <body>
-        {% body %}
-    <body>
-</html>
-```
-
-A template `conceptual.html.liquid` as follows:
-```liqud
-{% master _master.html %}
-Hello World
-```
-
-renders as the same as:
-```liqud
 <html>
     <head></head>
     <body>

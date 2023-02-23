@@ -13,6 +13,8 @@ samples/**/api
 *.user
 *.log
 *.cache
+*.received.*
+*.diff.*
 .settings
 .DS_Store
 .idea
