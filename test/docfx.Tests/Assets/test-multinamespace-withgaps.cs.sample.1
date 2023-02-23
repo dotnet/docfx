@@ -1,0 +1,47 @@
+using System;
+using System.Collections.Generic;
+
+namespace Samples.Foo
+{
+    public class Bar
+    {
+        public unsafe List<String> FooBar<TArg>(int[] arg1, byte* arg2, TArg arg3, List<TArg[]> arg4)
+        {
+            return null;
+        }
+    }
+}
+
+namespace Samples.Foo.Sub.Subber1
+{
+    public class SubberBar
+    {
+        public unsafe List<String> FooBar<TArg>(int[] arg1, byte* arg2, TArg arg3, List<TArg[]> arg4)
+        {
+            return null;
+        }
+    }
+}
+
+namespace Samples.Foo.Sub.Subber2
+{
+    public class Subber2Bar
+    {
+        public unsafe List<String> FooBar<TArg>(int[] arg1, byte* arg2, TArg arg3, List<TArg[]> arg4)
+        {
+            return null;
+        }
+    }
+}
+
+
+namespace OtherNamespace
+{
+    public class OtherBar
+    {
+        public unsafe List<String> FooBar<TArg>(int[] arg1, byte* arg2, TArg arg3, List<TArg[]> arg4)
+        {
+            return null;
+        }
+    }
+}
