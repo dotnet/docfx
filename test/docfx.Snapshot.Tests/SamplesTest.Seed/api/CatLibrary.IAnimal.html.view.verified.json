@@ -1101,6 +1101,7 @@
   },
   "level": 0.0,
   "conceptual": "<h3 id=\"welcome-to-the-animal-world\" sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Welcome to the <strong sourcefile=\"specs/CatLibrary.IAnimal.md\" sourcestartlinenumber=\"6\">Animal</strong> world!</h3>\n",
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "obj/api/CatLibrary.IAnimal.yml",

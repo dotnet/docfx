@@ -158,11 +158,6 @@ header .navbar {
   border-radius: 0;
 }
 
-.navbar-brand {
-  font-size: inherit;
-  padding: 0;
-}
-
 .navbar-collapse {
   margin: 0 -15px;
 }
@@ -258,10 +253,6 @@ article section {
 #autocollapse .navbar-header {
   margin-left: 0;
   margin-right: 0;
-}
-
-#autocollapse .navbar-brand {
-  margin-left: 0;
 }
 
 .collapse.in,

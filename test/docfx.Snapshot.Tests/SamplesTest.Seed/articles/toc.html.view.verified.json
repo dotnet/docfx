@@ -37,6 +37,7 @@
       "leaf": true
     }
   ],
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "articles/toc.md",

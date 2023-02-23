@@ -31,7 +31,8 @@
     ],
     "postProcessors": [ "ExtractSearchIndex" ],
     "globalMetadata": {
-      "_appTitle": "docfx"
+      "_appTitle": "docfx",
+      "_appName": "docfx"
     },
     "dest": "_site",
     "template": [

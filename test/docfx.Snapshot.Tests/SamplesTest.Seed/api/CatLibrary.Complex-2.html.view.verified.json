@@ -555,6 +555,7 @@
       "level": 0.0
     }
   ],
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "obj/api/CatLibrary.Complex-2.yml",

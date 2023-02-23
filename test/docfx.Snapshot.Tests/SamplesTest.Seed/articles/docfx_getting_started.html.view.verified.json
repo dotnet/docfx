@@ -22,6 +22,7 @@
     "endLine": 0.0,
     "isExternal": false
   },
+  "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "rawTitle": "<h1 id=\"getting-started-with-docfx\" sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">Getting Started with <code sourcefile=\"articles/docfx_getting_started.md\" sourcestartlinenumber=\"2\">docfx</code></h1>",
