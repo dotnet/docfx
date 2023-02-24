@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public bool IncludePrivateMembers { get; init; }
 
+        public bool IncludeExplicitInterfaceImplementations { get; init; }
+
         public bool UseCompatibilityFileName { get; init; }
 
         public string GlobalNamespaceId { get; init; }

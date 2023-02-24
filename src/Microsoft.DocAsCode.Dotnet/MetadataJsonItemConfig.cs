@@ -30,6 +30,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("includePrivateMembers")]
         public bool IncludePrivateMembers { get; set; }
 
+        [JsonProperty("includeExplicitInterfaceImplementations")]
+        public bool IncludeExplicitInterfaceImplementations { get; set; }
+
         [JsonProperty("globalNamespaceId")]
         public string GlobalNamespaceId { get; set; }
 

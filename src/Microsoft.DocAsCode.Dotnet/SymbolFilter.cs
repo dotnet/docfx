@@ -94,6 +94,20 @@ namespace Microsoft.DocAsCode.Dotnet
             if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
                 return false;
 
+            if (_config.IncludeExplicitInterfaceImplementations)
+            {
+                bool isEii = symbol.Kind switch
+                {
+                    SymbolKind.Method => IsEiiAndIncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Property => IsEiiAndIncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
+                    SymbolKind.Event => IsEiiAndIncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
+                    _ => false,
+                };
+
+                if (isEii)
+                    return true;
+            }
+
             if (_config.IncludePrivateMembers)
             {
                 return symbol.Kind switch
@@ -113,6 +127,11 @@ namespace Microsoft.DocAsCode.Dotnet
             bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
             {
                 return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
+            }
+
+            bool IsEiiAndIncludesContainingSymbols(IEnumerable<ISymbol> symbols)
+            {
+                return symbols.Any() && symbols.All(s => IncludeApi(s.ContainingSymbol));
             }
         }
     }

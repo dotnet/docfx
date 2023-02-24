@@ -110,6 +110,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
                 FilterConfigFile = configModel?.FilterConfigFile is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.FilterConfigFile)),
                 IncludePrivateMembers = configModel?.IncludePrivateMembers ?? false,
+                IncludeExplicitInterfaceImplementations = configModel?.IncludeExplicitInterfaceImplementations ?? false,
                 GlobalNamespaceId = configModel?.GlobalNamespaceId,
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
                 MSBuildProperties = configModel?.MSBuildProperties,
