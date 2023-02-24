@@ -57,6 +57,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
   - Run `npm run build` to build the templates.
 - Run `dotnet build` to build the project or use Visual Studio to build `docfx.sln`.
 - Run `dotnet test` to test the project or use Visual Studio test explorer.
+  - Run `git lfs checkout` to checkout files for snapshot testing
 
 ### Branch and Release
 
