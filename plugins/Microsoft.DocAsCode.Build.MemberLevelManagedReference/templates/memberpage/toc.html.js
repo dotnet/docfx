@@ -7,6 +7,7 @@ exports.transform = function (model) {
         "method":      { key: "methodsInSubtitle" },
         "event":       { key: "eventsInSubtitle" },
         "operator":    { key: "operatorsInSubtitle" },
+        "eii":         { key: "eiisInSubtitle" },
     };
 
     groupChildren(model);
@@ -22,7 +23,7 @@ exports.transform = function (model) {
         item.items.forEach(function (element) {
             groupChildren(element);
             if (element.type) {
-                var type = element.type.toLowerCase();
+                var type = element.isEii ? "eii" : element.type.toLowerCase();
                 if (!grouped.hasOwnProperty(type)) {
                     if (!groupNames.hasOwnProperty(type)) {
                         groupNames[type] = {
