@@ -8,15 +8,14 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
     using System.Reflection;
     using System.Reflection.Emit;
 
-    using YamlDotNet.Serialization;
+    using YamlDotNet.Serialization.ObjectFactories;
 
-    public class DefaultEmitObjectFactory : IObjectFactory
+    public class DefaultEmitObjectFactory : ObjectFactoryBase
     {
-        private readonly Dictionary<Type, Func<object>> _cache =
-            new Dictionary<Type, Func<object>>();
+        private readonly Dictionary<Type, Func<object>> _cache = new();
         private static Type[] EmptyTypes => Type.EmptyTypes;
 
-        public object Create(Type type)
+        public override object Create(Type type)
         {
             if (!_cache.TryGetValue(type, out Func<object> func))
             {

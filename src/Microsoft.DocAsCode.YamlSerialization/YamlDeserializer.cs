@@ -42,11 +42,13 @@ namespace Microsoft.DocAsCode.YamlSerialization
         private readonly List<IYamlTypeConverter> _converters;
         private readonly TypeDescriptorProxy _typeDescriptor = new TypeDescriptorProxy();
         private readonly IValueDeserializer _valueDeserializer;
+        private readonly ITypeConverter _reflectionTypeConverter = new ReflectionTypeConverter();
 
         public IList<INodeDeserializer> NodeDeserializers { get; private set; }
         public IList<INodeTypeResolver> TypeResolvers { get; private set; }
         public IValueDeserializer ValueDeserializer => _valueDeserializer;
-        private class TypeDescriptorProxy : ITypeInspector
+
+        private sealed class TypeDescriptorProxy : ITypeInspector
         {
             public ITypeInspector TypeDescriptor;
 
@@ -92,10 +94,10 @@ namespace Microsoft.DocAsCode.YamlSerialization
             {
                 new TypeConverterNodeDeserializer(_converters),
                 new NullNodeDeserializer(),
-                new ScalarNodeDeserializer(),
+                new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter),
                 new EmitArrayNodeDeserializer(),
                 new EmitGenericDictionaryNodeDeserializer(objectFactory),
-                new DictionaryNodeDeserializer(objectFactory),
+                new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
                 new EmitGenericCollectionNodeDeserializer(objectFactory),
                 new CollectionNodeDeserializer(objectFactory),
                 new EnumerableNodeDeserializer(),
@@ -108,25 +110,15 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 new DefaultContainersNodeTypeResolver(),
                 new ScalarYamlNodeTypeResolver()
             };
+
+            NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter);
             if (ignoreNotFoundAnchor)
             {
-                _valueDeserializer =
-                    new LooseAliasValueDeserializer(
-                        new NodeValueDeserializer(
-                            NodeDeserializers,
-                            TypeResolvers
-                        )
-                    );
+                _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
             }
             else
             {
-                _valueDeserializer =
-                    new AliasValueDeserializer(
-                        new NodeValueDeserializer(
-                            NodeDeserializers,
-                            TypeResolvers
-                        )
-                    );
+                _valueDeserializer = new AliasValueDeserializer(nodeValueDeserializer);
             }
         }
 
