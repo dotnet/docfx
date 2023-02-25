@@ -116,3 +116,17 @@ items:
     usage:
       command: "-t default,templates/singulinkfx"
       config: '"template":["default","templates/singulinkfx"]'
+  - name: Minimal
+    description: |
+      A minimal template.
+    author: Sota Nakamura
+    version: 1.0
+    type: External
+    thumbnail: images/minimal.screenshot.png
+    homepage: https://sotanakamura.github.io/docfx-minimal
+    repository:
+      type: git
+      url: "https://github.com/sotanakamura/docfx-minimal"
+    usage:
+      command: "-t default,templates/minimal"
+      config: '"template":["default","templates/minimal"]'
