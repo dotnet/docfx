@@ -3,6 +3,12 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
+@media (min-width: 769px) {
+  article [id] {
+    scroll-margin-top: 100px;
+  }
+}
+
 .navbar-brand {
   display: flex;
   align-items: center;

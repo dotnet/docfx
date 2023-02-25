@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+import $ from 'jquery'
+
 export function meta(name: string): string {
   return (document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement)?.content
 }
@@ -97,4 +99,12 @@ export function breakWord(e) {
     })
   }
   return e
+}
+
+export function breakText() {
+  $('.xref').addClass('text-break')
+  const texts = $('.text-break')
+  texts.each(function() {
+    breakWord($(this))
+  })
 }
