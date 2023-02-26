@@ -46,10 +46,6 @@ button, a, .btn-primary {
   color: #666666;
 }
 
-svg:hover path {
-    fill: #ffffff;
-}
-
 .counter-key-section{
   border: 2px solid #6E8B60;
   -webkit-border-image-source: -webkit-gradient(linear, left, right, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(50%, #385361), color-stop(100%, rgba(0, 0, 0, 0)));

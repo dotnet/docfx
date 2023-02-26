@@ -124,3 +124,7 @@ div.embeddedvideo iframe {
   display: block;
   margin-bottom: -16px;
 }
+
+.mainContainer[dir="rtl"] main ul[role="tablist"] {
+  margin: 0;
+}

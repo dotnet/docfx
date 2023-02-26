@@ -20,6 +20,96 @@
   margin-left: 0;
 }
 
+.breadcrumb {
+  margin: 0;
+  padding: 10px 0;
+  background-color: inherit;
+  white-space: nowrap;
+}
+
+.breadcrumb > li + li::before {
+  content: "\00a0/";
+}
+
+#autocollapse.collapsed .navbar-header {
+  float: none;
+}
+
+#autocollapse.collapsed .navbar-toggle {
+  display: block;
+}
+
+#autocollapse.collapsed .navbar-collapse {
+  border-top: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%);
+}
+
+#autocollapse.collapsed .navbar-collapse.collapse {
+  display: none !important;
+}
+
+#autocollapse.collapsed .navbar-nav {
+  float: none !important;
+  margin: 7.5px -15px;
+}
+
+#autocollapse.collapsed .navbar-nav > li {
+  float: none;
+}
+
+#autocollapse.collapsed .navbar-nav > li > a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#autocollapse.collapsed .collapse.in,
+#autocollapse.collapsed .collapsing {
+  display: block !important;
+}
+
+#autocollapse.collapsed .collapse.in .navbar-right,
+#autocollapse.collapsed .collapsing .navbar-right {
+  float: none !important;
+}
+
+#autocollapse .form-group {
+  width: 100%;
+}
+
+#autocollapse .form-control {
+  width: 100%;
+}
+
+#autocollapse .navbar-header {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.collapse.in,
+.collapsing {
+  text-align: center;
+}
+
+.collapsing .navbar-form {
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 10px 15px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 1px 0 rgb(255 255 255 / 10%);
+}
+
+.collapsed .collapse.in .navbar-form {
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 10px 15px;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%),
+    0 1px 0 rgb(255 255 255 / 10%);
+}
+
+.navbar .navbar-nav {
+  display: inline-block;
+}
+
 .sideaffix {
   margin-top: 50px;
   font-size: 12px;
