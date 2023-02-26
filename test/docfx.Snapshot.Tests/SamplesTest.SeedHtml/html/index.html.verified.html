@@ -1,3 +1,148 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9860905f6be27fb28fa7c1a53897b9051a44c24c70f34578e105c9b76e1af004
-size 9075
+﻿<!DOCTYPE html><html><head>
+    <meta charset="utf-8">
+      <title>docfx-seed | docfx seed website </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="docfx-seed | docfx seed website ">
+    
+      <link rel="icon" href="favicon.ico">
+      <style class="anchorjs"></style><link rel="stylesheet" href="styles/docfx.min.css">
+      <link rel="stylesheet" href="styles/main.css">
+      <meta name="docfx:navrel" content="toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+    
+    <meta name="docfx:rel" content="">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="Seed">
+  Seed
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search" style="display: block;">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            <ul class="nav level1 navbar-nav">
+                <li class="active">
+                    <a href="index.html" name="" title="Home" class="active">Home</a>
+                </li>
+                <li>
+                    <a href="articles/docfx_getting_started.html" name="articles/toc.html" title="Articles">Articles</a>
+                </li>
+                <li>
+                    <a href="api/BuildFromAssembly.html" name="api/toc.html" title="API Documentation">API Documentation</a>
+                </li>
+                <li>
+                    <a href="restapi/petstore.html" name="restapi/toc.html" title="REST API">REST API</a>
+                </li>
+          </ul></div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb"><ul class="level1 breadcrumb"><li><a href="http://localhost:8089/index.html">Home</a></li></ul></div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="docfx-seed">docfx-seed</h1>
+
+<h2 id="description"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#description" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Description</h2>
+<p>This is a sample docfx documentation project. It contains .NET source code and markdown files.
+<code>docfx.json</code> is the configuration file for running <code>docfx</code>.
+<code>docfx</code> will generate a static website as similar to <a href="http://docascode.github.io/docfx-seed/index.html">http://docascode.github.io/docfx-seed</a>.</p>
+<h2 id="how-to-run"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#how-to-run" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>How to run</h2>
+<h3 id="under-windows"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#under-windows" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Under Windows</h3>
+<ul>
+<li>Download and unzip <a href="https://github.com/dotnet/docfx/releases/latest">docfx.zip</a> to run <code>docfx.exe</code> directly!</li>
+<li>Run <code>docfx</code> under current repo! Website will be generated under <code>_site</code> folder.</li>
+<li>Run any web hosting tool to host <code>_site</code> folder, e.g. <code>docfx serve _site</code>.</li>
+</ul>
+<h3 id="cross-platform-and-use-dnx"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#cross-platform-and-use-dnx" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Cross platform and use <code>dnx</code></h3>
+<p>As a prerequisite, you will need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx">DNX</a>.
+###Quick Start</p>
+<ul>
+<li><p><code>dnvm upgrade</code> to get the latest dnvm.</p>
+</li>
+<li><p>Add feed <a href="https://www.myget.org/F/aspnetrelease/api/v2/">https://www.myget.org/F/aspnetrelease/api/v2/</a> to Nuget.config</p>
+<blockquote>
+<p>For Windows, the nuget config file is  <strong>%AppData%\NuGet\NuGet.config</strong>.</p>
+</blockquote>
+<blockquote>
+<p>For Linux/OSX, the nuget config file is <strong>~/.config/NuGet/NuGet.config</strong>.</p>
+</blockquote>
+<pre><code class="hljs language-undefined"></code></pre>
+</li>
+<li><p><code>dnu commands install docfx</code> to install <code>docfx</code> as a command</p>
+</li>
+<li><p>Run <code>docfx</code> under current repo! Website will be generated under <code>_site</code> folder.</p>
+</li>
+<li><p>Run any web hosting tool to host <code>_site</code> folder, e.g. <code>docfx serve _site</code>.</p>
+</li>
+</ul>
+<h2 id="further-information-about-docfx"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#further-information-about-docfx" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Further information about <code>docfx</code></h2>
+<p><code>docfx</code> is a tool to generate documentation towards .NET source code and markdown files. Please refer to <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html">docfx</a> to get start. The <code>docfx</code> website itself is generated by <code>docfx</code>!</p>
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              
+    <h5>In this article</h5>
+    <ul class="nav bs-docs-sidenav"><li><a href="#description">Description</a></li><li><a href="#how-to-run">How to run</a></li><li><a href="#further-information-about-docfx">Further information about docfx</a></li></ul></nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="footer">
+          <div class="container">
+      
+      <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="styles/docfx.min.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  
+
+</body></html>
