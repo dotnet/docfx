@@ -19,7 +19,6 @@ samples/**/api
 .DS_Store
 .idea
 launchSettings.json
-package-lock.json
 *.sublime-workspace
 *.nuget.targets
 *.code-workspace
