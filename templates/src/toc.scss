@@ -6,6 +6,7 @@
 .sidenav,
 .toc {
   background-color: #f1f1f1;
+  overflow-x: hidden;
 }
 
 .sidetoc {
@@ -19,11 +20,6 @@
   border-left: 1px solid #e7e7e7;
   border-right: 1px solid #e7e7e7;
   z-index: 1;
-}
-
-body .toc {
-  background-color: #f1f1f1;
-  overflow-x: hidden;
 }
 
 .sidetoc-expand > .caret {
@@ -56,6 +52,15 @@ body .toc {
 
 .expand-stub + a {
   font-weight: bold;
+}
+
+.toc ul {
+  font-size: 12px;
+  margin: 0 0 0 3px;
+}
+
+.toc .nav > li > ul {
+  display: none;
 }
 
 .toc .nav > li > a.sidetoc-expand {
@@ -91,30 +96,21 @@ body .toc {
   cursor: pointer;
 }
 
-.toc .nav > li.active > .expand-stub::before,
-.toc .nav > li.in > .expand-stub::before,
-.toc .nav > li.in.active > .expand-stub::before,
-.toc .nav > li.filtered > .expand-stub::before {
-  content: "-";
-}
-
 .toc .nav > li > .expand-stub::before,
 .toc .nav > li.active > .expand-stub::before {
   content: "+";
 }
 
+.toc .nav > li.active > .expand-stub::before,
+.toc .nav > li.in > .expand-stub::before,
+.toc .nav > li.filtered > .expand-stub::before,
+.toc .nav > li.in.active > .expand-stub::before {
+  content: "-";
+}
+
 .toc .nav > li.filtered > ul,
 .toc .nav > li.in > ul {
   display: block;
-}
-
-.toc .nav > li > ul {
-  display: none;
-}
-
-.toc ul {
-  font-size: 12px;
-  margin: 0 0 0 3px;
 }
 
 .toc .level1 > li {
