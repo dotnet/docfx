@@ -12,19 +12,12 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  padding-left: 0;
+  padding-left: 1rem;
   margin-right: 1rem;
-}
-
-.navbar .navbar-nav {
-  display: inline-block;
 }
 
 .breadcrumb {
   margin: 0;
-  padding: 10px 0;
-  background-color: inherit;
-  white-space: nowrap;
 }
 
 .breadcrumb > li + li::before {
