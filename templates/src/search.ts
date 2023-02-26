@@ -5,8 +5,6 @@ import { meta } from './helper'
 import $ from 'jquery'
 import Mark from 'mark.js'
 
-const collapsed = 'collapsed'
-
 /**
  * Support full-text-search
  */
@@ -18,33 +16,10 @@ export function enableSearch() {
   }
   try {
     webWorkerSearch()
-    renderSearchBox()
     highlightKeywords()
     addSearchEvent()
   } catch (e) {
     console.error(e)
-  }
-
-  // Adjust the position of search box in navbar
-  function renderSearchBox() {
-    autoCollapse()
-    $(window).on('resize', autoCollapse)
-    $(document).on('click', '.navbar-collapse.in', function(e) {
-      if ($(e.target).is('a')) {
-        $(this).collapse('hide')
-      }
-    })
-
-    function autoCollapse() {
-      const navbar = $('#autocollapse')
-      if (navbar.height() === null) {
-        setTimeout(autoCollapse, 300)
-      }
-      navbar.removeClass(collapsed)
-      if (navbar.height() > 60) {
-        navbar.addClass(collapsed)
-      }
-    }
   }
 
   function webWorkerSearch() {
