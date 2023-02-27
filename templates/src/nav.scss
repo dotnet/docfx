@@ -12,12 +12,19 @@
 .navbar-brand {
   display: flex;
   align-items: center;
-  padding-left: 0;
+  padding-left: 1rem;
   margin-right: 1rem;
 }
 
-#autocollapse .navbar-brand {
-  margin-left: 0;
+.breadcrumb {
+  margin: 0;
+  padding: 10px 0;
+  background-color: inherit;
+  white-space: nowrap;
+}
+
+.breadcrumb > li + li::before {
+  content: "\00a0/";
 }
 
 .sideaffix {
