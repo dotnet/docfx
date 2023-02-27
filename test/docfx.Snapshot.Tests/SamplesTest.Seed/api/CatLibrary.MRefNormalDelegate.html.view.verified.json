@@ -1,3 +1,285 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f8fd2d3de95b57c86551375c9d375626ccdc914aeb4e4609b164a04851f654c9
-size 7380
+﻿{
+  "uid": "CatLibrary.MRefNormalDelegate",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "parent": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "children": [],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefNormalDelegate"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "MRefNormalDelegate"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "CatLibrary.MRefNormalDelegate"
+    },
+    {
+      "lang": "vb",
+      "value": "CatLibrary.MRefNormalDelegate"
+    }
+  ],
+  "type": "delegate",
+  "source": {
+    "remote": {
+      "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": "MRefNormalDelegate",
+    "path": "dotnet/solution/CatLibrary/Class1.cs",
+    "startLine": 349.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "CatLibrary"
+  ],
+  "namespace": {
+    "uid": "CatLibrary",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "CatLibrary"
+      },
+      {
+        "lang": "vb",
+        "value": "CatLibrary"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"2\">Delegate in the namespace</p>\n",
+  "example": [],
+  "syntax": {
+    "content": [
+      {
+        "lang": "csharp",
+        "value": "public delegate void MRefNormalDelegate(List<string> pics, out string name)"
+      },
+      {
+        "lang": "vb",
+        "value": "Public Delegate Sub MRefNormalDelegate(pics As List(Of String), name As String)"
+      }
+    ],
+    "parameters": [
+      {
+        "id": "pics",
+        "type": {
+          "uid": "System.Collections.Generic.List{System.String}",
+          "definition": "System.Collections.Generic.List`1",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "List<string>"
+            },
+            {
+              "lang": "vb",
+              "value": "List(Of String)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "List<string>"
+            },
+            {
+              "lang": "vb",
+              "value": "List(Of String)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "System.Collections.Generic.List<string>"
+            },
+            {
+              "lang": "vb",
+              "value": "System.Collections.Generic.List(Of String)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>&lt;<xref uid=\"System.String\" text=\"string\"/>&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"System.Collections.Generic.List`1\" text=\"List\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">a name list of pictures.</p>\n"
+      },
+      {
+        "id": "name",
+        "type": {
+          "uid": "System.String",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "string"
+            },
+            {
+              "lang": "vb",
+              "value": "String"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "string"
+            },
+            {
+              "lang": "vb",
+              "value": "String"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "string"
+            },
+            {
+              "lang": "vb",
+              "value": "String"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"System.String\" text=\"string\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"System.String\" text=\"string\"/>"
+            }
+          ]
+        },
+        "description": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">give out the needed name.</p>\n"
+      }
+    ]
+  },
+  "level": 0.0,
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_key": "obj/api/CatLibrary.MRefNormalDelegate.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/CatLibrary.MRefNormalDelegate.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_MRefNormalDelegate.md&value=---%0Auid%3A%20CatLibrary.MRefNormalDelegate%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L350",
+  "remarks": null,
+  "conceptual": "",
+  "implements": null,
+  "seealso": null,
+  "id": "CatLibrary_MRefNormalDelegate",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "isClass": true,
+  "inDelegate": true,
+  "_disableToc": false
+}

@@ -1,3 +1,369 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ecb5b633e9901ba3989513f466c21c8f72b6ee703625fdb13fa459ad97563012
-size 10380
+﻿{
+  "uid": "MyExample.ExampleClass.#ctor*",
+  "isEii": false,
+  "isExtensionMethod": false,
+  "children": [
+    {
+      "inConstructor": true,
+      "typePropertyName": "inConstructor",
+      "id": "constructors",
+      "children": [
+        {
+          "uid": "MyExample.ExampleClass.#ctor",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "MyExample.ExampleClass",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ExampleClass()"
+            },
+            {
+              "lang": "vb",
+              "value": "New()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ExampleClass.ExampleClass()"
+            },
+            {
+              "lang": "vb",
+              "value": "ExampleClass.New()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "MyExample.ExampleClass.ExampleClass()"
+            },
+            {
+              "lang": "vb",
+              "value": "MyExample.ExampleClass.New()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"MyExample.ExampleClass.#ctor\" text=\"ExampleClass()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public ExampleClass()"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New()"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/extensions/src/ExampleClass.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "src/ExampleClass.cs",
+            "startLine": 12.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "cs.temp.dll"
+          ],
+          "namespace": "MyExample",
+          "overload": {
+            "uid": "MyExample.ExampleClass.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "ExampleClass"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "ExampleClass.ExampleClass"
+              },
+              {
+                "lang": "vb",
+                "value": "ExampleClass.New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "MyExample.ExampleClass.ExampleClass"
+              },
+              {
+                "lang": "vb",
+                "value": "MyExample.ExampleClass.New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"MyExample.ExampleClass.#ctor*\" text=\"ExampleClass\"/>"
+              }
+            ],
+            "id": "MyExample_ExampleClass__ctor_"
+          },
+          "level": 0.0,
+          "type": "constructor",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass__ctor.md&value=---%0Auid%3A%20MyExample.ExampleClass.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L13",
+          "remarks": null,
+          "conceptual": "",
+          "implements": null,
+          "example": null,
+          "seealso": null,
+          "id": "MyExample_ExampleClass__ctor",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    }
+  ],
+  "langs": [
+    "csharp",
+    "vb"
+  ],
+  "name": [
+    {
+      "lang": "csharp",
+      "value": "ExampleClass"
+    },
+    {
+      "lang": "vb",
+      "value": "New"
+    }
+  ],
+  "nameWithType": [
+    {
+      "lang": "csharp",
+      "value": "ExampleClass.ExampleClass"
+    },
+    {
+      "lang": "vb",
+      "value": "ExampleClass.New"
+    }
+  ],
+  "fullName": [
+    {
+      "lang": "csharp",
+      "value": "MyExample.ExampleClass.ExampleClass"
+    },
+    {
+      "lang": "vb",
+      "value": "MyExample.ExampleClass.New"
+    }
+  ],
+  "type": "constructor",
+  "source": {
+    "remote": {
+      "path": "samples/extensions/src/ExampleClass.cs",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "id": ".ctor",
+    "path": "src/ExampleClass.cs",
+    "startLine": 12.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "assemblies": [
+    "cs.temp.dll"
+  ],
+  "namespace": {
+    "uid": "MyExample",
+    "isEii": false,
+    "isExtensionMethod": false,
+    "name": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "nameWithType": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "fullName": [
+      {
+        "lang": "csharp",
+        "value": "MyExample"
+      },
+      {
+        "lang": "vb",
+        "value": "MyExample"
+      }
+    ],
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"MyExample\" text=\"MyExample\"/>"
+      }
+    ],
+    "level": 0.0
+  },
+  "level": 0.0,
+  "_isOverload": true,
+  "_systemKeys": [
+    "uid",
+    "isEii",
+    "isExtensionMethod",
+    "parent",
+    "children",
+    "href",
+    "langs",
+    "name",
+    "nameWithType",
+    "fullName",
+    "type",
+    "source",
+    "documentation",
+    "assemblies",
+    "namespace",
+    "summary",
+    "remarks",
+    "example",
+    "syntax",
+    "overridden",
+    "overload",
+    "exceptions",
+    "seealso",
+    "see",
+    "inheritance",
+    "derivedClasses",
+    "level",
+    "implements",
+    "inheritedMembers",
+    "extensionMethods",
+    "conceptual",
+    "platform",
+    "attributes",
+    "additionalNotes"
+  ],
+  "_splitReference": true,
+  "_key": "api/MyExample.ExampleClass.-ctor.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/MyExample.ExampleClass.-ctor.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "_shared": {}
+  },
+  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=MyExample_ExampleClass__ctor_.md&value=---%0Auid%3A%20MyExample.ExampleClass.%23ctor*%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/src/ExampleClass.cs/#L13",
+  "summary": "",
+  "remarks": null,
+  "conceptual": "",
+  "syntax": null,
+  "implements": null,
+  "example": null,
+  "seealso": null,
+  "id": "MyExample_ExampleClass__ctor_",
+  "hideTitleType": false,
+  "hideSubtitle": false,
+  "_disableToc": false,
+  "inConstructor": true,
+  "isCollection": true
+}

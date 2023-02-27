@@ -1,3 +1,198 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0bb3378d1ffa719f14d8f041c05faa0bb05d6093519b8f1519c9ca631ffa0382
-size 6673
+﻿{
+  "items": [
+    {
+      "name": "MyExample",
+      "href": "MyExample.html",
+      "topicHref": "MyExample.html",
+      "topicUid": "MyExample",
+      "items": [
+        {
+          "name": "ExampleClass",
+          "href": "MyExample.ExampleClass.html",
+          "topicHref": "MyExample.ExampleClass.html",
+          "topicUid": "MyExample.ExampleClass",
+          "items": [
+            {
+              "name": "Constructors",
+              "items": [
+                {
+                  "name": "ExampleClass",
+                  "href": "MyExample.ExampleClass.-ctor.html",
+                  "topicHref": "MyExample.ExampleClass.-ctor.html",
+                  "topicUid": "MyExample.ExampleClass.#ctor*",
+                  "name.vb": "New",
+                  "fullName": "MyExample.ExampleClass.ExampleClass",
+                  "nameWithType": "ExampleClass.ExampleClass",
+                  "type": "Constructor",
+                  "isEii": false,
+                  "fullName.vb": "MyExample.ExampleClass.New",
+                  "nameWithType.vb": "ExampleClass.New",
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                }
+              ],
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4.0,
+              "leaf": false
+            },
+            {
+              "name": "Properties",
+              "items": [
+                {
+                  "name": "MyProperty",
+                  "href": "MyExample.ExampleClass.MyProperty.html",
+                  "topicHref": "MyExample.ExampleClass.MyProperty.html",
+                  "topicUid": "MyExample.ExampleClass.MyProperty*",
+                  "fullName": "MyExample.ExampleClass.MyProperty",
+                  "nameWithType": "ExampleClass.MyProperty",
+                  "type": "Property",
+                  "isEii": false,
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                }
+              ],
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4.0,
+              "leaf": false
+            },
+            {
+              "name": "Methods",
+              "items": [
+                {
+                  "name": "MyMethod",
+                  "href": "MyExample.ExampleClass.MyMethod.html",
+                  "topicHref": "MyExample.ExampleClass.MyMethod.html",
+                  "topicUid": "MyExample.ExampleClass.MyMethod*",
+                  "fullName": "MyExample.ExampleClass.MyMethod",
+                  "nameWithType": "ExampleClass.MyMethod",
+                  "type": "Method",
+                  "isEii": false,
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                }
+              ],
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4.0,
+              "leaf": false
+            },
+            {
+              "name": "Events",
+              "items": [
+                {
+                  "name": "MyEvent",
+                  "href": "MyExample.ExampleClass.MyEvent.html",
+                  "topicHref": "MyExample.ExampleClass.MyEvent.html",
+                  "topicUid": "MyExample.ExampleClass.MyEvent",
+                  "fullName": "MyExample.ExampleClass.MyEvent",
+                  "nameWithType": "ExampleClass.MyEvent",
+                  "type": "Event",
+                  "isEii": false,
+                  "tocHref": null,
+                  "level": 5.0,
+                  "items": [],
+                  "leaf": true
+                }
+              ],
+              "topicHref": null,
+              "tocHref": null,
+              "level": 4.0,
+              "leaf": false
+            }
+          ],
+          "tocHref": null,
+          "level": 3.0,
+          "leaf": false
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0,
+      "leaf": false
+    }
+  ],
+  "_key": "api/toc.yml",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "api/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/api/toc.yml",
+  "_tocPath": "api/toc.html",
+  "_tocRel": "toc.html",
+  "__global": {
+    "namespacesInSubtitle": "Namespaces",
+    "classesInSubtitle": "Classes",
+    "structsInSubtitle": "Structs",
+    "interfacesInSubtitle": "Interfaces",
+    "enumsInSubtitle": "Enums",
+    "delegatesInSubtitle": "Delegates",
+    "constructorsInSubtitle": "Constructors",
+    "fieldsInSubtitle": "Fields",
+    "propertiesInSubtitle": "Properties",
+    "methodsInSubtitle": "Methods",
+    "eventsInSubtitle": "Events",
+    "operatorsInSubtitle": "Operators",
+    "eiisInSubtitle": "Explicit Interface Implementations",
+    "functionsInSubtitle": "Functions",
+    "variablesInSubtitle": "Variables",
+    "typeAliasesInSubtitle": "Type Aliases",
+    "membersInSubtitle": "Members",
+    "improveThisDoc": "Improve this Doc",
+    "viewSource": "View Source",
+    "inheritance": "Inheritance",
+    "inheritedMembers": "Inherited Members",
+    "package": "Package",
+    "namespace": "Namespace",
+    "assembly": "Assembly",
+    "syntax": "Syntax",
+    "overrides": "Overrides",
+    "implements": "Implements",
+    "remarks": "Remarks",
+    "examples": "Examples",
+    "seealso": "See Also",
+    "declaration": "Declaration",
+    "parameters": "Parameters",
+    "typeParameters": "Type Parameters",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "returns": "Returns",
+    "fieldValue": "Field Value",
+    "propertyValue": "Property Value",
+    "eventType": "Event Type",
+    "variableValue": "Variable Value",
+    "typeAliasType": "Type Alias Type",
+    "exceptions": "Exceptions",
+    "condition": "Condition",
+    "extensionMethods": "Extension Methods",
+    "note": "<h5>Note</h5>",
+    "warning": "<h5>Warning</h5>",
+    "tip": "<h5>Tip</h5>",
+    "important": "<h5>Important</h5>",
+    "caution": "<h5>Caution</h5>",
+    "tocToggleButton": "Show / Hide Table of Contents",
+    "tocFilter": "Enter here to filter...",
+    "search": "Search",
+    "searchResults": "Search Results for",
+    "pageFirst": "First",
+    "pagePrev": "Previous",
+    "pageNext": "Next",
+    "pageLast": "Last",
+    "inThisArticle": "In This Article",
+    "_shared": {}
+  },
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1.0,
+  "leaf": false
+}

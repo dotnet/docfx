@@ -1,3 +1,60 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fbfec8cd3285424f209dbfc0bff97e8c284ba5ac19515f61c81a711fa956ee0d
-size 1465
+﻿{
+  "items": [
+    {
+      "name": "Getting Started",
+      "href": "docfx_getting_started.html",
+      "topicHref": "docfx_getting_started.html",
+      "tocHref": null,
+      "level": 2.0,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Engineering Guidelines",
+      "href": "engineering_guidelines.html",
+      "topicHref": "engineering_guidelines.html",
+      "tocHref": null,
+      "level": 2.0,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "CSharp Coding Standards",
+      "href": "csharp_coding_standards.html",
+      "topicHref": "csharp_coding_standards.html",
+      "tocHref": null,
+      "level": 2.0,
+      "items": [],
+      "leaf": true
+    },
+    {
+      "name": "Markdown",
+      "href": "../docs/markdown.html",
+      "topicHref": "../docs/markdown.html",
+      "tocHref": null,
+      "level": 2.0,
+      "items": [],
+      "leaf": true
+    }
+  ],
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "_key": "articles/toc.md",
+  "_lang": "csharp",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "articles/toc.html",
+  "_rel": "../",
+  "_tocKey": "~/articles/toc.md",
+  "_tocPath": "articles/toc.html",
+  "_tocRel": "toc.html",
+  "topicHref": null,
+  "tocHref": null,
+  "name": null,
+  "level": 1.0,
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
+}

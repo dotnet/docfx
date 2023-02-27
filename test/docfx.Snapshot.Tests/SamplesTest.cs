@@ -106,7 +106,6 @@ namespace Microsoft.DocAsCode.Tests
                 foreach (var url in s_screenshotUrls)
                 {
                     await page.GotoAsync($"http://localhost:{port}/{url}");
-                    await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                     await page.WaitForFunctionAsync("window.docfx.ready");
 
                     if (url.Contains("?term=cat"))
