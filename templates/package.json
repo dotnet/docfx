@@ -22,7 +22,6 @@
     "highlight.js": "^11.7.0",
     "jquery": "~3.6.3",
     "jsx-dom": "^8.0.5",
-    "lit-html": "^2.6.1",
     "lunr": "2.3.9",
     "mark.js": "^8.4.0",
     "twbs-pagination": "josecebe/twbs-pagination#1.3.1"
