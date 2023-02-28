@@ -3,6 +3,21 @@
 <div class="sidenav hide-when-search">
   <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">{{__global.tocToggleButton}}</a>
   <div class="sidetoggle collapse" id="sidetoggle">
-    <div id="sidetoc"></div>
+    <div id="sidetoc">
+      <div>
+        {{^_disableSideFilter}}
+        <div class="sidefilter">
+          <form class="toc-filter">
+            <span class="glyphicon glyphicon-filter filter-icon"></span>
+            <input type="text" id="toc_filter_input" placeholder="{{__global.tocFilter}}" onkeypress="if(event.keyCode==13) {return false;}">
+          </form>
+        </div>
+        {{/_disableSideFilter}}
+        <div class="sidetoc">
+          <div class="toc" id="toc">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

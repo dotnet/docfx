@@ -3,10 +3,17 @@
 
 import React from 'jsx-dom'
 import { meta } from './helper'
+import { renderToc, TocNode } from './toc'
 
 export type NavItem = {
   name: string
   href: URL
+}
+
+export async function renderNav() {
+  renderInThisArticle()
+  const [activeNavItems, activeTocItems] = await Promise.all([renderNavbar(), renderToc()])
+  renderBreadcrumb([...activeNavItems, ...activeTocItems])
 }
 
 /**
@@ -36,6 +43,13 @@ export async function renderNavbar(): Promise<NavItem[]> {
     </ul>)
 
   return activeItem ? [activeItem] : []
+}
+
+export function renderBreadcrumb(items: (NavItem | TocNode)[]) {
+  document.getElementById('breadcrumb')?.appendChild(
+    <ul class='level1 breadcrumb'>
+      {items.map(i => <li><a href={i.href}>{i.name}</a></li>)}
+    </ul>)
 }
 
 export function renderInThisArticle() {
