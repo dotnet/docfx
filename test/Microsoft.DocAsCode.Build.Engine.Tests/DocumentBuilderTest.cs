@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
@@ -229,7 +229,7 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                     var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
-                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">Hello World</h1>",
+                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\">Hello World</h1>",
                         model["rawTitle"]);
                     Assert.Equal(
                         string.Join(
@@ -238,18 +238,18 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"34\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
-                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">link text</a>",
-                            $"Test link: <a href=\"~/{resourceFile}\" data-raw-source=\"[link text 2](../Microsoft.DocAsCode.Build.Engine.Tests.dll)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">link text 2</a>",
-                            $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" data-raw-source=\"[link text 3](xref:XRef2 &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" sourceendlinenumber=\"14\">link text 3</a>",
-                            $"Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" title=\"title\" data-raw-source=\"[link text 4](xref:XRef2#anchor &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"15\" sourceendlinenumber=\"15\">link text 4</a>",
-                            $"Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" title=\"title\" data-raw-source=\"[link text 5](xref:%58%52%65%66%32#anchor &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"16\" sourceendlinenumber=\"16\">link text 5</a>",
-                            $"Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\" data-raw-source=\"[link text 6](xref:invalid#anchor &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"17\" sourceendlinenumber=\"17\">link text 6</a>",
-                            $"Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:XRef2&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"18\" sourceendlinenumber=\"18\"></xref>",
-                            $"Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:XRef2#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"19\" sourceendlinenumber=\"19\"></xref>",
-                            $"Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:%58%52%65%66%32#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"20\" sourceendlinenumber=\"20\"></xref>",
-                            $"Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:invalid#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"21\" sourceendlinenumber=\"21\"></xref>",
-                            $"Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef2\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"22\" sourceendlinenumber=\"22\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\"></xref>",
+                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\">link text</a>",
+                            $"Test link: <a href=\"~/{resourceFile}\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\">link text 2</a>",
+                            $"Test link style xref: <a href=\"xref:XRef2\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" title=\"title\">link text 3</a>",
+                            $"Test link style xref with anchor: <a href=\"xref:XRef2#anchor\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"15\" title=\"title\">link text 4</a>",
+                            $"Test encoded link style xref with anchor: <a href=\"xref:%58%52%65%66%32#anchor\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"16\" title=\"title\">link text 5</a>",
+                            $"Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"17\" title=\"title\">link text 6</a>",
+                            $"Test autolink style xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:XRef2&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"18\"></xref>",
+                            $"Test autolink style xref with anchor: <xref href=\"XRef2#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:XRef2#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"19\"></xref>",
+                            $"Test encoded autolink style xref with anchor: <xref href=\"%58%52%65%66%32#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:%58%52%65%66%32#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"20\"></xref>",
+                            $"Test invalid autolink style xref with anchor: <xref href=\"invalid#anchor\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:invalid#anchor&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"21\"></xref>",
+                            $"Test short xref: <xref href=\"XRef2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef2\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"22\"></xref>",
                             "Test xref with query string: <xref href=\"XRef2?text=Foo%3CT%3E&it=remain\"></xref>",
                             "Test xref with query and bookmark carried to output: <xref href=\"XRef2?view=query#bookmark\"></xref>",
                             "Test invalid xref with query string: <xref href=\"invalid?alt=Foo%3CT%3E\"></xref>",
@@ -257,12 +257,12 @@ tagRules : [
                             "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
-                            $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\" sourceendlinenumber=\"30\"></xref>",
-                            $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\" sourceendlinenumber=\"31\"></xref>",
-                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" data-raw-source=\"[GitHub](GitHub.md?shouldBeAbbreviated=true#test)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\" sourceendlinenumber=\"32\">GitHub</a>",
+                            $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\"></xref>",
+                            $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\"></xref>",
+                            $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\">GitHub</a></p>",
                             "<p>",
-                            @"test</p>",
-                            ""),
+                            @"test",
+                            "</p>"),
                         model[Constants.PropertyName.Conceptual]);
                     Assert.Equal(
                         string.Join(
@@ -292,10 +292,10 @@ tagRules : [
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test external xref with absolute URL and anchor: <a class=\"xref\" href=\"https://docs.python.org/3.5/library/stdtypes.html#str\">str</a>",
                             "Test invalid autolink xref: &lt;xref:?displayProperty=fullName&gt;",
-                            "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a>",
+                            "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a></p>",
                             "<p>",
-                            "test</p>",
-                            ""),
+                            "test",
+                            "</p>"),
                         File.ReadAllText(conceptualOutputPath));
                     Assert.Equal("Conceptual", model["type"]);
                     Assert.Equal("Hello world!", model["meta"]);
@@ -637,14 +637,14 @@ exports.getOptions = function (){
                         "rawTitle",
                         "wordCount"
                     },
-                    ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"6\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link text</a>\ntest</p>\n",
+                    ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\">link text</a>\ntest</p>\n",
                     ["type"] = "Conceptual",
                     ["source"] = model["source"], // reuse model's source, not testing this
                     ["documentation"] = model["source"],
                     ["path"] = $"{_inputFolder}/test.md",
                     ["meta"] = "Hello world!",
                     ["title"] = "Hello World",
-                    ["rawTitle"] = $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">Hello World</h1>",
+                    ["rawTitle"] = $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\">Hello World</h1>",
                     ["uid"] = "XRef1",
                     ["wordCount"] = 5,
                     ["__global"] = new
@@ -773,24 +773,24 @@ exports.getOptions = function (){
                     Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
                     var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
                     Assert.Equal(
-                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Hello World</h1>",
+                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"1\">Hello World</h1>",
                         model["rawTitle"]);
                     Assert.Equal(
                         string.Join(
                             "\n",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"11\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link 1](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"2\">link 1</a>",
-                            $"Test link: <a href=\"http://www.microsoft.com\" data-raw-source=\"[link 2](http://www.microsoft.com)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"3\" sourceendlinenumber=\"3\">link 2</a>",
-                            $"Test link: <a href=\"a%20b%20c.md\" data-raw-source=\"[link 3](a%20b%20c.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">link 3</a>",
-                            $"Test link: <a href=\"c:\\a.md\" data-raw-source=\"[link 4](c:\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link 4</a>",
-                            $"Test link: <a href=\"\\a.md\" data-raw-source=\"[link 5](\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">link 5</a>",
-                            $"Test link: <a href=\"urn:a.md\" data-raw-source=\"[link 6](urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">link 6</a>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\">link 1</a>",
+                            $"Test link: <a href=\"http://www.microsoft.com\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"3\">link 2</a>",
+                            $"Test link: <a href=\"a%20b%20c.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\">link 3</a>",
+                            $"Test link: <a href=\"c:%5Ca.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\">link 4</a>",
+                            $"Test link: <a href=\"%5Ca.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\">link 5</a>",
+                            $"Test link: <a href=\"urn:a.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\">link 6</a>",
                             "Test link: [link 7](bad urn:a.md)",
-                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md#top\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\">link 8</a>",
-                            $"Test link: <a href=\"a.md#top\" data-raw-source=\"[link 9](a.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link 9</a>",
-                            $"Test link: <a href=\"#top\" data-raw-source=\"[link 10](#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link 10</a></p>",
+                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md#top\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\">link 8</a>",
+                            $"Test link: <a href=\"a.md#top\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\">link 9</a>",
+                            $"Test link: <a href=\"#top\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\">link 10</a></p>",
                             ""),
-                        model[Constants.PropertyName.Conceptual]);
+                        model[Constants.PropertyName.Conceptual].ToString().Replace("\r", ""));
                     Assert.Equal(
                         string.Join(
                             "\n",
@@ -798,8 +798,8 @@ exports.getOptions = function (){
                             "<p>Test link: <a href=\"test/test.html\">link 1</a>",
                             "Test link: <a href=\"http://www.microsoft.com\">link 2</a>",
                             "Test link: <a href=\"a%20b%20c.md\">link 3</a>",
-                            "Test link: <a href=\"c:\\a.md\">link 4</a>",
-                            "Test link: <a href=\"\\a.md\">link 5</a>",
+                            "Test link: <a href=\"c:%5Ca.md\">link 4</a>",
+                            "Test link: <a href=\"%5Ca.md\">link 5</a>",
                             "Test link: <a href=\"urn:a.md\">link 6</a>",
                             "Test link: [link 7](bad urn:a.md)",
                             "Test link: <a href=\"test/test.html#top\">link 8</a>",
@@ -1021,7 +1021,7 @@ exports.getOptions = function (){
 
         private void Init(string phaseName)
         {
-            Listener = TestLoggerListener.CreateLoggerListenerWithPhaseEndFilter(phaseName);
+            Listener = TestLoggerListener.CreateLoggerListenerWithPhaseEndFilter("BuildConceptualDocument");
             Logger.RegisterListener(Listener);
         }
 

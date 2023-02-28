@@ -38,11 +38,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Html = $"{{\"name\":\"0>0>markdown\",\"children\":[{json}]}}",
                 };
             }
-
-            public MarkupResult Markup(string src, string path, bool enableValidation)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }
