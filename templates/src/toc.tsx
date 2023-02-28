@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import React, { createRef } from 'jsx-dom'
+import * as React from 'jsx-dom'
 import { meta } from './helper'
 
 export type TocNode = {
@@ -61,9 +61,9 @@ export async function renderToc(): Promise<TocNode[]> {
     return false
   }
 
-  function renderTocNodes(nodes: TocNode[], level): React.ReactElement[] {
+  function renderTocNodes(nodes: TocNode[], level) {
     return nodes.map(node => {
-      const li = createRef()
+      const li = React.createRef()
       const { href, name, items } = node
       const isLeaf = !items || items.length <= 0
       const active = activeNodes.includes(node)

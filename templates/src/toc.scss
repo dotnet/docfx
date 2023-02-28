@@ -3,8 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-.sidenav,
-.toc {
+.sidenav {
   background-color: #f1f1f1;
   overflow-x: hidden;
 }
@@ -20,90 +19,6 @@
   border-left: 1px solid #e7e7e7;
   border-right: 1px solid #e7e7e7;
   z-index: 1;
-}
-
-.sidetoc-expand > .caret {
-  margin-left: 0;
-  margin-top: -2px;
-}
-
-.sidetoc-expand > .caret-side {
-  border-left: 4px solid;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  margin-left: 4px;
-  margin-top: -4px;
-}
-
-.sidetoc-heading {
-  font-weight: 500;
-}
-
-.toc {
-  margin: 0 0 0 10px;
-  padding: 0 10px;
-}
-
-.toc ul {
-  font-size: 12px;
-  margin: 0 0 0 3px;
-}
-
-.toc .nav > li > ul {
-  display: none;
-}
-
-.toc .nav > li > a.sidetoc-expand {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.toc .nav > li > a {
-  color: #666;
-  margin-left: 5px;
-  display: inline-block;
-  padding: 0;
-}
-
-.toc .nav > li > a:hover,
-.toc .nav > li > a:focus {
-  color: #000;
-  background: none;
-  text-decoration: inherit;
-}
-
-.toc .nav > li.active > a {
-  color: #337ab7;
-}
-
-.toc .nav > li.active > a:hover,
-.toc .nav > li.active > a:focus {
-  color: #23527c;
-}
-
-.toc .nav > li.filtered > ul,
-.toc .nav > li.in > ul {
-  display: block;
-}
-
-.toc .level1 > li {
-  font-weight: bold;
-  margin-top: 10px;
-  position: relative;
-  font-size: 16px;
-}
-
-.toc .level2,
-.toc .level3,
-.toc .level4,
-.toc .level5,
-.toc .level6,
-.toc .level7,
-.toc .level8,
-.toc .level9 {
-  font-weight: normal;
-  font-size: 14px;
 }
 
 .toc-toggle {
@@ -182,34 +97,68 @@
   }
 }
 
-/* TOC appearance */
 .toc {
-  a:not([href]) {
-    &,
-    &:hover {
-      cursor: pointer;
-      text-decoration: none;
-    }
-  }
+  margin: 0 0 0 1rem;
+  padding: .5rem 0;
+
   ul {
+    font-size: 12px;
+    margin: 0 0 0 3px;
     padding-left: 16px;
     list-style-type: none;
   }
+
   li {
     padding: .25em 0;
   }
-}
-
-/* TOC item toggle */
-.toc {
-  padding: .5em 0;
 
   li > ul {
     display: none;
   }
+
   li.filtered > ul,
   li.active > ul {
     display: block
+  }
+
+  li > a {
+    color: #666;
+    margin-left: 5px;
+    display: inline-block;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      color: #000;
+      background: none;
+      text-decoration: inherit;
+    }
+  }
+
+  li.active > a {
+    color: #337ab7;
+
+    &:hover,
+    &:focus {
+      color: #23527c;
+    }
+  }
+
+  li.filtered > ul {
+    display: block;
+  }
+  
+  .level1 > li {
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  @for $i from 2 through 9 {
+    .level#{$i} {
+      font-weight: normal;
+      font-size: 14px;
+    }
   }
 
   .toggle::before {
@@ -223,7 +172,7 @@
     transform-origin: .5em 50%;
   }
 
-  li.active > .toggle:before,
+  li.active > .toggle::before,
   li.filtered > .toggle::before {
     transform: rotate(90deg);
   }

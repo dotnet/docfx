@@ -2,6 +2,7 @@
   "extends": "stylelint-config-standard-scss",
   "ignoreFiles": [
     "**/*.ts",
+    "**/*.tsx",
     "src/docfx.scss"
   ],
   "rules": {
