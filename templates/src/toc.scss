@@ -44,16 +44,6 @@
   padding: 0 10px;
 }
 
-.expand-stub {
-  position: absolute;
-  left: -10px;
-  font-weight: bold;
-}
-
-.expand-stub + a {
-  font-weight: bold;
-}
-
 .toc ul {
   font-size: 12px;
   margin: 0 0 0 3px;
@@ -72,7 +62,7 @@
 .toc .nav > li > a {
   color: #666;
   margin-left: 5px;
-  display: block;
+  display: inline-block;
   padding: 0;
 }
 
@@ -90,22 +80,6 @@
 .toc .nav > li.active > a:hover,
 .toc .nav > li.active > a:focus {
   color: #23527c;
-}
-
-.toc .nav > li > .expand-stub {
-  cursor: pointer;
-}
-
-.toc .nav > li > .expand-stub::before,
-.toc .nav > li.active > .expand-stub::before {
-  content: "+";
-}
-
-.toc .nav > li.active > .expand-stub::before,
-.toc .nav > li.in > .expand-stub::before,
-.toc .nav > li.filtered > .expand-stub::before,
-.toc .nav > li.in.active > .expand-stub::before {
-  content: "-";
 }
 
 .toc .nav > li.filtered > ul,
@@ -129,7 +103,6 @@
 .toc .level8,
 .toc .level9 {
   font-weight: normal;
-  margin: 5px 0 0 15px;
   font-size: 14px;
 }
 
@@ -204,38 +177,58 @@
     border: none;
   }
 
-  .toc .nav > li,
-  .toc .nav > li > a {
-    display: inline-block;
-  }
-
-  .toc li::after {
-    margin-left: -3px;
-    margin-right: 5px;
-    content: ", ";
-    color: #666;
-  }
-
-  .toc .level1 > li {
-    display: block;
-  }
-
-  .toc .level1 > li::after {
-    display: none;
-  }
-
   .toc-toggle {
     display: block;
   }
 }
 
-/* For toc iframe */
-@media (max-width: 260px) {
-  .toc .level2 > li {
-    display: block;
+/* TOC appearance */
+.toc {
+  a:not([href]) {
+    &,
+    &:hover {
+      cursor: pointer;
+      text-decoration: none;
+    }
+  }
+  ul {
+    padding-left: 16px;
+    list-style-type: none;
+  }
+  li {
+    padding: .25em 0;
+  }
+}
+
+/* TOC item toggle */
+.toc {
+  padding: .5em 0;
+
+  li > ul {
+    display: none;
+  }
+  li.filtered > ul,
+  li.active > ul {
+    display: block
   }
 
-  .toc .level2 > li::after {
+  .toggle::before {
+    position: absolute;
+    display: inline-block;
+    margin: 0 0 0 -1.25em;
+    cursor: pointer;
+    width: 1.25em;
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+    transition: transform 0.35s ease;
+    transform-origin: .5em 50%;
+  }
+
+  li.active > .toggle:before,
+  li.filtered > .toggle::before {
+    transform: rotate(90deg);
+  }
+
+  .hide {
     display: none;
   }
 }

@@ -11,8 +11,7 @@ import { highlight } from './highlight'
 import { breakText } from './helper'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
-import { renderToc } from './toc'
-import { renderInThisArticle, renderNavbar } from './nav'
+import { renderNav } from './nav'
 
 declare global {
   interface Window {
@@ -36,10 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   enableSearch()
 
   renderMarkdown()
-  renderNavbar()
-  renderToc()
-  renderInThisArticle()
-
+  renderNav()
   breakText()
 
   window.docfx.ready = true
