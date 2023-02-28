@@ -47,10 +47,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         public MarkupResult Markup(string content, string filePath)
         {
-            return Markup(content, filePath, false);
+            return Markup(content, filePath, false, false);
         }
 
-        public MarkupResult Markup(string content, string filePath, bool enableValidation)
+        public MarkupResult Markup(string content, string filePath, bool enableValidation, bool multipleYamlHeader)
         {
             if (content == null)
             {
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 throw new ArgumentException("file path can't be null or empty.");
             }
 
-            var pipeline = CreateMarkdownPipeline(isInline: false, enableValidation: enableValidation);
+            var pipeline = CreateMarkdownPipeline(isInline: false, enableValidation, multipleYamlHeader);
 
             using (InclusionContext.PushFile((RelativePath)filePath))
             {
@@ -137,7 +137,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             }
         }
 
-        private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool enableValidation)
+        private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool enableValidation, bool multipleYamlHeader = false)
         {
             object enableSourceInfoObj = null;
             _parameters?.Extensions?.TryGetValue(Constants.EngineProperties.EnableSourceInfo, out enableSourceInfoObj);
@@ -147,7 +147,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var builder = new MarkdownPipelineBuilder();
 
             builder.UseDocfxExtensions(_context);
-            builder.Extensions.Insert(0, new YamlHeaderExtension(_context));
+            builder.Extensions.Insert(0, new YamlHeaderExtension(_context) { AllowInMiddleOfDocument = multipleYamlHeader });
 
             if (enableSourceInfo)
             {

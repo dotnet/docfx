@@ -146,8 +146,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             try
             {
-                var mr = MarkdownService is MarkdigMarkdownService
-                    ? MarkdownService.Markup(markdown, ft.File, enableValidation)
+                var mr = MarkdownService is MarkdigMarkdownService markdig
+                    ? markdig.Markup(markdown, ft.File, enableValidation, ft.Type is DocumentType.Overwrite)
                     : MarkdownService.Markup(markdown, ft.File);
                 if (omitParse)
                 {

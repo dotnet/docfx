@@ -32,11 +32,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Html = html,
                 };
             }
-
-            public MarkupResult Markup(string src, string path, bool enableValidation)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 }
