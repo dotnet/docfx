@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.Tests
     [Trait("Stage", "Snapshot")]
     public class SamplesTest
     {
+        private static readonly bool s_includeBuildServer = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UPDATE_SNAPSHOT"));
+
         private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
 
         private static readonly string[] s_screenshotUrls = new[]
@@ -71,7 +73,7 @@ namespace Microsoft.DocAsCode.Tests
                 Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
             }
 
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(s_includeBuildServer);
         }
 
 #if NET7_0_OR_GREATER
@@ -133,7 +135,7 @@ namespace Microsoft.DocAsCode.Tests
                             .Verify(new Target("html", NormalizeHtml(html)))
                             .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
                             .UseFileName(fileName)
-                            .AutoVerify(includeBuildServer: false);
+                            .AutoVerify(s_includeBuildServer);
                     }
 
                     // Verify screenshots only on windows
@@ -146,7 +148,7 @@ namespace Microsoft.DocAsCode.Tests
                         .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
                         .UseDirectory(directory)
                         .UseFileName(fileName)
-                        .AutoVerify(includeBuildServer: false);
+                        .AutoVerify(s_includeBuildServer);
                 }
 
                 await page.CloseAsync();
@@ -215,7 +217,7 @@ namespace Microsoft.DocAsCode.Tests
                 Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
             }
 
-            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+            await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(s_includeBuildServer);
         }
 #endif
 
@@ -231,7 +233,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(0, Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath));
 #endif
 
-            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+            return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(s_includeBuildServer);
         }
 
         private static int Exec(string filename, string args, string workingDirectory = null)
