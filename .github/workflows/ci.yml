@@ -16,8 +16,25 @@ jobs:
     - uses: actions/checkout@v3
       with:
         lfs: true
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: |
+          6.x
+          7.x
 
-    - uses: ./.github/actions/build
+    - run: npm install
+      working-directory: templates
+
+    - run: npm run lint
+      working-directory: templates
+
+    - run: npm run build
+      working-directory: templates
+
+    - run: dotnet build -c Release
 
     - run: choco install wkhtmltopdf
       if: matrix.os == 'windows-latest'
