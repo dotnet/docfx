@@ -12,7 +12,16 @@ exports.transform = function (model) {
 
     groupChildren(model);
     transformItem(model, 1);
-    return model;
+
+    for (var key in model) {
+      if (key[0] === '_') {
+        delete model[key]
+      }
+    }
+    
+    return {
+        content: JSON.stringify(model)
+    };
 
     function groupChildren(item) {
         if (!item || !item.items || item.items.length == 0) {

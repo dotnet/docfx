@@ -21,14 +21,6 @@ export function renderNavbar() {
   } else {
     $('#navbar ul a.active').parents('li').addClass(active)
     renderBreadcrumb()
-    showSearch()
-  }
-
-  function showSearch() {
-    if ($('#search-results').length !== 0) {
-      $('#search').show()
-      $('body').trigger('searchEvent')
-    }
   }
 
   function loadNavbar() {
@@ -41,7 +33,6 @@ export function renderNavbar() {
     if (tocPath) tocPath = tocPath.replace(/\\/g, '/')
     $.get(navbarPath, function(data) {
       $(data).find('#toc>ul').appendTo('#navbar')
-      showSearch()
       const index = navbarPath.lastIndexOf('/')
       let navrel = ''
       if (index > -1) {
@@ -81,7 +72,6 @@ export function renderNavbar() {
             }
           }
         })
-      renderNavbar()
     })
   }
 }
