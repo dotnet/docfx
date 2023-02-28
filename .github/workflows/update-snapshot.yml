@@ -1,0 +1,28 @@
+name: update-snapshot
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  update-snapshot:
+    runs-on: windows-latest
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/update-snapshot')
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - uses: ./.github/actions/build
+
+    - run: dotnet test -c Release --filter Stage=Snapshot --no-build --collect:"XPlat Code Coverage"
+      working-directory: test/docfx.Snapshot.Tests
+      env:
+        UPDATE_SNAPSHOT: true
+
+    - run: |
+        git add -A
+        git commit -m "update snapshots"
+        git push
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+

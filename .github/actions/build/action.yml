@@ -1,0 +1,29 @@
+name: build
+description: build the project
+runs:
+  using: "composite"
+  steps:
+  - uses: actions/setup-node@v3
+    with:
+      node-version: 16
+
+  - uses: actions/setup-dotnet@v3
+    with:
+      dotnet-version: |
+        6.x
+        7.x
+
+  - run: npm install
+    shell: bash
+    working-directory: templates
+
+  - run: npm run lint
+    shell: bash
+    working-directory: templates
+
+  - run: npm run build
+    shell: bash
+    working-directory: templates
+
+  - run: dotnet build -c Release
+    shell: bash
