@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import React from 'jsx-dom'
-import { render, html } from 'lit-html'
 import { meta } from './helper'
 
 export type NavItem = {
@@ -45,11 +44,12 @@ export function renderInThisArticle() {
     return
   }
 
-  const dom = html`
-    <h5>In this article</h5>
-    <ul class="nav bs-docs-sidenav">${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
-
-  render(dom, document.getElementById('affix'))
+  const affix = document.getElementById('affix')
+  affix?.appendChild(<h5>In this article</h5>)
+  affix?.appendChild(
+    <ul class='nav bs-docs-sidenav'>{
+      Array.from(h2s).map(h2 => <li><a href={`#${h2.id}`}>{h2.innerText}</a></li>)
+    }</ul>)
 }
 
 function findActiveItem(items: NavItem[]): NavItem {
