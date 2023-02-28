@@ -1,0 +1,77 @@
+// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+import React from 'jsx-dom'
+import { render, html } from 'lit-html'
+import { meta } from './helper'
+
+export type NavItem = {
+  name: string
+  href: URL
+}
+
+/**
+ * @returns active navbar items
+ */
+export async function renderNavbar(): Promise<NavItem[]> {
+  const navrel = meta('docfx:navrel')
+  if (!navrel) {
+    return []
+  }
+
+  const navUrl = new URL(navrel, window.location.href)
+  const { items } = await fetch(navUrl).then(res => res.json())
+  const navItems = items.map(a => ({ name: a.name, href: new URL(a.href, navUrl) }))
+  if (navItems.length <= 0) {
+    return []
+  }
+
+  const activeItem = findActiveItem(navItems)
+  document.getElementById('navbar')?.appendChild(
+    <ul class='nav level1 navbar-nav'>
+      {navItems.map(item => {
+        const current = (item === activeItem ? 'page' : false)
+        const active = (item === activeItem ? 'active' : null)
+        return <li class={active}><a href={item.href} class={active} aria-current={current}>{item.name}</a></li>
+      })}
+    </ul>)
+
+  return activeItem ? [activeItem] : []
+}
+
+export function renderInThisArticle() {
+  const h2s = document.querySelectorAll<HTMLHeadingElement>('article h2')
+  if (h2s.length <= 0) {
+    return
+  }
+
+  const dom = html`
+    <h5>In this article</h5>
+    <ul class="nav bs-docs-sidenav">${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
+
+  render(dom, document.getElementById('affix'))
+}
+
+function findActiveItem(items: NavItem[]): NavItem {
+  const url = new URL(window.location.href)
+  let activeItem: NavItem
+  let maxPrefix = 0
+  for (const item of items) {
+    const prefix = commonUrlPrefix(url, item.href)
+    if (prefix > maxPrefix) {
+      maxPrefix = prefix
+      activeItem = item
+    }
+  }
+  return activeItem
+}
+
+function commonUrlPrefix(url: URL, base: URL): number {
+  const urlSegments = url.pathname.split('/')
+  const baseSegments = base.pathname.split('/')
+  let i = 0
+  while (i < urlSegments.length && i < baseSegments.length && urlSegments[i] === baseSegments[i]) {
+    i++
+  }
+  return i
+}
