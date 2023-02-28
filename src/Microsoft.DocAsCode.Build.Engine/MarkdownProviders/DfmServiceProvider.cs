@@ -126,11 +126,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return result;
             }
 
-            public MarkupResult Markup(string src, string path, bool enableValidation)
-            {
-                throw new NotImplementedException();
-            }
-
             public void Dispose()
             {
                 (Renderer as IDisposable)?.Dispose();

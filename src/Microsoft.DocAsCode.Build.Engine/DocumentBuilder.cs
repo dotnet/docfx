@@ -239,13 +239,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             
                 var result = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, markdownEngineName);
-                    if (result == null)
-                    {
+                if (result == null)
+                {
                     Logger.LogError($"Unable to find markdown engine: {markdownEngineName}");
                     throw new DocfxException($"Unable to find markdown engine: {markdownEngineName}");
-                    }
-                Logger.LogInfo($"Markdown engine is {markdownEngineName}", code: "MarkdownEngineName");
-                    return result;
+                }
+                return result;
             }
         }
 

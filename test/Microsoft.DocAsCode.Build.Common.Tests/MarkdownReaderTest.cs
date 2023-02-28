@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.MarkdigEngine;
 
     public class MarkdownReaderTest
     {
@@ -33,7 +34,7 @@ This is unit test!";
             File.WriteAllText(fullPath, content);
             var host = new HostService(null, Enumerable.Empty<FileModel>())
             {
-                MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters {BasePath = string.Empty}),
+                MarkdownService = new MarkdigServiceProvider().CreateMarkdownService(new MarkdownServiceParameters {BasePath = string.Empty}),
                 SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
             };
 
@@ -43,7 +44,7 @@ This is unit test!";
             Assert.Single(results);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("\n<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"6\">This is unit test!</p>\n", results[0].Conceptual);
             File.Delete(fileName);
 
             // Test conceptual content between two yamlheader
@@ -66,11 +67,10 @@ uid: Test2
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Test2", results[1].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("\n<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
             Assert.Equal(string.Empty, results[1].Conceptual);
             File.Delete(fileName);
 
-            // Invalid yamlheader is not supported
             content = @"---
 uid: Test1
 remarks: Hello
@@ -85,10 +85,12 @@ uid: Test2
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
-            Assert.Single(results);
+            Assert.Equal(2, results.Count);
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<h2 id=\"this-is-unit-test\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"6\">This is unit test!</h2>\n<h2 id=\"uid-test2\" sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"8\">uid: Test2</h2>\n", results[0].Conceptual);
+            Assert.Equal("\n<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("Test2", results[1].Uid);
+            Assert.Equal("", results[1].Conceptual);
             File.Delete(fileName);
 
             // Test conceptual content with extra empty line between two yamlheader
@@ -114,7 +116,7 @@ uid: Test2
             Assert.Equal("Test1", results[0].Uid);
             Assert.Equal("Test2", results[1].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("\n<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"7\">This is unit test!</p>\n", results[0].Conceptual);
             Assert.Equal(string.Empty, results[1].Conceptual);
             File.Delete(fileName);
 
@@ -127,7 +129,7 @@ uid: Test2
             Assert.Single(results);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            Assert.Equal("\n<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
             File.Delete(fileName);
 
             // Test link to files and Uids in overwrite document
@@ -177,12 +179,15 @@ This is unit test!";
             Assert.Equal(5, uidLinkSource[0].LineNumber);
             Assert.Equal(fileName, uidLinkSource[0].SourceFile);
             Assert.Equal("NotExistUid", uidLinkSource[0].Target);
-            Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw-source=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
-<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""8""><a href=""link.md"" data-raw-source=""[Not exist link](link.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a>
-<a href=""link2.md"" data-raw-source=""[Not exist link2](link2.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""8"" sourceendlinenumber=""8"">Not exist link2</a></p>
-<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""10"" sourceendlinenumber=""10"">This is unit test!</p>
-".Replace("\r\n", "\n"),
-                results[0].Conceptual);
+            Assert.Equal(
+                """
+                <p sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="5"><xref href="NotExistUid" data-throw-if-not-resolved="False" data-raw-source="@NotExistUid" sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="5"></xref></p>
+                <p sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="7"><a href="link.md" sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="7">Not exist link</a>
+                <a href="link2.md" sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="8">Not exist link2</a></p>
+                <p sourcefile="ut_ReadMarkdownAsOverwrite.md" sourcestartlinenumber="10">This is unit test!</p>
+                """,
+                results[0].Conceptual.Trim(),
+                ignoreLineEndingDifferences: true);
             File.Delete(fileName);
         }
     }
