@@ -3,138 +3,29 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-.docs-search {
-  background: white;
-  vertical-align: middle;
-}
-
-.docs-search > .search-query {
-  font-size: 14px;
-  border: 0;
-  width: 120%;
-  color: #555;
-}
-
-.docs-search > .search-query:focus {
-  outline: 0;
-}
-
-.search-results-frame {
-  clear: both;
-  display: table;
-  width: 100%;
-}
-
-.search-results-container {
-  padding-bottom: 1em;
-  border-top: 1px solid #111;
-  background: rgb(25 25 25 / 50%);
-}
-
-.search-results-container .search-results-group {
-  padding: 10px;
-  padding-top: 50px !important;
-}
-
-.search-results-group-heading {
-  font-family: "Open Sans", sans-serif;
-  padding-left: 10px;
-  color: white;
-}
-
-.search-close {
-  position: absolute;
-  left: 50%;
-  margin-left: -100px;
-  color: white;
-  text-align: center;
-  padding: 5px;
-  background: #333;
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  width: 200px;
-  box-shadow: 0 0 10px #111;
-}
-
-#search {
-  display: none;
-}
-
-/* Search results display */
 #search-results {
-  max-width: 960px !important;
-  margin: 120px auto 115px;
+  margin: 2em 1em;
   line-height: 1.8;
-  display: none;
-}
 
-#search-results > .search-list {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 50px;
-}
-
-#search-results p {
-  text-align: center;
-}
-
-#search-results p .index-loading {
-  animation: index-loading 1.5s infinite linear;
-  font-size: 2.5rem;
-}
-
-@keyframes index-loading {
-  from {
-    transform: scale(1) rotate(0deg);
+  .search-list {
+    font-size: .9em;
+    color: $secondary;
   }
 
-  to {
-    transform: scale(1) rotate(360deg);
+  .sr-item {
+    margin-bottom: 1.5em;
+  
+    >.item-title {
+      font-size: x-large;
+    }
+  
+    >.item-href {
+      color: #093;
+      font-size: small;
+    }
+    
+    >.item-brief {
+      font-size: small;
+    }
   }
-}
-
-@keyframes index-loading {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes index-loading {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-#search-results .sr-items {
-  font-size: 24px;
-}
-
-.pagination > li > a {
-  color: #47a7a0;
-}
-
-.pagination > .active > a {
-  background-color: #47a7a0;
-  border-color: #47a7a0;
-}
-
-.sr-item {
-  margin-bottom: 25px;
-}
-
-.sr-item > .item-href {
-  font-size: 14px;
-  color: #093;
-}
-
-.sr-item > .item-brief {
-  font-size: 13px;
 }

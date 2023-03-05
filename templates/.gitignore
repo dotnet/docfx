@@ -1,9 +1,11 @@
-dist
-node_modules
 *.vendor.css
 *.vendor.js
 *.min.js
 *.min.css
 *.map
+*.woff
+*.woff2
+
+dist
 fonts
-glyphicons-*.*
+node_modules

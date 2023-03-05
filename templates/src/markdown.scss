@@ -7,31 +7,26 @@
 .alert h5 {
   text-transform: uppercase;
   font-weight: bold;
-  margin-top: 0;
 }
 
 .alert h5::before {
+  font-family: "bootstrap-icons", sans-serif;
   position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: "Glyphicons Halflings", sans-serif;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin-right: 5px;
+  top: 3px;
+  margin-right: .5em;
   font-weight: normal;
 }
 
 .alert-info h5::before {
-  content: "\e086";
+  content: "\F431";
 }
 
 .alert-warning h5::before {
-  content: "\e127";
+  content: "\F333";
 }
 
 .alert-danger h5::before {
-  content: "\e107";
+  content: "\F623";
 }
 
 /* For Embedded Video */
@@ -39,6 +34,7 @@ div.embeddedvideo {
   padding-top: 56.25%;
   position: relative;
   width: 100%;
+  margin-bottom: 1em;
 }
 
 div.embeddedvideo iframe {

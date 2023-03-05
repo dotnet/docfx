@@ -1,0 +1,201 @@
+/**
+ * Copyright (c) Microsoft Corporation. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+*/
+
+$header-height: 60px;
+$footer-height: 60px;
+$actionbar-min-height: 40px;
+
+// Makes a div sticky to top
+@mixin sticky-top($top: 0) {
+  position: sticky;
+  top: $top;
+  background-color: $body-bg;
+  z-index: 100;
+}
+
+html {
+  width: 100vw;
+  min-height: 100vh;
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "article"
+    "footer";
+  grid-template-columns: auto;
+  grid-template-rows: min-content 1fr min-content;
+  grid-auto-rows: 0;
+  grid-auto-columns: 0;
+
+  >:not(article):not(header):not(footer) {
+    display: none;
+  }
+  
+  >header {
+    grid-area: header;
+    display: flex;
+    align-items: stretch;
+
+    @include media-breakpoint-up(md) {
+      @include sticky-top;
+      height: $header-height;
+    }
+
+    >nav {
+      flex: 1;
+    }
+  }
+
+  >footer {
+    display: flex;
+    grid-area: footer;
+    padding: 1rem 0;
+    height: $footer-height;
+    border-top: 1px solid $border-color;
+  }
+
+  >article {
+    grid-area: article;
+    min-width: 0;
+
+    [id] {
+      scroll-margin-top: $header-height;
+    }
+  }
+
+  @media print {
+    >header, >footer {
+      display: none;
+    }
+  }
+}
+
+@media not print {
+  body:not([data-search]) {
+
+    // Default layout: with header, footer, actionbar, affix, and toc
+    &[data-layout=""],
+    &[data-layout=conceptual] {
+      gap: 0 2rem;
+      grid-template-rows: min-content min-content 1fr min-content;
+      grid-template-columns: minmax(200px, .4fr) 1fr min-content;
+      grid-template-areas:
+        "header header header"
+        "toc actionbar affix"
+        "toc article affix"
+        "toc footer footer";
+
+      >article {
+        margin: 0 0 4rem 0;
+      }
+
+      >.actionbar {
+        grid-area: actionbar;
+        display: flex;
+        align-items: flex-start;
+        margin-top: 2rem;
+        min-height: $actionbar-min-height;
+      }
+
+      >.toc-offcanvas {
+        grid-area: toc;
+        display: block;
+        padding: 2rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: calc(100vh - #{$header-height});
+
+        @include sticky-top($header-height);
+
+        @include media-breakpoint-down(md) {
+          width: 0;
+          height: 0;
+          padding: 0;
+        }
+      }
+
+      >.affix {
+        grid-area: affix;
+        display: block;
+        width: 254px;
+        padding: 2rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: calc(100vh - #{$header-height} - #{$footer-height});
+
+        @include sticky-top($header-height);
+
+        @include media-breakpoint-down(xl) {
+          display: none;
+        }
+      }
+
+      @include media-breakpoint-down(md) {
+        gap: 0;
+        grid-template-columns: auto;
+        grid-template-rows: min-content min-content 1fr min-content;
+        grid-template-areas:
+          "header"
+          "actionbar"
+          "article"
+          "footer";
+
+        >article, >.actionbar {
+          margin-left: 1rem;
+          margin-right: 1rem;
+        }
+      }
+    }
+
+    // Landing layout: with header, footer and article only
+    &[data-layout="landing"] {
+      >article {
+        max-width: map-get($container-max-widths, xxl);
+        justify-self: center;
+        margin: 2rem 2rem 4rem 2rem;
+      }
+
+      @include media-breakpoint-down(sm) {
+        >article {
+          margin: 2rem 1rem 4rem 1rem;
+        }
+      }
+    }
+
+    // Chromeless layout: with no header, footer, actionbar, affix, and toc
+    &[data-layout="chromeless"] {
+      grid-template-areas: "article";
+      grid-template-columns: auto;
+      grid-template-rows: auto;
+
+      >header, >footer {
+        display: none;
+      }
+    }
+  }
+
+  // Search layout
+  body[data-search] {
+    grid-template-areas:
+      "header"
+      "search"
+      "footer";
+    grid-auto-rows: 0;
+    grid-auto-columns: 0;
+
+    >.search-results {
+      grid-area: search;
+      display: block;
+    }
+  
+    >:not(.search-results):not(header):not(footer) {
+      display: none;
+    }
+  }
+}

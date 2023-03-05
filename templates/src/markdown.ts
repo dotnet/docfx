@@ -56,8 +56,9 @@ function renderLinks() {
 function renderAnchor() {
   const anchors = new AnchorJs()
   anchors.options = {
-    placement: 'left',
-    visible: 'hover'
+    placement: 'right',
+    visible: 'hover',
+    icon: '#'
   }
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 }

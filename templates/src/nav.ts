@@ -21,14 +21,6 @@ export function renderNavbar() {
   } else {
     $('#navbar ul a.active').parents('li').addClass(active)
     renderBreadcrumb()
-    showSearch()
-  }
-
-  function showSearch() {
-    if ($('#search-results').length !== 0) {
-      $('#search').show()
-      $('body').trigger('searchEvent')
-    }
   }
 
   function loadNavbar() {
@@ -40,14 +32,15 @@ export function renderNavbar() {
     let tocPath = meta('docfx:tocrel') || ''
     if (tocPath) tocPath = tocPath.replace(/\\/g, '/')
     $.get(navbarPath, function(data) {
-      $(data).find('#toc>ul').appendTo('#navbar')
-      showSearch()
+      $(data).find('#toc>ul').prependTo('#navbar')
       const index = navbarPath.lastIndexOf('/')
       let navrel = ''
       if (index > -1) {
         navrel = navbarPath.substr(0, index + 1)
       }
       $('#navbar>ul').addClass('navbar-nav')
+      $('#navbar>ul>li').addClass('nav-item')
+      $('#navbar>ul>li>a').addClass('nav-link')
       const currentAbsPath = getCurrentWindowAbsolutePath()
       // set active item
       $('#navbar')
@@ -81,7 +74,6 @@ export function renderNavbar() {
             }
           }
         })
-      renderNavbar()
     })
   }
 }
@@ -94,7 +86,7 @@ export function renderInThisArticle() {
 
   const dom = html`
     <h5>In this article</h5>
-    <ul class="nav bs-docs-sidenav">${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
+    <ul>${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
 
   render(dom, document.getElementById('affix'))
 }

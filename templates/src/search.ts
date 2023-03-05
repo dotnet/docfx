@@ -2,91 +2,48 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { meta } from './helper'
-import $ from 'jquery'
-import Mark from 'mark.js'
+import { html, render, TemplateResult } from 'lit-html'
+import { classMap } from 'lit-html/directives/class-map.js'
+
+type SearchHit = {
+  href: string
+  title: string
+  keywords: string
+}
+
+let query
 
 /**
  * Support full-text-search
  */
 export function enableSearch() {
-  let query
-  const relHref = meta('docfx:rel')
-  if (typeof relHref === 'undefined') {
+  const searchQuery = document.getElementById('search-query') as HTMLInputElement
+  if (!searchQuery || !window.Worker) {
     return
   }
-  try {
-    webWorkerSearch()
-    highlightKeywords()
-    addSearchEvent()
-  } catch (e) {
-    console.error(e)
-  }
 
-  function webWorkerSearch() {
-    const indexReady = $.Deferred()
-
-    const worker = new Worker(relHref + 'styles/search-worker.min.js')
-    worker.onmessage = function(oEvent) {
-      switch (oEvent.data.e) {
-        case 'index-ready':
-          indexReady.resolve()
-          break
-        case 'query-ready':
-          handleSearchResults(oEvent.data.d)
-          break
-      }
-    }
-
-    indexReady.promise().done(function() {
-      $('body').bind('queryReady', function() {
-        worker.postMessage({ q: query })
-      })
-      if (query && (query.length >= 3)) {
-        worker.postMessage({ q: query })
-      }
-    })
-  }
-
-  // Highlight the searching keywords
-  function highlightKeywords() {
-    const q = new URLSearchParams(window.location.search).get('q')
-    if (q) {
-      const keywords = q.split('%20')
-      keywords.forEach(function(keyword) {
-        if (keyword !== '') {
-          mark('.data-searchable *', keyword)
-          mark('article *', keyword)
-        }
-      })
+  const relHref = meta('docfx:rel') || ''
+  const worker = new Worker(relHref + 'styles/search-worker.min.js')
+  worker.onmessage = function(oEvent) {
+    switch (oEvent.data.e) {
+      case 'index-ready':
+        searchQuery.disabled = false
+        searchQuery.addEventListener('input', onSearchQueryInput)
+        break
+      case 'query-ready':
+        renderSearchResults(oEvent.data.d, 0)
+        window.docfx.searchResultReady = true
+        break
     }
   }
 
-  function addSearchEvent() {
-    $('body').bind('searchEvent', function() {
-      $('#search-query').keypress(function(e) {
-        return e.which !== 13
-      })
-
-      $('#search-query').keyup(function() {
-        query = $(this).val()
-        if (query.length < 3) {
-          flipContents('show')
-        } else {
-          flipContents('hide')
-          $('body').trigger('queryReady')
-          $('#search-results>.search-list>span').text('"' + query + '"')
-        }
-      }).off('keydown')
-    })
-  }
-
-  function flipContents(action) {
-    if (action === 'show') {
-      $('.hide-when-search').show()
-      $('#search-results').hide()
+  function onSearchQueryInput() {
+    query = searchQuery.value
+    if (query.length < 3) {
+      document.body.removeAttribute('data-search')
     } else {
-      $('.hide-when-search').hide()
-      $('#search-results').show()
+      document.body.setAttribute('data-search', 'true')
+      worker.postMessage({ q: query })
     }
   }
 
@@ -116,53 +73,94 @@ export function enableSearch() {
     }
   }
 
-  function handleSearchResults(hits) {
+  function renderSearchResults(hits: SearchHit[], page: number) {
     const numPerPage = 10
-    const pagination = $('#pagination')
-    pagination.empty()
-    pagination.removeData('twbs-pagination')
-    if (hits.length === 0) {
-      $('#search-results>.sr-items').html('<p>No results found</p>')
-    } else {
-      pagination.twbsPagination({
-        first: pagination.data('first'),
-        prev: pagination.data('prev'),
-        next: pagination.data('next'),
-        last: pagination.data('last'),
-        totalPages: Math.ceil(hits.length / numPerPage),
-        visiblePages: 5,
-        onPageClick: function(event, page) {
-          const start = (page - 1) * numPerPage
-          const curHits = hits.slice(start, start + numPerPage)
-          $('#search-results>.sr-items').empty().append(
-            curHits.map(function(hit) {
-              const currentUrl = window.location.href
-              const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
-              const itemHref = relHref + hit.href + '?q=' + query
-              const itemTitle = hit.title
-              const itemBrief = extractContentBrief(hit.keywords)
+    const totalPages = Math.ceil(hits.length / numPerPage)
 
-              const itemNode = $('<div>').attr('class', 'sr-item')
-              const itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr('target', '_blank').attr('rel', 'noopener noreferrer').text(itemTitle))
-              const itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref)
-              const itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief)
-              itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode)
-              return itemNode
-            })
-          )
-          query.split(/\s+/).forEach(function(word) {
-            if (word !== '') {
-              mark('#search-results>.sr-items *', word)
-            }
-          })
-        }
-      })
+    render(
+      renderPage(page),
+      document.getElementById('search-results'))
+
+    function renderPage(page: number): TemplateResult {
+      if (hits.length === 0) {
+        return html`<div class="search-list">No results for "${query}"</div>`
+      }
+
+      const start = page * numPerPage
+      const curHits = hits.slice(start, start + numPerPage)
+
+      const items = html`
+        <div class="search-list">${hits.length} results for "${query}"</div>
+        <div class="sr-items">${curHits.map(hit => {
+          const currentUrl = window.location.href
+          const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
+          const itemHref = relHref + hit.href + '?q=' + query
+          const itemBrief = extractContentBrief(hit.keywords)
+
+          return html`
+            <div class="sr-item">
+              <div class="item-title"><a href="${itemHref}" target="_blank" rel="noopener noreferrer">${mark(hit.title, query)}</a></div>
+              <div class="item-href">${mark(itemRawHref, query)}</div>
+              <div class="item-brief">${mark(itemBrief, query)}</div>
+            </div>`
+          })}
+        </div>`
+
+      return html`${items} ${renderPagination()}`
     }
 
-    window.docfx.searchResultReady = true
+    function renderPagination() {
+      const maxVisiblePages = 5
+      const startPage = Math.max(0, Math.min(page - 2, totalPages - maxVisiblePages))
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages)
+      const pages = Array.from(new Array(endPage - startPage).keys()).map(i => i + startPage)
+
+      return html`
+        <nav>
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link ${classMap({ disabled: page <= 0 })}" href="#" aria-label="Previous"
+                @click="${() => gotoPage(page - 1)}">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            ${pages.map(i => html`
+              <li class="page-item">
+                <a class="page-link ${classMap({ active: page === i })}" href="#"
+                  @click="${() => gotoPage(i)}">${i + 1}</a></li>`)}
+            <li class="page-item">
+              <a class="page-link ${classMap({ disabled: page >= totalPages - 1 })}" href="#" aria-label="Next"
+                @click="${() => gotoPage(page + 1)}">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>`
+
+      function gotoPage(page: number) {
+        if (page >= 0 && page < totalPages) {
+          renderSearchResults(hits, page)
+        }
+      }
+    }
   }
 }
 
-function mark(selector: string, keyword: string) {
-  new Mark(document.querySelectorAll(selector)).mark(keyword)
+function mark(text: string, query: string): TemplateResult {
+  const words = query.split(/\s+/g)
+  const wordsLower = words.map(w => w.toLowerCase())
+  const textLower = text.toLowerCase()
+  const result = []
+  let lastEnd = 0
+  for (let i = 0; i < wordsLower.length; i++) {
+    const word = wordsLower[i]
+    const index = textLower.indexOf(word, lastEnd)
+    if (index >= 0) {
+      result.push(html`${text.slice(lastEnd, index)}`)
+      result.push(html`<b>${text.slice(index, index + word.length)}</b>`)
+      lastEnd = index + word.length
+    }
+  }
+  result.push(html`${text.slice(lastEnd)}`)
+  return html`${result}`
 }

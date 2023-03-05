@@ -1,10 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<footer>
-  <div class="footer">
-    <div class="container">
-      {{{_appFooter}}}
-      {{^_appFooter}}<span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>{{/_appFooter}}
-    </div>
-  </div>
-</footer>
+<div class="container-fluid">
+  {{{_appFooter}}}
+  {{^_appFooter}}<span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>{{/_appFooter}}
+</div>
