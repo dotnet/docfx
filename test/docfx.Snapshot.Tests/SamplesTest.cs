@@ -107,13 +107,14 @@ namespace Microsoft.DocAsCode.Tests
                 {
                     await page.GotoAsync($"http://localhost:{port}/{url}");
                     await page.WaitForFunctionAsync("window.docfx.ready");
+                    await page.WaitForFunctionAsync("window.docfx.searchReady");
 
                     if (url.Contains("?term=cat"))
                     {
                         if (isMobile)
                         {
-                            await (await page.QuerySelectorAsync(".navbar-toggle")).ClickAsync();
-                            await page.WaitForSelectorAsync("#navbar.in");
+                            await (await page.QuerySelectorAsync("[data-bs-target='#navbar']")).ClickAsync();
+                            await page.WaitForSelectorAsync("#navbar.show");
                         }
 
                         await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");

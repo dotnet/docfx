@@ -13,100 +13,94 @@
     <meta name="docfx:rel" content="../">
     
   </head>
-  <body data-spy="scroll" data-target="#affix" data-offset="120">
-    <div id="wrapper">
-      <header>
+  <body data-layout="">
+    <header class="border-bottom">
 
-        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-fluid">
 
-              <a class="navbar-brand" href="../index.html">
-                <img id="logo" class="svg" src="../logo.svg" alt="Seed">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" height="40" src="../logo.svg" alt="Seed">
   Seed
-              </a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbar">
-              <form class="navbar-form navbar-right" role="search" id="search" style="display: block;">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
-                </div>
-              </form>
-            <ul class="nav level1 navbar-nav">
-                <li>
-                    <a href="../index.html" name="" title="Home">Home</a>
-                </li>
-                <li>
-                    <a href="../articles/docfx_getting_started.html" name="articles/toc.html" title="Articles">Articles</a>
-                </li>
-                <li>
-                    <a href="../api/BuildFromAssembly.html" name="api/toc.html" title="API Documentation">API Documentation</a>
-                </li>
-                <li class="active">
-                    <a href="../restapi/petstore.html" name="restapi/toc.html" title="REST API" class="active">REST API</a>
-                </li>
-          </ul></div>
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navbar"><ul class="nav level1 navbar-nav">
+            <li class="nav-item">
+                <a href="../index.html" name="" title="Home" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="../articles/docfx_getting_started.html" name="articles/toc.html" title="Articles" class="nav-link">Articles</a>
+            </li>
+            <li class="nav-item">
+                <a href="../api/BuildFromAssembly.html" name="api/toc.html" title="API Documentation" class="nav-link">API Documentation</a>
+            </li>
+            <li class="nav-item">
+                <a href="../restapi/petstore.html" name="restapi/toc.html" title="REST API" class="nav-link active">REST API</a>
+            </li>
+      </ul>
+            <form class="d-flex ms-auto" role="search" id="search">
+              <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
+            </form>
           </div>
-        </nav>
-
-        <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb"><ul class="level1 breadcrumb"><li><a href="http://localhost:8089/restapi/petstore.html">REST API</a></li><li><a href="http://localhost:8089/restapi/petstore.html">Pet Store API</a></li></ul></div>
         </div>
-      </header>
-      <div class="container body-content">
+      </nav>
+    </header>
 
-        <div id="search-results">
-          <div class="search-list">Search Results for <span></span></div>
-          <div class="sr-items">
-            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
-          </div>
-          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+    <div class="container-xxl search-results">
+      <div id="search-results"></div>
+    </div>
+
+    <div class="toc-offcanvas">
+      <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <nav class="sidetoc" id="sidetoc">
+<div>
+  <div class="toc" id="toc">
+
+      <ul class="nav level1">
+            <li class="active in">
+                <a href="petstore.html" name="" title="Pet Store API" class="active">Pet Store API</a>
+            </li>
+            <li>
+                <a href="contacts.html" name="" title="Contacts API">Contacts API</a>
+            </li>
+      </ul>
+  </div>
+</div></nav>
         </div>
       </div>
-      <div role="main" class="container body-content hide-when-search">
-
-        <div class="sidenav hide-when-search">
-          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
-          <div class="sidetoggle collapse" id="sidetoggle">
-            <div id="sidetoc"><div>
-    <div class="sidefilter">
-      <form class="toc-filter">
-        <span class="glyphicon glyphicon-filter filter-icon"></span>
-        <span class="glyphicon glyphicon-remove clear-icon" id="toc_filter_clear" style="display: none;"></span>
-        <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
-      </form>
     </div>
-    <div class="sidetoc">
-      <div class="toc" id="toc">
 
-          <ul class="nav level1">
-                <li class="active in">
-                    <a href="petstore.html" name="" title="Pet Store API" class="active">Pet Store API</a>
-                </li>
-                <li>
-                    <a href="contacts.html" name="" title="Contacts API">Contacts API</a>
-                </li>
-          </ul>
-      </div>
+    <div class="actionbar">
+      <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <nav id="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="http://localhost:8089/restapi/petstore.html">REST API</a></li><li class="breadcrumb-item"><a href="http://localhost:8089/restapi/petstore.html">Pet Store API</a></li>
+    </ol></nav>
     </div>
-  </div></div>
-          </div>
-        </div>
-        <div class="article row grid-right">
-          <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0">
+
+    <div class="affix">
+      <nav id="affix">
+    <h5>In this article</h5>
+    <ul><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user</a></li><li><a href="#other-apis">Other APIs</a></li></ul></nav>
+    </div>
+
+    <article data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0">
 
 <h1 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0" class="text-capitalize text-break">Swagger Petstore</h1>
   <div class="markdown level0 conceptual">
 <p>Describe APIs in Pet Store</p>
 </div>
-<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>pet</h2>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <div class="markdown level0 description"><p>Description for pet tag</p>
 </div>
 
@@ -117,7 +111,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>addPet</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize">addPet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Add a new pet to the store</p>
 </div>
   <h5>Request</h5>
@@ -178,7 +172,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>updatePet</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePet" class="text-capitalize">updatePet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Update an existing pet</p>
 </div>
   <h5>Request</h5>
@@ -248,7 +242,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByStatus" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>findPetsByStatus</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByStatus" class="text-capitalize">findPetsByStatus<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByStatus" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Finds Pets by status</p>
 </div>
   <div class="markdown level1 description"><p>Multiple status values can be provided with comma separated strings</p>
@@ -313,7 +307,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByTags" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>findPetsByTags</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/findPetsByTags" class="text-capitalize">findPetsByTags<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_findPetsByTags" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Finds Pets by tags</p>
 </div>
   <div class="markdown level1 description"><p>Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.</p>
@@ -378,7 +372,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deletePet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>deletePet</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deletePet" class="text-capitalize">deletePet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deletePet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Deletes a pet</p>
 </div>
   <h5>Request</h5>
@@ -447,7 +441,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getPetById" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>getPetById</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getPetById" class="text-capitalize">getPetById<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getPetById" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Find pet by ID</p>
 </div>
   <div class="markdown level1 description"><p>Returns a single pet</p>
@@ -519,7 +513,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePetWithForm" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>updatePetWithForm</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updatePetWithForm" class="text-capitalize">updatePetWithForm<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updatePetWithForm" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Updates a pet in the store with form data</p>
 </div>
   <h5>Request</h5>
@@ -589,7 +583,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>uploadFile</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/uploadFile" class="text-capitalize">uploadFile<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_uploadFile" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>uploads an image</p>
 </div>
   <h5>Request</h5>
@@ -651,7 +645,7 @@
       </tbody>
     </table></div>
   </div>
-<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>store</h2>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <div class="markdown level0 description"><p>Access to Petstore orders</p>
 </div>
   <div class="markdown level0 conceptual"><p>Additional description for store tag</p>
@@ -664,7 +658,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>addPet</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet" class="text-capitalize">addPet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_addPet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Add a new pet to the store</p>
 </div>
   <h5>Request</h5>
@@ -725,7 +719,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getInventory" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>getInventory</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getInventory" class="text-capitalize">getInventory<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getInventory" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Returns pet inventories by status</p>
 </div>
   <div class="markdown level1 description"><p>Returns a map of status codes to quantities</p>
@@ -763,7 +757,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/placeOrder" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>placeOrder</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/placeOrder" class="text-capitalize">placeOrder<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_placeOrder" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Place an order for a pet</p>
 </div>
   <h5>Request</h5>
@@ -826,7 +820,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>deleteOrder</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder" class="text-capitalize">deleteOrder<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Delete purchase order by ID</p>
 </div>
   <div class="markdown level1 description"><p>For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors</p>
@@ -891,7 +885,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getOrderById" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>getOrderById</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getOrderById" class="text-capitalize">getOrderById<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getOrderById" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Find purchase order by ID</p>
 </div>
   <div class="markdown level1 description"><p>For valid response try integer IDs with value &gt;= 1 and &lt;= 10. Other values will generated exceptions</p>
@@ -955,7 +949,7 @@
       </tbody>
     </table></div>
   </div>
-<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>user</h2>
+<h2 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <div class="markdown level0 description"><p>Operations about user</p>
 </div>
 
@@ -966,7 +960,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>createUser</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUser" class="text-capitalize">createUser<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUser" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Create user</p>
 </div>
   <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
@@ -1024,7 +1018,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithArrayInput" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>createUsersWithArrayInput</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithArrayInput" class="text-capitalize">createUsersWithArrayInput<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithArrayInput" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Creates list of users with given input array</p>
 </div>
   <h5>Request</h5>
@@ -1080,7 +1074,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithListInput" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>createUsersWithListInput</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/createUsersWithListInput" class="text-capitalize">createUsersWithListInput<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_createUsersWithListInput" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Creates list of users with given input array</p>
 </div>
   <h5>Request</h5>
@@ -1136,7 +1130,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/loginUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>loginUser</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/loginUser" class="text-capitalize">loginUser<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_loginUser" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Logs user into the system</p>
 </div>
   <h5>Request</h5>
@@ -1206,7 +1200,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/logoutUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>logoutUser</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/logoutUser" class="text-capitalize">logoutUser<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_logoutUser" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Logs out current logged in user session</p>
 </div>
   <h5>Request</h5>
@@ -1242,7 +1236,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>deleteUser</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteUser" class="text-capitalize">deleteUser<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteUser" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Delete user</p>
 </div>
   <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
@@ -1307,7 +1301,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getUserByName" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>getUserByName</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/getUserByName" class="text-capitalize">getUserByName<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_getUserByName" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Get user by user name</p>
 </div>
   <h5>Request</h5>
@@ -1369,7 +1363,7 @@
       </tbody>
     </table></div>
   </div>
-<h2 id="other-apis"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#other-apis" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Other APIs</h2>
+<h2 id="other-apis">Other APIs<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#other-apis" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
@@ -1378,7 +1372,7 @@
   <span class="small pull-right mobile-hide">
     <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1">View Source</a>
   </span>
-   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updateUser" class="text-capitalize"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>updateUser</h3>
+   <h3 id="petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" data-uid="petstore.swagger.io/v2/Swagger Petstore/1.0.0/updateUser" class="text-capitalize">updateUser<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_updateUser" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
   <div class="markdown level1 summary"><p>Updated user</p>
 </div>
   <div class="markdown level1 description"><p>This can only be done by the logged in user.</p>
@@ -1442,46 +1436,24 @@
       </tbody>
     </table></div>
   </div>
-<div class="markdown level0 api-footer"><h3 id="see-alsos"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#see-alsos" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>See Alsos</h3>
+<div class="markdown level0 api-footer"><h3 id="see-alsos">See Alsos<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#see-alsos" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 <p>See other REST APIs:</p>
 <ul>
 <li><a href="contacts.html">Contacts API</a></li>
 </ul>
 </div>
 
-</article>
-          </div>
-
-          <div class="hidden-sm col-md-2" role="complementary">
-            <div class="sideaffix">
-              <div class="contribution">
-                <ul class="nav">
-                  <li>
-                    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0.md&amp;value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
-                  </li>
-                  <li>
-                    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1" class="contribution-link">View Source</a>
-                  </li>
-                </ul>
-              </div>
-              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
-              
-    <h5>In this article</h5>
-    <ul class="nav bs-docs-sidenav"><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet">pet</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_store">store</a></li><li><a href="#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_user">user</a></li><li><a href="#other-apis">Other APIs</a></li></ul></nav>
-            </div>
-          </div>
-        </div>
+      <div class="contribution d-print-none">
       </div>
+    </article>
 
-      <footer>
-        <div class="footer">
-          <div class="container">
-      
-      <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <footer>
+
+      <div class="container-fluid">
+  
+  <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+      </div>    </footer>
+
 
     <script type="text/javascript" src="../styles/docfx.min.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>

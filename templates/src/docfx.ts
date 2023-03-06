@@ -17,6 +17,7 @@ declare global {
   interface Window {
     docfx: {
       ready?: boolean,
+      searchReady?: boolean,
       searchResultReady?: boolean,
     };
   }

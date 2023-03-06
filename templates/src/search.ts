@@ -29,6 +29,7 @@ export function enableSearch() {
       case 'index-ready':
         searchQuery.disabled = false
         searchQuery.addEventListener('input', onSearchQueryInput)
+        window.docfx.searchReady = true
         break
       case 'query-ready':
         renderSearchResults(oEvent.data.d, 0)
