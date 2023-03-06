@@ -3,12 +3,12 @@
 <ul class="nav level{{level}} navbar-nav">
   {{#items}}
     {{^dropdown}}
-      <li>
+      <li class="nav-item">
         {{^leaf}}
           <span class="expand-stub"></span>
         {{/leaf}}
         {{#topicHref}}
-          <a href="{{topicHref}}" title="{{name}}">{{name}}</a>
+          <a class="nav-link" href="{{topicHref}}" title="{{name}}">{{name}}</a>
         {{/topicHref}}
         {{^topicHref}}
           <a>{{{name}}}</a>

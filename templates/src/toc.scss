@@ -59,6 +59,12 @@
     top: 3px;
     transition: transform 0.35s ease;
     transform-origin: .5em 50%;
+
+    @media (prefer-reduced-motion) {
+      & {
+        transition: none;
+      }
+    }
   }
 
   li.in > .expand-stub::before {

@@ -101,6 +101,7 @@ namespace Microsoft.DocAsCode.Tests
                     ViewportSize = new() { Width = width, Height = height },
                     IsMobile = isMobile,
                     HasTouch = isMobile,
+                    ReducedMotion = ReducedMotion.Reduce,
                 });
 
                 foreach (var url in s_screenshotUrls)
@@ -118,8 +119,6 @@ namespace Microsoft.DocAsCode.Tests
                         }
 
                         await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
-                        // Wait for input box focus animation
-                        await page.WaitForTimeoutAsync(200);
                         await page.WaitForFunctionAsync("window.docfx.searchResultReady");
                     }
 
