@@ -1,0 +1,21 @@
+name: ci
+on:
+  pull_request:
+    branches: [ main, feature/*, hotfix/* ]
+  push:
+    branches: [ main, feature/*, hotfix/* ]
+
+jobs:
+  snapshot-test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - uses: ./.github/actions/build
+
+    - run: choco install wkhtmltopdf
+
+    - run: dotnet test -c Release -f net7.0 --no-build
+      working-directory: test/docfx.Snapshot.Tests

@@ -14,33 +14,8 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
     - uses: actions/checkout@v3
-      with:
-        lfs: true
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-    - uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: |
-          6.x
-          7.x
 
-    - run: npm install
-      working-directory: templates
-
-    - run: npm run lint
-      working-directory: templates
-
-    - run: npm run build
-      working-directory: templates
-
-    - run: dotnet build -c Release
-
-    - run: choco install wkhtmltopdf
-      if: matrix.os == 'windows-latest'
-
-    - run: dotnet test -c Release --filter Stage=Snapshot --no-build --collect:"XPlat Code Coverage"
-      working-directory: test/docfx.Snapshot.Tests
+    - uses: ./.github/actions/build
 
     - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
 
