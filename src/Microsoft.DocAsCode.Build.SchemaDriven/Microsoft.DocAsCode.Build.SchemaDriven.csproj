@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSchema.Net" Version="4.0.0-beta2" />
+    <PackageReference Include="JsonSchema.Net" Version="4.0.0-beta3" />
     <PackageReference Include="Markdig" Version="0.31.0" />
   </ItemGroup>
 </Project>
