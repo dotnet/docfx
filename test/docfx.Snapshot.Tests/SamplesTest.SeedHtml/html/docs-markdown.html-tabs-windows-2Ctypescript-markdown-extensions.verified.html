@@ -17,7 +17,7 @@
     <header class="border-bottom">
 
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
-        <div class="container-fluid">
+        <div class="container-xxl flex-nowrap">
 
           <a class="navbar-brand" href="../index.html">
             <img id="logo" class="svg" height="40" src="../logo.svg" alt="Seed">
@@ -48,18 +48,15 @@
       </nav>
     </header>
 
-    <div class="container-xxl search-results">
-      <div id="search-results"></div>
-    </div>
-
-    <div class="toc-offcanvas">
-      <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <nav class="sidetoc" id="sidetoc">
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="sidetoc" id="sidetoc">
 <div>
   <div class="toc" id="toc">
 
@@ -79,28 +76,23 @@
       </ul>
   </div>
 </div></nav>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="actionbar">
-      <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
-        <i class="bi bi-list"></i>
-      </button>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
 
-      <nav id="breadcrumb">
+          <nav id="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li><li class="breadcrumb-item"><a href="http://localhost:8089/docs/markdown.html">Markdown</a></li>
     </ol></nav>
-    </div>
+        </div>
 
-    <div class="affix">
-      <nav id="affix">
-    <h5>In this article</h5>
-    <ul><li><a href="#markdown-extensions">Markdown Extensions</a></li><li><a href="#alerts">Alerts</a></li><li><a href="#video">Video</a></li><li><a href="#include-markdown-files">Include Markdown Files</a></li><li><a href="#code-snippet">Code Snippet</a></li><li><a href="#tabs">Tabs</a></li></ul></nav>
-    </div>
-
-    <article data-uid="">
+        <article data-uid="">
 <h1 id="markdown">Markdown</h1>
 
 <p><a href="https://daringfireball.net/projects/markdown/">Markdown</a> is a lightweight markup language with plain text formatting syntax. Docfx supports <a href="https://commonmark.org/">CommonMark</a> compliant Markdown parsed through the <a href="https://github.com/xoofx/markdig">Markdig</a> parsing engine.</p>
@@ -333,14 +325,24 @@ REST API content, independent of platform...
 
 ---
 </code></pre>
+</article>
 
-      <div class="contribution d-print-none">
+        <div class="contribution d-print-none">
+        </div>
       </div>
-    </article>
+      
+      <div class="affix">
+        <nav id="affix">
+    <h5>In this article</h5>
+    <ul><li><a href="#markdown-extensions">Markdown Extensions</a></li><li><a href="#alerts">Alerts</a></li><li><a href="#video">Video</a></li><li><a href="#include-markdown-files">Include Markdown Files</a></li><li><a href="#code-snippet">Code Snippet</a></li><li><a href="#tabs">Tabs</a></li></ul></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
 
     <footer>
 
-      <div class="container-fluid">
+      <div class="container-xxl">
   
   <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
       </div>    </footer>

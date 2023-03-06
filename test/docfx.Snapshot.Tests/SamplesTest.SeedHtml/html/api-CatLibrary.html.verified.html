@@ -19,7 +19,7 @@
     <header class="border-bottom">
 
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
-        <div class="container-fluid">
+        <div class="container-xxl flex-nowrap">
 
           <a class="navbar-brand" href="../index.html">
             <img id="logo" class="svg" height="40" src="../logo.svg" alt="Seed">
@@ -50,18 +50,15 @@
       </nav>
     </header>
 
-    <div class="container-xxl search-results">
-      <div id="search-results"></div>
-    </div>
-
-    <div class="toc-offcanvas">
-      <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <nav class="sidetoc" id="sidetoc">
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="sidetoc" id="sidetoc">
 <div>
   <div class="toc" id="toc">
 
@@ -190,28 +187,23 @@
       </ul>
   </div>
 </div></nav>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="actionbar">
-      <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
-        <i class="bi bi-list"></i>
-      </button>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
 
-      <nav id="breadcrumb">
+          <nav id="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li><li class="breadcrumb-item"><a href="http://localhost:8089/api/CatLibrary.html">CatLibrary</a></li>
     </ol></nav>
-    </div>
+        </div>
 
-    <div class="affix">
-      <nav id="affix">
-    <h5>In this article</h5>
-    <ul><li><a href="#classes">Classes </a></li><li><a href="#interfaces">Interfaces </a></li><li><a href="#delegates">Delegates </a></li></ul></nav>
-    </div>
-
-    <article data-uid="CatLibrary">
+        <article data-uid="CatLibrary">
 
   <h1 id="CatLibrary" data-uid="CatLibrary" class="text-break">Namespace Cat<wbr>Library
 </h1>
@@ -261,13 +253,24 @@
       <h4 id="mrefnormaldelegate"><a class="xref text-break" href="CatLibrary.MRefNormalDelegate.html">MRef<wbr>Normal<wbr>Delegate</a><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#mrefnormaldelegate" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
       <section><p>Delegate in the namespace</p>
 </section>
-      <div class="contribution d-print-none">
+</article>
+
+        <div class="contribution d-print-none">
+        </div>
       </div>
-    </article>
+      
+      <div class="affix">
+        <nav id="affix">
+    <h5>In this article</h5>
+    <ul><li><a href="#classes">Classes </a></li><li><a href="#interfaces">Interfaces </a></li><li><a href="#delegates">Delegates </a></li></ul></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
 
     <footer>
 
-      <div class="container-fluid">
+      <div class="container-xxl">
   
   <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
       </div>    </footer>

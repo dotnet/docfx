@@ -5,6 +5,10 @@
 
 $enable-important-utilities: false;
 
+$container-max-widths: (
+  xxl: 1768px
+) !default;
+
 @import "bootstrap/scss/bootstrap.scss";
 
 h1,

@@ -17,7 +17,7 @@
     <header class="border-bottom">
 
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
-        <div class="container-fluid">
+        <div class="container-xxl flex-nowrap">
 
           <a class="navbar-brand" href="../index.html">
             <img id="logo" class="svg" height="40" src="../logo.svg" alt="Seed">
@@ -48,18 +48,15 @@
       </nav>
     </header>
 
-    <div class="container-xxl search-results">
-      <div id="search-results"></div>
-    </div>
-
-    <div class="toc-offcanvas">
-      <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <nav class="sidetoc" id="sidetoc">
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="sidetoc" id="sidetoc">
 <div>
   <div class="toc" id="toc">
 
@@ -79,28 +76,23 @@
       </ul>
   </div>
 </div></nav>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="actionbar">
-      <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
-        <i class="bi bi-list"></i>
-      </button>
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
 
-      <nav id="breadcrumb">
+          <nav id="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li><li class="breadcrumb-item"><a href="http://localhost:8089/articles/csharp_coding_standards.html">CSharp Coding Standards</a></li>
     </ol></nav>
-    </div>
+        </div>
 
-    <div class="affix">
-      <nav id="affix">
-    <h5>In this article</h5>
-    <ul><li><a href="#introduction">Introduction</a></li><li><a href="#tools">Tools</a></li><li><a href="#highlights-of-coding-standards">Highlights of Coding Standards</a></li></ul></nav>
-    </div>
-
-    <article data-uid="">
+        <article data-uid="">
 <h1 id="c-coding-standards">C# Coding Standards</h1>
 
 <h2 id="introduction">Introduction<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#introduction" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
@@ -286,14 +278,24 @@ Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
 <h4 id="parallel-tests">Parallel tests<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parallel-tests" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If the tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel tests!</p>
 <p>For functional tests it is reasonable to disable parallel tests.</p>
+</article>
 
-      <div class="contribution d-print-none">
+        <div class="contribution d-print-none">
+        </div>
       </div>
-    </article>
+      
+      <div class="affix">
+        <nav id="affix">
+    <h5>In this article</h5>
+    <ul><li><a href="#introduction">Introduction</a></li><li><a href="#tools">Tools</a></li><li><a href="#highlights-of-coding-standards">Highlights of Coding Standards</a></li></ul></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
 
     <footer>
 
-      <div class="container-fluid">
+      <div class="container-xxl">
   
   <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
       </div>    </footer>

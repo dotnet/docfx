@@ -4,28 +4,31 @@
 */
 
 #search-results {
-  margin: 2em 1em;
   line-height: 1.8;
 
-  .search-list {
+  >.search-list {
     font-size: .9em;
     color: $secondary;
   }
 
-  .sr-item {
-    margin-bottom: 1.5em;
-  
-    >.item-title {
-      font-size: x-large;
-    }
-  
-    >.item-href {
-      color: #093;
-      font-size: small;
-    }
+  >.sr-items {
+    flex: 1;
+
+    .sr-item {
+      margin-bottom: 1.5em;
     
-    >.item-brief {
-      font-size: small;
+      >.item-title {
+        font-size: x-large;
+      }
+    
+      >.item-href {
+        color: #093;
+        font-size: small;
+      }
+      
+      >.item-brief {
+        font-size: small;
+      }
     }
   }
 }

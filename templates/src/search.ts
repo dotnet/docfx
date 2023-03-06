@@ -116,6 +116,10 @@ export function enableSearch() {
       const endPage = Math.min(totalPages, startPage + maxVisiblePages)
       const pages = Array.from(new Array(endPage - startPage).keys()).map(i => i + startPage)
 
+      if (pages.length <= 1) {
+        return null
+      }
+
       return html`
         <nav>
           <ul class="pagination">

@@ -13,47 +13,49 @@
       {{>partials/navbar}}
     </header>
 
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="sidetoc" id="sidetoc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em"
+              type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
+              aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="{{uid}}">
+          {{!body}}
+        </article>
+
+        {{^_disableContribution}}
+        <div class="contribution d-print-none">
+          {{>partials/edit-link}}
+        </div>
+        {{/_disableContribution}}
+      </div>
+      
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
     {{#_enableSearch}}
-    <div class="container-xxl search-results">
-      <div id="search-results"></div>
-    </div>
+    <div class="container-xxl search-results" id="search-results"></div>
     {{/_enableSearch}}
-
-    <div class="toc-offcanvas">
-      <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-          <nav class="sidetoc" id="sidetoc"></nav>
-        </div>
-      </div>
-    </div>
-
-    <div class="actionbar">
-      <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em"
-          type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
-          aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
-        <i class="bi bi-list"></i>
-      </button>
-
-      <nav id="breadcrumb"></nav>
-    </div>
-
-    <div class="affix">
-      <nav id="affix"></nav>
-    </div>
-
-    <article data-uid="{{uid}}">
-      {{!body}}
-
-      {{^_disableContribution}}
-      <div class="contribution d-print-none">
-        {{>partials/edit-link}}
-      </div>
-      {{/_disableContribution}}
-    </article>
 
     <footer>
       {{>partials/footer}}
