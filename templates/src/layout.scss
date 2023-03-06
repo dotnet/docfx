@@ -27,7 +27,7 @@ html {
 }
 
 body,
-body[data-layout=landing] {
+body[data-layout="landing"] {
   width: 100vw;
   min-height: 100vh;
   display: flex;
@@ -39,6 +39,7 @@ body[data-layout=landing] {
 
     @include media-breakpoint-up(md) {
       @include sticky-top;
+
       height: $header-height;
     }
 
@@ -85,11 +86,24 @@ body[data-layout=landing] {
 }
 
 @media not print {
-  body:not([data-search]) {
+  // Search layout
+  body[data-search] {
+    >main {
+      display: none;
+    }
 
+    >.search-results {
+      display: block;
+      flex: 1;
+      padding-top: $main-padding-top;
+      padding-bottom: $main-padding-bottom;
+    }
+  }
+
+  body:not([data-search]) {
     // Default layout: with header, footer, actionbar, affix, and toc
     &[data-layout=""],
-    &[data-layout=conceptual] {
+    &[data-layout="conceptual"] {
       >main {
         display: grid;
         gap: 3rem;
@@ -121,7 +135,7 @@ body[data-layout=landing] {
 
         >.content {
           min-width: 0;
-          margin: 0 0 4rem 0;
+          margin: 0 0 4rem;
 
           >.actionbar {
             display: flex;
@@ -155,19 +169,6 @@ body[data-layout=landing] {
       >header, >footer {
         display: none;
       }
-    }
-  }
-
-  // Search layout
-  body[data-search] {
-    >main {
-      display: none;
-    }
-    >.search-results {
-      display: block;
-      flex: 1;
-      padding-top: $main-padding-top;
-      padding-bottom: $main-padding-bottom;
     }
   }
 }

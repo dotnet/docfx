@@ -53,14 +53,14 @@
   .expand-stub::before {
     display: inline-block;
     cursor: pointer;
-    font-family: "bootstrap-icons";
+    font-family: bootstrap-icons, sans-serif;
     content: "\F285";
     position: relative;
     top: 3px;
     transition: transform 0.35s ease;
     transform-origin: .5em 50%;
 
-    @media (prefer-reduced-motion) {
+    @media (prefers-reduced-motion) {
       & {
         transition: none;
       }
