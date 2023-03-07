@@ -12,6 +12,7 @@ runs:
       dotnet-version: |
         6.x
         7.x
+
   - run: npm install
     shell: bash
     working-directory: templates
