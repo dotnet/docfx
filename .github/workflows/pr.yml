@@ -4,24 +4,9 @@ on:
     types: [created]
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: khan/pull-request-comment-trigger@v1.1.0
-      id: update-snapshot
-      with:
-        trigger: '/update-snapshot'
-        reaction: rocket
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
-    outputs:
-      update-snapshot: steps.check.update-snapshot.triggered == 'true'
-
   update-snapshot:
     runs-on: ubuntu-latest
-    needs: check
-    if: needs.check.outputs.update-snapshot
+    if: ${{ github.event.comment.body == '/update-snapshot'}}
     steps:
     - uses: actions/checkout@v3
       with:

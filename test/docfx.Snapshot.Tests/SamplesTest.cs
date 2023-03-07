@@ -138,8 +138,8 @@ namespace Microsoft.DocAsCode.Tests
                             .AutoVerify(s_includeBuildServer);
                     }
 
-                    // Verify screenshots only on windows
-                    if (!OperatingSystem.IsWindows())
+                    // Verify screenshots only on linux
+                    if (!OperatingSystem.IsLinux())
                         continue;
 
                     var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
