@@ -86,6 +86,23 @@ This will be rendered as:
 
 > [!Video https://www.youtube.com/embed/Sz1lCeedcPI]
 
+## Image 
+
+You can embed a image in your page by using the following Markdown syntax:
+
+```md
+![ <alt-text> ]( <image-link> )
+```
+
+Example:
+```md
+![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
+```
+
+This will be rendered as:
+
+![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
+
 ## Include Markdown Files
 
 Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.
