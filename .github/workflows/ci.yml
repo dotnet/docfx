@@ -43,16 +43,10 @@ jobs:
 
     - run: dotnet test -c Release --filter Stage=Snapshot --no-build
       working-directory: test/docfx.Snapshot.Tests
-      env:
-        BUILD_SERVER: true
 
-    - uses: actions/upload-artifact@v3
-      if: failure()
+    - uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        name: screenshots
-        path: |
-          test/docfx.Snapshot.Tests/**/*.received.png
-          test/docfx.Snapshot.Tests/**/*.diff.png
+        commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
 
   publish-docs:
     if: github.ref == 'refs/heads/main'

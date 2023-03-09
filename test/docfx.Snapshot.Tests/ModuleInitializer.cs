@@ -13,7 +13,8 @@ namespace Microsoft.DocAsCode.Tests
         [ModuleInitializer]
         public static void Initialize()
         {
-            BuildServerDetector.Detected = Environment.GetEnvironmentVariable("BUILD_SERVER") == "true";
+            // Disable for CI build to allow commiting diff files
+            BuildServerDetector.Detected = false;
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
         }
     }

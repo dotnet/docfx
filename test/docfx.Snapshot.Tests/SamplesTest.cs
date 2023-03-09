@@ -159,9 +159,6 @@ namespace Microsoft.DocAsCode.Tests
                     return Task.FromResult(CompareResult.Equal);
                 }
 
-                var diffFile = Path.GetFullPath(Path.Combine("../../../", directory, $"{fileName}.diff.png"));
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
-                diffImage.Write(diffFile);
                 return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
             }
 
