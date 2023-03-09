@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Tests
         private static readonly string[] s_screenshotUrls = new[]
         {
             "index.html",
-            "docs/markdown.html?tabs=windows%2Ctypescript#markdown-extensions",
+            "articles/markdown.html?tabs=windows%2Ctypescript#markdown-extensions",
             "articles/csharp_coding_standards.html",
             "api/CatLibrary.html",
             "api/CatLibrary.html?term=cat",

@@ -173,6 +173,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return (GetDefaultPlainTextNode(InnerHtml), false);
                 }
+                if (!string.IsNullOrEmpty(Text))
+                {
+                    return (GetDefaultPlainTextNode(Text), false);
+                }
                 if (!string.IsNullOrEmpty(Alt))
                 {
                     return (GetDefaultPlainTextNode(Alt), false);

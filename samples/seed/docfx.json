@@ -28,10 +28,6 @@
       },
       {
         "files": [ "articles/**/*.md", "*.md", "toc.yml", "restapi/**" ]
-      },
-      {
-        "files": [ "docs/markdown.md" ],
-        "src": "../../docs/"
       }
     ],
     "resource": [

@@ -29,8 +29,8 @@
     },
     {
       "name": "Markdown",
-      "href": "../docs/markdown.html",
-      "topicHref": "../docs/markdown.html",
+      "href": "markdown.html",
+      "topicHref": "markdown.html",
       "tocHref": null,
       "level": 2.0,
       "items": [],
