@@ -29,7 +29,7 @@
     "anchor-js": "^5.0.0",
     "bootstrap": "~3.4.1",
     "highlight.js": "^11.7.0",
-    "jquery": "~3.6.3",
+    "jquery": "~3.6.4",
     "lit-html": "^2.6.1",
     "lunr": "2.3.9",
     "mark.js": "^8.4.0",
