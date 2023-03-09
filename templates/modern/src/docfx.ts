@@ -3,8 +3,8 @@
 
 import $ from 'jquery'
 
-import '../node_modules/bootstrap/dist/css/bootstrap.css'
-import '../node_modules/highlight.js/scss/github.scss'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'highlight.js/scss/github.scss'
 import './docfx.scss'
 
 import { highlight } from './highlight'

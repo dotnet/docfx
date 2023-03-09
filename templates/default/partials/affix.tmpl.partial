@@ -19,6 +19,8 @@
     </div>
     {{/_disableContribution}}
     <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+      <h5>{{__global.inThisArticle}}</h5>
+      <div></div>
     </nav>
   </div>
 </div>
