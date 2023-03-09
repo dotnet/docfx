@@ -136,10 +136,6 @@ namespace Microsoft.DocAsCode.Tests
                             .AutoVerify(includeBuildServer: false);
                     }
 
-                    // Verify screenshots only on windows
-                    if (!OperatingSystem.IsWindows())
-                        continue;
-
                     var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
                     await Verifier
                         .Verify(new Target("png", new MemoryStream(bytes)))

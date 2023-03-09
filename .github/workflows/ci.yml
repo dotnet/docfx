@@ -32,9 +32,31 @@ jobs:
         name: site
         path: docs/_site
 
+  snapshot-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - uses: ./.github/actions/build
+
+    - run: dotnet test -c Release --filter Stage=Snapshot --no-build
+      working-directory: test/docfx.Snapshot.Tests
+      env:
+        BUILD_SERVER: true
+
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: screenshots
+        path: |
+          test/docfx.Snapshot.Tests/**/*.received.png
+          test/docfx.Snapshot.Tests/**/*.diff.png
+
   publish-docs:
     if: github.ref == 'refs/heads/main'
-    needs: test
+    needs: [test, snapshot-test]
     runs-on: ubuntu-latest
     permissions:
       contents: write
