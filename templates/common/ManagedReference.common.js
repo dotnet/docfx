@@ -194,11 +194,11 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
 
   // set to null incase mustache looks up
   vm.summary = vm.summary || "";
-  vm.remarks = vm.remarks || null;
+  vm.remarks = vm.remarks || "";
   vm.conceptual = vm.conceptual || "";
-  vm.syntax = vm.syntax || null;
-  vm.implements = vm.implements || null;
-  vm.example = vm.example || null;
+  vm.syntax = vm.syntax || "";
+  vm.implements = vm.implements || "";
+  vm.example = vm.example || "";
   common.processSeeAlso(vm);
 
   // id is used as default template's bookmark
