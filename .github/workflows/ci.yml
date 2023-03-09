@@ -32,8 +32,10 @@ jobs:
         name: site
         path: docs/_site
 
-  snapshot-test:
+  snapshot:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v3
       with:
@@ -43,6 +45,8 @@ jobs:
 
     - run: dotnet test -c Release --filter Stage=Snapshot --no-build
       working-directory: test/docfx.Snapshot.Tests
+      env:
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
@@ -50,7 +54,7 @@ jobs:
 
   publish-docs:
     if: github.ref == 'refs/heads/main'
-    needs: [test, snapshot-test]
+    needs: [test, snapshot]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.Tests
         [ModuleInitializer]
         public static void Initialize()
         {
-            // Disable for CI build to allow commiting diff files
-            BuildServerDetector.Detected = false;
+            // Disable for PR build to allow commiting diff files
+            BuildServerDetector.Detected = Environment.GetEnvironmentVariable("GITHUB_EVENT_NAME") == "push";
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
         }
     }
