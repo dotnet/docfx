@@ -6,6 +6,8 @@
 *.woff
 *.woff2
 
+glyphicons-*.*
+
 dist
 fonts
 node_modules

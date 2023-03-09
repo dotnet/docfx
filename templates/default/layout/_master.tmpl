@@ -5,62 +5,52 @@
 {{!include(logo.svg)}}
 {{!include(search-stopwords.json)}}
 <!DOCTYPE html>
+<!--[if IE]><![endif]-->
 <html>
   {{>partials/head}}
   {{^redirect_url}}
-  <body data-layout="{{layout}}">
-    <header class="border-bottom">
-      {{>partials/navbar}}
-    </header>
-
-    <main class="container-xxl">
-      <div class="toc-offcanvas">
-        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        {{^_disableNavbar}}
+        {{>partials/navbar}}
+        {{/_disableNavbar}}
+        {{^_disableBreadcrumb}}
+        {{>partials/breadcrumb}}
+        {{/_disableBreadcrumb}}
+      </header>
+      {{#_enableSearch}}
+      <div class="container body-content">
+        {{>partials/searchResults}}
+      </div>
+      {{/_enableSearch}}
+      <div role="main" class="container body-content hide-when-search">
+      {{^_disableToc}}
+        {{>partials/toc}}
+        <div class="article row grid-right">
+      {{/_disableToc}}
+      {{#_disableToc}}
+        <div class="article row grid">
+        {{/_disableToc}}
+          {{#_disableAffix}}
+          <div class="col-md-12">
+          {{/_disableAffix}}
+          {{^_disableAffix}}
+          <div class="col-md-10">
+          {{/_disableAffix}}
+            <article class="content wrap" id="_content" data-uid="{{uid}}">
+                {{!body}}
+            </article>
           </div>
-          <div class="offcanvas-body">
-            {{>partials/toc}}
-          </div>
+          {{^_disableAffix}}
+          {{>partials/affix}}
+          {{/_disableAffix}}
         </div>
       </div>
-
-      <div class="content">
-        <div class="actionbar">
-          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.5em; margin-left: -.8em"
-              type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
-              aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
-            <i class="bi bi-list"></i>
-          </button>
-
-          <nav id="breadcrumb"></nav>
-        </div>
-
-        <article data-uid="{{uid}}">
-          {{!body}}
-        </article>
-
-        {{^_disableContribution}}
-        <div class="contribution d-print-none">
-          {{>partials/edit-link}}
-        </div>
-        {{/_disableContribution}}
-      </div>
-      
-      <div class="affix">
-        <nav id="affix"></nav>
-      </div>
-    </main>
-
-    {{#_enableSearch}}
-    <div class="container-xxl search-results" id="search-results"></div>
-    {{/_enableSearch}}
-
-    <footer>
+      {{^_disableFooter}}
       {{>partials/footer}}
-    </footer>
-
+      {{/_disableFooter}}
+    </div>
     {{>partials/scripts}}
   </body>
   {{/redirect_url}}
