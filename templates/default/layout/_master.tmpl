@@ -5,6 +5,7 @@
 {{!include(logo.svg)}}
 {{!include(search-stopwords.json)}}
 <!DOCTYPE html>
+<!--[if IE]><![endif]-->
 <html>
   {{>partials/head}}
   {{^redirect_url}}
@@ -38,7 +39,7 @@
           <div class="col-md-10">
           {{/_disableAffix}}
             <article class="content wrap" id="_content" data-uid="{{uid}}">
-              {{!body}}
+                {{!body}}
             </article>
           </div>
           {{^_disableAffix}}

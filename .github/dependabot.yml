@@ -10,6 +10,9 @@ updates:
   directory: "/templates"
   schedule:
     interval: weekly
+  ignore:
+     # Ignore default template dependency update due to missing tests
+  - dependency-name: '@default/*'
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 

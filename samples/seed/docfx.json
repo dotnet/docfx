@@ -43,7 +43,8 @@
     },
     "dest": "_site",
     "exportViewModel": true,
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ],
+    "template": ["default", "modern"]
   },
   "pdf": {
     "content": [

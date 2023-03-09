@@ -4,7 +4,7 @@
 const esbuild = require('esbuild')
 const { sassPlugin } = require('esbuild-sass-plugin')
 const bs = require('browser-sync')
-const { cpSync } = require('fs')
+const { cpSync, readdirSync, lstatSync, rmSync } = require('fs')
 const { join } = require('path')
 const { spawnSync } = require('child_process')
 const yargs = require('yargs/yargs')
@@ -22,15 +22,17 @@ async function build() {
     bundle: true,
     minify: true,
     sourcemap: true,
-    outdir: 'default/styles',
     outExtension: {
       '.css': '.min.css',
       '.js': '.min.js'
     },
-    entryPoints: [
-      'src/docfx.ts',
-      'src/search-worker.ts'
-    ],
+    outdir: '.',
+    entryPoints: {
+      'default/styles/docfx.vendor': 'default/src/main.js',
+      'default/styles/search-worker': 'default/src/search-worker.js',
+      'modern/styles/docfx': 'modern/src/docfx.ts',
+      'modern/styles/search-worker': 'modern/src/search-worker.ts',
+    },
     plugins: [
       sassPlugin()
     ],
@@ -60,6 +62,11 @@ async function build() {
 }
 
 function copyToDist() {
+
+  readdirSync('dist')
+    .filter(d => lstatSync(join('dist', d)).isDirectory())
+    .forEach(d => rmSync(join('dist', d), { recursive: true, force: true }))
+  
   cpSync('common', 'dist/common', { recursive: true, overwrite: true, filter });
   cpSync('common', 'dist/default', { recursive: true, overwrite: true, filter });
   cpSync('common', 'dist/pdf.default', { recursive: true, overwrite: true, filter });
@@ -72,9 +79,11 @@ function copyToDist() {
   cpSync('default(zh-cn)', 'dist/default(zh-cn)', { recursive: true, overwrite: true, filter });
   cpSync('pdf.default', 'dist/pdf.default', { recursive: true, overwrite: true, filter });
   cpSync('statictoc', 'dist/statictoc', { recursive: true, overwrite: true, filter });
+  cpSync('modern', 'dist/modern', { recursive: true, overwrite: true, filter });
 
   function filter(src) {
-    return !src.includes('node_modules') && !src.includes('package-lock.json');
+    const segments = src.split(/[/\\]/);
+    return !segments.includes('node_modules') && !segments.includes('package-lock.json') && !segments.includes('src');
   }
 
   function staticTocFilter(src) {
