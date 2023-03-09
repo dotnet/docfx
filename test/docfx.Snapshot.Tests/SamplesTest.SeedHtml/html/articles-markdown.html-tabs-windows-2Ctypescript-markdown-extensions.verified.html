@@ -8,7 +8,7 @@
       <style class="anchorjs"></style><link rel="stylesheet" href="../styles/docfx.min.css">
       <link rel="stylesheet" href="../styles/main.css">
       <meta name="docfx:navrel" content="../toc.html">
-      <meta name="docfx:tocrel" content="../articles/toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
     
     <meta name="docfx:rel" content="../">
     
@@ -56,7 +56,7 @@
         </nav>
 
         <div class="subnav navbar navbar-default">
-          <div class="container hide-when-search" id="breadcrumb"><ul class="level1 breadcrumb"><li><a href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li><li><a href="http://localhost:8089/docs/markdown.html">Markdown</a></li></ul></div>
+          <div class="container hide-when-search" id="breadcrumb"><ul class="level1 breadcrumb"><li><a href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li><li><a href="http://localhost:8089/articles/markdown.html">Markdown</a></li></ul></div>
         </div>
       </header>
       <div class="container body-content">
@@ -87,16 +87,16 @@
 
           <ul class="nav level1">
                 <li>
-                    <a href="../articles/docfx_getting_started.html" name="" title="Getting Started">Getting Started</a>
+                    <a href="docfx_getting_started.html" name="" title="Getting Started">Getting Started</a>
                 </li>
                 <li>
-                    <a href="../articles/engineering_guidelines.html" name="" title="Engineering Guidelines">Engineering Guidelines</a>
+                    <a href="engineering_guidelines.html" name="" title="Engineering Guidelines">Engineering Guidelines</a>
                 </li>
                 <li>
-                    <a href="../articles/csharp_coding_standards.html" name="" title="CSharp Coding Standards">CSharp Coding Standards</a>
+                    <a href="csharp_coding_standards.html" name="" title="CSharp Coding Standards">CSharp Coding Standards</a>
                 </li>
                 <li class="active in">
-                    <a href="../articles/../docs/markdown.html" name="" title="Markdown" class="active">Markdown</a>
+                    <a href="markdown.html" name="" title="Markdown" class="active">Markdown</a>
                 </li>
           </ul>
       </div>
@@ -178,6 +178,15 @@
 </code></pre>
 <p>This will be rendered as:</p>
 <div class="embeddedvideo"><iframe src="https://www.youtube-nocookie.com/embed/Sz1lCeedcPI" frameborder="0" allowfullscreen="true"></iframe></div>
+<h2 id="image"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#image" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Image</h2>
+<p>You can embed a image in your page by using the following Markdown syntax:</p>
+<pre><code class="lang-md hljs language-markdown">![<span class="hljs-string"> &lt;alt-text&gt; </span>](<span class="hljs-link"> &lt;image-link&gt; </span>)
+</code></pre>
+<p>Example:</p>
+<pre><code class="lang-md hljs language-markdown">![<span class="hljs-string">alt-text</span>](<span class="hljs-link">https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main</span>)
+</code></pre>
+<p>This will be rendered as:</p>
+<p><img src="https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main" alt="alt-text"></p>
 <h2 id="include-markdown-files"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="" href="#include-markdown-files" style="font-style: normal; font-variant: normal; font-weight: normal; font-stretch: normal; font-size: 1em; line-height: inherit; font-family: anchorjs-icons; position: absolute; margin-left: -1.25em; padding-right: 0.25em; padding-left: 0.25em;"></a>Include Markdown Files</h2>
 <p>Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.</p>
 <p>You can reuse a common text snippet within a sentence using inline include:</p>
@@ -347,14 +356,14 @@ REST API content, independent of platform...
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/main/docs/docs/markdown.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/articles/markdown.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
               
     <h5>In this article</h5>
-    <ul class="nav bs-docs-sidenav"><li class="active"><a href="#markdown-extensions">Markdown Extensions</a></li><li><a href="#alerts">Alerts</a></li><li><a href="#video">Video</a></li><li><a href="#include-markdown-files">Include Markdown Files</a></li><li><a href="#code-snippet">Code Snippet</a></li><li><a href="#tabs">Tabs</a></li></ul></nav>
+    <ul class="nav bs-docs-sidenav"><li class="active"><a href="#markdown-extensions">Markdown Extensions</a></li><li><a href="#alerts">Alerts</a></li><li><a href="#video">Video</a></li><li><a href="#image">Image</a></li><li><a href="#include-markdown-files">Include Markdown Files</a></li><li><a href="#code-snippet">Code Snippet</a></li><li><a href="#tabs">Tabs</a></li></ul></nav>
             </div>
           </div>
         </div>
