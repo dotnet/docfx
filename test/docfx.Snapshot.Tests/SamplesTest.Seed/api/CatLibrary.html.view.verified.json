@@ -4,6 +4,73 @@
   "isExtensionMethod": false,
   "children": [
     {
+      "inNamespace": true,
+      "typePropertyName": "inNamespace",
+      "id": "namespaces",
+      "children": [
+        {
+          "uid": "CatLibrary.Core",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "namespace",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CatLibrary_Core",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
       "inClass": true,
       "typePropertyName": "inClass",
       "id": "classes",

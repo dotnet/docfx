@@ -466,9 +466,11 @@ references:
   nameWithType: Complex<T, J>
   nameWithType.vb: Complex(Of T, J)
 - uid: CatLibrary.Core
-  name: CatLibrary.Core
+  name: Core
   href: api/CatLibrary.Core.html
   commentId: N:CatLibrary.Core
+  name.csharp: CatLibrary.Core
+  name.vb: CatLibrary.Core
   fullName: CatLibrary.Core
   nameWithType: CatLibrary.Core
 - uid: CatLibrary.Core.ContainersRefType

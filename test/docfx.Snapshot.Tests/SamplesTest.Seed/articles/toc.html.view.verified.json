@@ -10,22 +10,31 @@
       "leaf": true
     },
     {
-      "name": "Engineering Guidelines",
-      "href": "engineering_guidelines.html",
-      "topicHref": "engineering_guidelines.html",
+      "name": "Engineering Docs",
+      "items": [
+        {
+          "name": "Engineering Guidelines",
+          "href": "engineering_guidelines.html",
+          "topicHref": "engineering_guidelines.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "CSharp Coding Standards",
+          "href": "csharp_coding_standards.html",
+          "topicHref": "csharp_coding_standards.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "expanded": true,
+      "topicHref": null,
       "tocHref": null,
-      "level": 2.0,
-      "items": [],
-      "leaf": true
-    },
-    {
-      "name": "CSharp Coding Standards",
-      "href": "csharp_coding_standards.html",
-      "topicHref": "csharp_coding_standards.html",
-      "tocHref": null,
-      "level": 2.0,
-      "items": [],
-      "leaf": true
+      "level": 2.0
     },
     {
       "name": "Markdown",
@@ -40,14 +49,14 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
-  "_key": "articles/toc.md",
+  "_key": "articles/toc.yml",
   "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
   "_path": "articles/toc.html",
   "_rel": "../",
-  "_tocKey": "~/articles/toc.md",
+  "_tocKey": "~/articles/toc.yml",
   "_tocPath": "articles/toc.html",
   "_tocRel": "toc.html",
   "topicHref": null,
