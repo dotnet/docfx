@@ -136,10 +136,6 @@ namespace Microsoft.DocAsCode.Tests
                             .AutoVerify(includeBuildServer: false);
                     }
 
-                    // Verify screenshots only on windows
-                    if (!OperatingSystem.IsWindows())
-                        continue;
-
                     var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
                     await Verifier
                         .Verify(new Target("png", new MemoryStream(bytes)))
@@ -163,9 +159,6 @@ namespace Microsoft.DocAsCode.Tests
                     return Task.FromResult(CompareResult.Equal);
                 }
 
-                var diffFile = Path.GetFullPath(Path.Combine("../../../", directory, $"{fileName}.diff.png"));
-                Directory.CreateDirectory(Path.GetDirectoryName(diffFile));
-                diffImage.Write(diffFile);
                 return Task.FromResult(CompareResult.NotEqual($"Image diff: {diff}"));
             }
 

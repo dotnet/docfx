@@ -3,7 +3,9 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
+    using System;
     using System.Runtime.CompilerServices;
+    using DiffEngine;
     using VerifyTests;
 
     public static class ModuleInitializer
@@ -11,6 +13,7 @@ namespace Microsoft.DocAsCode.Tests
         [ModuleInitializer]
         public static void Initialize()
         {
+            BuildServerDetector.Detected = Environment.GetEnvironmentVariable("BUILD_SERVER") == "true";
             VerifyDiffPlex.Initialize(VerifyTests.DiffPlex.OutputType.Compact);
         }
     }

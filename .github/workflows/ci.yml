@@ -32,9 +32,30 @@ jobs:
         name: site
         path: docs/_site
 
+  snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - uses: ./.github/actions/build
+
+    - run: dotnet test -c Release --filter Stage=Snapshot --no-build
+      working-directory: test/docfx.Snapshot.Tests
+      env:
+        BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
+
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      if: github.event_name == 'pull_request'
+      with:
+        commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
+
   publish-docs:
     if: github.ref == 'refs/heads/main'
-    needs: test
+    needs: [test, snapshot]
     runs-on: ubuntu-latest
     permissions:
       contents: write
