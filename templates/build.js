@@ -13,11 +13,28 @@ const argv = yargs(hideBin(process.argv)).argv
 
 const watch = argv.watch
 const project = '../samples/seed'
+const loader = {
+  '.eot': 'file',
+  '.svg': 'file',
+  '.ttf': 'file',
+  '.woff': 'file',
+  '.woff2': 'file'
+}
 
 build()
 
 async function build() {
 
+  await Promise.all([buildDefaultTemplate(), buildModernTemplate()])
+
+  copyToDist()
+
+  if (watch) {
+    serve()
+  }
+}
+
+async function buildModernTemplate() {
   await esbuild.build({
     bundle: true,
     minify: true,
@@ -26,23 +43,15 @@ async function build() {
       '.css': '.min.css',
       '.js': '.min.js'
     },
-    outdir: '.',
-    entryPoints: {
-      'default/styles/docfx.vendor': 'default/src/main.js',
-      'default/styles/search-worker': 'default/src/search-worker.js',
-      'modern/styles/docfx': 'modern/src/docfx.ts',
-      'modern/styles/search-worker': 'modern/src/search-worker.ts',
-    },
+    outdir: 'modern/styles',
+    entryPoints: [
+      'modern/src/docfx.ts',
+      'modern/src/search-worker.ts',
+    ],
     plugins: [
       sassPlugin()
     ],
-    loader: {
-      '.eot': 'file',
-      '.svg': 'file',
-      '.ttf': 'file',
-      '.woff': 'file',
-      '.woff2': 'file'
-    },
+    loader,
     watch: watch && {
       onRebuild(error, result) {
         if (error) {
@@ -53,12 +62,24 @@ async function build() {
       }
     }
   })
+}
 
-  copyToDist()
-
-  if (watch) {
-    serve()
-  }
+async function buildDefaultTemplate() {
+  await esbuild.build({
+    bundle: true,
+    minify: true,
+    sourcemap: true,
+    outExtension: {
+      '.css': '.min.css',
+      '.js': '.min.js'
+    },
+    outdir: 'default/styles',
+    entryPoints: [
+      'default/src/main.js',
+      'default/src/search-worker.js',
+    ],
+    loader
+  })
 }
 
 function copyToDist() {
