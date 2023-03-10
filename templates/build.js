@@ -75,7 +75,7 @@ async function buildDefaultTemplate() {
     },
     outdir: 'default/styles',
     entryPoints: [
-      'default/src/main.js',
+      'default/src/docfx.vendor.js',
       'default/src/search-worker.js',
     ],
     loader
