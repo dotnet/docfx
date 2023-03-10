@@ -3,32 +3,13 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-html,
-body {
-  font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
-  height: 100%;
-}
+$enable-important-utilities: false;
 
-button,
-a {
-  color: #337ab7;
-  cursor: pointer;
-}
+$container-max-widths: (
+  xxl: 1768px
+) !default;
 
-button:hover,
-button:focus,
-a:hover,
-a:focus {
-  color: #23527c;
-  text-decoration: none;
-}
-
-a.disable,
-a.disable:hover {
-  text-decoration: none;
-  cursor: default;
-  color: #000;
-}
+@import "bootstrap/scss/bootstrap.scss";
 
 h1,
 h2,
@@ -41,124 +22,23 @@ h6,
   word-break: break-word;
 }
 
-h1 mark,
-h2 mark,
-h3 mark,
-h4 mark,
-h5 mark,
-h6 mark {
-  padding: 0;
-}
-
-.table {
-  margin-bottom: 10px;
-}
-
-table p {
-  margin-bottom: 0;
-}
-
-table a {
-  display: inline-block;
-}
-
-/* Make hidden attribute compatible with old browser. */
-[hidden] {
-  display: none !important;
-}
-
-h1,
-.h1,
-h2,
-.h2,
-h3,
-.h3 {
-  margin-top: 15px;
-  margin-bottom: 10px;
-  font-weight: 400;
-}
-
-h4,
-.h4,
-h5,
-.h5,
-h6,
-.h6 {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-.navbar {
-  margin-bottom: 0;
-}
-
-#wrapper {
-  min-height: 100%;
-  position: relative;
-}
-
 .divider {
   margin: 0 5px;
   color: #ccc;
 }
 
-hr {
-  border-color: #ccc;
-}
-
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-header .navbar {
-  border-width: 0 0 1px;
-  border-radius: 0;
-}
-
-.navbar-collapse {
-  margin: 0 -15px;
-}
-
-.subnav {
-  min-height: 40px;
-}
-
-article h1,
-article h2,
-article h3,
-article h4 {
-  margin-top: 25px;
-}
-
-article h4 {
-  border: 0;
-  font-weight: bold;
-  margin-top: 2em;
-}
-
-article span.small.pull-right {
-  margin-top: 20px;
-}
-
-article section {
-  margin-left: 1em;
-}
-
-.article {
-  margin-top: 120px;
-  margin-bottom: 115px;
-}
-
-.article.grid-right {
-  margin-left: 280px;
-}
-
-.article img {
-  max-width: 100%;
+article {
+  span.small.pull-right {
+    float: right;
+  }
+  
+  section {
+    margin-left: 1em;
+  }
+  
+  img {
+    max-width: 100%;
+  }
 }
 
 .codewrapper {
@@ -169,68 +49,13 @@ article section {
   max-height: 200px;
 }
 
-footer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-}
-
-.footer {
-  border-top: 1px solid #e7e7e7;
-  background-color: #f8f8f8;
-  padding: 15px 0;
-}
-
-@media (min-width: 769px) {
-  #sidetoggle.collapse {
-    display: block;
-  }
-
-  .topnav .navbar-nav {
-    float: none;
-    white-space: nowrap;
-  }
-
-  .topnav .navbar-nav > li {
-    float: none;
-    display: inline-block;
-  }
-}
-
 @media (max-width: 768px) {
   #mobile-indicator {
     display: block;
   }
 
-  /* TOC display for responsive */
-  .article {
-    margin-top: 30px !important;
-  }
-
-  header {
-    position: static;
-  }
-
-  .topnav {
-    text-align: center;
-  }
-
-  .article.grid-right {
-    margin-left: 0;
-  }
-
-  .sideaffix {
-    display: none;
-  }
-
   .mobile-hide {
     display: none;
-  }
-
-  .breadcrumb {
-    white-space: inherit;
   }
 
   /* workaround for #hashtag url is no longer needed */
@@ -243,98 +68,12 @@ footer {
   }
 }
 
-/* Code snippet */
-code {
-  color: #717374;
-  background-color: #f1f2f3;
-}
-
-a code {
-  color: #337ab7;
-  background-color: #f1f2f3;
-}
-
-a code:hover {
-  text-decoration: underline;
-}
-
-pre {
-  border: 0;
-}
-
 /* For code snippet line highlight */
 pre > code .line-highlight {
-  background-color: #ffc;
+  background-color: yellow;
 }
 
-/* Alerts */
-.alert h5 {
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-top: 0;
-}
-
-.alert h5::before {
-  position: relative;
-  top: 1px;
-  display: inline-block;
-  font-family: "Glyphicons Halflings";
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin-right: 5px;
-  font-weight: normal;
-}
-
-.alert-info h5::before {
-  content: "\e086";
-}
-
-.alert-warning h5::before {
-  content: "\e127";
-}
-
-.alert-danger h5::before {
-  content: "\e107";
-}
-
-/* For Embedded Video */
-div.embeddedvideo {
-  padding-top: 56.25%;
-  position: relative;
-  width: 100%;
-}
-
-div.embeddedvideo iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* For printer */
-@media print {
-  .article.grid-right {
-    margin-top: 0;
-    margin-left: 0;
-  }
-
-  .sideaffix {
-    display: none;
-  }
-
-  .mobile-hide {
-    display: none;
-  }
-
-  .footer {
-    display: none;
-  }
-}
-
+@import "layout.scss";
 @import "nav.scss";
 @import "toc.scss";
 @import "markdown.scss";

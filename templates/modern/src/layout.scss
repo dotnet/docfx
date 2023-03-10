@@ -1,0 +1,174 @@
+/**
+ * Copyright (c) Microsoft Corporation. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+*/
+
+$header-height: 60px;
+$footer-height: 60px;
+$main-padding-top: 1rem;
+$main-padding-bottom: 4rem;
+
+// Makes a div sticky to top
+@mixin sticky-top($top: 0) {
+  position: sticky;
+  top: $top;
+  background-color: $body-bg;
+
+  @if $top == 0 {
+    z-index: 1030;
+  } @else {
+    z-index: 1020;
+  }
+}
+
+html {
+  width: 100vw;
+  min-height: 100vh;
+}
+
+body,
+body[data-layout="landing"] {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  >header {
+    display: flex;
+    align-items: stretch;
+
+    @include media-breakpoint-up(md) {
+      @include sticky-top;
+
+      height: $header-height;
+    }
+
+    >nav {
+      flex: 1;
+    }
+  }
+
+  >footer {
+    display: flex;
+    padding: 1rem 0;
+    height: $footer-height;
+    border-top: 1px solid $border-color;
+  }
+
+  >main {
+    display: flex;
+    flex: 1;
+    padding-top: $main-padding-top;
+    padding-bottom: $main-padding-bottom;
+
+    >.content {
+      >:not(article) {
+        display: none;
+      }
+
+      @include media-breakpoint-up(md) {
+        >article [id] {
+          scroll-margin-top: $header-height;
+        }
+      }
+    }
+
+    >:not(.content) {
+      display: none;
+    }
+  }
+
+  @media print {
+    >header, >footer {
+      display: none;
+    }
+  }
+}
+
+@media not print {
+  // Search layout
+  body[data-search] {
+    >main {
+      display: none;
+    }
+
+    >.search-results {
+      display: block;
+      flex: 1;
+      padding-top: $main-padding-top;
+      padding-bottom: $main-padding-bottom;
+    }
+  }
+
+  body:not([data-search]) {
+    // Default layout: with header, footer, actionbar, affix, and toc
+    &[data-layout=""],
+    &[data-layout="conceptual"] {
+      >main {
+        display: grid;
+        gap: 3rem;
+        grid-template-columns: .4fr 1fr min-content;
+
+        @include media-breakpoint-down(lg) {
+          gap: 1rem;
+        }
+
+        @include media-breakpoint-down(md) {
+          gap: 0;
+          grid-template-columns: 1fr;
+          grid-template-rows: 0 1fr;
+        }
+
+        >.toc-offcanvas {
+          display: block;
+          overflow-x: hidden;
+          overflow-y: auto;
+          max-height: calc(100vh - #{$header-height} - #{$footer-height});
+
+          @include sticky-top($header-height);
+
+          @include media-breakpoint-down(md) {
+            width: 0;
+            height: 0;
+          }
+        }
+
+        >.content {
+          min-width: 0;
+          margin: 0 0 4rem;
+
+          >.actionbar {
+            display: flex;
+            align-items: flex-start;
+            min-height: 40px;
+          }
+
+          >.contribution {
+            display: flex;
+          }
+        }
+
+        >.affix {
+          display: block;
+          width: 254px;
+          max-height: calc(100vh - #{$header-height} - #{$footer-height});
+          overflow-x: hidden;
+          overflow-y: auto;
+
+          @include sticky-top($header-height);
+
+          @include media-breakpoint-down(xl) {
+            display: none;
+          }
+        }
+      }
+    }
+
+    // Chromeless layout: with no header, footer, actionbar, affix, and toc
+    &[data-layout="chromeless"] {
+      >header, >footer {
+        display: none;
+      }
+    }
+  }
+}

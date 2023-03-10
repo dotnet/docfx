@@ -3,239 +3,71 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-.sidenav,
-.toc {
-  background-color: #f1f1f1;
-  overflow-x: hidden;
-}
-
-.sidetoc {
-  position: fixed;
-  width: 260px;
-  top: 150px;
-  bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: #f1f1f1;
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
-  z-index: 1;
-}
-
-.sidetoc-expand > .caret {
-  margin-left: 0;
-  margin-top: -2px;
-}
-
-.sidetoc-expand > .caret-side {
-  border-left: 4px solid;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  margin-left: 4px;
-  margin-top: -4px;
-}
-
-.sidetoc-heading {
-  font-weight: 500;
-}
-
-.toc {
-  margin: 0 0 0 10px;
-  padding: 0 10px;
-}
-
-.expand-stub {
-  position: absolute;
-  left: -10px;
-  font-weight: bold;
-}
-
-.expand-stub + a {
-  font-weight: bold;
-}
-
 .toc ul {
-  font-size: 12px;
-  margin: 0 0 0 3px;
+  flex-direction: column;
 }
 
-.toc .nav > li > ul {
-  display: none;
-}
 
-.toc .nav > li > a.sidetoc-expand {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.toc .nav > li > a {
+.toc li > a {
   color: #666;
-  margin-left: 5px;
-  display: block;
-  padding: 0;
+  display: inline;
 }
 
-.toc .nav > li > a:hover,
-.toc .nav > li > a:focus {
+.toc li > a:hover,
+.toc li > a:focus {
   color: #000;
   background: none;
   text-decoration: inherit;
 }
 
-.toc .nav > li.active > a {
+.toc li.active > a {
   color: #337ab7;
 }
 
-.toc .nav > li.active > a:hover,
-.toc .nav > li.active > a:focus {
+.toc li.active > a:hover,
+.toc li.active > a:focus {
   color: #23527c;
 }
 
-.toc .nav > li > .expand-stub {
-  cursor: pointer;
-}
 
-.toc .nav > li > .expand-stub::before,
-.toc .nav > li.active > .expand-stub::before {
-  content: "+";
-}
-
-.toc .nav > li.active > .expand-stub::before,
-.toc .nav > li.in > .expand-stub::before,
-.toc .nav > li.filtered > .expand-stub::before,
-.toc .nav > li.in.active > .expand-stub::before {
-  content: "-";
-}
-
-.toc .nav > li.filtered > ul,
-.toc .nav > li.in > ul {
-  display: block;
-}
-
-.toc .level1 > li {
-  font-weight: bold;
-  margin-top: 10px;
-  position: relative;
-  font-size: 16px;
-}
-
-.toc .level2,
-.toc .level3,
-.toc .level4,
-.toc .level5,
-.toc .level6,
-.toc .level7,
-.toc .level8,
-.toc .level9 {
+.toc li {
   font-weight: normal;
-  margin: 5px 0 0 15px;
-  font-size: 14px;
+  margin: .4em .4em .4em 1.25em;
 }
 
-.toc-toggle {
-  display: none;
-  margin: 0 15px;
+.toc ul.level1 > li {
+  margin-left: 0;
+  font-weight: 600;
 }
 
-.sidefilter {
-  position: fixed;
-  top: 90px;
-  width: 260px;
-  background-color: #f1f1f1;
-  padding: 15px;
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
-  z-index: 1;
-}
-
-.toc-filter {
-  border-radius: 5px;
-  background: #fff;
-  color: #666;
-  padding: 5px;
-  position: relative;
-  margin: 0 5px;
-}
-
-.toc-filter > input {
-  border: 0;
-  color: #666;
-  padding-left: 20px;
-  padding-right: 20px;
-  width: 100%;
-}
-
-.toc-filter > input:focus {
-  outline: 0;
-}
-
-.toc-filter > .filter-icon {
-  position: absolute;
-  top: 10px;
-  left: 5px;
-}
-
-.toc-filter > .clear-icon {
-  position: absolute;
-  top: 10px;
-  right: 5px;
-}
-
-@media (max-width: 768px) {
-  .sidenav {
-    padding: 15px 0;
-    margin-left: -15px;
-    margin-right: -15px;
+// TOC expand icon
+.toc {
+  li > ul {
+    display: none;
   }
 
-  .sidefilter {
-    position: static;
-    width: auto;
-    float: none;
-    border: none;
+  li.in > ul {
+    display: block;
   }
 
-  .sidetoc {
-    position: static;
-    width: auto;
-    float: none;
-    padding-bottom: 0;
-    border: none;
-  }
-
-  .toc .nav > li,
-  .toc .nav > li > a {
+  .expand-stub::before {
     display: inline-block;
+    cursor: pointer;
+    font-family: bootstrap-icons, sans-serif;
+    content: "\F285";
+    position: relative;
+    top: 3px;
+    transition: transform 0.35s ease;
+    transform-origin: .5em 50%;
+
+    @media (prefers-reduced-motion) {
+      & {
+        transition: none;
+      }
+    }
   }
 
-  .toc li::after {
-    margin-left: -3px;
-    margin-right: 5px;
-    content: ", ";
-    color: #666;
-  }
-
-  .toc .level1 > li {
-    display: block;
-  }
-
-  .toc .level1 > li::after {
-    display: none;
-  }
-
-  .toc-toggle {
-    display: block;
-  }
-}
-
-/* For toc iframe */
-@media (max-width: 260px) {
-  .toc .level2 > li {
-    display: block;
-  }
-
-  .toc .level2 > li::after {
-    display: none;
+  li.in > .expand-stub::before {
+    transform: rotate(90deg);
   }
 }
