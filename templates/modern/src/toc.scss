@@ -3,60 +3,61 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-.toc ul {
-  flex-direction: column;
-}
+$expand-stub-width: 1.2rem;
 
-
-.toc li > a {
-  color: #666;
-  display: inline;
-}
-
-.toc li > a:hover,
-.toc li > a:focus {
-  color: #000;
-  background: none;
-  text-decoration: inherit;
-}
-
-.toc li.active > a {
-  color: #337ab7;
-}
-
-.toc li.active > a:hover,
-.toc li.active > a:focus {
-  color: #23527c;
-}
-
-
-.toc li {
-  font-weight: normal;
-  margin: .4em .4em .4em 1.25em;
-}
-
-.toc ul.level1 > li {
-  margin-left: 0;
-  font-weight: 600;
-}
-
-// TOC expand icon
 .toc {
+  min-width: 0;
+
+  ul {
+    flex-direction: column;
+    list-style-type: none;
+    padding-left: 0;
+    overflow-wrap: break-word;
+  }
+
+  li {
+    font-weight: normal;
+    margin: .4em 0;
+    padding-left: $expand-stub-width;
+    position: relative;
+  }
+
+  li > a {
+    color: #666;
+    display: inline;
+    text-decoration: none;
+
+    &:hover, &:focus {
+      color: #000;
+      background: none;
+      text-decoration: underline;
+    }
+  }
+
+  li.active > a {
+    color: #337ab7;
+
+    &:hover, &:focus {
+      color: #23527c;
+    }
+  }
+
   li > ul {
     display: none;
   }
 
-  li.in > ul {
+  li.expanded > ul {
     display: block;
   }
 
   .expand-stub::before {
     display: inline-block;
+    width: $expand-stub-width;
     cursor: pointer;
     font-family: bootstrap-icons, sans-serif;
     content: "\F285";
-    position: relative;
-    top: 3px;
+    position: absolute;
+    margin-left: -$expand-stub-width;
     transition: transform 0.35s ease;
     transform-origin: .5em 50%;
 
@@ -67,7 +68,7 @@
     }
   }
 
-  li.in > .expand-stub::before {
+  li.expanded > .expand-stub::before {
     transform: rotate(90deg);
   }
 }

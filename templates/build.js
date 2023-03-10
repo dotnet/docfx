@@ -130,12 +130,12 @@ function serve() {
     open: true,
     startPath: '/test',
     files: [
-      'default/styles/**',
+      'modern/styles/**',
       join(project, '_site', '**')
     ],
     server: {
       routes: {
-        '/test/styles': 'default/styles',
+        '/test/styles': 'modern/styles',
         '/test': join(project, '_site')
       }
     }

@@ -16,6 +16,7 @@
           "src": "dotnet"
         }
       ],
+      "namespaceLayout": "nested",
       "dest": "obj/api"
     }
   ],
@@ -27,7 +28,7 @@
         "dest": "api"
       },
       {
-        "files": [ "articles/**/*.md", "*.md", "toc.yml", "restapi/**" ]
+        "files": [ "articles/**/*.{md,yml}", "*.md", "toc.yml", "restapi/**" ]
       }
     ],
     "resource": [

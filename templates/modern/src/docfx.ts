@@ -7,7 +7,7 @@ import { breakText } from './helper'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
-import { renderInThisArticle, renderNavbar } from './nav'
+import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
 import 'highlight.js/scss/github.scss'
 import 'bootstrap-icons/font/bootstrap-icons.scss'
@@ -30,8 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
   enableSearch()
 
   renderMarkdown()
-  renderNavbar()
-  renderToc()
+
+  Promise.all([renderNavbar(), renderToc()])
+    .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))
+
   renderInThisArticle()
 
   breakText()

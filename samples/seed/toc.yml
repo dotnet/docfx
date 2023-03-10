@@ -2,7 +2,6 @@
   href: index.md
 - name: Articles
   href: articles/
-  homepage: articles/docfx_getting_started.md
 - name: API Documentation
   href: obj/api/
 - name: REST API

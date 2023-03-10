@@ -74,7 +74,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerPhaseScope(PhaseName, LogLevel.Verbose))
             {
-                Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
 
                 var context = new DocumentBuildContext(parameters);
