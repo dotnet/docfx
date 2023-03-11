@@ -10,15 +10,9 @@
           "name": "Class1",
           "href": "BuildFromAssembly.Class1.html",
           "topicHref": "BuildFromAssembly.Class1.html",
-          "topicUid": "BuildFromAssembly.Class1",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "BuildFromAssembly.Class1"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     },
     {
       "name": "BuildFromCSharpSourceCode",
@@ -30,15 +24,9 @@
           "name": "CSharp",
           "href": "BuildFromCSharpSourceCode.CSharp.html",
           "topicHref": "BuildFromCSharpSourceCode.CSharp.html",
-          "topicUid": "BuildFromCSharpSourceCode.CSharp",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "BuildFromCSharpSourceCode.CSharp"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     },
     {
       "name": "BuildFromProject",
@@ -50,26 +38,16 @@
           "name": "Class1",
           "href": "BuildFromProject.Class1.html",
           "topicHref": "BuildFromProject.Class1.html",
-          "topicUid": "BuildFromProject.Class1",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "BuildFromProject.Class1"
         },
         {
           "name": "Class1.Test<T>",
           "href": "BuildFromProject.Class1.Test-1.html",
           "topicHref": "BuildFromProject.Class1.Test-1.html",
           "topicUid": "BuildFromProject.Class1.Test`1",
-          "name.vb": "Class1.Test(Of T)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "Class1.Test(Of T)"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     },
     {
       "name": "BuildFromVBSourceCode",
@@ -81,25 +59,15 @@
           "name": "BaseClass1",
           "href": "BuildFromVBSourceCode.BaseClass1.html",
           "topicHref": "BuildFromVBSourceCode.BaseClass1.html",
-          "topicUid": "BuildFromVBSourceCode.BaseClass1",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "BuildFromVBSourceCode.BaseClass1"
         },
         {
           "name": "Class1",
           "href": "BuildFromVBSourceCode.Class1.html",
           "topicHref": "BuildFromVBSourceCode.Class1.html",
-          "topicUid": "BuildFromVBSourceCode.Class1",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "BuildFromVBSourceCode.Class1"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     },
     {
       "name": "CatLibrary",
@@ -117,186 +85,114 @@
               "name": "ContainersRefType",
               "href": "CatLibrary.Core.ContainersRefType.html",
               "topicHref": "CatLibrary.Core.ContainersRefType.html",
-              "topicUid": "CatLibrary.Core.ContainersRefType",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ContainersRefType"
             },
             {
               "name": "ContainersRefType.ColorType",
               "href": "CatLibrary.Core.ContainersRefType.ColorType.html",
               "topicHref": "CatLibrary.Core.ContainersRefType.ColorType.html",
-              "topicUid": "CatLibrary.Core.ContainersRefType.ColorType",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ContainersRefType.ColorType"
             },
             {
               "name": "ContainersRefType.ContainersRefTypeChild",
               "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
               "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
-              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild"
             },
             {
               "name": "ContainersRefType.ContainersRefTypeChildInterface",
               "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
               "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html",
-              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface"
             },
             {
               "name": "ContainersRefType.ContainersRefTypeDelegate",
               "href": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
               "topicHref": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html",
-              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate"
             },
             {
               "name": "ExplicitLayoutClass",
               "href": "CatLibrary.Core.ExplicitLayoutClass.html",
               "topicHref": "CatLibrary.Core.ExplicitLayoutClass.html",
-              "topicUid": "CatLibrary.Core.ExplicitLayoutClass",
-              "tocHref": null,
-              "level": 4.0,
-              "items": [],
-              "leaf": true
+              "topicUid": "CatLibrary.Core.ExplicitLayoutClass"
             }
           ],
           "name.csharp": "CatLibrary.Core",
-          "name.vb": "CatLibrary.Core",
-          "tocHref": null,
-          "level": 3.0
+          "name.vb": "CatLibrary.Core"
         },
         {
           "name": "Cat<T, K>",
           "href": "CatLibrary.Cat-2.html",
           "topicHref": "CatLibrary.Cat-2.html",
           "topicUid": "CatLibrary.Cat`2",
-          "name.vb": "Cat(Of T, K)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "Cat(Of T, K)"
         },
         {
           "name": "CatException<T>",
           "href": "CatLibrary.CatException-1.html",
           "topicHref": "CatLibrary.CatException-1.html",
           "topicUid": "CatLibrary.CatException`1",
-          "name.vb": "CatException(Of T)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "CatException(Of T)"
         },
         {
           "name": "Complex<T, J>",
           "href": "CatLibrary.Complex-2.html",
           "topicHref": "CatLibrary.Complex-2.html",
           "topicUid": "CatLibrary.Complex`2",
-          "name.vb": "Complex(Of T, J)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "Complex(Of T, J)"
         },
         {
           "name": "FakeDelegate<T>",
           "href": "CatLibrary.FakeDelegate-1.html",
           "topicHref": "CatLibrary.FakeDelegate-1.html",
           "topicUid": "CatLibrary.FakeDelegate`1",
-          "name.vb": "FakeDelegate(Of T)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "FakeDelegate(Of T)"
         },
         {
           "name": "IAnimal",
           "href": "CatLibrary.IAnimal.html",
           "topicHref": "CatLibrary.IAnimal.html",
-          "topicUid": "CatLibrary.IAnimal",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.IAnimal"
         },
         {
           "name": "ICat",
           "href": "CatLibrary.ICat.html",
           "topicHref": "CatLibrary.ICat.html",
-          "topicUid": "CatLibrary.ICat",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.ICat"
         },
         {
           "name": "ICatExtension",
           "href": "CatLibrary.ICatExtension.html",
           "topicHref": "CatLibrary.ICatExtension.html",
-          "topicUid": "CatLibrary.ICatExtension",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.ICatExtension"
         },
         {
           "name": "MRefDelegate<K, T, L>",
           "href": "CatLibrary.MRefDelegate-3.html",
           "topicHref": "CatLibrary.MRefDelegate-3.html",
           "topicUid": "CatLibrary.MRefDelegate`3",
-          "name.vb": "MRefDelegate(Of K, T, L)",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "name.vb": "MRefDelegate(Of K, T, L)"
         },
         {
           "name": "MRefNormalDelegate",
           "href": "CatLibrary.MRefNormalDelegate.html",
           "topicHref": "CatLibrary.MRefNormalDelegate.html",
-          "topicUid": "CatLibrary.MRefNormalDelegate",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.MRefNormalDelegate"
         },
         {
           "name": "Tom",
           "href": "CatLibrary.Tom.html",
           "topicHref": "CatLibrary.Tom.html",
-          "topicUid": "CatLibrary.Tom",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.Tom"
         },
         {
           "name": "TomFromBaseClass",
           "href": "CatLibrary.TomFromBaseClass.html",
           "topicHref": "CatLibrary.TomFromBaseClass.html",
-          "topicUid": "CatLibrary.TomFromBaseClass",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "CatLibrary.TomFromBaseClass"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     },
     {
       "name": "MRef.Demo.Enumeration",
@@ -308,35 +204,9 @@
           "name": "ColorType",
           "href": "MRef.Demo.Enumeration.ColorType.html",
           "topicHref": "MRef.Demo.Enumeration.ColorType.html",
-          "topicUid": "MRef.Demo.Enumeration.ColorType",
-          "tocHref": null,
-          "level": 3.0,
-          "items": [],
-          "leaf": true
+          "topicUid": "MRef.Demo.Enumeration.ColorType"
         }
-      ],
-      "tocHref": null,
-      "level": 2.0
+      ]
     }
-  ],
-  "_appName": "Seed",
-  "_appTitle": "docfx seed website",
-  "_enableSearch": true,
-  "_key": "obj/api/toc.yml",
-  "_lang": "csharp",
-  "_navKey": "~/toc.yml",
-  "_navPath": "toc.html",
-  "_navRel": "../toc.html",
-  "_path": "api/toc.html",
-  "_rel": "../",
-  "_tocKey": "~/obj/api/toc.yml",
-  "_tocPath": "api/toc.html",
-  "_tocRel": "toc.html",
-  "topicHref": null,
-  "tocHref": null,
-  "name": null,
-  "level": 1.0,
-  "leaf": false,
-  "title": "Table of Content",
-  "_disableToc": true
+  ]
 }

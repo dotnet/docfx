@@ -108,6 +108,7 @@ body[data-layout="landing"] {
         display: grid;
         gap: 3rem;
         grid-template-columns: .4fr 1fr min-content;
+        padding-bottom: 0;
 
         @include media-breakpoint-down(lg) {
           gap: 1rem;
@@ -123,7 +124,7 @@ body[data-layout="landing"] {
           display: block;
           overflow-x: hidden;
           overflow-y: auto;
-          max-height: calc(100vh - #{$header-height} - #{$footer-height});
+          max-height: calc(100vh - #{$header-height});
 
           @include sticky-top($header-height);
 
@@ -136,6 +137,7 @@ body[data-layout="landing"] {
         >.content {
           min-width: 0;
           margin: 0 0 4rem;
+          padding-bottom: $main-padding-bottom;
 
           >.actionbar {
             display: flex;
@@ -151,7 +153,7 @@ body[data-layout="landing"] {
         >.affix {
           display: block;
           width: 254px;
-          max-height: calc(100vh - #{$header-height} - #{$footer-height});
+          max-height: calc(100vh - #{$header-height});
           overflow-x: hidden;
           overflow-y: auto;
 

@@ -1,101 +1,91 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import $ from 'jquery'
 import { html, render } from 'lit-html'
-import { breakWord, getAbsolutePath, getCurrentWindowAbsolutePath, isRelativePath, meta } from './helper'
+import { classMap } from 'lit-html/directives/class-map.js'
+import { meta } from './helper'
 
-const active = 'active'
-const expanded = 'in'
-
-export function renderToc() {
-  const sidetoc = document.getElementById('sidetoc')
-  if (!sidetoc) {
-    return
-  }
-
-  if (sidetoc.childElementCount === 0) {
-    loadToc()
-  } else {
-    registerTocEvents()
-
-    // Scroll to active item
-    let top = 0
-    $('#toc a.active').parents('li').each(function(i, e) {
-      $(e).addClass(active).addClass(expanded)
-      $(e).children('a').addClass(active)
-    })
-    $('#toc a.active').parents('li').each(function(i, e) {
-      top += $(e).position().top
-    })
-    $('.sidetoc').scrollTop(top - 50)
-
-    renderBreadcrumb()
-  }
-
-  function registerTocEvents() {
-    $('.toc li > .expand-stub').click(function(e) {
-      $(e.target).parent().toggleClass(expanded)
-    })
-    $('.toc li > .expand-stub + a:not([href])').click(function(e) {
-      $(e.target).parent().toggleClass(expanded)
-    })
-  }
-
-  function loadToc() {
-    let tocPath = meta('docfx:tocrel')
-    if (!tocPath) {
-      return
-    }
-    tocPath = tocPath.replace(/\\/g, '/')
-    $('#sidetoc').load(tocPath, function() {
-      const index = tocPath.lastIndexOf('/')
-      let tocrel = ''
-      if (index > -1) {
-        tocrel = tocPath.substr(0, index + 1)
-      }
-      let currentHref = getCurrentWindowAbsolutePath()
-      if (!currentHref.endsWith('.html')) {
-        currentHref += '.html'
-      }
-      $('#sidetoc').find('a[href]').each(function(i, e) {
-        let href = $(e).attr('href')
-        if (isRelativePath(href)) {
-          href = tocrel + href
-          $(e).attr('href', href)
-        }
-
-        if (getAbsolutePath(e.href) === currentHref) {
-          $(e).addClass(active)
-        }
-
-        breakWord($(e))
-      })
-
-      renderToc()
-    })
-  }
+export type TocNode = {
+  name: string
+  href?: string
+  expanded?: boolean
+  items?: TocNode[]
 }
 
-export function renderBreadcrumb() {
-  const breadcrumb = []
-  $('#navbar a.active').each(function(i, e) {
-    breadcrumb.push({
-      href: e.href,
-      name: e.innerText
-    })
-  })
-  $('#toc a.active').each(function(i, e) {
-    breadcrumb.push({
-      href: e.href,
-      name: e.innerText
-    })
-  })
+/**
+ * @returns active TOC nodes
+ */
+export async function renderToc(): Promise<TocNode[]> {
+  const tocrel = meta('docfx:tocrel')
+  if (!tocrel) {
+    return []
+  }
 
-  render(
-    html`
-    <ol class="breadcrumb">
-      ${breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${i.name}</a></li>`)}
-    </ol>`,
-    document.getElementById('breadcrumb'))
+  const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
+  const { items } = await (await fetch(tocUrl)).json()
+
+  const activeNodes = []
+  items.forEach(initTocNodes)
+
+  const tocContainer = document.getElementById('toc')
+  if (tocContainer) {
+    renderToc()
+
+    const activeElements = tocContainer.querySelectorAll('li.active')
+    const lastActiveElement = activeElements[activeElements.length - 1]
+    if (lastActiveElement) {
+      lastActiveElement.scrollIntoView({ block: 'nearest' })
+    }
+  }
+
+  return activeNodes.slice(0, -1)
+
+  function initTocNodes(node: TocNode): boolean {
+    let active
+    if (node.href) {
+      const url = new URL(node.href, tocUrl)
+      node.href = url.href
+      active = url.pathname === window.location.pathname
+    }
+
+    if (node.items) {
+      for (const child of node.items) {
+        if (initTocNodes(child)) {
+          active = true
+          node.expanded = true
+        }
+      }
+    }
+
+    if (active) {
+      activeNodes.unshift(node)
+      return true
+    }
+    return false
+  }
+
+  function renderToc() {
+    render(renderTocNodes(items), tocContainer)
+  }
+
+  function renderTocNodes(nodes: TocNode[]) {
+    return html`<ul>${nodes.map(node => {
+      const { href, name, items } = node
+      const isLeaf = !items || items.length <= 0
+      const active = activeNodes.includes(node) ? 'active' : null
+      const expanded = node.expanded ? 'expanded' : null
+
+      return html`
+        <li class=${classMap({ active, expanded })}>
+          ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
+          ${href ? html`<a href=${href}>${name}</a>` : html`<a @click=${toggleExpand}>${name}</a>`}
+          ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
+        </li>`
+
+      function toggleExpand() {
+        node.expanded = !node.expanded
+        renderToc()
+      }
+    })}</ul>`
+  }
 }

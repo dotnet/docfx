@@ -1,80 +1,58 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import $ from 'jquery'
 import { render, html } from 'lit-html'
-import {
-  getAbsolutePath,
-  getCurrentWindowAbsolutePath,
-  getDirectory,
-  isRelativePath,
-  meta
-} from './helper'
-import { renderBreadcrumb } from './toc'
+import { meta } from './helper'
+import { TocNode } from './toc'
 
-const active = 'active'
+export type NavItem = {
+  name: string
+  href: URL
+}
 
-export function renderNavbar() {
-  const navbar = $('#navbar ul')[0]
-  if (typeof navbar === 'undefined') {
-    loadNavbar()
-  } else {
-    $('#navbar ul a.active').parents('li').addClass(active)
-    renderBreadcrumb()
+/**
+ * @returns active navbar items
+ */
+export async function renderNavbar(): Promise<NavItem[]> {
+  const navrel = meta('docfx:navrel')
+  if (!navrel) {
+    return []
   }
 
-  function loadNavbar() {
-    let navbarPath = meta('docfx:navrel')
-    if (!navbarPath) {
-      return
-    }
-    navbarPath = navbarPath.replace(/\\/g, '/')
-    let tocPath = meta('docfx:tocrel') || ''
-    if (tocPath) tocPath = tocPath.replace(/\\/g, '/')
-    $.get(navbarPath, function(data) {
-      $(data).find('#toc>ul').prependTo('#navbar')
-      const index = navbarPath.lastIndexOf('/')
-      let navrel = ''
-      if (index > -1) {
-        navrel = navbarPath.substr(0, index + 1)
-      }
-      $('#navbar>ul').addClass('navbar-nav')
-      $('#navbar>ul>li').addClass('nav-item')
-      $('#navbar>ul>li>a').addClass('nav-link')
-      const currentAbsPath = getCurrentWindowAbsolutePath()
-      // set active item
-      $('#navbar')
-        .find('a[href]')
-        .each(function(i, e) {
-          let href = $(e).attr('href')
-          if (isRelativePath(href)) {
-            href = navrel + href
-            $(e).attr('href', href)
+  const navUrl = new URL(navrel.replace(/.html$/gi, '.json'), window.location.href)
+  const { items } = await fetch(navUrl).then(res => res.json())
+  const navItems = items.map(a => ({ name: a.name, href: new URL(a.href, navUrl) }))
+  if (navItems.length <= 0) {
+    return []
+  }
 
-            let isActive = false
-            let originalHref = e.name
-            if (originalHref) {
-              originalHref = navrel + originalHref
-              if (
-                getDirectory(getAbsolutePath(originalHref)) ===
-                getDirectory(getAbsolutePath(tocPath))
-              ) {
-                isActive = true
-              }
-            } else {
-              if (getAbsolutePath(href) === currentAbsPath) {
-                const dropdown = $(e).attr('data-toggle') === 'dropdown'
-                if (!dropdown) {
-                  isActive = true
-                }
-              }
-            }
-            if (isActive) {
-              $(e).addClass(active)
-            }
-          }
+  const activeItem = findActiveItem(navItems)
+  const navbar = document.getElementById('navbar')
+  if (navbar) {
+    const menu = html`
+      <ul class='navbar-nav'>${
+        navItems.map(item => {
+          const current = (item === activeItem ? 'page' : false)
+          const active = (item === activeItem ? 'active' : null)
+          return html`<li class='nav-item'><a class='nav-link ${active}' aria-current=${current} href=${item.href}>${item.name}</a></li>`
         })
-    })
+      }</ul>`
+
+    render(menu, navbar, { renderBefore: navbar.firstChild })
+  }
+
+  return activeItem ? [activeItem] : []
+}
+
+export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
+  const container = document.getElementById('breadcrumb')
+  if (container) {
+    render(
+      html`
+        <ol class="breadcrumb">
+          ${breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${i.name}</a></li>`)}
+        </ol>`,
+      container)
   }
 }
 
@@ -89,4 +67,28 @@ export function renderInThisArticle() {
     <ul>${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
 
   render(dom, document.getElementById('affix'))
+}
+
+function findActiveItem(items: NavItem[]): NavItem {
+  const url = new URL(window.location.href)
+  let activeItem: NavItem
+  let maxPrefix = 0
+  for (const item of items) {
+    const prefix = commonUrlPrefix(url, item.href)
+    if (prefix > maxPrefix) {
+      maxPrefix = prefix
+      activeItem = item
+    }
+  }
+  return activeItem
+}
+
+function commonUrlPrefix(url: URL, base: URL): number {
+  const urlSegments = url.pathname.split('/')
+  const baseSegments = base.pathname.split('/')
+  let i = 0
+  while (i < urlSegments.length && i < baseSegments.length && urlSegments[i] === baseSegments[i]) {
+    i++
+  }
+  return i
 }

@@ -1,0 +1,30 @@
+﻿{
+  "items": [
+    {
+      "name": "Getting Started",
+      "href": "docfx_getting_started.html",
+      "topicHref": "docfx_getting_started.html"
+    },
+    {
+      "name": "Engineering Docs",
+      "items": [
+        {
+          "name": "Engineering Guidelines",
+          "href": "engineering_guidelines.html",
+          "topicHref": "engineering_guidelines.html"
+        },
+        {
+          "name": "CSharp Coding Standards",
+          "href": "csharp_coding_standards.html",
+          "topicHref": "csharp_coding_standards.html"
+        }
+      ],
+      "expanded": true
+    },
+    {
+      "name": "Markdown",
+      "href": "markdown.html",
+      "topicHref": "markdown.html"
+    }
+  ]
+}

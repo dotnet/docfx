@@ -2,6 +2,21 @@
   "uid": "CatLibrary.Core",
   "isEii": false,
   "isExtensionMethod": false,
+  "parent": {
+    "isEii": false,
+    "isExtensionMethod": false,
+    "specName": [
+      {
+        "lang": "csharp",
+        "value": "<xref uid=\"CatLibrary\" displayProperty=\"name\"/>"
+      },
+      {
+        "lang": "vb",
+        "value": "<xref uid=\"CatLibrary\" displayProperty=\"name\"/>"
+      }
+    ],
+    "level": 0.0
+  },
   "children": [
     {
       "inClass": true,
