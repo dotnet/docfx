@@ -7,14 +7,11 @@
 .alert h5 {
   text-transform: uppercase;
   font-weight: bold;
-}
+  font-size: 1rem;
 
-.alert h5::before {
-  font-family: bootstrap-icons, sans-serif;
-  position: relative;
-  top: 3px;
-  margin-right: .5em;
-  font-weight: normal;
+  &::before {
+    @include adjust-icon;
+  }
 }
 
 .alert-info h5::before {

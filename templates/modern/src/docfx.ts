@@ -9,7 +9,6 @@ import { enableSearch } from './search'
 import { renderToc } from './toc'
 import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
-import 'highlight.js/scss/github.scss'
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
 
@@ -24,7 +23,6 @@ declare global {
 }
 
 window.docfx = {}
-
 document.addEventListener('DOMContentLoaded', function() {
   highlight()
   enableSearch()

@@ -11,6 +11,14 @@ $container-max-widths: (
 
 @import "bootstrap/scss/bootstrap.scss";
 
+@import "highlight.js/scss/github.scss";
+
+@include color-mode(dark) {
+  @import "highlight.js/scss/github-dark.scss";
+}
+
+@import "highlight.scss";
+
 h1,
 h2,
 h3,
@@ -38,6 +46,7 @@ article {
   
   img {
     max-width: 100%;
+    height: auto;
   }
 }
 
@@ -68,9 +77,13 @@ article {
   }
 }
 
-/* For code snippet line highlight */
-pre > code .line-highlight {
-  background-color: yellow;
+@mixin adjust-icon {
+  font-family: bootstrap-icons, sans-serif;
+  position: relative;
+  margin-right: 0.5em;
+  top: 0.2em;
+  font-size: 1.25em;
+  font-weight: normal;
 }
 
 @import "layout.scss";
@@ -78,5 +91,4 @@ pre > code .line-highlight {
 @import "toc.scss";
 @import "markdown.scss";
 @import "search.scss";
-@import "highlight.scss";
 @import "dotnet.scss";

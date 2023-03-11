@@ -63,8 +63,8 @@ export function renderInThisArticle() {
   }
 
   const dom = html`
-    <h5>In this article</h5>
-    <ul>${Array.from(h2s).map(h2 => html`<li><a href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
+    <h5 class="border-bottom">In this article</h5>
+    <ul>${Array.from(h2s).map(h2 => html`<li><a class="link-secondary" href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
 
   render(dom, document.getElementById('affix'))
 }

@@ -2,3 +2,18 @@
  * Copyright (c) Microsoft Corporation. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
+
+.hljs {
+  background-color: #f5f5f5;
+}
+  
+/* For code snippet line highlight */
+pre > code .line-highlight {
+  background-color: yellow;
+}
+
+@include color-mode(dark) {
+  pre > code .line-highlight {
+    background-color: #4a4a00;
+  }
+}

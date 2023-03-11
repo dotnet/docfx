@@ -13,64 +13,41 @@
   flex-wrap: nowrap;
 }
 
-div.contribution {
-  margin-bottom: 20px;
-}
-
-div.contribution > ul > li > a.contribution-link {
-  padding: 6px 10px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-div.contribution > ul > li > a.contribution-link:hover {
-  background-color: #fff;
+@include color-mode(dark) {
+  .form-control {
+    background-color: $body-secondary-bg-dark;
+  }
 }
 
 .affix {
-  font-size: 12px;
+  font-size: 14px;
 
   h5 {
-    font-weight: bold;
+    display: inline-block;
+    font-weight: 600;
     text-transform: uppercase;
-    padding-left: 10px;
-    font-size: 12px;
+    padding: 1em 0;
+    font-size: 1rem;
   }
 
-  > ul {
-    padding-bottom: 10px;
+  ul {
     flex-direction: column;
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
   }
+}
 
-  li > a {
-    display: block;
-    padding: 0 .5em;
-    margin: .5em 0;
-    color: #666;
-    border-left: transparent solid 4px;
+.contribution {
+  margin-top: 2rem;
 
-    &:focus {
-      background: none;
-    }
+  a.edit-link {
+    text-decoration: none;
 
-    &:hover {
-      background: none;
-      color: #666;
-    }
+    &::before {
+      content: "\F4CA";
 
-    &.active {
-      color: #337ab7;
-      border-left: #337ab7 solid 4px;
-    }
-
-    li.active:last-child {
-      margin-bottom: 50px;
-    }
-
-    &.active::before,
-    &:hover::before {
-      display: block;
-      white-space: nowrap;
+      @include adjust-icon;
     }
   }
 }
