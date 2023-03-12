@@ -13,12 +13,6 @@
   flex-wrap: nowrap;
 }
 
-@include color-mode(dark) {
-  .form-control {
-    background-color: $body-secondary-bg-dark;
-  }
-}
-
 .affix {
   font-size: 14px;
 

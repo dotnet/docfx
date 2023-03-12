@@ -23,6 +23,7 @@ declare global {
 }
 
 window.docfx = {}
+
 document.addEventListener('DOMContentLoaded', function() {
   highlight()
   enableSearch()
