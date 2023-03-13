@@ -70,19 +70,20 @@ export async function renderToc(): Promise<TocNode[]> {
 
   function renderTocNodes(nodes: TocNode[]) {
     return html`<ul>${nodes.map(node => {
-      const { href, name, items } = node
+      const { href, name, items, expanded } = node
       const isLeaf = !items || items.length <= 0
-      const active = activeNodes.includes(node) ? 'active' : null
-      const expanded = node.expanded ? 'expanded' : null
 
       return html`
-        <li class=${classMap({ active, expanded })}>
+        <li class=${classMap({ expanded })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
-          ${href ? html`<a href=${href}>${name}</a>` : html`<a @click=${toggleExpand}>${name}</a>`}
+          ${href
+            ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${name}</a>`
+            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${name}</a>`}
           ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
         </li>`
 
-      function toggleExpand() {
+      function toggleExpand(e) {
+        e.preventDefault()
         node.expanded = !node.expanded
         renderToc()
       }

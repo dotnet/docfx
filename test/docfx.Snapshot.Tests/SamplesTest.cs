@@ -38,12 +38,12 @@ namespace Microsoft.DocAsCode.Tests
             "restapi/petstore.html",
         };
 
-        private static readonly (int width, int height, bool fullPage)[] s_viewports = new[]
+        private static readonly (int width, int height, string theme, bool fullPage)[] s_viewports = new[]
         {
-            (1920, 1080, true),
-            (1152, 648, false),
-            (768, 600, false),
-            (375, 812, true),
+            (1920, 1080, "light", true),
+            (1152, 648, "light", false),
+            (768, 600, "dark", false),
+            (375, 812, "dark", true),
         };
 
         static SamplesTest()
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Tests
 
             await s_viewports.ForEachInParallelAsync(async viewport =>
             {
-                var (width, height, fullPage) = viewport;
+                var (width, height, theme, fullPage) = viewport;
                 var isMobile = width < 500;
                 var page = await browser.NewPageAsync(new()
                 {
@@ -107,6 +107,7 @@ namespace Microsoft.DocAsCode.Tests
                 foreach (var url in s_screenshotUrls)
                 {
                     await page.GotoAsync($"http://localhost:{port}/{url}");
+                    await page.EvaluateAsync($"() => document.body.setAttribute('data-bs-theme', '{theme}')");
                     await page.WaitForFunctionAsync("window.docfx.ready");
                     await page.WaitForFunctionAsync("window.docfx.searchReady");
 
@@ -126,7 +127,7 @@ namespace Microsoft.DocAsCode.Tests
                     var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
 
                     // Verify HTML files once
-                    if (htmlUrls.TryAdd(url, url))
+                    if (theme is "light" && htmlUrls.TryAdd(url, url))
                     {
                         var html = await page.ContentAsync();
                         await Verifier

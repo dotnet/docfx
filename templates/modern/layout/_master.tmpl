@@ -29,7 +29,7 @@
 
   {{^redirect_url}}
   <body data-layout="{{layout}}">
-    <header class="border-bottom">
+    <header class="border-bottom bg-body">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="{{_rel}}index.html">
@@ -78,14 +78,9 @@
 
         {{^_disableContribution}}
         <div class="contribution d-print-none">
-          <ul>
-            {{#docurl}}
-            <li><a href="{{docurl}}" class="contribution-link">{{__global.improveThisDoc}}</a></li>
-            {{/docurl}}
-            {{#sourceurl}}
-            <li><a href="{{sourceurl}}" class="contribution-link">{{__global.viewSource}}</a></li>
-            {{/sourceurl}}
-          </ul>
+          {{#docurl}}
+          <a href="{{docurl}}" class="edit-link">Edit this page</a>
+          {{/docurl}}
         </div>
         {{/_disableContribution}}
       </div>
@@ -99,7 +94,7 @@
     <div class="container-xxl search-results" id="search-results"></div>
     {{/_enableSearch}}
 
-    <footer>
+    <footer class="border-top">
       <div class="container-xxl">
         {{>partials/footer}}
       </div>

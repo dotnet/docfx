@@ -23,22 +23,12 @@ $expand-stub-width: 1.2rem;
   }
 
   li > a {
-    color: #666;
     display: inline;
     text-decoration: none;
 
     &:hover, &:focus {
-      color: #000;
       background: none;
       text-decoration: underline;
-    }
-  }
-
-  li.active > a {
-    color: #337ab7;
-
-    &:hover, &:focus {
-      color: #23527c;
     }
   }
 

@@ -9,7 +9,6 @@ import { enableSearch } from './search'
 import { renderToc } from './toc'
 import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
-import 'highlight.js/scss/github.scss'
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
 
