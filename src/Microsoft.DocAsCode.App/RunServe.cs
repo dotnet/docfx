@@ -45,9 +45,8 @@ namespace Microsoft.DocAsCode
             try
             {
                 var builder = WebApplication.CreateBuilder();
-                builder.WebHost
-                    .ConfigureLogging(options => options.ClearProviders())
-                    .UseUrls(url);
+                builder.Logging.ClearProviders();
+                builder.WebHost.UseUrls(url);
 
                 Console.WriteLine($"Serving \"{folder}\" on {url}. Press Ctrl+C to shut down.");
                 using var app = builder.Build();
