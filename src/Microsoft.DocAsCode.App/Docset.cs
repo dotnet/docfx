@@ -4,7 +4,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Dotnet;
 using Newtonsoft.Json.Linq;
 
 namespace Microsoft.DocAsCode
@@ -31,7 +30,7 @@ namespace Microsoft.DocAsCode
         /// <param name="configPath">The path to docfx.json config file.</param>
         /// <param name="options">The build options.</param>
         /// <returns>A task to await for build completion.</returns>
-        public static async Task Build(string configPath, BuildOptions options)
+        public static Task Build(string configPath, BuildOptions options)
         {
             var consoleLogListener = new ConsoleLogListener();
             Logger.RegisterListener(consoleLogListener);
@@ -43,6 +42,7 @@ namespace Microsoft.DocAsCode
                 var config = JObject.Parse(File.ReadAllText(configPath));
                 if (config.TryGetValue("build", out var value))
                     RunBuild.Exec(value.ToObject<BuildJsonConfig>(JsonUtility.DefaultSerializer.Value), options, configDirectory);
+                return Task.CompletedTask;
             }
             finally
             {

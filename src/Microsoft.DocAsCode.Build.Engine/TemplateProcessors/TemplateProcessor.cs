@@ -127,6 +127,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var path = Path.Combine(outputDirectory, filePath);
                 var dir = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                if (File.Exists(path))
+                {
+                    Logger.Log(LogLevel.Verbose, $"Resource {filePath} already exists, skip saving");
+                    return;
+                }
 
                 using (var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
                 {
