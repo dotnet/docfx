@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Tests
                     var fileName = $"{Regex.Replace(url, "[^a-zA-Z0-9-_.]", "-")}";
 
                     // Verify HTML files once
-                    if (htmlUrls.TryAdd(url, url))
+                    if (theme is "light" && htmlUrls.TryAdd(url, url))
                     {
                         var html = await page.ContentAsync();
                         await Verifier
