@@ -45,7 +45,7 @@ export async function renderToc(): Promise<TocNode[]> {
     if (node.href) {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
-      active = url.pathname === window.location.pathname
+      active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
     }
 
     if (node.items) {
@@ -88,5 +88,9 @@ export async function renderToc(): Promise<TocNode[]> {
         renderToc()
       }
     })}</ul>`
+  }
+
+  function normalizeUrlPath(url: { pathname: string }): string {
+    return url.pathname.replace(/\/index\.html$/gi, '/')
   }
 }
