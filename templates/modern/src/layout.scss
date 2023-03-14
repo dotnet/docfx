@@ -9,20 +9,25 @@ $main-padding-top: 1rem;
 $main-padding-bottom: 4rem;
 
 // Makes a div sticky to top
-@mixin sticky-top($top: 0) {
-  position: sticky;
-  top: $top;
-
-  @if $top == 0 {
+@mixin sticky-top {
+  @include media-breakpoint-up(md) {
+    position: sticky;
+    top: 0;
     z-index: 1030;
-  } @else {
-    z-index: 1020;
+  }
+}
+
+@mixin stick-to-header {
+  @include media-breakpoint-up(md) {
+    position: sticky;
+    top: calc($header-height + $main-padding-top);
   }
 }
 
 html {
   width: 100vw;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 body,
@@ -36,9 +41,9 @@ body[data-layout="landing"] {
     display: flex;
     align-items: stretch;
 
-    @include media-breakpoint-up(md) {
-      @include sticky-top;
+    @include sticky-top;
 
+    @include media-breakpoint-up(md) {
       height: $header-height;
     }
 
@@ -107,37 +112,27 @@ body[data-layout="landing"] {
     &[data-layout=""],
     &[data-layout="conceptual"] {
       >main {
-        display: grid;
-        gap: 3rem;
-        grid-template-columns: .4fr 1fr min-content;
         padding-bottom: 0;
 
-        @include media-breakpoint-down(lg) {
-          gap: 1rem;
-        }
-
-        @include media-breakpoint-down(md) {
-          gap: 0;
-          grid-template-columns: 1fr;
-          grid-template-rows: 0 1fr;
-        }
-
         >.toc-offcanvas {
+          flex: .35;
           display: block;
           overflow-x: hidden;
           overflow-y: auto;
+          max-width: 360px;
           max-height: calc(100vh - #{$header-height});
 
-          @include sticky-top($header-height);
+          @include stick-to-header;
 
           @include media-breakpoint-down(md) {
-            width: 0;
-            height: 0;
+            flex: 0;
           }
         }
 
         >.content {
+          flex: 1;
           min-width: 0;
+          margin: 0 3rem;
           padding-bottom: $main-padding-bottom;
 
           >.actionbar {
@@ -149,6 +144,14 @@ body[data-layout="landing"] {
           >.contribution {
             display: flex;
           }
+
+          @include media-breakpoint-down(lg) {
+            margin: 0 1rem;
+          }
+  
+          @include media-breakpoint-down(md) {
+            margin: 0;
+          }
         }
 
         >.affix {
@@ -158,7 +161,7 @@ body[data-layout="landing"] {
           overflow-x: hidden;
           overflow-y: auto;
 
-          @include sticky-top($header-height);
+          @include stick-to-header;
 
           @include media-breakpoint-down(xl) {
             display: none;

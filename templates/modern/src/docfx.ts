@@ -7,8 +7,7 @@ import { breakText } from './helper'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
-import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
-import { renderThemePicker } from './theme'
+import { renderBreadcrumb, renderFooter, renderInThisArticle, renderNavbar } from './nav'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
@@ -30,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   enableSearch()
 
   renderMarkdown()
-  renderThemePicker()
+  renderFooter()
 
   Promise.all([renderNavbar(), renderToc()])
     .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))

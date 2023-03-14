@@ -3,6 +3,7 @@
 
 import { render, html } from 'lit-html'
 import { meta } from './helper'
+import { themePicker } from './theme'
 import { TocNode } from './toc'
 
 export type NavItem = {
@@ -42,6 +43,28 @@ export async function renderNavbar(): Promise<NavItem[]> {
   }
 
   return activeItem ? [activeItem] : []
+}
+
+export function renderFooter() {
+  const footer = document.querySelector('footer>div') as HTMLElement
+  if (footer) {
+    render(html`${githubLink()} ${themePicker(renderFooter)}`, footer)
+  }
+
+  function githubLink() {
+    const docurl = meta('docfx:docurl')
+    const github = parseGitHubRepo(docurl)
+    if (github) {
+      return html`<a href='${github}' class='btn border-0'><i class='bi bi-github'></i></a>`
+    }
+  }
+
+  function parseGitHubRepo(url: string): string {
+    const match = /^https:\/\/github.com\/([^/]+\/[^/]+)/gi.exec(url)
+    if (match) {
+      return match[0]
+    }
+  }
 }
 
 export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {

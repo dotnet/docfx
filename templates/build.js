@@ -12,7 +12,8 @@ const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv)).argv
 
 const watch = argv.watch
-const project = '../samples/seed'
+const project = argv.project || '../samples/seed'
+
 const loader = {
   '.eot': 'file',
   '.svg': 'file',
