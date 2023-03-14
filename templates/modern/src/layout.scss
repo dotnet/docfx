@@ -48,9 +48,13 @@ body[data-layout="landing"] {
   }
 
   >footer {
-    display: flex;
     padding: 1rem 0;
     height: $footer-height;
+
+    >div {
+      display: flex;
+      align-items: center;
+    }
   }
 
   >main {
