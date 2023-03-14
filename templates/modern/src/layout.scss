@@ -108,6 +108,10 @@ body[data-layout="landing"] {
   }
 
   body:not([data-search]) {
+    >.search-results {
+      display: none;
+    }
+
     // Default layout: with header, footer, actionbar, affix, and toc
     &[data-layout=""],
     &[data-layout="conceptual"] {

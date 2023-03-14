@@ -32,6 +32,7 @@ export function enableSearch() {
         window.docfx.searchReady = true
         break
       case 'query-ready':
+        document.body.setAttribute('data-search', 'true')
         renderSearchResults(oEvent.data.d, 0)
         window.docfx.searchResultReady = true
         break
@@ -43,7 +44,6 @@ export function enableSearch() {
     if (query.length < 3) {
       document.body.removeAttribute('data-search')
     } else {
-      document.body.setAttribute('data-search', 'true')
       worker.postMessage({ q: query })
     }
   }
