@@ -67,6 +67,8 @@ function renderAnchor() {
  * Render tabbed content.
  */
 function renderTabs() {
+  updateTabStyle()
+
   const contentAttrs = {
     id: 'data-bi-id',
     name: 'data-bi-name',
@@ -108,11 +110,13 @@ function renderTabs() {
       set: function(value) {
         if (value) {
           this.a.setAttribute('aria-selected', 'true')
+          this.a.classList.add('active')
           this.a.tabIndex = 0
           this.section.removeAttribute('hidden')
           this.section.removeAttribute('aria-hidden')
         } else {
           this.a.setAttribute('aria-selected', 'false')
+          this.a.classList.remove('active')
           this.a.tabIndex = -1
           this.section.setAttribute('hidden', 'hidden')
           this.section.setAttribute('aria-hidden', 'true')
@@ -146,7 +150,6 @@ function renderTabs() {
     }
     selectTabs(queryStringTabs)
     updateTabsQueryStringParam(state)
-    notifyContentUpdated()
     return state
   }
 
@@ -248,7 +251,6 @@ function renderTabs() {
       }
       updateTabsQueryStringParam(state)
     }
-    notifyContentUpdated()
     const top = info.anchor.getBoundingClientRect().top
     if (top !== originalTop && event instanceof MouseEvent) {
       window.scrollTo(0, window.pageYOffset + top - originalTop)
@@ -298,8 +300,10 @@ function renderTabs() {
     return false
   }
 
-  function notifyContentUpdated() {
-    // Dispatch this event when needed
-    // window.dispatchEvent(new CustomEvent('content-update'));
+  function updateTabStyle() {
+    document.querySelectorAll('div.tabGroup>ul').forEach(e => e.classList.add('nav', 'nav-tabs'))
+    document.querySelectorAll('div.tabGroup>ul>li').forEach(e => e.classList.add('nav-item'))
+    document.querySelectorAll('div.tabGroup>ul>li>a').forEach(e => e.classList.add('nav-link'))
+    document.querySelectorAll('div.tabGroup>section').forEach(e => e.classList.add('card'))
   }
 }
