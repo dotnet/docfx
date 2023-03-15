@@ -19,16 +19,30 @@ export function renderMarkdown() {
 }
 
 /**
- * Make images in articles clickable
+ * Make images in articles clickable by wrapping the image in an anchor tag.
+ * The image is clickable only if its size is larger than 200x200 and it is not already been wrapped in an anchor tag.
  */
 function renderClickableImage() {
+  const MIN_CLICKABLE_IMAGE_SIZE = 200
+  const imageLinks = Array.from(document.querySelectorAll<HTMLImageElement>('article a img[src]'))
+
   document.querySelectorAll<HTMLImageElement>('article img[src]').forEach(img => {
-    const a = document.createElement('a')
-    a.target = '_blank'
-    a.rel = 'noopener noreferrer nofollow'
-    a.href = img.src
-    img.replaceWith(a)
-    a.appendChild(img)
+    if (shouldMakeClickable() && !imageLinks.includes(img)) {
+      makeClickable()
+    }
+
+    function makeClickable() {
+      const a = document.createElement('a')
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer nofollow'
+      a.href = img.src
+      img.replaceWith(a)
+      a.appendChild(img)
+    }
+
+    function shouldMakeClickable(): boolean {
+      return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE && img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE
+    }
   })
 }
 
