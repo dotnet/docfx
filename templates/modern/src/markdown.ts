@@ -27,8 +27,14 @@ function renderClickableImage() {
   const imageLinks = Array.from(document.querySelectorAll<HTMLImageElement>('article a img[src]'))
 
   document.querySelectorAll<HTMLImageElement>('article img[src]').forEach(img => {
-    if (shouldMakeClickable() && !imageLinks.includes(img)) {
+    if (shouldMakeClickable()) {
       makeClickable()
+    } else {
+      img.addEventListener('load', () => {
+        if (shouldMakeClickable()) {
+          makeClickable()
+        }
+      })
     }
 
     function makeClickable() {
@@ -41,7 +47,9 @@ function renderClickableImage() {
     }
 
     function shouldMakeClickable(): boolean {
-      return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE && img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE
+      return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE &&
+             img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
+             !imageLinks.includes(img)
     }
   })
 }
