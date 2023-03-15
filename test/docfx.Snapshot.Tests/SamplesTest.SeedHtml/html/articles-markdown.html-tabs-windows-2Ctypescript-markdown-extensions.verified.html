@@ -98,7 +98,7 @@
 <li>Use docfx as a NuGet library:</li>
 </ol>
 <pre><code class="lang-xml hljs language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">PackageReference</span> <span class="hljs-attr">Include</span>=<span class="hljs-string">"Microsoft.DocAsCode.App"</span> <span class="hljs-attr">Version</span>=<span class="hljs-string">"2.61.0"</span> /&gt;</span>
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <ol start="2">
 <li>Configure the markdig markdown pipeline:</li>
 </ol>
@@ -109,7 +109,7 @@
 }
 
 <span class="hljs-keyword">await</span> Docset.Build(<span class="hljs-string">"docfx.json"</span>, options);
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Here is a list of markdown extensions provided by docfx by default.</p>
 <h2 id="alerts">Alerts<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#alerts" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>Alerts are block quotes that render with colors and icons that indicate the significance of the content.</p>
@@ -128,7 +128,7 @@
 
 <span class="hljs-quote">&gt; [!WARNING]</span>
 <span class="hljs-quote">&gt; Dangerous certain consequences of an action.</span>
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>They look like this in rendered page:</p>
 <div class="NOTE alert alert-info">
 <h5>Note</h5>
@@ -153,47 +153,47 @@
 <h2 id="video">Video<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#video" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>You can embed a video in your page by using the following Markdown syntax:</p>
 <pre><code class="lang-md hljs language-markdown"><span class="hljs-quote">&gt; [!Video embed<span class="hljs-emphasis">_link]
-</span></span></code></pre>
+</span></span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Example:</p>
 <pre><code class="lang-md hljs language-markdown"><span class="hljs-quote">&gt; [!Video https://www.youtube.com/embed/Sz1lCeedcPI]</span>
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>This will be rendered as:</p>
 <div class="embeddedvideo"><iframe src="https://www.youtube-nocookie.com/embed/Sz1lCeedcPI" frameborder="0" allowfullscreen="true"></iframe></div>
 <h2 id="image">Image<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#image" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>You can embed a image in your page by using the following Markdown syntax:</p>
 <pre><code class="lang-md hljs language-markdown">![<span class="hljs-string"> &lt;alt-text&gt; </span>](<span class="hljs-link"> &lt;image-link&gt; </span>)
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Example:</p>
 <pre><code class="lang-md hljs language-markdown">![<span class="hljs-string">alt-text</span>](<span class="hljs-link">https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main</span>)
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>This will be rendered as:</p>
 <p><img src="https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main" alt="alt-text"></p>
 <h2 id="include-markdown-files">Include Markdown Files<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#include-markdown-files" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.</p>
 <p>You can reuse a common text snippet within a sentence using inline include:</p>
 <pre><code class="lang-markdown hljs language-markdown">Text before [<span class="hljs-string">!INCLUDE [&lt;title&gt;</span>](<span class="hljs-link">&lt;filepath&gt;</span>)] and after.
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Or reuse an entire Markdown file as a block, nested within a section of an article. Block include is on its own line:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!INCLUDE [&lt;title&gt;</span>](<span class="hljs-link">&lt;filepath&gt;</span>)]
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Where <code>&lt;title&gt;</code> is the name of the file and <code>&lt;filepath&gt;</code> is the relative path to the file.</p>
 <p>Included markdown files needs to be excluded from build, they are usually placed in the <code>/includes</code> folder.</p>
 <h2 id="code-snippet">Code Snippet<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#code-snippet" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>There are several ways to include code in an article. The code snippet syntax replaces code from another file:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs</span>)]
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>You can include selected lines from the code snippet using region or line range syntax:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs#region</span>)]
 [<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs#L12-L16</span>)]
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Code snippets are indicated by using a specific link syntax described as follows:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-&lt;language&gt;[</span>](<span class="hljs-link">&lt;filepath&gt;&lt;query-options&gt;</span>)]
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Where <code>&lt;language&gt;</code> is the syntax highlighting language of the code and <code>&lt;filepath&gt;</code> is the relative path to the markdown file.</p>
 <h3 id="highlight-selected-lines">Highlight Selected Lines<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#highlight-selected-lines" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 <p>Code Snippets typically include more code than necessary in order to provide context. It helps readability when you highlight the key lines that you're focusing on. To highlight key lines, use the <code>highlight</code> query options:</p>
 <pre><code class="lang-markdown hljs language-markdown">[<span class="hljs-string">!code-csharp[</span>](<span class="hljs-link">Program.cs?highlight=2,5-7,9-</span>)]
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>The example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.</p>
 <pre><code class="lang-csharp hljs language-csharp" highlight-lines="2,5-7,9-"><span class="hljs-keyword">using</span> System;
 <span class="line-highlight"><span class="hljs-keyword">using</span> Azure;</span>
@@ -227,7 +227,7 @@
         }
     }
 }
-</span></code></pre><h2 id="tabs">Tabs<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#tabs" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre><h2 id="tabs">Tabs<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#tabs" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>Tabs enable content that is multi-faceted. They allow sections of a document to contain variant content renderings and eliminates duplicate content.</p>
 <p>Here's an example of the tab experience:</p>
 <div class="tabGroup" id="tabgroup_bHGHmlrG6S" data-bi-name="tab-group">
@@ -259,10 +259,10 @@ Content for Linux...
 Content for Windows...
 
 ---
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>Tabs are indicated by using a specific link syntax within a Markdown header. The syntax can be described as follows:</p>
 <pre><code class="lang-markdown hljs language-markdown"><span class="hljs-section"># [<span class="hljs-string">Tab Display Name</span>](<span class="hljs-link">#tab/tab-id</span>)</span>
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>A tab starts with a Markdown header, <code>#</code>, and is followed by a Markdown link <code>[]()</code>. The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with <code>#tab/</code> and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the page. Using the above example, when a user selects a tab with the link <code>#tab/windows</code>, all tabs with the link <code>#tab/windows</code> on the page will be selected.</p>
 <h3 id="dependent-tabs">Dependent tabs<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#dependent-tabs" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 <p>It's possible to make the selection in one set of tabs dependent on the selection in another set of tabs. Here's an example of that in action:</p>
@@ -328,7 +328,7 @@ TypeScript content for Windows...
 REST API content, independent of platform...
 
 ---
-</code></pre>
+</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 </article>
 
         <div class="contribution d-print-none">

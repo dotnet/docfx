@@ -274,7 +274,7 @@ This is a CAT class</p>
   <h5 id="CatLibrary_Cat_2_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Serializable</span>]
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code></pre>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -307,7 +307,7 @@ This is a CAT class</p>
     unsafe
     {
         a.GetFeetLength(catNumber);
-    }</code></pre>
+    }</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>As you see, here we bring in <strong>pointer</strong> so we need to add <code data-dev-comment-type="languageKeyword" class="languageKeyword">unsafe</code> keyword.</p>
 
   <h3 id="constructors">Constructors
@@ -326,7 +326,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
@@ -342,7 +342,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -376,7 +376,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -431,7 +431,7 @@ This is a CAT class</p>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">ContextStatic</span>]
 [<span class="hljs-meta">NonSerialized</span>]
-<span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code></pre>
+<span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="fieldValue">Field Value</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -464,7 +464,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -495,7 +495,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -545,7 +545,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -580,7 +580,7 @@ This is a CAT class</p>
 </div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -646,7 +646,7 @@ This is a CAT class</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -699,7 +699,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -756,7 +756,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>(<span class="hljs-params">T ownType, K anotherOwnType, <span class="hljs-keyword">ref</span> <span class="hljs-built_in">bool</span> cheat</span>)</span></code></pre>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>(<span class="hljs-params">T ownType, K anotherOwnType, <span class="hljs-keyword">ref</span> <span class="hljs-built_in">bool</span> cheat</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -819,7 +819,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="eventType">Event Type</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -852,7 +852,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -873,7 +873,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
       <tr>
         <td><a class="xref text-break" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
         <td><span class="parametername">rsr</span></td>
-        <td><pre><code class="hljs language-undefined"></code></pre>
+        <td><pre><code class="hljs language-undefined"></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
 </td>
       </tr>
     </tbody>
@@ -909,7 +909,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
@@ -959,7 +959,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <div class="table-responsive"><table class="table table-bordered table-striped table-condensed">
