@@ -3,6 +3,7 @@
 
 import { meta } from './helper'
 import AnchorJs from 'anchor-js'
+import { html, render } from 'lit-html'
 
 /**
  * Initialize markdown rendering.
@@ -13,6 +14,7 @@ export function renderMarkdown() {
   renderLinks()
   renderTabs()
   renderAnchor()
+  renderCodeCopy()
 }
 
 /**
@@ -53,14 +55,41 @@ function renderLinks() {
   }
 }
 
+/**
+ * Render anchor # for headings
+ */
 function renderAnchor() {
   const anchors = new AnchorJs()
   anchors.options = {
-    placement: 'right',
     visible: 'hover',
     icon: '#'
   }
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
+}
+
+function renderCodeCopy() {
+  document.querySelectorAll<HTMLElement>('pre>code').forEach(code => {
+    let copied = false
+    renderCore()
+
+    function renderCore() {
+      const dom = copied
+        ? html`<a class='btn border-0 link-success code-action'><i class='bi bi-check-lg'></i></a>`
+        : html`<a class='btn border-0 code-action' href='#' @click=${copy}><i class='bi bi-clipboard'></i></a>`
+      render(dom, code.parentElement)
+
+      async function copy(e) {
+        e.preventDefault()
+        await navigator.clipboard.writeText(code.innerText)
+        copied = true
+        renderCore()
+        setTimeout(() => {
+          copied = false
+          renderCore()
+        }, 1000)
+      }
+    }
+  })
 }
 
 /**

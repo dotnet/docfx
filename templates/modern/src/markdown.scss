@@ -44,6 +44,28 @@ div.embeddedvideo iframe {
   height: 100%;
 }
 
+/* For code actions */
+pre {
+  position: relative;
+
+  >.code-action {
+    display: none;
+    position: absolute;
+    top: .5rem;
+    right: 0;
+
+    .bi-check-lg {
+      font-size: 1.2rem;
+    }
+  }
+
+  &:hover {
+    >.code-action {
+      display: block;
+    }
+  }
+}
+
 /* For tabbed content */
 .tabGroup {
   >section {
