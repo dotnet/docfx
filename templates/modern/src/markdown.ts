@@ -15,6 +15,21 @@ export function renderMarkdown() {
   renderTabs()
   renderAnchor()
   renderCodeCopy()
+  renderClickableImage()
+}
+
+/**
+ * Make images in articles clickable
+ */
+function renderClickableImage() {
+  document.querySelectorAll<HTMLImageElement>('article img[src]').forEach(img => {
+    const a = document.createElement('a')
+    a.target = '_blank'
+    a.rel = 'noopener noreferrer nofollow'
+    a.href = img.src
+    img.replaceWith(a)
+    a.appendChild(img)
+  })
 }
 
 /**
@@ -67,6 +82,9 @@ function renderAnchor() {
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 }
 
+/**
+ * Render code copy button.
+ */
 function renderCodeCopy() {
   document.querySelectorAll<HTMLElement>('pre>code').forEach(code => {
     let copied = false
