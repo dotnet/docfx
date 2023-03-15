@@ -5,6 +5,8 @@ var extension = require('./ManagedReference.extension.js');
 var overwrite = require('./ManagedReference.overwrite.js');
 
 exports.transform = function (model) {
+  model.yamlmime = "ManagedReference";
+
   if (overwrite && overwrite.transform) {
     return overwrite.transform(model);
   }

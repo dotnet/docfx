@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { render, html } from 'lit-html'
+import { render, html, TemplateResult } from 'lit-html'
 import { meta } from './helper'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
@@ -80,16 +80,34 @@ export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
 }
 
 export function renderInThisArticle() {
-  const h2s = document.querySelectorAll<HTMLHeadingElement>('article h2')
-  if (h2s.length <= 0) {
-    return
+  const affix = document.getElementById('affix')
+  if (affix) {
+    render(meta('docfx:yamlmime') === 'ManagedReference' ? inThisArticleForManagedReference() : inThisArticleForConceptual(), affix)
   }
+}
 
-  const dom = html`
-    <h5 class="border-bottom">In this article</h5>
-    <ul>${Array.from(h2s).map(h2 => html`<li><a class="link-secondary" href="#${h2.id}">${h2.innerText}</a></li>`)}</ul>`
+function inThisArticleForConceptual() {
+  const headings = document.querySelectorAll<HTMLHeadingElement>('article h2')
+  if (headings.length > 0) {
+    return html`
+      <h5 class="border-bottom">In this article</h5>
+      <ul>${Array.from(headings).map(h => html`<li><a class="link-secondary" href="#${h.id}">${h.innerText}</a></li>`)}</ul>`
+  }
+}
 
-  render(dom, document.getElementById('affix'))
+function inThisArticleForManagedReference(): TemplateResult {
+  let headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h3, article h4'))
+  headings = headings.filter((h, i) => h.tagName === 'H4' || headings[i + 1]?.tagName === 'H4')
+
+  if (headings.length > 0) {
+    return html`
+      <h5 class="border-bottom">In this article</h5>
+      <ul>${headings.map(h => {
+        return h.tagName === 'H3'
+          ? html`<li><h6>${h.innerText}</h6></li>`
+          : html`<li><a class="link-secondary" href="#${h.id}">${h.innerText}</a></li>`
+      })}</ul>`
+  }
 }
 
 function findActiveItem(items: NavItem[]): NavItem {
