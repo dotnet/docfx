@@ -4204,6 +4204,7 @@
   "_tocKey": "~/obj/api/toc.yml",
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
+  "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/Cat.md/#L2",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L113",
   "seealso": null,
