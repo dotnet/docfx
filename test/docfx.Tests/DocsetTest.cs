@@ -48,14 +48,12 @@ namespace Microsoft.DocAsCode.Tests
                     """
                     {
                         "build": {
-                            "content": [{ "files": [ "*.md" ] }],
                             "resource": [{ "files": [ "logo.svg" ] }],
                             "template": ["default"],
                             "dest": "_site"
                         }
                     }
                     """,
-                ["a.md"] = "",
                 ["logo.svg"] = "<svg>my svg</svg>"
             });
 

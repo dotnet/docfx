@@ -107,6 +107,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
                     }
 
+                    templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
+
                     BuildCore(phaseProcessor, hostServices, context);
 
                     var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
