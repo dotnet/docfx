@@ -17,14 +17,6 @@ runs:
     shell: bash
     working-directory: templates
 
-  - run: npm run lint
-    shell: bash
-    working-directory: templates
-
-  - run: npm test
-    shell: bash
-    working-directory: templates
-
   - run: npm run build
     shell: bash
     working-directory: templates

@@ -19,6 +19,14 @@ jobs:
 
     - uses: ./.github/actions/build
 
+    - run: npm run lint
+      shell: bash
+      working-directory: templates
+
+    - run: npm test
+      shell: bash
+      working-directory: templates
+
     - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
 
     - run: dotnet test -c Release -f net6.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
