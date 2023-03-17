@@ -27,6 +27,9 @@ jobs:
       shell: bash
       working-directory: templates
 
+    - run: choco install wkhtmltopdf
+      if: matrix.os == 'windows-latest'
+
     - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
 
     - run: dotnet test -c Release -f net6.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
