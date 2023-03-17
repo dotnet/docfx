@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import { render, html, TemplateResult } from 'lit-html'
-import { meta } from './helper'
+import { breakWordLit, meta } from './helper'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
 
@@ -35,7 +35,8 @@ export async function renderNavbar(): Promise<NavItem[]> {
         navItems.map(item => {
           const current = (item === activeItem ? 'page' : false)
           const active = (item === activeItem ? 'active' : null)
-          return html`<li class='nav-item'><a class='nav-link ${active}' aria-current=${current} href=${item.href}>${item.name}</a></li>`
+          return html`
+            <li class='nav-item'><a class='nav-link ${active}' aria-current=${current} href=${item.href}>${breakWordLit(item.name)}</a></li>`
         })
       }</ul>`
 
@@ -73,7 +74,7 @@ export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
     render(
       html`
         <ol class="breadcrumb">
-          ${breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${i.name}</a></li>`)}
+          ${breadcrumb.map(i => html`<li class="breadcrumb-item"><a href="${i.href}">${breakWordLit(i.name)}</a></li>`)}
         </ol>`,
       container)
   }
@@ -91,7 +92,7 @@ function inThisArticleForConceptual() {
   if (headings.length > 0) {
     return html`
       <h5 class="border-bottom">In this article</h5>
-      <ul>${Array.from(headings).map(h => html`<li><a class="link-secondary" href="#${h.id}">${h.innerText}</a></li>`)}</ul>`
+      <ul>${Array.from(headings).map(h => html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`)}</ul>`
   }
 }
 
@@ -104,8 +105,8 @@ function inThisArticleForManagedReference(): TemplateResult {
       <h5 class="border-bottom">In this article</h5>
       <ul>${headings.map(h => {
         return h.tagName === 'H3'
-          ? html`<li><h6>${h.innerText}</h6></li>`
-          : html`<li><a class="link-secondary" href="#${h.id}">${h.innerText}</a></li>`
+          ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`
+          : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
       })}</ul>`
   }
 }

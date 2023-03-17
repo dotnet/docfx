@@ -3,7 +3,7 @@
 
 import { html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
-import { meta } from './helper'
+import { breakWordLit, meta } from './helper'
 
 export type TocNode = {
   name: string
@@ -77,8 +77,8 @@ export async function renderToc(): Promise<TocNode[]> {
         <li class=${classMap({ expanded })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
           ${href
-            ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${name}</a>`
-            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${name}</a>`}
+            ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
+            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`}
           ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
         </li>`
 
