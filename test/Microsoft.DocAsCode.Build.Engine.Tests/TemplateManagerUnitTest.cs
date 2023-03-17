@@ -594,6 +594,7 @@ exports.transform = function (model){
             EnvironmentContext.SetOutputDirectory(outputFolder);
             try
             {
+                processor.CopyTemplateResources(settings);
                 processor.Process(items.ToList(), settings);
             }
             finally

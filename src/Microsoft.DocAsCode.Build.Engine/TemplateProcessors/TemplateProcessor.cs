@@ -66,28 +66,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerPhaseScope("Apply Templates", LogLevel.Verbose))
             {
-                if (globals == null)
-                {
-                    globals = Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-                }
-
-                if (settings == null)
-                {
-                    settings = _context?.ApplyTemplateSettings;
-                }
+                globals ??= Tokens.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
+                settings ??= _context?.ApplyTemplateSettings;
 
                 Logger.LogInfo($"Applying templates to {manifest.Count} model(s)...");
                 var documentTypes = new HashSet<string>(manifest.Select(s => s.DocumentType));
-                ProcessDependencies(documentTypes, settings);
-                var templateManifest = ProcessCore(manifest, settings, globals);
-                return templateManifest;
-            }
-        }
-
-        internal void ProcessDependencies(HashSet<string> documentTypes, ApplyTemplateSettings settings)
-        {
-            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
-            {
                 var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
                 if (notSupportedDocumentTypes.Any())
                 {
@@ -95,8 +78,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                         $"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}",
                         code: WarningCodes.Build.UnknownContentTypeForTemplate);
                 }
-                var templatesInUse = documentTypes.Select(s => _templateCollection[s]).Where(s => s != null).ToList();
-                ProcessDependenciesCore(settings.OutputFolder, templatesInUse);
+
+                return ProcessCore(manifest, settings, globals);
+            }
+        }
+
+        public void CopyTemplateResources(ApplyTemplateSettings settings)
+        {
+            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+            {
+                CopyTemplateResources(settings.OutputFolder, _templateCollection.Values);
             }
             else
             {
@@ -104,14 +95,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ProcessDependenciesCore(string outputDirectory, IEnumerable<TemplateBundle> templateBundles)
+        private void CopyTemplateResources(string outputDirectory, IEnumerable<TemplateBundle> templateBundles)
         {
             foreach (var resourceInfo in templateBundles.SelectMany(s => s.Resources).Distinct())
             {
                 try
                 {
                     using var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey);
-                    ProcessSingleDependency(stream, outputDirectory, resourceInfo.ResourceKey);
+                    CopyTemplateResource(stream, outputDirectory, resourceInfo.ResourceKey);
                 }
                 catch (Exception e)
                 {
@@ -120,18 +111,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ProcessSingleDependency(Stream stream, string outputDirectory, string filePath)
+        private void CopyTemplateResource(Stream stream, string outputDirectory, string filePath)
         {
             if (stream != null)
             {
                 var path = Path.Combine(outputDirectory, filePath);
-                var dir = Path.GetDirectoryName(path);
-                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                if (File.Exists(path))
-                {
-                    Logger.Log(LogLevel.Verbose, $"Resource {filePath} already exists, skip saving");
-                    return;
-                }
+                Directory.CreateDirectory(Path.GetFullPath(Path.GetDirectoryName(path)));
 
                 using (var writer = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
                 {
