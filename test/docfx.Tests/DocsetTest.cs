@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Tests
     {
         private static async Task<Dictionary<string, Func<string>>> Build(Dictionary<string, string> files, [CallerMemberName] string testName = null)
         {
-            var testDirectory = $"DocsetTest/{testName}";
+            var testDirectory = $"{nameof(DocsetTest)}/{testName}";
             var outputDirectory = $"{testDirectory}/_site";
 
             if (Directory.Exists(testDirectory))

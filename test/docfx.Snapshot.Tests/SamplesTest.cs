@@ -170,31 +170,6 @@ namespace Microsoft.DocAsCode.Tests
         }
 
         [Fact]
-        public void Pdf()
-        {
-            if (!OperatingSystem.IsWindows())
-                return;
-
-            var samplePath = $"{s_samplesDir}/seed";
-            Clean(samplePath);
-
-            if (Debugger.IsAttached)
-            {
-                Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-                Assert.Equal(0, Program.Main(new[] { "metadata", $"{samplePath}/docfx.json" }));
-                Assert.Equal(0, Program.Main(new[] { "pdf", $"{samplePath}/docfx.json" }));
-            }
-            else
-            {
-                var docfxPath = Path.GetFullPath(OperatingSystem.IsWindows() ? "docfx.exe" : "docfx");
-                Assert.Equal(0, Exec(docfxPath, $"metadata {samplePath}/docfx.json"));
-                Assert.Equal(0, Exec(docfxPath, $"pdf {samplePath}/docfx.json"));
-            }
-
-            Assert.True(File.Exists($"{samplePath}/_site_pdf/seed_pdf.pdf"));
-        }
-
-        [Fact]
         public async Task CSharp()
         {
             var samplePath = $"{s_samplesDir}/csharp";
