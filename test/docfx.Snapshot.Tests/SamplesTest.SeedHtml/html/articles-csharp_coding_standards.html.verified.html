@@ -28,7 +28,11 @@
             <i class="bi bi-three-dots"></i>
           </button>
           <div class="collapse navbar-collapse" id="navbar">
-      <ul class="navbar-nav"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+      <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
+            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
+            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
             <form class="d-flex ms-auto" role="search" id="search">
               <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
             </form>
@@ -246,7 +250,7 @@ Assert.Equal(
     <span class="hljs-string">"1234"</span>,
     ex.Message);
 </code><a class="btn border-0 code-action" href="#"><i class="bi bi-clipboard"></i></a></pre>
-<h4 id="use-xunitnets-plethora-of-built-in-assertions">Use xUnit.net's plethora of built-in assertions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#use-xunitnets-plethora-of-built-in-assertions" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+<h4 id="use-xunitnets-plethora-of-built-in-assertions">Use x<wbr>Unit.<wbr>net's plethora of built-in assertions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#use-xunitnets-plethora-of-built-in-assertions" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This will make the tests a lot more readable and also allow the test runner report the best possible errors (whether it's local or the CI machine). For example, these are bad:</p>
 <pre><code class="lang-cs hljs language-csharp">Assert.Equal(<span class="hljs-literal">true</span>, someBool);
 

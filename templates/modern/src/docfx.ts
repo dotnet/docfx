@@ -3,7 +3,6 @@
 
 import 'bootstrap'
 import { highlight } from './highlight'
-import { breakText } from './helper'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
@@ -35,8 +34,5 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))
 
   renderInThisArticle()
-
-  breakText()
-
   window.docfx.ready = true
 })

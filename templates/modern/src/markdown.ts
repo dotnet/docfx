@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { meta } from './helper'
+import { breakWord, meta } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 
@@ -9,6 +9,7 @@ import { html, render } from 'lit-html'
  * Initialize markdown rendering.
  */
 export function renderMarkdown() {
+  renderWordBreaks()
   renderTables()
   renderAlerts()
   renderLinks()
@@ -16,6 +17,24 @@ export function renderMarkdown() {
   renderAnchor()
   renderCodeCopy()
   renderClickableImage()
+}
+
+/**
+ * Add <wbr> to break long text.
+ */
+function renderWordBreaks() {
+  document.querySelectorAll<HTMLElement>('article h1,h2,h3,h4,h5,h6,.xref,.text-break').forEach(e => {
+    if (e.innerHTML === e.innerText) {
+      const children: (string | Node)[] = []
+      for (const text of breakWord(e.innerText)) {
+        if (children.length > 0) {
+          children.push(document.createElement('wbr'))
+        }
+        children.push(text)
+      }
+      e.replaceChildren(...children)
+    }
+  })
 }
 
 /**
