@@ -67,8 +67,8 @@ function renderClickableImage() {
 
     function shouldMakeClickable(): boolean {
       return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE &&
-             img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
-             !imageLinks.includes(img)
+        img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
+        !imageLinks.includes(img)
     }
   })
 }
@@ -100,15 +100,13 @@ function renderAlerts() {
  * Open external links to different host in a new window.
  */
 function renderLinks() {
-  if (meta('docfx:newtab') === 'true') {
-    const links = document.links
-    for (let i = 0; i < links.length; i++) {
-      const link = links.item(i)
-      if (link.hostname !== window.location.hostname) {
-        link.target = '_blank'
-      }
+  document.querySelectorAll<HTMLAnchorElement>('article a[href]').forEach(a => {
+    if (a.hostname !== window.location.hostname && a.innerText.trim() !== '') {
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer nofollow'
+      a.classList.add('external')
     }
-  }
+  })
 }
 
 /**
@@ -163,25 +161,25 @@ function renderTabs() {
     type: 'data-bi-type'
   }
 
-  const Tab = (function() {
+  const Tab = (function () {
     function Tab(li, a, section) {
       this.li = li
       this.a = a
       this.section = section
     }
     Object.defineProperty(Tab.prototype, 'tabIds', {
-      get: function() { return this.a.getAttribute('data-tab').split(' ') },
+      get: function () { return this.a.getAttribute('data-tab').split(' ') },
       enumerable: true,
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'condition', {
-      get: function() { return this.a.getAttribute('data-condition') },
+      get: function () { return this.a.getAttribute('data-condition') },
       enumerable: true,
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'visible', {
-      get: function() { return !this.li.hasAttribute('hidden') },
-      set: function(value) {
+      get: function () { return !this.li.hasAttribute('hidden') },
+      set: function (value) {
         if (value) {
           this.li.removeAttribute('hidden')
           this.li.removeAttribute('aria-hidden')
@@ -194,8 +192,8 @@ function renderTabs() {
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'selected', {
-      get: function() { return !this.section.hasAttribute('hidden') },
-      set: function(value) {
+      get: function () { return !this.section.hasAttribute('hidden') },
+      set: function (value) {
         if (value) {
           this.a.setAttribute('aria-selected', 'true')
           this.a.classList.add('active')
@@ -213,7 +211,7 @@ function renderTabs() {
       enumerable: true,
       configurable: true
     })
-    Tab.prototype.focus = function() {
+    Tab.prototype.focus = function () {
       this.a.focus()
     }
     return Tab
@@ -232,7 +230,7 @@ function renderTabs() {
         state.groups.push(group)
       }
     }
-    container.addEventListener('click', function(event) { return handleClick(event, state) })
+    container.addEventListener('click', function (event) { return handleClick(event, state) })
     if (state.groups.length === 0) {
       return state
     }
@@ -317,7 +315,7 @@ function renderTabs() {
     }
     event.preventDefault()
     info.anchor.href = 'javascript:'
-    setTimeout(function() {
+    setTimeout(function () {
       info.anchor.href = '#' + info.anchor.getAttribute('aria-controls')
     })
     const tabIds = info.tabIds; const group = info.group
@@ -331,7 +329,7 @@ function renderTabs() {
       if (arraysIntersect(state.selectedTabs, tabIds)) {
         return
       }
-      const previousTabId = group.tabs.filter(function(t) { return t.selected })[0].tabIds[0]
+      const previousTabId = group.tabs.filter(function (t) { return t.selected })[0].tabIds[0]
       state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0])
       for (let _b = 0, _c = state.groups; _b < _c.length; _b++) {
         const group1 = _c[_b]
