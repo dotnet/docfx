@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { breakWord, meta } from './helper'
+import { breakWord } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 
@@ -161,25 +161,25 @@ function renderTabs() {
     type: 'data-bi-type'
   }
 
-  const Tab = (function () {
+  const Tab = (function() {
     function Tab(li, a, section) {
       this.li = li
       this.a = a
       this.section = section
     }
     Object.defineProperty(Tab.prototype, 'tabIds', {
-      get: function () { return this.a.getAttribute('data-tab').split(' ') },
+      get: function() { return this.a.getAttribute('data-tab').split(' ') },
       enumerable: true,
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'condition', {
-      get: function () { return this.a.getAttribute('data-condition') },
+      get: function() { return this.a.getAttribute('data-condition') },
       enumerable: true,
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'visible', {
-      get: function () { return !this.li.hasAttribute('hidden') },
-      set: function (value) {
+      get: function() { return !this.li.hasAttribute('hidden') },
+      set: function(value) {
         if (value) {
           this.li.removeAttribute('hidden')
           this.li.removeAttribute('aria-hidden')
@@ -192,8 +192,8 @@ function renderTabs() {
       configurable: true
     })
     Object.defineProperty(Tab.prototype, 'selected', {
-      get: function () { return !this.section.hasAttribute('hidden') },
-      set: function (value) {
+      get: function() { return !this.section.hasAttribute('hidden') },
+      set: function(value) {
         if (value) {
           this.a.setAttribute('aria-selected', 'true')
           this.a.classList.add('active')
@@ -211,7 +211,7 @@ function renderTabs() {
       enumerable: true,
       configurable: true
     })
-    Tab.prototype.focus = function () {
+    Tab.prototype.focus = function() {
       this.a.focus()
     }
     return Tab
@@ -230,7 +230,7 @@ function renderTabs() {
         state.groups.push(group)
       }
     }
-    container.addEventListener('click', function (event) { return handleClick(event, state) })
+    container.addEventListener('click', function(event) { return handleClick(event, state) })
     if (state.groups.length === 0) {
       return state
     }
@@ -315,7 +315,7 @@ function renderTabs() {
     }
     event.preventDefault()
     info.anchor.href = 'javascript:'
-    setTimeout(function () {
+    setTimeout(function() {
       info.anchor.href = '#' + info.anchor.getAttribute('aria-controls')
     })
     const tabIds = info.tabIds; const group = info.group
@@ -329,7 +329,7 @@ function renderTabs() {
       if (arraysIntersect(state.selectedTabs, tabIds)) {
         return
       }
-      const previousTabId = group.tabs.filter(function (t) { return t.selected })[0].tabIds[0]
+      const previousTabId = group.tabs.filter(function(t) { return t.selected })[0].tabIds[0]
       state.selectedTabs.splice(state.selectedTabs.indexOf(previousTabId), 1, tabIds[0])
       for (let _b = 0, _c = state.groups; _b < _c.length; _b++) {
         const group1 = _c[_b]

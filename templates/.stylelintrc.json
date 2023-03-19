@@ -5,6 +5,11 @@
     "**/docfx.scss"
   ],
   "rules": {
-    "selector-class-pattern": null
+    "selector-class-pattern": null,
+    "font-family-no-missing-generic-family-keyword": [ true, {
+      "ignoreFontFamilies": [
+        "bootstrap-icons"
+      ]
+    }]
   }
 }

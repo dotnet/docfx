@@ -5,9 +5,9 @@
 
 /* External link icon */
 a.external[href]::after {
-  font-family: bootstrap-icons, sans-serif;
+  font-family: bootstrap-icons;
   content: "\F1C5";
-  font-size: .65em;
+  font-size: .6rem;
   margin: 0 .2em;
   display: inline-block;
 }
