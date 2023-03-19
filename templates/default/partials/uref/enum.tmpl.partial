@@ -3,7 +3,7 @@
 {{>partials/uref/class.header}}
 {{#children}}
 <h3 id="{{id}}">{{>partials/classSubtitle}}</h3>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.name}}</th>

@@ -5,7 +5,7 @@
 
 $header-height: 60px;
 $footer-height: 60px;
-$main-padding-top: 1rem;
+$main-padding-top: 1.6rem;
 $main-padding-bottom: 4rem;
 
 // Makes a div sticky to top
@@ -142,6 +142,7 @@ body[data-layout="landing"] {
           >.actionbar {
             display: flex;
             align-items: flex-start;
+            margin-top: .5rem;
             min-height: 40px;
           }
 
@@ -160,14 +161,14 @@ body[data-layout="landing"] {
 
         >.affix {
           display: block;
-          width: 254px;
+          width: 230px;
           max-height: calc(100vh - #{$header-height});
           overflow-x: hidden;
           overflow-y: auto;
 
           @include stick-to-header;
 
-          @include media-breakpoint-down(xl) {
+          @media only screen and (max-width: 1140px) {
             display: none;
           }
         }

@@ -24,7 +24,7 @@ export function renderMarkdown() {
  */
 function renderWordBreaks() {
   document.querySelectorAll<HTMLElement>('article h1,h2,h3,h4,h5,h6,.xref,.text-break').forEach(e => {
-    if (e.innerHTML === e.innerText) {
+    if (e.innerHTML?.trim() === e.innerText?.trim()) {
       const children: (string | Node)[] = []
       for (const text of breakWord(e.innerText)) {
         if (children.length > 0) {
@@ -79,7 +79,7 @@ function renderClickableImage() {
  */
 function renderTables() {
   document.querySelectorAll('table').forEach(table => {
-    table.classList.add('table', 'table-bordered', 'table-striped', 'table-condensed')
+    table.classList.add('table', 'table-bordered', 'table-condensed')
     const wrapper = document.createElement('div')
     wrapper.className = 'table-responsive'
     table.parentElement.insertBefore(wrapper, table)
@@ -126,13 +126,17 @@ function renderAnchor() {
  */
 function renderCodeCopy() {
   document.querySelectorAll<HTMLElement>('pre>code').forEach(code => {
+    if (code.innerText.trim().length === 0) {
+      return
+    }
+
     let copied = false
     renderCore()
 
     function renderCore() {
       const dom = copied
         ? html`<a class='btn border-0 link-success code-action'><i class='bi bi-check-lg'></i></a>`
-        : html`<a class='btn border-0 code-action' href='#' @click=${copy}><i class='bi bi-clipboard'></i></a>`
+        : html`<a class='btn border-0 code-action' title='copy' href='#' @click=${copy}><i class='bi bi-clipboard'></i></a>`
       render(dom, code.parentElement)
 
       async function copy(e) {

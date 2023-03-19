@@ -56,7 +56,7 @@ export function renderFooter() {
     const docurl = meta('docfx:docurl')
     const github = parseGitHubRepo(docurl)
     if (github) {
-      return html`<a href='${github}' class='btn border-0'><i class='bi bi-github'></i></a>`
+      return html`<a href='${github}' title='GitHub' class='btn border-0'><i class='bi bi-github'></i></a>`
     }
   }
 

@@ -24,9 +24,9 @@ export function themePicker(refresh: () => void) {
 
   return html`
     <div class='dropdown'>
-      <button class='btn border-0 dropdown-toggle' type='button' data-bs-toggle='dropdown' aria-expanded='false'>
+      <a title='Change theme' class='btn border-0 dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>
         <i class='bi bi-${icon}'></i>
-      </button>
+      </a>
       <ul class='dropdown-menu'>
         <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'light')}><i class='bi bi-sun'></i> Light</a></li>
         <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'dark')}><i class='bi bi-moon'></i> Dark</a></li>
