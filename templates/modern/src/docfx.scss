@@ -28,7 +28,6 @@ h5,
 h6,
 .xref,
 .text-break {
-  white-space: nowrap;
   word-wrap: break-word;
   word-break: break-word;
 }
@@ -87,6 +86,13 @@ article {
   top: 0.2em;
   font-size: 1.25em;
   font-weight: normal;
+}
+
+@mixin underline-on-hover {
+  text-decoration: none;
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
 }
 
 @import "layout.scss";

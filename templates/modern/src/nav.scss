@@ -3,14 +3,37 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-.navbar-brand {
-  display: flex;
-  align-items: center;
+.navbar {
+  padding: 0;
+
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-nav {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  form {
+    align-items: center;
+    >i.bi {
+      position: relative;
+      left: 1.8rem;
+      opacity: .5;
+    }
+    >input[type=search] {
+      padding-left: 2.5rem;
+    }
+  }
 }
 
-.navbar-nav {
-  display: flex;
-  flex-wrap: nowrap;
+.breadcrumb {
+  font-size: 14px;
+  a {
+    @include underline-on-hover;
+  }
 }
 
 .affix {
@@ -35,7 +58,10 @@
     }
 
     li {
-      margin: .2rem 0;
+      margin: .4rem 0;
+      a {
+        @include underline-on-hover;
+      }
     }
   }
 }
@@ -44,11 +70,11 @@
   margin-top: 2rem;
 
   a.edit-link {
-    text-decoration: none;
+    @include underline-on-hover;
 
     &::before {
       content: "\F4CA";
-
+      display: inline-block;
       @include adjust-icon;
     }
   }

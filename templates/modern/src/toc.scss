@@ -3,10 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-$expand-stub-width: 1.2rem;
+$expand-stub-width: .85rem;
 
 .toc {
   min-width: 0;
+  font-size: 14px;
 
   ul {
     flex-direction: column;
@@ -17,19 +18,14 @@ $expand-stub-width: 1.2rem;
 
   li {
     font-weight: normal;
-    margin: .4em 0;
+    margin: .6em 0;
     padding-left: $expand-stub-width;
     position: relative;
   }
 
   li > a {
     display: inline;
-    text-decoration: none;
-
-    &:hover, &:focus {
-      background: none;
-      text-decoration: underline;
-    }
+    @include underline-on-hover;
   }
 
   li > ul {
@@ -45,8 +41,10 @@ $expand-stub-width: 1.2rem;
     width: $expand-stub-width;
     cursor: pointer;
     font-family: bootstrap-icons;
+    font-size: .8em;
     content: "\F285";
     position: absolute;
+    margin-top: .2em;
     margin-left: -$expand-stub-width;
     transition: transform 0.35s ease;
     transform-origin: .5em 50%;
