@@ -25,6 +25,7 @@ $expand-stub-width: .85rem;
 
   li > a {
     display: inline;
+
     @include underline-on-hover;
   }
 

@@ -23,7 +23,8 @@
       left: 1.8rem;
       opacity: .5;
     }
-    >input[type=search] {
+
+    >input {
       padding-left: 2.5rem;
     }
   }
@@ -31,6 +32,7 @@
 
 .breadcrumb {
   font-size: 14px;
+
   a {
     @include underline-on-hover;
   }
@@ -41,10 +43,15 @@
 
   h5 {
     display: inline-block;
-    font-weight: 600;
+    font-weight: 300;
     text-transform: uppercase;
-    padding: 1em 0;
-    font-size: 1rem;
+    padding: 1em 0 .5em;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  h6 {
+    font-size: 14px;
   }
 
   ul {
@@ -59,6 +66,7 @@
 
     li {
       margin: .4rem 0;
+
       a {
         @include underline-on-hover;
       }
@@ -75,6 +83,7 @@
     &::before {
       content: "\F4CA";
       display: inline-block;
+
       @include adjust-icon;
     }
   }
