@@ -50,7 +50,7 @@
 </div>
 {{#syntax.parameters.0}}
 <h5 class="parameters">{{__global.parameters}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -73,7 +73,7 @@
 {{/syntax.parameters.0}}
 {{#syntax.return}}
 <h5 class="returns">{{__global.returns}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.type}}</th>
@@ -90,7 +90,7 @@
 {{/syntax.return}}
 {{#syntax.typeParameters.0}}
 <h5 class="typeParameters">{{__global.typeParameters}}</h5>
-<table class="table table-bordered table-striped table-condensed">
+<table class="table table-bordered table-condensed">
   <thead>
     <tr>
       <th>{{__global.name}}</th>
