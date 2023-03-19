@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { breakWord, meta } from './helper'
+import { breakWord } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 
@@ -67,8 +67,8 @@ function renderClickableImage() {
 
     function shouldMakeClickable(): boolean {
       return img.naturalWidth > MIN_CLICKABLE_IMAGE_SIZE &&
-             img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
-             !imageLinks.includes(img)
+        img.naturalHeight > MIN_CLICKABLE_IMAGE_SIZE &&
+        !imageLinks.includes(img)
     }
   })
 }
@@ -100,15 +100,13 @@ function renderAlerts() {
  * Open external links to different host in a new window.
  */
 function renderLinks() {
-  if (meta('docfx:newtab') === 'true') {
-    const links = document.links
-    for (let i = 0; i < links.length; i++) {
-      const link = links.item(i)
-      if (link.hostname !== window.location.hostname) {
-        link.target = '_blank'
-      }
+  document.querySelectorAll<HTMLAnchorElement>('article a[href]').forEach(a => {
+    if (a.hostname !== window.location.hostname && a.innerText.trim() !== '') {
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer nofollow'
+      a.classList.add('external')
     }
-  }
+  })
 }
 
 /**

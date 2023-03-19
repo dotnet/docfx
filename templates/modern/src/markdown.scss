@@ -3,6 +3,15 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
+/* External link icon */
+a.external[href]::after {
+  font-family: bootstrap-icons;
+  content: "\F1C5";
+  font-size: .6rem;
+  margin: 0 .2em;
+  display: inline-block;
+}
+
 /* Alerts */
 .alert h5 {
   text-transform: uppercase;

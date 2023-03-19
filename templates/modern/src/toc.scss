@@ -44,7 +44,7 @@ $expand-stub-width: 1.2rem;
     display: inline-block;
     width: $expand-stub-width;
     cursor: pointer;
-    font-family: bootstrap-icons, sans-serif;
+    font-family: bootstrap-icons;
     content: "\F285";
     position: absolute;
     margin-left: -$expand-stub-width;
