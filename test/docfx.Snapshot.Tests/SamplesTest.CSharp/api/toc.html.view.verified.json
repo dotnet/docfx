@@ -321,6 +321,7 @@
     "improveThisDoc": "Improve this Doc",
     "viewSource": "View Source",
     "inheritance": "Inheritance",
+    "derived": "Derived",
     "inheritedMembers": "Inherited Members",
     "package": "Package",
     "namespace": "Namespace",

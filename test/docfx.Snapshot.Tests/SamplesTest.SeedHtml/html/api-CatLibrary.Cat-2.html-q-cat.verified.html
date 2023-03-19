@@ -14,10 +14,9 @@
       
       <meta name="docfx:rel" content="../">
       <meta name="docfx:docurl" content="https://github.com/dotnet/docfx/blob/main/samples/seed/specs/Cat.md/#L2">
-      <meta name="docfx:yamlmime" content="ManagedReference">
   </head>
 
-  <body data-layout="" data-bs-theme="light">
+  <body data-layout="" data-yaml-mime="ManagedReference" data-bs-theme="light">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
@@ -143,7 +142,7 @@
         </li>
         <li class="  ">
           
-          <a class="  " href="http://localhost:8089/api/CatLibrary.Cat-2.html">Cat&lt;<wbr>T, K&gt;</a>
+          <a class="  " href="http://localhost:8089/api/CatLibrary.Cat-2.html">Cat&lt;<wbr>T,<wbr> K&gt;</a>
           
         </li>
         <li class="  ">
@@ -153,7 +152,7 @@
         </li>
         <li class="  ">
           
-          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Complex-2.html">Complex&lt;<wbr>T, J&gt;</a>
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Complex-2.html">Complex&lt;<wbr>T,<wbr> J&gt;</a>
           
         </li>
         <li class="  ">
@@ -178,7 +177,7 @@
         </li>
         <li class="  ">
           
-          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.MRefDelegate-3.html">MRef<wbr>Delegate&lt;<wbr>K, T, L&gt;</a>
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.MRefDelegate-3.html">MRef<wbr>Delegate&lt;<wbr>K,<wbr> T,<wbr> L&gt;</a>
           
         </li>
         <li class="  ">
@@ -226,15 +225,25 @@
         <article data-uid="CatLibrary.Cat`2">
 
 
-  <h1 id="CatLibrary_Cat_2" data-uid="CatLibrary.Cat`2" class="text-break">Class Cat&lt;T, K&gt;
-</h1>
-  <div class="markdown level0 summary"><p>Here's main class of this <em>Demo</em>.</p>
+  <h1 id="CatLibrary_Cat_2" data-uid="CatLibrary.Cat`2" class="text-break">
+    Class Cat&lt;T, K&gt;
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L113"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <dl class="facts text-secondary">
+    <dt>Namespace</dt><dd><a class="xref" href="CatLibrary.html">Cat<wbr>Library</a></dd>
+  </dl>
+  <dl class="facts text-secondary">
+    <dt>Assembly</dt><dd>CatLibrary.dll</dd>
+  </dl>
+
+  <div class="markdown summary"><p>Here's main class of this <em>Demo</em>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>
 <p></p>
 <p>this class is a template class. It has two Generic parameter. they are: <code data-dev-comment-type="typeparamref" class="typeparamref">T</code> and <code data-dev-comment-type="typeparamref" class="typeparamref">K</code>.</p>
 <p>The extension method of this class can refer to <a class="xref" href="CatLibrary.ICatExtension.html">ICat<wbr>Extension</a> class</p>
 </div>
-  <div class="markdown level0 conceptual">
+  <div class="markdown conceptual">
 <p>This is a class talking about <a href="https://en.wikipedia.org/wiki/Cat" target="_blank" rel="noopener noreferrer nofollow" class="external">CAT</a>.</p>
 <blockquote>
 <p><strong>NOTE</strong>
@@ -242,20 +251,46 @@ This is a CAT class</p>
 </blockquote>
 <p>Refer to <a class="xref" href="CatLibrary.IAnimal.html">IAnimal</a> to see other animals.</p>
 </div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a></div>
-    <div class="level1"><span class="xref">Cat&lt;T, K&gt;</span></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Serializable</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <div class="implements">
-    <h5>Implements</h5>
-    <div><a class="xref" href="CatLibrary.ICat.html">ICat</a></div>
-    <div><a class="xref" href="CatLibrary.IAnimal.html">IAnimal</a></div>
-  </div>
-  <div class="inheritedMembers">
-    <h5>Inherited Members</h5>
+
+
+
+  <h4 class="section" id="type-parameters">Type Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#type-parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd><p>This type should be class and can new instance.</p>
+</dd>
+    <dt><code>K</code></dt>
+    <dd><p>This type is a struct type, class type can't be used for this parameter.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a></div>
+      <div><span class="xref">Cat&lt;T, K&gt;</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="CatLibrary.ICat.html">ICat</a></div>
+      <div><a class="xref" href="CatLibrary.IAnimal.html">IAnimal</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
     <div>
-      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Equals(object, object)</a>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Equals(object,<wbr> object)</a>
     </div>
     <div>
       <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode#system-object-gethashcode" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Get<wbr>Hash<wbr>Code()</a>
@@ -267,44 +302,26 @@ This is a CAT class</p>
       <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone#system-object-memberwiseclone" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Memberwise<wbr>Clone()</a>
     </div>
     <div>
-      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals#system-object-referenceequals(system-object-system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Reference<wbr>Equals(object, object)</a>
+      <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals#system-object-referenceequals(system-object-system-object)" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>Reference<wbr>Equals(object,<wbr> object)</a>
     </div>
     <div>
       <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.tostring#system-object-tostring" target="_blank" rel="noopener noreferrer nofollow">object.<wbr>To<wbr>String()</a>
     </div>
+  </dd></dl>
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_">ICat<wbr>Extension.<wbr>Play(ICat,<wbr> Containers<wbr>Ref<wbr>Type.<wbr>Color<wbr>Type)</a>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="CatLibrary.html">Cat<wbr>Library</a></h6>
-  <h6><strong>Assembly</strong>: CatLibrary.dll</h6>
-  <h5 id="CatLibrary_Cat_2_syntax">Syntax</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Serializable</span>]
-<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+  <div>
+      <a class="xref" href="CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_">ICat<wbr>Extension.<wbr>Sleep(ICat,<wbr> long)</a>
   </div>
-  <h5 class="typeParameters">Type Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="parametername">T</span></td>
-        <td><p>This type should be class and can new instance.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="parametername">K</span></td>
-        <td><p>This type is a struct type, class type can't be used for this parameter.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 id="CatLibrary_Cat_2_remarks"><strong>Remarks</strong></h5>
-  <div class="markdown level0 remarks"><p><em>THIS</em> is remarks overridden in <em>MARKDWON</em> file</p>
-</div>
-  <h5 id="CatLibrary_Cat_2_examples"><strong>Examples</strong></h5>
+  </dd></dl>
+
+
+  <h2 id="CatLibrary_Cat_2_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
   <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
 <pre><code class="lang-c# hljs language-c">    var a = new Cat(object, <span class="hljs-type">int</span>)();
     <span class="hljs-type">int</span> catNumber = new <span class="hljs-type">int</span>();
@@ -314,702 +331,583 @@ This is a CAT class</p>
     }</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
 <p>As you see, here we bring in <strong>pointer</strong> so we need to add <code data-dev-comment-type="languageKeyword" class="languageKeyword">unsafe</code> keyword.</p>
 
-  <h3 id="constructors">Constructors<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#constructors" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h2 id="CatLibrary_Cat_2_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+  <div class="markdown level0 remarks"><p><em>THIS</em> is remarks overridden in <em>MARKDWON</em> file</p>
+</div>
+
+  <h2 class="section" id="constructors">Constructors<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#constructors" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
   <a id="CatLibrary_Cat_2__ctor_" data-uid="CatLibrary.Cat`2.#ctor*"></a>
-  <h4 id="CatLibrary_Cat_2__ctor" data-uid="CatLibrary.Cat`2.#ctor">Cat()<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2__ctor" data-uid="CatLibrary.Cat`2.#ctor">
+  Cat()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Default constructor.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor__0_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2__ctor_" data-uid="CatLibrary.Cat`2.#ctor*"></a>
-  <h4 id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">Cat(T)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">
+  Cat(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Constructor with one generic parameter.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">T</span></td>
-        <td><span class="parametername">ownType</span></td>
-        <td><p>This parameter type defined by class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(System.String%2CSystem.Int32%40%2CSystem.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>ownType</code> <span class="xref">T</span></dt>
+    <dd><p>This parameter type defined by class.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2__ctor_" data-uid="CatLibrary.Cat`2.#ctor*"></a>
-  <h4 id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">Cat(string, out int, string, bool)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">
+  Cat(string, out int, string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>It's a complex constructor. The parameter will have some attributes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></td>
-        <td><span class="parametername">nickName</span></td>
-        <td><p>it's string type.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td><span class="parametername">age</span></td>
-        <td><p>It's an out and ref parameter.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></td>
-        <td><span class="parametername">realName</span></td>
-        <td><p>It's an out paramter.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></td>
-        <td><span class="parametername">isHealthy</span></td>
-        <td><p>It's an in parameter.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="fields">Fields<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#fields" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_isHealthy.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.isHealthy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
-  <h4 id="CatLibrary_Cat_2_isHealthy" data-uid="CatLibrary.Cat`2.isHealthy">is<wbr>Healthy<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_isHealthy" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h4 class="section" id="parameters-1">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>nickName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd><p>it's string type.</p>
+</dd>
+    <dt><code>age</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd><p>It's an out and ref parameter.</p>
+</dd>
+    <dt><code>realName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd><p>It's an out paramter.</p>
+</dd>
+    <dt><code>isHealthy</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
+    <dd><p>It's an in parameter.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="fields">Fields<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#fields" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_isHealthy" data-uid="CatLibrary.Cat`2.isHealthy">
+  isHealthy
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_isHealthy" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Field with attribute.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">ContextStatic</span>]
 [<span class="hljs-meta">NonSerialized</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="properties">Properties<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#properties" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Age.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.Age%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+
+
+
+  <h4 class="section" id="field-value">Field Value<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#field-value" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#properties" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
   <a id="CatLibrary_Cat_2_Age_" data-uid="CatLibrary.Cat`2.Age*"></a>
-  <h4 id="CatLibrary_Cat_2_Age" data-uid="CatLibrary.Cat`2.Age">Age<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Age" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_Age" data-uid="CatLibrary.Cat`2.Age">
+  Age
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Age" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Hint cat's age.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Item_System_String_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.Item(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+
+
+
+
+  <h4 class="section" id="property-value">Property Value<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#property-value" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_Item_" data-uid="CatLibrary.Cat`2.Item*"></a>
-  <h4 id="CatLibrary_Cat_2_Item_System_String_" data-uid="CatLibrary.Cat`2.Item(System.String)">this[string]<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Item_System_String_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_Item_System_String_" data-uid="CatLibrary.Cat`2.Item(System.String)">
+  this[string]
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Item_System_String_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></td>
-        <td><span class="parametername">a</span></td>
-        <td><p>Cat's name.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="propertyValue">Property Value</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td><p>Cat's number.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Name.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-2">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-2" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>a</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd><p>Cat's name.</p>
+</dd>
+  </dl>
+
+
+
+
+  <h4 class="section" id="property-value-1">Property Value<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#property-value-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd><p>Cat's number.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_Name_" data-uid="CatLibrary.Cat`2.Name*"></a>
-  <h4 id="CatLibrary_Cat_2_Name" data-uid="CatLibrary.Cat`2.Name">Name<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Name" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_Name" data-uid="CatLibrary.Cat`2.Name">
+  Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Name" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>EII property.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="methods">Methods<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#methods" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/specs/Cat.CalculateFood.md/#L2" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L145" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+
+
+
+
+  <h4 class="section" id="property-value-2">Property Value<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#property-value-2" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#methods" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
   <a id="CatLibrary_Cat_2_CalculateFood_" data-uid="CatLibrary.Cat`2.CalculateFood*"></a>
-  <h4 id="CatLibrary_Cat_2_CalculateFood_System_DateTime_" data-uid="CatLibrary.Cat`2.CalculateFood(System.DateTime)">Override Calculate<wbr>Food Name<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_CalculateFood_System_DateTime_" data-uid="CatLibrary.Cat`2.CalculateFood(System.DateTime)">
+  Override CalculateFood Name
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>It's an overridden summary in <code>markdown</code> format</p>
 </div>
   <div class="markdown level1 conceptual">
 <p>This is overriding methods. You can override parameter descriptions for methods, you can even add exceptions to methods. Check the intermediate <code>obj</code> folder to see the data model of the generated method/class. Override Yaml header should follow the data structure.</p>
 </div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.datetime" target="_blank" rel="noopener noreferrer nofollow">Date<wbr>Time</a></td>
-        <td><span class="parametername">date</span></td>
-        <td><p>This is overridden description for a parameter. <code>id</code> must be specified.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2" target="_blank" rel="noopener noreferrer nofollow">Dictionary</a>&lt;<a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a>, <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1" target="_blank" rel="noopener noreferrer nofollow">List</a>&lt;<a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a>&gt;&gt;</td>
-        <td><p>It's overridden description for return. <code>type</code> must be specified.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="exceptions">Exceptions</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.argumentexception" target="_blank" rel="noopener noreferrer nofollow">Argument<wbr>Exception</a></td>
-        <td><p>This is an <code>overridden</code> argument exception. you can add additional exception by adding different exception <code>type</code>.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Equals_System_Object_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-3">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-3" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>date</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.datetime" target="_blank" rel="noopener noreferrer nofollow">Date<wbr>Time</a></dt>
+    <dd><p>This is overridden description for a parameter. <code>id</code> must be specified.</p>
+</dd>
+  </dl>
+
+  <h4 class="section" id="returns">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2" target="_blank" rel="noopener noreferrer nofollow">Dictionary</a>&lt;<a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a>, <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1" target="_blank" rel="noopener noreferrer nofollow">List</a>&lt;<a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a>&gt;&gt;</dt>
+    <dd><p>It's overridden description for return. <code>type</code> must be specified.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="exceptions">Exceptions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#exceptions" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.argumentexception" target="_blank" rel="noopener noreferrer nofollow">Argument<wbr>Exception</a></dt>
+    <dd><p>This is an <code>overridden</code> argument exception. you can add additional exception by adding different exception <code>type</code>.</p>
+</dd>
+  </dl>
+
+
+
   <a id="CatLibrary_Cat_2_Equals_" data-uid="CatLibrary.Cat`2.Equals*"></a>
-  <h4 id="CatLibrary_Cat_2_Equals_System_Object_" data-uid="CatLibrary.Cat`2.Equals(System.Object)">Equals(object)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Equals_System_Object_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_Equals_System_Object_" data-uid="CatLibrary.Cat`2.Equals(System.Object)">
+  Equals(object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Equals_System_Object_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Override the method of <code>Object.Equals(object obj).</code></p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a></td>
-        <td><span class="parametername">obj</span></td>
-        <td><p>Can pass any class type.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></td>
-        <td><p>The return value tell you whehter the compare operation is successful.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)" target="_blank" rel="noopener noreferrer nofollow">Object.<wbr>Equals(Object)</a></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.GetTailLength(System.Int32*%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-4">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-4" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>obj</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a></dt>
+    <dd><p>Can pass any class type.</p>
+</dd>
+  </dl>
+
+  <h4 class="section" id="returns-1">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
+    <dd><p>The return value tell you whehter the compare operation is successful.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_GetTailLength_" data-uid="CatLibrary.Cat`2.GetTailLength*"></a>
-  <h4 id="CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" data-uid="CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])">Get<wbr>Tail<wbr>Length(int*, params object[])<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" data-uid="CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])">
+  GetTailLength(int*, params object[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>It's an <code>unsafe</code> method.
 As you see, <code data-dev-comment-type="paramref" class="paramref">catName</code> is a <strong>pointer</strong>, so we need to add <code data-dev-comment-type="languageKeyword" class="languageKeyword">unsafe</code> keyword.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a>*</td>
-        <td><span class="parametername">catName</span></td>
-        <td><p>Thie represent for cat name length.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a>[]</td>
-        <td><span class="parametername">parameters</span></td>
-        <td><p>Optional parameters.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int64" target="_blank" rel="noopener noreferrer nofollow">long</a></td>
-        <td><p>Return cat tail's length.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Jump__0__1_System_Boolean__.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.Jump(%600%2C%601%2CSystem.Boolean%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-5">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-5" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>catName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a>*</dt>
+    <dd><p>Thie represent for cat name length.</p>
+</dd>
+    <dt><code>parameters</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.object" target="_blank" rel="noopener noreferrer nofollow">object</a>[]</dt>
+    <dd><p>Optional parameters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section" id="returns-2">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-2" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int64" target="_blank" rel="noopener noreferrer nofollow">long</a></dt>
+    <dd><p>Return cat tail's length.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_Jump_" data-uid="CatLibrary.Cat`2.Jump*"></a>
-  <h4 id="CatLibrary_Cat_2_Jump__0__1_System_Boolean__" data-uid="CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)">Jump(T, K, ref bool)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_Jump__0__1_System_Boolean__" data-uid="CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)">
+  Jump(T, K, ref bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>This method have attribute above it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>(<span class="hljs-params">T ownType, K anotherOwnType, <span class="hljs-keyword">ref</span> <span class="hljs-built_in">bool</span> cheat</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">T</span></td>
-        <td><span class="parametername">ownType</span></td>
-        <td><p>Type come from class define.</p>
-</td>
-      </tr>
-      <tr>
-        <td><span class="xref">K</span></td>
-        <td><span class="parametername">anotherOwnType</span></td>
-        <td><p>Type come from class define.</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></td>
-        <td><span class="parametername">cheat</span></td>
-        <td><p>Hint whether this cat has cheat mode.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="exceptions">Exceptions</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Condition</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.argumentexception" target="_blank" rel="noopener noreferrer nofollow">Argument<wbr>Exception</a></td>
-        <td><p>This is an argument exception</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="events">Events<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#events" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_ownEat.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.ownEat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
-  <h4 id="CatLibrary_Cat_2_ownEat" data-uid="CatLibrary.Cat`2.ownEat">own<wbr>Eat<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_ownEat" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h4 class="section" id="parameters-6">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-6" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>ownType</code> <span class="xref">T</span></dt>
+    <dd><p>Type come from class define.</p>
+</dd>
+    <dt><code>anotherOwnType</code> <span class="xref">K</span></dt>
+    <dd><p>Type come from class define.</p>
+</dd>
+    <dt><code>cheat</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
+    <dd><p>Hint whether this cat has cheat mode.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+  <h4 class="section" id="exceptions-1">Exceptions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#exceptions-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.argumentexception" target="_blank" rel="noopener noreferrer nofollow">Argument<wbr>Exception</a></dt>
+    <dd><p>This is an argument exception</p>
+</dd>
+  </dl>
+
+
+  <h2 class="section" id="events">Events<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#events" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_ownEat" data-uid="CatLibrary.Cat`2.ownEat">
+  ownEat
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_ownEat" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Eat event of this cat</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="eventType">Event Type</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.eventhandler" target="_blank" rel="noopener noreferrer nofollow">Event<wbr>Handler</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="operators">Operators<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#operators" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.op_Addition(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+
+
+
+
+
+  <h4 class="section" id="event-type">Event Type<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#event-type" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.eventhandler" target="_blank" rel="noopener noreferrer nofollow">Event<wbr>Handler</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h2 class="section" id="operators">Operators<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#operators" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
+
   <a id="CatLibrary_Cat_2_op_Addition_" data-uid="CatLibrary.Cat`2.op_Addition*"></a>
-  <h4 id="CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)">operator +(Cat&lt;T, K&gt;, int)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)">
+  operator +(Cat&lt;T, K&gt;, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Addition operator of this class.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</td>
-        <td><span class="parametername">lsr</span></td>
-        <td><p>...</p>
-</td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td><span class="parametername">rsr</span></td>
-        <td><pre><code class="hljs language-undefined"></code></pre>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td><p>Result with <em>int</em> type.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.op_Explicit(CatLibrary.Cat%7B%600%2C%601%7D)~CatLibrary.Tom%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-7">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-7" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>lsr</code> <a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</dt>
+    <dd><p>...</p>
+</dd>
+    <dt><code>rsr</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd><pre><code class="hljs language-undefined"></code></pre>
+</dd>
+  </dl>
+
+  <h4 class="section" id="returns-3">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-3" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd><p>Result with <em>int</em> type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_op_Explicit_" data-uid="CatLibrary.Cat`2.op_Explicit*"></a>
-  <h4 id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" data-uid="CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom">explicit operator Tom(Cat&lt;T, K&gt;)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" data-uid="CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom">
+  explicit operator Tom(Cat&lt;T, K&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Expilicit operator of this class.</p>
 <p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</td>
-        <td><span class="parametername">src</span></td>
-        <td><p>Instance of this class.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="CatLibrary.Tom.html">Tom</a></td>
-        <td><p>Advanced class type of cat.</p>
-</td>
-      </tr>
-    </tbody>
-  </table></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_.md&amp;value=---%0Auid%3A%20CatLibrary.Cat%602.op_Subtraction(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" target="_blank" rel="noopener noreferrer nofollow" class="external">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188" target="_blank" rel="noopener noreferrer nofollow" class="external">View Source</a>
-  </span>
+
+  <h4 class="section" id="parameters-8">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-8" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>src</code> <a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</dt>
+    <dd><p>Instance of this class.</p>
+</dd>
+  </dl>
+
+  <h4 class="section" id="returns-4">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-4" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="CatLibrary.Tom.html">Tom</a></dt>
+    <dd><p>Advanced class type of cat.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
   <a id="CatLibrary_Cat_2_op_Subtraction_" data-uid="CatLibrary.Cat`2.op_Subtraction*"></a>
-  <h4 id="CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)">operator -(Cat&lt;T, K&gt;, int)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+
+  <h3 class="border-bottom" id="CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)">
+  operator -(Cat&lt;T, K&gt;, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+
   <div class="markdown level1 summary"><p>Similar with operaotr +, refer to that topic.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
+
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</td>
-        <td><span class="parametername">lsr</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td><span class="parametername">rsr</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h5 class="returns">Returns</h5>
-  <div class="table-responsive"><table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table></div>
-  <h3 id="implements">Implements<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#implements" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <div>
-      <a class="xref" href="CatLibrary.ICat.html">ICat</a>
-  </div>
-  <div>
-      <a class="xref" href="CatLibrary.IAnimal.html">IAnimal</a>
-  </div>
-  <h3 id="extensionmethods">Extension Methods<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#extensionmethods" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-  <div>
-      <a class="xref" href="CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_">ICat<wbr>Extension.<wbr>Play(ICat, Containers<wbr>Ref<wbr>Type.<wbr>Color<wbr>Type)</a>
-  </div>
-  <div>
-      <a class="xref" href="CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_">ICat<wbr>Extension.<wbr>Sleep(ICat, long)</a>
-  </div>
+
+  <h4 class="section" id="parameters-9">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-9" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><code>lsr</code> <a class="xref" href="CatLibrary.Cat-2.html">Cat</a>&lt;T, K&gt;</dt>
+    <dd></dd>
+    <dt><code>rsr</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section" id="returns-5">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-5" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
+  <dl class="parameters">
+    <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
 </article>
 
         <div class="contribution d-print-none">
@@ -1020,7 +918,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
       <div class="affix">
         <nav id="affix">
       <h5 class="border-bottom">In this article</h5>
-      <ul><li><h6>Constructors</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat()</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string, out int, string, bool)</a></li><li><h6>Fields</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy</a></li><li><h6>Properties</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string]</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name</a></li><li><h6>Methods</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[])</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T, K, ref bool)</a></li><li><h6>Events</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat</a></li><li><h6>Operators</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T, K&gt;<wbr>, int)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T, K&gt;<wbr>)</a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T, K&gt;<wbr>, int)</a></li></ul></nav>
+      <ul><li><h6>Constructors</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat() </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string,<wbr> out int,<wbr> string,<wbr> bool) </a></li><li><h6>Fields</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy </a></li><li><h6>Properties</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string] </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name </a></li><li><h6>Methods</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[]) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T,<wbr> K,<wbr> ref bool) </a></li><li><h6>Events</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat </a></li><li><h6>Operators</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li></ul></nav>
       </div>
     </main>
 
