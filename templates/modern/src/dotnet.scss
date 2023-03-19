@@ -4,13 +4,30 @@
 */
 
 body[data-yaml-mime="ManagedReference"] article {
+  h1[data-uid] {
+    position: relative;
+    padding-right: 1.6rem;
+  }
 
   h3[data-uid] {
+    position: relative;  
     font-weight: 400;
+    margin-top: 3rem;
+    padding-bottom: 5px;
+    padding-right: 1.6rem;
+  }
+
+  h2.section {
+    margin-top: 3rem;
+
+    +h3[data-uid], +a+h3[data-uid] {
+      margin-top: 1rem;
+    }
   }
 
   h4.section {
     font-weight: 300;
+    margin-top: 2rem;
   }
 
   dl>dt {
@@ -68,7 +85,9 @@ body[data-yaml-mime="ManagedReference"] article {
   }
 
   .header-action {
-    float: right;
+    position: absolute;
+    right: 0;
+    bottom: .2rem;
     font-size: 1.2rem;
   }
 }
