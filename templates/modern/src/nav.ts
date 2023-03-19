@@ -97,14 +97,14 @@ function inThisArticleForConceptual() {
 }
 
 function inThisArticleForManagedReference(): TemplateResult {
-  let headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h3, article h4'))
-  headings = headings.filter((h, i) => h.tagName === 'H4' || headings[i + 1]?.tagName === 'H4')
+  let headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h2, article h3'))
+  headings = headings.filter((h, i) => h.tagName === 'H3' || headings[i + 1]?.tagName === 'H3')
 
   if (headings.length > 0) {
     return html`
       <h5 class="border-bottom">In this article</h5>
       <ul>${headings.map(h => {
-        return h.tagName === 'H3'
+        return h.tagName === 'H2'
           ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`
           : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
       })}</ul>`

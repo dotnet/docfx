@@ -4,10 +4,13 @@
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
 <div class="markdown level0 remarks">{{{remarks}}}</div>
+
 {{#children}}
   <h3 id="{{id}}">{{>partials/namespaceSubtitle}}</h3>
   {{#children}}
-    <h4><xref uid="{{uid}}" altProperty="fullName" displayProperty="name"/></h4>
-    <section>{{{summary}}}</section>
+  <dl class="jumplist">
+    <dt><xref uid="{{uid}}" altProperty="fullName" displayProperty="name"/></dt>
+    <dd>{{{summary}}}</dd>
+  </dl>
   {{/children}}
 {{/children}}

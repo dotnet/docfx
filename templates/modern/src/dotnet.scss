@@ -4,44 +4,71 @@
 */
 
 body[data-yaml-mime="ManagedReference"] article {
-  .inheritance {
-    @for $i from 0 through 9 {
-      .level#{$i} {
-        margin-left: $i * 1em;
 
-        &::before {
-          content: "↳";
-          margin-right: 5px;
-        }
+  h3[data-uid] {
+    font-weight: 400;
+  }
+
+  h4.section {
+    font-weight: 300;
+  }
+
+  dl>dt {
+    font-weight: normal;
+  }
+
+  dl>dd {
+    margin-left: 1rem;
+  }
+
+  dl.facts {
+    font-size: 14px;
+    margin: 0;
+    display: flex;
+
+    dd {
+      margin-left: .25rem;
+    }
+
+    dt::after {
+      content: ":";
+    }
+  }
+
+  dl.typelist {
+    >dt {
+      font-weight: 600;
+    }
+
+    >dd {
+      margin-left: 0;
+    }
+
+    >dd>div {
+      display: inline-block;
+
+      &:not(:last-child)::after {
+        content: ', ';
       }
+    }
+
+    &.inheritance>dd>div:not(:last-child)::after {
+      font-family: bootstrap-icons;
+      content: '\F12C';
+      position: relative;
+      top: .2em;
+      opacity: .8;
+    }
+  }
+
+  dl.parameters {
+    >dt>code {
+      margin-right: .2em;
     }
   }
 
   .header-action {
     float: right;
     font-size: 1.2rem;
-  }
-
-  .level0.summary {
-    margin: 2em 0;
-  }
-
-  .level1.summary {
-    margin: 1em 0;
-  }
-
-  .inheritance h5,
-  .inheritedMembers h5 {
-    border-bottom: 1px solid #ccc;
-  }
-  
-  span.parametername,
-  span.paramref,
-  span.typeparamref {
-    font-style: italic;
-  }
-
-  span.languagekeyword {
-    font-weight: bold;
   }
 }

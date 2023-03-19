@@ -14,7 +14,7 @@ export function meta(name: string): string {
  * Add <wbr> into long word.
  */
 export function breakWord(text: string): string[] {
-  const regex = /([a-z0-9])([A-Z]+[a-z])|([a-zA-Z0-9][./<>_])/g
+  const regex = /([a-z0-9])([A-Z]+[a-z])|([a-zA-Z0-9][.,/<>_])/g
   const result = []
   let start = 0
   while (true) {

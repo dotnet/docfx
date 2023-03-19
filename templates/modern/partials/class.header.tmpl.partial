@@ -1,11 +1,17 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
+{{^_disableContribution}}
+{{#sourceurl}}<a class="header-action link-secondary" title="View source" href="{{sourceurl}}"><i class="bi bi-code-slash"></i></a>{{/sourceurl}}
+{{/_disableContribution}}
+
 <h1 id="{{id}}" data-uid="{{uid}}" class="text-break">{{>partials/title}}</h1>
 
-<div class="facts text-secondary">
-  <div>{{__global.namespace}}: {{{namespace.specName.0.value}}}</div>
-  <div>{{__global.assembly}}: {{assemblies.0}}.dll</div>
-</div>
+<dl class="facts text-secondary">
+  <dt>{{__global.namespace}}</dt><dd>{{{namespace.specName.0.value}}}</dd>
+</dl>
+<dl class="facts text-secondary">
+  <dt>{{__global.assembly}}</dt><dd>{{assemblies.0}}.dll</dd>
+</dl>
 
 <div class="markdown summary">{{{summary}}}</div>
 <div class="markdown conceptual">{{{conceptual}}}</div>
@@ -13,93 +19,87 @@
 <div class="codewrapper">
   <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
 </div>
+
 {{#syntax.parameters.0}}
-<h5 class="parameters">{{__global.parameters}}</h5>
-<table class="table table-bordered table-condensed">
-  <thead>
-    <tr>
-      <th>{{__global.type}}</th>
-      <th>{{__global.name}}</th>
-      <th>{{__global.description}}</th>
-    </tr>
-  </thead>
-  <tbody>
+<h4 class="section">{{__global.parameters}}</h4>
+<dl class="parameters">
 {{/syntax.parameters.0}}
 {{#syntax.parameters}}
-    <tr>
-      <td>{{{type.specName.0.value}}}</td>
-      <td><span class="parametername">{{{id}}}</span></td>
-      <td>{{{description}}}</td>
-    </tr>
+  <dt><code>{{{id}}}</code> {{{type.specName.0.value}}}</dt>
+  <dd>{{{description}}}</dd>
 {{/syntax.parameters}}
 {{#syntax.parameters.0}}
-  </tbody>
-</table>
+</dl>
 {{/syntax.parameters.0}}
+
 {{#syntax.return}}
-<h5 class="returns">{{__global.returns}}</h5>
-<table class="table table-bordered table-condensed">
-  <thead>
-    <tr>
-      <th>{{__global.type}}</th>
-      <th>{{__global.description}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{{type.specName.0.value}}}</td>
-      <td>{{{description}}}</td>
-    </tr>
-  </tbody>
-</table>
+<h4 class="section">{{__global.returns}}</h4>
+<dl class="parameters">
+  <dt><code>type.specName.0.value</code></dt>
+  <dd>{{{description}}}</dd>
+</dl>
 {{/syntax.return}}
+
 {{#syntax.typeParameters.0}}
-<h5 class="typeParameters">{{__global.typeParameters}}</h5>
-<table class="table table-bordered table-condensed">
-  <thead>
-    <tr>
-      <th>{{__global.name}}</th>
-      <th>{{__global.description}}</th>
-    </tr>
-  </thead>
-  <tbody>
+<h4 class="section">{{__global.typeParameters}}</h4>
+<dl class="parameters">
 {{/syntax.typeParameters.0}}
 {{#syntax.typeParameters}}
-    <tr>
-      <td><span class="parametername">{{{id}}}</span></td>
-      <td>{{{description}}}</td>
-    </tr>
+  <dt><code>{{{id}}}</code></dt>
+  <dd>{{{description}}}</dd>
 {{/syntax.typeParameters}}
 {{#syntax.typeParameters.0}}
-  </tbody>
-</table>
+</dl>
 {{/syntax.typeParameters.0}}
 
 {{#inClass}}
-<div class="inheritance">
-  <h5>{{__global.inheritance}}</h5>
-  {{#inheritance}}
-  <div class="level{{index}}">{{{specName.0.value}}}</div>
-  {{/inheritance}}
-  <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
-  {{#derivedClasses}}
-    <div class="level{{index}}">{{{specName.0.value}}}</div>
-  {{/derivedClasses}}
-</div>
+{{#inheritance.0}}
+<dl class="typelist inheritance">
+  <dt>{{__global.inheritance}}</dt>
+  <dd>
+{{/inheritance.0}}
+{{#inheritance}}
+    <div>{{{specName.0.value}}}</div>
+{{/inheritance}}
+    <div><span class="xref">{{name.0.value}}</span></div>
+{{#inheritance.0}}
+  </dd>
+</dl>
+{{/inheritance.0}}
 {{/inClass}}
+
 {{#implements.0}}
-<div class="implements">
-  <h5>{{__global.implements}}</h5>
+<dl class="typelist implements">
+  <dt>{{__global.implements}}</dt>
+  <dd>
 {{/implements.0}}
 {{#implements}}
-  <div>{{{specName.0.value}}}</div>
+    <div>{{{specName.0.value}}}</div>
 {{/implements}}
 {{#implements.0}}
-</div>
+  </dd>
+</dl>
 {{/implements.0}}
+
+{{#inClass}}
+{{#derivedClasses.0}}
+<dl class="typelist derived">
+  <dt>{{__global.derived}}</dt>
+  <dd>
+{{/derivedClasses.0}}
+{{#derivedClasses}}
+    <div>{{{specName.0.value}}}</div>
+{{/derivedClasses}}
+{{#derivedClasses.0}}
+  </dd>
+</dl>
+{{/derivedClasses.0}}
+{{/inClass}}
+
 {{#inheritedMembers.0}}
-<div class="inheritedMembers">
-  <h5>{{__global.inheritedMembers}}</h5>
+<dl class="typelist derived">
+  <dt>{{__global.inheritedMembers}}</dt>
+  <dd>
 {{/inheritedMembers.0}}
 {{#inheritedMembers}}
   <div>
@@ -112,16 +112,56 @@
   </div>
 {{/inheritedMembers}}
 {{#inheritedMembers.0}}
-</div>
+</dl>
 {{/inheritedMembers.0}}
 
-{{#remarks}}
-<h5 id="{{id}}_remarks"><strong>{{__global.remarks}}</strong></h5>
-<div class="markdown level0 remarks">{{{remarks}}}</div>
-{{/remarks}}
+{{#extensionMethods.0}}
+<dl class="typelist extensionMethods">
+  <dt>{{__global.extensionMethods}}</dt>
+  <dd>
+{{/extensionMethods.0}}
+{{#extensionMethods}}
+<div>
+  {{#definition}}
+    <xref uid="{{definition}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+  {{^definition}}
+    <xref uid="{{uid}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+</div>
+{{/extensionMethods}}
+{{#extensionMethods.0}}
+</dl>
+{{/extensionMethods.0}}
+
+{{#seealso.0}}
+<dl class="typelist seealso">
+  <dt>{{__global.seealso}}</dt>
+  <dd>
+{{/seealso.0}}
+{{#seealso}}
+  <div>
+  {{#isCref}}
+    <div>{{{type.specName.0.value}}}</div>
+  {{/isCref}}
+  {{^isCref}}
+    <div>{{{url}}}</div>
+  {{/isCref}}
+  </div>
+{{/seealso}}
+{{#seealso.0}}
+  </dd>
+</dl>
+{{/seealso.0}}
+
 {{#example.0}}
-<h5 id="{{id}}_examples"><strong>{{__global.examples}}</strong></h5>
+<h2 id="{{id}}_examples">{{__global.examples}}</h2>
 {{/example.0}}
 {{#example}}
 {{{.}}}
 {{/example}}
+
+{{#remarks}}
+<h2 id="{{id}}_remarks">{{__global.remarks}}</h2>
+<div class="markdown level0 remarks">{{{remarks}}}</div>
+{{/remarks}}
