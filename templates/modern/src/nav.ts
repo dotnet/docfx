@@ -83,7 +83,7 @@ export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
 export function renderInThisArticle() {
   const affix = document.getElementById('affix')
   if (affix) {
-    render(meta('docfx:yamlmime') === 'ManagedReference' ? inThisArticleForManagedReference() : inThisArticleForConceptual(), affix)
+    render(document.body.getAttribute('data-yaml-mime') === 'ManagedReference' ? inThisArticleForManagedReference() : inThisArticleForConceptual(), affix)
   }
 }
 

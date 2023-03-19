@@ -168,7 +168,7 @@ body[data-layout="landing"] {
 
           @include stick-to-header;
 
-          @include media-breakpoint-down(xl) {
+          @media only screen and (max-width: 1140px) {
             display: none;
           }
         }

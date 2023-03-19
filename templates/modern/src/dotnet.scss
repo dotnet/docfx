@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-article {
+body[data-yaml-mime="ManagedReference"] article {
   .inheritance {
     @for $i from 0 through 9 {
       .level#{$i} {
@@ -17,6 +17,11 @@ article {
     }
   }
 
+  .header-action {
+    float: right;
+    font-size: 1.2rem;
+  }
+
   .level0.summary {
     margin: 2em 0;
   }
@@ -25,14 +30,8 @@ article {
     margin: 1em 0;
   }
 
-  .inheritance hr {
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-  
   .inheritance h5,
   .inheritedMembers h5 {
-    padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
   }
   
@@ -45,21 +44,4 @@ article {
   span.languagekeyword {
     font-weight: bold;
   }
-}
-
-/* These are not important, tune down **/
-.declaration,
-.fieldValue,
-.parameters,
-.returns {
-  color: #a2a2a2;
-}
-
-/* Major sections, increase visibility **/
-#fields,
-#properties,
-#methods,
-#events {
-  font-weight: bold;
-  margin-top: 2em;
 }
