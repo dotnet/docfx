@@ -5,12 +5,10 @@
   {{#sourceurl}}<a class="header-action link-secondary" title="View source" href="{{sourceurl}}"><i class="bi bi-code-slash"></i></a>{{/sourceurl}}
 </h1>
 
-<dl class="facts text-secondary">
-  <dt>{{__global.namespace}}</dt><dd>{{{namespace.specName.0.value}}}</dd>
-</dl>
-<dl class="facts text-secondary">
-  <dt>{{__global.assembly}}</dt><dd>{{assemblies.0}}.dll</dd>
-</dl>
+<div class="facts text-secondary">
+  <dl><dt>{{__global.namespace}}</dt><dd>{{{namespace.specName.0.value}}}</dd></dl>
+  <dl><dt>{{__global.assembly}}</dt><dd>{{assemblies.0}}.dll</dd></dl>
+</div>
 
 <div class="markdown summary">{{{summary}}}</div>
 <div class="markdown conceptual">{{{conceptual}}}</div>
@@ -133,25 +131,17 @@
 </dl>
 {{/extensionMethods.0}}
 
-{{#seealso.0}}
-<dl class="typelist seealso">
-  <dt>{{__global.seealso}}</dt>
-  <dd>
-{{/seealso.0}}
-{{#seealso}}
-  <div>
-  {{#isCref}}
-    <div>{{{type.specName.0.value}}}</div>
-  {{/isCref}}
-  {{^isCref}}
-    <div>{{{url}}}</div>
-  {{/isCref}}
-  </div>
-{{/seealso}}
-{{#seealso.0}}
-  </dd>
+{{#isEnum}}
+{{#children}}
+<h2 id="{{id}}">{{>partials/classSubtitle}}</h2>
+<dl class="parameters">
+{{#children}}
+  <dt id="{{id}}"><code>{{syntax.content.0.value}}</code></dt>
+  <dd>{{{summary}}}</dd>
+{{/children}}
 </dl>
-{{/seealso.0}}
+{{/children}}
+{{/isEnum}}
 
 {{#example.0}}
 <h2 id="{{id}}_examples">{{__global.examples}}</h2>

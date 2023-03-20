@@ -38,6 +38,11 @@ h6,
 }
 
 article {
+  // For REST API view source link
+  span.small.pull-right {
+    float: right;
+  }
+
   img {
     max-width: 100%;
     height: auto;

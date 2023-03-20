@@ -38,17 +38,25 @@ body[data-yaml-mime="ManagedReference"] article {
     margin-left: 1rem;
   }
 
-  dl.facts {
+  div.facts {
     font-size: 14px;
-    margin: 0;
-    display: flex;
+    margin: 2rem 0 1rem 0;
 
-    dd {
-      margin-left: .25rem;
-    }
+    >dl {
+      margin: 0;
 
-    dt::after {
-      content: ":";
+      >dd {
+        margin-left: .25rem;
+        display: inline-block;
+      }
+  
+      >dt {
+        display: inline-block;
+      }
+  
+      >dt::after {
+        content: ":";
+      }
     }
   }
 

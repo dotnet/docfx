@@ -2,12 +2,18 @@
 
 {{>partials/class.header}}
 
-{{#children}}
-<h2 id="{{id}}">{{>partials/classSubtitle}}</h2>
-<dl class="parameters">
-{{#children}}
-  <dt id="{{id}}"><code>{{syntax.content.0.value}}</code></dt>
-  <dd>{{{summary}}}</dd>
-{{/children}}
-</dl>
-{{/children}}
+{{#seealso.0}}
+<h2 id="seealso">{{__global.seealso}}</h2>
+<div class="seealso">
+{{/seealso.0}}
+{{#seealso}}
+  {{#isCref}}
+    <div>{{{type.specName.0.value}}}</div>
+  {{/isCref}}
+  {{^isCref}}
+    <div>{{{url}}}</div>
+  {{/isCref}}
+{{/seealso}}
+{{#seealso.0}}
+</div>
+{{/seealso.0}}

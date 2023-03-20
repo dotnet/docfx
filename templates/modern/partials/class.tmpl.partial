@@ -10,7 +10,7 @@
 <a id="{{id}}" data-uid="{{uid}}"></a>
 {{/overload}}
 
-<h3 class="border-bottom" id="{{id}}" data-uid="{{uid}}">
+<h3 id="{{id}}" data-uid="{{uid}}">
   {{name.0.value}}
   {{#sourceurl}}<a class="header-action link-secondary" title="View source" href="{{sourceurl}}"><i class="bi bi-code-slash"></i></a>{{/sourceurl}}
 </h3>
@@ -128,3 +128,18 @@
 {{/children}}
 {{/children}}
 
+{{#seealso.0}}
+<h2 id="seealso">{{__global.seealso}}</h2>
+<div class="seealso">
+{{/seealso.0}}
+{{#seealso}}
+  {{#isCref}}
+    <div>{{{type.specName.0.value}}}</div>
+  {{/isCref}}
+  {{^isCref}}
+    <div>{{{url}}}</div>
+  {{/isCref}}
+{{/seealso}}
+{{#seealso.0}}
+</div>
+{{/seealso.0}}
