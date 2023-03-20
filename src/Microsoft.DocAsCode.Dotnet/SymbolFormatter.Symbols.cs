@@ -92,7 +92,9 @@ namespace Microsoft.DocAsCode.Dotnet
             ISymbol ISymbol.OriginalDefinition => throw new NotImplementedException();
 
             public void Accept(SymbolVisitor visitor) => visitor.VisitParameter(this);
+#nullable enable
             public TResult? Accept<TResult>(SymbolVisitor<TResult> visitor) => throw new NotImplementedException();
+#nullable disable
             public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) => throw new NotImplementedException();
             public bool Equals([NotNullWhen(true)] ISymbol other, SymbolEqualityComparer equalityComparer) => throw new NotImplementedException();
             public bool Equals(ISymbol other) => throw new NotImplementedException();
@@ -194,10 +196,12 @@ namespace Microsoft.DocAsCode.Dotnet
             ISymbol ISymbol.OriginalDefinition => ((ISymbol)Inner).OriginalDefinition;
 
             public void Accept(SymbolVisitor visitor) => visitor.VisitProperty(this);
+#nullable enable
             public TResult? Accept<TResult>(SymbolVisitor<TResult> visitor) => visitor.VisitProperty(this);
+#nullable disable
             public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) => visitor.VisitProperty(this, argument);
             public bool Equals([NotNullWhen(true)] ISymbol other, SymbolEqualityComparer equalityComparer) => Inner.Equals(other, equalityComparer);
-            public bool Equals(ISymbol other) => Inner.Equals(other);
+            public bool Equals(ISymbol other) => Inner.Equals(other, SymbolEqualityComparer.Default);
             public ImmutableArray<AttributeData> GetAttributes() => Inner.GetAttributes();
             public string GetDocumentationCommentId() => Inner.GetDocumentationCommentId();
             public string GetDocumentationCommentXml(CultureInfo preferredCulture = null, bool expandIncludes = false, CancellationToken cancellationToken = default) => Inner.GetDocumentationCommentXml(preferredCulture, expandIncludes, cancellationToken);
@@ -336,12 +340,14 @@ namespace Microsoft.DocAsCode.Dotnet
             ISymbol ISymbol.OriginalDefinition => ((ISymbol)Inner).OriginalDefinition;
 
             public void Accept(SymbolVisitor visitor) => Inner.Accept(visitor);
+#nullable enable
             public TResult? Accept<TResult>(SymbolVisitor<TResult> visitor) => Inner.Accept(visitor);
+#nullable disable
             public TResult Accept<TArgument, TResult>(SymbolVisitor<TArgument, TResult> visitor, TArgument argument) => Inner.Accept(visitor, argument);
             public IMethodSymbol Construct(params ITypeSymbol[] typeArguments) => Inner.Construct(typeArguments);
             public IMethodSymbol Construct(ImmutableArray<ITypeSymbol> typeArguments, ImmutableArray<NullableAnnotation> typeArgumentNullableAnnotations) => Inner.Construct(typeArguments, typeArgumentNullableAnnotations);
             public bool Equals([NotNullWhen(true)] ISymbol other, SymbolEqualityComparer equalityComparer) => Inner.Equals(other, equalityComparer);
-            public bool Equals(ISymbol other) => Inner.Equals(other);
+            public bool Equals(ISymbol other) => Inner.Equals(other, SymbolEqualityComparer.Default);
             public ImmutableArray<AttributeData> GetAttributes() => Inner.GetAttributes();
             public DllImportData GetDllImportData() => Inner.GetDllImportData();
             public string GetDocumentationCommentId() => Inner.GetDocumentationCommentId();
