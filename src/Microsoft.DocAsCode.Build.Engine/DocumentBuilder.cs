@@ -222,23 +222,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             IMarkdownServiceProvider GetMarkdownServiceProvider()
             {
-                var markdownEngineName = parameters[0].MarkdownEngineName;
-                if (markdownEngineName == "markdig")
+                return new MarkdigServiceProvider
                 {
-                    return new MarkdigServiceProvider
-                    {
-                        Container = _container.GetExport<ICompositionContainer>(),
-                        ConfigureMarkdig = parameters[0].ConfigureMarkdig
-                    };
-                }
-            
-                var result = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, markdownEngineName);
-                if (result == null)
-                {
-                    Logger.LogError($"Unable to find markdown engine: {markdownEngineName}");
-                    throw new DocfxException($"Unable to find markdown engine: {markdownEngineName}");
-                }
-                return result;
+                    Container = _container.GetExport<ICompositionContainer>(),
+                    ConfigureMarkdig = parameters[0].ConfigureMarkdig
+                };
             }
         }
 

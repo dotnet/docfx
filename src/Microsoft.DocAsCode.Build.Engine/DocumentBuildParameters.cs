@@ -40,8 +40,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public int MaxHttpParallelism { get; set; }
 
-        public string MarkdownEngineName { get; set; } = "markdig";
-
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
 
         public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; set; }
