@@ -1,19 +1,20 @@
 <Project>
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <LangVersion>Latest</LangVersion>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <ItemGroup>
     <None Include="TestData\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="3.2.0">
+    <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <!--
       The NuGet.Frameworks package is required to run csproj based tests targeting .NET 7.0.200.
 
@@ -23,8 +24,8 @@
 
       This only impact test since MSBuildLocator will resolve NuGet.Frameworks package from the appropreciate .NET SDK location.
     -->
-    <PackageReference Include="NuGet.Frameworks" Version="6.5.0-*" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
-    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="NuGet.Frameworks" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="xunit" />
   </ItemGroup>
 </Project>

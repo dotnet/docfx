@@ -79,7 +79,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             try
             {
                 var manifests = new List<Manifest>();
-                bool transformDocument = false;
                 if (parameters.All(p => p.Files.Count == 0))
                 {
                     Logger.LogSuggestion(
@@ -119,10 +118,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                     EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
-                    if (parameter.ApplyTemplateSettings.TransformDocument)
-                    {
-                        transformDocument = true;
-                    }
 
                     if (parameter.Files.Count == 0)
                     {

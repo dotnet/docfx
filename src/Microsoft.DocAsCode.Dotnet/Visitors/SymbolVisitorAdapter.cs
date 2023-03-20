@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         #region Constructor
 
-        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods )
+        public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
         {
             _generator = generator;
             _preserveRawInlineComments = options.PreserveRawInlineComments;
@@ -581,7 +581,7 @@ namespace Microsoft.DocAsCode.Dotnet
                         break;
                     }
 
-                    if (type != symbol)
+                    if (!type.Equals(symbol, SymbolEqualityComparer.Default))
                     {
                         inheritance.Add(AddSpecReference(type, typeParamterNames));
                     }
@@ -630,7 +630,7 @@ namespace Microsoft.DocAsCode.Dotnet
                                where _filter.IncludeApi(type)
                                from member in type.GetMembers()
                                where _filter.IncludeApi(member)
-                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
+                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member), SymbolEqualityComparer.Default)
                                select AddSpecReference(member, typeGenericParameters)).ToList();
             if (item.Implements.Count == 0)
             {
@@ -645,7 +645,7 @@ namespace Microsoft.DocAsCode.Dotnet
                                where _filter.IncludeApi(type)
                                from member in type.GetMembers()
                                where _filter.IncludeApi(member)
-                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member))
+                               where symbol.Equals(symbol.ContainingType.FindImplementationForInterfaceMember(member), SymbolEqualityComparer.Default)
                                select AddSpecReference(
                                    symbol.TypeParameters.Length == 0 ? member : ((IMethodSymbol)member).Construct(symbol.TypeParameters.ToArray<ITypeSymbol>()),
                                    typeGenericParameters,
@@ -695,7 +695,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 var sig = MemberSigRegex.Replace(SpecIdHelper.GetSpecId(m, typeParamterNames), string.Empty);
                 if (!dict.ContainsKey(sig))
                 {
-                    dict.Add(sig, type == symbol ? null : AddSpecReference(m, typeParamterNames));
+                    dict.Add(sig, type.Equals(symbol, SymbolEqualityComparer.Default) ? null : AddSpecReference(m, typeParamterNames));
                 }
             }
         }

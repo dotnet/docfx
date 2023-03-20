@@ -22,3 +22,4 @@ launchSettings.json
 *.sublime-workspace
 *.nuget.targets
 *.code-workspace
+*.binlog

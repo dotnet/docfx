@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Dotnet
             {
                 originalSymbol = reducedFrom;
             }
-            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId) && (symbol.IsDefinition || VisitorHelper.GetId(symbol.OriginalDefinition) == rawId);
+            reference.IsDefinition = originalSymbol.Equals(symbol, SymbolEqualityComparer.Default) && (id == rawId) && (symbol.IsDefinition || VisitorHelper.GetId(symbol.OriginalDefinition) == rawId);
 
             if (!reference.IsDefinition.Value && rawId != null)
             {
@@ -196,7 +196,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         private static bool IsGlobalNamespace(ISymbol symbol)
         {
-            return (symbol as INamespaceSymbol)?.IsGlobalNamespace == true;
+            return symbol is INamespaceSymbol { IsGlobalNamespace: true };
         }
     }
 }

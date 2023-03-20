@@ -1,0 +1,51 @@
+<Project>
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <LangVersion>Latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      Suppress warnings similar to the following:
+          warning CS0612: 'StringHelper.LegacyEscapeMarkdown(string)' is obsolete
+     -->
+    <NoWarn>$(NoWarn);CS0612</NoWarn>
+    <!--
+      Suppress warnings similar to the following:
+          warning CS0618: 'MarkdownLHeadingBlockRule.LHeading' is obsolete: 'Please use LHeadingMatcher.'
+     -->
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
+
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(IsPackable)' == 'true' ">
+    <ContentTargetFolders>contentFiles</ContentTargetFolders>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources> 
+  
+    <Authors>Microsoft</Authors>
+    <Company>Microsoft</Company>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+    <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
