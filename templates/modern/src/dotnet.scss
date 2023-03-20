@@ -38,28 +38,6 @@ body[data-yaml-mime="ManagedReference"] article {
     margin-left: 1rem;
   }
 
-  div.facts {
-    font-size: 14px;
-    margin: 2rem 0 1rem 0;
-
-    >dl {
-      margin: 0;
-
-      >dd {
-        margin-left: .25rem;
-        display: inline-block;
-      }
-  
-      >dt {
-        display: inline-block;
-      }
-  
-      >dt::after {
-        content: ":";
-      }
-    }
-  }
-
   dl.typelist {
     >dt {
       font-weight: 600;
@@ -89,6 +67,28 @@ body[data-yaml-mime="ManagedReference"] article {
   dl.parameters {
     >dt>code {
       margin-right: .2em;
+    }
+  }
+
+  div.facts {
+    font-size: 14px;
+    margin: 2rem 0 1rem;
+
+    >dl {
+      margin: 0;
+
+      >dd {
+        margin-left: .25rem;
+        display: inline-block;
+      }
+  
+      >dt {
+        display: inline-block;
+      }
+  
+      >dt::after {
+        content: ":";
+      }
     }
   }
 
