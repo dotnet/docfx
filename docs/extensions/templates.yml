@@ -4,6 +4,14 @@ title: Templates
 documentType: dashboard
 contributionLink: https://github.com/dotnet/docfx/edit/main/docs/extensions/templates.yml
 items: 
+  - name: modern
+    description: The modern template
+    type: Embedded
+    thumbnail: images/modern.screenshot.png
+    homepage: https://github.com/dotnet/docfx/tree/main/templates/modern
+    repository:
+      type: git
+      url: "https://github.com/dotnet/docfx/tree/main/templates/modern"
   - name: default
     description: The default template
     type: Embedded
