@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
     using Xunit;
 
-    using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.MarkdigEngine;
@@ -27,7 +26,6 @@ remarks: Hello
 
 This is unit test!";
             content = Regex.Replace(content, "\r?\n", "\r\n");
-            var html = DocfxFlavoredMarked.Markup(content);
             var baseDir = Directory.GetCurrentDirectory();
             var fileName = "ut_ReadMarkdownAsOverwrite.md";
             var fullPath = Path.Combine(baseDir, fileName);
@@ -59,7 +57,6 @@ uid: Test2
 ---
 ";
             content = Regex.Replace(content, "\r?\n", "\r\n");
-            html = DocfxFlavoredMarked.Markup(content);
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
@@ -81,7 +78,6 @@ uid: Test2
 ---
 ";
             content = Regex.Replace(content, "\r?\n", "\r\n");
-            html = DocfxFlavoredMarked.Markup(content);
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
@@ -108,7 +104,6 @@ uid: Test2
 ---
 ";
             content = Regex.Replace(content, "\r?\n", "\r\n");
-            html = DocfxFlavoredMarked.Markup(content);
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
@@ -122,7 +117,6 @@ uid: Test2
 
             // Test different line ending
             content = "---\nuid: Test\nremarks: Hello\n---\nThis is unit test!\n";
-            html = DocfxFlavoredMarked.Markup(content);
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);
@@ -144,7 +138,6 @@ remarks: Hello
 
 This is unit test!";
             content = Regex.Replace(content, "\r?\n", "\r\n");
-            html = DocfxFlavoredMarked.Markup(content);
             File.WriteAllText(fileName, content);
             results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
             Assert.NotNull(results);

@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
@@ -247,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using var builder = new SingleDocumentBuilder
             {
-                MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
+                MetadataValidators = MetadataValidators.ToList(),
                 Processors = Processors,
                 MarkdownServiceProvider = markdownServiceProvider,
             };
@@ -311,20 +310,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 },
                 new CompositionContainer(CompositionContainer.DefaultContainer),
                 parameters.ConfigureMarkdig);
-        }
-
-        private IEnumerable<IInputMetadataValidator> GetMetadataRules(DocumentBuildParameters parameter)
-        {
-            try
-            {
-                var mvb = MarkdownValidatorBuilder.Create(new CompositionContainer(), parameter.Files.DefaultBaseDir, parameter.TemplateDir);
-                return mvb.GetEnabledMetadataRules().ToList();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Fail to init markdown style, details:{Environment.NewLine}{ex.Message}");
-                return Enumerable.Empty<IInputMetadataValidator>();
-            }
         }
 
         private static void SaveManifest(Manifest manifest)

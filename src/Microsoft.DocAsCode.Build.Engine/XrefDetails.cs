@@ -6,9 +6,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Specialized;
     using System.Linq;
+    using System.Net;
     using System.Web;
 
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
 
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 SourceEndLineNumber = node.GetAttributeValue("sourceEndLineNumber", 0),
                 RawSource = node.GetAttributeValue("data-raw-source", null),
                 ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false),
-                TemplatePath = StringHelper.HtmlDecode(node.GetAttributeValue("template", null)),
+                TemplatePath = WebUtility.HtmlDecode(node.GetAttributeValue("template", null)),
             };
 
             var rawHref = node.GetAttributeValue("href", null);
@@ -73,8 +73,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var queryValueCollection = HttpUtility.ParseQueryString(query);
                 xref.DisplayProperty = ExtractValue(queryValueCollection, "displayProperty") ?? xref.DisplayProperty;
                 xref.AltProperty = ExtractValue(queryValueCollection, "altProperty") ?? xref.AltProperty;
-                xref.Text = StringHelper.HtmlEncode(ExtractValue(queryValueCollection, "text")) ?? xref.Text;
-                xref.Alt = StringHelper.HtmlEncode(ExtractValue(queryValueCollection, "alt")) ?? xref.Alt;
+                xref.Text = WebUtility.HtmlEncode(ExtractValue(queryValueCollection, "text")) ?? xref.Text;
+                xref.Alt = WebUtility.HtmlEncode(ExtractValue(queryValueCollection, "alt")) ?? xref.Alt;
                 xref.Title = ExtractValue(queryValueCollection, "title") ?? xref.Title;
 
                 var remainingQuery = queryValueCollection.ToString();
@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var raw = node.GetAttributeValue("data-raw-html", null);
             if (!string.IsNullOrEmpty(raw))
             {
-                xref.Raw = StringHelper.HtmlDecode(raw);
+                xref.Raw = WebUtility.HtmlDecode(raw);
             }
             else
             {
@@ -155,7 +155,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (Spec != null)
                 {
-                    var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
+                    var value = WebUtility.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
                         return (GetAnchorNode(Href, Query + Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber), true);
@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (Spec != null)
                 {
-                    var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, AltProperty, "name"));
+                    var value = WebUtility.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, AltProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
                         return (GetDefaultPlainTextNode(value), false);
@@ -270,7 +270,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new NotSupportedException("Only anchor node with href started with \"xref:\" is supported!");
             }
             href = href.Substring("xref:".Length);
-            var raw = StringHelper.HtmlEncode(node.OuterHtml);
+            var raw = WebUtility.HtmlEncode(node.OuterHtml);
 
             var xrefNode = $"<xref href=\"{href}\" data-throw-if-not-resolved=\"True\" data-raw-html=\"{raw}\"";
             foreach (var attr in node.Attributes ?? Enumerable.Empty<HtmlAttribute>())

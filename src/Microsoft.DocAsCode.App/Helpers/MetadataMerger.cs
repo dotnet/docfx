@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.MarkdigEngine;
 
     internal class MetadataMerger
     {
@@ -74,7 +75,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     Metadata = parameters.Metadata,
                     OutputBaseDir = parameters.OutputBaseDir,
                 },
-                new DfmServiceProvider().CreateMarkdownService(
+                new MarkdigServiceProvider().CreateMarkdownService(
                     new MarkdownServiceParameters
                     {
                         BasePath = fc.DefaultBaseDir,
