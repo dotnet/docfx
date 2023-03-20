@@ -24,12 +24,11 @@
       {{#_noindex}}<meta name="searchOption" content="noindex">{{/_noindex}}
       {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
-      {{#yamlmime}}<meta name="docfx:yamlmime" content="{{yamlmime}}">{{/yamlmime}}
     {{/redirect_url}}
   </head>
 
   {{^redirect_url}}
-  <body data-layout="{{layout}}">
+  <body data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">

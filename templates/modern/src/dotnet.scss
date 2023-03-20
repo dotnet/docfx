@@ -3,63 +3,99 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-article {
-  .inheritance {
-    @for $i from 0 through 9 {
-      .level#{$i} {
-        margin-left: $i * 1em;
+body[data-yaml-mime="ManagedReference"] article {
+  h1[data-uid] {
+    position: relative;
+    padding-right: 1.6rem;
+  }
 
-        &::before {
-          content: "↳";
-          margin-right: 5px;
-        }
+  h3[data-uid] {
+    position: relative;  
+    font-weight: 400;
+    margin-top: 3rem;
+    padding-bottom: 5px;
+    padding-right: 1.6rem;
+  }
+
+  h2.section {
+    margin-top: 3rem;
+
+    +h3[data-uid], +a+h3[data-uid] {
+      margin-top: 1rem;
+    }
+  }
+
+  h4.section {
+    font-weight: 300;
+    margin-top: 1.6rem;
+  }
+
+  dl>dt {
+    font-weight: normal;
+  }
+
+  dl>dd {
+    margin-left: 1rem;
+  }
+
+  dl.typelist {
+    >dt {
+      font-weight: 600;
+    }
+
+    >dd {
+      margin-left: 0;
+    }
+
+    >dd>div {
+      display: inline-block;
+
+      &:not(:last-child)::after {
+        content: ', ';
+      }
+    }
+
+    &.inheritance>dd>div:not(:last-child)::after {
+      font-family: bootstrap-icons;
+      content: '\F12C';
+      position: relative;
+      top: .2em;
+      opacity: .8;
+    }
+  }
+
+  dl.parameters {
+    >dt>code {
+      margin-right: .2em;
+    }
+  }
+
+  div.facts {
+    font-size: 14px;
+    margin: 2rem 0 1rem;
+
+    >dl {
+      margin: 0;
+
+      >dd {
+        margin-left: .25rem;
+        display: inline-block;
+      }
+  
+      >dt {
+        display: inline-block;
+      }
+  
+      >dt::after {
+        content: ":";
       }
     }
   }
 
-  .level0.summary {
-    margin: 2em 0;
+  .header-action {
+    position: absolute;
+    right: 0;
+    bottom: .2rem;
+    font-size: 1.2rem;
   }
-
-  .level1.summary {
-    margin: 1em 0;
-  }
-
-  .inheritance hr {
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .inheritance h5,
-  .inheritedMembers h5 {
-    padding-bottom: 5px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  span.parametername,
-  span.paramref,
-  span.typeparamref {
-    font-style: italic;
-  }
-
-  span.languagekeyword {
-    font-weight: bold;
-  }
-}
-
-/* These are not important, tune down **/
-.declaration,
-.fieldValue,
-.parameters,
-.returns {
-  color: #a2a2a2;
-}
-
-/* Major sections, increase visibility **/
-#fields,
-#properties,
-#methods,
-#events {
-  font-weight: bold;
-  margin-top: 2em;
 }
