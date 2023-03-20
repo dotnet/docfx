@@ -147,7 +147,7 @@
   "api/MRef.Demo.Enumeration.ColorType.html": {
     "href": "api/MRef.Demo.Enumeration.ColorType.html",
     "title": "Enum ColorType | docfx seed website",
-    "keywords": "Enum ColorType Namespace MRef.Demo.Enumeration Assembly CatLibrary.dll Enumeration ColorType public enum ColorType See Also object Remarks Red/Blue/Yellow can become all color you want. Fields Blue = 1 blue like river Red = 0 this color is red Yellow = 2 yellow comes from desert"
+    "keywords": "Enum ColorType Namespace MRef.Demo.Enumeration Assembly CatLibrary.dll Enumeration ColorType public enum ColorType Fields Blue = 1 blue like river Red = 0 this color is red Yellow = 2 yellow comes from desert Remarks Red/Blue/Yellow can become all color you want. See Also object"
   },
   "api/MRef.Demo.Enumeration.html": {
     "href": "api/MRef.Demo.Enumeration.html",
