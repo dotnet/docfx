@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <InternalsVisibleTo Include="Microsoft.DocAsCode.Build.Common.Tests" />
   </ItemGroup>
@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jint" Version="3.0.0-beta-2048" />
-    <PackageReference Include="Stubble.Core" Version="1.10.8" />
+    <PackageReference Include="Jint" />
+    <PackageReference Include="Stubble.Core" />
   </ItemGroup>
 
 </Project>

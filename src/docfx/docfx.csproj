@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="CommandLineParser"/>
   </ItemGroup>
 </Project>
