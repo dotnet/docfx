@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Dotnet
         public static string GlobalNamespaceId { get; set; }
         private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
 
-        public static void FeedComments(MetadataItem item, ITripleSlashCommentParserContext context)
+        public static void FeedComments(MetadataItem item, TripleSlashCommentParserContext context)
         {
             if (!string.IsNullOrEmpty(item.RawComment))
             {
@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.Dotnet
             return uidBody;
         }
 
-        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
+        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, TripleSlashCommentParserContext context)
         {
             string comment = isReturn ? item.CommentModel?.Returns : item.CommentModel?.GetParameter(symbol.Name);
             return new ApiParameter
@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Dotnet
             };
         }
 
-        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, ITripleSlashCommentParserContext context)
+        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, TripleSlashCommentParserContext context)
         {
             string comment = item.CommentModel?.GetTypeParameter(symbol.Name);
             return new ApiParameter

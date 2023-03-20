@@ -727,7 +727,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        private ITripleSlashCommentParserContext GetTripleSlashCommentParserContext(MetadataItem item, bool preserve)
+        private TripleSlashCommentParserContext GetTripleSlashCommentParserContext(MetadataItem item, bool preserve)
         {
             return new TripleSlashCommentParserContext
             {

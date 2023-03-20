@@ -91,7 +91,7 @@ namespace Example
         <exception >This is a sample of another invalid exception node</exception>
 
     <example>
-    This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""/> method.
+    This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext)""/> method.
     <code>
    class TestClass
     {
@@ -178,7 +178,7 @@ remarks);
             var example = commentModel.Examples;
             var expected = new List<string> {
 @"
-This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.ITripleSlashCommentParserContext)""></see> method.
+This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext)""></see> method.
 <pre><code>class TestClass
 {
     static int Main()

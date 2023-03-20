@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
     using Microsoft.DocAsCode.DataContracts.Common;
 
-    internal class TripleSlashCommentParserContext : ITripleSlashCommentParserContext
+    internal class TripleSlashCommentParserContext
     {
         public bool PreserveRawInlineComments { get; set; }
 
