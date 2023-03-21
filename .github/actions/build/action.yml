@@ -12,7 +12,7 @@ runs:
       dotnet-version: |
         6.x
         7.x
-        8.0.100-alpha.1.23061.8
+        8.0.100-preview.2.23157.25
 
   - run: npm install
     shell: bash
