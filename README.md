@@ -63,8 +63,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 The `main` branch is the default branch for pull requests and most other development activities. We occationally use `feature/*` branches for epic feature development.
 
-Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Release versioning follows [Semantic Versioning](https://semver.org/). 
-Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
+Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
 
 Docfx is _not_ released under a regular cadence, new versions arrive when maintainers see enough changes that warrant a new releases. Sometimes we use prereleases to dogfood breaking changes and get feedbacks from the community.
 
