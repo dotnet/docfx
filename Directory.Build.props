@@ -27,7 +27,7 @@
     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(IsPackable)' == 'true' ">
+  <PropertyGroup>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -44,11 +44,11 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(IsPackable)' == 'true' ">
+  <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
