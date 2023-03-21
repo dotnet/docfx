@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(TargetFrameworks);net8.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
