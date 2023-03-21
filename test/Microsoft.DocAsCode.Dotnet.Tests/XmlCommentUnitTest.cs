@@ -15,11 +15,10 @@ namespace Microsoft.DocAsCode.Dotnet.Tests
 
     using Xunit;
 
-    public class TripleSlashParserUnitTest
+    public class XmlCommentUnitTest
     {
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
-        public void TestTripleSlashParser()
+        public void TestXmlCommentParser()
         {
             string inputFolder = Path.GetRandomFileName();
             Directory.CreateDirectory(inputFolder);
@@ -91,7 +90,7 @@ namespace Example
         <exception >This is a sample of another invalid exception node</exception>
 
     <example>
-    This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext)""/> method.
+    This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.XmlCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.XmlCommentParserContext)""/> method.
     <code>
    class TestClass
     {
@@ -124,7 +123,7 @@ namespace Example
     <seealso href=""http://www.bing.com"">Hello Bing</seealso>
     <seealso href=""http://www.bing.com""/>
 </member>";
-            var context = new TripleSlashCommentParserContext
+            var context = new XmlCommentParserContext
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
@@ -134,7 +133,7 @@ namespace Example
                 }
             };
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
             var summary = commentModel.Summary;
@@ -178,7 +177,7 @@ remarks);
             var example = commentModel.Examples;
             var expected = new List<string> {
 @"
-This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.TripleSlashCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.TripleSlashCommentParserContext)""></see> method.
+This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel.XmlCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.XmlCommentParserContext)""></see> method.
 <pre><code>class TestClass
 {
     static int Main()
@@ -207,7 +206,7 @@ This is an example using source reference.
             Assert.Equal(expected, example);
 
             context.PreserveRawInlineComments = true;
-            commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var sees = commentModel.Sees;
             Assert.Equal(5, sees.Count);
@@ -230,8 +229,6 @@ This is an example using source reference.
             Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
         }
 
-
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
         public void SeeAltText()
         {
@@ -249,7 +246,7 @@ This is an example using source reference.
 
         <param name='input'>This is an <see cref='T:System.AccessViolationException'>Exception</see>.</param>
 </member>";
-            var context = new TripleSlashCommentParserContext
+            var context = new XmlCommentParserContext
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
@@ -259,7 +256,7 @@ This is an example using source reference.
                 }
             };
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
             var summary = commentModel.Summary;
@@ -275,7 +272,6 @@ This is an example using source reference.
             Assert.Equal("\nSee <xref href=\"System.Int?text=Integer\" data-throw-if-not-resolved=\"false\"></xref>.\n", remarks);
         }
 
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
         public void InheritDoc()
         {
@@ -283,17 +279,16 @@ This is an example using source reference.
 <member name=""M:ClassLibrary1.MyClass.DoThing"">
     <inheritdoc />
 </member>";
-            var context = new TripleSlashCommentParserContext
+            var context = new XmlCommentParserContext
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
             };
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.True(commentModel.InheritDoc != null, nameof(commentModel.InheritDoc));
         }
 
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
         public void InheritDocWithCref()
         {
@@ -301,19 +296,18 @@ This is an example using source reference.
 <member name=""M:ClassLibrary1.MyClass.DoThing"">
     <inheritdoc cref=""M:ClassLibrary1.MyClass.DoThing""/>
 </member>";
-            var context = new TripleSlashCommentParserContext
+            var context = new XmlCommentParserContext
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
             };
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.Equal("ClassLibrary1.MyClass.DoThing", commentModel.InheritDoc);
         }
 
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
-        public void TestTripleSlashParserForXamlSource()
+        public void TestXmlCommentParserForXamlSource()
         {
             string inputFolder = Path.GetRandomFileName();
             Directory.CreateDirectory(inputFolder);
@@ -346,7 +340,7 @@ This is an example using source reference.
     <code source='Example.xaml' region='Example'/>
     </example>
 </member>";
-            var context = new TripleSlashCommentParserContext
+            var context = new XmlCommentParserContext
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
@@ -356,7 +350,7 @@ This is an example using source reference.
                 }
             };
 
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
             
             // using xml to get rid of escaped tags
             var example = commentModel.Examples.Single();
@@ -371,7 +365,7 @@ This is an example using source reference.
         public void ParseXmlCommentWithoutRootNode()
         {
             var input = @"<summary>A</summary>";
-            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, new TripleSlashCommentParserContext());
+            var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, new XmlCommentParserContext());
             Assert.Equal("A", commentModel.Summary);
         }
 

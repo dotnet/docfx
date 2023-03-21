@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dotnet
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System.Globalization;
 
-    internal class TripleSlashCommentModel
+    internal class XmlComment
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
         private static readonly Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Dotnet
         private static readonly Regex EndRegionRegex = new Regex(@"^\s*#endregion\s*.*$");
         private static readonly Regex XmlEndRegionRegex = new Regex(@"^\s*<!--\s*</(.*)>\s*-->$");
 
-        private readonly TripleSlashCommentParserContext _context;
+        private readonly XmlCommentParserContext _context;
 
         public string Summary { get; private set; }
 
@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         public string InheritDoc { get; private set; }
 
-        private TripleSlashCommentModel(string xml, SyntaxLanguage language, TripleSlashCommentParserContext context)
+        private XmlComment(string xml, SyntaxLanguage language, XmlCommentParserContext context)
         {
             // Workaround: https://github.com/dotnet/roslyn/pull/66668
             if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
 
             // Transform triple slash comment
-            XDocument doc = TripleSlashCommentTransformer.Transform(xml, language);
+            XDocument doc = XmlCommentTransformer.Transform(xml, language);
 
             _context = context;
             if (!context.PreserveRawInlineComments)
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Dotnet
             InheritDoc = GetInheritDoc(nav, context);
         }
 
-        public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, TripleSlashCommentParserContext context)
+        public static XmlComment CreateModel(string xml, SyntaxLanguage language, XmlCommentParserContext context)
         {
             if (context == null)
             {
@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
             try
             {
-                var model = new TripleSlashCommentModel(xml, language, context);
+                var model = new XmlComment(xml, language, context);
                 return model;
             }
             catch (XmlException)
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        public void CopyInheritedData(TripleSlashCommentModel src)
+        public void CopyInheritedData(XmlComment src)
         {
             if (src == null)
             {
@@ -186,7 +186,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <example>
         /// <code> <see cref="Hello"/></code>
         /// </example>
-        private string GetSummary(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private string GetSummary(XPathNavigator nav, XmlCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
@@ -203,13 +203,13 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <param name="xml"></param>
         /// <param name="normalize"></param>
         /// <returns></returns>
-        private string GetRemarks(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private string GetRemarks(XPathNavigator nav, XmlCommentParserContext context)
         {
             string selector = "/member/remarks";
             return GetSingleNodeValue(nav, selector);
         }
 
-        private string GetReturns(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private string GetReturns(XPathNavigator nav, XmlCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
@@ -224,7 +224,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <param name="normalize"></param>
         /// <returns></returns>
         /// <exception cref="XmlException">This is a sample of exception node</exception>
-        private List<ExceptionInfo> GetExceptions(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private List<ExceptionInfo> GetExceptions(XPathNavigator nav, XmlCommentParserContext context)
         {
             string selector = "/member/exception";
             var result = GetMulitpleCrefInfo(nav, selector).ToList();
@@ -243,7 +243,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <returns></returns>
         /// <see cref="SpecIdHelper"/>
         /// <see cref="SourceSwitch"/>
-        private List<LinkInfo> GetSees(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private List<LinkInfo> GetSees(XPathNavigator nav, XmlCommentParserContext context)
         {
             var result = GetMultipleLinkInfo(nav, "/member/see").ToList();
             if (result.Count == 0)
@@ -261,7 +261,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <returns></returns>
         /// <seealso cref="WaitForChangedResult"/>
         /// <seealso cref="http://google.com">ABCS</seealso>
-        private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, XmlCommentParserContext context)
         {
             var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
             if (result.Count == 0)
@@ -278,7 +278,7 @@ namespace Microsoft.DocAsCode.Dotnet
         /// <param name="context"></param>
         /// <returns></returns>
         /// <example>
-        /// This sample shows how to call the <see cref="GetExceptions(string, TripleSlashCommentParserContext)"/> method.
+        /// This sample shows how to call the <see cref="GetExceptions(string, XmlCommentParserContext)"/> method.
         /// <code>
         /// class TestClass
         /// {
@@ -289,14 +289,14 @@ namespace Microsoft.DocAsCode.Dotnet
         /// }
         /// </code>
         /// </example>
-        private List<string> GetExamples(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private List<string> GetExamples(XPathNavigator nav, XmlCommentParserContext context)
         {
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
         }
 
-        private string GetInheritDoc(XPathNavigator nav, TripleSlashCommentParserContext context)
+        private string GetInheritDoc(XPathNavigator nav, XmlCommentParserContext context)
         {
             var node = nav.SelectSingleNode("/member/inheritdoc");
             if (node == null)
@@ -340,7 +340,7 @@ namespace Microsoft.DocAsCode.Dotnet
             return string.Empty;
         }
 
-        private void ResolveCodeSource(XDocument doc, TripleSlashCommentParserContext context)
+        private void ResolveCodeSource(XDocument doc, XmlCommentParserContext context)
         {
             foreach (XElement node in doc.XPathSelectElements("//code"))
             {
@@ -432,7 +432,7 @@ namespace Microsoft.DocAsCode.Dotnet
             element.SetValue(builder.ToString());
         }
 
-        private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, TripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, XmlCommentParserContext context)
         {
             var iterator = navigator.Select(xpath);
             var result = new Dictionary<string, string>();
@@ -461,7 +461,7 @@ namespace Microsoft.DocAsCode.Dotnet
             return result;
         }
 
-        private Dictionary<string, string> GetParameters(XPathNavigator navigator, TripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetParameters(XPathNavigator navigator, XmlCommentParserContext context)
         {
             return GetListContent(navigator, "/member/param", "parameter", context);
         }
@@ -482,7 +482,7 @@ namespace Microsoft.DocAsCode.Dotnet
             return (RegionRegex, EndRegionRegex);
         }
 
-        private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, TripleSlashCommentParserContext context)
+        private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, XmlCommentParserContext context)
         {
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }

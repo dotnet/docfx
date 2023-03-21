@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
         [YamlIgnore]
         [JsonIgnore]
-        public TripleSlashCommentModel CommentModel { get; set; }
+        public XmlComment CommentModel { get; set; }
 
         public override string ToString()
         {

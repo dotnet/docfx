@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
             }
 
-            VisitorHelper.FeedComments(item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
+            VisitorHelper.FeedComments(item, GetXmlCommentParserContext(item, _preserveRawInlineComments));
             if (item.Exceptions != null)
             {
                 foreach (var exceptions in item.Exceptions)
@@ -186,7 +186,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetTripleSlashCommentParserContext(item, _preserveRawInlineComments));
+                    var param = VisitorHelper.GetTypeParameterDescription(p, item, GetXmlCommentParserContext(item, _preserveRawInlineComments));
                     item.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -235,7 +235,7 @@ namespace Microsoft.DocAsCode.Dotnet
 
                 foreach (var p in symbol.TypeParameters)
                 {
-                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                    var param = VisitorHelper.GetTypeParameterDescription(p, result, GetXmlCommentParserContext(result, _preserveRawInlineComments));
                     result.Syntax.TypeParameters.Add(param);
                 }
             }
@@ -289,7 +289,7 @@ namespace Microsoft.DocAsCode.Dotnet
             var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
             Debug.Assert(result.Syntax.Return.Type != null);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
@@ -322,7 +322,7 @@ namespace Microsoft.DocAsCode.Dotnet
             }
 
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
             Debug.Assert(result.Syntax.Return.Type != null);
 
             AddMemberImplements(symbol, result, typeGenericParameters);
@@ -362,14 +362,14 @@ namespace Microsoft.DocAsCode.Dotnet
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters);
-                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result, _preserveRawInlineComments));
                     Debug.Assert(param.Type != null);
                     result.Syntax.Parameters.Add(param);
                 }
             }
             {
                 var id = AddSpecReference(symbol.Type, typeGenericParameters);
-                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
                 Debug.Assert(result.Syntax.Return.Type != null);
             }
 
@@ -705,7 +705,7 @@ namespace Microsoft.DocAsCode.Dotnet
             if (!symbol.ReturnsVoid)
             {
                 var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
-                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
                 result.Syntax.Return.Attributes = GetAttributeInfo(symbol.GetReturnTypeAttributes());
             }
 
@@ -719,7 +719,7 @@ namespace Microsoft.DocAsCode.Dotnet
                 foreach (var p in symbol.Parameters)
                 {
                     var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
-                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetTripleSlashCommentParserContext(result, _preserveRawInlineComments));
+                    var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result, _preserveRawInlineComments));
                     Debug.Assert(param.Type != null);
                     param.Attributes = GetAttributeInfo(p.GetAttributes());
                     result.Syntax.Parameters.Add(param);
@@ -727,9 +727,9 @@ namespace Microsoft.DocAsCode.Dotnet
             }
         }
 
-        private TripleSlashCommentParserContext GetTripleSlashCommentParserContext(MetadataItem item, bool preserve)
+        private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item, bool preserve)
         {
-            return new TripleSlashCommentParserContext
+            return new XmlCommentParserContext
             {
                 AddReferenceDelegate = GetAddReferenceDelegate(item),
                 PreserveRawInlineComments = preserve,

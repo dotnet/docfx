@@ -106,7 +106,6 @@ namespace Test1.Test2
 
         [Trait("Related", "Generic")]
         [Trait("Related", "Reference")]
-        [Trait("Related", "TripleSlashComments")]
         [Fact]
         public void TestGenerateMetadataWithGenericClass()
         {

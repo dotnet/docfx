@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.Dotnet
         public static string GlobalNamespaceId { get; set; }
         private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
 
-        public static void FeedComments(MetadataItem item, TripleSlashCommentParserContext context)
+        public static void FeedComments(MetadataItem item, XmlCommentParserContext context)
         {
             if (!string.IsNullOrEmpty(item.RawComment))
             {
-                var commentModel = TripleSlashCommentModel.CreateModel(item.RawComment, SyntaxLanguage.CSharp, context);
+                var commentModel = XmlComment.CreateModel(item.RawComment, SyntaxLanguage.CSharp, context);
                 if (commentModel == null) return;
                 item.Summary = commentModel.Summary;
                 item.Remarks = commentModel.Remarks;
@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.Dotnet
             return uidBody;
         }
 
-        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, TripleSlashCommentParserContext context)
+        public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, XmlCommentParserContext context)
         {
             string comment = isReturn ? item.CommentModel?.Returns : item.CommentModel?.GetParameter(symbol.Name);
             return new ApiParameter
@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Dotnet
             };
         }
 
-        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, TripleSlashCommentParserContext context)
+        public static ApiParameter GetTypeParameterDescription(ITypeParameterSymbol symbol, MetadataItem item, XmlCommentParserContext context)
         {
             string comment = item.CommentModel?.GetTypeParameter(symbol.Name);
             return new ApiParameter

@@ -13,14 +13,14 @@ namespace Microsoft.DocAsCode.Dotnet
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    internal static class TripleSlashCommentTransformer
+    internal static class XmlCommentTransformer
     {
         private static readonly XslCompiledTransform _transform;
 
-        static TripleSlashCommentTransformer()
+        static XmlCommentTransformer()
         {
-            var assembly = typeof(TripleSlashCommentTransformer).Assembly;
-            var xsltFilePath = $"{assembly.GetName().Name}.Transform.TripleSlashCommentTransform.xsl";
+            var assembly = typeof(XmlCommentTransformer).Assembly;
+            var xsltFilePath = $"{assembly.GetName().Name}.Transform.XmlCommentTransform.xsl";
             using var stream = assembly.GetManifestResourceStream(xsltFilePath);
             using var reader = XmlReader.Create(stream);
             var xsltSettings = new XsltSettings(true, true);
