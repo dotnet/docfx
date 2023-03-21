@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <TargetFrameworks Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(TargetFrameworks);net8.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
@@ -23,7 +24,6 @@
 
   <PropertyGroup Condition=" '$(IsPackable)' == 'true' ">
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
