@@ -1,162 +1,157 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using System.Collections.Immutable;
+
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+internal class CompilePhaseHandler : IPhaseHandler
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.Linq;
+    private readonly List<TreeItemRestructure> _restructions = new();
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
+    public string Name => nameof(CompilePhaseHandler);
 
-    internal class CompilePhaseHandler : IPhaseHandler
+    public BuildPhase Phase => BuildPhase.Compile;
+
+    public DocumentBuildContext Context { get; }
+
+    public List<TreeItemRestructure> Restructions => _restructions;
+
+    public CompilePhaseHandler(DocumentBuildContext context)
     {
-        private readonly List<TreeItemRestructure> _restructions = new List<TreeItemRestructure>();
+        Context = context;
+    }
 
-        public string Name => nameof(CompilePhaseHandler);
-
-        public BuildPhase Phase => BuildPhase.Compile;
-
-        public DocumentBuildContext Context { get; }
-
-        public List<TreeItemRestructure> Restructions => _restructions;
-
-        public CompilePhaseHandler(DocumentBuildContext context)
+    public void Handle(List<HostService> hostServices, int maxParallelism)
+    {
+        Prepare(hostServices, maxParallelism);
+        hostServices.RunAll(hostService =>
         {
-            Context = context;
-        }
-
-        public void Handle(List<HostService> hostServices, int maxParallelism)
-        {
-            Prepare(hostServices, maxParallelism);
-            hostServices.RunAll(hostService =>
+            using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+                var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
+                Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
+                using (new LoggerPhaseScope("Prebuild", LogLevel.Verbose))
                 {
-                    var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
-                    Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope("Prebuild", LogLevel.Verbose))
-                    {
-                        Prebuild(hostService);
-                    }
-
-                    // Register all the delegates to handler
-                    if (hostService.TableOfContentRestructions != null)
-                    {
-                        lock (_restructions)
-                        {
-                            _restructions.AddRange(hostService.TableOfContentRestructions);
-                        }
-                    }
+                    Prebuild(hostService);
                 }
-            }, maxParallelism);
 
-            DistributeTocRestructions(hostServices);
-
-            foreach (var hostService in hostServices)
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+                // Register all the delegates to handler
+                if (hostService.TableOfContentRestructions != null)
                 {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                    using (new LoggerPhaseScope("Build", LogLevel.Verbose))
+                    lock (_restructions)
                     {
-                        BuildArticle(hostService, maxParallelism);
+                        _restructions.AddRange(hostService.TableOfContentRestructions);
                     }
                 }
             }
-        }
+        }, maxParallelism);
 
-        #region Private Methods
+        DistributeTocRestructions(hostServices);
 
-        private void Prepare(List<HostService> hostServices, int maxParallelism)
+        foreach (var hostService in hostServices)
         {
-            if (Context == null)
+            using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
             {
-                return;
-            }
-            foreach (var hostService in hostServices)
-            {
-                hostService.SourceFiles = Context.AllSourceFiles;
-                hostService.Models.RunAll(
-                    m =>
-                    {
-                        if (m.LocalPathFromRoot == null)
-                        {
-                            m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-                        }
-                    },
-                    maxParallelism);
-            }
-        }
-
-        private void DistributeTocRestructions(List<HostService> hostServices)
-        {
-            if (_restructions.Count > 0)
-            {
-                var restructions = _restructions.ToImmutableList();
-                // Distribute delegates to all the hostServices
-                foreach (var hostService in hostServices)
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
+                using (new LoggerPhaseScope("Build", LogLevel.Verbose))
                 {
-                    hostService.TableOfContentRestructions = restructions;
+                    BuildArticle(hostService, maxParallelism);
                 }
             }
         }
+    }
 
-        private static void Prebuild(HostService hostService)
+    #region Private Methods
+
+    private void Prepare(List<HostService> hostServices, int maxParallelism)
+    {
+        if (Context == null)
         {
-            BuildPhaseUtility.RunBuildSteps(
-                hostService.Processor.BuildSteps,
-                buildStep =>
-                {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
-                    {
-                        var models = buildStep.Prebuild(hostService.Models, hostService);
-                        if (!object.ReferenceEquals(models, hostService.Models))
-                        {
-                            Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
-                            hostService.Reload(models);
-                        }
-                    }
-                });
+            return;
         }
-
-        private static void BuildArticle(HostService hostService, int maxParallelism)
+        foreach (var hostService in hostServices)
         {
-            using var aggregatedPerformanceScope = new AggregatedPerformanceScope();
+            hostService.SourceFiles = Context.AllSourceFiles;
             hostService.Models.RunAll(
                 m =>
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRoot))
+                    if (m.LocalPathFromRoot == null)
                     {
-                        Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
-                        BuildPhaseUtility.RunBuildSteps(
-                            hostService.Processor.BuildSteps,
-                            buildStep =>
-                            {
-                                Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
-                                {
-                                    try
-                                    {
-                                        buildStep.Build(m, hostService);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
-                                        throw;
-                                    }
-                                }
-                            });
+                        m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                     }
                 },
                 maxParallelism);
         }
-
-        #endregion
     }
+
+    private void DistributeTocRestructions(List<HostService> hostServices)
+    {
+        if (_restructions.Count > 0)
+        {
+            var restructions = _restructions.ToImmutableList();
+            // Distribute delegates to all the hostServices
+            foreach (var hostService in hostServices)
+            {
+                hostService.TableOfContentRestructions = restructions;
+            }
+        }
+    }
+
+    private static void Prebuild(HostService hostService)
+    {
+        BuildPhaseUtility.RunBuildSteps(
+            hostService.Processor.BuildSteps,
+            buildStep =>
+            {
+                Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
+                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
+                {
+                    var models = buildStep.Prebuild(hostService.Models, hostService);
+                    if (!object.ReferenceEquals(models, hostService.Models))
+                    {
+                        Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
+                        hostService.Reload(models);
+                    }
+                }
+            });
+    }
+
+    private static void BuildArticle(HostService hostService, int maxParallelism)
+    {
+        using var aggregatedPerformanceScope = new AggregatedPerformanceScope();
+        hostService.Models.RunAll(
+            m =>
+            {
+                using (new LoggerFileScope(m.LocalPathFromRoot))
+                {
+                    Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
+                    BuildPhaseUtility.RunBuildSteps(
+                        hostService.Processor.BuildSteps,
+                        buildStep =>
+                        {
+                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
+                            using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic, aggregatedPerformanceScope))
+                            {
+                                try
+                                {
+                                    buildStep.Build(m, hostService);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError($"Trouble processing file - {m.FileAndType.FullPath}, with error - {ex.Message}");
+                                    throw;
+                                }
+                            }
+                        });
+                }
+            },
+            maxParallelism);
+    }
+
+    #endregion
 }

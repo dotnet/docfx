@@ -1,50 +1,49 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using Markdig.Syntax;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class MarkdownDocumentAggregatorVisitor
 {
-    using Markdig.Syntax;
+    private readonly IBlockAggregator _aggregator;
 
-    public class MarkdownDocumentAggregatorVisitor
+    public MarkdownDocumentAggregatorVisitor(IBlockAggregator aggregator)
     {
-        private readonly IBlockAggregator _aggregator;
+        _aggregator = aggregator;
+    }
 
-        public MarkdownDocumentAggregatorVisitor(IBlockAggregator aggregator)
+    public void Visit(MarkdownDocument document)
+    {
+        if (_aggregator == null)
         {
-            _aggregator = aggregator;
+            return;
         }
 
-        public void Visit(MarkdownDocument document)
+        VisitContainerBlock(document);
+    }
+
+    private void VisitContainerBlock(ContainerBlock blocks)
+    {
+        for (var i = 0; i < blocks.Count; i++)
         {
-            if (_aggregator == null)
+            var block = blocks[i];
+            if (block is ContainerBlock containerBlock)
             {
-                return;
+                VisitContainerBlock(containerBlock);
             }
 
-            VisitContainerBlock(document);
+            var context = new BlockAggregateContext(blocks);
+            Aggregate(context);
         }
+    }
 
-        private void VisitContainerBlock(ContainerBlock blocks)
+    private void Aggregate(BlockAggregateContext context)
+    {
+        while (context.NextBlock())
         {
-            for (var i = 0; i < blocks.Count; i++)
-            {
-                var block = blocks[i];
-                if (block is ContainerBlock containerBlock)
-                {
-                    VisitContainerBlock(containerBlock);
-                }
-
-                var context = new BlockAggregateContext(blocks);
-                Aggregate(context);
-            }
-        }
-
-        private void Aggregate(BlockAggregateContext context)
-        {
-            while (context.NextBlock())
-            {
-                _aggregator.Aggregate(context);
-            }
+            _aggregator.Aggregate(context);
         }
     }
 }

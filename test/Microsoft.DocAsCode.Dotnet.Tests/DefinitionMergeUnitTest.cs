@@ -1,17 +1,17 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet.Tests
-{
-    using Xunit;
+using Xunit;
 
-    public class DefinitionMergeUnitTest
+namespace Microsoft.DocAsCode.Dotnet.Tests;
+
+public class DefinitionMergeUnitTest
+{
+    [Fact]
+    public void InterfaceWithTemplateDoesNotCrash()
     {
-        [Fact]
-        public void InterfaceWithTemplateDoesNotCrash()
-        {
-            // arrange
-            string code = @"
+        // arrange
+        string code = @"
 namespace A {
   public interface IInterface
   {
@@ -30,11 +30,10 @@ namespace A {
 }
 
 ";
-            // act
-            var output = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll").Assembly.GenerateMetadataItem();
+        // act
+        var output = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll").Assembly.GenerateMetadataItem();
 
-            // assert
-            Assert.NotNull(output);
-        }
+        // assert
+        Assert.NotNull(output);
     }
 }

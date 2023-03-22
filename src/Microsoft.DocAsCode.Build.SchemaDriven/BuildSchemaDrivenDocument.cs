@@ -1,54 +1,52 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDriven
+using System.Composition;
+
+using Microsoft.DocAsCode.Build.Common;
+using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.SchemaDriven;
+
+[Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
+public class BuildSchemaBasedDocument : BuildReferenceDocumentBase
 {
-    using System.Collections.Generic;
-    using System.Composition;
+    private const string DocumentTypeKey = "documentType";
+    private readonly SchemaProcessor _schemaProcessor = new(
+        new FileIncludeInterpreter(),
+        new MarkdownInterpreter(),
+        new XrefPropertiesInterpreter(),
+        new FileInterpreter(true, false),
+        new HrefInterpreter(true, false),
+        new XrefInterpreter(true, false)
+        );
 
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
+    public override string Name => nameof(BuildSchemaBasedDocument);
 
-    [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildSchemaBasedDocument : BuildReferenceDocumentBase
+    public override int BuildOrder => 0;
+
+    protected override void BuildArticle(IHostService host, FileModel model)
     {
-        private const string DocumentTypeKey = "documentType";
-        private readonly SchemaProcessor _schemaProcessor = new SchemaProcessor(
-            new FileIncludeInterpreter(),
-            new MarkdownInterpreter(),
-            new XrefPropertiesInterpreter(),
-            new FileInterpreter(true, false),
-            new HrefInterpreter(true, false),
-            new XrefInterpreter(true, false)
-            );
+        var content = model.Content;
 
-        public override string Name => nameof(BuildSchemaBasedDocument);
+        var context = new ProcessContext(host, model);
+        DocumentSchema schema = model.Properties.Schema;
+        content = _schemaProcessor.Process(content, schema, context);
+        model.LinkToUids = model.LinkToUids.Union(context.UidLinkSources.Keys);
+        model.LinkToFiles = model.LinkToFiles.Union(context.FileLinkSources.Keys);
+        model.FileLinkSources = model.FileLinkSources.Merge(context.FileLinkSources);
+        model.UidLinkSources = model.UidLinkSources.Merge(context.UidLinkSources);
+        model.Uids = model.Uids.AddRange(context.Uids);
+        model.Properties.XRefSpecs = context.XRefSpecs;
+        model.Properties.ExternalXRefSpecs = context.ExternalXRefSpecs;
 
-        public override int BuildOrder => 0;
-
-        protected override void BuildArticle(IHostService host, FileModel model)
+        if (content is IDictionary<string, object> eo)
         {
-            var content = model.Content;
-
-            var context = new ProcessContext(host, model);
-            DocumentSchema schema = model.Properties.Schema;
-            content = _schemaProcessor.Process(content, schema, context);
-            model.LinkToUids = model.LinkToUids.Union(context.UidLinkSources.Keys);
-            model.LinkToFiles = model.LinkToFiles.Union(context.FileLinkSources.Keys);
-            model.FileLinkSources = model.FileLinkSources.Merge(context.FileLinkSources);
-            model.UidLinkSources = model.UidLinkSources.Merge(context.UidLinkSources);
-            model.Uids = model.Uids.AddRange(context.Uids);
-            model.Properties.XRefSpecs = context.XRefSpecs;
-            model.Properties.ExternalXRefSpecs = context.ExternalXRefSpecs;
-
-            if (content is IDictionary<string, object> eo)
+            if (eo.TryGetValue(DocumentTypeKey, out object documentType) && documentType is string dt)
             {
-                if (eo.TryGetValue(DocumentTypeKey, out object documentType) && documentType is string dt)
-                {
-                    model.DocumentType = dt;
-                }
+                model.DocumentType = dt;
             }
         }
     }

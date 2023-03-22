@@ -1,89 +1,83 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.SubCommands
+using CommandLine;
+
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.SubCommands;
+
+internal abstract class CommandCreator<TOptions, TCommand> : ISubCommandCreator where TOptions : class where TCommand : ISubCommand
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.IO;
+    public static readonly Parser LooseParser = new(s => s.IgnoreUnknownArguments = true);
+    public static readonly Parser StrictParser = Parser.Default;
+    private static readonly TOptions DefaultOption = Activator.CreateInstance<TOptions>();
 
-    using CommandLine;
+    private static readonly string HelpText = GetDefaultHelpText(DefaultOption);
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-
-    internal abstract class CommandCreator<TOptions, TCommand> : ISubCommandCreator where TOptions : class where TCommand : ISubCommand
+    public virtual ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
     {
-        public static readonly Parser LooseParser = new Parser(s => s.IgnoreUnknownArguments = true);
-        public static readonly Parser StrictParser = Parser.Default;
-        private static readonly TOptions DefaultOption = Activator.CreateInstance<TOptions>();
-
-        private static readonly string HelpText = GetDefaultHelpText(DefaultOption);
-
-        public virtual ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
+        var parser = CommandUtility.GetParser(option);
+        var options = Activator.CreateInstance<TOptions>();
+        bool parsed = parser.ParseArguments(args, options);
+        if (!parsed && option == SubCommandParseOption.Strict)
         {
-            var parser = CommandUtility.GetParser(option);
-            var options = Activator.CreateInstance<TOptions>();
-            bool parsed = parser.ParseArguments(args, options);
-            if (!parsed && option == SubCommandParseOption.Strict)
+            throw new OptionParserException();
+        }
+
+        if (options is ICanPrintHelpMessage helpOption && helpOption.PrintHelpMessage)
+        {
+            return new HelpCommand(GetHelpText());
+        }
+
+        var buildOption = options as BuildCommandOptions;
+        string root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
+
+        if (options is LogOptions logOption)
+        {
+            if (!string.IsNullOrWhiteSpace(logOption.LogFilePath))
             {
-                throw new OptionParserException();
+                Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
             }
 
-            if (options is ICanPrintHelpMessage helpOption && helpOption.PrintHelpMessage)
+            if (logOption.LogLevel.HasValue)
             {
-                return new HelpCommand(GetHelpText());
+                Logger.LogLevelThreshold = logOption.LogLevel.Value;
             }
 
-            var buildOption = options as BuildCommandOptions;
-            string root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
+            Logger.WarningsAsErrors = logOption.WarningsAsErrors;
 
-            if (options is LogOptions logOption)
+            if (!string.IsNullOrEmpty(logOption.CorrelationId))
             {
-                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath))
+                if (AmbientContext.CurrentContext == null)
                 {
-                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
-                }
-
-                if (logOption.LogLevel.HasValue)
-                {
-                    Logger.LogLevelThreshold = logOption.LogLevel.Value;
-                }
-
-                Logger.WarningsAsErrors = logOption.WarningsAsErrors;
-
-                if (!string.IsNullOrEmpty(logOption.CorrelationId))
-                {
-                    if (AmbientContext.CurrentContext == null)
-                    {
-                        AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
-                    }
+                    AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
                 }
             }
-
-            return CreateCommand(options, controller);
         }
 
-        public abstract TCommand CreateCommand(TOptions options, ISubCommandController controller);
+        return CreateCommand(options, controller);
+    }
 
-        public virtual string GetHelpText()
-        {
-            return HelpText;
-        }
+    public abstract TCommand CreateCommand(TOptions options, ISubCommandController controller);
 
-        private static string GetDefaultHelpText(TOptions option)
-        {
-            var usages = GetOptionUsages();
-            return HelpTextGenerator.GetSubCommandHelpMessage(option, usages.ToArray());
-        }
+    public virtual string GetHelpText()
+    {
+        return HelpText;
+    }
 
-        private static IEnumerable<string> GetOptionUsages()
-        {
-            var attributes = typeof(TOptions).GetCustomAttributes(typeof(OptionUsageAttribute), false);
-            if (attributes == null) yield break;
-            foreach (var item in attributes)
-                yield return ((OptionUsageAttribute)item).Name;
-        }
+    private static string GetDefaultHelpText(TOptions option)
+    {
+        var usages = GetOptionUsages();
+        return HelpTextGenerator.GetSubCommandHelpMessage(option, usages.ToArray());
+    }
+
+    private static IEnumerable<string> GetOptionUsages()
+    {
+        var attributes = typeof(TOptions).GetCustomAttributes(typeof(OptionUsageAttribute), false);
+        if (attributes == null) yield break;
+        foreach (var item in attributes)
+            yield return ((OptionUsageAttribute)item).Name;
     }
 }

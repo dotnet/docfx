@@ -1,21 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public interface IResourceFileReader
 {
-    using System.Collections.Generic;
-    using System.IO;
+    IEnumerable<string> Names { get; }
 
-    public interface IResourceFileReader
-    {
-        IEnumerable<string> Names { get; }
+    string GetResource(string name);
 
-        string GetResource(string name);
+    IEnumerable<ResourceInfo> GetResources(string selector);
 
-        IEnumerable<ResourceInfo> GetResources(string selector);
+    IEnumerable<KeyValuePair<string, Stream>> GetResourceStreams(string selector);
 
-        IEnumerable<KeyValuePair<string, Stream>> GetResourceStreams(string selector);
-
-        Stream GetResourceStream(string name);
-    }
+    Stream GetResourceStream(string name);
 }

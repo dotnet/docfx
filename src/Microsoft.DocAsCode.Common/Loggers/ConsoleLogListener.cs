@@ -1,60 +1,57 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using System.Text;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Common;
+
+public sealed class ConsoleLogListener : ILoggerListener
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using Microsoft.DocAsCode.Plugins;
+    private const LogLevel LogLevelThreshold = LogLevel.Verbose;
 
-    public sealed class ConsoleLogListener : ILoggerListener
+    public void WriteLine(ILogItem item)
     {
-        private const LogLevel LogLevelThreshold = LogLevel.Verbose;
+        var level = item.LogLevel;
+        if (level < LogLevelThreshold)
+            return;
 
-        public void WriteLine(ILogItem item)
+        var consoleColor = GetConsoleColor(level);
+
+        var message = new StringBuilder();
+        if (!string.IsNullOrEmpty(item.File))
         {
-            var level = item.LogLevel;
-            if (level < LogLevelThreshold)
-                return;
-
-            var consoleColor = GetConsoleColor(level);
-
-            var message = new StringBuilder();
-            if (!string.IsNullOrEmpty(item.File))
-            {
-                message.Append($"{Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, item.File))}");
-                if (!string.IsNullOrEmpty(item.Line))
-                    message.Append($"({item.Line},1)");
-                if (!string.IsNullOrEmpty(item.Code))
-                    message.Append($": {item.LogLevel.ToString().ToLowerInvariant()} {item.Code}");
-                message.Append(": ");
-            }
-
-            message.Append(item.Message);
-
-            ConsoleUtility.WriteLine(message.ToString(), consoleColor);
+            message.Append($"{Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, item.File))}");
+            if (!string.IsNullOrEmpty(item.Line))
+                message.Append($"({item.Line},1)");
+            if (!string.IsNullOrEmpty(item.Code))
+                message.Append($": {item.LogLevel.ToString().ToLowerInvariant()} {item.Code}");
+            message.Append(": ");
         }
 
-        public void Dispose()
-        {
-        }
+        message.Append(item.Message);
 
-        public void Flush()
-        {
-        }
+        ConsoleUtility.WriteLine(message.ToString(), consoleColor);
+    }
 
-        private ConsoleColor GetConsoleColor(LogLevel level)
+    public void Dispose()
+    {
+    }
+
+    public void Flush()
+    {
+    }
+
+    private ConsoleColor GetConsoleColor(LogLevel level)
+    {
+        return level switch
         {
-            return level switch
-            {
-                LogLevel.Verbose => ConsoleColor.Gray,
-                LogLevel.Info => ConsoleColor.White,
-                LogLevel.Suggestion => ConsoleColor.Blue,
-                LogLevel.Warning => ConsoleColor.Yellow,
-                LogLevel.Error => ConsoleColor.Red,
-                _ => throw new NotSupportedException(level.ToString()),
-            };
-        }
+            LogLevel.Verbose => ConsoleColor.Gray,
+            LogLevel.Info => ConsoleColor.White,
+            LogLevel.Suggestion => ConsoleColor.Blue,
+            LogLevel.Warning => ConsoleColor.Yellow,
+            LogLevel.Error => ConsoleColor.Red,
+            _ => throw new NotSupportedException(level.ToString()),
+        };
     }
 }

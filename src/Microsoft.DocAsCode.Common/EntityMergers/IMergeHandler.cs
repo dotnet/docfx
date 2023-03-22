@@ -1,7 +1,6 @@
-﻿namespace Microsoft.DocAsCode.Common.EntityMergers
+﻿namespace Microsoft.DocAsCode.Common.EntityMergers;
+
+public interface IMergeHandler
 {
-    public interface IMergeHandler
-    {
-        void Merge(ref object source, object overrides, IMergeContext context);
-    }
+    void Merge(ref object source, object overrides, IMergeContext context);
 }

@@ -1,27 +1,24 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common.EntityMergers
+namespace Microsoft.DocAsCode.Common.EntityMergers;
+
+public abstract class MergerDecorator : IMerger
 {
-    using System;
+    private readonly IMerger _inner;
 
-    public abstract class MergerDecorator : IMerger
+    protected MergerDecorator(IMerger inner)
     {
-        private readonly IMerger _inner;
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    }
 
-        protected MergerDecorator(IMerger inner)
-        {
-            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-        }
+    public virtual void Merge(ref object source, object overrides, Type type, IMergeContext context)
+    {
+        _inner.Merge(ref source, overrides, type, context);
+    }
 
-        public virtual void Merge(ref object source, object overrides, Type type, IMergeContext context)
-        {
-            _inner.Merge(ref source, overrides, type, context);
-        }
-
-        public virtual bool TestKey(object source, object overrides, Type type, IMergeContext context)
-        {
-            return _inner.TestKey(source, overrides, type, context);
-        }
+    public virtual bool TestKey(object source, object overrides, Type type, IMergeContext context)
+    {
+        return _inner.TestKey(source, overrides, type, context);
     }
 }

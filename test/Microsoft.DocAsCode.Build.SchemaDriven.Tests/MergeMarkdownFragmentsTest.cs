@@ -1,143 +1,140 @@
-﻿namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
+﻿using System.Collections.Immutable;
+using Microsoft.DocAsCode.Build.Engine;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+using Microsoft.DocAsCode.Tests.Common;
+
+using Newtonsoft.Json.Linq;
+using Xunit;
+
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests;
+
+[Collection("docfx STA")]
+public class MergeMarkdownFragmentsTest : TestBase
 {
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.Linq;
-    using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Tests.Common;
+    private string _outputFolder;
+    private string _inputFolder;
+    private string _templateFolder;
+    private FileCollection _defaultFiles;
+    private ApplyTemplateSettings _applyTemplateSettings;
+    private TemplateManager _templateManager;
+    private FileCollection _files;
 
-    using Newtonsoft.Json.Linq;
-    using Xunit;
+    private TestLoggerListener _listener;
+    private string _rawModelFilePath;
 
-    [Collection("docfx STA")]
-    public class MergeMarkdownFragmentsTest : TestBase
+    private const string RawModelFileExtension = ".raw.json";
+
+    public MergeMarkdownFragmentsTest()
     {
-        private string _outputFolder;
-        private string _inputFolder;
-        private string _templateFolder;
-        private FileCollection _defaultFiles;
-        private ApplyTemplateSettings _applyTemplateSettings;
-        private TemplateManager _templateManager;
-        private FileCollection _files;
+        _outputFolder = GetRandomFolder();
+        _inputFolder = GetRandomFolder();
+        _templateFolder = GetRandomFolder();
+        _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
+        _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
-        private TestLoggerListener _listener;
-        private string _rawModelFilePath;
+        _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
 
-        private const string RawModelFileExtension = ".raw.json";
+        _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
+        _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
 
-        public MergeMarkdownFragmentsTest()
-        {
-            _outputFolder = GetRandomFolder();
-            _inputFolder = GetRandomFolder();
-            _templateFolder = GetRandomFolder();
-            _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
+        var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
+        var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
+        _files = new FileCollection(_defaultFiles);
+        _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
+    }
 
-            _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
+    [Fact]
+    void TestMergeMarkdownFragments()
+    {
+        // Arrange
+        var mdFile = CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
 
-            _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
-            _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
+        // Act
+        BuildDocument(_files);
 
-            var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
-            var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
-            _files = new FileCollection(_defaultFiles);
-            _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
-        }
+        // Assert
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Equal("bob", rawModel["author"]);
+        Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
+        Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
+        Assert.Contains("This is a summary at YAML's", rawModel["summary"].ToString());
+    }
 
-        [Fact]
-        void TestMergeMarkdownFragments()
-        {
-            // Arrange
-            var mdFile = CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
-
-            // Act
-            BuildDocument(_files);
-
-            // Assert
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Equal("bob", rawModel["author"]);
-            Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
-            Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
-            Assert.Contains("This is a summary at YAML's", rawModel["summary"].ToString());
-        }
-
-        [Fact]
-        public void TestMissingStartingH1CodeHeading()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"## `summary`
+    [Fact]
+    public void TestMissingStartingH1CodeHeading()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"## `summary`
 markdown content
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            Logger.RegisterListener(_listener);
-            try
-            {
-                BuildDocument(_files);
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Single(warningLogs);
-            Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-            Assert.Equal("1", warningLogs.First().Line);
-            Assert.Null(rawModel["summary"]);
+        // Act
+        Logger.RegisterListener(_listener);
+        try
+        {
+            BuildDocument(_files);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
         }
 
-        [Fact]
-        public void TestInvalidSpaceMissing()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"#head_1_without_space
+        var logs = _listener.Items;
+        var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Single(warningLogs);
+        Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+        Assert.Equal("1", warningLogs.First().Line);
+        Assert.Null(rawModel["summary"]);
+    }
+
+    [Fact]
+    public void TestInvalidSpaceMissing()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"#head_1_without_space
 
 ## `summary`
 markdown content
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            Logger.RegisterListener(_listener);
-            try
-            {
-                BuildDocument(_files);
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Single(warningLogs);
-            Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-            Assert.Equal("1", warningLogs.First().Line);
-            Assert.Null(rawModel["summary"]);
+        // Act
+        Logger.RegisterListener(_listener);
+        try
+        {
+            BuildDocument(_files);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
         }
 
-        [Fact]
-        public void TestValidSpaceMissing()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+        var logs = _listener.Items;
+        var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Single(warningLogs);
+        Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+        Assert.Equal("1", warningLogs.First().Line);
+        Assert.Null(rawModel["summary"]);
+    }
+
+    [Fact]
+    public void TestValidSpaceMissing()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `management.azure.com.advisor.suppressions`
 
 ## `summary`
 markdown content
@@ -145,23 +142,23 @@ markdown content
 ##head_3_without_space
 markdown content
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            BuildDocument(_files);
+        // Act
+        BuildDocument(_files);
 
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Contains("##head_3_without_space", rawModel["summary"].ToString());
-        }
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Contains("##head_3_without_space", rawModel["summary"].ToString());
+    }
 
-        [Fact]
-        public void TestInvalidYaml()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+    [Fact]
+    public void TestInvalidYaml()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `management.azure.com.advisor.suppressions`
 ```
 author:author_without_space
 ```
@@ -169,36 +166,36 @@ author:author_without_space
 ## `summary`
 markdown content
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            Logger.RegisterListener(_listener);
-            try
-            {
-                BuildDocument(_files);
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Single(warningLogs);
-            Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
-            Assert.Equal("2", warningLogs.First().Line);
-            Assert.Null(rawModel["summary"]);
+        // Act
+        Logger.RegisterListener(_listener);
+        try
+        {
+            BuildDocument(_files);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
         }
 
-        [Fact]
-        public void TestInvalidOPath()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+        var logs = _listener.Items;
+        var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Single(warningLogs);
+        Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
+        Assert.Equal("2", warningLogs.First().Line);
+        Assert.Null(rawModel["summary"]);
+    }
+
+    [Fact]
+    public void TestInvalidOPath()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `management.azure.com.advisor.suppressions`
 
 ## `operations[id=]/summary`
 
@@ -207,36 +204,36 @@ markdown_content
 ## `summary`
 markdown content
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            Logger.RegisterListener(_listener);
-            try
-            {
-                BuildDocument(_files);
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Single(warningLogs);
-            Assert.Equal("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
-            Assert.Equal("3", warningLogs.First().Line);
-            Assert.Null(rawModel["summary"]);
+        // Act
+        Logger.RegisterListener(_listener);
+        try
+        {
+            BuildDocument(_files);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
         }
 
-        [Fact]
-        public void TestNotExistedUid()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `uid_not_exist`
+        var logs = _listener.Items;
+        var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Single(warningLogs);
+        Assert.Equal("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
+        Assert.Equal("3", warningLogs.First().Line);
+        Assert.Null(rawModel["summary"]);
+    }
+
+    [Fact]
+    public void TestNotExistedUid()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `uid_not_exist`
 
 ## `summary`
 markdown content
@@ -264,35 +261,35 @@ Some empty lines between H2 and this paragraph is tolerant
 ## `definitions[name=""CloudError""]/properties[name=""error""]/description`
 
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            Logger.RegisterListener(_listener);
-            try
-            {
-                BuildDocument(_files);
-            }
-            finally
-            {
-                Logger.UnregisterListener(_listener);
-            }
-
-            var logs = _listener.Items;
-            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Single(warningLogs);
-            Assert.Equal("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
-            Assert.Empty(rawModel["summary"]);
+        // Act
+        Logger.RegisterListener(_listener);
+        try
+        {
+            BuildDocument(_files);
+        }
+        finally
+        {
+            Logger.UnregisterListener(_listener);
         }
 
-        [Fact]
-        public void TestDuplicateOPathsInYamlCodeBlockAndContentsBlock()
-        {
-            // Arrange
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+        var logs = _listener.Items;
+        var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Single(warningLogs);
+        Assert.Equal("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
+        Assert.Empty(rawModel["summary"]);
+    }
+
+    [Fact]
+    public void TestDuplicateOPathsInYamlCodeBlockAndContentsBlock()
+    {
+        // Arrange
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `management.azure.com.advisor.suppressions`
 ```
 name: name overwrite
 definitions:
@@ -307,123 +304,122 @@ definitions:
 ## `definitions[name=""Application 1""]/properties[name=""displayName""]/description`
 overwrite in contents block
 ",
-                _inputFolder);
+            _inputFolder);
 
-            // Act
-            BuildDocument(_files);
+        // Act
+        BuildDocument(_files);
 
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Equal("name overwrite", rawModel["name"]);
-            Assert.Equal($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
-            Assert.Equal($"<p sourceFile=\"{_inputFolder}/Suppressions.yml.md\" sourceStartLineNumber=\"14\">overwrite in contents block</p>\n", rawModel["definitions"][0]["properties"][1]["description"].ToString());
-        }
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Equal("name overwrite", rawModel["name"]);
+        Assert.Equal($"<p sourcefile=\"{_inputFolder}/Suppressions.yml.md\" sourcestartlinenumber=\"1\" jsonPath=\"/definitions/0/properties/0/description\">overwrite in yaml block</p>\n", rawModel["definitions"][0]["properties"][0]["description"].ToString());
+        Assert.Equal($"<p sourceFile=\"{_inputFolder}/Suppressions.yml.md\" sourceStartLineNumber=\"14\">overwrite in contents block</p>\n", rawModel["definitions"][0]["properties"][1]["description"].ToString());
+    }
 
-        [Fact]
-        public void TestFragmentsWithIncremental()
+    [Fact]
+    public void TestFragmentsWithIncremental()
+    {
+        using var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental));
+        // first build
+        using (new LoggerPhaseScope("FirstBuild"))
         {
-            using var listener = new TestListenerScope(nameof(TestFragmentsWithIncremental));
-            // first build
-            using (new LoggerPhaseScope("FirstBuild"))
-            {
-                BuildDocument(_files);
-            }
-            Assert.True(File.Exists(_rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.Null(rawModel["summary"]);
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-            ClearLog(listener.Items);
+            BuildDocument(_files);
+        }
+        Assert.True(File.Exists(_rawModelFilePath));
+        var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.Null(rawModel["summary"]);
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        ClearLog(listener.Items);
 
-            // add fragments
-            var mdFile = CreateFile(
-                "Suppressions.yml.md",
-                @"# `management.azure.com.advisor.suppressions`
+        // add fragments
+        var mdFile = CreateFile(
+            "Suppressions.yml.md",
+            @"# `management.azure.com.advisor.suppressions`
 ## ``summary``
 I add a summary.
 With [!include[invalid](invalid.md)]",
-                _inputFolder);
-            using (new LoggerPhaseScope("AddFragments"))
-            {
-                BuildDocument(_files);
-            }
-            Assert.True(File.Exists(_rawModelFilePath));
-            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.NotNull(rawModel["summary"]);
-            Assert.Contains("I add a summary", rawModel["summary"].ToString());
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-            List<string> lastMessages;
-            var messages = ClearLog(listener.Items);
-
-            // modify fragments
-            UpdateFile(
-                "Suppressions.yml.md",
-                new string[] { @"# `management.azure.com.advisor.suppressions`",
-                    "## ``summary``",
-                    "I update a summary.",
-                    "With [!include[invalid](invalid.md)]",
-                },
-                _inputFolder);
-            using (new LoggerPhaseScope("ModifyFragments"))
-            {
-                BuildDocument(_files);
-            }
-            Assert.True(File.Exists(_rawModelFilePath));
-            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.NotNull(rawModel["summary"]);
-            Assert.Contains("I update a summary", rawModel["summary"].ToString());
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-            lastMessages = messages;
-            messages = ClearLog(listener.Items);
-            Assert.True(messages.SequenceEqual(lastMessages));
-
-            // rebuild
-            using (new LoggerPhaseScope("Rebuild"))
-            {
-                BuildDocument(_files);
-            }
-            Assert.True(File.Exists(_rawModelFilePath));
-            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
-            Assert.NotNull(rawModel["summary"]);
-            Assert.Contains("I update a summary", rawModel["summary"].ToString());
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
-            Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
-            lastMessages = messages;
-            messages = ClearLog(listener.Items);
-            Assert.True(messages.SequenceEqual(lastMessages));
-        }
-
-        private List<string> ClearLog(List<ILogItem> items)
+            _inputFolder);
+        using (new LoggerPhaseScope("AddFragments"))
         {
-            var result = items.Select(i => i.Message).ToList();
-            items.Clear();
-            return result;
+            BuildDocument(_files);
         }
+        Assert.True(File.Exists(_rawModelFilePath));
+        rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.NotNull(rawModel["summary"]);
+        Assert.Contains("I add a summary", rawModel["summary"].ToString());
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        List<string> lastMessages;
+        var messages = ClearLog(listener.Items);
 
-        private void BuildDocument(FileCollection files)
+        // modify fragments
+        UpdateFile(
+            "Suppressions.yml.md",
+            new string[] { @"# `management.azure.com.advisor.suppressions`",
+                "## ``summary``",
+                "I update a summary.",
+                "With [!include[invalid](invalid.md)]",
+            },
+            _inputFolder);
+        using (new LoggerPhaseScope("ModifyFragments"))
         {
-            var parameters = new DocumentBuildParameters
-            {
-                Files = files,
-                OutputBaseDir = _outputFolder,
-                ApplyTemplateSettings = _applyTemplateSettings,
-                TemplateManager = _templateManager,
-            };
-
-            using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
-            builder.Build(parameters);
+            BuildDocument(_files);
         }
+        Assert.True(File.Exists(_rawModelFilePath));
+        rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.NotNull(rawModel["summary"]);
+        Assert.Contains("I update a summary", rawModel["summary"].ToString());
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        lastMessages = messages;
+        messages = ClearLog(listener.Items);
+        Assert.True(messages.SequenceEqual(lastMessages));
 
-        private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
+        // rebuild
+        using (new LoggerPhaseScope("Rebuild"))
         {
-            yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
-            yield return typeof(SchemaDrivenProcessorTest).Assembly;
+            BuildDocument(_files);
         }
+        Assert.True(File.Exists(_rawModelFilePath));
+        rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+        Assert.NotNull(rawModel["summary"]);
+        Assert.Contains("I update a summary", rawModel["summary"].ToString());
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): RESTMixedTest")));
+        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.Contains("Cannot resolve") && s.Message.Contains("invalid.md")));
+        lastMessages = messages;
+        messages = ClearLog(listener.Items);
+        Assert.True(messages.SequenceEqual(lastMessages));
+    }
 
-        private string GetRawModelFilePath(string fileName)
+    private List<string> ClearLog(List<ILogItem> items)
+    {
+        var result = items.Select(i => i.Message).ToList();
+        items.Clear();
+        return result;
+    }
+
+    private void BuildDocument(FileCollection files)
+    {
+        var parameters = new DocumentBuildParameters
         {
-            return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, RawModelFileExtension)));
-        }
+            Files = files,
+            OutputBaseDir = _outputFolder,
+            ApplyTemplateSettings = _applyTemplateSettings,
+            TemplateManager = _templateManager,
+        };
+
+        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        builder.Build(parameters);
+    }
+
+    private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
+    {
+        yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
+        yield return typeof(SchemaDrivenProcessorTest).Assembly;
+    }
+
+    private string GetRawModelFilePath(string fileName)
+    {
+        return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, RawModelFileExtension)));
     }
 }

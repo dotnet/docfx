@@ -1,42 +1,39 @@
-﻿namespace Microsoft.DocAsCode.Plugins
+﻿namespace Microsoft.DocAsCode.Plugins;
+
+public class DocumentException : Exception
 {
-    using System;
+    public string File { get; set; }
+    public int Line { get; set; }
+    public int Column { get; set; }
 
-    public class DocumentException : Exception
+    public DocumentException() { }
+    public DocumentException(string message) : base(message) { }
+    public DocumentException(string message, Exception inner) : base(message, inner) { }
+
+    public static void RunAll(params Action[] actions)
     {
-        public string File { get; set; }
-        public int Line { get; set; }
-        public int Column { get; set; }
-
-        public DocumentException() { }
-        public DocumentException(string message) : base(message) { }
-        public DocumentException(string message, Exception inner) : base(message, inner) { }
-
-        public static void RunAll(params Action[] actions)
+        if (actions == null)
         {
-            if (actions == null)
+            throw new ArgumentNullException(nameof(actions));
+        }
+        DocumentException firstException = null;
+        foreach (var action in actions)
+        {
+            try
             {
-                throw new ArgumentNullException(nameof(actions));
+                action();
             }
-            DocumentException firstException = null;
-            foreach (var action in actions)
+            catch (DocumentException ex)
             {
-                try
+                if (firstException == null)
                 {
-                    action();
-                }
-                catch (DocumentException ex)
-                {
-                    if (firstException == null)
-                    {
-                        firstException = ex;
-                    }
+                    firstException = ex;
                 }
             }
-            if (firstException != null)
-            {
-                throw new DocumentException(firstException.Message, firstException);
-            }
+        }
+        if (firstException != null)
+        {
+            throw new DocumentException(firstException.Message, firstException);
         }
     }
 }

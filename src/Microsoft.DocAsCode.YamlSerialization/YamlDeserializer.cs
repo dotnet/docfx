@@ -1,320 +1,315 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerialization
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization.NodeDeserializers;
+using YamlDotNet.Serialization.NodeTypeResolvers;
+using YamlDotNet.Serialization.TypeResolvers;
+using YamlDotNet.Serialization.Utilities;
+using YamlDotNet.Serialization.ValueDeserializers;
+
+using Microsoft.DocAsCode.YamlSerialization.Helpers;
+using Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
+using Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers;
+using Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
+using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
+
+namespace Microsoft.DocAsCode.YamlSerialization;
+
+/// <summary>
+/// A facade for the YAML library with the standard configuration.
+/// </summary>
+public sealed class YamlDeserializer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-
-    using YamlDotNet.Core;
-    using YamlDotNet.Core.Events;
-    using YamlDotNet.Serialization;
-    using YamlDotNet.Serialization.NamingConventions;
-    using YamlDotNet.Serialization.NodeDeserializers;
-    using YamlDotNet.Serialization.NodeTypeResolvers;
-    using YamlDotNet.Serialization.TypeResolvers;
-    using YamlDotNet.Serialization.Utilities;
-    using YamlDotNet.Serialization.ValueDeserializers;
-
-    using Microsoft.DocAsCode.YamlSerialization.Helpers;
-    using Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
-    using Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers;
-    using Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
-    using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
-
-    /// <summary>
-    /// A facade for the YAML library with the standard configuration.
-    /// </summary>
-    public sealed class YamlDeserializer
+    private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new Dictionary<TagName, Type>
     {
-        private static Dictionary<TagName, Type> PredefinedTagMappings { get; } = new Dictionary<TagName, Type>
+        { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
+        { "tag:yaml.org,2002:bool", typeof(bool) },
+        { "tag:yaml.org,2002:float", typeof(double) },
+        { "tag:yaml.org,2002:int", typeof(int) },
+        { "tag:yaml.org,2002:str", typeof(string) },
+        { "tag:yaml.org,2002:timestamp", typeof(DateTime) },
+    };
+
+    private readonly Dictionary<TagName, Type> _tagMappings;
+    private readonly List<IYamlTypeConverter> _converters;
+    private readonly TypeDescriptorProxy _typeDescriptor = new();
+    private readonly IValueDeserializer _valueDeserializer;
+    private readonly ITypeConverter _reflectionTypeConverter = new ReflectionTypeConverter();
+
+    public IList<INodeDeserializer> NodeDeserializers { get; private set; }
+    public IList<INodeTypeResolver> TypeResolvers { get; private set; }
+    public IValueDeserializer ValueDeserializer => _valueDeserializer;
+
+    private sealed class TypeDescriptorProxy : ITypeInspector
+    {
+        public ITypeInspector TypeDescriptor;
+
+        public IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
         {
-            { "tag:yaml.org,2002:map", typeof(Dictionary<object, object>) },
-            { "tag:yaml.org,2002:bool", typeof(bool) },
-            { "tag:yaml.org,2002:float", typeof(double) },
-            { "tag:yaml.org,2002:int", typeof(int) },
-            { "tag:yaml.org,2002:str", typeof(string) },
-            { "tag:yaml.org,2002:timestamp", typeof(DateTime) },
+            return TypeDescriptor.GetProperties(type, container);
+        }
+
+        public IPropertyDescriptor GetProperty(Type type, object container, string name, bool ignoreUnmatched)
+        {
+            return TypeDescriptor.GetProperty(type, container, name, ignoreUnmatched);
+        }
+    }
+
+    public YamlDeserializer(
+        IObjectFactory objectFactory = null,
+        INamingConvention namingConvention = null,
+        bool ignoreUnmatched = false,
+        bool ignoreNotFoundAnchor = true)
+    {
+        objectFactory = objectFactory ?? new DefaultEmitObjectFactory();
+        namingConvention = namingConvention ?? new NullNamingConvention();
+
+        _typeDescriptor.TypeDescriptor =
+            new ExtensibleYamlAttributesTypeInspector(
+                new ExtensibleNamingConventionTypeInspector(
+                    new ExtensibleReadableAndWritablePropertiesTypeInspector(
+                        new EmitTypeInspector(
+                            new StaticTypeResolver()
+                        )
+                    ),
+                    namingConvention
+                )
+            );
+
+        _converters = new List<IYamlTypeConverter>();
+        foreach (IYamlTypeConverter yamlTypeConverter in YamlTypeConverters.BuiltInConverters)
+        {
+            _converters.Add(yamlTypeConverter);
+        }
+
+        NodeDeserializers = new List<INodeDeserializer>
+        {
+            new TypeConverterNodeDeserializer(_converters),
+            new NullNodeDeserializer(),
+            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter),
+            new EmitArrayNodeDeserializer(),
+            new EmitGenericDictionaryNodeDeserializer(objectFactory),
+            new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
+            new EmitGenericCollectionNodeDeserializer(objectFactory),
+            new CollectionNodeDeserializer(objectFactory),
+            new EnumerableNodeDeserializer(),
+            new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
+        };
+        _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
+        TypeResolvers = new List<INodeTypeResolver>
+        {
+            new TagNodeTypeResolver(_tagMappings),
+            new DefaultContainersNodeTypeResolver(),
+            new ScalarYamlNodeTypeResolver()
         };
 
-        private readonly Dictionary<TagName, Type> _tagMappings;
-        private readonly List<IYamlTypeConverter> _converters;
-        private readonly TypeDescriptorProxy _typeDescriptor = new TypeDescriptorProxy();
-        private readonly IValueDeserializer _valueDeserializer;
-        private readonly ITypeConverter _reflectionTypeConverter = new ReflectionTypeConverter();
-
-        public IList<INodeDeserializer> NodeDeserializers { get; private set; }
-        public IList<INodeTypeResolver> TypeResolvers { get; private set; }
-        public IValueDeserializer ValueDeserializer => _valueDeserializer;
-
-        private sealed class TypeDescriptorProxy : ITypeInspector
+        NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter);
+        if (ignoreNotFoundAnchor)
         {
-            public ITypeInspector TypeDescriptor;
+            _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
+        }
+        else
+        {
+            _valueDeserializer = new AliasValueDeserializer(nodeValueDeserializer);
+        }
+    }
 
-            public IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
-            {
-                return TypeDescriptor.GetProperties(type, container);
-            }
+    public void RegisterTagMapping(string tag, Type type)
+    {
+        _tagMappings.Add(tag, type);
+    }
 
-            public IPropertyDescriptor GetProperty(Type type, object container, string name, bool ignoreUnmatched)
-            {
-                return TypeDescriptor.GetProperty(type, container, name, ignoreUnmatched);
-            }
+    public void RegisterTypeConverter(IYamlTypeConverter typeConverter)
+    {
+        _converters.Add(typeConverter);
+    }
+
+    public T Deserialize<T>(TextReader input, IValueDeserializer deserializer = null)
+    {
+        return (T)Deserialize(input, typeof(T), deserializer);
+    }
+
+    public object Deserialize(TextReader input, IValueDeserializer deserializer = null)
+    {
+        return Deserialize(input, typeof(object), deserializer);
+    }
+
+    public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
+    {
+        return Deserialize(new Parser(input), type, deserializer);
+    }
+
+    public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
+    {
+        return (T)Deserialize(reader, typeof(T), deserializer);
+    }
+
+    public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
+    {
+        return Deserialize(reader, typeof(object), deserializer);
+    }
+
+    /// <summary>
+    /// Deserializes an object of the specified type.
+    /// </summary>
+    /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
+    /// <param name="type">The static type of the object to deserialize.</param>
+    /// <returns>Returns the deserialized object.</returns>
+    public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
+    {
+        if (parser == null)
+        {
+            throw new ArgumentNullException("reader");
         }
 
-        public YamlDeserializer(
-            IObjectFactory objectFactory = null,
-            INamingConvention namingConvention = null,
-            bool ignoreUnmatched = false,
-            bool ignoreNotFoundAnchor = true)
+        if (type == null)
         {
-            objectFactory = objectFactory ?? new DefaultEmitObjectFactory();
-            namingConvention = namingConvention ?? new NullNamingConvention();
-
-            _typeDescriptor.TypeDescriptor =
-                new ExtensibleYamlAttributesTypeInspector(
-                    new ExtensibleNamingConventionTypeInspector(
-                        new ExtensibleReadableAndWritablePropertiesTypeInspector(
-                            new EmitTypeInspector(
-                                new StaticTypeResolver()
-                            )
-                        ),
-                        namingConvention
-                    )
-                );
-
-            _converters = new List<IYamlTypeConverter>();
-            foreach (IYamlTypeConverter yamlTypeConverter in YamlTypeConverters.BuiltInConverters)
-            {
-                _converters.Add(yamlTypeConverter);
-            }
-
-            NodeDeserializers = new List<INodeDeserializer>
-            {
-                new TypeConverterNodeDeserializer(_converters),
-                new NullNodeDeserializer(),
-                new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter),
-                new EmitArrayNodeDeserializer(),
-                new EmitGenericDictionaryNodeDeserializer(objectFactory),
-                new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
-                new EmitGenericCollectionNodeDeserializer(objectFactory),
-                new CollectionNodeDeserializer(objectFactory),
-                new EnumerableNodeDeserializer(),
-                new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
-            };
-            _tagMappings = new Dictionary<TagName, Type>(PredefinedTagMappings);
-            TypeResolvers = new List<INodeTypeResolver>
-            {
-                new TagNodeTypeResolver(_tagMappings),
-                new DefaultContainersNodeTypeResolver(),
-                new ScalarYamlNodeTypeResolver()
-            };
-
-            NodeValueDeserializer nodeValueDeserializer = new(NodeDeserializers, TypeResolvers, _reflectionTypeConverter);
-            if (ignoreNotFoundAnchor)
-            {
-                _valueDeserializer = new LooseAliasValueDeserializer(nodeValueDeserializer);
-            }
-            else
-            {
-                _valueDeserializer = new AliasValueDeserializer(nodeValueDeserializer);
-            }
+            throw new ArgumentNullException("type");
         }
 
-        public void RegisterTagMapping(string tag, Type type)
+        var hasStreamStart = parser.Allow<StreamStart>() != null;
+
+        var hasDocumentStart = parser.Allow<DocumentStart>() != null;
+        deserializer = deserializer ?? _valueDeserializer;
+        object result = null;
+        if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
         {
-            _tagMappings.Add(tag, type);
+            using var state = new SerializerState();
+            result = deserializer.DeserializeValue(parser, type, state, deserializer);
+            state.OnDeserialization();
         }
 
-        public void RegisterTypeConverter(IYamlTypeConverter typeConverter)
+        if (hasDocumentStart)
         {
-            _converters.Add(typeConverter);
+            parser.Expect<DocumentEnd>();
         }
 
-        public T Deserialize<T>(TextReader input, IValueDeserializer deserializer = null)
+        if (hasStreamStart)
         {
-            return (T)Deserialize(input, typeof(T), deserializer);
+            parser.Expect<StreamEnd>();
         }
 
-        public object Deserialize(TextReader input, IValueDeserializer deserializer = null)
+        return result;
+    }
+
+    private sealed class LooseAliasValueDeserializer : IValueDeserializer
+    {
+        private readonly IValueDeserializer _innerDeserializer;
+
+        public LooseAliasValueDeserializer(IValueDeserializer innerDeserializer)
         {
-            return Deserialize(input, typeof(object), deserializer);
+            _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
         }
 
-        public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
+        private sealed class AliasState : Dictionary<AnchorName, ValuePromise>, IPostDeserializationCallback
         {
-            return Deserialize(new Parser(input), type, deserializer);
-        }
-
-        public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
-        {
-            return (T)Deserialize(reader, typeof(T), deserializer);
-        }
-
-        public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
-        {
-            return Deserialize(reader, typeof(object), deserializer);
-        }
-
-        /// <summary>
-        /// Deserializes an object of the specified type.
-        /// </summary>
-        /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
-        /// <param name="type">The static type of the object to deserialize.</param>
-        /// <returns>Returns the deserialized object.</returns>
-        public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
-        {
-            if (parser == null)
+            public void OnDeserialization()
             {
-                throw new ArgumentNullException("reader");
-            }
-
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-
-            var hasStreamStart = parser.Allow<StreamStart>() != null;
-
-            var hasDocumentStart = parser.Allow<DocumentStart>() != null;
-            deserializer = deserializer ?? _valueDeserializer;
-            object result = null;
-            if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
-            {
-                using var state = new SerializerState();
-                result = deserializer.DeserializeValue(parser, type, state, deserializer);
-                state.OnDeserialization();
-            }
-
-            if (hasDocumentStart)
-            {
-                parser.Expect<DocumentEnd>();
-            }
-
-            if (hasStreamStart)
-            {
-                parser.Expect<StreamEnd>();
-            }
-
-            return result;
-        }
-
-        private sealed class LooseAliasValueDeserializer : IValueDeserializer
-        {
-            private readonly IValueDeserializer _innerDeserializer;
-
-            public LooseAliasValueDeserializer(IValueDeserializer innerDeserializer)
-            {
-                _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
-            }
-
-            private sealed class AliasState : Dictionary<AnchorName, ValuePromise>, IPostDeserializationCallback
-            {
-                public void OnDeserialization()
+                foreach (var promise in Values)
                 {
-                    foreach (var promise in Values)
+                    if (!promise.HasValue)
                     {
-                        if (!promise.HasValue)
-                        {
-                            // If promise is not resolved, reset to it's alias value
-                            promise.Value = "*" + promise.Alias.Value;
-                        }
+                        // If promise is not resolved, reset to it's alias value
+                        promise.Value = "*" + promise.Alias.Value;
                     }
                 }
             }
+        }
 
-            private sealed class ValuePromise : IValuePromise
+        private sealed class ValuePromise : IValuePromise
+        {
+            public event Action<object> ValueAvailable;
+
+            public bool HasValue { get; private set; }
+
+            private object value;
+
+            public readonly AnchorAlias Alias;
+
+            public ValuePromise(AnchorAlias alias)
             {
-                public event Action<object> ValueAvailable;
+                this.Alias = alias;
+            }
 
-                public bool HasValue { get; private set; }
+            public ValuePromise(object value)
+            {
+                HasValue = true;
+                this.value = value;
+            }
 
-                private object value;
-
-                public readonly AnchorAlias Alias;
-
-                public ValuePromise(AnchorAlias alias)
+            public object Value
+            {
+                get
                 {
-                    this.Alias = alias;
+                    if (!HasValue)
+                    {
+                        throw new InvalidOperationException("Value not set");
+                    }
+                    return value;
                 }
-
-                public ValuePromise(object value)
+                set
                 {
+                    if (HasValue)
+                    {
+                        throw new InvalidOperationException("Value already set");
+                    }
                     HasValue = true;
                     this.value = value;
-                }
 
-                public object Value
-                {
-                    get
-                    {
-                        if (!HasValue)
-                        {
-                            throw new InvalidOperationException("Value not set");
-                        }
-                        return value;
-                    }
-                    set
-                    {
-                        if (HasValue)
-                        {
-                            throw new InvalidOperationException("Value already set");
-                        }
-                        HasValue = true;
-                        this.value = value;
-
-                        ValueAvailable?.Invoke(value);
-                    }
+                    ValueAvailable?.Invoke(value);
                 }
             }
+        }
 
-            public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+        public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+        {
+            object value;
+            var alias = reader.Allow<AnchorAlias>();
+            if (alias != null)
             {
-                object value;
-                var alias = reader.Allow<AnchorAlias>();
-                if (alias != null)
+                var aliasState = state.Get<AliasState>();
+                if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
                 {
-                    var aliasState = state.Get<AliasState>();
-                    if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
-                    {
-                        valuePromise = new ValuePromise(alias);
-                        aliasState.Add(alias.Value, valuePromise);
-                    }
-
-                    return valuePromise.HasValue ? valuePromise.Value : valuePromise;
+                    valuePromise = new ValuePromise(alias);
+                    aliasState.Add(alias.Value, valuePromise);
                 }
 
-                AnchorName? anchor = null;
-
-                var nodeEvent = reader.Peek<NodeEvent>();
-                if (nodeEvent != null && !nodeEvent.Anchor.IsEmpty)
-                {
-                    anchor = nodeEvent.Anchor;
-                }
-
-                value = _innerDeserializer.DeserializeValue(reader, expectedType, state, nestedObjectDeserializer);
-
-                if (anchor != null)
-                {
-                    var aliasState = state.Get<AliasState>();
-
-                    if (!aliasState.TryGetValue(anchor.Value, out ValuePromise valuePromise))
-                    {
-                        aliasState.Add(anchor.Value, new ValuePromise(value));
-                    }
-                    else if (!valuePromise.HasValue)
-                    {
-                        valuePromise.Value = value;
-                    }
-                    else
-                    {
-                        aliasState[anchor.Value] = new ValuePromise(value);
-                    }
-                }
-
-                return value;
+                return valuePromise.HasValue ? valuePromise.Value : valuePromise;
             }
+
+            AnchorName? anchor = null;
+
+            var nodeEvent = reader.Peek<NodeEvent>();
+            if (nodeEvent != null && !nodeEvent.Anchor.IsEmpty)
+            {
+                anchor = nodeEvent.Anchor;
+            }
+
+            value = _innerDeserializer.DeserializeValue(reader, expectedType, state, nestedObjectDeserializer);
+
+            if (anchor != null)
+            {
+                var aliasState = state.Get<AliasState>();
+
+                if (!aliasState.TryGetValue(anchor.Value, out ValuePromise valuePromise))
+                {
+                    aliasState.Add(anchor.Value, new ValuePromise(value));
+                }
+                else if (!valuePromise.HasValue)
+                {
+                    valuePromise.Value = value;
+                }
+                else
+                {
+                    aliasState[anchor.Value] = new ValuePromise(value);
+                }
+            }
+
+            return value;
         }
     }
 }

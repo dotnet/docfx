@@ -1,15 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
+namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization;
+
+public enum StreamSegmentType : byte
 {
-    public enum StreamSegmentType : byte
-    {
-        Null,
-        Integer,
-        String,
-        Binary,
-        Array,
-        Dictionary,
-    }
+    Null,
+    Integer,
+    String,
+    Binary,
+    Array,
+    Dictionary,
 }

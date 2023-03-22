@@ -1,63 +1,59 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using YamlDotNet.Serialization;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+[Serializable]
+internal class ConfigFilterRuleItemUnion
 {
-    using System;
-    using System.IO;
+    private ConfigFilterRuleIncludeItem _include;
+    private ConfigFilterRuleExcludeItem _exclude;
 
-    using YamlDotNet.Serialization;
-
-    [Serializable]
-    internal class ConfigFilterRuleItemUnion
+    [YamlMember(Alias = "include")]
+    public ConfigFilterRuleIncludeItem Include
     {
-        private ConfigFilterRuleIncludeItem _include;
-        private ConfigFilterRuleExcludeItem _exclude;
-
-        [YamlMember(Alias = "include")]
-        public ConfigFilterRuleIncludeItem Include
+        get
         {
-            get
-            {
-                return _include;
-            }
-            set
-            {
-                if (_exclude != null)
-                {
-                    throw new InvalidDataException("it is not allowed to specify both include and exclude in one rule");
-                }
-                _include = value;
-            }
+            return _include;
         }
-
-        [YamlMember(Alias = "exclude")]
-        public ConfigFilterRuleExcludeItem Exclude
+        set
         {
-            get
+            if (_exclude != null)
             {
-                return _exclude;
+                throw new InvalidDataException("it is not allowed to specify both include and exclude in one rule");
             }
-            set
-            {
-                if (_include != null)
-                {
-                    throw new InvalidDataException("it is not allowed to specify both include and exclude in one rule");
-                }
-                _exclude = value;
-            }
+            _include = value;
         }
+    }
 
-        public ConfigFilterRuleItem Rule
+    [YamlMember(Alias = "exclude")]
+    public ConfigFilterRuleExcludeItem Exclude
+    {
+        get
         {
-            get
+            return _exclude;
+        }
+        set
+        {
+            if (_include != null)
             {
-                if (Include != null)
-                {
-                    return Include;
-                }
-                return Exclude;
+                throw new InvalidDataException("it is not allowed to specify both include and exclude in one rule");
             }
+            _exclude = value;
+        }
+    }
+
+    public ConfigFilterRuleItem Rule
+    {
+        get
+        {
+            if (Include != null)
+            {
+                return Include;
+            }
+            return Exclude;
         }
     }
 }

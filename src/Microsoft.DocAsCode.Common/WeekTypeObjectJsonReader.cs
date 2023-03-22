@@ -1,241 +1,236 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using Newtonsoft.Json;
+
+namespace Microsoft.DocAsCode.Common;
+
+public class IgnoreStrongTypeObjectJsonReader : JsonReader
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    private object _current => _currentNode?.Value;
+    private Node _currentNode;
+    private Node _parentNode;
 
-    using Newtonsoft.Json;
-
-    public class IgnoreStrongTypeObjectJsonReader : JsonReader
+    public IgnoreStrongTypeObjectJsonReader(object obj)
     {
-        private object _current => _currentNode?.Value;
-        private Node _currentNode;
-        private Node _parentNode;
+        _currentNode = new Node(obj, null);
+        _parentNode = null;
+    }
 
-        public IgnoreStrongTypeObjectJsonReader(object obj)
+    public override bool Read()
+    {
+        if (_currentNode == null)
         {
-            _currentNode = new Node(obj, null);
-            _parentNode = null;
+            return false;
         }
-
-        public override bool Read()
+        else if (_current is IDictionary<string, object> sdict)
         {
-            if (_currentNode == null)
+            SetToken(JsonToken.StartObject);
+            _currentNode = new DictNode<string, object>(sdict, _parentNode);
+            return MoveToNext();
+        }
+        else if (_current is IDictionary<object, object> odict)
+        {
+            SetToken(JsonToken.StartObject);
+            _currentNode = new DictNode<object, object>(odict, _parentNode);
+            return MoveToNext();
+        }
+        else if (_current is IList<object> list)
+        {
+            SetToken(JsonToken.StartArray);
+            _currentNode = new ArrayNode<object>(list, _parentNode);
+            return MoveToNext();
+        }
+        else
+        {
+            var token = _currentNode.Token ?? GetJsonToken(_current);
+            if (token == JsonToken.StartObject)
             {
-                return false;
-            }
-            else if (_current is IDictionary<string, object> sdict)
-            {
-                SetToken(JsonToken.StartObject);
-                _currentNode = new DictNode<string, object>(sdict, _parentNode);
-                return MoveToNext();
-            }
-            else if (_current is IDictionary<object, object> odict)
-            {
-                SetToken(JsonToken.StartObject);
-                _currentNode = new DictNode<object, object>(odict, _parentNode);
-                return MoveToNext();
-            }
-            else if (_current is IList<object> list)
-            {
-                SetToken(JsonToken.StartArray);
-                _currentNode = new ArrayNode<object>(list, _parentNode);
-                return MoveToNext();
+                _currentNode = new Node(_current, _parentNode);
+                // ignore strong type object in case plugins create some
+                SetToken(JsonToken.Null, null);
             }
             else
             {
-                var token = _currentNode.Token ?? GetJsonToken(_current);
-                if (token == JsonToken.StartObject)
-                {
-                    _currentNode = new Node(_current, _parentNode);
-                    // ignore strong type object in case plugins create some
-                    SetToken(JsonToken.Null, null);
-                }
-                else
-                {
-                    SetToken(token.Value, _current);
-                }
-
-                return MoveToNext();
+                SetToken(token.Value, _current);
             }
+
+            return MoveToNext();
+        }
+    }
+
+    private bool MoveToNext()
+    {
+        if (_currentNode == null)
+        {
+            return false;
         }
 
-        private bool MoveToNext()
+        // Try child first
+        var child = _currentNode.NextChild();
+        if (child != null)
         {
-            if (_currentNode == null)
-            {
-                return false;
-            }
-
-            // Try child first
-            var child = _currentNode.NextChild();
-            if (child != null)
-            {
-                _parentNode = _currentNode;
-                _currentNode = child;
-                return true;
-            }
-
-            if (_currentNode.Parent == null)
-            {
-                _currentNode = null;
-                return true;
-            }
-
-            var next = _currentNode.Parent.NextChild();
-            if (next == null)
-            {
-                _currentNode = _currentNode.Parent;
-                _parentNode = _currentNode.Parent;
-            }
-            else
-            {
-                _currentNode = next;
-            }
+            _parentNode = _currentNode;
+            _currentNode = child;
             return true;
         }
 
-        private JsonToken? GetJsonToken(object obj)
+        if (_currentNode.Parent == null)
         {
-            if (obj is null)
-            {
+            _currentNode = null;
+            return true;
+        }
+
+        var next = _currentNode.Parent.NextChild();
+        if (next == null)
+        {
+            _currentNode = _currentNode.Parent;
+            _parentNode = _currentNode.Parent;
+        }
+        else
+        {
+            _currentNode = next;
+        }
+        return true;
+    }
+
+    private JsonToken? GetJsonToken(object obj)
+    {
+        if (obj is null)
+        {
+            return JsonToken.Null;
+        }
+
+        if (obj is IConvertible ct)
+        {
+            return GetJsonToken(ct.GetTypeCode());
+        }
+
+        return GetJsonToken(Type.GetTypeCode(obj.GetType()));
+    }
+
+    private JsonToken? GetJsonToken(TypeCode code)
+    {
+        switch (code)
+        {
+            case TypeCode.Empty:
+            case TypeCode.DBNull:
                 return JsonToken.Null;
-            }
+            case TypeCode.Boolean:
+                return JsonToken.Boolean;
+            case TypeCode.SByte:
+            case TypeCode.Byte:
+                return JsonToken.Bytes;
+            case TypeCode.Int16:
+            case TypeCode.UInt16:
+            case TypeCode.Int32:
+            case TypeCode.UInt32:
+            case TypeCode.Int64:
+            case TypeCode.UInt64:
+                return JsonToken.Integer;
+            case TypeCode.Single:
+            case TypeCode.Double:
+            case TypeCode.Decimal:
+                return JsonToken.Float;
+            case TypeCode.DateTime:
+                return JsonToken.Date;
+            case TypeCode.Char:
+            case TypeCode.String:
+                return JsonToken.String;
+            case TypeCode.Object:
+                return JsonToken.StartObject;
+            default:
+                throw new NotSupportedException($"{code} is not supported in {nameof(IgnoreStrongTypeObjectJsonReader)}");
+        }
+    }
 
-            if (obj is IConvertible ct)
-            {
-                return GetJsonToken(ct.GetTypeCode());
-            }
+    private class Node
+    {
+        public object Value;
+        public Node Parent;
+        public JsonToken? Token = null;
 
-            return GetJsonToken(Type.GetTypeCode(obj.GetType()));
+        public Node(object val, Node parent)
+        {
+            Value = val;
+            Parent = parent;
         }
 
-        private JsonToken? GetJsonToken(TypeCode code)
+        public virtual Node NextChild()
         {
-            switch (code)
-            {
-                case TypeCode.Empty:
-                case TypeCode.DBNull:
-                    return JsonToken.Null;
-                case TypeCode.Boolean:
-                    return JsonToken.Boolean;
-                case TypeCode.SByte:
-                case TypeCode.Byte:
-                    return JsonToken.Bytes;
-                case TypeCode.Int16:
-                case TypeCode.UInt16:
-                case TypeCode.Int32:
-                case TypeCode.UInt32:
-                case TypeCode.Int64:
-                case TypeCode.UInt64:
-                    return JsonToken.Integer;
-                case TypeCode.Single:
-                case TypeCode.Double:
-                case TypeCode.Decimal:
-                    return JsonToken.Float;
-                case TypeCode.DateTime:
-                    return JsonToken.Date;
-                case TypeCode.Char:
-                case TypeCode.String:
-                    return JsonToken.String;
-                case TypeCode.Object:
-                    return JsonToken.StartObject;
-                default:
-                    throw new NotSupportedException($"{code} is not supported in {nameof(IgnoreStrongTypeObjectJsonReader)}");
-            }
+            return null;
+        }
+    }
+
+    private class EmptyNode : Node
+    {
+        public EmptyNode(Node parent, JsonToken token) : base(null, parent)
+        {
+            Token = token;
         }
 
-        private class Node
+        public override Node NextChild()
         {
-            public object Value;
-            public Node Parent;
-            public JsonToken? Token = null;
+            return Parent?.NextChild();
+        }
+    }
 
-            public Node(object val, Node parent)
-            {
-                Value = val;
-                Parent = parent;
-            }
+    private class DictNode<TKey, TValue> : Node
+    {
+        public new readonly IList<KeyValuePair<TKey, TValue>> Value;
 
-            public virtual Node NextChild()
-            {
-                return null;
-            }
+        private int index = 0;
+        private bool firstRound = true;
+        public DictNode(IDictionary<TKey, TValue> val, Node parent) : base(val, parent)
+        {
+            Value = val.ToList();
         }
 
-        private class EmptyNode : Node
+        public override Node NextChild()
         {
-            public EmptyNode(Node parent, JsonToken token) : base(null, parent)
+            if (Value.Count == 0 || index > Value.Count - 1)
             {
-                Token = token;
+                return new EmptyNode(Parent, JsonToken.EndObject);
             }
 
-            public override Node NextChild()
+            var child = Value[index];
+            if (firstRound)
             {
-                return Parent?.NextChild();
-            }
-        }
-
-        private class DictNode<TKey, TValue> : Node
-        {
-            public new readonly IList<KeyValuePair<TKey, TValue>> Value;
-
-            private int index = 0;
-            private bool firstRound = true;
-            public DictNode(IDictionary<TKey, TValue> val, Node parent) : base(val, parent)
-            {
-                Value = val.ToList();
-            }
-
-            public override Node NextChild()
-            {
-                if (Value.Count == 0 || index > Value.Count - 1)
+                firstRound = false;
+                return new Node(child.Key, this)
                 {
-                    return new EmptyNode(Parent, JsonToken.EndObject);
-                }
-
-                var child = Value[index];
-                if (firstRound)
-                {
-                    firstRound = false;
-                    return new Node(child.Key, this)
-                    {
-                        Token = JsonToken.PropertyName,
-                    };
-                }
-                else
-                {
-                    firstRound = true;
-                    index++;
-                    return new Node(child.Value, this);
-                }
+                    Token = JsonToken.PropertyName,
+                };
             }
-        }
-
-        private class ArrayNode<T> : Node
-        {
-            public new readonly IList<T> Value;
-
-            private int index = 0;
-            public ArrayNode(IList<T> val, Node parent) : base(val, parent)
+            else
             {
-                Value = val;
-            }
-
-            public override Node NextChild()
-            {
-                if (Value.Count == 0 || index > Value.Count - 1)
-                {
-                    return new EmptyNode(Parent, JsonToken.EndArray);
-                }
-
-                var child = Value[index];
+                firstRound = true;
                 index++;
-                return new Node(child, this);
+                return new Node(child.Value, this);
             }
+        }
+    }
+
+    private class ArrayNode<T> : Node
+    {
+        public new readonly IList<T> Value;
+
+        private int index = 0;
+        public ArrayNode(IList<T> val, Node parent) : base(val, parent)
+        {
+            Value = val;
+        }
+
+        public override Node NextChild()
+        {
+            if (Value.Count == 0 || index > Value.Count - 1)
+            {
+                return new EmptyNode(Parent, JsonToken.EndArray);
+            }
+
+            var child = Value[index];
+            index++;
+            return new Node(child, this);
         }
     }
 }

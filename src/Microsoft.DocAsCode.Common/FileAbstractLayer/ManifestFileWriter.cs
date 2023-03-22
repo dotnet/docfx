@@ -1,82 +1,78 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Common;
+
+public class ManifestFileWriter : FileWriterBase
 {
-    using System;
-    using System.IO;
+    private readonly bool _noRandomFile;
 
-    using Microsoft.DocAsCode.Plugins;
+    public Manifest Manifest { get; }
 
-    public class ManifestFileWriter : FileWriterBase
+    public string ManifestFolder { get; }
+
+    public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
+        : base(outputFolder ?? manifestFolder)
     {
-        private readonly bool _noRandomFile;
+        Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
+        ManifestFolder = manifestFolder ?? throw new ArgumentNullException(nameof(manifestFolder));
+        _noRandomFile = outputFolder == null;
+    }
 
-        public Manifest Manifest { get; }
+    #region Overrides
 
-        public string ManifestFolder { get; }
-
-        public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
-            : base(outputFolder ?? manifestFolder)
+    public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
+    {
+        lock (Manifest)
         {
-            Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
-            ManifestFolder = manifestFolder ?? throw new ArgumentNullException(nameof(manifestFolder));
-            _noRandomFile = outputFolder == null;
-        }
-
-        #region Overrides
-
-        public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
-        {
-            lock (Manifest)
+            var entry = FindEntryInManifest(destFileName.RemoveWorkingFolder());
+            if (entry == null)
             {
-                var entry = FindEntryInManifest(destFileName.RemoveWorkingFolder());
-                if (entry == null)
-                {
-                    throw new InvalidOperationException("File entry not found.");
-                }
-                entry.LinkToPath = sourceFileName.PhysicalPath;
+                throw new InvalidOperationException("File entry not found.");
+            }
+            entry.LinkToPath = sourceFileName.PhysicalPath;
+        }
+    }
+
+    public override Stream Create(RelativePath file)
+    {
+        lock (Manifest)
+        {
+            var entry = FindEntryInManifest(file.RemoveWorkingFolder());
+            if (entry == null)
+            {
+                throw new InvalidOperationException("File entry not found.");
+            }
+            if (_noRandomFile)
+            {
+                Directory.CreateDirectory(
+                    Path.Combine(ManifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
+                var result = File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
+                entry.LinkToPath = null;
+                return result;
+            }
+            else
+            {
+                var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var result = File.Create(path);
+                entry.LinkToPath = path;
+                return result;
             }
         }
+    }
 
-        public override Stream Create(RelativePath file)
-        {
-            lock (Manifest)
-            {
-                var entry = FindEntryInManifest(file.RemoveWorkingFolder());
-                if (entry == null)
-                {
-                    throw new InvalidOperationException("File entry not found.");
-                }
-                if (_noRandomFile)
-                {
-                    Directory.CreateDirectory(
-                        Path.Combine(ManifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                    var result = File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
-                    entry.LinkToPath = null;
-                    return result;
-                }
-                else
-                {
-                    var path = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    var result = File.Create(path);
-                    entry.LinkToPath = path;
-                    return result;
-                }
-            }
-        }
+    public override IFileReader CreateReader()
+    {
+        return new ManifestFileReader(Manifest, ManifestFolder);
+    }
 
-        public override IFileReader CreateReader()
-        {
-            return new ManifestFileReader(Manifest, ManifestFolder);
-        }
+    #endregion
 
-        #endregion
-
-        private OutputFileInfo FindEntryInManifest(string file)
-        {
-            return Manifest.FindOutputFileInfo(file);
-        }
+    private OutputFileInfo FindEntryInManifest(string file)
+    {
+        return Manifest.FindOutputFileInfo(file);
     }
 }

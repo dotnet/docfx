@@ -1,85 +1,83 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class MarkdownDocumentVisitor
 {
-    using System;
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
+    private readonly IMarkdownObjectRewriter _rewriter;
 
-    public class MarkdownDocumentVisitor
+    public MarkdownDocumentVisitor(IMarkdownObjectRewriter rewriter)
     {
-        private readonly IMarkdownObjectRewriter _rewriter;
+        _rewriter = rewriter;
+    }
 
-        public MarkdownDocumentVisitor(IMarkdownObjectRewriter rewriter)
+    public void Visit(MarkdownDocument document)
+    {
+        if (document == null)
         {
-            _rewriter = rewriter;
+            throw new ArgumentNullException(nameof(document));
         }
 
-        public void Visit(MarkdownDocument document)
+        if (_rewriter == null)
         {
-            if (document == null)
-            {
-                throw new ArgumentNullException(nameof(document));
-            }
-
-            if (_rewriter == null)
-            {
-                return;
-            }
-
-            _rewriter.PreProcess(document);
-
-            // rewrite root node of AST
-            document = _rewriter.Rewrite(document) as MarkdownDocument;
-            if (document == null)
-            {
-                throw new InvalidOperationException("The result of rewriting a root node in AST can't be null.");
-            }
-
-            RewriteContainerBlock(document);
-
-            _rewriter.PostProcess(document);
+            return;
         }
 
-        private void RewriteContainerBlock(ContainerBlock blocks)
-        {
-            for (var i = 0; i < blocks.Count; i++)
-            {
-                var block = blocks[i];
-                if (block is LeafBlock leafBlock && leafBlock.Inline != null)
-                {
-                    RewriteContainerInline(leafBlock.Inline);
-                }
-                else if (block is ContainerBlock containerBlock)
-                {
-                    RewriteContainerBlock(containerBlock);
-                }
+        _rewriter.PreProcess(document);
 
-                var rewrittenToken = _rewriter.Rewrite(block);
-                if (rewrittenToken != null && rewrittenToken != blocks[i] && rewrittenToken is Block rewrittenBlock)
-                {
-                    blocks[i] = rewrittenBlock;
-                }
+        // rewrite root node of AST
+        document = _rewriter.Rewrite(document) as MarkdownDocument;
+        if (document == null)
+        {
+            throw new InvalidOperationException("The result of rewriting a root node in AST can't be null.");
+        }
+
+        RewriteContainerBlock(document);
+
+        _rewriter.PostProcess(document);
+    }
+
+    private void RewriteContainerBlock(ContainerBlock blocks)
+    {
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            var block = blocks[i];
+            if (block is LeafBlock leafBlock && leafBlock.Inline != null)
+            {
+                RewriteContainerInline(leafBlock.Inline);
+            }
+            else if (block is ContainerBlock containerBlock)
+            {
+                RewriteContainerBlock(containerBlock);
+            }
+
+            var rewrittenToken = _rewriter.Rewrite(block);
+            if (rewrittenToken != null && rewrittenToken != blocks[i] && rewrittenToken is Block rewrittenBlock)
+            {
+                blocks[i] = rewrittenBlock;
+            }
+        }
+    }
+
+    // TODO: support to return a new inline token while rewriting inline token.
+    private void RewriteContainerInline(ContainerInline inlines)
+    {
+        foreach (var inline in inlines)
+        {
+            if (inline is LeafInline leafInline)
+            {
+                _rewriter.Rewrite(leafInline);
+            }
+            else if (inline is ContainerInline containerInline)
+            {
+                RewriteContainerInline(containerInline);
             }
         }
 
-        // TODO: support to return a new inline token while rewriting inline token.
-        private void RewriteContainerInline(ContainerInline inlines)
-        {
-            foreach (var inline in inlines)
-            {
-                if (inline is LeafInline leafInline)
-                {
-                    _rewriter.Rewrite(leafInline);
-                }
-                else if (inline is ContainerInline containerInline)
-                {
-                    RewriteContainerInline(containerInline);
-                }
-            }
-
-            _rewriter.Rewrite(inlines);
-        }
+        _rewriter.Rewrite(inlines);
     }
 }

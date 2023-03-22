@@ -1,69 +1,66 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using Microsoft.CodeAnalysis;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal sealed class TypeGenericParameterNameVisitor : SymbolVisitor<List<string>>
 {
-    using System.Collections.Generic;
+    public static readonly TypeGenericParameterNameVisitor Instance = new();
 
-    using Microsoft.CodeAnalysis;
-
-    internal sealed class TypeGenericParameterNameVisitor : SymbolVisitor<List<string>>
+    private TypeGenericParameterNameVisitor()
     {
-        public static readonly TypeGenericParameterNameVisitor Instance = new TypeGenericParameterNameVisitor();
+    }
 
-        private TypeGenericParameterNameVisitor()
+    public override List<string> DefaultVisit(ISymbol symbol)
+    {
+        return null;
+    }
+
+    public override List<string> VisitNamedType(INamedTypeSymbol symbol)
+    {
+        List<string> result = null;
+        if (symbol.ContainingType != null)
         {
+            result = symbol.ContainingType.Accept(this);
         }
-
-        public override List<string> DefaultVisit(ISymbol symbol)
+        if (symbol.TypeParameters.Length > 0)
         {
-            return null;
-        }
-
-        public override List<string> VisitNamedType(INamedTypeSymbol symbol)
-        {
-            List<string> result = null;
-            if (symbol.ContainingType != null)
+            if (result == null)
             {
-                result = symbol.ContainingType.Accept(this);
+                result = new List<string>();
             }
-            if (symbol.TypeParameters.Length > 0)
+            for (int i = 0; i < symbol.TypeParameters.Length; i++)
             {
-                if (result == null)
-                {
-                    result = new List<string>();
-                }
-                for (int i = 0; i < symbol.TypeParameters.Length; i++)
-                {
-                    result.Add(symbol.TypeParameters[i].Name);
-                }
+                result.Add(symbol.TypeParameters[i].Name);
             }
-            return result;
         }
+        return result;
+    }
 
-        public override List<string> VisitEvent(IEventSymbol symbol)
-        {
-            return symbol.ContainingType.Accept(this);
-        }
+    public override List<string> VisitEvent(IEventSymbol symbol)
+    {
+        return symbol.ContainingType.Accept(this);
+    }
 
-        public override List<string> VisitField(IFieldSymbol symbol)
-        {
-            return symbol.ContainingType.Accept(this);
-        }
+    public override List<string> VisitField(IFieldSymbol symbol)
+    {
+        return symbol.ContainingType.Accept(this);
+    }
 
-        public override List<string> VisitMethod(IMethodSymbol symbol)
-        {
-            return symbol.ContainingType.Accept(this);
-        }
+    public override List<string> VisitMethod(IMethodSymbol symbol)
+    {
+        return symbol.ContainingType.Accept(this);
+    }
 
-        public override List<string> VisitProperty(IPropertySymbol symbol)
-        {
-            return symbol.ContainingType.Accept(this);
-        }
+    public override List<string> VisitProperty(IPropertySymbol symbol)
+    {
+        return symbol.ContainingType.Accept(this);
+    }
 
-        public override List<string> VisitTypeParameter(ITypeParameterSymbol symbol)
-        {
-            return symbol.ContainingType.Accept(this);
-        }
+    public override List<string> VisitTypeParameter(ITypeParameterSymbol symbol)
+    {
+        return symbol.ContainingType.Accept(this);
     }
 }

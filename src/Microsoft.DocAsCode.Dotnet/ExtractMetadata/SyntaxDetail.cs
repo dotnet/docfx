@@ -1,57 +1,53 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
+
+using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal class SyntaxDetail
 {
-    using System;
-    using System.Collections.Generic;
+    [YamlMember(Alias = "content")]
+    [JsonProperty("content")]
+    public SortedList<SyntaxLanguage, string> Content { get; set; }
 
-    using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
+    [YamlMember(Alias = "parameters")]
+    [JsonProperty("parameters")]
+    public List<ApiParameter> Parameters { get; set; }
 
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    [YamlMember(Alias = "typeParameters")]
+    [JsonProperty("typeParameters")]
+    public List<ApiParameter> TypeParameters { get; set; }
 
-    internal class SyntaxDetail
+    [YamlMember(Alias = "return")]
+    [JsonProperty("return")]
+    public ApiParameter Return { get; set; }
+
+    internal void CopyInheritedData(SyntaxDetail src)
     {
-        [YamlMember(Alias = "content")]
-        [JsonProperty("content")]
-        public SortedList<SyntaxLanguage, string> Content { get; set; }
+        if (src == null)
+            throw new ArgumentNullException(nameof(src));
 
-        [YamlMember(Alias = "parameters")]
-        [JsonProperty("parameters")]
-        public List<ApiParameter> Parameters { get; set; }
+        CopyInheritedParameterList(Parameters, src.Parameters);
+        CopyInheritedParameterList(TypeParameters, src.TypeParameters);
+        if (Return != null && src.Return != null)
+            Return.CopyInheritedData(src.Return);
+    }
 
-        [YamlMember(Alias = "typeParameters")]
-        [JsonProperty("typeParameters")]
-        public List<ApiParameter> TypeParameters { get; set; }
-
-        [YamlMember(Alias = "return")]
-        [JsonProperty("return")]
-        public ApiParameter Return { get; set; }
-
-        internal void CopyInheritedData(SyntaxDetail src)
+    static void CopyInheritedParameterList(List<ApiParameter> dest, List<ApiParameter> src)
+    {
+        if (dest == null || src == null || dest.Count != src.Count)
+            return;
+        for (int ndx = 0; ndx < dest.Count; ndx++)
         {
-            if (src == null)
-                throw new ArgumentNullException(nameof(src));
-
-            CopyInheritedParameterList(Parameters, src.Parameters);
-            CopyInheritedParameterList(TypeParameters, src.TypeParameters);
-            if (Return != null && src.Return != null)
-                Return.CopyInheritedData(src.Return);
-        }
-
-        static void CopyInheritedParameterList(List<ApiParameter> dest, List<ApiParameter> src)
-        {
-            if (dest == null || src == null || dest.Count != src.Count)
-                return;
-            for (int ndx = 0; ndx < dest.Count; ndx++)
+            var myParam = dest[ndx];
+            var srcParam = src[ndx];
+            if (myParam.Name == srcParam.Name && myParam.Type == srcParam.Type)
             {
-                var myParam = dest[ndx];
-                var srcParam = src[ndx];
-                if (myParam.Name == srcParam.Name && myParam.Type == srcParam.Type)
-                {
-                    myParam.CopyInheritedData(srcParam);
-                }
+                myParam.CopyInheritedData(srcParam);
             }
         }
     }

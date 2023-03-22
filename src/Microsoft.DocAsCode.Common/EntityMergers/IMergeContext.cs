@@ -1,8 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Common.EntityMergers
+﻿namespace Microsoft.DocAsCode.Common.EntityMergers;
+
+public interface IMergeContext
 {
-    public interface IMergeContext
-    {
-        IMerger Merger { get; }
-        object this[string key] { get; }
-    }
+    IMerger Merger { get; }
+    object this[string key] { get; }
 }

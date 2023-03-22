@@ -1,66 +1,65 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using Markdig.Helpers;
+using Markdig.Parsers;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class InclusionBlockParser : BlockParser
 {
-    using Markdig.Helpers;
-    using Markdig.Parsers;
+    private const string StartString = "[!include";
 
-    public class InclusionBlockParser : BlockParser
+    public InclusionBlockParser()
     {
-        private const string StartString = "[!include";
+        OpeningCharacters = new char[] { '[' };
+    }
 
-        public InclusionBlockParser()
+    public override BlockState TryOpen(BlockProcessor processor)
+    {
+        if (processor.IsCodeIndent)
         {
-            OpeningCharacters = new char[] { '[' };
+            return BlockState.None;
         }
 
-        public override BlockState TryOpen(BlockProcessor processor)
+        // [!include[<title>](<filepath>)]
+        var column = processor.Column;
+        var line = processor.Line;
+        var command = line.ToString();
+
+        if (!ExtensionsHelper.MatchStart(ref line, StartString, false))
         {
-            if (processor.IsCodeIndent)
-            {
-                return BlockState.None;
-            }
-
-            // [!include[<title>](<filepath>)]
-            var column = processor.Column;
-            var line = processor.Line;
-            var command = line.ToString();
-
-            if (!ExtensionsHelper.MatchStart(ref line, StartString, false))
-            {
-                return BlockState.None;
-            }
-            else
-            {
-                if (line.CurrentChar == '+')
-                {
-                    line.NextChar();
-                }
-            }
-
-            string title = null, path = null;
-
-            if (!ExtensionsHelper.MatchLink(ref line, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref line))
-            {
-                return BlockState.None;
-            }
-
-            while (line.CurrentChar.IsSpaceOrTab()) line.NextChar();
-            if (line.CurrentChar != '\0')
-            {
-                return BlockState.None;
-            }
-
-            processor.NewBlocks.Push(new InclusionBlock(this)
-            {
-                Title = title,
-                IncludedFilePath = path,
-                Line = processor.LineIndex,
-                Column = column,
-            });
-
-            return BlockState.BreakDiscard;
+            return BlockState.None;
         }
+        else
+        {
+            if (line.CurrentChar == '+')
+            {
+                line.NextChar();
+            }
+        }
+
+        string title = null, path = null;
+
+        if (!ExtensionsHelper.MatchLink(ref line, ref title, ref path) || !ExtensionsHelper.MatchInclusionEnd(ref line))
+        {
+            return BlockState.None;
+        }
+
+        while (line.CurrentChar.IsSpaceOrTab()) line.NextChar();
+        if (line.CurrentChar != '\0')
+        {
+            return BlockState.None;
+        }
+
+        processor.NewBlocks.Push(new InclusionBlock(this)
+        {
+            Title = title,
+            IncludedFilePath = path,
+            Line = processor.LineIndex,
+            Column = column,
+        });
+
+        return BlockState.BreakDiscard;
     }
 }

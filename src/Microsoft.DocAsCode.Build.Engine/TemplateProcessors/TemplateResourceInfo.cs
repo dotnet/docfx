@@ -1,34 +1,33 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public sealed class TemplateResourceInfo
 {
-    public sealed class TemplateResourceInfo
+    public string ResourceKey { get; }
+    public TemplateResourceInfo(string resourceKey)
     {
-        public string ResourceKey { get; }
-        public TemplateResourceInfo(string resourceKey)
+        ResourceKey = resourceKey;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (!(obj is TemplateResourceInfo target))
         {
-            ResourceKey = resourceKey;
+            return false;
         }
 
-        public override bool Equals(object obj)
+        if (ReferenceEquals(this, target))
         {
-            if (!(obj is TemplateResourceInfo target))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, target))
-            {
-                return true;
-            }
-
-            return Equals(ResourceKey, target.ResourceKey);
+            return true;
         }
 
-        public override int GetHashCode()
-        {
-            return ResourceKey.GetHashCode();
-        }
+        return Equals(ResourceKey, target.ResourceKey);
+    }
+
+    public override int GetHashCode()
+    {
+        return ResourceKey.GetHashCode();
     }
 }

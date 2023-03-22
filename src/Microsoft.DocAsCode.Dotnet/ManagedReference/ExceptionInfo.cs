@@ -1,38 +1,35 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.DataContracts.ManagedReference
+using Microsoft.DocAsCode.Common.EntityMergers;
+using Microsoft.DocAsCode.DataContracts.Common;
+
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
+
+namespace Microsoft.DocAsCode.DataContracts.ManagedReference;
+
+[Serializable]
+public class ExceptionInfo
 {
-    using System;
+    [YamlMember(Alias = "type")]
+    [MergeOption(MergeOption.MergeKey)]
+    [JsonProperty("type")]
+    [UniqueIdentityReference]
+    public string Type { get; set; }
 
-    using Microsoft.DocAsCode.Common.EntityMergers;
-    using Microsoft.DocAsCode.DataContracts.Common;
+    [YamlMember(Alias = Constants.PropertyName.CommentId)]
+    [JsonProperty(Constants.PropertyName.CommentId)]
+    [MergeOption(MergeOption.Ignore)]
+    public string CommentId { get; set; }
 
-    using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
+    [YamlMember(Alias = "description")]
+    [JsonProperty("description")]
+    [MarkdownContent]
+    public string Description { get; set; }
 
-    [Serializable]
-    public class ExceptionInfo
+    internal ExceptionInfo Clone()
     {
-        [YamlMember(Alias = "type")]
-        [MergeOption(MergeOption.MergeKey)]
-        [JsonProperty("type")]
-        [UniqueIdentityReference]
-        public string Type { get; set; }
-
-        [YamlMember(Alias = Constants.PropertyName.CommentId)]
-        [JsonProperty(Constants.PropertyName.CommentId)]
-        [MergeOption(MergeOption.Ignore)]
-        public string CommentId { get; set; }
-
-        [YamlMember(Alias = "description")]
-        [JsonProperty("description")]
-        [MarkdownContent]
-        public string Description { get; set; }
-
-        internal ExceptionInfo Clone()
-        {
-            return (ExceptionInfo)MemberwiseClone();
-        }
+        return (ExceptionInfo)MemberwiseClone();
     }
 }

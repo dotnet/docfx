@@ -1,51 +1,47 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.HtmlToPdf
+namespace Microsoft.DocAsCode.HtmlToPdf;
+
+public static class PdfHelper
 {
-    using System;
-    using System.IO;
-
-    public static class PdfHelper
+    public static string RemoveUrlQueryString(this string url)
     {
-        public static string RemoveUrlQueryString(this string url)
+        if (string.IsNullOrEmpty(url))
         {
-            if (string.IsNullOrEmpty(url))
-            {
-                return url;
-            }
-            var queryStringIndex = url.IndexOf("?", StringComparison.OrdinalIgnoreCase);
-            if (queryStringIndex != -1)
-            {
-                url = url.Substring(0, queryStringIndex);
-            }
             return url;
         }
-
-        public static string RemoveUrlBookmark(this string url)
+        var queryStringIndex = url.IndexOf("?", StringComparison.OrdinalIgnoreCase);
+        if (queryStringIndex != -1)
         {
-            if (string.IsNullOrEmpty(url))
-            {
-                return url;
-            }
-            var bookmarkIndex = url.LastIndexOf("#", StringComparison.OrdinalIgnoreCase);
-            if (bookmarkIndex != -1)
-            {
-                url = url.Substring(0, bookmarkIndex);
-            }
+            url = url.Substring(0, queryStringIndex);
+        }
+        return url;
+    }
 
+    public static string RemoveUrlBookmark(this string url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
             return url;
         }
-
-        public static string TrimStartPath(this string path)
+        var bookmarkIndex = url.LastIndexOf("#", StringComparison.OrdinalIgnoreCase);
+        if (bookmarkIndex != -1)
         {
-            return path.TrimStart('/').TrimStart('\\');
+            url = url.Substring(0, bookmarkIndex);
         }
 
-        public static string NormalizeFileLocalPath(string basePath, string relativePath, bool toLower = true)
-        {
-            string localPath = new Uri(Path.Combine(basePath, relativePath.TrimStartPath())).LocalPath;
-            return toLower ? localPath.ToLower() : localPath;
-        }
+        return url;
+    }
+
+    public static string TrimStartPath(this string path)
+    {
+        return path.TrimStart('/').TrimStart('\\');
+    }
+
+    public static string NormalizeFileLocalPath(string basePath, string relativePath, bool toLower = true)
+    {
+        string localPath = new Uri(Path.Combine(basePath, relativePath.TrimStartPath())).LocalPath;
+        return toLower ? localPath.ToLower() : localPath;
     }
 }

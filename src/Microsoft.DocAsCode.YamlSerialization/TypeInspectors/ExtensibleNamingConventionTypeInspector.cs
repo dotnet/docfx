@@ -1,41 +1,36 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
+using YamlDotNet.Serialization;
+
+namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
+
+public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInspectorSkeleton
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    private readonly IExtensibleTypeInspector innerTypeDescriptor;
+    private readonly INamingConvention namingConvention;
 
-    using YamlDotNet.Serialization;
-
-    public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInspectorSkeleton
+    public ExtensibleNamingConventionTypeInspector(IExtensibleTypeInspector innerTypeDescriptor, INamingConvention namingConvention)
     {
-        private readonly IExtensibleTypeInspector innerTypeDescriptor;
-        private readonly INamingConvention namingConvention;
-
-        public ExtensibleNamingConventionTypeInspector(IExtensibleTypeInspector innerTypeDescriptor, INamingConvention namingConvention)
+        if (innerTypeDescriptor == null)
         {
-            if (innerTypeDescriptor == null)
-            {
-                throw new ArgumentNullException(nameof(innerTypeDescriptor));
-            }
-
-            this.innerTypeDescriptor = innerTypeDescriptor;
-
-            if (namingConvention == null)
-            {
-                throw new ArgumentNullException(nameof(namingConvention));
-            }
-
-            this.namingConvention = namingConvention;
+            throw new ArgumentNullException(nameof(innerTypeDescriptor));
         }
 
-        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container) =>
-            from p in innerTypeDescriptor.GetProperties(type, container)
-            select (IPropertyDescriptor)new PropertyDescriptor(p) { Name = namingConvention.Apply(p.Name) };
+        this.innerTypeDescriptor = innerTypeDescriptor;
 
-        public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
-            innerTypeDescriptor.GetProperty(type, container, name);
+        if (namingConvention == null)
+        {
+            throw new ArgumentNullException(nameof(namingConvention));
+        }
+
+        this.namingConvention = namingConvention;
     }
+
+    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container) =>
+        from p in innerTypeDescriptor.GetProperties(type, container)
+        select (IPropertyDescriptor)new PropertyDescriptor(p) { Name = namingConvention.Apply(p.Name) };
+
+    public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
+        innerTypeDescriptor.GetProperty(type, container, name);
 }

@@ -1,58 +1,55 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common.Git
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
+
+namespace Microsoft.DocAsCode.Common.Git;
+
+[Serializable]
+public class GitDetail
 {
-    using System;
+    /// <summary>
+    /// Relative path of current file to the Git Root Directory
+    /// </summary>
+    [YamlMember(Alias = "path")]
+    [JsonProperty("path")]
+    public string RelativePath { get; set; }
 
-    using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
+    [YamlMember(Alias = "branch")]
+    [JsonProperty("branch")]
+    public string RemoteBranch { get; set; }
 
-    [Serializable]
-    public class GitDetail
+    [YamlMember(Alias = "repo")]
+    [JsonProperty("repo")]
+    public string RemoteRepositoryUrl { get; set; }
+
+    // remove it to avoid config hash changed
+    //[YamlMember(Alias = "commit")]
+    //[JsonProperty("commit")]
+    //public string CommitId { get; set; }
+
+    // remove it to avoid config hash changed
+    //[JsonProperty("key")]
+    //[YamlMember(Alias = "key")]
+    //public string Description { get; set; }
+
+    public override bool Equals(object obj)
     {
-        /// <summary>
-        /// Relative path of current file to the Git Root Directory
-        /// </summary>
-        [YamlMember(Alias = "path")]
-        [JsonProperty("path")]
-        public string RelativePath { get; set; }
+        if (obj == null) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (this.GetType() != obj.GetType()) return false;
 
-        [YamlMember(Alias = "branch")]
-        [JsonProperty("branch")]
-        public string RemoteBranch { get; set; }
+        return Equals(this.ToString(), obj.ToString());
+    }
 
-        [YamlMember(Alias = "repo")]
-        [JsonProperty("repo")]
-        public string RemoteRepositoryUrl { get; set; }
+    public override int GetHashCode()
+    {
+        return ToString().GetHashCode();
+    }
 
-        // remove it to avoid config hash changed
-        //[YamlMember(Alias = "commit")]
-        //[JsonProperty("commit")]
-        //public string CommitId { get; set; }
-
-        // remove it to avoid config hash changed
-        //[JsonProperty("key")]
-        //[YamlMember(Alias = "key")]
-        //public string Description { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (this.GetType() != obj.GetType()) return false;
-
-            return Equals(this.ToString(), obj.ToString());
-        }
-
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return $"branch: {RemoteBranch}, url: {RemoteRepositoryUrl}, file: {RelativePath}";
-        }
+    public override string ToString()
+    {
+        return $"branch: {RemoteBranch}, url: {RemoteRepositoryUrl}, file: {RelativePath}";
     }
 }

@@ -1,24 +1,20 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.OverwriteDocuments
+using Markdig.Syntax;
+
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
+
+[Serializable]
+public class MarkdownFragmentModel
 {
-    using System;
-    using System.Collections.Generic;
+    public string Uid { get; set; }
 
-    using Markdig.Syntax;
+    public Block UidSource { get; set; }
 
-    [Serializable]
-    public class MarkdownFragmentModel
-    {
-        public string Uid { get; set; }
+    public string YamlCodeBlock { get; set; }
 
-        public Block UidSource { get; set; }
+    public Block YamlCodeBlockSource { get; set; }
 
-        public string YamlCodeBlock { get; set; }
-
-        public Block YamlCodeBlockSource { get; set; }
-
-        public List<MarkdownPropertyModel> Contents { get; set; }
-    }
+    public List<MarkdownPropertyModel> Contents { get; set; }
 }

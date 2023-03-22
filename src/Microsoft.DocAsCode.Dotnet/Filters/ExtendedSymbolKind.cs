@@ -1,36 +1,35 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal enum ExtendedSymbolKind
 {
-    internal enum ExtendedSymbolKind
-    {
-        Assembly = 0x100,
-        Namespace = 0x110,
-        Type = 0x120,
-        Class,
-        Struct,
-        Enum,
-        Interface,
-        Delegate,
-        Member = 0x200,
-        Event,
-        Field,
-        Method,
-        Property,
-    }
+    Assembly = 0x100,
+    Namespace = 0x110,
+    Type = 0x120,
+    Class,
+    Struct,
+    Enum,
+    Interface,
+    Delegate,
+    Member = 0x200,
+    Event,
+    Field,
+    Method,
+    Property,
+}
 
-    internal static class ExtendedSymbolKindHelper
+internal static class ExtendedSymbolKindHelper
+{
+    public static bool Contains(this ExtendedSymbolKind kind, SymbolFilterData symbol)
     {
-        public static bool Contains(this ExtendedSymbolKind kind, SymbolFilterData symbol)
+        ExtendedSymbolKind? k = symbol.Kind;
+
+        if (k == null)
         {
-            ExtendedSymbolKind? k = symbol.Kind;
-
-            if (k == null)
-            {
-                return false;
-            }
-            return (kind & k.Value) == kind;
+            return false;
         }
+        return (kind & k.Value) == kind;
     }
 }

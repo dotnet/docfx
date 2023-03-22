@@ -1,25 +1,24 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine.Tests
+using System.Text;
+
+using Microsoft.DocAsCode.Plugins;
+
+using HtmlAgilityPack;
+using Xunit;
+
+namespace Microsoft.DocAsCode.Build.Engine.Tests;
+
+[Collection("docfx STA")]
+public class ExtractSearchIndexFromHtmlTest
 {
-    using System.IO;
-    using System.Text;
+    private static ExtractSearchIndex _extractor = new();
 
-    using Microsoft.DocAsCode.Plugins;
-
-    using HtmlAgilityPack;
-    using Xunit;
-
-    [Collection("docfx STA")]
-    public class ExtractSearchIndexFromHtmlTest
+    [Fact]
+    public void TestBasicFeature()
     {
-        private static ExtractSearchIndex _extractor = new ExtractSearchIndex();
-
-        [Fact]
-        public void TestBasicFeature()
-        {
-            var rawHtml = @"
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -38,17 +37,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Hello World, Microsoft This is article title docfx can do anything..." }, item);
+    }
 
-        [Fact]
-        public void TestSearchableClass()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestSearchableClass()
+    {
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -58,17 +57,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }, item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Cooooooool!" }, item);
+    }
 
-        [Fact]
-        public void TestSearchDisableClass()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestSearchDisableClass()
+    {
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -84,17 +83,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Null(item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Null(item);
+    }
 
-        [Fact]
-        public void TestArticleTagWithSearchableClass()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestArticleTagWithSearchableClass()
+    {
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -106,17 +105,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}, item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}, item);
+    }
 
-        [Fact]
-        public void TestDisableTagWithSearchableClass()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestDisableTagWithSearchableClass()
+    {
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -130,17 +129,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Null(item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Null(item);
+    }
 
-        [Fact]
-        public void TestEmptyItem()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestEmptyItem()
+    {
+        var rawHtml = @"
 <html>
     <head>
         <title>This is title in head metadata</title>
@@ -149,17 +148,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }, item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = string.Empty }, item);
+    }
 
-        [Fact]
-        public void TestBlockTagsVsInlineTags()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestBlockTagsVsInlineTags()
+    {
+        var rawHtml = @"
 <html>
     <body>
         <article>
@@ -169,17 +168,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     </body>
 </html>
 ";
-            var html = new HtmlDocument();
-            html.LoadHtml(rawHtml);
-            var href = "http://dotnet.github.io/docfx";
-            var item = _extractor.ExtractItem(html, href);
-            Assert.Equal(new SearchIndexItem { Href = href, Title = "", Keywords = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
-        }
+        var html = new HtmlDocument();
+        html.LoadHtml(rawHtml);
+        var href = "http://dotnet.github.io/docfx";
+        var item = _extractor.ExtractItem(html, href);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "", Keywords = "Insert space in block level html tags Donotinsertspaceininlinehtmltags" }, item);
+    }
 
-        [Fact]
-        public void TestIndexDotJsonWithNonEnglishCharacters()
-        {
-            var rawHtml = @"
+    [Fact]
+    public void TestIndexDotJsonWithNonEnglishCharacters()
+    {
+        var rawHtml = @"
 <!DOCTYPE html>
 <html>
 <head>
@@ -202,35 +201,34 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 </html>
 ";
 
-            // prepares temp folder and file for testing purposes
-            // ExtractSearchIndex should probably be refactored so we can test it without depending on the filesystem
-            var tempTestFolder = "temp_test_folder";
-            if (Directory.Exists(tempTestFolder)) Directory.Delete(tempTestFolder, true);
-            Directory.CreateDirectory(tempTestFolder);
-            File.WriteAllText(Path.Combine(tempTestFolder, "index.html"), rawHtml, new UTF8Encoding(false));
+        // prepares temp folder and file for testing purposes
+        // ExtractSearchIndex should probably be refactored so we can test it without depending on the filesystem
+        var tempTestFolder = "temp_test_folder";
+        if (Directory.Exists(tempTestFolder)) Directory.Delete(tempTestFolder, true);
+        Directory.CreateDirectory(tempTestFolder);
+        File.WriteAllText(Path.Combine(tempTestFolder, "index.html"), rawHtml, new UTF8Encoding(false));
 
-            // prepares fake manifest object
-            var outputFileInfo = new OutputFileInfo();
-            outputFileInfo.RelativePath = "index.html";
+        // prepares fake manifest object
+        var outputFileInfo = new OutputFileInfo();
+        outputFileInfo.RelativePath = "index.html";
 
-            var manifestItem = new ManifestItem();
-            manifestItem.OutputFiles.Add(".html", outputFileInfo);
+        var manifestItem = new ManifestItem();
+        manifestItem.OutputFiles.Add(".html", outputFileInfo);
 
-            var manifest = new Manifest();
-            manifest.Files.Add(manifestItem);
+        var manifest = new Manifest();
+        manifest.Files.Add(manifestItem);
 
-            // process the fake manifest, using tempTestFolder as the output folder
-            _extractor.Process(manifest, tempTestFolder);
+        // process the fake manifest, using tempTestFolder as the output folder
+        _extractor.Process(manifest, tempTestFolder);
 
-            var expectedIndexJSON = @"{
+        var expectedIndexJSON = @"{
   ""index.html"": {
     ""href"": ""index.html"",
     ""title"": ""This is title in head metadata"",
     ""keywords"": ""Hello World, Microsoft This is article title docfx can do anything... and it supports non-english characters like these: ãâáà êé í õôó Типы шрифтов 人物 文字""
   }
 }";
-            var actualIndexJSON = File.ReadAllText(Path.Combine(tempTestFolder, "index.json"), Encoding.UTF8);
-            Assert.Equal(expectedIndexJSON, actualIndexJSON, ignoreLineEndingDifferences: true);
-        }
+        var actualIndexJSON = File.ReadAllText(Path.Combine(tempTestFolder, "index.json"), Encoding.UTF8);
+        Assert.Equal(expectedIndexJSON, actualIndexJSON, ignoreLineEndingDifferences: true);
     }
 }

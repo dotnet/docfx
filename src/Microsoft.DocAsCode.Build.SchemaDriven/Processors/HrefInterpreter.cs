@@ -1,85 +1,83 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors;
+
+public class HrefInterpreter : IInterpreter
 {
-    using System;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
+    private readonly bool _exportFileLink;
+    private readonly bool _updateValue;
+    private readonly string _siteHostName;
 
-    public class HrefInterpreter : IInterpreter
+    public HrefInterpreter(bool exportFileLink, bool updateValue, string siteHostName = null)
     {
-        private readonly bool _exportFileLink;
-        private readonly bool _updateValue;
-        private readonly string _siteHostName;
+        _exportFileLink = exportFileLink;
+        _updateValue = updateValue;
+        _siteHostName = siteHostName;
+    }
 
-        public HrefInterpreter(bool exportFileLink, bool updateValue, string siteHostName = null)
+    public bool CanInterpret(BaseSchema schema)
+    {
+        return schema != null && schema.ContentType == ContentType.Href;
+    }
+
+    public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
+    {
+        if (value == null || !CanInterpret(schema))
         {
-            _exportFileLink = exportFileLink;
-            _updateValue = updateValue;
-            _siteHostName = siteHostName;
+            return value;
         }
 
-        public bool CanInterpret(BaseSchema schema)
+        if (!(value is string val))
         {
-            return schema != null && schema.ContentType == ContentType.Href;
+            throw new ArgumentException($"{value.GetType()} is not supported type string.");
         }
 
-        public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
+        if (!Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out Uri uri))
         {
-            if (value == null || !CanInterpret(schema))
-            {
-                return value;
-            }
+            var message = $"{val} is not a valid href";
+            Logger.LogError(message, code: ErrorCodes.Build.InvalidHref);
+            throw new DocumentException(message);
+        }
 
-            if (!(value is string val))
-            {
-                throw new ArgumentException($"{value.GetType()} is not supported type string.");
-            }
+        // "/" is also considered as absolute to us
+        if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
+        {
+            return Helper.RemoveHostName(val, _siteHostName);
+        }
 
-            if (!Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out Uri uri))
+        // sample value: a/b/c?hello
+        var filePath = UriUtility.GetPath(val);
+        var fragments = UriUtility.GetQueryStringAndFragment(val);
+        var relPath = RelativePath.TryParse(filePath);
+        if (relPath != null)
+        {
+            var originalFile = context.GetOriginalContentFile(path);
+            var currentFile = (RelativePath)originalFile.File;
+            relPath = (currentFile + relPath.UrlDecode()).GetPathFromWorkingFolder();
+            if (_exportFileLink)
             {
-                var message = $"{val} is not a valid href";
-                Logger.LogError(message, code: ErrorCodes.Build.InvalidHref);
-                throw new DocumentException(message);
-            }
-
-            // "/" is also considered as absolute to us
-            if (uri.IsAbsoluteUri || val.StartsWith("/", StringComparison.Ordinal))
-            {
-                return Helper.RemoveHostName(val, _siteHostName);
-            }
-
-            // sample value: a/b/c?hello
-            var filePath = UriUtility.GetPath(val);
-            var fragments = UriUtility.GetQueryStringAndFragment(val);
-            var relPath = RelativePath.TryParse(filePath);
-            if (relPath != null)
-            {
-                var originalFile = context.GetOriginalContentFile(path);
-                var currentFile = (RelativePath)originalFile.File;
-                relPath = (currentFile + relPath.UrlDecode()).GetPathFromWorkingFolder();
-                if (_exportFileLink)
+                (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
                 {
-                    (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
-                    {
-                        Target = relPath,
-                        Anchor = UriUtility.GetFragment(val),
-                        SourceFile = originalFile.File
-                    });
-                }
+                    Target = relPath,
+                    Anchor = UriUtility.GetFragment(val),
+                    SourceFile = originalFile.File
+                });
+            }
 
-                if (_updateValue && context.BuildContext != null)
+            if (_updateValue && context.BuildContext != null)
+            {
+                var resolved = (RelativePath)context.BuildContext.GetFilePath(relPath);
+                if (resolved != null)
                 {
-                    var resolved = (RelativePath)context.BuildContext.GetFilePath(relPath);
-                    if (resolved != null)
-                    {
-                        val = resolved.MakeRelativeTo(((RelativePath)context.FileAndType.File).GetPathFromWorkingFolder()).UrlEncode() + fragments;
-                    }
+                    val = resolved.MakeRelativeTo(((RelativePath)context.FileAndType.File).GetPathFromWorkingFolder()).UrlEncode() + fragments;
                 }
             }
-
-            return val;
         }
+
+        return val;
     }
 }

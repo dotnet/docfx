@@ -1,30 +1,27 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.HtmlToPdf
+using Newtonsoft.Json;
+
+namespace Microsoft.DocAsCode.HtmlToPdf;
+
+public class FileOutputs
 {
-    using System.Collections.Generic;
+    [JsonProperty(ManifestConstants.BuildManifestItem.OutputHtml)]
+    public FileOutput Html { get; set; }
 
-    using Newtonsoft.Json;
+    [JsonProperty(ManifestConstants.BuildManifestItem.OutputRawPageJson)]
+    public FileOutput RawPageJson { get; set; }
 
-    public class FileOutputs
-    {
-        [JsonProperty(ManifestConstants.BuildManifestItem.OutputHtml)]
-        public FileOutput Html { get; set; }
+    [JsonProperty(ManifestConstants.BuildManifestItem.OutputMtaJson)]
+    public FileOutput MtaJson { get; set; }
 
-        [JsonProperty(ManifestConstants.BuildManifestItem.OutputRawPageJson)]
-        public FileOutput RawPageJson { get; set; }
+    [JsonProperty(ManifestConstants.BuildManifestItem.OutputResource)]
+    public FileOutput Resource { get; set; }
 
-        [JsonProperty(ManifestConstants.BuildManifestItem.OutputMtaJson)]
-        public FileOutput MtaJson { get; set; }
+    [JsonProperty(ManifestConstants.BuildManifestItem.OutputJson)]
+    public FileOutput TocJson { get; set; }
 
-        [JsonProperty(ManifestConstants.BuildManifestItem.OutputResource)]
-        public FileOutput Resource { get; set; }
-
-        [JsonProperty(ManifestConstants.BuildManifestItem.OutputJson)]
-        public FileOutput TocJson { get; set; }
-
-        [JsonExtensionData]
-        public Dictionary<string, object> OtherOutputs { get; set; }
-    }
+    [JsonExtensionData]
+    public Dictionary<string, object> OtherOutputs { get; set; }
 }

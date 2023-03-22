@@ -1,42 +1,41 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using Newtonsoft.Json;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public class SearchIndexItem
 {
-    using Newtonsoft.Json;
+    [JsonProperty("href")]
+    public string Href { get; set; }
 
-    public class SearchIndexItem
+    [JsonProperty("title")]
+    public string Title { get; set; }
+
+    [JsonProperty("keywords")]
+    public string Keywords { get; set; }
+
+    public override bool Equals(object obj)
     {
-        [JsonProperty("href")]
-        public string Href { get; set; }
+        return this.Equals(obj as SearchIndexItem);
+    }
 
-        [JsonProperty("title")]
-        public string Title { get; set; }
-
-        [JsonProperty("keywords")]
-        public string Keywords { get; set; }
-
-        public override bool Equals(object obj)
+    public bool Equals(SearchIndexItem other)
+    {
+        if (other == null)
         {
-            return this.Equals(obj as SearchIndexItem);
+            return false;
         }
-
-        public bool Equals(SearchIndexItem other)
+        if (ReferenceEquals(this, other))
         {
-            if (other == null)
-            {
-                return false;
-            }
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-            return string.Equals(this.Title, other.Title) && string.Equals(this.Href, other.Href) && string.Equals(this.Keywords, other.Keywords);
+            return true;
         }
+        return string.Equals(this.Title, other.Title) && string.Equals(this.Href, other.Href) && string.Equals(this.Keywords, other.Keywords);
+    }
 
-        public override int GetHashCode()
-        {
-            return Title.GetHashCode() ^ Href.GetHashCode() ^ Keywords.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return Title.GetHashCode() ^ Href.GetHashCode() ^ Keywords.GetHashCode();
     }
 }

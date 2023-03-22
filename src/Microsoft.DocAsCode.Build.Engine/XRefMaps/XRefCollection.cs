@@ -1,124 +1,119 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using System.Collections.Immutable;
+
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+internal sealed class XRefCollection
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
-    using System.Threading.Tasks;
+    private const int MaxParallelism = 0x10;
 
-    using Microsoft.DocAsCode.Common;
-
-    internal sealed class XRefCollection
+    public XRefCollection(IEnumerable<Uri> uris)
     {
-        private const int MaxParallelism = 0x10;
-
-        public XRefCollection(IEnumerable<Uri> uris)
+        if (uris == null)
         {
-            if (uris == null)
-            {
-                throw new ArgumentNullException(nameof(uris));
-            }
-            Uris = uris.ToImmutableList();
+            throw new ArgumentNullException(nameof(uris));
+        }
+        Uris = uris.ToImmutableList();
+    }
+
+    public ImmutableList<Uri> Uris { get; set; }
+
+    public Task<IXRefContainerReader> GetReaderAsync(string baseFolder, IReadOnlyList<string> fallbackFolders = null)
+    {
+        var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder, fallbackFolders);
+        return creator.CreateAsync();
+    }
+
+    private sealed class ReaderCreator
+    {
+        private readonly ImmutableList<Uri> _uris;
+        private readonly HashSet<string> _set = new();
+        private readonly Dictionary<Task<IXRefContainer>, Uri> _processing = new();
+        private readonly XRefMapDownloader _downloader;
+
+        public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism, string baseFolder, IReadOnlyList<string> fallbackFolders)
+        {
+            _uris = uris;
+            _downloader = new XRefMapDownloader(baseFolder, fallbackFolders, maxParallelism);
         }
 
-        public ImmutableList<Uri> Uris { get; set; }
-
-        public Task<IXRefContainerReader> GetReaderAsync(string baseFolder, IReadOnlyList<string> fallbackFolders = null)
+        public async Task<IXRefContainerReader> CreateAsync()
         {
-            var creator = new ReaderCreator(Uris, MaxParallelism, baseFolder, fallbackFolders);
-            return creator.CreateAsync();
+            AddToDownloadList(_uris);
+            var dict = new Dictionary<string, IXRefContainer>();
+            foreach (var item in _processing)
+            {
+                var task = item.Key;
+                var uri = item.Value;
+                try
+                {
+                    var container = await task;
+                    if (!container.IsEmbeddedRedirections)
+                    {
+                        AddToDownloadList(
+                            from r in container.GetRedirections()
+                            where r != null
+                            select GetUri(uri, r.Href) into u
+                            where u != null
+                            select u);
+                    }
+                    dict[uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.OriginalString] = container;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning($"Unable to download xref map file from {uri}, details: {ex.Message}");
+                }
+            }
+            var fakeEntry = Guid.NewGuid().ToString();
+            dict[fakeEntry] = new XRefMap
+            {
+                HrefUpdated = true,
+                Redirections = (from pair in dict
+                                select new XRefMapRedirection
+                                {
+                                    Href = pair.Key,
+                                }).ToList()
+            };
+            return new XRefMapReader(fakeEntry, dict);
         }
 
-        private sealed class ReaderCreator
+        private static Uri GetUri(Uri baseUri, string href)
         {
-            private readonly ImmutableList<Uri> _uris;
-            private readonly HashSet<string> _set = new HashSet<string>();
-            private readonly Dictionary<Task<IXRefContainer>, Uri> _processing = new Dictionary<Task<IXRefContainer>, Uri>();
-            private readonly XRefMapDownloader _downloader;
-
-            public ReaderCreator(ImmutableList<Uri> uris, int maxParallelism, string baseFolder, IReadOnlyList<string> fallbackFolders)
+            if (string.IsNullOrWhiteSpace(href))
             {
-                _uris = uris;
-                _downloader = new XRefMapDownloader(baseFolder, fallbackFolders, maxParallelism);
+                return null;
             }
-
-            public async Task<IXRefContainerReader> CreateAsync()
+            if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri uri))
             {
-                AddToDownloadList(_uris);
-                var dict = new Dictionary<string, IXRefContainer>();
-                foreach (var item in _processing)
-                {
-                    var task = item.Key;
-                    var uri = item.Value;
-                    try
-                    {
-                        var container = await task;
-                        if (!container.IsEmbeddedRedirections)
-                        {
-                            AddToDownloadList(
-                                from r in container.GetRedirections()
-                                where r != null
-                                select GetUri(uri, r.Href) into u
-                                where u != null
-                                select u);
-                        }
-                        dict[uri.IsAbsoluteUri ? uri.AbsoluteUri : uri.OriginalString] = container;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogWarning($"Unable to download xref map file from {uri}, details: {ex.Message}");
-                    }
-                }
-                var fakeEntry = Guid.NewGuid().ToString();
-                dict[fakeEntry] = new XRefMap
-                {
-                    HrefUpdated = true,
-                    Redirections = (from pair in dict
-                                    select new XRefMapRedirection
-                                    {
-                                        Href = pair.Key,
-                                    }).ToList()
-                };
-                return new XRefMapReader(fakeEntry, dict);
+                return null;
             }
-
-            private static Uri GetUri(Uri baseUri, string href)
+            if (uri.IsAbsoluteUri)
             {
-                if (string.IsNullOrWhiteSpace(href))
-                {
-                    return null;
-                }
-                if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri uri))
-                {
-                    return null;
-                }
+                return uri;
+            }
+            return new Uri(baseUri, uri);
+        }
+
+        private void AddToDownloadList(IEnumerable<Uri> uris)
+        {
+            foreach (var uri in uris)
+            {
                 if (uri.IsAbsoluteUri)
                 {
-                    return uri;
-                }
-                return new Uri(baseUri, uri);
-            }
-
-            private void AddToDownloadList(IEnumerable<Uri> uris)
-            {
-                foreach (var uri in uris)
-                {
-                    if (uri.IsAbsoluteUri)
-                    {
-                        if (_set.Add(uri.AbsoluteUri))
-                        {
-                            var task = _downloader.DownloadAsync(uri);
-                            _processing[task] = uri;
-                        }
-                    }
-                    else if (_set.Add(uri.OriginalString))
+                    if (_set.Add(uri.AbsoluteUri))
                     {
                         var task = _downloader.DownloadAsync(uri);
                         _processing[task] = uri;
                     }
+                }
+                else if (_set.Add(uri.OriginalString))
+                {
+                    var task = _downloader.DownloadAsync(uri);
+                    _processing[task] = uri;
                 }
             }
         }

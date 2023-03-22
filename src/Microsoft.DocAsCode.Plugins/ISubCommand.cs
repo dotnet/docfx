@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Plugins
+namespace Microsoft.DocAsCode.Plugins;
+
+public interface ISubCommand
 {
-    public interface ISubCommand
-    {
-        bool AllowReplay { get; }
-        void Exec(SubCommandRunningContext context);
-        string Name { get; }
-    }
+    bool AllowReplay { get; }
+    void Exec(SubCommandRunningContext context);
+    string Name { get; }
 }

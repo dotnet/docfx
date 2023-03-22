@@ -1,28 +1,24 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+namespace Microsoft.DocAsCode.Common;
+
+internal sealed class EmptyFileReader : IFileReader
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    public static readonly EmptyFileReader Instance = new();
 
-    internal sealed class EmptyFileReader : IFileReader
+    private EmptyFileReader()
     {
-        public static readonly EmptyFileReader Instance = new EmptyFileReader();
-
-        private EmptyFileReader()
-        {
-        }
-
-        #region IFileReader Members
-
-        public PathMapping? FindFile(RelativePath file) => null;
-
-        public IEnumerable<RelativePath> EnumerateFiles() => Enumerable.Empty<RelativePath>();
-
-        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
-            Enumerable.Empty<string>();
-
-        #endregion
     }
+
+    #region IFileReader Members
+
+    public PathMapping? FindFile(RelativePath file) => null;
+
+    public IEnumerable<RelativePath> EnumerateFiles() => Enumerable.Empty<RelativePath>();
+
+    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
+        Enumerable.Empty<string>();
+
+    #endregion
 }

@@ -1,17 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public class InvalidCrossReferenceException : DocumentException
 {
-    using Microsoft.DocAsCode.Plugins;
+    public XRefDetails XRefDetails { get; }
 
-    public class InvalidCrossReferenceException : DocumentException
+    public InvalidCrossReferenceException(XRefDetails xrefDetails) : base()
     {
-        public XRefDetails XRefDetails { get; }
-
-        public InvalidCrossReferenceException(XRefDetails xrefDetails) : base()
-        {
-            XRefDetails = xrefDetails;
-        }
+        XRefDetails = xrefDetails;
     }
 }

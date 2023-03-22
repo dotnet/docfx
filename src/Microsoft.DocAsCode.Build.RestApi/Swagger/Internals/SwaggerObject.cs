@@ -1,23 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
+namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
+
+internal class SwaggerObject : SwaggerObjectBase
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    public override SwaggerObjectType ObjectType => SwaggerObjectType.Object;
 
-    internal class SwaggerObject : SwaggerObjectBase
+    public Dictionary<string, SwaggerObjectBase> Dictionary { get; set; } = new Dictionary<string, SwaggerObjectBase>();
+
+    public override SwaggerObjectBase Clone()
     {
-        public override SwaggerObjectType ObjectType => SwaggerObjectType.Object;
-
-        public Dictionary<string, SwaggerObjectBase> Dictionary { get; set; } = new Dictionary<string, SwaggerObjectBase>();
-
-        public override SwaggerObjectBase Clone()
-        {
-            var clone = (SwaggerObject)MemberwiseClone();
-            clone.Dictionary = Dictionary.ToDictionary(k => k.Key, k => k.Value.Clone());
-            clone.ReferencesResolved = false;
-            return clone;
-        }
+        var clone = (SwaggerObject)MemberwiseClone();
+        clone.Dictionary = Dictionary.ToDictionary(k => k.Key, k => k.Value.Clone());
+        clone.ReferencesResolved = false;
+        return clone;
     }
 }

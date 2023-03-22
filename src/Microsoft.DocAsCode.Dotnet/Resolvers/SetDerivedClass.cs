@@ -1,67 +1,63 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal class SetDerivedClass: IResolverPipeline
 {
-    using System.Linq;
-    using System.Collections.Generic;
+    private readonly Dictionary<string, List<string>> _derivedClassMapping = new();
 
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
-
-    internal class SetDerivedClass: IResolverPipeline
+    public void Run(MetadataModel yaml, ResolverContext context)
     {
-        private readonly Dictionary<string, List<string>> _derivedClassMapping = new Dictionary<string, List<string>>();
-
-        public void Run(MetadataModel yaml, ResolverContext context)
+        if (yaml.Members != null && yaml.Members.Count > 0)
         {
-            if (yaml.Members != null && yaml.Members.Count > 0)
-            {
-                UpdateDerivedClassMapping(yaml.Members, context.References);
-                AppendDerivedClass(yaml.Members);
-            }
+            UpdateDerivedClassMapping(yaml.Members, context.References);
+            AppendDerivedClass(yaml.Members);
         }
+    }
 
-        private void UpdateDerivedClassMapping(List<MetadataItem> items, Dictionary<string, ReferenceItem> reference)
+    private void UpdateDerivedClassMapping(List<MetadataItem> items, Dictionary<string, ReferenceItem> reference)
+    {
+        foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
-            foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
+            var inheritance = item.Inheritance;
+            if (inheritance!= null && inheritance.Count > 0)
             {
-                var inheritance = item.Inheritance;
-                if (inheritance!= null && inheritance.Count > 0)
+                var superClass = inheritance[inheritance.Count - 1];
+
+                if (reference.TryGetValue(superClass, out ReferenceItem referenceItem))
                 {
-                    var superClass = inheritance[inheritance.Count - 1];
+                    superClass = referenceItem.Definition ?? superClass;
+                }
 
-                    if (reference.TryGetValue(superClass, out ReferenceItem referenceItem))
+                // ignore System.Object's derived class
+                if (superClass != "System.Object")
+                {
+                    if (_derivedClassMapping.TryGetValue(superClass, out List<string> derivedClasses))
                     {
-                        superClass = referenceItem.Definition ?? superClass;
+                        derivedClasses.Add(item.Name);
                     }
-
-                    // ignore System.Object's derived class
-                    if (superClass != "System.Object")
+                    else
                     {
-                        if (_derivedClassMapping.TryGetValue(superClass, out List<string> derivedClasses))
-                        {
-                            derivedClasses.Add(item.Name);
-                        }
-                        else
-                        {
-                            _derivedClassMapping.Add(superClass, new List<string> { item.Name });
-                        }
+                        _derivedClassMapping.Add(superClass, new List<string> { item.Name });
                     }
                 }
             }
         }
+    }
 
-        private void AppendDerivedClass(List<MetadataItem> items)
+    private void AppendDerivedClass(List<MetadataItem> items)
+    {
+        foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
         {
-            foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
+            if (item.Type == MemberType.Class)
             {
-                if (item.Type == MemberType.Class)
+                if (_derivedClassMapping.TryGetValue(item.Name, out List<string> derivedClasses))
                 {
-                    if (_derivedClassMapping.TryGetValue(item.Name, out List<string> derivedClasses))
-                    {
-                        derivedClasses.Sort();
-                        item.DerivedClasses = derivedClasses;
-                    }
+                    derivedClasses.Sort();
+                    item.DerivedClasses = derivedClasses;
                 }
             }
         }

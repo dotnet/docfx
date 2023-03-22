@@ -1,71 +1,65 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
+using HtmlAgilityPack;
+
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.HtmlToPdf.Transformer;
+
+public class FrameTransformer : ITransformer
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
+    private static readonly string[] DefaultReplaceHosts = new string[] { "hubs-video.ssl.catalog.video.msn.com" };
+    private readonly string[] _replaceHosts;
 
-    using HtmlAgilityPack;
-
-    using Microsoft.DocAsCode.Common;
-
-    public class FrameTransformer : ITransformer
+    public FrameTransformer(params string[] replaceHosts)
     {
-        private static readonly string[] DefaultReplaceHosts = new string[] { "hubs-video.ssl.catalog.video.msn.com" };
-        private readonly string[] _replaceHosts;
+        _replaceHosts = replaceHosts ?? DefaultReplaceHosts;
+    }
 
-        public FrameTransformer(params string[] replaceHosts)
+    public void Transform(IEnumerable<string> htmlFilePaths)
+    {
+        if (_replaceHosts.Length == 0)
         {
-            _replaceHosts = replaceHosts ?? DefaultReplaceHosts;
+            return;
         }
 
-        public void Transform(IEnumerable<string> htmlFilePaths)
+        Parallel.ForEach(
+            htmlFilePaths,
+            htmlFilePath =>
         {
-            if (_replaceHosts.Length == 0)
+            try
             {
-                return;
-            }
-
-            Parallel.ForEach(
-                htmlFilePaths,
-                htmlFilePath =>
-            {
-                try
+                var doc = new HtmlDocument();
+                doc.Load(htmlFilePath);
+                var iframes = doc.DocumentNode.SelectNodes("//iframe[@src]");
+                if (iframes != null && iframes.Count > 0)
                 {
-                    var doc = new HtmlDocument();
-                    doc.Load(htmlFilePath);
-                    var iframes = doc.DocumentNode.SelectNodes("//iframe[@src]");
-                    if (iframes != null && iframes.Count > 0)
+                    bool isTransformed = false;
+                    foreach (var iframe in iframes)
                     {
-                        bool isTransformed = false;
-                        foreach (var iframe in iframes)
+                        var src = iframe.Attributes["src"].Value;
+                        if (Uri.TryCreate(src, UriKind.Absolute, out Uri uri))
                         {
-                            var src = iframe.Attributes["src"].Value;
-                            if (Uri.TryCreate(src, UriKind.Absolute, out Uri uri))
+                            string host = uri.Host;
+                            if (_replaceHosts.Any(p => string.Equals(p, host, StringComparison.OrdinalIgnoreCase)))
                             {
-                                string host = uri.Host;
-                                if (_replaceHosts.Any(p => string.Equals(p, host, StringComparison.OrdinalIgnoreCase)))
-                                {
-                                    var newNode = HtmlNode.CreateNode($"<a href='{src}'>Click here to view</a>");
-                                    iframe.ParentNode.ReplaceChild(newNode, iframe);
-                                    isTransformed = true;
-                                }
+                                var newNode = HtmlNode.CreateNode($"<a href='{src}'>Click here to view</a>");
+                                iframe.ParentNode.ReplaceChild(newNode, iframe);
+                                isTransformed = true;
                             }
                         }
-                        if (isTransformed)
-                        {
-                            doc.Save(htmlFilePath);
-                        }
+                    }
+                    if (isTransformed)
+                    {
+                        doc.Save(htmlFilePath);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning($"Transfer frame error, details: {ex.Message}", htmlFilePath);
-                }
-            });
-        }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Transfer frame error, details: {ex.Message}", htmlFilePath);
+            }
+        });
     }
 }

@@ -1,26 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.SubCommands
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.SubCommands;
+
+internal class HelpCommand : ISubCommand
 {
-    using System;
+    private string _message;
+    public bool AllowReplay => false;
+    public string Name { get; } = nameof(HelpCommand);
 
-    using Microsoft.DocAsCode.Plugins;
-
-    internal class HelpCommand : ISubCommand
+    public HelpCommand(string message)
     {
-        private string _message;
-        public bool AllowReplay => false;
-        public string Name { get; } = nameof(HelpCommand);
+        _message = message;
+    }
 
-        public HelpCommand(string message)
-        {
-            _message = message;
-        }
-
-        public void Exec(SubCommandRunningContext context)
-        {
-            Console.WriteLine(_message);
-        }
+    public void Exec(SubCommandRunningContext context)
+    {
+        Console.WriteLine(_message);
     }
 }

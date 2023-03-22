@@ -1,30 +1,27 @@
-﻿namespace Microsoft.DocAsCode.Common.EntityMergers
+﻿namespace Microsoft.DocAsCode.Common.EntityMergers;
+
+internal sealed class MergeContext : IMergeContext
 {
-    using System.Collections.Generic;
+    private readonly IReadOnlyDictionary<string, object> Data;
 
-    internal sealed class MergeContext : IMergeContext
+    public MergeContext(IMerger merger, IReadOnlyDictionary<string, object> data)
     {
-        private readonly IReadOnlyDictionary<string, object> Data;
+        Merger = merger;
+        Data = data;
+    }
 
-        public MergeContext(IMerger merger, IReadOnlyDictionary<string, object> data)
+    public IMerger Merger { get; }
+
+    public object this[string key]
+    {
+        get
         {
-            Merger = merger;
-            Data = data;
-        }
-
-        public IMerger Merger { get; }
-
-        public object this[string key]
-        {
-            get
+            if (Data == null)
             {
-                if (Data == null)
-                {
-                    return null;
-                }
-                Data.TryGetValue(key, out object result);
-                return result;
+                return null;
             }
+            Data.TryGetValue(key, out object result);
+            return result;
         }
     }
 }

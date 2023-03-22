@@ -1,21 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Plugins
+using System.Collections.Immutable;
+
+namespace Microsoft.DocAsCode.Plugins;
+
+public interface IDocumentProcessor
 {
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
+    string Name { get; }
+    IEnumerable<IDocumentBuildStep> BuildSteps { get; }
+    ProcessingPriority GetProcessingPriority(FileAndType file);
+    FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
 
-    public interface IDocumentProcessor
-    {
-        string Name { get; }
-        IEnumerable<IDocumentBuildStep> BuildSteps { get; }
-        ProcessingPriority GetProcessingPriority(FileAndType file);
-        FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
+    // TODO: rename
+    SaveResult Save(FileModel model);
 
-        // TODO: rename
-        SaveResult Save(FileModel model);
-
-        void UpdateHref(FileModel model, IDocumentBuildContext context);
-    }
+    void UpdateHref(FileModel model, IDocumentBuildContext context);
 }

@@ -1,105 +1,103 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.HtmlToPdf
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.HtmlToPdf;
+
+public static class ManifestUtility
 {
-    using System;
-    using Microsoft.DocAsCode.Plugins;
-
-    public static class ManifestUtility
+    public static string GetRelativePath(ManifestItem item, OutputType type)
     {
-        public static string GetRelativePath(ManifestItem item, OutputType type)
+        if (item?.OutputFiles == null)
         {
-            if (item?.OutputFiles == null)
-            {
-                return null;
-            }
-            switch (type)
-            {
-                case OutputType.Html:
-                    if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension, out OutputFileInfo content))
-                    {
-                        return content.RelativePath;
-                    }
-                    break;
-                case OutputType.TocJson:
-                    if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.TocFileExtension, out content))
-                    {
-                        return content.RelativePath;
-                    }
-                    break;
-                case OutputType.RawPageJson:
-                    if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentRawPageExtension, out content))
-                    {
-                        return content.RelativePath;
-                    }
-                    break;
-                case OutputType.Resource:
-                    if (item.OutputFiles.TryGetValue(ManifestConstants.BuildManifestItem.OutputResource, out content))
-                    {
-                        return content.RelativePath;
-                    }
-                    break;
-            }
-
             return null;
         }
-
-        public static string GetAssetId(ManifestItem manifestItem)
+        switch (type)
         {
-            Guard.ArgumentNotNull(manifestItem, nameof(manifestItem));
-            var documentType = GetDocumentType(manifestItem);
-            string assetId;
-            switch (documentType)
-            {
-                case ManifestItemType.Content:
-                    assetId = GetRelativePath(manifestItem, OutputType.Html) ?? GetRelativePath(manifestItem, OutputType.RawPageJson);
-                    break;
-
-                case ManifestItemType.Resource:
-                    assetId = GetRelativePath(manifestItem, OutputType.Resource);
-                    break;
-
-                case ManifestItemType.Toc:
-                    assetId = GetRelativePath(manifestItem, OutputType.TocJson);
-                    break;
-
-                default:
-                    throw new NotSupportedException($"{nameof(ManifestItemType)} {documentType} is not supported.");
-            }
-
-            if (assetId == null)
-            {
-                throw new ArgumentException($"Invalid manifest item: {manifestItem}", nameof(manifestItem));
-            }
-
-            return assetId;
+            case OutputType.Html:
+                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension, out OutputFileInfo content))
+                {
+                    return content.RelativePath;
+                }
+                break;
+            case OutputType.TocJson:
+                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.TocFileExtension, out content))
+                {
+                    return content.RelativePath;
+                }
+                break;
+            case OutputType.RawPageJson:
+                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentRawPageExtension, out content))
+                {
+                    return content.RelativePath;
+                }
+                break;
+            case OutputType.Resource:
+                if (item.OutputFiles.TryGetValue(ManifestConstants.BuildManifestItem.OutputResource, out content))
+                {
+                    return content.RelativePath;
+                }
+                break;
         }
 
-        public static ManifestItemType GetDocumentType(ManifestItem item)
+        return null;
+    }
+
+    public static string GetAssetId(ManifestItem manifestItem)
+    {
+        Guard.ArgumentNotNull(manifestItem, nameof(manifestItem));
+        var documentType = GetDocumentType(manifestItem);
+        string assetId;
+        switch (documentType)
         {
-            var type = item.DocumentType;
-            if (Enum.TryParse(type, out ManifestItemType actualType))
-            {
-                return actualType;
-            }
+            case ManifestItemType.Content:
+                assetId = GetRelativePath(manifestItem, OutputType.Html) ?? GetRelativePath(manifestItem, OutputType.RawPageJson);
+                break;
 
-            return ManifestItemType.Content;
+            case ManifestItemType.Resource:
+                assetId = GetRelativePath(manifestItem, OutputType.Resource);
+                break;
+
+            case ManifestItemType.Toc:
+                assetId = GetRelativePath(manifestItem, OutputType.TocJson);
+                break;
+
+            default:
+                throw new NotSupportedException($"{nameof(ManifestItemType)} {documentType} is not supported.");
         }
+
+        if (assetId == null)
+        {
+            throw new ArgumentException($"Invalid manifest item: {manifestItem}", nameof(manifestItem));
+        }
+
+        return assetId;
     }
 
-    public enum OutputType
+    public static ManifestItemType GetDocumentType(ManifestItem item)
     {
-        Html,
-        TocJson,
-        RawPageJson,
-        Resource
-    }
+        var type = item.DocumentType;
+        if (Enum.TryParse(type, out ManifestItemType actualType))
+        {
+            return actualType;
+        }
 
-    public enum ManifestItemType
-    {
-        Toc,
-        Content,
-        Resource,
+        return ManifestItemType.Content;
     }
+}
+
+public enum OutputType
+{
+    Html,
+    TocJson,
+    RawPageJson,
+    Resource
+}
+
+public enum ManifestItemType
+{
+    Toc,
+    Content,
+    Resource,
 }

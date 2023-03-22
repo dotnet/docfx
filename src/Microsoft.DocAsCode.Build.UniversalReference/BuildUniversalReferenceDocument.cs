@@ -1,28 +1,27 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.UniversalReference
+using System.Composition;
+
+using Microsoft.DocAsCode.Build.Common;
+using Microsoft.DocAsCode.DataContracts.UniversalReference;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.UniversalReference;
+
+[Export(nameof(UniversalReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
+public class BuildUniversalReferenceDocument : BuildReferenceDocumentBase
 {
-    using System.Composition;
+    public override string Name => nameof(BuildUniversalReferenceDocument);
 
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.DataContracts.UniversalReference;
-    using Microsoft.DocAsCode.Plugins;
+    #region BuildReferenceDocumentBase
 
-    [Export(nameof(UniversalReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildUniversalReferenceDocument : BuildReferenceDocumentBase
+    protected override void BuildArticle(IHostService host, FileModel model)
     {
-        public override string Name => nameof(BuildUniversalReferenceDocument);
+        var pageViewModel = (PageViewModel)model.Content;
 
-        #region BuildReferenceDocumentBase
-
-        protected override void BuildArticle(IHostService host, FileModel model)
-        {
-            var pageViewModel = (PageViewModel)model.Content;
-
-            BuildArticleCore(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
-        }
-
-        #endregion
+        BuildArticleCore(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
     }
+
+    #endregion
 }

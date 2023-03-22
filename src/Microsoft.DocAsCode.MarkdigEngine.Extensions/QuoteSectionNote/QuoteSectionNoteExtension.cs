@@ -1,40 +1,39 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using Markdig;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class QuoteSectionNoteExtension : IMarkdownExtension
 {
-    using Markdig;
-    using Markdig.Parsers;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
+    private readonly MarkdownContext _context;
 
-    public class QuoteSectionNoteExtension : IMarkdownExtension
+    public QuoteSectionNoteExtension(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public QuoteSectionNoteExtension(MarkdownContext context)
+    void IMarkdownExtension.Setup(MarkdownPipelineBuilder pipeline)
+    {
+        if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
         {
-            _context = context;
+            pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
         }
+    }
 
-        void IMarkdownExtension.Setup(MarkdownPipelineBuilder pipeline)
+    void IMarkdownExtension.Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
+    {
+        if (renderer is HtmlRenderer htmlRenderer)
         {
-            if (!pipeline.BlockParsers.Replace<QuoteBlockParser>(new QuoteSectionNoteParser(_context)))
-            {
-                pipeline.BlockParsers.Insert(0, new QuoteSectionNoteParser(_context));
-            }
-        }
+            QuoteSectionNoteRender quoteSectionNoteRender = new(_context);
 
-        void IMarkdownExtension.Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)
-        {
-            if (renderer is HtmlRenderer htmlRenderer)
+            if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
             {
-                QuoteSectionNoteRender quoteSectionNoteRender = new QuoteSectionNoteRender(_context);
-
-                if (!renderer.ObjectRenderers.Replace<QuoteBlockRenderer>(quoteSectionNoteRender))
-                {
-                    renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
-                }
+                renderer.ObjectRenderers.Insert(0, quoteSectionNoteRender);
             }
         }
     }

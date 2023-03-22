@@ -1,19 +1,16 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.OverwriteDocuments
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
+
+[Serializable]
+public class OPathSegment
 {
-    using System;
+    public string SegmentName { get; set; }
 
-    [Serializable]
-    public class OPathSegment
-    {
-        public string SegmentName { get; set; }
+    public string Key { get; set; }
 
-        public string Key { get; set; }
+    public string Value { get; set; }
 
-        public string Value { get; set; }
-
-        public string OriginalSegmentString { get; set; }
-    }
+    public string OriginalSegmentString { get; set; }
 }

@@ -1,306 +1,300 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.HtmlToPdf
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Web;
+
+using iTextSharp.text.pdf;
+
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.HtmlToPdf;
+
+public class HtmlToPdfConverter
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Web;
+    #region Fields
 
-    using iTextSharp.text.pdf;
+    private const string OutLineKidsName = "Kids";
+    private const int TimeoutInMilliseconds = 60 * 1000;
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
+    private readonly HtmlToPdfOptions _htmlToPdfOptions;
+    private readonly IList<HtmlModel> _htmlModels;
+    private readonly IList<string> _htmlFilePaths;
 
-    public class HtmlToPdfConverter
+    private int _currentNumberOfPages;
+
+    #endregion
+
+    #region Constructor
+
+    public HtmlToPdfConverter(IList<HtmlModel> htmlModels, HtmlToPdfOptions htmlToPdfOptions)
     {
-        #region Fields
+        Guard.ArgumentNotNull(htmlModels, nameof(htmlModels));
+        Guard.Argument(() => htmlModels.All(p => p != null), nameof(htmlModels), $"{nameof(htmlModels)} cannot contain null htmlModel.");
+        Guard.Argument(() => htmlModels.All(p => !string.IsNullOrEmpty(p.Title)), nameof(htmlModels), $"Title of {nameof(htmlModels)} must be provided.");
+        Guard.ArgumentNotNull(htmlToPdfOptions, nameof(htmlToPdfOptions));
 
-        private const string OutLineKidsName = "Kids";
-        private const int TimeoutInMilliseconds = 60 * 1000;
+        _htmlToPdfOptions = htmlToPdfOptions;
+        _htmlModels = htmlModels;
+        _htmlFilePaths = new List<string>();
+        ExtractHtmlPathFromHtmlModels(_htmlModels);
+    }
 
-        private readonly HtmlToPdfOptions _htmlToPdfOptions;
-        private readonly IList<HtmlModel> _htmlModels;
-        private readonly IList<string> _htmlFilePaths;
+    #endregion
 
-        private int _currentNumberOfPages;
+    #region Public Methods
 
-        #endregion
+    public IDictionary<string, PartialPdfModel> GetPartialPdfModels(IList<string> htmlFilePaths)
+    {
+        Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));
+        Guard.Argument(() => htmlFilePaths.All(p => !string.IsNullOrEmpty(p)), nameof(htmlFilePaths), $"{nameof(htmlFilePaths)} cannot contain null or empty html file path.");
 
-        #region Constructor
+        var pdfFileNumberOfPages = new ConcurrentDictionary<string, PartialPdfModel>();
 
-        public HtmlToPdfConverter(IList<HtmlModel> htmlModels, HtmlToPdfOptions htmlToPdfOptions)
-        {
-            Guard.ArgumentNotNull(htmlModels, nameof(htmlModels));
-            Guard.Argument(() => htmlModels.All(p => p != null), nameof(htmlModels), $"{nameof(htmlModels)} cannot contain null htmlModel.");
-            Guard.Argument(() => htmlModels.All(p => !string.IsNullOrEmpty(p.Title)), nameof(htmlModels), $"Title of {nameof(htmlModels)} must be provided.");
-            Guard.ArgumentNotNull(htmlToPdfOptions, nameof(htmlToPdfOptions));
+        Parallel.ForEach(
+            htmlFilePaths,
+            new ParallelOptions { MaxDegreeOfParallelism = _htmlToPdfOptions.MaxDegreeOfParallelism },
+            htmlFilePath =>
+            {
+                var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
 
-            _htmlToPdfOptions = htmlToPdfOptions;
-            _htmlModels = htmlModels;
-            _htmlFilePaths = new List<string>();
-            ExtractHtmlPathFromHtmlModels(_htmlModels);
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public IDictionary<string, PartialPdfModel> GetPartialPdfModels(IList<string> htmlFilePaths)
-        {
-            Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));
-            Guard.Argument(() => htmlFilePaths.All(p => !string.IsNullOrEmpty(p)), nameof(htmlFilePaths), $"{nameof(htmlFilePaths)} cannot contain null or empty html file path.");
-
-            var pdfFileNumberOfPages = new ConcurrentDictionary<string, PartialPdfModel>();
-
-            Parallel.ForEach(
-                htmlFilePaths,
-                new ParallelOptions { MaxDegreeOfParallelism = _htmlToPdfOptions.MaxDegreeOfParallelism },
-                htmlFilePath =>
+                PartialPdfModel pdfModel = new()
                 {
-                    var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
+                    FilePath = htmlFilePath,
+                    NumberOfPages = numberOfPages
+                };
 
-                    PartialPdfModel pdfModel = new PartialPdfModel
-                    {
-                        FilePath = htmlFilePath,
-                        NumberOfPages = numberOfPages
-                    };
+                pdfFileNumberOfPages.TryAdd(htmlFilePath, pdfModel);
+            });
 
-                    pdfFileNumberOfPages.TryAdd(htmlFilePath, pdfModel);
-                });
+        return pdfFileNumberOfPages;
+    }
 
-            return pdfFileNumberOfPages;
+    public void Save(string outputFileName)
+    {
+        Guard.ArgumentNotNullOrEmpty(outputFileName, nameof(outputFileName));
+        Guard.ArgumentNotNullOrEmpty(Path.GetFileName(outputFileName), $"There is no file name {nameof(outputFileName)}.");
+
+        string directoryName = Path.GetDirectoryName(outputFileName);
+        if (!string.IsNullOrEmpty(directoryName))
+        {
+            Directory.CreateDirectory(directoryName);
         }
 
-        public void Save(string outputFileName)
-        {
-            Guard.ArgumentNotNullOrEmpty(outputFileName, nameof(outputFileName));
-            Guard.ArgumentNotNullOrEmpty(Path.GetFileName(outputFileName), $"There is no file name {nameof(outputFileName)}.");
+        using var fileStream = new FileStream(outputFileName, FileMode.Create);
+        SaveCore(fileStream);
+    }
 
-            string directoryName = Path.GetDirectoryName(outputFileName);
-            if (!string.IsNullOrEmpty(directoryName))
+    #endregion
+
+    #region Private Methods
+
+    private static string NormalizePath(string path)
+    {
+        Guard.ArgumentNotNullOrEmpty(path, nameof(path));
+
+        return HttpUtility.UrlDecode(path.Replace('\\', '/'));
+    }
+
+    private static string WrapQuoteToPath(string path)
+    {
+        Guard.ArgumentNotNullOrEmpty(path, nameof(path));
+
+        return $"\"{NormalizePath(path)}\"";
+    }
+
+    private void ConvertToStreamCore(string arguments, Stream stream)
+    {
+        // In advanced scenarios where the user is passing additional arguments directly to the command line,
+        // disable the quiet mode so problems can be diagnosed.
+        if (!string.IsNullOrEmpty(this._htmlToPdfOptions.AdditionalArguments))
+        {
+            this._htmlToPdfOptions.IsQuiet = false;
+        }
+
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
             {
-                Directory.CreateDirectory(directoryName);
+                UseShellExecute = false,
+                RedirectStandardInput = _htmlToPdfOptions.IsReadArgsFromStdin,
+                RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = _htmlToPdfOptions.FilePath ?? Constants.PdfCommandName,
+                Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
             }
-
-            using var fileStream = new FileStream(outputFileName, FileMode.Create);
-            SaveCore(fileStream);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static string NormalizePath(string path)
+        };
+        using(new LoggerPhaseScope(Constants.PdfCommandName))
         {
-            Guard.ArgumentNotNullOrEmpty(path, nameof(path));
-
-            return HttpUtility.UrlDecode(path.Replace('\\', '/'));
-        }
-
-        private static string WrapQuoteToPath(string path)
-        {
-            Guard.ArgumentNotNullOrEmpty(path, nameof(path));
-
-            return $"\"{NormalizePath(path)}\"";
-        }
-
-        private void ConvertToStreamCore(string arguments, Stream stream)
-        {
-            // In advanced scenarios where the user is passing additional arguments directly to the command line,
-            // disable the quiet mode so problems can be diagnosed.
-            if (!string.IsNullOrEmpty(this._htmlToPdfOptions.AdditionalArguments))
+            Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
+            process.Start();
+            if (_htmlToPdfOptions.IsReadArgsFromStdin)
             {
-                this._htmlToPdfOptions.IsQuiet = false;
+                using var standardInput = process.StandardInput;
+                standardInput.AutoFlush = true;
+                standardInput.Write(arguments);
             }
-
-            using var process = new Process
+            if (_htmlToPdfOptions.IsOutputToStdout)
             {
-                StartInfo = new ProcessStartInfo
+                using (var standardOutput = process.StandardOutput)
                 {
-                    UseShellExecute = false,
-                    RedirectStandardInput = _htmlToPdfOptions.IsReadArgsFromStdin,
-                    RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = _htmlToPdfOptions.FilePath ?? Constants.PdfCommandName,
-                    Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
+                    standardOutput.BaseStream.CopyTo(stream);
                 }
-            };
-            using(new LoggerPhaseScope(Constants.PdfCommandName))
+                if (stream.CanSeek)
+                    Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
+            }
+            process.WaitForExit(TimeoutInMilliseconds);
+        }
+    }
+
+    private void ConvertToStream(string arguments, Stream stream)
+    {
+        try
+        {
+            RetryHelper.Retry(() => ConvertToStreamCore(arguments, stream), _htmlToPdfOptions.RetryIntervals);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Convert the file : " + arguments + " has exception, the details: " + ex.Message);
+        }
+    }
+
+    private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
+    {
+        if (htmlModels?.Count > 0)
+        {
+            foreach (var htmlModel in htmlModels)
             {
-                Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
-                process.Start();
-                if (_htmlToPdfOptions.IsReadArgsFromStdin)
+                var outline = new Dictionary<string, object>
                 {
-                    using var standardInput = process.StandardInput;
-                    standardInput.AutoFlush = true;
-                    standardInput.Write(arguments);
+                    { "Title", htmlModel.Title },
+                    { OutLineKidsName, new List<Dictionary<string, object>>() }
+                };
+
+                if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
+                {
+                    outline.Add("Action", "URI");
+                    outline.Add("URI", htmlModel.ExternalLink);
                 }
-                if (_htmlToPdfOptions.IsOutputToStdout)
+                else
                 {
-                    using (var standardOutput = process.StandardOutput)
-                    {
-                        standardOutput.BaseStream.CopyTo(stream);
-                    }
-                    if (stream.CanSeek)
-                        Logger.LogVerbose($"got {process.StartInfo.FileName} output {stream.Length}Bytes");
-                }
-                process.WaitForExit(TimeoutInMilliseconds);
-            }
-        }
+                    int pageNumber = 0;
 
-        private void ConvertToStream(string arguments, Stream stream)
-        {
-            try
-            {
-                RetryHelper.Retry(() => ConvertToStreamCore(arguments, stream), _htmlToPdfOptions.RetryIntervals);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Convert the file : " + arguments + " has exception, the details: " + ex.Message);
-            }
-        }
-
-        private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
-        {
-            if (htmlModels?.Count > 0)
-            {
-                foreach (var htmlModel in htmlModels)
-                {
-                    var outline = new Dictionary<string, object>
-                    {
-                        { "Title", htmlModel.Title },
-                        { OutLineKidsName, new List<Dictionary<string, object>>() }
-                    };
-
-                    if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
-                    {
-                        outline.Add("Action", "URI");
-                        outline.Add("URI", htmlModel.ExternalLink);
-                    }
-                    else
-                    {
-                        int pageNumber = 0;
-
-                        if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
-                        {
-                            string filePath = GetFilePath(htmlModel.HtmlFilePath);
-
-                            if (pdfPages.ContainsKey(filePath))
-                            {
-                                PartialPdfModel pdfModel = pdfPages[filePath];
-
-                                if (!pdfModel.PageNumber.HasValue)
-                                {
-                                    pdfModel.PageNumber = _currentNumberOfPages;
-                                    _currentNumberOfPages += pdfModel.NumberOfPages;
-                                }
-
-                                pageNumber = pdfModel.PageNumber.Value;
-                            }
-                        }
-                        else
-                        {
-                            // this is a parent node for the next topic
-                            pageNumber = _currentNumberOfPages;
-                        }
-
-                        outline.Add("Action", "GoTo");
-
-                        // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
-                        outline.Add("Page", $"{pageNumber} FitH");
-                    }
-
-                    ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
-                    CreateOutlines(outline, htmlModel.Children, pdfPages);
-                }
-            }
-        }
-
-        private List<Dictionary<string, object>> ConvertOutlines()
-        {
-            var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
-            _currentNumberOfPages = 1;
-
-            var rootOutline = new Dictionary<string, object>
-            {
-                { OutLineKidsName, new List<Dictionary<string, object>>() }
-            };
-
-            CreateOutlines(rootOutline, _htmlModels, pdfFileNumberOfPages);
-            return (List<Dictionary<string, object>>)rootOutline[OutLineKidsName];
-        }
-
-        private IList<Dictionary<string, object>> GetOutlines()
-        {
-            switch (_htmlToPdfOptions.OutlineOption)
-            {
-                case OutlineOption.NoOutline:
-                case OutlineOption.WkDefaultOutline:
-                    return null;
-                case OutlineOption.DefaultOutline:
-                    return ConvertOutlines();
-                default:
-                    throw new NotSupportedException(_htmlToPdfOptions.OutlineOption.ToString());
-            }
-        }
-
-        private void ExtractHtmlPathFromHtmlModels(IList<HtmlModel> htmlModels)
-        {
-            if (htmlModels?.Count > 0)
-            {
-                foreach (var htmlModel in htmlModels)
-                {
                     if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
                     {
                         string filePath = GetFilePath(htmlModel.HtmlFilePath);
-                        if ((!_htmlFilePaths.Contains(filePath))
-                            && File.Exists(NormalizePath(filePath)))
+
+                        if (pdfPages.ContainsKey(filePath))
                         {
-                            _htmlFilePaths.Add(filePath);
+                            PartialPdfModel pdfModel = pdfPages[filePath];
+
+                            if (!pdfModel.PageNumber.HasValue)
+                            {
+                                pdfModel.PageNumber = _currentNumberOfPages;
+                                _currentNumberOfPages += pdfModel.NumberOfPages;
+                            }
+
+                            pageNumber = pdfModel.PageNumber.Value;
                         }
                     }
-                    ExtractHtmlPathFromHtmlModels(htmlModel.Children);
+                    else
+                    {
+                        // this is a parent node for the next topic
+                        pageNumber = _currentNumberOfPages;
+                    }
+
+                    outline.Add("Action", "GoTo");
+
+                    // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
+                    outline.Add("Page", $"{pageNumber} FitH");
                 }
+
+                ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
+                CreateOutlines(outline, htmlModel.Children, pdfPages);
             }
         }
+    }
 
-        private string GetFilePath(string htmlFilePath)
+    private List<Dictionary<string, object>> ConvertOutlines()
+    {
+        var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
+        _currentNumberOfPages = 1;
+
+        var rootOutline = new Dictionary<string, object>
         {
-            var basePath = string.IsNullOrEmpty(_htmlToPdfOptions.BasePath) ? EnvironmentContext.BaseDirectory : _htmlToPdfOptions.BasePath;
-            return Path.Combine(basePath, htmlFilePath);
+            { OutLineKidsName, new List<Dictionary<string, object>>() }
+        };
+
+        CreateOutlines(rootOutline, _htmlModels, pdfFileNumberOfPages);
+        return (List<Dictionary<string, object>>)rootOutline[OutLineKidsName];
+    }
+
+    private IList<Dictionary<string, object>> GetOutlines()
+    {
+        switch (_htmlToPdfOptions.OutlineOption)
+        {
+            case OutlineOption.NoOutline:
+            case OutlineOption.WkDefaultOutline:
+                return null;
+            case OutlineOption.DefaultOutline:
+                return ConvertOutlines();
+            default:
+                throw new NotSupportedException(_htmlToPdfOptions.OutlineOption.ToString());
         }
+    }
 
-        private void SaveCore(Stream stream)
+    private void ExtractHtmlPathFromHtmlModels(IList<HtmlModel> htmlModels)
+    {
+        if (htmlModels?.Count > 0)
         {
-            if (_htmlFilePaths.Count > 0)
+            foreach (var htmlModel in htmlModels)
             {
-                var outlines = GetOutlines();
-                using var pdfStream = new MemoryStream();
-                ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
-                pdfStream.Position = 0;
-
-                using var pdfReader = new PdfReader(pdfStream);
-                using var pdfStamper = new PdfStamper(pdfReader, stream);
-                pdfStamper.Outlines = outlines;
+                if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
+                {
+                    string filePath = GetFilePath(htmlModel.HtmlFilePath);
+                    if ((!_htmlFilePaths.Contains(filePath))
+                        && File.Exists(NormalizePath(filePath)))
+                    {
+                        _htmlFilePaths.Add(filePath);
+                    }
+                }
+                ExtractHtmlPathFromHtmlModels(htmlModel.Children);
             }
         }
+    }
 
-        private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
+    private string GetFilePath(string htmlFilePath)
+    {
+        var basePath = string.IsNullOrEmpty(_htmlToPdfOptions.BasePath) ? EnvironmentContext.BaseDirectory : _htmlToPdfOptions.BasePath;
+        return Path.Combine(basePath, htmlFilePath);
+    }
+
+    private void SaveCore(Stream stream)
+    {
+        if (_htmlFilePaths.Count > 0)
         {
+            var outlines = GetOutlines();
             using var pdfStream = new MemoryStream();
-            ConvertToStream(arguments, pdfStream);
+            ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
             pdfStream.Position = 0;
 
             using var pdfReader = new PdfReader(pdfStream);
-            return readerFunc(pdfReader);
+            using var pdfStamper = new PdfStamper(pdfReader, stream);
+            pdfStamper.Outlines = outlines;
         }
-
-        #endregion
     }
+
+    private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
+    {
+        using var pdfStream = new MemoryStream();
+        ConvertToStream(arguments, pdfStream);
+        pdfStream.Position = 0;
+
+        using var pdfReader = new PdfReader(pdfStream);
+        return readerFunc(pdfReader);
+    }
+
+    #endregion
 }

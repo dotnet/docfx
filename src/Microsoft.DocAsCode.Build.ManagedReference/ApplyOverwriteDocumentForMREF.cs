@@ -1,36 +1,33 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.ManagedReference
+using System.Composition;
+
+using Microsoft.DocAsCode.Build.Common;
+using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.ManagedReference;
+
+[Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
+public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
 {
-    using System.Collections.Generic;
-    using System.Composition;
-    using System.Linq;
+    public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Plugins;
+    public override int BuildOrder => 0x10;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
+    public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
     {
-        public override string Name => nameof(ApplyOverwriteDocumentForMref);
+        return Transform<ItemViewModel>(fileModel, uid, host);
+    }
 
-        public override int BuildOrder => 0x10;
+    public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
+    {
+        return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
+    }
 
-        public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
-        {
-            return Transform<ItemViewModel>(fileModel, uid, host);
-        }
-
-        public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
-        {
-            return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
-        }
-
-        protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
-        {
-            ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
-        }
+    protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
+    {
+        ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
     }
 }

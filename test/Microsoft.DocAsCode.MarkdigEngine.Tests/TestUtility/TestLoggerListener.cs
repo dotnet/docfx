@@ -1,60 +1,56 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Tests
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Tests;
+
+internal class TestLoggerListener : ILoggerListener
 {
-    using System;
-    using System.Collections.Generic;
+    private readonly Func<ILogItem, bool> _filter;
+    public List<ILogItem> Items { get; } = new List<ILogItem>();
 
-    using Microsoft.DocAsCode.Common;
-
-    internal class TestLoggerListener : ILoggerListener
+    public TestLoggerListener(Func<ILogItem, bool> filter)
     {
-        private readonly Func<ILogItem, bool> _filter;
-        public List<ILogItem> Items { get; } = new List<ILogItem>();
+        _filter = filter ?? throw new ArgumentNullException(nameof(filter));
+    }
 
-        public TestLoggerListener(Func<ILogItem, bool> filter)
+    public void Dispose()
+    {
+    }
+
+    public void Flush()
+    {
+    }
+
+    public void WriteLine(ILogItem item)
+    {
+        if (item == null)
         {
-            _filter = filter ?? throw new ArgumentNullException(nameof(filter));
+            throw new ArgumentNullException(nameof(item));
         }
 
-        public void Dispose()
+        if (_filter(item))
         {
+            Items.Add(item);
         }
+    }
 
-        public void Flush()
+    public static TestLoggerListener CreateLoggerListenerWithPhaseEqualFilter(string phase, LogLevel logLevel = LogLevel.Warning)
+    {
+        return new TestLoggerListener(iLogItem =>
         {
-        }
-
-        public void WriteLine(ILogItem item)
-        {
-            if (item == null)
+            if (iLogItem.LogLevel < logLevel)
             {
-                throw new ArgumentNullException(nameof(item));
-            }
-
-            if (_filter(item))
-            {
-                Items.Add(item);
-            }
-        }
-
-        public static TestLoggerListener CreateLoggerListenerWithPhaseEqualFilter(string phase, LogLevel logLevel = LogLevel.Warning)
-        {
-            return new TestLoggerListener(iLogItem =>
-            {
-                if (iLogItem.LogLevel < logLevel)
-                {
-                    return false;
-                }
-
-                if (phase == null || (iLogItem?.Phase != null && iLogItem.Phase == phase))
-                {
-                    return true;
-                }
-
                 return false;
-            });
-        }
+            }
+
+            if (phase == null || (iLogItem?.Phase != null && iLogItem.Phase == phase))
+            {
+                return true;
+            }
+
+            return false;
+        });
     }
 }

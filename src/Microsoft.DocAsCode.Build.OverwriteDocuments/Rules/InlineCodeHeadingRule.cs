@@ -1,43 +1,40 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.OverwriteDocuments
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
+
+public class InlineCodeHeadingRule : IOverwriteBlockRule
 {
-    using System;
+    public virtual string TokenName => "InlineCodeHeading";
 
-    using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
+    protected virtual bool NeedCheckLevel { get; set; }
 
-    public class InlineCodeHeadingRule : IOverwriteBlockRule
+    protected virtual int Level { get; set; }
+
+    public bool Parse(Block block, out string value)
     {
-        public virtual string TokenName => "InlineCodeHeading";
-
-        protected virtual bool NeedCheckLevel { get; set; }
-
-        protected virtual int Level { get; set; }
-
-        public bool Parse(Block block, out string value)
+        if (block == null)
         {
-            if (block == null)
-            {
-                throw new ArgumentNullException(nameof(block));
-            }
-
-            var inline = ParseCore(block);
-            value = inline?.Content;
-            return inline != null;
+            throw new ArgumentNullException(nameof(block));
         }
 
-        private CodeInline ParseCore(Block block)
-        {
-            if (!(block is HeadingBlock heading)
-                || NeedCheckLevel && heading.Level != Level
-                || heading.Inline.FirstChild != heading.Inline.LastChild)
-            {
-                return null;
-            }
+        var inline = ParseCore(block);
+        value = inline?.Content;
+        return inline != null;
+    }
 
-            return heading.Inline.FirstChild as CodeInline;
+    private CodeInline ParseCore(Block block)
+    {
+        if (!(block is HeadingBlock heading)
+            || NeedCheckLevel && heading.Level != Level
+            || heading.Inline.FirstChild != heading.Inline.LastChild)
+        {
+            return null;
         }
+
+        return heading.Inline.FirstChild as CodeInline;
     }
 }

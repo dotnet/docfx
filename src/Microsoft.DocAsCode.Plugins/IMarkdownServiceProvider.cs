@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Plugins
+namespace Microsoft.DocAsCode.Plugins;
+
+public interface IMarkdownServiceProvider
 {
-    public interface IMarkdownServiceProvider
-    {
-        IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters);
-    }
+    IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters);
 }

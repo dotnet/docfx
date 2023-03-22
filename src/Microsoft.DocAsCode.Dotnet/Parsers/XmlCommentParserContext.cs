@@ -1,22 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using Microsoft.DocAsCode.DataContracts.Common;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal class XmlCommentParserContext
 {
-    using System;
+    public bool PreserveRawInlineComments { get; set; }
 
-    using Microsoft.DocAsCode.DataContracts.Common;
+    public Action<string, string> AddReferenceDelegate { get; set; }
 
-    internal class XmlCommentParserContext
-    {
-        public bool PreserveRawInlineComments { get; set; }
+    public Func<string, CRefTarget> ResolveCRef { get; set; }
 
-        public Action<string, string> AddReferenceDelegate { get; set; }
+    public SourceDetail Source { get; set; }
 
-        public Func<string, CRefTarget> ResolveCRef { get; set; }
-
-        public SourceDetail Source { get; set; }
-
-        public string CodeSourceBasePath { get; set; }
-    }
+    public string CodeSourceBasePath { get; set; }
 }

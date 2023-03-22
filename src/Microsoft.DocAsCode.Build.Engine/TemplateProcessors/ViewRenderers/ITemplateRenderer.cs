@@ -1,20 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public interface ITemplateRenderer
 {
-    using System.Collections.Generic;
+    string Render(object model);
 
-    public interface ITemplateRenderer
-    {
-        string Render(object model);
+    IEnumerable<string> Dependencies { get; }
 
-        IEnumerable<string> Dependencies { get; }
+    string Raw { get; }
 
-        string Raw { get; }
+    string Path { get; }
 
-        string Path { get; }
-
-        string Name { get; }
-    }
+    string Name { get; }
 }

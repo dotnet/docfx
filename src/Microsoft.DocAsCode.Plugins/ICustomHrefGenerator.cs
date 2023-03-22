@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Plugins
+namespace Microsoft.DocAsCode.Plugins;
+
+public interface ICustomHrefGenerator
 {
-    public interface ICustomHrefGenerator
-    {
-        string GenerateHref(IFileLinkInfo href);
-    }
+    string GenerateHref(IFileLinkInfo href);
 }

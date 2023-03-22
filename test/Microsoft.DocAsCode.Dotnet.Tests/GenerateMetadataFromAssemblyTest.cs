@@ -1,74 +1,71 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet.Tests
+using Xunit;
+
+using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
+namespace Microsoft.DocAsCode.Dotnet.Tests;
+
+[Collection("docfx STA")]
+public class GenerateMetadataFromAssemblyTest
 {
-    using System.Linq;
-
-    using Xunit;
-
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
-
-    [Collection("docfx STA")]
-    public class GenerateMetadataFromAssemblyTest
+    [Fact]
+    public void TestGenerateMetadataFromAssembly()
     {
-        [Fact]
-        public void TestGenerateMetadataFromAssembly()
         {
-            {
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary.dll");
-                Assert.Empty(compilation.GetDeclarationDiagnostics());
+            var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary.dll");
+            Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-                var output = assembly.GenerateMetadataItem();
-                var @class = output.Items[0].Items[2];
-                Assert.NotNull(@class);
-                Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
-                Assert.Equal("Cat<T, K>", @class.DisplayNamesWithType.First().Value);
-                Assert.Equal("CatLibrary.Cat<T, K>", @class.DisplayQualifiedNames.First().Value);
-            }
-
-            {
-                var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary2.dll");
-                Assert.Empty(compilation.GetDeclarationDiagnostics());
-
-                var output = assembly.GenerateMetadataItem();
-                var @class = output.Items[0].Items[0];
-                Assert.NotNull(@class);
-                Assert.Equal("CarLibrary2.Cat2", @class.Name);
-                Assert.Equal(new[] { "System.Object", "CatLibrary.Cat{CatLibrary.Dog{System.String},System.Int32}" }, @class.Inheritance);
-            }
+            var output = assembly.GenerateMetadataItem();
+            var @class = output.Items[0].Items[2];
+            Assert.NotNull(@class);
+            Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
+            Assert.Equal("Cat<T, K>", @class.DisplayNamesWithType.First().Value);
+            Assert.Equal("CatLibrary.Cat<T, K>", @class.DisplayQualifiedNames.First().Value);
         }
 
-        [Fact]
-        public void TestGenerateMetadataFromAssemblyWithReferences()
         {
-            var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/TupleLibrary.dll");
+            var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary2.dll");
             Assert.Empty(compilation.GetDeclarationDiagnostics());
 
             var output = assembly.GenerateMetadataItem();
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
-            Assert.Equal("XmlTasks", @class.DisplayNames[SyntaxLanguage.CSharp]);
-            Assert.Equal("XmlTasks", @class.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-            Assert.Equal("TupleLibrary.XmlTasks", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("CarLibrary2.Cat2", @class.Name);
+            Assert.Equal(new[] { "System.Object", "CatLibrary.Cat{CatLibrary.Dog{System.String},System.Int32}" }, @class.Inheritance);
+        }
+    }
 
-            {
-                var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.ToNamespace(System.String,System.String)");
-                Assert.Equal("ToNamespace(string, string)", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("XmlTasks.ToNamespace(string, string)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("TupleLibrary.XmlTasks.ToNamespace(string, string)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+    [Fact]
+    public void TestGenerateMetadataFromAssemblyWithReferences()
+    {
+        var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/TupleLibrary.dll");
+        Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-                Assert.Equal("public (string, string) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-            }
+        var output = assembly.GenerateMetadataItem();
+        var @class = output.Items[0].Items[0];
+        Assert.NotNull(@class);
+        Assert.Equal("XmlTasks", @class.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("XmlTasks", @class.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("TupleLibrary.XmlTasks", @class.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-            {
-                var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.XmlPeek(System.String,System.ValueTuple{System.String,System.String}[])");
-                Assert.Equal("XmlPeek(string, params (string, string)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
-                Assert.Equal("XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-                Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        {
+            var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.ToNamespace(System.String,System.String)");
+            Assert.Equal("ToNamespace(string, string)", method.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("XmlTasks.ToNamespace(string, string)", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("TupleLibrary.XmlTasks.ToNamespace(string, string)", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
 
-                Assert.Equal("public string XmlPeek(string xpath, params (string, string)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
-            }
+            Assert.Equal("public (string, string) ToNamespace(string prefix, string uri)", method.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
+        {
+            var method = @class.Items.Single(i => i.Name == "TupleLibrary.XmlTasks.XmlPeek(System.String,System.ValueTuple{System.String,System.String}[])");
+            Assert.Equal("XmlPeek(string, params (string, string)[])", method.DisplayNames[SyntaxLanguage.CSharp]);
+            Assert.Equal("XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+            Assert.Equal("TupleLibrary.XmlTasks.XmlPeek(string, params (string, string)[])", method.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+
+            Assert.Equal("public string XmlPeek(string xpath, params (string, string)[] namespaces)", method.Syntax.Content[SyntaxLanguage.CSharp]);
         }
     }
 }

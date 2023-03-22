@@ -1,25 +1,22 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common.EntityMergers
+namespace Microsoft.DocAsCode.Common.EntityMergers;
+
+public class MergerFacade
 {
-    using System.Collections.Generic;
+    private readonly IMerger _merger;
 
-    public class MergerFacade
+    public MergerFacade(IMerger merger)
     {
-        private readonly IMerger _merger;
+        _merger = merger;
+    }
 
-        public MergerFacade(IMerger merger)
-        {
-            _merger = merger;
-        }
-
-        public void Merge<T>(ref T source, T overrides, IReadOnlyDictionary<string, object> data = null) where T : class
-        {
-            object s = source;
-            var context = new MergeContext(_merger, data);
-            context.Merger.Merge(ref s, overrides, typeof(T), context);
-            source = (T)s;
-        }
+    public void Merge<T>(ref T source, T overrides, IReadOnlyDictionary<string, object> data = null) where T : class
+    {
+        object s = source;
+        var context = new MergeContext(_merger, data);
+        context.Merger.Merge(ref s, overrides, typeof(T), context);
+        source = (T)s;
     }
 }

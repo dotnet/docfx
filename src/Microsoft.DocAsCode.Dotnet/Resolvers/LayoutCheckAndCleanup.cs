@@ -1,114 +1,112 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using System.Diagnostics;
+using System.Text;
+
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal class LayoutCheckAndCleanup : IResolverPipeline
 {
-    using System.Diagnostics;
-    using System.Text;
-
-    using Microsoft.DocAsCode.Common;
-
-    internal class LayoutCheckAndCleanup : IResolverPipeline
+    /// <summary>
+    /// The yaml layout should be 
+    /// namespace -- class level -- method level
+    /// But also allows nested namespaces
+    /// </summary>
+    /// <param name="allMembers"></param>
+    /// <returns></returns>
+    public void Run(MetadataModel yaml, ResolverContext context)
     {
-        /// <summary>
-        /// The yaml layout should be 
-        /// namespace -- class level -- method level
-        /// But also allows nested namespaces
-        /// </summary>
-        /// <param name="allMembers"></param>
-        /// <returns></returns>
-        public void Run(MetadataModel yaml, ResolverContext context)
+        StringBuilder message = new();
+        foreach (var member in yaml.TocYamlViewModel.Items)
         {
-            StringBuilder message = new StringBuilder();
-            foreach (var member in yaml.TocYamlViewModel.Items)
+            var result = CheckNamespaces(member);
+            if (!string.IsNullOrEmpty(result))
             {
-                var result = CheckNamespaces(member);
+                message.AppendLine(result);
+            }
+        }
+
+        if (message.Length > 0)
+        {
+            Logger.LogWarning(message.ToString());
+        }
+    }
+
+    private string CheckNamespaces(MetadataItem member)
+    {
+        StringBuilder message = new();
+
+        // Skip if it is already invalid
+        if (member.Items == null || member.IsInvalid)
+        {
+            return string.Empty;
+        }
+
+        foreach (var i in member.Items)
+        {
+            Debug.Assert(i.Type.IsPageLevel());
+            if (!i.Type.IsPageLevel())
+            {
+                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
+                message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
+                i.IsInvalid = true;
+            }
+            else
+            {
+                var result = CheckNamespaceMembers(i);
                 if (!string.IsNullOrEmpty(result))
                 {
                     message.AppendLine(result);
                 }
             }
-
-            if (message.Length > 0)
-            {
-                Logger.LogWarning(message.ToString());
-            }
         }
 
-        private string CheckNamespaces(MetadataItem member)
+        return message.ToString();
+    }
+
+    /// <summary>
+    /// e.g. Classes
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    private string CheckNamespaceMembers(MetadataItem member)
+    {
+        StringBuilder message = new();
+
+        // Skip if it is already invalid
+        if (member.Items == null || member.IsInvalid)
         {
-            StringBuilder message = new StringBuilder();
-
-            // Skip if it is already invalid
-            if (member.Items == null || member.IsInvalid)
-            {
-                return string.Empty;
-            }
-
-            foreach (var i in member.Items)
-            {
-                Debug.Assert(i.Type.IsPageLevel());
-                if (!i.Type.IsPageLevel())
-                {
-                    Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
-                    message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
-                    i.IsInvalid = true;
-                }
-                else
-                {
-                    var result = CheckNamespaceMembers(i);
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        message.AppendLine(result);
-                    }
-                }
-            }
-
-            return message.ToString();
+            return string.Empty;
         }
 
-        /// <summary>
-        /// e.g. Classes
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private string CheckNamespaceMembers(MetadataItem member)
+        foreach (var i in member.Items)
         {
-            StringBuilder message = new StringBuilder();
-
-            // Skip if it is already invalid
-            if (member.Items == null || member.IsInvalid)
+            var result = CheckNamespaceMembersMembers(i);
+            if (!string.IsNullOrEmpty(result))
             {
-                return string.Empty;
+                message.AppendLine(result);
             }
-
-            foreach (var i in member.Items)
-            {
-                var result = CheckNamespaceMembersMembers(i);
-                if (!string.IsNullOrEmpty(result))
-                {
-                    message.AppendLine(result);
-                }
-            }
-
-            return message.ToString();
         }
 
+        return message.ToString();
+    }
 
-        /// <summary>
-        /// e.g. Methods
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private string CheckNamespaceMembersMembers(MetadataItem member)
+    /// <summary>
+    /// e.g. Methods
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    private string CheckNamespaceMembersMembers(MetadataItem member)
+    {
+        StringBuilder message = new();
+        if (member.IsInvalid)
         {
-            StringBuilder message = new StringBuilder();
-            if (member.IsInvalid)
-            {
-                return string.Empty;
-            }
-
-            return message.ToString();
+            return string.Empty;
         }
+
+        return message.ToString();
     }
 }

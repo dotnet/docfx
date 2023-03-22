@@ -1,70 +1,67 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using System.Collections.Immutable;
+
+using Markdig.Syntax;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+internal class TagValidator
 {
-    using System;
-    using System.Collections.Immutable;
-    using System.Linq;
+    public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.Plugins;
+    private readonly MarkdownContext _context;
 
-    internal class TagValidator
+    public TagValidator(ImmutableList<MarkdownTagValidationRule> validators, MarkdownContext context)
     {
-        public ImmutableList<MarkdownTagValidationRule> Validators { get; }
+        _context = context;
+        Validators = validators;
+    }
 
-        private readonly MarkdownContext _context;
-
-        public TagValidator(ImmutableList<MarkdownTagValidationRule> validators, MarkdownContext context)
+    public void Validate(IMarkdownObject markdownObject)
+    {
+        var tags = Tag.Convert(markdownObject);
+        if (tags == null)
         {
-            _context = context;
-            Validators = validators;
+            return;
         }
 
-        public void Validate(IMarkdownObject markdownObject)
+        foreach (var tag in tags)
         {
-            var tags = Tag.Convert(markdownObject);
-            if (tags == null)
+            foreach (var validator in Validators)
             {
+                ValidateOne(tag, validator);
+            }
+        }
+    }
+
+    private void ValidateOne(Tag tag, MarkdownTagValidationRule validator)
+    {
+        if (tag.IsOpening || !validator.OpeningTagOnly)
+        {
+            var hasTagName = validator.TagNames.Any(tagName => string.Equals(tagName, tag.Name, StringComparison.OrdinalIgnoreCase));
+            if (hasTagName ^ (validator.Relation == TagRelation.NotIn))
+            {
+                ValidateCore(tag, validator);
+            }
+        }
+    }
+
+    private void ValidateCore(Tag tag, MarkdownTagValidationRule validator)
+    {
+        switch (validator.Behavior)
+        {
+            case TagValidationBehavior.Warning:
+                _context.LogWarning("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), null, line: tag.Line);
                 return;
-            }
-
-            foreach (var tag in tags)
-            {
-                foreach (var validator in Validators)
-                {
-                    ValidateOne(tag, validator);
-                }
-            }
-        }
-
-        private void ValidateOne(Tag tag, MarkdownTagValidationRule validator)
-        {
-            if (tag.IsOpening || !validator.OpeningTagOnly)
-            {
-                var hasTagName = validator.TagNames.Any(tagName => string.Equals(tagName, tag.Name, StringComparison.OrdinalIgnoreCase));
-                if (hasTagName ^ (validator.Relation == TagRelation.NotIn))
-                {
-                    ValidateCore(tag, validator);
-                }
-            }
-        }
-
-        private void ValidateCore(Tag tag, MarkdownTagValidationRule validator)
-        {
-            switch (validator.Behavior)
-            {
-                case TagValidationBehavior.Warning:
-                    _context.LogWarning("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), null, line: tag.Line);
-                    return;
-                case TagValidationBehavior.Error:
-                    _context.LogError("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), null, line: tag.Line);
-                    return;
-                case TagValidationBehavior.None:
-                default:
-                    return;
-            }
+            case TagValidationBehavior.Error:
+                _context.LogError("invalid-markdown-tag", string.Format(validator.MessageFormatter, tag.Name, tag.Content), null, line: tag.Line);
+                return;
+            case TagValidationBehavior.None:
+            default:
+                return;
         }
     }
 }

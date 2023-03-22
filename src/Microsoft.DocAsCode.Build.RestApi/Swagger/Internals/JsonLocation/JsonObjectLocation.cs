@@ -1,23 +1,22 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
+using System.Text;
+
+namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
+
+internal class JsonObjectLocation : IJsonLocation
 {
-    using System.Text;
+    private readonly string _propertyName;
 
-    internal class JsonObjectLocation : IJsonLocation
+    public JsonObjectLocation(string propertyName)
     {
-        private readonly string _propertyName;
+        _propertyName = propertyName;
+    }
 
-        public JsonObjectLocation(string propertyName)
-        {
-            _propertyName = propertyName;
-        }
-
-        public void WriteTo(StringBuilder sb)
-        {
-            sb.Append('/');
-            sb.Append(RestApiHelper.FormatDefinitionSinglePath(_propertyName));
-        }
+    public void WriteTo(StringBuilder sb)
+    {
+        sb.Append('/');
+        sb.Append(RestApiHelper.FormatDefinitionSinglePath(_propertyName));
     }
 }

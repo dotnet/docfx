@@ -1,43 +1,42 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dotnet
+using Microsoft.CodeAnalysis;
+
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal sealed class SpecIdCoreVisitor : SymbolVisitor<string>
 {
-    using Microsoft.CodeAnalysis;
+    public static readonly SpecIdCoreVisitor Instance = new();
 
-    internal sealed class SpecIdCoreVisitor : SymbolVisitor<string>
+    private SpecIdCoreVisitor()
     {
-        public static readonly SpecIdCoreVisitor Instance = new SpecIdCoreVisitor();
+    }
 
-        private SpecIdCoreVisitor()
-        {
-        }
+    public override string DefaultVisit(ISymbol symbol)
+    {
+        return VisitorHelper.GetId(symbol);
+    }
 
-        public override string DefaultVisit(ISymbol symbol)
-        {
-            return VisitorHelper.GetId(symbol);
-        }
+    public override string VisitPointerType(IPointerTypeSymbol symbol)
+    {
+        return symbol.PointedAtType.Accept(this) + "*";
+    }
 
-        public override string VisitPointerType(IPointerTypeSymbol symbol)
+    public override string VisitArrayType(IArrayTypeSymbol symbol)
+    {
+        if (symbol.Rank == 1)
         {
-            return symbol.PointedAtType.Accept(this) + "*";
+            return symbol.ElementType.Accept(this) + "[]";
         }
+        else
+        {
+            return symbol.ElementType.Accept(this) + "[" + new string(',', symbol.Rank - 1) + "]";
+        }
+    }
 
-        public override string VisitArrayType(IArrayTypeSymbol symbol)
-        {
-            if (symbol.Rank == 1)
-            {
-                return symbol.ElementType.Accept(this) + "[]";
-            }
-            else
-            {
-                return symbol.ElementType.Accept(this) + "[" + new string(',', symbol.Rank - 1) + "]";
-            }
-        }
-
-        public override string VisitTypeParameter(ITypeParameterSymbol symbol)
-        {
-            return "{" + symbol.Name + "}";
-        }
+    public override string VisitTypeParameter(ITypeParameterSymbol symbol)
+    {
+        return "{" + symbol.Name + "}";
     }
 }

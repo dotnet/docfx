@@ -1,26 +1,25 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Tests
+using Xunit;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Tests;
+
+public class TabGroupTest
 {
-    using Xunit;
-
-
-    public class TabGroupTest
+    [Fact]
+    [Trait("Related", "TabGroup")]
+    public void Test_General()
     {
-        [Fact]
-        [Trait("Related", "TabGroup")]
-        public void Test_General()
-        {
-            var groupId = "bHGHmlrG6S";
-            TestMarkupInGeneral(
-                @"Tab group test case
+        var groupId = "bHGHmlrG6S";
+        TestMarkupInGeneral(
+            @"Tab group test case
 # [title-a](#tab/a)
 content-a
 # [title-b](#tab/b/c)
 content-b
 - - -",
-                $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"">Tab group test case</p>
+            $@"<p sourceFile=""Topic.md"" sourceStartLineNumber=""1"">Tab group test case</p>
 <div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""2"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -40,16 +39,16 @@ content-b
 </section>
 </div>
 "
-            );
-        }
+        );
+    }
 
-        [Fact]
-        [Trait("Related", "TabGroup")]
-        public void Test_TabGroup_Combining()
-        {
-            var groupId = "bHGHmlrG6S";
-            TestMarkupInGeneral(
-                @"# [title-a or b](#tab/a+b)
+    [Fact]
+    [Trait("Related", "TabGroup")]
+    public void Test_TabGroup_Combining()
+    {
+        var groupId = "bHGHmlrG6S";
+        TestMarkupInGeneral(
+            @"# [title-a or b](#tab/a+b)
 content-a or b
 # [title-c](#tab/c)
 content-c
@@ -59,7 +58,7 @@ content-a
 # [title-b or c](#tab/b+c)
 content-b or c
 - - -",
-                $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
+            $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
 <a href=""#tabpanel_{groupId}_a+b"" role=""tab"" aria-controls=""tabpanel_{groupId}_a+b"" data-tab=""a+b"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"">title-a or b</a>
@@ -94,14 +93,14 @@ content-b or c
 </section>
 </div>
 "
-            );
-        }
+        );
+    }
 
-        [Fact]
-        public void TestTableInTabGroup()
-        {
-            var groupId = "bHGHmlrG6S";
-            TestMarkupInGeneral(@"# [title](#tab/id)
+    [Fact]
+    public void TestTableInTabGroup()
+    {
+        var groupId = "bHGHmlrG6S";
+        TestMarkupInGeneral(@"# [title](#tab/id)
 
 a | b
 - | -
@@ -131,11 +130,10 @@ $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sou
 </section>
 </div>
 ");
-        }
+    }
 
-        private static void TestMarkupInGeneral(string source, string expected)
-        {
-            TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
-        }
+    private static void TestMarkupInGeneral(string source, string expected)
+    {
+        TestUtility.VerifyMarkup(source, expected, lineNumber: true, filePath: "Topic.md");
     }
 }

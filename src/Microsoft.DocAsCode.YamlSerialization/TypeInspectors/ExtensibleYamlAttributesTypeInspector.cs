@@ -1,53 +1,48 @@
-﻿namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors
+﻿using YamlDotNet.Serialization;
+
+namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
+
+/// <summary>
+/// Applies the <see cref="YamlMemberAttribute"/> to another <see cref="ITypeInspector"/>.
+/// </summary>
+public sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspectorSkeleton
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    private readonly IExtensibleTypeInspector innerTypeDescriptor;
 
-    using YamlDotNet.Serialization;
-
-    /// <summary>
-    /// Applies the <see cref="YamlMemberAttribute"/> to another <see cref="ITypeInspector"/>.
-    /// </summary>
-    public sealed class ExtensibleYamlAttributesTypeInspector : ExtensibleTypeInspectorSkeleton
+    public ExtensibleYamlAttributesTypeInspector(IExtensibleTypeInspector innerTypeDescriptor)
     {
-        private readonly IExtensibleTypeInspector innerTypeDescriptor;
+        this.innerTypeDescriptor = innerTypeDescriptor;
+    }
 
-        public ExtensibleYamlAttributesTypeInspector(IExtensibleTypeInspector innerTypeDescriptor)
-        {
-            this.innerTypeDescriptor = innerTypeDescriptor;
-        }
-
-        public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
-        {
-            return innerTypeDescriptor.GetProperties(type, container)
-                .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
-                .Select(p =>
+    public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
+    {
+        return innerTypeDescriptor.GetProperties(type, container)
+            .Where(p => p.GetCustomAttribute<YamlIgnoreAttribute>() == null)
+            .Select(p =>
+            {
+                var descriptor = new PropertyDescriptor(p);
+                var member = p.GetCustomAttribute<YamlMemberAttribute>();
+                if (member != null)
                 {
-                    var descriptor = new PropertyDescriptor(p);
-                    var member = p.GetCustomAttribute<YamlMemberAttribute>();
-                    if (member != null)
+                    if (member.SerializeAs != null)
                     {
-                        if (member.SerializeAs != null)
-                        {
-                            descriptor.TypeOverride = member.SerializeAs;
-                        }
-
-                        descriptor.Order = member.Order;
-                        descriptor.ScalarStyle = member.ScalarStyle;
-
-                        if (member.Alias != null)
-                        {
-                            descriptor.Name = member.Alias;
-                        }
+                        descriptor.TypeOverride = member.SerializeAs;
                     }
 
-                    return (IPropertyDescriptor)descriptor;
-                })
-                .OrderBy(p => p.Order);
-        }
+                    descriptor.Order = member.Order;
+                    descriptor.ScalarStyle = member.ScalarStyle;
 
-        public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
-            innerTypeDescriptor.GetProperty(type, container, name);
+                    if (member.Alias != null)
+                    {
+                        descriptor.Name = member.Alias;
+                    }
+                }
+
+                return (IPropertyDescriptor)descriptor;
+            })
+            .OrderBy(p => p.Order);
     }
+
+    public override IPropertyDescriptor GetProperty(Type type, object container, string name) =>
+        innerTypeDescriptor.GetProperty(type, container, name);
 }

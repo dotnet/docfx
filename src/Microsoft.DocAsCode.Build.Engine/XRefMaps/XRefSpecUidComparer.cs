@@ -1,20 +1,16 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public sealed class XRefSpecUidComparer : Comparer<XRefSpec>
 {
-    using System;
-    using System.Collections.Generic;
+    public static readonly XRefSpecUidComparer Instance = new();
 
-    using Microsoft.DocAsCode.Plugins;
-
-    public sealed class XRefSpecUidComparer : Comparer<XRefSpec>
+    public override int Compare(XRefSpec x, XRefSpec y)
     {
-        public static readonly XRefSpecUidComparer Instance = new XRefSpecUidComparer();
-
-        public override int Compare(XRefSpec x, XRefSpec y)
-        {
-            return StringComparer.InvariantCulture.Compare(x.Uid, y.Uid);
-        }
+        return StringComparer.InvariantCulture.Compare(x.Uid, y.Uid);
     }
 }

@@ -1,108 +1,105 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+namespace Microsoft.DocAsCode.Common;
+
+public class CircularBuffer<T>
 {
-    using System;
+    private T[] _buffer;
+    private int _index;
+    private int _count;
 
-    public class CircularBuffer<T>
+    public CircularBuffer()
+        : this(0x10)
     {
-        private T[] _buffer;
-        private int _index;
-        private int _count;
+    }
 
-        public CircularBuffer()
-            : this(0x10)
+    public CircularBuffer(int capacity)
+    {
+        _buffer = new T[capacity];
+    }
+
+    public void Write(T item)
+    {
+        EnsureCapacity(1);
+        _buffer[WriteIndex] = item;
+        _count++;
+    }
+
+    public void Write(T[] items)
+    {
+        Write(items, 0, items.Length);
+    }
+
+    public void Write(T[] items, int startIndex, int count)
+    {
+        EnsureCapacity(count);
+        var c = _buffer.Length - WriteIndex;
+        if (c >= count)
         {
+            Array.Copy(items, startIndex, _buffer, WriteIndex, count);
         }
-
-        public CircularBuffer(int capacity)
+        else
         {
-            _buffer = new T[capacity];
+            Array.Copy(items, startIndex, _buffer, WriteIndex, c);
+            Array.Copy(items, startIndex + c, _buffer, 0, count - c);
         }
+        _count += count;
+    }
 
-        public void Write(T item)
+    public T Read()
+    {
+        if (_count == 0)
         {
-            EnsureCapacity(1);
-            _buffer[WriteIndex] = item;
-            _count++;
+            throw new InvalidOperationException("No item to read.");
         }
+        var result = _buffer[_index];
+        _index = ++_index % _buffer.Length;
+        _count--;
+        return result;
+    }
 
-        public void Write(T[] items)
+    public int Read(T[] buffer, int startIndex, int count)
+    {
+        var read = Math.Min(count, _count);
+        var c = Math.Min(read, _buffer.Length - _index);
+        Array.Copy(_buffer, _index, buffer, startIndex, c);
+        if (c < read)
         {
-            Write(items, 0, items.Length);
+            Array.Copy(_buffer, 0, buffer, startIndex + c, read - c);
         }
+        _index = (_index + read) % _buffer.Length;
+        _count -= read;
+        return read;
+    }
 
-        public void Write(T[] items, int startIndex, int count)
+    public int Count => _count;
+
+    private int WriteIndex => (_index + _count) % _buffer.Length;
+
+    private void EnsureCapacity(int count)
+    {
+        var c = _count + count;
+        if (c > _buffer.Length)
         {
-            EnsureCapacity(count);
-            var c = _buffer.Length - WriteIndex;
-            if (c >= count)
-            {
-                Array.Copy(items, startIndex, _buffer, WriteIndex, count);
-            }
-            else
-            {
-                Array.Copy(items, startIndex, _buffer, WriteIndex, c);
-                Array.Copy(items, startIndex + c, _buffer, 0, count - c);
-            }
-            _count += count;
+            Resize(Math.Max(c, _buffer.Length * 2));
         }
+    }
 
-        public T Read()
+    private void Resize(int capacity)
+    {
+        var buffer = new T[capacity];
+        if (_index + _count <= _buffer.Length)
         {
-            if (_count == 0)
-            {
-                throw new InvalidOperationException("No item to read.");
-            }
-            var result = _buffer[_index];
-            _index = ++_index % _buffer.Length;
-            _count--;
-            return result;
+            Array.Copy(_buffer, _index, buffer, 0, _count);
         }
-
-        public int Read(T[] buffer, int startIndex, int count)
+        else
         {
-            var read = Math.Min(count, _count);
-            var c = Math.Min(read, _buffer.Length - _index);
-            Array.Copy(_buffer, _index, buffer, startIndex, c);
-            if (c < read)
-            {
-                Array.Copy(_buffer, 0, buffer, startIndex + c, read - c);
-            }
-            _index = (_index + read) % _buffer.Length;
-            _count -= read;
-            return read;
+            var c = _buffer.Length - _index;
+            Array.Copy(_buffer, _index, buffer, 0, c);
+            Array.Copy(_buffer, 0, buffer, c, _count - c);
         }
-
-        public int Count => _count;
-
-        private int WriteIndex => (_index + _count) % _buffer.Length;
-
-        private void EnsureCapacity(int count)
-        {
-            var c = _count + count;
-            if (c > _buffer.Length)
-            {
-                Resize(Math.Max(c, _buffer.Length * 2));
-            }
-        }
-
-        private void Resize(int capacity)
-        {
-            var buffer = new T[capacity];
-            if (_index + _count <= _buffer.Length)
-            {
-                Array.Copy(_buffer, _index, buffer, 0, _count);
-            }
-            else
-            {
-                var c = _buffer.Length - _index;
-                Array.Copy(_buffer, _index, buffer, 0, c);
-                Array.Copy(_buffer, 0, buffer, c, _count - c);
-            }
-            _buffer = buffer;
-            _index = 0;
-        }
+        _buffer = buffer;
+        _index = 0;
     }
 }

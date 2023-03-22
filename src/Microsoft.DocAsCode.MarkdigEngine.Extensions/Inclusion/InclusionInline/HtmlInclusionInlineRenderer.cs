@@ -1,46 +1,44 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using Markdig;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
 {
-    using Markdig;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using System.Linq;
+    private readonly MarkdownContext _context;
+    private readonly MarkdownPipeline _inlinePipeline;
 
-    public class HtmlInclusionInlineRenderer : HtmlObjectRenderer<InclusionInline>
+    public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline inlinePipeline)
     {
-        private readonly MarkdownContext _context;
-        private readonly MarkdownPipeline _inlinePipeline;
+        _context = context;
+        _inlinePipeline = inlinePipeline;
+    }
 
-        public HtmlInclusionInlineRenderer(MarkdownContext context, MarkdownPipeline inlinePipeline)
+    protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
+    {
+        var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, inclusion);
+
+        if (content == null)
         {
-            _context = context;
-            _inlinePipeline = inlinePipeline;
+            _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
+            renderer.Write(inclusion.GetRawToken());
+            return;
         }
 
-        protected override void Write(HtmlRenderer renderer, InclusionInline inclusion)
+        if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
         {
-            var (content, includeFilePath) = _context.ReadFile(inclusion.IncludedFilePath, inclusion);
+            _context.LogWarning("circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{includeFilePath}'", inclusion);
+            renderer.Write(inclusion.GetRawToken());
+            return;
+        }
 
-            if (content == null)
-            {
-                _context.LogWarning("include-not-found", $"Cannot resolve '{inclusion.IncludedFilePath}' relative to '{InclusionContext.File}'.", inclusion);
-                renderer.Write(inclusion.GetRawToken());
-                return;
-            }
-
-            if (InclusionContext.IsCircularReference(includeFilePath, out var dependencyChain))
-            {
-                _context.LogWarning("circular-reference", $"Build has identified file(s) referencing each other: {string.Join(" --> ", dependencyChain.Select(file => $"'{file}'"))} --> '{includeFilePath}'", inclusion);
-                renderer.Write(inclusion.GetRawToken());
-                return;
-            }
-
-            using (InclusionContext.PushInclusion(includeFilePath))
-            {
-                renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
-            }
+        using (InclusionContext.PushInclusion(includeFilePath))
+        {
+            renderer.Write(Markdown.ToHtml(content, _inlinePipeline));
         }
     }
 }

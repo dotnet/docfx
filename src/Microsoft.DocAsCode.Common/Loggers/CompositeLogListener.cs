@@ -1,129 +1,125 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+namespace Microsoft.DocAsCode.Common;
+
+public class CompositeLogListener : ILoggerListener
 {
-    using System;
-    using System.Collections.Generic;
+    private readonly object _sync = new();
+    private readonly List<ILoggerListener> _listeners = new();
 
-    public class CompositeLogListener : ILoggerListener
+    public CompositeLogListener()
     {
-        private readonly object _sync = new object();
-        private readonly List<ILoggerListener> _listeners = new List<ILoggerListener>();
+    }
 
-        public CompositeLogListener()
+    public CompositeLogListener(IEnumerable<ILoggerListener> listeners)
+    {
+        _listeners.AddRange(listeners);
+    }
+
+    public int Count => _listeners.Count;
+
+    public void AddListener(ILoggerListener listener)
+    {
+        if (listener == null)
         {
+            throw new ArgumentNullException(nameof(listener));
         }
 
-        public CompositeLogListener(IEnumerable<ILoggerListener> listeners)
+        lock (_sync)
+        {
+            _listeners.Add(listener);
+        }
+    }
+
+    public void AddListeners(IEnumerable<ILoggerListener> listeners)
+    {
+        if (listeners == null)
+        {
+            throw new ArgumentNullException(nameof(listeners));
+        }
+
+        lock (_sync)
         {
             _listeners.AddRange(listeners);
         }
+    }
 
-        public int Count => _listeners.Count;
-
-        public void AddListener(ILoggerListener listener)
+    public ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
+    {
+        if (predicate == null)
         {
-            if (listener == null)
-            {
-                throw new ArgumentNullException(nameof(listener));
-            }
-
-            lock (_sync)
-            {
-                _listeners.Add(listener);
-            }
+            throw new ArgumentNullException(nameof(predicate));
         }
 
-        public void AddListeners(IEnumerable<ILoggerListener> listeners)
+        lock (_sync)
         {
-            if (listeners == null)
-            {
-                throw new ArgumentNullException(nameof(listeners));
-            }
+            return _listeners.Find(predicate);
+        }
+    }
 
-            lock (_sync)
-            {
-                _listeners.AddRange(listeners);
-            }
+    public void RemoveListener(ILoggerListener listener)
+    {
+        if (listener == null)
+        {
+            throw new ArgumentNullException(nameof(listener));
         }
 
-        public ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
+        lock (_sync)
         {
-            if (predicate == null)
+            listener.Dispose();
+            // prevent marshal listener.
+            _listeners.RemoveAll(listener.Equals);
+        }
+    }
+
+    public void RemoveAllListeners()
+    {
+        lock (_sync)
+        {
+            foreach (var i in _listeners)
             {
-                throw new ArgumentNullException(nameof(predicate));
+                i.Dispose();
             }
 
-            lock (_sync)
-            {
-                return _listeners.Find(predicate);
-            }
+            _listeners.Clear();
+        }
+    }
+
+    public void WriteLine(ILogItem item)
+    {
+        if (item == null)
+        {
+            throw new ArgumentNullException(nameof(item));
         }
 
-        public void RemoveListener(ILoggerListener listener)
+        lock (_sync)
         {
-            if (listener == null)
+            foreach (var listener in _listeners)
             {
-                throw new ArgumentNullException(nameof(listener));
-            }
-
-            lock (_sync)
-            {
-                listener.Dispose();
-                // prevent marshal listener.
-                _listeners.RemoveAll(listener.Equals);
+                listener.WriteLine(item);
             }
         }
+    }
 
-        public void RemoveAllListeners()
+    public void Flush()
+    {
+        lock (_sync)
         {
-            lock (_sync)
+            foreach (var listener in _listeners)
             {
-                foreach (var i in _listeners)
-                {
-                    i.Dispose();
-                }
-
-                _listeners.Clear();
+                listener.Flush();
             }
         }
+    }
 
-        public void WriteLine(ILogItem item)
+    public void Dispose()
+    {
+        lock (_sync)
         {
-            if (item == null)
+            foreach (var listener in _listeners)
             {
-                throw new ArgumentNullException(nameof(item));
-            }
-
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.WriteLine(item);
-                }
-            }
-        }
-
-        public void Flush()
-        {
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.Flush();
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.Flush();
-                }
+                listener.Flush();
             }
         }
     }

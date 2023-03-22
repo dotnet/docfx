@@ -1,66 +1,62 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace Microsoft.DocAsCode;
+
+internal class ListWithStringFallbackConverter : JsonConverter
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-
-    internal class ListWithStringFallbackConverter : JsonConverter
+    public override bool CanConvert(Type objectType)
     {
-        public override bool CanConvert(Type objectType)
+        return objectType == typeof(FileMapping);
+    }
+
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        var model = new ListWithStringFallback();
+        var value = reader.Value;
+        IEnumerable<JToken> jItems;
+        if (reader.TokenType == JsonToken.StartArray)
         {
-            return objectType == typeof(FileMapping);
+            jItems = JArray.Load(reader);
+        }
+        else if (reader.TokenType == JsonToken.StartObject)
+        {
+            jItems = JContainer.Load(reader);
+        }
+        else if (reader.TokenType == JsonToken.String)
+        {
+            jItems = JRaw.Load(reader);
+        }
+        else
+        {
+            jItems = JObject.Load(reader);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        if (jItems is JValue)
         {
-            var model = new ListWithStringFallback();
-            var value = reader.Value;
-            IEnumerable<JToken> jItems;
-            if (reader.TokenType == JsonToken.StartArray)
+            model.Add(jItems.ToString());
+        }
+        else
+        {
+            foreach (var item in jItems)
             {
-                jItems = JArray.Load(reader);
+                model.Add(item.ToString());
             }
-            else if (reader.TokenType == JsonToken.StartObject)
-            {
-                jItems = JContainer.Load(reader);
-            }
-            else if (reader.TokenType == JsonToken.String)
-            {
-                jItems = JRaw.Load(reader);
-            }
-            else
-            {
-                jItems = JObject.Load(reader);
-            }
-
-            if (jItems is JValue)
-            {
-                model.Add(jItems.ToString());
-            }
-            else
-            {
-                foreach (var item in jItems)
-                {
-                    model.Add(item.ToString());
-                }
-            }
-
-            return model;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        return model;
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        writer.WriteStartArray();
+        foreach(var item in (ListWithStringFallback)value)
         {
-            writer.WriteStartArray();
-            foreach(var item in (ListWithStringFallback)value)
-            {
-                serializer.Serialize(writer, item);
-            }
-            writer.WriteEndArray();
+            serializer.Serialize(writer, item);
         }
+        writer.WriteEndArray();
     }
 }

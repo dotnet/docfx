@@ -1,66 +1,61 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using System.Collections.Immutable;
+
+namespace Microsoft.DocAsCode.Common;
+
+public class RealFileReader : IFileReader
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.Linq;
+    private readonly string _expandedInputFolder;
 
-    public class RealFileReader : IFileReader
+    public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
     {
-        private readonly string _expandedInputFolder;
-
-        public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
+        if (inputFolder == null)
         {
-            if (inputFolder == null)
-            {
-                throw new ArgumentNullException(nameof(inputFolder));
-            }
-            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
-
-            _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
-            if (!Directory.Exists(_expandedInputFolder))
-            {
-                throw new DirectoryNotFoundException($"Directory ({inputFolder}) not found.");
-            }
-            if (inputFolder.Length > 0 &&
-                !inputFolder.EndsWith("\\", StringComparison.Ordinal) &&
-                !inputFolder.EndsWith("/", StringComparison.Ordinal))
-            {
-                inputFolder += "/";
-            }
-            InputFolder = inputFolder;
+            throw new ArgumentNullException(nameof(inputFolder));
         }
+        Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 
-        public string InputFolder { get; }
-
-        public ImmutableDictionary<string, string> Properties { get; }
-
-        #region IFileReader Members
-
-        public PathMapping? FindFile(RelativePath file)
+        _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
+        if (!Directory.Exists(_expandedInputFolder))
         {
-            var pp = Path.Combine(_expandedInputFolder, file.RemoveWorkingFolder());
-            if (!File.Exists(pp))
-            {
-                return null;
-            }
-            return new PathMapping(file, Path.Combine(InputFolder, file.RemoveWorkingFolder())) { Properties = Properties };
+            throw new DirectoryNotFoundException($"Directory ({inputFolder}) not found.");
         }
-
-        public IEnumerable<RelativePath> EnumerateFiles()
+        if (inputFolder.Length > 0 &&
+            !inputFolder.EndsWith("\\", StringComparison.Ordinal) &&
+            !inputFolder.EndsWith("/", StringComparison.Ordinal))
         {
-            var length = _expandedInputFolder.Length + 1;
-            return from f in Directory.EnumerateFiles(_expandedInputFolder, "*.*", SearchOption.AllDirectories)
-                   select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
+            inputFolder += "/";
         }
-
-        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
-            new[] { Path.Combine(InputFolder, file.RemoveWorkingFolder().ToString()) };
-
-        #endregion
+        InputFolder = inputFolder;
     }
+
+    public string InputFolder { get; }
+
+    public ImmutableDictionary<string, string> Properties { get; }
+
+    #region IFileReader Members
+
+    public PathMapping? FindFile(RelativePath file)
+    {
+        var pp = Path.Combine(_expandedInputFolder, file.RemoveWorkingFolder());
+        if (!File.Exists(pp))
+        {
+            return null;
+        }
+        return new PathMapping(file, Path.Combine(InputFolder, file.RemoveWorkingFolder())) { Properties = Properties };
+    }
+
+    public IEnumerable<RelativePath> EnumerateFiles()
+    {
+        var length = _expandedInputFolder.Length + 1;
+        return from f in Directory.EnumerateFiles(_expandedInputFolder, "*.*", SearchOption.AllDirectories)
+               select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
+    }
+
+    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
+        new[] { Path.Combine(InputFolder, file.RemoveWorkingFolder().ToString()) };
+
+    #endregion
 }

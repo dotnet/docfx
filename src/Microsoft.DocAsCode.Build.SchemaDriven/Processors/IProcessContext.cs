@@ -1,43 +1,40 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
+using Microsoft.DocAsCode.MarkdigEngine;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors;
+
+public interface IProcessContext
 {
-    using System.Collections.Generic;
+    IHostService Host { get; }
 
-    using Microsoft.DocAsCode.MarkdigEngine;
-    using Microsoft.DocAsCode.Plugins;
+    IDocumentBuildContext BuildContext { get; }
 
-    public interface IProcessContext
-    {
-        IHostService Host { get; }
+    IContentAnchorParser ContentAnchorParser { get; }
 
-        IDocumentBuildContext BuildContext { get; }
+    List<UidDefinition> Uids { get; }
 
-        IContentAnchorParser ContentAnchorParser { get; }
+    Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; }
 
-        List<UidDefinition> Uids { get; }
+    Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; }
 
-        Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; }
+    HashSet<string> Dependency { get; }
 
-        Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; }
+    List<XRefSpec> XRefSpecs { get; }
 
-        HashSet<string> Dependency { get; }
+    List<XRefSpec> ExternalXRefSpecs { get; }
 
-        List<XRefSpec> XRefSpecs { get; }
+    FileAndType OriginalFileAndType { get; }
 
-        List<XRefSpec> ExternalXRefSpecs { get; }
+    FileAndType FileAndType { get; }
 
-        FileAndType OriginalFileAndType { get; }
+    Dictionary<string, Dictionary<string, object>> PathProperties { get; }
 
-        FileAndType FileAndType { get; }
+    MarkdigMarkdownService MarkdigMarkdownService { get; }
 
-        Dictionary<string, Dictionary<string, object>> PathProperties { get; }
+    T GetModel<T>();
 
-        MarkdigMarkdownService MarkdigMarkdownService { get; }
-
-        T GetModel<T>();
-
-        IDictionary<string, object> Metadata { get; }
-    }
+    IDictionary<string, object> Metadata { get; }
 }

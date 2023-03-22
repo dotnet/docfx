@@ -1,52 +1,48 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using System.Net;
+
+using Markdig.Extensions.Yaml;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
+    private readonly MarkdownContext _context;
 
-    using Markdig.Extensions.Yaml;
-    using Markdig.Renderers;
-    using Markdig.Renderers.Html;
-    using Microsoft.DocAsCode.Common;
-
-    public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
+    public YamlHeaderRenderer(MarkdownContext context)
     {
-        private readonly MarkdownContext _context;
+        _context = context;
+    }
 
-        public YamlHeaderRenderer(MarkdownContext context)
+    protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
+    {
+        if (InclusionContext.IsInclude)
         {
-            _context = context;
+            return;
         }
 
-        protected override void Write(HtmlRenderer renderer, YamlFrontMatterBlock obj)
+        var content = obj.Lines.ToString();
+        try
         {
-            if (InclusionContext.IsInclude)
+            using StringReader reader = new(content);
+            var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
+            if (result != null)
             {
-                return;
+                renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
+                renderer.WriteAttributes(obj).Write(">");
+                renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
+                renderer.Write("</yamlheader>");
             }
-
-            var content = obj.Lines.ToString();
-            try
-            {
-                using StringReader reader = new StringReader(content);
-                var result = YamlUtility.Deserialize<Dictionary<string, object>>(reader);
-                if (result != null)
-                {
-                    renderer.Write("<yamlheader").Write($" start=\"{obj.Line + 1}\" end=\"{obj.Line + obj.Lines.Count + 2}\"");
-                    renderer.WriteAttributes(obj).Write(">");
-                    renderer.Write(WebUtility.HtmlEncode(obj.Lines.ToString()));
-                    renderer.Write("</yamlheader>");
-                }
-            }
-            catch (Exception ex)
-            {
-                // not a valid ymlheader, do nothing
-                _context.LogWarning("invalid-yaml-header", ex.Message, obj);
-            }
+        }
+        catch (Exception ex)
+        {
+            // not a valid ymlheader, do nothing
+            _context.LogWarning("invalid-yaml-header", ex.Message, obj);
         }
     }
 }

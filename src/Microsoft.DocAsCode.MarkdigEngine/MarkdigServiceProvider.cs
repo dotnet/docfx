@@ -1,20 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine
+using Markdig;
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.MarkdigEngine;
+
+public class MarkdigServiceProvider : IMarkdownServiceProvider
 {
-    using System;
-    using Markdig;
-    using Microsoft.DocAsCode.Plugins;
+    public ICompositionContainer Container { get; init; }
+    public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; init; }
 
-    public class MarkdigServiceProvider : IMarkdownServiceProvider
+    public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
     {
-        public ICompositionContainer Container { get; init; }
-        public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; init; }
-
-        public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
-        {
-            return new MarkdigMarkdownService(parameters, Container, ConfigureMarkdig);
-        }
+        return new MarkdigMarkdownService(parameters, Container, ConfigureMarkdig);
     }
 }

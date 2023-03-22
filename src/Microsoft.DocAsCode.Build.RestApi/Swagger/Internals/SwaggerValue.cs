@@ -1,21 +1,20 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
+using Newtonsoft.Json.Linq;
+
+namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
+
+internal class SwaggerValue : SwaggerObjectBase
 {
-    using Newtonsoft.Json.Linq;
+    public override SwaggerObjectType ObjectType => SwaggerObjectType.ValueType;
 
-    internal class SwaggerValue : SwaggerObjectBase
+    public JToken Token { get; set; }
+
+    public override SwaggerObjectBase Clone()
     {
-        public override SwaggerObjectType ObjectType => SwaggerObjectType.ValueType;
-
-        public JToken Token { get; set; }
-
-        public override SwaggerObjectBase Clone()
-        {
-            var clone = (SwaggerValue)MemberwiseClone();
-            clone.ReferencesResolved = false;
-            return clone;
-        }
+        var clone = (SwaggerValue)MemberwiseClone();
+        clone.ReferencesResolved = false;
+        return clone;
     }
 }

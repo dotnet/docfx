@@ -1,79 +1,76 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
+using System.Reflection;
+using System.Reflection.Emit;
+
+using YamlDotNet.Serialization.ObjectFactories;
+
+namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
+
+public class DefaultEmitObjectFactory : ObjectFactoryBase
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Reflection.Emit;
+    private readonly Dictionary<Type, Func<object>> _cache = new();
+    private static Type[] EmptyTypes => Type.EmptyTypes;
 
-    using YamlDotNet.Serialization.ObjectFactories;
-
-    public class DefaultEmitObjectFactory : ObjectFactoryBase
+    public override object Create(Type type)
     {
-        private readonly Dictionary<Type, Func<object>> _cache = new();
-        private static Type[] EmptyTypes => Type.EmptyTypes;
-
-        public override object Create(Type type)
+        if (!_cache.TryGetValue(type, out Func<object> func))
         {
-            if (!_cache.TryGetValue(type, out Func<object> func))
+            var realType = type;
+            if (type.IsInterface && type.IsGenericType)
             {
-                var realType = type;
-                if (type.IsInterface && type.IsGenericType)
+                var def = type.GetGenericTypeDefinition();
+                var args = type.GetGenericArguments();
+                if (def == typeof(IDictionary<,>) || def == typeof(IReadOnlyDictionary<,>))
                 {
-                    var def = type.GetGenericTypeDefinition();
-                    var args = type.GetGenericArguments();
-                    if (def == typeof(IDictionary<,>) || def == typeof(IReadOnlyDictionary<,>))
-                    {
-                        realType = typeof(Dictionary<,>).MakeGenericType(args);
-                    }
-                    if (def == typeof(IList<>) || def == typeof(IReadOnlyList<>) ||
-                        def == typeof(ICollection<>) || def == typeof(IReadOnlyCollection<>) ||
-                        def == typeof(IEnumerable<>))
-                    {
-                        realType = typeof(List<>).MakeGenericType(args);
-                    }
-                    if (def == typeof(ISet<>))
-                    {
-                        realType = typeof(HashSet<>).MakeGenericType(args);
-                    }
+                    realType = typeof(Dictionary<,>).MakeGenericType(args);
                 }
-                var ctor = realType.GetConstructor(Type.EmptyTypes);
-                if (ctor != null)
+                if (def == typeof(IList<>) || def == typeof(IReadOnlyList<>) ||
+                    def == typeof(ICollection<>) || def == typeof(IReadOnlyCollection<>) ||
+                    def == typeof(IEnumerable<>))
                 {
-                    func = CreateReferenceTypeFactory(ctor);
+                    realType = typeof(List<>).MakeGenericType(args);
                 }
-                else if (type.IsValueType)
+                if (def == typeof(ISet<>))
                 {
-                    func = CreateValueTypeFactory(type);
+                    realType = typeof(HashSet<>).MakeGenericType(args);
                 }
-                _cache[type] = func;
             }
-            return func();
-        }
-
-        private static Func<object> CreateReferenceTypeFactory(ConstructorInfo ctor)
-        {
-            var dm = new DynamicMethod(string.Empty, typeof(object), EmptyTypes);
-            var il = dm.GetILGenerator();
-            il.Emit(OpCodes.Newobj, ctor);
-            if (ctor.DeclaringType.IsValueType)
+            var ctor = realType.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
             {
-                il.Emit(OpCodes.Box, ctor.DeclaringType);
+                func = CreateReferenceTypeFactory(ctor);
             }
-            il.Emit(OpCodes.Ret);
-            return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
+            else if (type.IsValueType)
+            {
+                func = CreateValueTypeFactory(type);
+            }
+            _cache[type] = func;
         }
+        return func();
+    }
 
-        private static Func<object> CreateValueTypeFactory(Type type)
+    private static Func<object> CreateReferenceTypeFactory(ConstructorInfo ctor)
+    {
+        var dm = new DynamicMethod(string.Empty, typeof(object), EmptyTypes);
+        var il = dm.GetILGenerator();
+        il.Emit(OpCodes.Newobj, ctor);
+        if (ctor.DeclaringType.IsValueType)
         {
-            var dm = new DynamicMethod(string.Empty, typeof(object), EmptyTypes);
-            var il = dm.GetILGenerator();
-            il.Emit(OpCodes.Initobj, type);
-            il.Emit(OpCodes.Box, type);
-            il.Emit(OpCodes.Ret);
-            return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
+            il.Emit(OpCodes.Box, ctor.DeclaringType);
         }
+        il.Emit(OpCodes.Ret);
+        return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
+    }
+
+    private static Func<object> CreateValueTypeFactory(Type type)
+    {
+        var dm = new DynamicMethod(string.Empty, typeof(object), EmptyTypes);
+        var il = dm.GetILGenerator();
+        il.Emit(OpCodes.Initobj, type);
+        il.Emit(OpCodes.Box, type);
+        il.Emit(OpCodes.Ret);
+        return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
     }
 }

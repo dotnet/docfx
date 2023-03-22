@@ -1,23 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public sealed class EmptyResourceReader : ResourceFileReader
 {
-    using System.Collections.Generic;
-    using System.IO;
+    private static readonly IEnumerable<string> Empty = new string[0];
 
-    public sealed class EmptyResourceReader : ResourceFileReader
+    public override bool IsEmpty => true;
+    public override string Name => "Empty";
+
+    public override IEnumerable<string> Names => Empty;
+
+    public override Stream GetResourceStream(string name)
     {
-        private static readonly IEnumerable<string> Empty = new string[0];
-
-        public override bool IsEmpty => true;
-        public override string Name => "Empty";
-
-        public override IEnumerable<string> Names => Empty;
-
-        public override Stream GetResourceStream(string name)
-        {
-            return Stream.Null;
-        }
+        return Stream.Null;
     }
 }

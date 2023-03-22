@@ -1,55 +1,51 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.OverwriteDocuments
+using Microsoft.DocAsCode.Common;
+using System.Text;
+
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
+
+public class MarkdownFragment
 {
-    using Microsoft.DocAsCode.Common;
+    public string Uid { get; set; }
 
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
+    public Dictionary<string, object> Metadata { get; set; }
 
-    public class MarkdownFragment
+    public Dictionary<string, MarkdownProperty> Properties { get; set; }
+
+    public bool Touched { get; set; }
+
+    public override string ToString()
     {
-        public string Uid { get; set; }
+        string uidWrapper = OverwriteUtility.GetUidWrapper(Uid);
+        StringBuilder sb = new();
+        sb.Append("# " + uidWrapper);
+        sb.Append(Uid);
+        sb.AppendLine(uidWrapper);
 
-        public Dictionary<string, object> Metadata { get; set; }
-
-        public Dictionary<string, MarkdownProperty> Properties { get; set; }
-
-        public bool Touched { get; set; }
-
-        public override string ToString()
+        if (Metadata?.Count > 0)
         {
-            string uidWrapper = OverwriteUtility.GetUidWrapper(Uid);
-            StringBuilder sb = new StringBuilder();
-            sb.Append("# " + uidWrapper);
-            sb.Append(Uid);
-            sb.AppendLine(uidWrapper);
+            SerializeYamlHeader(Metadata, sb);
+        }
+        sb.AppendLine();
 
-            if (Metadata?.Count > 0)
-            {
-                SerializeYamlHeader(Metadata, sb);
-            }
+        foreach (var prop in Properties.Values)
+        {
+            prop.SerializeTo(sb);
             sb.AppendLine();
-
-            foreach (var prop in Properties.Values)
-            {
-                prop.SerializeTo(sb);
-                sb.AppendLine();
-            }
-
-            return sb.ToString();
         }
 
-        private static void SerializeYamlHeader(Dictionary<string, object> metadata, StringBuilder sb)
+        return sb.ToString();
+    }
+
+    private static void SerializeYamlHeader(Dictionary<string, object> metadata, StringBuilder sb)
+    {
+        if (metadata?.Count > 0)
         {
-            if (metadata?.Count > 0)
-            {
-                sb.AppendLine("```yaml");
-                YamlUtility.Serialize(new StringWriter(sb), metadata);
-                sb.AppendLine("```");
-            }
+            sb.AppendLine("```yaml");
+            YamlUtility.Serialize(new StringWriter(sb), metadata);
+            sb.AppendLine("```");
         }
     }
 }

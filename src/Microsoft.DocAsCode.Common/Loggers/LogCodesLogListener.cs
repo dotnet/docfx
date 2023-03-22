@@ -1,39 +1,37 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+
+namespace Microsoft.DocAsCode.Common;
+
+public class LogCodesLogListener : ILoggerListener
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Immutable;
+    public ConcurrentDictionary<string, ImmutableHashSet<string>> Codes { get; }
+        = new ConcurrentDictionary<string, ImmutableHashSet<string>>(FilePathComparer.OSPlatformSensitiveRelativePathComparer);
 
-    public class LogCodesLogListener : ILoggerListener
+    public void Dispose()
     {
-        public ConcurrentDictionary<string, ImmutableHashSet<string>> Codes { get; }
-            = new ConcurrentDictionary<string, ImmutableHashSet<string>>(FilePathComparer.OSPlatformSensitiveRelativePathComparer);
+    }
 
-        public void Dispose()
-        {
-        }
+    public void Flush()
+    {
+    }
 
-        public void Flush()
+    public void WriteLine(ILogItem item)
+    {
+        if (item == null)
         {
+            throw new ArgumentNullException(nameof(item));
         }
-
-        public void WriteLine(ILogItem item)
+        if (string.IsNullOrEmpty(item.File) || string.IsNullOrEmpty(item.Code))
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException(nameof(item));
-            }
-            if (string.IsNullOrEmpty(item.File) || string.IsNullOrEmpty(item.Code))
-            {
-                return;
-            }
-            Codes.AddOrUpdate(
-                item.File,
-                ImmutableHashSet.Create(item.Code),
-                (_, v) => v.Add(item.Code));
+            return;
         }
+        Codes.AddOrUpdate(
+            item.File,
+            ImmutableHashSet.Create(item.Code),
+            (_, v) => v.Add(item.Code));
     }
 }

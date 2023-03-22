@@ -1,68 +1,62 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+using Microsoft.DocAsCode.Plugins;
+
+namespace Microsoft.DocAsCode.Common;
+
+public class ManifestFileReader : IFileReader
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+    public Manifest Manifest { get; }
 
-    using Microsoft.DocAsCode.Plugins;
+    public string ManifestFolder { get; }
 
-    public class ManifestFileReader : IFileReader
+    public ManifestFileReader(Manifest manifest, string manifestFolder)
     {
-        public Manifest Manifest { get; }
+        Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
+        ManifestFolder = manifestFolder;
+    }
 
-        public string ManifestFolder { get; }
-
-        public ManifestFileReader(Manifest manifest, string manifestFolder)
+    public PathMapping? FindFile(RelativePath file)
+    {
+        OutputFileInfo entry;
+        lock (Manifest)
         {
-            Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
-            ManifestFolder = manifestFolder;
+            entry = FindEntryInManifest(file.RemoveWorkingFolder());
         }
-
-        public PathMapping? FindFile(RelativePath file)
+        if (entry == null)
         {
-            OutputFileInfo entry;
-            lock (Manifest)
-            {
-                entry = FindEntryInManifest(file.RemoveWorkingFolder());
-            }
-            if (entry == null)
-            {
-                return null;
-            }
-            return new PathMapping(file, entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath));
+            return null;
         }
+        return new PathMapping(file, entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath));
+    }
 
-        public IEnumerable<RelativePath> EnumerateFiles()
+    public IEnumerable<RelativePath> EnumerateFiles()
+    {
+        lock (Manifest)
         {
-            lock (Manifest)
-            {
-                return (from f in Manifest.Files
-                        from ofi in f.OutputFiles.Values
-                        select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).Distinct().ToList();
-            }
+            return (from f in Manifest.Files
+                    from ofi in f.OutputFiles.Values
+                    select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).Distinct().ToList();
         }
+    }
 
-        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+    public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+    {
+        OutputFileInfo entry;
+        lock (Manifest)
         {
-            OutputFileInfo entry;
-            lock (Manifest)
-            {
-                entry = FindEntryInManifest(file.RemoveWorkingFolder());
-            }
-            if (entry == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-            return new[] { entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath) };
+            entry = FindEntryInManifest(file.RemoveWorkingFolder());
         }
+        if (entry == null)
+        {
+            return Enumerable.Empty<string>();
+        }
+        return new[] { entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath) };
+    }
 
-        private OutputFileInfo FindEntryInManifest(string file)
-        {
-            return Manifest.FindOutputFileInfo(file);
-        }
+    private OutputFileInfo FindEntryInManifest(string file)
+    {
+        return Manifest.FindOutputFileInfo(file);
     }
 }

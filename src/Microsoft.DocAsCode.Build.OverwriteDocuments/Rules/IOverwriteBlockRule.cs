@@ -1,14 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.OverwriteDocuments
+using Markdig.Syntax;
+
+namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
+
+public interface IOverwriteBlockRule
 {
-    using Markdig.Syntax;
+    string TokenName{ get; }
 
-    public interface IOverwriteBlockRule
-    {
-        string TokenName{ get; }
-
-        bool Parse(Block block, out string value);
-    }
+    bool Parse(Block block, out string value);
 }

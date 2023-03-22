@@ -1,43 +1,39 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Engine
+using Microsoft.DocAsCode.Common;
+
+namespace Microsoft.DocAsCode.Build.Engine;
+
+public class TemplatePageLoader
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    private readonly RendererLoader _rendererLoader;
+    private readonly PreprocessorLoader _preprocessorLoader;
 
-    using Microsoft.DocAsCode.Common;
-
-    public class TemplatePageLoader
+    public TemplatePageLoader(IResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
     {
-        private readonly RendererLoader _rendererLoader;
-        private readonly PreprocessorLoader _preprocessorLoader;
+        _rendererLoader = new RendererLoader(reader, maxParallelism);
+        _preprocessorLoader = new PreprocessorLoader(reader, context, maxParallelism);
+    }
 
-        public TemplatePageLoader(IResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
+    public IEnumerable<Template> LoadAll()
+    {
+        foreach(var render in _rendererLoader.LoadAll())
         {
-            _rendererLoader = new RendererLoader(reader, maxParallelism);
-            _preprocessorLoader = new PreprocessorLoader(reader, context, maxParallelism);
+            var preprocessors = _preprocessorLoader.LoadFromRenderer(render).ToList();
+            if (preprocessors.Count > 1)
+            {
+                Logger.Log(
+                    LogLevel.Warning, 
+                    $"Multiple template preprocessors '{preprocessors.Select(s => s.Path).ToDelimitedString()}'(case insensitive) are found for template page '{preprocessors[0].Name}', '{preprocessors[0].Path}' is used and others are ignored.");
+            }
+
+            yield return new Template(render, preprocessors.FirstOrDefault());
         }
 
-        public IEnumerable<Template> LoadAll()
+        foreach(var p in _preprocessorLoader.LoadStandalones())
         {
-            foreach(var render in _rendererLoader.LoadAll())
-            {
-                var preprocessors = _preprocessorLoader.LoadFromRenderer(render).ToList();
-                if (preprocessors.Count > 1)
-                {
-                    Logger.Log(
-                        LogLevel.Warning, 
-                        $"Multiple template preprocessors '{preprocessors.Select(s => s.Path).ToDelimitedString()}'(case insensitive) are found for template page '{preprocessors[0].Name}', '{preprocessors[0].Path}' is used and others are ignored.");
-                }
-
-                yield return new Template(render, preprocessors.FirstOrDefault());
-            }
-
-            foreach(var p in _preprocessorLoader.LoadStandalones())
-            {
-                yield return new Template(null, p);
-            }
+            yield return new Template(null, p);
         }
     }
 }

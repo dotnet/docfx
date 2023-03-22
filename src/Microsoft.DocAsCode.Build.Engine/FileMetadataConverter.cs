@@ -1,118 +1,114 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode
+using System.Collections.Immutable;
+
+using Microsoft.DocAsCode.Build.Engine;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Glob;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace Microsoft.DocAsCode;
+
+public class FileMetadataConverter : JsonConverter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
+    private const string BaseDir = "baseDir";
+    private const string Dict = "dict";
+    private const string Glob = "glob";
+    private const string Key = "key";
+    private const string Value = "value";
 
-    using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Glob;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    private readonly bool _ignoreBaseDir;
 
-    public class FileMetadataConverter : JsonConverter
+    public FileMetadataConverter() : base() { }
+
+    public FileMetadataConverter(bool ignoreBaseDir)
     {
-        private const string BaseDir = "baseDir";
-        private const string Dict = "dict";
-        private const string Glob = "glob";
-        private const string Key = "key";
-        private const string Value = "value";
+        _ignoreBaseDir = ignoreBaseDir;
+    }
 
-        private readonly bool _ignoreBaseDir;
+    public override bool CanConvert(Type objectType)
+    {
+        return objectType == typeof(FileMetadata);
+    }
 
-        public FileMetadataConverter() : base() { }
-
-        public FileMetadataConverter(bool ignoreBaseDir)
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    {
+        JToken token;
+        if (reader.TokenType == JsonToken.StartObject)
         {
-            _ignoreBaseDir = ignoreBaseDir;
+            token = JToken.Load(reader);
+        }
+        else
+        {
+            throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
+        }
+        var baseDir = (string)((JObject)token).GetValue(BaseDir);
+        if (!(token[Dict] is JObject dict))
+        {
+            throw new JsonReaderException($"Expect {token[Dict]} to be JObject.");
+        }
+        var metaDict = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
+        foreach (var pair in dict)
+        {
+            metaDict.Add(pair.Key, GetFileMetadataItemArray(pair.Value));
         }
 
-        public override bool CanConvert(Type objectType)
+        return new FileMetadata(baseDir, metaDict);
+    }
+
+    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    {
+        var fileMetadata = (FileMetadata)value;
+        writer.WriteStartObject();
+
+        if (!_ignoreBaseDir && fileMetadata.BaseDir != null)
         {
-            return objectType == typeof(FileMetadata);
+            writer.WritePropertyName(BaseDir);
+            writer.WriteRawValue(JsonUtility.Serialize(fileMetadata.BaseDir));
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        writer.WritePropertyName(Dict);
+        writer.WriteStartObject();
+        foreach (var pair in fileMetadata)
         {
-            JToken token;
-            if (reader.TokenType == JsonToken.StartObject)
+            writer.WritePropertyName(pair.Key);
+            writer.WriteStartArray();
+            foreach (var item in pair.Value)
             {
-                token = JToken.Load(reader);
+                writer.WriteStartObject();
+                writer.WritePropertyName(Glob);
+                writer.WriteRawValue(JsonUtility.Serialize(item.Glob.Raw));
+                writer.WritePropertyName(Key);
+                writer.WriteRawValue(JsonUtility.Serialize(item.Key));
+                writer.WritePropertyName(Value);
+                writer.WriteRawValue(JsonUtility.Serialize(item.Value));
+                writer.WriteEndObject();
             }
-            else
-            {
-                throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
-            }
-            var baseDir = (string)((JObject)token).GetValue(BaseDir);
-            if (!(token[Dict] is JObject dict))
-            {
-                throw new JsonReaderException($"Expect {token[Dict]} to be JObject.");
-            }
-            var metaDict = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
-            foreach (var pair in dict)
-            {
-                metaDict.Add(pair.Key, GetFileMetadataItemArray(pair.Value));
-            }
-
-            return new FileMetadata(baseDir, metaDict);
+            writer.WriteEndArray();
         }
+        writer.WriteEndObject();
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        writer.WriteEndObject();
+    }
+
+    private ImmutableArray<FileMetadataItem> GetFileMetadataItemArray(JToken value)
+    {
+        if (!(value is JArray arr))
         {
-            var fileMetadata = (FileMetadata)value;
-            writer.WriteStartObject();
-
-            if (!_ignoreBaseDir && fileMetadata.BaseDir != null)
-            {
-                writer.WritePropertyName(BaseDir);
-                writer.WriteRawValue(JsonUtility.Serialize(fileMetadata.BaseDir));
-            }
-
-            writer.WritePropertyName(Dict);
-            writer.WriteStartObject();
-            foreach (var pair in fileMetadata)
-            {
-                writer.WritePropertyName(pair.Key);
-                writer.WriteStartArray();
-                foreach (var item in pair.Value)
-                {
-                    writer.WriteStartObject();
-                    writer.WritePropertyName(Glob);
-                    writer.WriteRawValue(JsonUtility.Serialize(item.Glob.Raw));
-                    writer.WritePropertyName(Key);
-                    writer.WriteRawValue(JsonUtility.Serialize(item.Key));
-                    writer.WritePropertyName(Value);
-                    writer.WriteRawValue(JsonUtility.Serialize(item.Value));
-                    writer.WriteEndObject();
-                }
-                writer.WriteEndArray();
-            }
-            writer.WriteEndObject();
-
-            writer.WriteEndObject();
+            throw new JsonReaderException($"Expect {value} to be JArray.");
         }
-
-        private ImmutableArray<FileMetadataItem> GetFileMetadataItemArray(JToken value)
+        return arr.Select(e =>
         {
-            if (!(value is JArray arr))
+            if (!(e is JObject obj))
             {
-                throw new JsonReaderException($"Expect {value} to be JArray.");
+                throw new JsonReaderException($"Expect {e} to be JObject.");
             }
-            return arr.Select(e =>
-            {
-                if (!(e is JObject obj))
-                {
-                    throw new JsonReaderException($"Expect {e} to be JObject.");
-                }
-                return new FileMetadataItem(
-                    new GlobMatcher((string)obj[Glob]),
-                    (string)obj[Key],
-                    ConvertToObjectHelper.ConvertJObjectToObject(obj[Value]));
-            }).ToImmutableArray();
-        }
+            return new FileMetadataItem(
+                new GlobMatcher((string)obj[Glob]),
+                (string)obj[Key],
+                ConvertToObjectHelper.ConvertJObjectToObject(obj[Value]));
+        }).ToImmutableArray();
     }
 }

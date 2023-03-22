@@ -1,50 +1,49 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
+using Microsoft.DocAsCode.Common;
+
+using Markdig.Syntax;
+
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors;
+
+public class MarkdownAstInterpreter : IInterpreter
 {
-    using Microsoft.DocAsCode.Common;
+    private readonly IInterpreter _inner;
 
-    using Markdig.Syntax;
-
-    public class MarkdownAstInterpreter : IInterpreter
+    public MarkdownAstInterpreter(IInterpreter inner)
     {
-        private readonly IInterpreter _inner;
+        _inner = inner;
+    }
 
-        public MarkdownAstInterpreter(IInterpreter inner)
+    public bool CanInterpret(BaseSchema schema)
+    {
+        return true;
+    }
+
+    public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
+    {
+        if (value == null || !CanInterpret(schema))
         {
-            _inner = inner;
+            return value;
         }
 
-        public bool CanInterpret(BaseSchema schema)
+        if (value is MarkdownDocument val)
         {
-            return true;
+            return MarkupCore(val, context, path);
         }
 
-        public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
-        {
-            if (value == null || !CanInterpret(schema))
-            {
-                return value;
-            }
+        return _inner.Interpret(schema, value, context, path);
+    }
 
-            if (value is MarkdownDocument val)
-            {
-                return MarkupCore(val, context, path);
-            }
+    private static string MarkupCore(MarkdownDocument document, IProcessContext context, string path)
+    {
+        var host = context.Host;
 
-            return _inner.Interpret(schema, value, context, path);
-        }
-
-        private static string MarkupCore(MarkdownDocument document, IProcessContext context, string path)
-        {
-            var host = context.Host;
-
-            var mr = context.MarkdigMarkdownService.Render(document);
-            (context.FileLinkSources).Merge(mr.FileLinkSources);
-            (context.UidLinkSources).Merge(mr.UidLinkSources);
-            (context.Dependency).UnionWith(mr.Dependency);
-            return mr.Html;
-        }
+        var mr = context.MarkdigMarkdownService.Render(document);
+        (context.FileLinkSources).Merge(mr.FileLinkSources);
+        (context.UidLinkSources).Merge(mr.UidLinkSources);
+        (context.Dependency).UnionWith(mr.Dependency);
+        return mr.Html;
     }
 }

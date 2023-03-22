@@ -1,68 +1,65 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
+using System.Collections.Immutable;
+
+using Markdig.Syntax;
+using Microsoft.DocAsCode.MarkdigEngine.Validators;
+
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
+    private Action<IMarkdownObject> _preProcess;
+    private Action<IMarkdownObject> _postProcess;
 
-    using Markdig.Syntax;
-    using Microsoft.DocAsCode.MarkdigEngine.Validators;
+    public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
 
-    internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
+    public MarkdownObjectValidatorAdapter(
+        IEnumerable<IMarkdownObjectValidator> validators, 
+        Action<IMarkdownObject> preProcess, 
+        Action<IMarkdownObject> postProcess)
     {
-        private Action<IMarkdownObject> _preProcess;
-        private Action<IMarkdownObject> _postProcess;
+        Validators = validators.ToImmutableArray();
+        _preProcess = preProcess;
+        _postProcess = postProcess;
+    }
 
-        public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
+    public MarkdownObjectValidatorAdapter(
+        IMarkdownObjectValidator validator,
+        Action<IMarkdownObject> preProcess,
+        Action<IMarkdownObject> postProcess)
+    {
+        Validators = new[] { validator }.ToImmutableArray();
+        _preProcess = preProcess;
+        _postProcess = postProcess;
+    }
 
-        public MarkdownObjectValidatorAdapter(
-            IEnumerable<IMarkdownObjectValidator> validators, 
-            Action<IMarkdownObject> preProcess, 
-            Action<IMarkdownObject> postProcess)
+    public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
+    {
+        foreach (var validator in Validators)
         {
-            Validators = validators.ToImmutableArray();
-            _preProcess = preProcess;
-            _postProcess = postProcess;
+            validator.Validate(markdownObject);
         }
 
-        public MarkdownObjectValidatorAdapter(
-            IMarkdownObjectValidator validator,
-            Action<IMarkdownObject> preProcess,
-            Action<IMarkdownObject> postProcess)
-        {
-            Validators = new[] { validator }.ToImmutableArray();
-            _preProcess = preProcess;
-            _postProcess = postProcess;
-        }
+        return markdownObject;
+    }
 
-        public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
+    public void PreProcess(IMarkdownObject markdownObject)
+    {
+        _preProcess?.Invoke(markdownObject);
+        foreach (var validator in Validators)
         {
-            foreach (var validator in Validators)
-            {
-                validator.Validate(markdownObject);
-            }
-
-            return markdownObject;
+            validator.PreValidate(markdownObject);
         }
+    }
 
-        public void PreProcess(IMarkdownObject markdownObject)
+    public void PostProcess(IMarkdownObject markdownObject)
+    {
+        foreach (var validator in Validators)
         {
-            _preProcess?.Invoke(markdownObject);
-            foreach (var validator in Validators)
-            {
-                validator.PreValidate(markdownObject);
-            }
+            validator.PostValidate(markdownObject);
         }
-
-        public void PostProcess(IMarkdownObject markdownObject)
-        {
-            foreach (var validator in Validators)
-            {
-                validator.PostValidate(markdownObject);
-            }
-            _postProcess?.Invoke(markdownObject);
-        }
+        _postProcess?.Invoke(markdownObject);
     }
 }

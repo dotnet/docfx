@@ -2,118 +2,115 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 
 #nullable enable
 
-namespace Microsoft.DocAsCode.Dotnet
+namespace Microsoft.DocAsCode.Dotnet;
+
+internal class SymbolFilter
 {
-    internal class SymbolFilter
+    private readonly ExtractMetadataConfig _config;
+    private readonly DotnetApiOptions _options;
+    private readonly ConfigFilterRule? _filterRule;
+
+    private readonly ConcurrentDictionary<ISymbol, bool> _cache = new(SymbolEqualityComparer.Default);
+    private readonly ConcurrentDictionary<ISymbol, bool> _attributeCache = new(SymbolEqualityComparer.Default);
+
+    public SymbolFilter(ExtractMetadataConfig config, DotnetApiOptions options)
     {
-        private readonly ExtractMetadataConfig _config;
-        private readonly DotnetApiOptions _options;
-        private readonly ConfigFilterRule? _filterRule;
+        _options = options;
+        _config = config;
+        _filterRule = config.DisableDefaultFilter ? null : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);
+    }
 
-        private readonly ConcurrentDictionary<ISymbol, bool> _cache = new(SymbolEqualityComparer.Default);
-        private readonly ConcurrentDictionary<ISymbol, bool> _attributeCache = new(SymbolEqualityComparer.Default);
+    public bool IncludeApi(ISymbol symbol)
+    {
+        return IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
 
-        public SymbolFilter(ExtractMetadataConfig config, DotnetApiOptions options)
+        bool IncludeApiCore(ISymbol symbol)
         {
-            _options = options;
-            _config = config;
-            _filterRule = config.DisableDefaultFilter ? null : ConfigFilterRule.LoadWithDefaults(config.FilterConfigFile);
+            return _cache.GetOrAdd(symbol, _ => _options.IncludeApi?.Invoke(_) switch
+            {
+                SymbolIncludeState.Include => true,
+                SymbolIncludeState.Exclude => false,
+                _ => IncludeApiDefault(symbol),
+            });
         }
 
-        public bool IncludeApi(ISymbol symbol)
+        bool IncludeApiDefault(ISymbol symbol)
         {
-            return IsSymbolAccessible(symbol) && IncludeApiCore(symbol);
+            if (_filterRule is not null && !_filterRule.CanVisitApi(RoslynFilterData.GetSymbolFilterData(symbol)))
+                return false;
 
-            bool IncludeApiCore(ISymbol symbol)
+            return symbol.ContainingSymbol is null || IncludeApiCore(symbol.ContainingSymbol);
+        }
+    }
+
+    public bool IncludeAttribute(ISymbol symbol)
+    {
+        return IsSymbolAccessible(symbol) && IncludeAttributeCore(symbol);
+
+        bool IncludeAttributeCore(ISymbol symbol)
+        {
+            return _attributeCache.GetOrAdd(symbol, _ => _options.IncludeAttribute?.Invoke(_) switch
             {
-                return _cache.GetOrAdd(symbol, _ => _options.IncludeApi?.Invoke(_) switch
-                {
-                    SymbolIncludeState.Include => true,
-                    SymbolIncludeState.Exclude => false,
-                    _ => IncludeApiDefault(symbol),
-                });
-            }
-
-            bool IncludeApiDefault(ISymbol symbol)
-            {
-                if (_filterRule is not null && !_filterRule.CanVisitApi(RoslynFilterData.GetSymbolFilterData(symbol)))
-                    return false;
-
-                return symbol.ContainingSymbol is null || IncludeApiCore(symbol.ContainingSymbol);
-            }
+                SymbolIncludeState.Include => true,
+                SymbolIncludeState.Exclude => false,
+                _ => IncludeAttributeDefault(symbol),
+            });
         }
 
-        public bool IncludeAttribute(ISymbol symbol)
+        bool IncludeAttributeDefault(ISymbol symbol)
         {
-            return IsSymbolAccessible(symbol) && IncludeAttributeCore(symbol);
+            if (_filterRule is not null && !_filterRule.CanVisitAttribute(RoslynFilterData.GetSymbolFilterData(symbol)))
+                return false;
 
-            bool IncludeAttributeCore(ISymbol symbol)
-            {
-                return _attributeCache.GetOrAdd(symbol, _ => _options.IncludeAttribute?.Invoke(_) switch
-                {
-                    SymbolIncludeState.Include => true,
-                    SymbolIncludeState.Exclude => false,
-                    _ => IncludeAttributeDefault(symbol),
-                });
-            }
-
-            bool IncludeAttributeDefault(ISymbol symbol)
-            {
-                if (_filterRule is not null && !_filterRule.CanVisitAttribute(RoslynFilterData.GetSymbolFilterData(symbol)))
-                    return false;
-
-                return symbol.ContainingSymbol is null || IncludeAttributeCore(symbol.ContainingSymbol);
-            }
+            return symbol.ContainingSymbol is null || IncludeAttributeCore(symbol.ContainingSymbol);
         }
+    }
 
-        public Accessibility? GetDisplayAccessibility(ISymbol symbol)
+    public Accessibility? GetDisplayAccessibility(ISymbol symbol)
+    {
+        if (_config.IncludePrivateMembers)
+            return symbol.DeclaredAccessibility;
+
+        // Hide internal or private APIs
+        return symbol.DeclaredAccessibility switch
         {
-            if (_config.IncludePrivateMembers)
-                return symbol.DeclaredAccessibility;
+            Accessibility.NotApplicable => Accessibility.NotApplicable,
+            Accessibility.Public => Accessibility.Public,
+            Accessibility.Protected => Accessibility.Protected,
+            Accessibility.ProtectedOrInternal => Accessibility.Protected,
+            _ => null,
+        };
+    }
 
-            // Hide internal or private APIs
-            return symbol.DeclaredAccessibility switch
+    private bool IsSymbolAccessible(ISymbol symbol)
+    {
+        // TODO: should we include implicitly declared members like constructors? They are part of the API contract.
+        if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
+            return false;
+
+        if (_config.IncludePrivateMembers)
+        {
+            return symbol.Kind switch
             {
-                Accessibility.NotApplicable => Accessibility.NotApplicable,
-                Accessibility.Public => Accessibility.Public,
-                Accessibility.Protected => Accessibility.Protected,
-                Accessibility.ProtectedOrInternal => Accessibility.Protected,
-                _ => null,
+                SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
+                SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
+                SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
+                _ => true,
             };
         }
 
-        private bool IsSymbolAccessible(ISymbol symbol)
+        if (GetDisplayAccessibility(symbol) is null)
+            return false;
+
+        return symbol.ContainingSymbol is null || IsSymbolAccessible(symbol.ContainingSymbol);
+
+        bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
         {
-            // TODO: should we include implicitly declared members like constructors? They are part of the API contract.
-            if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
-                return false;
-
-            if (_config.IncludePrivateMembers)
-            {
-                return symbol.Kind switch
-                {
-                    SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
-                    _ => true,
-                };
-            }
-
-            if (GetDisplayAccessibility(symbol) is null)
-                return false;
-
-            return symbol.ContainingSymbol is null || IsSymbolAccessible(symbol.ContainingSymbol);
-
-            bool IncludesContainingSymbols(IEnumerable<ISymbol> symbols)
-            {
-                return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
-            }
+            return !symbols.Any() || symbols.All(s => IncludeApi(s.ContainingSymbol));
         }
     }
 }

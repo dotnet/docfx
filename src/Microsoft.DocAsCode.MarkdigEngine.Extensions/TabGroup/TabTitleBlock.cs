@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
-{
-    using Markdig.Syntax;
+using Markdig.Syntax;
 
-    public class TabTitleBlock : LeafBlock
+namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
+
+public class TabTitleBlock : LeafBlock
+{
+    public TabTitleBlock() : base(null)
     {
-        public TabTitleBlock() : base(null)
-        {
-        }
     }
 }

@@ -1,62 +1,58 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+namespace Microsoft.DocAsCode.Common;
+
+public class ComputerResourceCollection
 {
-    using System;
-    using System.Threading;
+    public const int DefaultDiskIOThreshold = 2;
+    public const int DefaultNetworkIOThreshold = 16;
 
-    public class ComputerResourceCollection
+    public ComputerResourceCollection(int cpu = 0, int diskIO = DefaultDiskIOThreshold, int networkIO = DefaultNetworkIOThreshold)
     {
-        public const int DefaultDiskIOThreshold = 2;
-        public const int DefaultNetworkIOThreshold = 16;
+        CpuResource = new SemaphoreSlim(cpu <= 0 ? Environment.ProcessorCount : cpu);
+        DiskIOResource = new SemaphoreSlim(diskIO <= 0 ? DefaultDiskIOThreshold : diskIO);
+        NetworkIOResource = new SemaphoreSlim(networkIO <= 0 ? DefaultNetworkIOThreshold : networkIO);
+    }
 
-        public ComputerResourceCollection(int cpu = 0, int diskIO = DefaultDiskIOThreshold, int networkIO = DefaultNetworkIOThreshold)
+    public SemaphoreSlim CpuResource { get; }
+
+    public SemaphoreSlim DiskIOResource { get; }
+
+    public SemaphoreSlim NetworkIOResource { get; }
+
+    public void RequireResource(ComputerResourceType current, ComputerResourceType target)
+    {
+        if (target == current)
         {
-            CpuResource = new SemaphoreSlim(cpu <= 0 ? Environment.ProcessorCount : cpu);
-            DiskIOResource = new SemaphoreSlim(diskIO <= 0 ? DefaultDiskIOThreshold : diskIO);
-            NetworkIOResource = new SemaphoreSlim(networkIO <= 0 ? DefaultNetworkIOThreshold : networkIO);
+            return;
         }
-
-        public SemaphoreSlim CpuResource { get; }
-
-        public SemaphoreSlim DiskIOResource { get; }
-
-        public SemaphoreSlim NetworkIOResource { get; }
-
-        public void RequireResource(ComputerResourceType current, ComputerResourceType target)
+        switch ((target & ComputerResourceType.Cpu) - (current & ComputerResourceType.Cpu))
         {
-            if (target == current)
-            {
-                return;
-            }
-            switch ((target & ComputerResourceType.Cpu) - (current & ComputerResourceType.Cpu))
-            {
-                case (int)ComputerResourceType.Cpu:
-                    CpuResource.Wait();
-                    break;
-                case -(int)ComputerResourceType.Cpu:
-                    CpuResource.Release();
-                    break;
-            }
-            switch ((target & ComputerResourceType.DiskIO) - (current & ComputerResourceType.DiskIO))
-            {
-                case (int)ComputerResourceType.DiskIO:
-                    DiskIOResource.Wait();
-                    break;
-                case -(int)ComputerResourceType.DiskIO:
-                    DiskIOResource.Release();
-                    break;
-            }
-            switch ((target & ComputerResourceType.NetworkIO) - (current & ComputerResourceType.NetworkIO))
-            {
-                case (int)ComputerResourceType.NetworkIO:
-                    NetworkIOResource.Wait();
-                    break;
-                case -(int)ComputerResourceType.NetworkIO:
-                    NetworkIOResource.Release();
-                    break;
-            }
+            case (int)ComputerResourceType.Cpu:
+                CpuResource.Wait();
+                break;
+            case -(int)ComputerResourceType.Cpu:
+                CpuResource.Release();
+                break;
+        }
+        switch ((target & ComputerResourceType.DiskIO) - (current & ComputerResourceType.DiskIO))
+        {
+            case (int)ComputerResourceType.DiskIO:
+                DiskIOResource.Wait();
+                break;
+            case -(int)ComputerResourceType.DiskIO:
+                DiskIOResource.Release();
+                break;
+        }
+        switch ((target & ComputerResourceType.NetworkIO) - (current & ComputerResourceType.NetworkIO))
+        {
+            case (int)ComputerResourceType.NetworkIO:
+                NetworkIOResource.Wait();
+                break;
+            case -(int)ComputerResourceType.NetworkIO:
+                NetworkIOResource.Release();
+                break;
         }
     }
 }

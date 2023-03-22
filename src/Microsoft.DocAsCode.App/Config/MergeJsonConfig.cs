@@ -1,18 +1,16 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode
+using Newtonsoft.Json;
+
+namespace Microsoft.DocAsCode;
+
+[JsonConverter(typeof(MergeJsonConfigConverter))]
+internal class MergeJsonConfig : List<MergeJsonItemConfig>
 {
-    using Newtonsoft.Json;
-    using System.Collections.Generic;
+    public MergeJsonConfig(IEnumerable<MergeJsonItemConfig> configs) : base(configs) { }
 
-    [JsonConverter(typeof(MergeJsonConfigConverter))]
-    internal class MergeJsonConfig : List<MergeJsonItemConfig>
+    public MergeJsonConfig(params MergeJsonItemConfig[] configs) : base(configs)
     {
-        public MergeJsonConfig(IEnumerable<MergeJsonItemConfig> configs) : base(configs) { }
-
-        public MergeJsonConfig(params MergeJsonItemConfig[] configs) : base(configs)
-        {
-        }
     }
 }

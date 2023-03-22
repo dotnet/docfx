@@ -1,68 +1,65 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common
+namespace Microsoft.DocAsCode.Common;
+
+[Serializable]
+public sealed class ComputerResource : IDisposable
 {
-    using System;
+    private static ComputerResourceCollection _resources = new();
 
-    [Serializable]
-    public sealed class ComputerResource : IDisposable
+    private readonly ComputerResource _outer;
+    private readonly ComputerResourceType _type;
+
+    private ComputerResource(ComputerResourceType type, bool freeSlot)
     {
-        private static ComputerResourceCollection _resources = new ComputerResourceCollection();
+        _type = type;
+        _outer = GetResourceType();
+        SetResourceType(freeSlot ? null : this);
+        _resources.RequireResource(_outer?._type ?? ComputerResourceType.None, type);
+    }
 
-        private readonly ComputerResource _outer;
-        private readonly ComputerResourceType _type;
+    public static void SetResources(ComputerResourceCollection resources)
+    {
+        _resources = resources ?? throw new ArgumentNullException(nameof(resources));
+    }
 
-        private ComputerResource(ComputerResourceType type, bool freeSlot)
+    public static ComputerResource Require(ComputerResourceType type)
+    {
+        return new ComputerResource(type, false);
+    }
+
+    public static ComputerResource NewThread()
+    {
+        return new ComputerResource(ComputerResourceType.None, true);
+    }
+
+    private static void SetResourceType(ComputerResource resource)
+    {
+        if (resource == null)
         {
-            _type = type;
-            _outer = GetResourceType();
-            SetResourceType(freeSlot ? null : this);
-            _resources.RequireResource(_outer?._type ?? ComputerResourceType.None, type);
+            LogicalCallContext.FreeData(nameof(ComputerResource));
         }
-
-        public static void SetResources(ComputerResourceCollection resources)
+        else
         {
-            _resources = resources ?? throw new ArgumentNullException(nameof(resources));
+            LogicalCallContext.SetData(nameof(ComputerResource), resource);
         }
+    }
 
-        public static ComputerResource Require(ComputerResourceType type)
-        {
-            return new ComputerResource(type, false);
-        }
+    private static ComputerResource GetResourceType()
+    {
+        return (ComputerResource)LogicalCallContext.GetData(nameof(ComputerResource));
+    }
 
-        public static ComputerResource NewThread()
-        {
-            return new ComputerResource(ComputerResourceType.None, true);
-        }
+    public static int GetAvailableCpuResource() => _resources.CpuResource.CurrentCount;
 
-        private static void SetResourceType(ComputerResource resource)
-        {
-            if (resource == null)
-            {
-                LogicalCallContext.FreeData(nameof(ComputerResource));
-            }
-            else
-            {
-                LogicalCallContext.SetData(nameof(ComputerResource), resource);
-            }
-        }
+    public static int GetAvailableDiskIOResource() => _resources.DiskIOResource.CurrentCount;
 
-        private static ComputerResource GetResourceType()
-        {
-            return (ComputerResource)LogicalCallContext.GetData(nameof(ComputerResource));
-        }
+    public static int GetAvailableNetworkIOResource() => _resources.NetworkIOResource.CurrentCount;
 
-        public static int GetAvailableCpuResource() => _resources.CpuResource.CurrentCount;
-
-        public static int GetAvailableDiskIOResource() => _resources.DiskIOResource.CurrentCount;
-
-        public static int GetAvailableNetworkIOResource() => _resources.NetworkIOResource.CurrentCount;
-
-        public void Dispose()
-        {
-            SetResourceType(_outer);
-            _resources.RequireResource(_type, _outer?._type ?? ComputerResourceType.None);
-        }
+    public void Dispose()
+    {
+        SetResourceType(_outer);
+        _resources.RequireResource(_type, _outer?._type ?? ComputerResourceType.None);
     }
 }
