@@ -110,12 +110,39 @@ When the file extension is `.cs` or `.vb`, docfx uses the latest supported .NET 
 
 ## Supported XML Tags
 
-Docfx supports [Recommended XML tags for C# documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags).
+Docfx supports documenting APIs using [Recommended XML tags for C# documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags).
 
-> [!WARNING]
-> Docfx parses XML documentation comment as markdown by default, writing XML documentation comments using markdown may cause rendering problems on places that do not support markdown, like in the Visual Studio intellisense window.
+Docfx also supports writing API documentation using markdown, making it easy to create list, links, codesnippets or images:
 
-To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to `true`:
+```csharp
+/// <summary>
+/// Represents text as a sequence of UTF-16 code units.
+/// </summary>
+/// <remarks>
+/// [!string](string.png)
+///
+/// A single <see cref="char"/> object usually represents a single code point;
+///
+/// - A *grapheme* is represented by a base character followed by one or more combining characters.
+///
+///   ```csharp
+///   StreamWriter sw = new StreamWriter(@".\graphemes.txt");
+///   string grapheme = "\u0061\u0308";
+///   sw.WriteLine(grapheme);
+///   ```
+///
+/// - A Unicode supplementary code point (a surrogate pair) is represented by a `char` object.
+///
+///   ```csharp
+///   string surrogate = "\uD800\uDC03";
+///   for (int ctr = 0; ctr < surrogate.Length; ctr++) 
+///      Console.Write($"U+{(ushort)surrogate[ctr]:X2} ");
+///   ```
+/// </remarks>
+public class String
+```
+
+To use markdown in documentation comment, set the `commentFormat` to `markdown`:
 
 ```json
 {
@@ -125,10 +152,37 @@ To disable markdown parsing while processing XML tags, set `shouldSkipMarkup` to
       "src": "../"
     }],
     "dest": "api",
-    "shouldSkipMarkup": true
+    "commentFormat": "markdown"
   }
 }
 ```
+
+> [!WARNING]
+> Tools such as Visual Studio DOES NOT support markdown in documentation comment,
+> documentation comments written in markdown may not render as expected in Visual Studio intellisense window.
+
+Markdown can be embedded under these top-level XML tags:
+
+- `<summary>`
+- `<remarks>`
+- `<returns>`
+- `<examples>`
+- `<param>`
+- `<typeparam>`
+- `<exception>`
+- `<value>`
+
+Since markdown is whitespace sensitive, formatting tags such as `<para>` or `<list>` are not supported in markdown documentation comments.
+Use the equivalent markdown syntax instead.
+
+These XML tags are supported in markdown documentation comments to allow IDE-asisted cross referencing:
+
+- `<see>`
+- `<seealso>`
+- `<paramref>`
+- `<typeparamref>`
+
+Docfx supports many [markdown extensions](markdown.md) that could also be used in documentation comments, it is recommended to use [CommonMark](https://commonmark.org/) for interoperability with other tools.
 
 ## Filter APIs
 
