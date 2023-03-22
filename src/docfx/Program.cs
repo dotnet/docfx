@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.Net;
     using System.Reflection;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -17,19 +16,7 @@ namespace Microsoft.DocAsCode
     {
         internal static int Main(string[] args)
         {
-            try
-            {
-                // TLS best practices for .NET: https://docs.microsoft.com/en-us/dotnet/framework/network-programming/tls
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                return ExecSubCommand(args);
-            }
-            finally
-            {
-                Logger.Flush();
-                Logger.PrintSummary();
-                Logger.UnregisterAllListeners();
-            }
+            return ExecSubCommand(args);
         }
 
         internal static int ExecSubCommand(string[] args)
@@ -81,6 +68,15 @@ namespace Microsoft.DocAsCode
                 }
 
                 command.Exec(context);
+
+                Logger.Flush();
+                Logger.UnregisterAllListeners();
+
+                if (command.AllowReplay)
+                {
+                    Logger.PrintSummary();
+                }
+
                 return Logger.HasError ? -1 : 0;
             }
             catch (AggregateException ae)
