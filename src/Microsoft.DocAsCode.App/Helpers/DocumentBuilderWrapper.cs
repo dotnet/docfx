@@ -207,11 +207,6 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
                 ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
 
-                parameters.MarkdownEngineName = config.MarkdownEngineName ?? "markdig";
-                if (parameters.MarkdownEngineName != "markdig")
-                {
-                    Logger.LogWarning($"Markdown engine {parameters.MarkdownEngineName} is deprecated and will be removed in future releases, please use markdig instead.");
-                }
                 if (config.MarkdownEngineProperties != null)
                 {
                     parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();

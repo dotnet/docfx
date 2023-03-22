@@ -204,10 +204,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.MaxParallelism = options.MaxParallelism;
             }
-            if (options.MarkdownEngineName != null)
-            {
-                config.MarkdownEngineName = options.MarkdownEngineName;
-            }
             if (options.MarkdownEngineProperties != null)
             {
                 config.MarkdownEngineProperties =

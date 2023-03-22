@@ -22,7 +22,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
     using System.Composition;
@@ -172,7 +171,7 @@ tagRules : [
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            Init("Markdown style");
             try
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
@@ -453,7 +452,7 @@ settings : [
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
-            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            Init("Markdown style");
             try
             {
                 using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))

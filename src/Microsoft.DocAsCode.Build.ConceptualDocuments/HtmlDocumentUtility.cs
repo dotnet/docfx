@@ -4,9 +4,7 @@
 namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 {
     using System;
-
-    using Microsoft.DocAsCode.MarkdownLite;
-
+    using System.Net;
     using HtmlAgilityPack;
 
     public static class HtmlDocumentUtility
@@ -25,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             // TODO: how to get TITLE
             // InnerText in HtmlAgilityPack is not decoded, should be a bug
             var headerNode = document.DocumentNode.SelectSingleNode("//h1|//h2|//h3");
-            content.Title = StringHelper.HtmlDecode(headerNode?.InnerText);
+            content.Title = WebUtility.HtmlDecode(headerNode?.InnerText);
 
             if (headerNode != null && GetFirstNoneCommentChild(document.DocumentNode) == headerNode)
             {
