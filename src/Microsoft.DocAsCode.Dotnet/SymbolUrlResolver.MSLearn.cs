@@ -12,8 +12,11 @@ partial class SymbolUrlResolver
 
     public static string? GetMicrosoftLearnUrl(ISymbol symbol)
     {
-        if (!s_msLearnAssemblies.Value.Contains(symbol.ContainingAssembly.Name))
+        if (string.IsNullOrEmpty(symbol.ContainingAssembly?.Name) ||
+            !s_msLearnAssemblies.Value.Contains(symbol.ContainingAssembly.Name))
+        {
             return null;
+        }
 
         return symbol.GetDocumentationCommentId() is { } commentId ?
             GetMicrosoftLearnUrl(commentId, symbol.IsEnumMember(), symbol.HasOverloads()) : null;
