@@ -359,6 +359,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.int32",
       "name": [
         {
           "lang": "csharp",
@@ -508,6 +509,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.string",
       "name": [
         {
           "lang": "csharp",
@@ -610,6 +612,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.ICatExtension",
       "definition": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)",
+      "href": "https://learn.microsoft.com/dotnet/api/system.int64",
       "name": [
         {
           "lang": "csharp",
