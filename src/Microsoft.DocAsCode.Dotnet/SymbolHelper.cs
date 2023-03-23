@@ -53,6 +53,12 @@ internal static class SymbolHelper
         return symbol.Kind is SymbolKind.Method && ((IMethodSymbol)symbol).MethodKind is MethodKind.Conversion;
     }
 
+    public static bool HasOverloads(this ISymbol symbol)
+    {
+        return symbol.Kind is SymbolKind.Method && symbol.ContainingType.GetMembers().Any(
+            m => m.Kind is SymbolKind.Method && !ReferenceEquals(m, symbol) && m.Name == symbol.Name);
+    }
+
     public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)
     {
         if (!assembly.MightContainExtensionMethods)

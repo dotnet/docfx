@@ -26,9 +26,6 @@
         "exclude": [ "_site/**", "obj/**" ]
       }
     ],
-    "xrefService": [
-      "https://xref.docs.microsoft.com/query?uid={uid}"
-    ],
     "postProcessors": [ "ExtractSearchIndex" ],
     "globalMetadata": {
       "_appTitle": "docfx",

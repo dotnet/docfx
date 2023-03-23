@@ -1,0 +1,79 @@
+﻿apiRules:
+- exclude:
+    hasAttribute:
+      uid: System.ComponentModel.EditorBrowsableAttribute
+      ctorArguments:
+      - System.ComponentModel.EditorBrowsableState.Never
+attributeRules:
+- exclude:
+    uidRegex: ^System\.ComponentModel\.Design$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.ComponentModel\.Design\.Serialization$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Xml\.Serialization$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Web\.Compilation$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Runtime\.Versioning$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Runtime\.ConstrainedExecution$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.EnterpriseServices$
+    type: Namespace
+- exclude:
+    uidRegex: ^System\.Diagnostics\.CodeAnalysis$
+    type: Namespace
+- include:
+    uidRegex: ^System\.Diagnostics\.(ConditionalAttribute|EventLogPermissionAttribute|PerformanceCounterPermissionAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Diagnostics\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.ComponentModel\.(BindableAttribute|BrowsableAttribute|ComplexBindingPropertiesAttribute|DataObjectAttribute|DefaultBindingPropertyAttribute|ListBindableAttribute|LookupBindingPropertiesAttribute|SettingsBindableAttribute|TypeConverterAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.ComponentModel\.[^.]+$'
+    type: Type
+- exclude:
+    uidRegex: ^System\.Reflection\.DefaultMemberAttribute$
+    type: Type
+- exclude:
+    uidRegex: ^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$
+    type: Type
+- include:
+    uidRegex: ^System\.Runtime\.CompilerServices\.ExtensionAttribute$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Runtime\.CompilerServices\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.Runtime\.InteropServices\.(ComVisibleAttribute|GuidAttribute|ClassInterfaceAttribute|InterfaceTypeAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Runtime\.InteropServices\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.Security\.(SecurityCriticalAttribute|SecurityTreatAsSafeAttribute|AllowPartiallyTrustedCallersAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Security\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.Web\.UI\.(ControlValuePropertyAttribute|PersistenceModeAttribute|ValidationPropertyAttribute|WebResourceAttribute|TemplateContainerAttribute|ThemeableAttribute|TemplateInstanceAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Web\.UI\.[^.]+$'
+    type: Type
+- include:
+    uidRegex: ^System\.Windows\.Markup\.(ConstructorArgumentAttribute|DesignerSerializationOptionsAttribute|ValueSerializerAttribute|XmlnsCompatibleWithAttribute|XmlnsDefinitionAttribute|XmlnsPrefixAttribute)$
+    type: Type
+- exclude:
+    uidRegex: '^System\.Windows\.Markup\.[^.]+$'
+    type: Type
