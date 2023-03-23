@@ -14,14 +14,6 @@ namespace Microsoft.DocAsCode.Dotnet;
 /// </summary>
 public static class DotnetApiCatalog
 {
-    static DotnetApiCatalog()
-    {
-        var vs = MSBuildLocator.RegisterDefaults() ?? throw new ExtractMetadataException(
-            $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
-
-        Logger.LogInfo($"Using {vs.Name} {vs.Version}");
-    }
-
     /// <summary>
     /// Generates metadata reference YAML files using docfx.json config.
     /// </summary>
@@ -60,6 +52,8 @@ public static class DotnetApiCatalog
 
     internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
     {
+        EnsureMSBuildLocator();
+
         try
         {
             using (new LoggerPhaseScope("ExtractMetadata"))
@@ -88,6 +82,24 @@ public static class DotnetApiCatalog
         finally
         {
             EnvironmentContext.Clean();
+        }
+    }
+
+    private static void EnsureMSBuildLocator()
+    {
+        try
+        {
+            if (!MSBuildLocator.IsRegistered)
+            {
+                var vs = MSBuildLocator.RegisterDefaults() ?? throw new ExtractMetadataException(
+                    $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
+
+                Logger.LogInfo($"Using {vs.Name} {vs.Version}");
+            }
+        }
+        catch (Exception e)
+        {
+            throw new ExtractMetadataException(e.Message, e);
         }
     }
 
