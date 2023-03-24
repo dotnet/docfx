@@ -322,14 +322,44 @@
             {
               "type": {
                 "uid": "System.NotImplementedException",
-                "specName": [
+                "name": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.NotImplementedException\" displayProperty=\"name\"/>"
+                    "value": "NotImplementedException"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.NotImplementedException\" displayProperty=\"name\"/>"
+                    "value": "NotImplementedException"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "NotImplementedException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "NotImplementedException"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.NotImplementedException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.NotImplementedException"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.NotImplementedException\" text=\"NotImplementedException\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.NotImplementedException\" text=\"NotImplementedException\"/>"
                   }
                 ]
               },
@@ -338,14 +368,44 @@
             {
               "type": {
                 "uid": "System.ArgumentException",
-                "specName": [
+                "name": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ArgumentException"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.ArgumentException"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
                   }
                 ]
               },
