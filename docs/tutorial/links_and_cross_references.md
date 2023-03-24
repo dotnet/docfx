@@ -238,6 +238,9 @@ Both will render to:
 
 Another common need is to reference topics from an external project. For example, when you're writing the documentation for your own .NET library, you'll want to add some links that point to types in .NET base class library. DocFX gives you two ways to achieve this functionality: by exporting all UIDs in a project into a map file to be imported in another project, and through cross reference services.
 
+> [!TIP]
+> Docfx automatically resolves .NET base class library types and other types published to <https://learn.microsoft.com> by default, without cross reference map or cross reference service. This process does not require network access.
+
 ### Cross reference map file
 
 When building a DocFX project, there will be an `xrefmap.yml` generated under output folder. This file contains information for all topics that have UID defined and their corresponding urls. The format of `xrefmap.yml` looks like this:
@@ -301,8 +304,6 @@ To use a cross reference service, add a `xrefservice` config to the `build` sect
   }
 }
 ```
-
-For example, the URL for the cross reference service for .NET BCL types is `https://xref.docs.microsoft.com/query?uid={uid}`.
 
 ## Advanced: more options for cross reference
 

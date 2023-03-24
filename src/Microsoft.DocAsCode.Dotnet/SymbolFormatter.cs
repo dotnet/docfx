@@ -133,6 +133,7 @@ internal static partial class SymbolFormatter
             {
                 Name = overload ? VisitorHelper.GetOverloadId(symbol) : VisitorHelper.GetId(symbol),
                 DisplayName = part.ToString(),
+                Href = SymbolUrlResolver.GetSymbolUrl(symbol),
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
             };
         }

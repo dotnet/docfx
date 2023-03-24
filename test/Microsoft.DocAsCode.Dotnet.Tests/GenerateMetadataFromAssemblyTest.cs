@@ -17,7 +17,7 @@ public class GenerateMetadataFromAssemblyTest
             var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary.dll");
             Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-            var output = assembly.GenerateMetadataItem();
+            var output = assembly.GenerateMetadataItem(compilation);
             var @class = output.Items[0].Items[2];
             Assert.NotNull(@class);
             Assert.Equal("Cat<T, K>", @class.DisplayNames.First().Value);
@@ -29,7 +29,7 @@ public class GenerateMetadataFromAssemblyTest
             var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/CatLibrary2.dll");
             Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-            var output = assembly.GenerateMetadataItem();
+            var output = assembly.GenerateMetadataItem(compilation);
             var @class = output.Items[0].Items[0];
             Assert.NotNull(@class);
             Assert.Equal("CarLibrary2.Cat2", @class.Name);
@@ -43,7 +43,7 @@ public class GenerateMetadataFromAssemblyTest
         var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly("TestData/TupleLibrary.dll");
         Assert.Empty(compilation.GetDeclarationDiagnostics());
 
-        var output = assembly.GenerateMetadataItem();
+        var output = assembly.GenerateMetadataItem(compilation);
         var @class = output.Items[0].Items[0];
         Assert.NotNull(@class);
         Assert.Equal("XmlTasks", @class.DisplayNames[SyntaxLanguage.CSharp]);

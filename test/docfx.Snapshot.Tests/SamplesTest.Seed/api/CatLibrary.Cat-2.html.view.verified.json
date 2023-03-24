@@ -1724,14 +1724,44 @@
             {
               "type": {
                 "uid": "System.ArgumentException",
-                "specName": [
+                "name": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ArgumentException"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.ArgumentException"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
                   }
                 ]
               },
@@ -2566,14 +2596,44 @@
             {
               "type": {
                 "uid": "System.ArgumentException",
-                "specName": [
+                "name": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"System.ArgumentException\" displayProperty=\"name\"/>"
+                    "value": "ArgumentException"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "ArgumentException"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "System.ArgumentException"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "System.ArgumentException"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"System.ArgumentException\" text=\"ArgumentException\"/>"
                   }
                 ]
               },
@@ -3662,6 +3722,7 @@
       "isExtensionMethod": false,
       "parent": "System",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
       "name": [
         {
           "lang": "csharp",
@@ -3802,6 +3863,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -3850,6 +3912,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
       "name": [
         {
           "lang": "csharp",
@@ -3898,6 +3961,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
       "name": [
         {
           "lang": "csharp",
@@ -3946,6 +4010,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
       "name": [
         {
           "lang": "csharp",
@@ -3994,6 +4059,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
       "name": [
         {
           "lang": "csharp",
@@ -4042,6 +4108,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
       "name": [
         {
           "lang": "csharp",
@@ -4140,6 +4207,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.ICatExtension",
       "definition": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)",
+      "href": "https://learn.microsoft.com/dotnet/api/system.int64",
       "name": [
         {
           "lang": "csharp",

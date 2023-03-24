@@ -169,6 +169,7 @@
       "isExtensionMethod": false,
       "parent": "System",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
       "name": [
         {
           "lang": "csharp",
@@ -218,6 +219,7 @@
       "isExtensionMethod": false,
       "parent": "System",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception",
       "name": [
         {
           "lang": "csharp",
@@ -315,6 +317,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception",
       "name": [
         {
           "lang": "csharp",
@@ -363,6 +366,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata",
       "name": [
         {
           "lang": "csharp",
@@ -411,6 +415,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.gettype",
       "name": [
         {
           "lang": "csharp",
@@ -459,6 +464,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.tostring",
       "name": [
         {
           "lang": "csharp",
@@ -507,6 +513,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.data",
       "name": [
         {
           "lang": "csharp",
@@ -555,6 +562,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.helplink",
       "name": [
         {
           "lang": "csharp",
@@ -603,6 +611,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.hresult",
       "name": [
         {
           "lang": "csharp",
@@ -651,6 +660,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.innerexception",
       "name": [
         {
           "lang": "csharp",
@@ -699,6 +709,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.message",
       "name": [
         {
           "lang": "csharp",
@@ -747,6 +758,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.source",
       "name": [
         {
           "lang": "csharp",
@@ -795,6 +807,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.stacktrace",
       "name": [
         {
           "lang": "csharp",
@@ -843,6 +856,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.targetsite",
       "name": [
         {
           "lang": "csharp",
@@ -891,6 +905,7 @@
       "isExtensionMethod": false,
       "parent": "System.Exception",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.exception.serializeobjectstate",
       "name": [
         {
           "lang": "csharp",
@@ -939,6 +954,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -987,6 +1003,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -1035,6 +1052,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
       "name": [
         {
           "lang": "csharp",
@@ -1083,6 +1101,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
       "name": [
         {
           "lang": "csharp",
@@ -1131,6 +1150,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
       "name": [
         {
           "lang": "csharp",

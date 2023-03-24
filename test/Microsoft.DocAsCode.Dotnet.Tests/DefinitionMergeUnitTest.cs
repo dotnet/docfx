@@ -31,7 +31,8 @@ namespace A {
 
 ";
         // act
-        var output = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll").Assembly.GenerateMetadataItem();
+        var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
+        var output = compilation.Assembly.GenerateMetadataItem(compilation);
 
         // assert
         Assert.NotNull(output);

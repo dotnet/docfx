@@ -6,10 +6,10 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal static class SymbolHelper
 {
-    public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
+    public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, Compilation compilation, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
     {
         config ??= new();
-        return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
+        return assembly.Accept(new SymbolVisitorAdapter(compilation, new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
     }
 
     public static bool IsInstanceInterfaceMember(this ISymbol symbol)
@@ -51,6 +51,12 @@ internal static class SymbolHelper
     public static bool IsCastOperator(this ISymbol symbol)
     {
         return symbol.Kind is SymbolKind.Method && ((IMethodSymbol)symbol).MethodKind is MethodKind.Conversion;
+    }
+
+    public static bool HasOverloads(this ISymbol symbol)
+    {
+        return symbol.Kind is SymbolKind.Method && symbol.ContainingType.GetMembers().Any(
+            m => m.Kind is SymbolKind.Method && !ReferenceEquals(m, symbol) && m.Name == symbol.Name);
     }
 
     public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)

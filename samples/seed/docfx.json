@@ -44,7 +44,6 @@
     },
     "dest": "_site",
     "exportViewModel": true,
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ],
     "template": ["default", "modern"]
   },
   "pdf": {
@@ -70,7 +69,6 @@
       "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
       "additionalArguments": "--enable-local-file-access"
     },
-    "dest": "_site_pdf",
-    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ]
+    "dest": "_site_pdf"
   }
 }

@@ -75,17 +75,6 @@ internal class YamlModelGenerator
         return id;
     }
 
-    public string AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
-    {
-        if (!references.TryGetValue(id, out ReferenceItem reference))
-        {
-            // Add id to reference dictionary
-            references[id] = new ReferenceItem { CommentId = commentId };
-        }
-
-        return id;
-    }
-
     public string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
     {
         var uidBody = VisitorHelper.GetOverloadIdBody(symbol);

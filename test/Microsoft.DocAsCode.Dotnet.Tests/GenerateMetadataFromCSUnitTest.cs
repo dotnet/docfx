@@ -18,7 +18,7 @@ public class GenerateMetadataFromCSUnitTest
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
         var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
-        return compilation.Assembly.GenerateMetadataItem(config, extensionMethods: extensionMethods);
+        return compilation.Assembly.GenerateMetadataItem(compilation, config, extensionMethods: extensionMethods);
     }
 
     [Fact]

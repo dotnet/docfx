@@ -305,6 +305,7 @@
       "isExtensionMethod": false,
       "parent": "System",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object",
       "name": [
         {
           "lang": "csharp",
@@ -357,6 +358,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -405,6 +407,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -453,6 +456,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gethashcode",
       "name": [
         {
           "lang": "csharp",
@@ -501,6 +505,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
       "name": [
         {
           "lang": "csharp",
@@ -549,6 +554,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone",
       "name": [
         {
           "lang": "csharp",
@@ -597,6 +603,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
       "name": [
         {
           "lang": "csharp",
@@ -645,6 +652,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.tostring",
       "name": [
         {
           "lang": "csharp",

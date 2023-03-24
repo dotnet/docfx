@@ -13,32 +13,25 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 {
-    #region Fields
     private static readonly Regex MemberSigRegex = new(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
     private static readonly IReadOnlyList<string> EmptyListOfString = new string[0];
+    private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
-    private Dictionary<string, ReferenceItem> _references;
-    private bool _preserveRawInlineComments;
+    private readonly Dictionary<string, ReferenceItem> _references = new();
+    private readonly bool _preserveRawInlineComments;
     private readonly IMethodSymbol[] _extensionMethods;
     private readonly string _codeSourceBasePath;
     private readonly SymbolFilter _filter;
 
-    #endregion
-
-    #region Constructor
-
-    public SymbolVisitorAdapter(YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
+    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
     {
+        _compilation = compilation;
         _generator = generator;
         _preserveRawInlineComments = options.PreserveRawInlineComments;
         _filter = filter;
         _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
         _codeSourceBasePath = options.CodeSourceBasePath;
     }
-
-    #endregion
-
-    #region Overrides
 
     public override MetadataItem DefaultVisit(ISymbol symbol)
     {
@@ -111,7 +104,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             { SyntaxLanguage.Default, symbol.MetadataName },
         };
         item.Type = MemberType.Assembly;
-        _references = new Dictionary<string, ReferenceItem>();
 
         IEnumerable<INamespaceSymbol> namespaces;
         if (!string.IsNullOrEmpty(VisitorHelper.GlobalNamespaceId))
@@ -385,10 +377,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         return result;
     }
 
-    #endregion
-
-    #region Public Methods
-
     public string AddReference(ISymbol symbol)
     {
         var memberType = GetMemberTypeFromSymbol(symbol);
@@ -402,7 +390,22 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
     public string AddReference(string id, string commentId)
     {
-        return _generator.AddReference(id, commentId, _references);
+        if (_references.ContainsKey(id))
+            return id;
+
+        var reference = new ReferenceItem { CommentId = commentId };
+        if (DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, _compilation) is { } symbol)
+        {
+            reference.NameParts = new();
+            reference.NameWithTypeParts = new();
+            reference.QualifiedNameParts = new();
+            reference.IsDefinition = symbol.IsDefinition;
+
+            _generator.GenerateReference(symbol, reference, asOverload: false);
+        }
+
+        _references[id] = reference;
+        return id;
     }
 
     public string AddOverloadReference(ISymbol symbol)
@@ -435,10 +438,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             throw new DocfxException($"Unable to generate spec reference for {VisitorHelper.GetCommentId(symbol)}", ex);
         }
     }
-
-    #endregion
-
-    #region Private Methods
 
     private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
     {
@@ -873,6 +872,4 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             item.References[id] = null;
         };
     }
-
-    #endregion
 }

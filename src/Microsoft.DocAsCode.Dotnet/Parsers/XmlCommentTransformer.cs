@@ -19,7 +19,7 @@ internal static class XmlCommentTransformer
     static XmlCommentTransformer()
     {
         var assembly = typeof(XmlCommentTransformer).Assembly;
-        var xsltFilePath = $"{assembly.GetName().Name}.Transform.XmlCommentTransform.xsl";
+        var xsltFilePath = $"{assembly.GetName().Name}.Resources.XmlCommentTransform.xsl";
         using var stream = assembly.GetManifestResourceStream(xsltFilePath);
         using var reader = XmlReader.Create(stream);
         var xsltSettings = new XsltSettings(true, true);

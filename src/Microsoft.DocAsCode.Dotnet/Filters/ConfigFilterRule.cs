@@ -71,7 +71,7 @@ internal class ConfigFilterRule
         ConfigFilterRule defaultRule, userRule;
 
         var assembly = Assembly.GetExecutingAssembly();
-        var defaultConfigPath = $"{assembly.GetName().Name}.Filters.defaultfilterconfig.yml";
+        var defaultConfigPath = $"{assembly.GetName().Name}.Resources.defaultfilterconfig.yml";
         using (var stream = assembly.GetManifestResourceStream(defaultConfigPath))
         {
             using var reader = new StreamReader(stream);
