@@ -1119,6 +1119,7 @@
       "isExtensionMethod": false,
       "parent": "System.ValueType",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.equals",
       "name": [
         {
           "lang": "csharp",
@@ -1167,6 +1168,7 @@
       "isExtensionMethod": false,
       "parent": "System.ValueType",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode",
       "name": [
         {
           "lang": "csharp",
@@ -1215,6 +1217,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)",
       "name": [
         {
           "lang": "csharp",
@@ -1263,6 +1266,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.gettype",
       "name": [
         {
           "lang": "csharp",
@@ -1311,6 +1315,7 @@
       "isExtensionMethod": false,
       "parent": "System.Object",
       "isExternal": true,
+      "href": "https://learn.microsoft.com/dotnet/api/system.object.referenceequals",
       "name": [
         {
           "lang": "csharp",
