@@ -70,7 +70,7 @@ internal class ExtractMetadataWorker : IDisposable
 
         var hasCompilationError = false;
         var projectCompilations = new HashSet<Compilation>();
-        var assemblySymbols = new List<IAssemblySymbol>();
+        var assemblies = new List<(IAssemblySymbol, Compilation)>();
 
         if (_files.TryGetValue(FileType.Solution, out var solutionFiles))
         {
@@ -102,21 +102,21 @@ internal class ExtractMetadataWorker : IDisposable
         foreach (var compilation in projectCompilations)
         {
             hasCompilationError |= compilation.CheckDiagnostics();
-            assemblySymbols.Add(compilation.Assembly);
+            assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (_files.TryGetValue(FileType.CSSourceCode, out var csFiles))
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath));
             hasCompilationError |= compilation.CheckDiagnostics();
-            assemblySymbols.Add(compilation.Assembly);
+            assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (_files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
         {
             var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath));
             hasCompilationError |= compilation.CheckDiagnostics();
-            assemblySymbols.Add(compilation.Assembly);
+            assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (_files.TryGetValue(FileType.Assembly, out var assemblyFiles))
@@ -126,7 +126,7 @@ internal class ExtractMetadataWorker : IDisposable
                 Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
                 var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _config.References);
                 hasCompilationError |= compilation.CheckDiagnostics();
-                assemblySymbols.Add(assembly);
+                assemblies.Add((assembly, compilation));
             }
         }
 
@@ -135,20 +135,20 @@ internal class ExtractMetadataWorker : IDisposable
             return;
         }
 
-        if (assemblySymbols.Count <= 0)
+        if (assemblies.Count <= 0)
         {
             Logger.LogWarning("No .NET API project detected.");
             return;
         }
 
         var projectMetadataList = new List<MetadataItem>();
-        var extensionMethods = assemblySymbols.SelectMany(assembly => assembly.FindExtensionMethods()).ToArray();
+        var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods()).ToArray();
         var filter = new SymbolFilter(_config, _options);
 
-        foreach (var assembly in assemblySymbols)
+        foreach (var (assembly, compilation) in assemblies)
         {
             Logger.LogInfo($"Processing {assembly.Name}");
-            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), _config, filter, extensionMethods));
+            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(compilation, new YamlModelGenerator(), _config, filter, extensionMethods));
             if (projectMetadata != null)
                 projectMetadataList.Add(projectMetadata);
         }

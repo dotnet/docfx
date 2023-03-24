@@ -6,10 +6,10 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal static class SymbolHelper
 {
-    public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
+    public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, Compilation compilation, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
     {
         config ??= new();
-        return assembly.Accept(new SymbolVisitorAdapter(new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
+        return assembly.Accept(new SymbolVisitorAdapter(compilation, new YamlModelGenerator(), config, new(config, options ?? new()), extensionMethods));
     }
 
     public static bool IsInstanceInterfaceMember(this ISymbol symbol)

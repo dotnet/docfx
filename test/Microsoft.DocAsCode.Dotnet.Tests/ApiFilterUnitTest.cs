@@ -332,6 +332,6 @@ namespace Test1
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
         Assert.Empty(compilation.GetDeclarationDiagnostics());
-        return compilation.Assembly.GenerateMetadataItem(config, options);
+        return compilation.Assembly.GenerateMetadataItem(compilation, config, options);
     }
 }

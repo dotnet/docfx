@@ -15,7 +15,7 @@ public class GenerateMetadataFromVBUnitTest
     private static MetadataItem Verify(string code, ExtractMetadataConfig options = null, params MetadataReference[] references)
     {
         var compilation = CompilationHelper.CreateCompilationFromVBCode(code, "test.dll", references);
-        return compilation.Assembly.GenerateMetadataItem(options);
+        return compilation.Assembly.GenerateMetadataItem(compilation, options);
     }
 
     [Trait("Related", "Generic")]
