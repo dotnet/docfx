@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Common.Git;
 
 public static class GitUtility
 {
+    private const string GitTimeoutEnvVarName = "DOVFX_GIT_TIMEOUT";
     private static readonly string CommandName = "git";
     private static readonly int GitTimeOut = 1000;
 
@@ -48,6 +49,15 @@ public static class GitUtility
 
     private static bool? GitCommandExists = null;
     private static object SyncRoot = new();
+
+    static GitUtility()
+    {
+        var gitTimeoutEnvConfig = Environment.GetEnvironmentVariable(GitTimeoutEnvVarName);
+        if (int.TryParse(gitTimeoutEnvConfig, out var gitTimeout) && gitTimeout > 0)
+        {
+            GitTimeOut = gitTimeout;
+        }
+    }
 
     public static GitDetail TryGetFileDetail(string filePath)
     {
