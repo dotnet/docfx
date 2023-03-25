@@ -161,11 +161,11 @@
         "specName": [
           {
             "lang": "csharp",
-            "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.String\" text=\"string\"/>&gt;"
+            "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>&gt;"
           },
           {
             "lang": "vb",
-            "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>(Of <xref uid=\"System.String\" text=\"String\"/>)"
+            "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>)"
           }
         ]
       }
