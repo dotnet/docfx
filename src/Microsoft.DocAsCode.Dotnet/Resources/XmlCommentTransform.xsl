@@ -57,19 +57,6 @@
     </returns>
   </xsl:template>
 
-  <xsl:template match="see[@langword]">
-    <xref>
-      <xsl:attribute name="uid">
-        <xsl:value-of select="concat('langword_', $input:language, '_', @langword)"/>
-      </xsl:attribute>
-      <xsl:attribute name="name">
-        <xsl:value-of select="@langword"/>
-      </xsl:attribute>
-      <xsl:attribute name="href">
-      </xsl:attribute>
-    </xref>
-  </xsl:template>
-
   <xsl:template match="see[@href and not(parent::member)]">
     <a>
       <xsl:apply-templates select="@*|node()"/>

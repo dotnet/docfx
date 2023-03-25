@@ -211,10 +211,6 @@ internal sealed class BuildCommand : ISubCommand
                         }
                     });
         }
-        if (options.NoLangKeyword != null)
-        {
-            config.NoLangKeyword = options.NoLangKeyword.Value;
-        }
         if (options.GlobalMetadataFilePaths != null && options.GlobalMetadataFilePaths.Any())
         {
             config.GlobalMetadataFilePaths.AddRange(options.GlobalMetadataFilePaths);

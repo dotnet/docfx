@@ -89,12 +89,6 @@ internal class BuildCommandOptions : LogOptions, ICanPrintHelpMessage
     [Option("markdownEngineProperties", HelpText = "Set the parameters for markdown engine, value should be a JSON string.")]
     public string MarkdownEngineProperties { get; set; }
 
-    [Option("noLangKeyword", HelpText = "Disable default lang keyword.")]
-    public bool? NoLangKeyword { get; set; }
-
-    [Option("changesFile", HelpText = "Set changes file.")]
-    public string ChangesFile { get; set; }
-
     [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
     public List<string> PostProcessors { get; set; }
 
