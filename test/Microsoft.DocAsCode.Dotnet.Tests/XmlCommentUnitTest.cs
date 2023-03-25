@@ -13,6 +13,21 @@ namespace Microsoft.DocAsCode.Dotnet.Tests;
 
 public class XmlCommentUnitTest
 {
+    private static void Verify(string comment, string summary)
+    {
+        Assert.Equal(
+            summary,
+            XmlComment.Parse($"<summary>{comment}</summary>", new()).Summary,
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public static void SeeLangword()
+    {
+        Verify("<see langword=\"if\" />", "<a href=\"https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-if-statement\">if</a>");
+        Verify("<see langword=\"undefined-langword\" />", "<c>undefined-langword</c>");
+    }
+
     [Fact]
     public void TestXmlCommentParser()
     {
@@ -129,17 +144,19 @@ namespace Example
             }
         };
 
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        var commentModel = XmlComment.Parse(input, context);
         Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
         var summary = commentModel.Summary;
-        Assert.Equal(@"
-Partial classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
+        Assert.Equal("""
 
-```
-Classes in assemblies are by definition complete.
-```
-".Replace("\r\n", "\n"), summary);
+            Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null">null</a>
+
+            ```
+            Classes in assemblies are by definition complete.
+            ```
+
+            """.Replace("\r\n", "\n"), summary);
 
         var returns = commentModel.Returns;
         Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
@@ -202,7 +219,7 @@ This is an example using source reference.
         Assert.Equal(expected, example);
 
         context.PreserveRawInlineComments = true;
-        commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        commentModel = XmlComment.Parse(input, context);
 
         var sees = commentModel.Sees;
         Assert.Equal(5, sees.Count);
@@ -252,7 +269,7 @@ This is an example using source reference.
             }
         };
 
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        var commentModel = XmlComment.Parse(input, context);
         Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
         var summary = commentModel.Summary;
@@ -281,7 +298,7 @@ This is an example using source reference.
             PreserveRawInlineComments = false,
         };
 
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        var commentModel = XmlComment.Parse(input, context);
         Assert.True(commentModel.InheritDoc != null, nameof(commentModel.InheritDoc));
     }
 
@@ -298,7 +315,7 @@ This is an example using source reference.
             PreserveRawInlineComments = false,
         };
 
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        var commentModel = XmlComment.Parse(input, context);
         Assert.Equal("ClassLibrary1.MyClass.DoThing", commentModel.InheritDoc);
     }
 
@@ -346,7 +363,7 @@ This is an example using source reference.
             }
         };
 
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, context);
+        var commentModel = XmlComment.Parse(input, context);
         
         // using xml to get rid of escaped tags
         var example = commentModel.Examples.Single();
@@ -361,7 +378,7 @@ This is an example using source reference.
     public void ParseXmlCommentWithoutRootNode()
     {
         var input = @"<summary>A</summary>";
-        var commentModel = XmlComment.CreateModel(input, SyntaxLanguage.CSharp, new XmlCommentParserContext());
+        var commentModel = XmlComment.Parse(input, new XmlCommentParserContext());
         Assert.Equal("A", commentModel.Summary);
     }
 

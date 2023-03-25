@@ -48,7 +48,7 @@ internal class XmlComment
 
     public string InheritDoc { get; private set; }
 
-    private XmlComment(string xml, SyntaxLanguage language, XmlCommentParserContext context)
+    private XmlComment(string xml, XmlCommentParserContext context)
     {
         // Workaround: https://github.com/dotnet/roslyn/pull/66668
         if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
@@ -57,11 +57,12 @@ internal class XmlComment
         }
 
         // Transform triple slash comment
-        XDocument doc = XmlCommentTransformer.Transform(xml, language);
+        var doc = XmlCommentTransformer.Transform(xml);
 
         _context = context;
         if (!context.PreserveRawInlineComments)
         {
+            ResolveLangword(doc);
             ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
             ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
             ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
@@ -81,7 +82,7 @@ internal class XmlComment
         InheritDoc = GetInheritDoc(nav, context);
     }
 
-    public static XmlComment CreateModel(string xml, SyntaxLanguage language, XmlCommentParserContext context)
+    public static XmlComment Parse(string xml, XmlCommentParserContext context)
     {
         if (context == null)
         {
@@ -97,7 +98,7 @@ internal class XmlComment
         }
         try
         {
-            var model = new XmlComment(xml, language, context);
+            var model = new XmlComment(xml, context);
             return model;
         }
         catch (XmlException)
@@ -498,6 +499,24 @@ internal class XmlComment
     private void ResolveExceptionCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
     {
         ResolveCrefLink(node, "//exception[@cref]", addReference, resolveCRef);
+    }
+
+    private void ResolveLangword(XNode node)
+    {
+        foreach (var item in node.XPathSelectElements("//see[@langword]").ToList())
+        {
+            var langword = item.Attribute("langword").Value;
+            if (SymbolUrlResolver.GetLangwordUrl(langword) is { } href)
+            {
+                var a = new XElement("a", langword);
+                a.SetAttributeValue("href", href);
+                item.ReplaceWith(a);
+            }
+            else
+            {
+                item.ReplaceWith(new XElement("c", langword));
+            }
+        }
     }
 
     private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)

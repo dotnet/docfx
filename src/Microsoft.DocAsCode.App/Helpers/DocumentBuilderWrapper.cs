@@ -152,10 +152,6 @@ internal static class DocumentBuilderWrapper
             {
                 parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
             }
-            if (!config.NoLangKeyword)
-            {
-                parameters.XRefMaps = parameters.XRefMaps.Add("embedded:Microsoft.DocAsCode.App/langwordMapping.yml");
-            }
 
             string outputFolderForDebugFiles = null;
             if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))

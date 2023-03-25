@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="langwordMapping.yml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
   </ItemGroup>
