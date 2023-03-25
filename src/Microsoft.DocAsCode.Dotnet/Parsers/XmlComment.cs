@@ -82,12 +82,8 @@ internal class XmlComment
         InheritDoc = GetInheritDoc(nav, context);
     }
 
-    public static XmlComment Parse(string xml, XmlCommentParserContext context)
+    public static XmlComment Parse(string xml, XmlCommentParserContext context = null)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
         if (string.IsNullOrEmpty(xml)) return null;
 
         // Quick turnaround for badly formed XML comment
@@ -98,8 +94,7 @@ internal class XmlComment
         }
         try
         {
-            var model = new XmlComment(xml, context);
-            return model;
+            return new XmlComment(xml, context ?? new());
         }
         catch (XmlException)
         {
@@ -445,8 +440,8 @@ internal class XmlComment
             {
                 if (result.ContainsKey(name))
                 {
-                    string path = context.Source.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
-                    Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", file: StringExtension.ToDisplayPath(path), line: context.Source.StartLine.ToString());
+                    string path = context.Source?.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source?.Path;
+                    Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", file: StringExtension.ToDisplayPath(path), line: context.Source?.StartLine.ToString());
                 }
                 else
                 {

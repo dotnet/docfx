@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 using Microsoft.DocAsCode.DataContracts.Common;
-using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
 using Xunit;
 
@@ -17,7 +16,7 @@ public class XmlCommentUnitTest
     {
         Assert.Equal(
             summary,
-            XmlComment.Parse($"<summary>{comment}</summary>", new()).Summary,
+            XmlComment.Parse($"<summary>{comment}</summary>").Summary,
             ignoreLineEndingDifferences: true);
     }
 
@@ -31,8 +30,19 @@ public class XmlCommentUnitTest
     [Fact]
     public static void Issue8122()
     {
-        var comment = XmlComment.Parse("<seealso href=\"#\">Foo's</seealso>", new());
+        var comment = XmlComment.Parse("<seealso href=\"#\">Foo's</seealso>");
         Assert.Equal("Foo's", comment.SeeAlsos[0].AltText);
+    }
+
+    [Fact]
+    public static void Issue4165()
+    {
+        var comment = XmlComment.Parse(
+            """
+            <param name="args">arg1</param>
+            <param name="args">arg2</param>
+            """);
+        Assert.Equal("arg1", comment.Parameters["args"]);
     }
 
     [Fact]
