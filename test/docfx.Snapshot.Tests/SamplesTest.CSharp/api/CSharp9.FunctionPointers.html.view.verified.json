@@ -150,11 +150,11 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>&lt;<xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"System.Action`1\" text=\"Action\"/>(Of <xref uid=\"System.Int32\" text=\"Integer\"/>)"
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.action-1\">Action</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
                     }
                   ]
                 }
@@ -196,7 +196,7 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Void\" text=\"void\"/>&gt;"
+                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.void\">void</a>&gt;"
                     }
                   ]
                 }
@@ -238,7 +238,7 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "delegate*&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                      "value": "delegate*&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
                     }
                   ]
                 }
@@ -280,7 +280,7 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "delegate* unmanaged&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                      "value": "delegate* unmanaged&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
                     }
                   ]
                 }
@@ -322,7 +322,7 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                      "value": "delegate* unmanaged[<xref uid=\".(System.Int32)\" text=\"Cdecl\"/>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
                     }
                   ]
                 }
@@ -364,7 +364,7 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "delegate* unmanaged[<xref uid=\"System.Runtime.CompilerServices.CallConvStdcall\" text=\"Stdcall\"/>, <xref uid=\"System.Runtime.CompilerServices.CallConvSuppressGCTransition\" text=\"SuppressGCTransition\"/>]&lt;<xref uid=\"System.Int32\" text=\"int\"/>, <xref uid=\"System.Int32\" text=\"int\"/>&gt;"
+                      "value": "delegate* unmanaged[<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvstdcall\">Stdcall</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.runtime.compilerservices.callconvsuppressgctransition\">SuppressGCTransition</a>]&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>&gt;"
                     }
                   ]
                 }
@@ -651,11 +651,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
       "level": 0.0
@@ -700,11 +700,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.Equals(System.Object,System.Object)\" text=\"Equals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)\">Equals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
       "level": 0.0
@@ -749,11 +749,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetHashCode\" text=\"GetHashCode\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gethashcode\">GetHashCode</a>()"
         }
       ],
       "level": 0.0
@@ -798,11 +798,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.GetType\" text=\"GetType\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.gettype\">GetType</a>()"
         }
       ],
       "level": 0.0
@@ -847,11 +847,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.MemberwiseClone\" text=\"MemberwiseClone\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone\">MemberwiseClone</a>()"
         }
       ],
       "level": 0.0
@@ -896,11 +896,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"object\"/>, <xref uid=\"System.Object\" text=\"object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>)"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ReferenceEquals(System.Object,System.Object)\" text=\"ReferenceEquals\"/>(<xref uid=\"System.Object\" text=\"Object\"/>, <xref uid=\"System.Object\" text=\"Object\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.referenceequals\">ReferenceEquals</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>)"
         }
       ],
       "level": 0.0
@@ -945,11 +945,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"System.Object.ToString\" text=\"ToString\"/>()"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object.tostring\">ToString</a>()"
         }
       ],
       "level": 0.0

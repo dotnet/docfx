@@ -290,11 +290,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"System.Object\" text=\"object\"/>[]"
+              "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>[]"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"System.Object\" text=\"Object\"/>()"
+              "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.object\">Object</a>()"
             }
           ]
         },
