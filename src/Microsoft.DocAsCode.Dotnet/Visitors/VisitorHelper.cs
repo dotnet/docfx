@@ -23,7 +23,7 @@ internal static class VisitorHelper
     {
         if (!string.IsNullOrEmpty(item.RawComment))
         {
-            var commentModel = XmlComment.CreateModel(item.RawComment, SyntaxLanguage.CSharp, context);
+            var commentModel = XmlComment.Parse(item.RawComment, context);
             if (commentModel == null) return;
             item.Summary = commentModel.Summary;
             item.Remarks = commentModel.Remarks;

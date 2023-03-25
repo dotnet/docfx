@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
@@ -27,13 +25,13 @@ internal static class XmlCommentTransformer
         _transform.Load(reader, xsltSettings, new XmlUrlResolver());
     }
 
-    public static XDocument Transform(string xml, SyntaxLanguage language)
+    public static XDocument Transform(string xml)
     {
         using var ms = new MemoryStream();
         using var writer = new XHtmlWriter(new StreamWriter(ms));
         XDocument doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
         var args = new XsltArgumentList();
-        args.AddParam("language", "urn:input-variables", WebUtility.HtmlEncode(language.ToString().ToLower()));
+        args.AddParam("language", "urn:input-variables", "csharp");
         _transform.Transform(doc.CreateNavigator(), args, writer);
         ms.Seek(0, SeekOrigin.Begin);
         return XDocument.Load(ms, LoadOptions.PreserveWhitespace | LoadOptions.SetLineInfo);
