@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Reflection;
 using Xunit;
 
 using Microsoft.DocAsCode.Common.Git;
@@ -12,10 +13,12 @@ namespace Microsoft.DocAsCode.Common.Tests;
 {
     private string _originalBranchName;
     private const string envName = "DOCFX_SOURCE_BRANCH_NAME";
+    private const string GitTimeoutConfigEnvName = "DOVFX_GIT_TIMEOUT";
     public GitUtilityTest()
     {
         _originalBranchName = Environment.GetEnvironmentVariable(envName);
         Environment.SetEnvironmentVariable(envName, "special-branch");
+        Environment.SetEnvironmentVariable(GitTimeoutConfigEnvName, "3000");
     }
 
     public void Dispose()
@@ -28,6 +31,15 @@ namespace Microsoft.DocAsCode.Common.Tests;
     {
         var info = GitUtility.TryGetFileDetail(Directory.GetCurrentDirectory());
         Assert.Equal("special-branch", info.RemoteBranch);
+    }
+
+    [Fact]
+    public void Environment_ForGitTimeout()
+    {
+        var fieldInfo = typeof(GitUtility).GetField("GitTimeOut", BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(fieldInfo);
+        var timeout = Convert.ToInt32(fieldInfo.GetValue(null));
+        Assert.Equal(3000, timeout);
     }
 
     [Fact]
