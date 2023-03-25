@@ -133,13 +133,15 @@ namespace Example
         Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
         var summary = commentModel.Summary;
-        Assert.Equal(@"
-Partial classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
+        Assert.Equal("""
 
-```
-Classes in assemblies are by definition complete.
-```
-".Replace("\r\n", "\n"), summary);
+            Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null">null</a>
+
+            ```
+            Classes in assemblies are by definition complete.
+            ```
+
+            """.Replace("\r\n", "\n"), summary);
 
         var returns = commentModel.Returns;
         Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);

@@ -62,6 +62,7 @@ internal class XmlComment
         _context = context;
         if (!context.PreserveRawInlineComments)
         {
+            ResolveLangword(doc);
             ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
             ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
             ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
@@ -498,6 +499,24 @@ internal class XmlComment
     private void ResolveExceptionCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
     {
         ResolveCrefLink(node, "//exception[@cref]", addReference, resolveCRef);
+    }
+
+    private void ResolveLangword(XNode node)
+    {
+        foreach (var item in node.XPathSelectElements("//see[@langword]").ToList())
+        {
+            var langword = item.Attribute("langword").Value;
+            if (string.IsNullOrEmpty(langword))
+                continue;
+
+            var href = SymbolUrlResolver.GetLangwordUrl(langword);
+            if (href is null)
+                continue;
+
+            var a = new XElement("a", langword);
+            a.SetAttributeValue("href", href);
+            item.ReplaceWith(a);
+        }
     }
 
     private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)

@@ -13,7 +13,7 @@ using Microsoft.SourceLink.Tools;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
-internal static partial class SymbolUrlResolver
+partial class SymbolUrlResolver
 {
     private static readonly ConditionalWeakTable<IAssemblySymbol, SourceLinkProvider?> s_sourceLinkProviders = new();
 
