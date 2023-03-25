@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode.Common.Git;
 
 public static class GitUtility
 {
-    private const string GitTimeoutEnvVarName = "DOVFX_GIT_TIMEOUT";
+    internal const string GitTimeoutEnvVarName = "DOCFX_GIT_TIMEOUT";
     private static readonly string CommandName = "git";
-    private static readonly int GitTimeOut = 1000;
+    private static readonly int GitTimeOut = GetGitTimeout();
 
     private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
     private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
@@ -49,15 +49,6 @@ public static class GitUtility
 
     private static bool? GitCommandExists = null;
     private static object SyncRoot = new();
-
-    static GitUtility()
-    {
-        var gitTimeoutEnvConfig = Environment.GetEnvironmentVariable(GitTimeoutEnvVarName);
-        if (int.TryParse(gitTimeoutEnvConfig, out var gitTimeout) && gitTimeout > 0)
-        {
-            GitTimeOut = gitTimeout;
-        }
-    }
 
     public static GitDetail TryGetFileDetail(string filePath)
     {
@@ -149,6 +140,16 @@ public static class GitUtility
             default:
                 throw new NotSupportedException($"RepoType '{repoType}' is not supported.");
         }
+    }
+
+    internal static int GetGitTimeout()
+    {
+        var gitTimeoutEnvConfig = Environment.GetEnvironmentVariable(GitTimeoutEnvVarName);
+        if (int.TryParse(gitTimeoutEnvConfig, out var gitTimeout) && gitTimeout > 0)
+        {
+            return gitTimeout;
+        }
+        return 10_000;
     }
 
     #region Private Methods
