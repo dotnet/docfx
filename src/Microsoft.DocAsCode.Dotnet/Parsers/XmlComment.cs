@@ -695,7 +695,7 @@ internal class XmlComment
         }
         foreach (XPathNavigator nav in iterator)
         {
-            string altText = GetXmlValue(nav);
+            string altText = nav.InnerXml.Trim();
             if (string.IsNullOrEmpty(altText))
             {
                 altText = null;

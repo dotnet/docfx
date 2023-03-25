@@ -29,6 +29,13 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
+    public static void Issue8122()
+    {
+        var comment = XmlComment.Parse("<seealso href=\"#\">Foo's</seealso>", new());
+        Assert.Equal("Foo's", comment.SeeAlsos[0].AltText);
+    }
+
+    [Fact]
     public void TestXmlCommentParser()
     {
         string inputFolder = Path.GetRandomFileName();
