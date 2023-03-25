@@ -148,7 +148,7 @@ internal static class VisitorHelper
         };
     }
 
-    public static SourceDetail GetSourceDetail(ISymbol symbol)
+    public static SourceDetail GetSourceDetail(ISymbol symbol, Compilation compilation)
     {
         // For namespace, definition is meaningless
         if (symbol == null || symbol.Kind == SymbolKind.Namespace)
@@ -159,11 +159,12 @@ internal static class VisitorHelper
         var syntaxRef = symbol.DeclaringSyntaxReferences.LastOrDefault();
         if (symbol.IsExtern || syntaxRef == null)
         {
-            return new SourceDetail
+            if (SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, symbol) is string url)
             {
-                IsExternalPath = true,
-                Path = symbol.ContainingAssembly?.Name,
-            };
+                return new() { Href = url };
+            }
+
+            return null;
         }
 
         var syntaxNode = syntaxRef.GetSyntax();

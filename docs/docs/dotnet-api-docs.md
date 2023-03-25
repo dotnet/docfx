@@ -58,7 +58,7 @@ Docfx examines the assembly and tries to load the reference assemblies from with
 }
 ```
 
-Features that needs source code information such as "Improve this doc" and "View source" is not available using this approach.
+If [source link](https://learn.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) is enabled on the assembly and the `.pdb` file exists along side the assembly, docfx shows the "View Source" link based on the source URL extract from source link.
 
 ## Generate from projects or solutions
 

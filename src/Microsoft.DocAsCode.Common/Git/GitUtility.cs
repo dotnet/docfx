@@ -52,9 +52,7 @@ public static class GitUtility
     public static GitDetail TryGetFileDetail(string filePath)
     {
         if (EnvironmentContext.GitFeaturesDisabled)
-        {
             return null;
-        }
 
         try
         {
@@ -67,6 +65,20 @@ public static class GitUtility
         }
 
         return null;
+    }
+
+    public static string RawContentUrlToContentUrl(string rawUrl)
+    {
+        if (EnvironmentContext.GitFeaturesDisabled)
+            return null;
+
+        var branch = Environment.GetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME");
+
+        // GitHub
+        return Regex.Replace(
+            rawUrl,
+            @"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$",
+            string.IsNullOrEmpty(branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{branch}/$4");
     }
 
     [Obsolete("Docfx parses repoUrl in template preprocessor. This method is never used.")]
@@ -279,36 +291,6 @@ public static class GitUtility
     private static void ProcessErrorMessage(string message)
     {
         throw new GitException(message);
-    }
-
-    private static string TryRunGitCommand(string repoPath, string arguments)
-    {
-        var content = new StringBuilder();
-        try
-        {
-            RunGitCommand(repoPath, arguments, output => content.AppendLine(output));
-        }
-        catch (Exception ex)
-        {
-            Logger.LogWarning($"Skipping RunGitCommand. Exception found: {ex.GetType()}, Message: {ex.Message}");
-            Logger.LogVerbose(ex.ToString());
-        }
-        return content.Length == 0 ? null : content.ToString();
-    }
-
-    private static string TryRunGitCommandAndGetLastLine(string repoPath, string arguments)
-    {
-        string content = null;
-        try
-        {
-            content = RunGitCommandAndGetLastLine(repoPath, arguments);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogWarning($"Skipping RunGitCommandAndGetLastLine. Exception found: {ex.GetType()}, Message: {ex.Message}");
-            Logger.LogVerbose(ex.ToString());
-        }
-        return content;
     }
 
     private static string RunGitCommandAndGetLastLine(string repoPath, string arguments)
