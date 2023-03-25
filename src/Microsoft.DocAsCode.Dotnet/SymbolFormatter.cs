@@ -108,7 +108,7 @@ internal static partial class SymbolFormatter
         }
     }
 
-    public static List<LinkItem> ToLinkItems(this ImmutableArray<SymbolDisplayPart> parts, SyntaxLanguage language, bool overload)
+    public static List<LinkItem> ToLinkItems(this ImmutableArray<SymbolDisplayPart> parts, Compilation compilation, SyntaxLanguage language, bool overload)
     {
         var result = new List<LinkItem>();
         foreach (var part in parts)
@@ -133,7 +133,7 @@ internal static partial class SymbolFormatter
             {
                 Name = overload ? VisitorHelper.GetOverloadId(symbol) : VisitorHelper.GetId(symbol),
                 DisplayName = part.ToString(),
-                Href = SymbolUrlResolver.GetSymbolUrl(symbol),
+                Href = SymbolUrlResolver.GetSymbolUrl(symbol, compilation),
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
             };
         }

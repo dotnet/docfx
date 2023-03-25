@@ -49,7 +49,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.DisplayNames = new SortedList<SyntaxLanguage, string>();
         item.DisplayNamesWithType = new SortedList<SyntaxLanguage, string>();
         item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
-        item.Source = VisitorHelper.GetSourceDetail(symbol);
+        item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
         if (!(symbol is INamespaceSymbol))

@@ -148,7 +148,8 @@ internal class ExtractMetadataWorker : IDisposable
         foreach (var (assembly, compilation) in assemblies)
         {
             Logger.LogInfo($"Processing {assembly.Name}");
-            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(compilation, new YamlModelGenerator(), _config, filter, extensionMethods));
+            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(compilation, new(compilation), _config, filter, extensionMethods));
+
             if (projectMetadata != null)
                 projectMetadataList.Add(projectMetadata);
         }

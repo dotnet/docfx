@@ -31,7 +31,9 @@ function getHtmlId(input) {
 
 // Note: the parameter `gitContribute` won't be used in this function
 function getViewSourceHref(item, gitContribute, gitUrlPattern) {
-    if (!item || !item.source || !item.source.remote) return '';
+    if (!item || !item.source) return '';
+    if (item.source.href) return item.source.href;
+    if (!item.source.remote) return '';
     return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, null, gitUrlPattern);
 }
 

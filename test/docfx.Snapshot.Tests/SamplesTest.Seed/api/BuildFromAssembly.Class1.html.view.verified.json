@@ -114,10 +114,10 @@
             ]
           },
           "source": {
-            "path": "BuildFromAssembly",
+            "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
             "endLine": 0.0,
-            "isExternal": true
+            "isExternal": false
           },
           "assemblies": [
             "BuildFromAssembly"
@@ -172,7 +172,7 @@
           "summary": "",
           "platform": null,
           "docurl": "",
-          "sourceurl": "",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -248,10 +248,10 @@
             ]
           },
           "source": {
-            "path": "BuildFromAssembly",
+            "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
             "endLine": 0.0,
-            "isExternal": true
+            "isExternal": false
           },
           "assemblies": [
             "BuildFromAssembly"
@@ -306,7 +306,7 @@
           "summary": "",
           "platform": null,
           "docurl": "",
-          "sourceurl": "",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -355,10 +355,10 @@
   ],
   "type": "class",
   "source": {
-    "path": "BuildFromAssembly",
+    "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
     "startLine": 0.0,
     "endLine": 0.0,
-    "isExternal": true
+    "isExternal": false
   },
   "assemblies": [
     "BuildFromAssembly"
@@ -837,7 +837,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "",
-  "sourceurl": "",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
   "remarks": "",
   "conceptual": "",
   "implements": "",

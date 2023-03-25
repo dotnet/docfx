@@ -6,8 +6,9 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal static partial class SymbolUrlResolver
 {
-    public static string? GetSymbolUrl(ISymbol symbol)
+    public static string? GetSymbolUrl(ISymbol symbol, Compilation compilation)
     {
-        return GetMicrosoftLearnUrl(symbol);
+        return GetMicrosoftLearnUrl(symbol)
+            ?? GetPdbSourceLinkUrl(compilation, symbol);
     }
 }
