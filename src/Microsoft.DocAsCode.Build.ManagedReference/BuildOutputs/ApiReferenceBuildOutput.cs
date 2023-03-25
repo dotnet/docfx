@@ -297,6 +297,11 @@ public class ApiReferenceBuildOutput
 
     private static string GetCompositeName(SpecViewModel svm)
     {
+        if (!string.IsNullOrEmpty(svm.Href))
+        {
+            return $"<a class=\"xref\" href=\"{HttpUtility.HtmlAttributeEncode(svm.Href)}\">{HttpUtility.HtmlEncode(svm.Name)}</a>";
+        }
+
         // If href does not exists, return full name
         if (string.IsNullOrEmpty(svm.Uid))
         {
