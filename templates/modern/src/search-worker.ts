@@ -38,12 +38,14 @@ searchDataRequest.send()
 
 onmessage = function(oEvent) {
   const q = oEvent.data.q
-  const hits = lunrIndex.search(q)
   const results = []
-  hits.forEach(function(hit) {
-    const item = searchData[hit.ref]
-    results.push({ href: item.href, title: item.title, keywords: item.keywords })
-  })
+  if (lunrIndex) {
+    const hits = lunrIndex.search(q)
+    hits.forEach(function(hit) {
+      const item = searchData[hit.ref]
+      results.push({ href: item.href, title: item.title, keywords: item.keywords })
+    })
+  }
   postMessage({ e: 'query-ready', q, d: results })
 }
 
