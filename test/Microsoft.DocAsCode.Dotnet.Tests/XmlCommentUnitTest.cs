@@ -23,7 +23,7 @@ public class XmlCommentUnitTest
     [Fact]
     public static void SeeLangword()
     {
-        Verify("<see langword=\"if\" />", "<a href=\"https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/selection-statements#the-if-statement\">if</a>");
+        Verify("<see langword=\"if\" />", "<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/statements/selection-statements#the-if-statement\">if</a>");
         Verify("<see langword=\"undefined-langword\" />", "<c>undefined-langword</c>");
     }
 
@@ -167,7 +167,7 @@ namespace Example
         var summary = commentModel.Summary;
         Assert.Equal("""
 
-            Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/null">null</a>
+            Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
 
             ```
             Classes in assemblies are by definition complete.
