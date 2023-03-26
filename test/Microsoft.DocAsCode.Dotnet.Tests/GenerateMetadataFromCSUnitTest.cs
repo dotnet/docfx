@@ -3656,19 +3656,19 @@ namespace Test1
     {
         var code =
             """
-                namespace Test
+            namespace Test
+            {
+                internal class Foo : IFoo
                 {
-                    internal class Foo : IFoo
-                    {
-                        internal void M1();
-                        protected internal void M2();
-                        private protected void M3();
-                        private void M4();
-                    }
-
-                    internal interface IFoo { }
+                    internal void M1();
+                    protected internal void M2();
+                    private protected void M3();
+                    private void M4();
                 }
-                """;
+
+                internal interface IFoo { }
+            }
+            """;
 
         var output = Verify(code, new() { IncludePrivateMembers = true });
         var foo = output.Items[0].Items[0];
@@ -3680,5 +3680,21 @@ namespace Test1
             "private protected void M3()",
             "private void M4()",
         }, foo.Items.Select(item => item.Syntax.Content[SyntaxLanguage.CSharp]));
+    }
+
+    [Fact]
+    public void TestAllowCompilationErrors()
+    {
+        var code =
+            """
+            namespace Test
+            {
+                public class Foo : Bar {}
+            }
+            """;
+
+        var output = Verify(code, new() { AllowCompilationErrors = true });
+        var foo = output.Items[0].Items[0];
+        Assert.Equal("public class Foo : Bar", foo.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 }

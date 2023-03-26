@@ -101,21 +101,21 @@ internal class ExtractMetadataWorker : IDisposable
 
         foreach (var compilation in projectCompilations)
         {
-            hasCompilationError |= compilation.CheckDiagnostics();
+            hasCompilationError |= compilation.CheckDiagnostics(_config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (_files.TryGetValue(FileType.CSSourceCode, out var csFiles))
         {
             var compilation = CompilationHelper.CreateCompilationFromCSharpFiles(csFiles.Select(f => f.NormalizedPath));
-            hasCompilationError |= compilation.CheckDiagnostics();
+            hasCompilationError |= compilation.CheckDiagnostics(_config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
         if (_files.TryGetValue(FileType.VBSourceCode, out var vbFiles))
         {
             var compilation = CompilationHelper.CreateCompilationFromVBFiles(vbFiles.Select(f => f.NormalizedPath));
-            hasCompilationError |= compilation.CheckDiagnostics();
+            hasCompilationError |= compilation.CheckDiagnostics(_config.AllowCompilationErrors);
             assemblies.Add((compilation.Assembly, compilation));
         }
 
@@ -125,7 +125,7 @@ internal class ExtractMetadataWorker : IDisposable
             {
                 Logger.LogInfo($"Loading assembly {assemblyFile.NormalizedPath}");
                 var (compilation, assembly) = CompilationHelper.CreateCompilationFromAssembly(assemblyFile.NormalizedPath, _config.References);
-                hasCompilationError |= compilation.CheckDiagnostics();
+                hasCompilationError |= compilation.CheckDiagnostics(_config.AllowCompilationErrors);
                 assemblies.Add((assembly, compilation));
             }
         }

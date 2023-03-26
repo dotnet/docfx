@@ -25,7 +25,7 @@ internal static class CompilationHelper
                 """),
     };
 
-    public static bool CheckDiagnostics(this Compilation compilation)
+    public static bool CheckDiagnostics(this Compilation compilation, bool errorAsWarning)
     {
         var errorCount = 0;
 
@@ -34,7 +34,8 @@ internal static class CompilationHelper
             if (diagnostic.IsSuppressed)
                 continue;
 
-            if (diagnostic.Severity is DiagnosticSeverity.Warning)
+            if (diagnostic.Severity is DiagnosticSeverity.Warning ||
+                (diagnostic.Severity is DiagnosticSeverity.Error && errorAsWarning))
             {
                 Logger.LogWarning(diagnostic.ToString());
                 continue;

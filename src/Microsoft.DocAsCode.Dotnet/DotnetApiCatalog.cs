@@ -126,6 +126,7 @@ public static class DotnetApiCatalog
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             NoRestore = configModel?.NoRestore ?? false,
             NamespaceLayout = configModel?.NamespaceLayout ?? NamespaceLayout.Flattened,
+            AllowCompilationErrors = configModel?.AllowCompilationErrors ?? false,
             Files = expandedFiles.Items.SelectMany(s => s.Files).ToList(),
             References = expandedReferences?.Items.SelectMany(s => s.Files).ToList(),
         };
