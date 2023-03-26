@@ -98,4 +98,17 @@ body[data-yaml-mime="ManagedReference"] article {
     bottom: .2rem;
     font-size: 1.2rem;
   }
+
+  td.term {
+    font-weight: 600;
+  }
+
+  li>span.term {
+    font-weight: 600;
+
+    &::after {
+      content: '-';
+      margin: 0 .5em;
+    }
+  }
 }

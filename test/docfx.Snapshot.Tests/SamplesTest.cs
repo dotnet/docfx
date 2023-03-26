@@ -26,6 +26,7 @@ public class SamplesTest
         "index.html",
         "articles/markdown.html?tabs=windows%2Ctypescript#markdown-extensions",
         "articles/csharp_coding_standards.html",
+        "api/BuildFromProject.Class1.html",
         "api/CatLibrary.html",
         "api/CatLibrary.html?term=cat",
         "api/CatLibrary.Cat-2.html?q=cat",

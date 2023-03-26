@@ -136,12 +136,12 @@
             <thead>
               <tr>
                 <xsl:for-each select="listheader/term">
-                  <th>
+                  <th class="term">
                     <xsl:apply-templates />
                   </th>
                 </xsl:for-each>
                 <xsl:for-each select="listheader/description">
-                  <th>
+                  <th class="description">
                     <xsl:apply-templates />
                   </th>
                 </xsl:for-each>
@@ -152,12 +152,12 @@
             <xsl:for-each select="item">
               <tr>
                 <xsl:for-each select="term">
-                  <td>
+                  <td class="term">
                     <xsl:apply-templates />
                   </td>
                 </xsl:for-each>
                 <xsl:for-each select="description">
-                  <td>
+                  <td class="description">
                     <xsl:apply-templates />
                   </td>
                 </xsl:for-each>
@@ -222,7 +222,9 @@
   </xsl:template>
 
   <xsl:template match="term">
-    <xsl:apply-templates />
+    <span class="term">
+      <xsl:apply-templates />
+    </span>
   </xsl:template>
 
   <xsl:template match="@*|node()">
