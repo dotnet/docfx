@@ -31,6 +31,19 @@ namespace Microsoft.DocAsCode.Common.Tests;
     }
 
     [Fact]
+    public void Environment_ForGitTimeout()
+    {
+        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "3000");
+        Assert.Equal(3000, GitUtility.GetGitTimeout());
+
+        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "0");
+        Assert.Equal(10_000, GitUtility.GetGitTimeout());
+
+        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "");
+        Assert.Equal(10_000, GitUtility.GetGitTimeout());
+    }
+
+    [Fact]
     public void TestParseGitRepoInfo()
     {
         var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
