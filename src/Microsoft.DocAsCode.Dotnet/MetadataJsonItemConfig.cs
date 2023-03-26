@@ -57,4 +57,7 @@ internal class MetadataJsonItemConfig
 
     [JsonProperty("namespaceLayout")]
     public NamespaceLayout NamespaceLayout{  get; set; }
+
+    [JsonProperty("allowCompilationErrors")]
+    public bool AllowCompilationErrors { get; set; }
 }

@@ -32,4 +32,6 @@ internal class ExtractMetadataConfig
     public NamespaceLayout NamespaceLayout { get; init; }
 
     public Dictionary<string, string> MSBuildProperties { get; init; }
+
+    public bool AllowCompilationErrors { get; init; }
 }
