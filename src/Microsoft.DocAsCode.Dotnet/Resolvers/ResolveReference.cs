@@ -144,14 +144,6 @@ internal class ResolveReference : IResolverPipeline
             }
         }
 
-        if (current.Sees?.Count > 0)
-        {
-            foreach (var item in current.Sees.Where(l => l.LinkType == LinkType.CRef))
-            {
-                yield return item.LinkId;
-            }
-        }
-
         if (current.SeeAlsos?.Count > 0)
         {
             foreach (var item in current.SeeAlsos.Where(l => l.LinkType == LinkType.CRef))

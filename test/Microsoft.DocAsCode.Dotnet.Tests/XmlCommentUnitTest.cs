@@ -253,17 +253,6 @@ public class XmlCommentUnitTest
 
         commentModel = XmlComment.Parse(input, context);
 
-        var sees = commentModel.Sees;
-        Assert.Equal(5, sees.Count);
-        Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
-        Assert.Null(sees[0].AltText);
-        Assert.Equal("System.String.Compare*", sees[2].LinkId);
-        Assert.Null(sees[1].AltText);
-        Assert.Equal("http://exception.com", sees[3].LinkId);
-        Assert.Equal("Global See section", sees[3].AltText);
-        Assert.Equal("http://exception.com", sees[4].AltText);
-        Assert.Equal("http://exception.com", sees[4].LinkId);
-
         var seeAlsos = commentModel.SeeAlsos;
         Assert.Equal(3, seeAlsos.Count);
         Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);

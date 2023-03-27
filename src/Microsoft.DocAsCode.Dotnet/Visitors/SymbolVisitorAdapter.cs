@@ -65,14 +65,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             }
         }
 
-        if (item.Sees != null)
-        {
-            foreach (var i in item.Sees.Where(l => l.LinkType == LinkType.CRef))
-            {
-                AddReference(i.LinkId, i.CommentId);
-            }
-        }
-
         if (item.SeeAlsos != null)
         {
             foreach (var i in item.SeeAlsos.Where(l => l.LinkType == LinkType.CRef))

@@ -263,7 +263,6 @@ internal static class YamlViewModelExtensions
             Overridden = model.Overridden,
             Overload = model.Overload,
             Exceptions = model.Exceptions,
-            Sees = model.Sees,
             SeeAlsos = model.SeeAlsos,
             DerivedClasses = model.DerivedClasses,
             Inheritance = model.Inheritance,
