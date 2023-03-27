@@ -100,10 +100,6 @@ internal class MetadataItem : ICloneable
     [JsonProperty("exceptions")]
     public List<ExceptionInfo> Exceptions { get; set; }
 
-    [YamlMember(Alias = "see")]
-    [JsonProperty("see")]
-    public List<LinkInfo> Sees { get; set; }
-
     [YamlMember(Alias = "seealso")]
     [JsonProperty("seealso")]
     public List<LinkInfo> SeeAlsos { get; set; }
@@ -171,8 +167,6 @@ internal class MetadataItem : ICloneable
 
         if (Exceptions == null && src.Exceptions != null)
             Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
-        if (Sees == null && src.Sees != null)
-            Sees = src.Sees.Select(s => s.Clone()).ToList();
         if (SeeAlsos == null && src.SeeAlsos != null)
             SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
         if (Examples == null && src.Examples != null)

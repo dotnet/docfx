@@ -36,8 +36,6 @@ internal class XmlComment
 
     public List<ExceptionInfo> Exceptions { get; private set; }
 
-    public List<LinkInfo> Sees { get; private set; }
-
     public List<LinkInfo> SeeAlsos { get; private set; }
 
     public List<string> Examples { get; private set; }
@@ -74,7 +72,6 @@ internal class XmlComment
         Returns = GetReturns(nav, context);
 
         Exceptions = GetExceptions(nav, context);
-        Sees = GetSees(nav, context);
         SeeAlsos = GetSeeAlsos(nav, context);
         Examples = GetExamples(nav, context);
         Parameters = GetParameters(nav, context);
@@ -115,10 +112,6 @@ internal class XmlComment
         if (Exceptions == null && src.Exceptions != null)
         {
             Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
-        }
-        if (Sees == null && src.Sees != null)
-        {
-            Sees = src.Sees.Select(s => s.Clone()).ToList();
         }
         if (SeeAlsos == null && src.SeeAlsos != null)
         {
@@ -220,24 +213,6 @@ internal class XmlComment
     {
         string selector = "/member/exception";
         var result = GetMulitpleCrefInfo(nav, selector).ToList();
-        if (result.Count == 0)
-        {
-            return null;
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// To get `see` tags out
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    /// <see cref="SpecIdHelper"/>
-    /// <see cref="SourceSwitch"/>
-    private List<LinkInfo> GetSees(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        var result = GetMultipleLinkInfo(nav, "/member/see").ToList();
         if (result.Count == 0)
         {
             return null;

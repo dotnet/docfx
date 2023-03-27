@@ -276,19 +276,10 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [JsonProperty("seealso")]
     public List<LinkInfo> SeeAlsos { get; set; }
 
-    [YamlMember(Alias = "see")]
-    [JsonProperty("see")]
-    public List<LinkInfo> Sees { get; set; }
-
     [JsonIgnore]
     [YamlIgnore]
     [UniqueIdentityReference]
     public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
-
-    [JsonIgnore]
-    [YamlIgnore]
-    [UniqueIdentityReference]
-    public List<string> SeesUidReference => Sees?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
 
     [YamlMember(Alias = Constants.PropertyName.Inheritance)]
     [MergeOption(MergeOption.Ignore)]

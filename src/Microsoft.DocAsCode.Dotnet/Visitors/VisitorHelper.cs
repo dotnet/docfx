@@ -28,7 +28,6 @@ internal static class VisitorHelper
             item.Summary = commentModel.Summary;
             item.Remarks = commentModel.Remarks;
             item.Exceptions = commentModel.Exceptions;
-            item.Sees = commentModel.Sees;
             item.SeeAlsos = commentModel.SeeAlsos;
             item.Examples = commentModel.Examples;
             item.InheritDoc = commentModel.InheritDoc;

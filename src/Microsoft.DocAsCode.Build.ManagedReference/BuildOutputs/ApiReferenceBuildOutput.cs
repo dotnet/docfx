@@ -109,10 +109,6 @@ public class ApiReferenceBuildOutput
     [JsonProperty("seealso")]
     public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
-    [YamlMember(Alias = "see")]
-    [JsonProperty("see")]
-    public List<ApiLinkInfoBuildOutput> Sees { get; set; }
-
     [YamlMember(Alias = "inheritance")]
     [JsonProperty("inheritance")]
     public List<ApiReferenceBuildOutput> Inheritance { get; set; }
@@ -229,7 +225,6 @@ public class ApiReferenceBuildOutput
             Overridden = ApiNames.FromUid(vm.Overridden),
             Overload = ApiNames.FromUid(vm.Overload),
             SeeAlsos = vm.SeeAlsos?.Select(ApiLinkInfoBuildOutput.FromModel).ToList(),
-            Sees = vm.Sees?.Select(ApiLinkInfoBuildOutput.FromModel).ToList(),
             Inheritance = vm.Inheritance?.Select(FromUid).ToList(),
             Implements = vm.Implements?.Select(ApiNames.FromUid).ToList(),
             InheritedMembers = vm.InheritedMembers,
@@ -256,7 +251,6 @@ public class ApiReferenceBuildOutput
             Syntax?.Expand(references, supportedLanguages);
             Overridden = ApiBuildOutputUtility.GetApiNames(Overridden?.Uid, references, supportedLanguages);
             SeeAlsos?.ForEach(e => e.Expand(references, supportedLanguages));
-            Sees?.ForEach(e => e.Expand(references, supportedLanguages));
             Exceptions?.ForEach(e => e.Expand(references, supportedLanguages));
             Overload = ApiBuildOutputUtility.GetApiNames(Overload?.Uid, references, supportedLanguages);
         }

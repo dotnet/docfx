@@ -111,10 +111,6 @@ public class ApiBuildOutput
     [JsonProperty("seealso")]
     public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
-    [YamlMember(Alias = "see")]
-    [JsonProperty("see")]
-    public List<ApiLinkInfoBuildOutput> Sees { get; set; }
-
     [YamlMember(Alias = "inheritance")]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty("inheritance")]
@@ -230,7 +226,6 @@ public class ApiBuildOutput
             Overload = ApiBuildOutputUtility.GetApiNames(model.Overload, references, model.SupportedLanguages),
             Exceptions = GetCrefInfoList(model.Exceptions, references, model.SupportedLanguages),
             SeeAlsos = GetLinkInfoList(model.SeeAlsos, references, model.SupportedLanguages),
-            Sees = GetLinkInfoList(model.Sees, references, model.SupportedLanguages),
             Inheritance = GetReferenceList(model.Inheritance, references, model.SupportedLanguages, true),
             Implements = model.Implements?.Select(u => ApiBuildOutputUtility.GetApiNames(u, references, model.SupportedLanguages)).ToList(),
             InheritedMembers = GetReferenceList(model.InheritedMembers, references, model.SupportedLanguages),
