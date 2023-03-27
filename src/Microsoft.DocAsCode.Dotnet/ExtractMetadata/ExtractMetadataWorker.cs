@@ -235,7 +235,7 @@ internal class ExtractMetadataWorker : IDisposable
         var members = model.Members;
         foreach (var memberModel in members)
         {
-            var fileName = _config.UseCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
+            var fileName = memberModel.Name.Replace('`', '-');
             var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
             string itemFilePath = Path.Combine(_config.OutputFolder, outputFileName);
             var memberViewModel = memberModel.ToPageViewModel();

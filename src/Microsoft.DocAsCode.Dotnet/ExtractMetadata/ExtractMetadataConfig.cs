@@ -17,8 +17,6 @@ internal class ExtractMetadataConfig
 
     public bool IncludePrivateMembers { get; init; }
 
-    public bool UseCompatibilityFileName { get; init; }
-
     public string GlobalNamespaceId { get; init; }
 
     public string CodeSourceBasePath { get; init; }

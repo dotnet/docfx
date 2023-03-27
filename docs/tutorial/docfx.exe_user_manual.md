@@ -174,7 +174,6 @@ src                      | Defines the source projects to have metadata generate
 dest                     | Defines the output folder of the generated metadata files. Relative paths are relative to the docfx.json file being used. To go up a folder use `../`.
 shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
 filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](./howto_filter_out_unwanted_apis_attributes.md) for more details.
-useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment id instead of replacing it with `-`.
 properties               |  Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
 
 **Sample**
@@ -203,7 +202,6 @@ properties               |  Defines an optional set of MSBuild properties used w
         }
       ],
       "dest": "obj/docfx/api/js",
-      "useCompatibilityFileName": true,
       "properties": {
           "TargetFramework": "net46"
       }
