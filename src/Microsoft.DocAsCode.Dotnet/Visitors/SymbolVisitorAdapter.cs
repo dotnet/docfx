@@ -18,7 +18,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
-    private readonly bool _preserveRawInlineComments;
     private readonly IMethodSymbol[] _extensionMethods;
     private readonly string _codeSourceBasePath;
     private readonly SymbolFilter _filter;
@@ -27,7 +26,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         _compilation = compilation;
         _generator = generator;
-        _preserveRawInlineComments = options.PreserveRawInlineComments;
         _filter = filter;
         _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
         _codeSourceBasePath = options.CodeSourceBasePath;
@@ -58,7 +56,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
         }
 
-        VisitorHelper.FeedComments(item, GetXmlCommentParserContext(item, _preserveRawInlineComments));
+        VisitorHelper.FeedComments(item, GetXmlCommentParserContext(item));
         if (item.Exceptions != null)
         {
             foreach (var exceptions in item.Exceptions)
@@ -174,7 +172,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
             foreach (var p in symbol.TypeParameters)
             {
-                var param = VisitorHelper.GetTypeParameterDescription(p, item, GetXmlCommentParserContext(item, _preserveRawInlineComments));
+                var param = VisitorHelper.GetTypeParameterDescription(p, item, GetXmlCommentParserContext(item));
                 item.Syntax.TypeParameters.Add(param);
             }
         }
@@ -223,7 +221,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
             foreach (var p in symbol.TypeParameters)
             {
-                var param = VisitorHelper.GetTypeParameterDescription(p, result, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+                var param = VisitorHelper.GetTypeParameterDescription(p, result, GetXmlCommentParserContext(result));
                 result.Syntax.TypeParameters.Add(param);
             }
         }
@@ -277,7 +275,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var typeGenericParameters = symbol.ContainingType.IsGenericType ? symbol.ContainingType.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
 
         var id = AddSpecReference(symbol.Type, typeGenericParameters);
-        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
         Debug.Assert(result.Syntax.Return.Type != null);
 
         result.Attributes = GetAttributeInfo(symbol.GetAttributes());
@@ -310,7 +308,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         var id = AddSpecReference(symbol.Type, typeGenericParameters);
-        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+        result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
         Debug.Assert(result.Syntax.Return.Type != null);
 
         AddMemberImplements(symbol, result, typeGenericParameters);
@@ -350,14 +348,14 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             foreach (var p in symbol.Parameters)
             {
                 var id = AddSpecReference(p.Type, typeGenericParameters);
-                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result));
                 Debug.Assert(param.Type != null);
                 result.Syntax.Parameters.Add(param);
             }
         }
         {
             var id = AddSpecReference(symbol.Type, typeGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
             Debug.Assert(result.Syntax.Return.Type != null);
         }
 
@@ -700,7 +698,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         if (!symbol.ReturnsVoid)
         {
             var id = AddSpecReference(symbol.ReturnType, typeGenericParameters, methodGenericParameters);
-            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+            result.Syntax.Return = VisitorHelper.GetParameterDescription(symbol, result, id, true, GetXmlCommentParserContext(result));
             result.Syntax.Return.Attributes = GetAttributeInfo(symbol.GetReturnTypeAttributes());
         }
 
@@ -714,7 +712,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             foreach (var p in symbol.Parameters)
             {
                 var id = AddSpecReference(p.Type, typeGenericParameters, methodGenericParameters);
-                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result, _preserveRawInlineComments));
+                var param = VisitorHelper.GetParameterDescription(p, result, id, false, GetXmlCommentParserContext(result));
                 Debug.Assert(param.Type != null);
                 param.Attributes = GetAttributeInfo(p.GetAttributes());
                 result.Syntax.Parameters.Add(param);
@@ -722,12 +720,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
     }
 
-    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item, bool preserve)
+    private XmlCommentParserContext GetXmlCommentParserContext(MetadataItem item)
     {
         return new XmlCommentParserContext
         {
             AddReferenceDelegate = GetAddReferenceDelegate(item),
-            PreserveRawInlineComments = preserve,
             Source = item.Source,
             CodeSourceBasePath = _codeSourceBasePath
         };

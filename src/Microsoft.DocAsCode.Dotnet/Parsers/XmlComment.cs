@@ -60,13 +60,12 @@ internal class XmlComment
         var doc = XmlCommentTransformer.Transform(xml);
 
         _context = context;
-        if (!context.PreserveRawInlineComments)
-        {
-            ResolveLangword(doc);
-            ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
-            ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
-            ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
-        }
+
+        ResolveLangword(doc);
+        ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+        ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+        ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+            
         ResolveCodeSource(doc, context);
         var nav = doc.CreateNavigator();
         Summary = GetSummary(nav, context);

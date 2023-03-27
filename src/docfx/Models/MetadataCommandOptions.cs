@@ -16,9 +16,6 @@ internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
     [Option('o', "output", HelpText = "Specify the output base directory")]
     public string OutputFolder { get; set; }
 
-    [Option("raw", HelpText = "Preserve the existing xml comment tags inside 'summary' triple slash comments")]
-    public bool PreserveRawInlineComments { get; set; }
-
     [Option('h', "help", HelpText = "Print help message for this sub-command")]
     public bool PrintHelpMessage { get; set; }
 

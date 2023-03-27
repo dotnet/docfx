@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal class XmlCommentParserContext
 {
-    public bool PreserveRawInlineComments { get; set; }
-
     public Action<string, string> AddReferenceDelegate { get; set; }
 
     public Func<string, CRefTarget> ResolveCRef { get; set; }

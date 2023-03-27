@@ -29,7 +29,6 @@ internal static class YamlMetadataResolver
     public static MetadataModel ResolveMetadata(
         Dictionary<string, MetadataItem> allMembers,
         Dictionary<string, ReferenceItem> allReferences,
-        bool preserveRawInlineComments,
         NamespaceLayout namespaceLayout)
     {
         MetadataModel viewModel = new();
@@ -39,7 +38,6 @@ internal static class YamlMetadataResolver
         {
             References = allReferences,
             Members = allMembers,
-            PreserveRawInlineComments = preserveRawInlineComments,
         };
 
         ExecutePipeline(viewModel, context);
