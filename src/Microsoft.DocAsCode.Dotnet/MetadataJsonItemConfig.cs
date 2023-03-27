@@ -32,9 +32,6 @@ internal class MetadataJsonItemConfig
     [JsonProperty("globalNamespaceId")]
     public string GlobalNamespaceId { get; set; }
 
-    [JsonProperty("useCompatibilityFileName")]
-    public bool? UseCompatibilityFileName { get; set; }
-
     /// <summary>
     /// An optional set of MSBuild properties used when interpreting project files. These
     ///  are the same properties that are passed to msbuild via the /property:&lt;n&gt;=&lt;v&gt;
