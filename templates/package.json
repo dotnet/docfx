@@ -31,7 +31,7 @@
     "bootstrap": "twbs/bootstrap#59c556cea60fdeb9c365031c09dc17884bf63bfb",
     "bootstrap-icons": "^1.10.3",
     "highlight.js": "^11.7.0",
-    "lit-html": "^2.6.1",
+    "lit-html": "^2.7.0",
     "lunr": "2.3.9"
   },
   "devDependencies": {
