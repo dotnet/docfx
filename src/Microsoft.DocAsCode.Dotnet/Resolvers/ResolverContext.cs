@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal class ResolverContext
 {
-    public bool PreserveRawInlineComments { get; set; }
-
     public Dictionary<string, ReferenceItem> References { get; set; }
 
     public Dictionary<string, MetadataItem> Members { get; set; }

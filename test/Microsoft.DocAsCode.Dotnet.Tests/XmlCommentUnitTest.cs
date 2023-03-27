@@ -158,7 +158,6 @@ public class XmlCommentUnitTest
         var context = new XmlCommentParserContext
         {
             AddReferenceDelegate = null,
-            PreserveRawInlineComments = false,
             Source = new SourceDetail
             {
                 Path = Path.Combine(inputFolder, "Source.cs"),
@@ -252,7 +251,6 @@ public class XmlCommentUnitTest
                 """, e, ignoreLineEndingDifferences: true)
             );
 
-        context.PreserveRawInlineComments = true;
         commentModel = XmlComment.Parse(input, context);
 
         var sees = commentModel.Sees;
@@ -298,7 +296,6 @@ public class XmlCommentUnitTest
         var context = new XmlCommentParserContext
         {
             AddReferenceDelegate = null,
-            PreserveRawInlineComments = false,
             Source = new SourceDetail
             {
                 Path = Path.Combine(inputFolder, "Source.cs"),
@@ -341,7 +338,6 @@ public class XmlCommentUnitTest
         var context = new XmlCommentParserContext
         {
             AddReferenceDelegate = null,
-            PreserveRawInlineComments = false,
         };
 
         var commentModel = XmlComment.Parse(input, context);
@@ -360,7 +356,6 @@ public class XmlCommentUnitTest
         var context = new XmlCommentParserContext
         {
             AddReferenceDelegate = null,
-            PreserveRawInlineComments = false,
         };
 
         var commentModel = XmlComment.Parse(input, context);
@@ -408,7 +403,6 @@ public class XmlCommentUnitTest
         var context = new XmlCommentParserContext
         {
             AddReferenceDelegate = null,
-            PreserveRawInlineComments = false,
             Source = new SourceDetail
             {
                 Path = Path.Combine(inputFolder, "Source.cs"),

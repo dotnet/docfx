@@ -60,7 +60,6 @@ internal sealed class MetadataCommand : ISubCommand
         var msbuildProperties = ResolveMSBuildProperties(options);
         foreach (var item in config)
         {
-            item.Raw |= options.PreserveRawInlineComments;
             item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
             item.DisableGitFeatures |= options.DisableGitFeatures;
             item.DisableDefaultFilter |= options.DisableDefaultFilter;

@@ -114,7 +114,6 @@ public static class DotnetApiCatalog
 
         return new ExtractMetadataConfig
         {
-            PreserveRawInlineComments = configModel?.Raw ?? false,
             ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
             FilterConfigFile = configModel?.FilterConfigFile is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.FilterConfigFile)),
             IncludePrivateMembers = configModel?.IncludePrivateMembers ?? false,
