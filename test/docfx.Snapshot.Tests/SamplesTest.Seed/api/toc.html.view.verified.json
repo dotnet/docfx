@@ -319,6 +319,7 @@
       "level": 2.0
     }
   ],
+  "memberLayout": "SamePage",
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

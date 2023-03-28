@@ -102,7 +102,7 @@
   "api/CatLibrary.FakeDelegate-1.html": {
     "href": "api/CatLibrary.FakeDelegate-1.html",
     "title": "Delegate FakeDelegate<T> | docfx seed website",
-    "keywords": "Delegate FakeDelegate<T> Namespace CatLibrary Assembly CatLibrary.dll Fake delegate public delegate int FakeDelegate<T>(long num, string name, params object[] scores) Parameters num long Fake para name string Fake para scores object[] Optional Parameter. Returns type.specName.0.value Return a fake number to confuse you. Type Parameters T Fake para"
+    "keywords": "Delegate FakeDelegate<T> Namespace CatLibrary Assembly CatLibrary.dll Fake delegate public delegate int FakeDelegate<T>(long num, string name, params object[] scores) Parameters num long Fake para name string Fake para scores object[] Optional Parameter. Returns int Return a fake number to confuse you. Type Parameters T Fake para"
   },
   "api/CatLibrary.html": {
     "href": "api/CatLibrary.html",

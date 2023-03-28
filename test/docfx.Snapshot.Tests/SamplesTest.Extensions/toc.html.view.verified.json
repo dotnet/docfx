@@ -89,5 +89,7 @@
   "tocHref": null,
   "name": null,
   "level": 1.0,
-  "leaf": false
+  "leaf": false,
+  "title": "Table of Content",
+  "_disableToc": true
 }
