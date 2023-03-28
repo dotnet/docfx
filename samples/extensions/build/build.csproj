@@ -9,14 +9,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
-    <ProjectReference Include="..\..\..\plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj" />
   </ItemGroup>
 
   <!-- NOTE: Uncomment to use <PackageReference> for your own project. -->
   <!--
   <ItemGroup>
     <PackageReference Include="Microsoft.DocAsCode.App" Version="2.60.2" />
-    <PackageReference Include="Microsoft.DocAsCode.Build.MemberLevelManagedReference" Version="2.60.2" />
   </ItemGroup>
   -->
 

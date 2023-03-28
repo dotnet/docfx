@@ -3,7 +3,11 @@
 {{>partials/class.header}}
 
 {{#children}}
+
+{{^_splitReference}}
 <h2 class="section" id="{{id}}">{{>partials/classSubtitle}}</h2>
+{{/_splitReference}}
+
 {{#children}}
 
 {{#overload}}

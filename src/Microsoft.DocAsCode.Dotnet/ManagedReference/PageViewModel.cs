@@ -26,6 +26,10 @@ public class PageViewModel
     [JsonProperty("shouldSkipMarkup")]
     public bool ShouldSkipMarkup { get; set; }
 
+    [YamlMember(Alias = "memberLayout")]
+    [JsonProperty("memberLayout")]
+    public MemberLayout MemberLayout { get; set; }
+
     [ExtensibleMember]
     [JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

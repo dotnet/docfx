@@ -108,6 +108,18 @@ When the file extension is `.cs` or `.vb`, docfx uses the latest supported .NET 
 }
 ```
 
+## Customization Options
+
+There are several options available for customizing .NET API pages that are tailored to your specific needs and preferences. To customize .NET API pages for DocFX, you can use the following options:
+
+- `memberLayout`: This option determines whether type members should be on the same page as containing type or as dedicated pages. Possible values are:
+  - `samePage`: Type members are on the same page as containing type.
+  - `separatePages`: Type members are on dedicated pages.
+
+- `namespaceLayout`: This option determines whether namespace node in TOC is a list or nested. Possible values are:
+  - `flattened`: Namespace node in TOC is a list.
+  - `nested`: Namespace node in TOC is nested.
+
 ## Supported XML Tags
 
 Docfx supports [Recommended XML tags for C# documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags).

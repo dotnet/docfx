@@ -154,7 +154,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
         var page = (PageViewModel)model.Content;
 
-        if (page.Items.Count <= 1)
+        if (page.Items.Count <= 1 || page.MemberLayout != MemberLayout.SeparatePages)
         {
             return null;
         }
