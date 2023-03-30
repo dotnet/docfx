@@ -1,0 +1,31 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+
+{{>partials/class.header}}
+
+{{#children}}
+<h2 class="section" id="{{id}}">{{>partials/classSubtitle}}</h2>
+
+{{#children}}
+<dl class="jumplist">
+  <dt><xref uid="{{uid}}" altProperty="fullName" displayProperty="name"/></dt>
+  <dd>{{{summary}}}</dd>
+</dl>
+{{/children}}
+
+{{/children}}
+
+{{#seealso.0}}
+<h2 id="seealso">{{__global.seealso}}</h2>
+<div class="seealso">
+{{/seealso.0}}
+{{#seealso}}
+  {{#isCref}}
+    <div>{{{type.specName.0.value}}}</div>
+  {{/isCref}}
+  {{^isCref}}
+    <div>{{{url}}}</div>
+  {{/isCref}}
+{{/seealso}}
+{{#seealso.0}}
+</div>
+{{/seealso.0}}

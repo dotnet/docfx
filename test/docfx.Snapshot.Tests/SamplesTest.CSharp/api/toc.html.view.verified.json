@@ -293,6 +293,7 @@
       "level": 2.0
     }
   ],
+  "memberLayout": "SamePage",
   "_key": "api/toc.yml",
   "_lang": "csharp",
   "_path": "api/toc.html",

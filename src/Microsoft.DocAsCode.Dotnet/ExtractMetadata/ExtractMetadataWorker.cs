@@ -222,7 +222,11 @@ internal class ExtractMetadataWorker : IDisposable
         model.TocYamlViewModel.Type = MemberType.Toc;
 
         // TOC do not change
-        var tocViewModel = model.TocYamlViewModel.ToTocViewModel();
+        var tocViewModel = new TocRootViewModel
+        {
+            Metadata = new() { ["memberLayout"] = _config.MemberLayout },
+            Items = model.TocYamlViewModel.ToTocViewModel(),
+        };
         string tocFilePath = Path.Combine(_config.OutputFolder, tocFileName);
 
         YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
@@ -240,6 +244,7 @@ internal class ExtractMetadataWorker : IDisposable
             string itemFilePath = Path.Combine(_config.OutputFolder, outputFileName);
             var memberViewModel = memberModel.ToPageViewModel();
             memberViewModel.ShouldSkipMarkup = _config.ShouldSkipMarkup;
+            memberViewModel.MemberLayout = _config.MemberLayout;
             YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
             Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
             AddMemberToIndexer(memberModel, outputFileName, indexer);

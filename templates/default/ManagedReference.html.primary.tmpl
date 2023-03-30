@@ -4,9 +4,18 @@
 {{#isNamespace}}
   {{>partials/namespace}}
 {{/isNamespace}}
+
+{{#_splitReference}}
+{{#isClass}}
+  {{>partials/class.memberpage}}
+{{/isClass}}
+{{/_splitReference}}
+{{^_splitReference}}
 {{#isClass}}
   {{>partials/class}}
 {{/isClass}}
+{{/_splitReference}}
+
 {{#isEnum}}
   {{>partials/enum}}
 {{/isEnum}}

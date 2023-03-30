@@ -121,7 +121,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("testVBproj1.Foo", tocViewModel[0].Uid);
         Assert.Equal("testVBproj1.Foo", tocViewModel[0].Name);
         Assert.Equal("testVBproj1.Foo.Bar", tocViewModel[0].Items[0].Uid);
@@ -190,7 +190,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("Foo", tocViewModel[0].Uid);
         Assert.Equal("Foo", tocViewModel[0].Name);
         Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
@@ -238,7 +238,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("Foo", tocViewModel[0].Uid);
         Assert.Equal("Foo", tocViewModel[0].Name);
         Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
@@ -302,7 +302,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
         Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
@@ -339,7 +339,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
         Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
@@ -376,7 +376,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("OtherNamespace", tocViewModel[0].Uid);
         Assert.Equal("OtherNamespace", tocViewModel[0].Name);
 
@@ -408,7 +408,7 @@ public class MetadataCommandTest : TestBase
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
         Assert.Equal("Foo", tocViewModel[0].Uid);
         Assert.Equal("Foo", tocViewModel[0].Name);
         Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
