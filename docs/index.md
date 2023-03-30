@@ -64,8 +64,8 @@ jobs:
     - run: docfx docfx_project/docfx.json
 
     - name: Deploy
-    uses: peaceiris/actions-gh-pages@v3
-    with:
+      uses: peaceiris/actions-gh-pages@v3
+      with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_site
 ```
