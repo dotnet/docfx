@@ -3,19 +3,7 @@
 title: Packages
 documentType: dashboard
 contributionLink: https://github.com/dotnet/docfx/edit/main/docs/extensions/packages.yml
-items: 
-  - name: memberpage
-    description: It splits the *YAML* data model into member level. Currently it supports ManagedReference document type. With this template enabled, the class page contains lists of method overloads, fields, events and so on, while every method overload, field or event displays in a separated page.
-    type: Internal
-    thumbnail: images/memberpage.default.screenshot.png
-    homepage: https://www.nuget.org/packages/memberpage/
-    repository:
-      type: git
-      url: "https://github.com/dotnet/docfx/tree/master/plugins/Microsoft.DocAsCode.Build.MemberLevelManagedReference"
-    usage:
-      init: "nuget install memberpage -OutputDirectory <output>"
-      command: "-t default,<output>/memberpage.<version>/content"
-      config: 'template: ["statictoc", "<output>/memberpage.<version>/content"]'
+items:
   - name: rest.tagpage
     description: It splits the *REST* model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.
     type: Internal
