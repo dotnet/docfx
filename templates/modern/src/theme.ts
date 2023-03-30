@@ -10,9 +10,9 @@ setTheme(localStorage.getItem('theme') as Theme || 'auto')
 function setTheme(theme: Theme) {
   localStorage.setItem('theme', theme)
   if (theme === 'auto') {
-    document.body.setAttribute('data-bs-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    document.documentElement.setAttribute('data-bs-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
   } else {
-    document.body.setAttribute('data-bs-theme', theme)
+    document.documentElement.setAttribute('data-bs-theme', theme)
   }
 }
 
