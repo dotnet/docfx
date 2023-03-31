@@ -143,8 +143,8 @@ internal class CopyInherited : IResolverPipeline
                 !context.Members.TryGetValue(referenceItem.Definition, out src))
             {
                 Logger.LogWarning($"Could not resolve base documentation for '{dest.Name}'",
-                                  file: dest.Source.Path,
-                                  line: dest.Source.StartLine != 0 ? dest.Source.StartLine.ToString() : null);
+                                  file: dest.Source?.Path,
+                                  line: dest.Source?.StartLine != 0 ? dest.Source?.StartLine.ToString() : null);
                 return;
             }
                 
