@@ -112,10 +112,5 @@ partial class SymbolUrlResolver
             _peReader.Dispose();
             _pdbReaderProvider.Dispose();
         }
-
-        ~SourceLinkProvider()
-        {
-            Dispose();
-        }
     }
 }
