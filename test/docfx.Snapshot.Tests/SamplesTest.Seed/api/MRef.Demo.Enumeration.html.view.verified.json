@@ -12,6 +12,7 @@
           "uid": "MRef.Demo.Enumeration.ColorType",
           "isExtensionMethod": false,
           "parent": "MRef.Demo.Enumeration",
+          "href": "MRef.Demo.Enumeration.ColorType.html",
           "name": [
             {
               "lang": "csharp",

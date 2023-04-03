@@ -6,6 +6,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -196,11 +197,11 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                      "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+                      "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
                     }
                   ]
                 },
@@ -569,6 +570,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",

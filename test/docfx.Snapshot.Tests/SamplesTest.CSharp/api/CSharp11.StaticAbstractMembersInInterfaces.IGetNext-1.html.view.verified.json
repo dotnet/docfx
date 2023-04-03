@@ -6,6 +6,7 @@
     "uid": "CSharp11",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp11.html",
     "name": [
       {
         "lang": "csharp",
@@ -258,7 +259,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <xref uid=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment*\" text=\"++\"/>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\">++</a>"
               }
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_"
@@ -335,6 +336,7 @@
     "uid": "CSharp11",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp11.html",
     "name": [
       {
         "lang": "csharp",

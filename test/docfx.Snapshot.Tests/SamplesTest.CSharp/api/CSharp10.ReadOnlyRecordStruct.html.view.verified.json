@@ -6,6 +6,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -931,6 +932,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -1023,11 +1025,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>&gt;"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp10.ReadOnlyRecordStruct.html\">ReadOnlyRecordStruct</a>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <xref uid=\"CSharp10.ReadOnlyRecordStruct\" text=\"ReadOnlyRecordStruct\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp10.ReadOnlyRecordStruct.html\">ReadOnlyRecordStruct</a>)"
         }
       ]
     }

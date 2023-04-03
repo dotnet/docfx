@@ -11,6 +11,7 @@
         {
           "uid": "BuildFromProject.Class1",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Class1.html",
           "name": [
             {
               "lang": "csharp",
@@ -71,6 +72,7 @@
         {
           "uid": "BuildFromProject.Class1.Test`1",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Class1.html",
           "name": [
             {
               "lang": "csharp",
@@ -104,11 +106,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>.<xref uid=\"BuildFromProject.Class1.Test`1\" text=\"Test\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Test-1.html\">Test</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>.<xref uid=\"BuildFromProject.Class1.Test`1\" text=\"Test\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Test-1.html\">Test</a>(Of T)"
             }
           ],
           "level": 0.0,

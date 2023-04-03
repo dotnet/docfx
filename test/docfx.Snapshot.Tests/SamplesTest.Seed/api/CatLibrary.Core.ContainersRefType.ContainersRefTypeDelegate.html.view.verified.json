@@ -6,6 +6,7 @@
     "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -39,11 +40,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
     "level": 0.0
@@ -103,6 +104,7 @@
     "uid": "CatLibrary.Core",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -136,11 +138,11 @@
     "specName": [
       {
         "lang": "csharp",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       },
       {
         "lang": "vb",
-        "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+        "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
       }
     ],
     "level": 0.0
