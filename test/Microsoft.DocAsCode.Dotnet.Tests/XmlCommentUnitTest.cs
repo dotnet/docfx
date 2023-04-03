@@ -316,42 +316,6 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
-    public void InheritDoc()
-    {
-        const string input = """
-
-            <member name="M:ClassLibrary1.MyClass.DoThing">
-                <inheritdoc />
-            </member>
-            """;
-        var context = new XmlCommentParserContext
-        {
-            AddReferenceDelegate = null,
-        };
-
-        var commentModel = XmlComment.Parse(input, context);
-        Assert.True(commentModel.InheritDoc != null, nameof(commentModel.InheritDoc));
-    }
-
-    [Fact]
-    public void InheritDocWithCref()
-    {
-        const string input = """
-
-            <member name="M:ClassLibrary1.MyClass.DoThing">
-                <inheritdoc cref="M:ClassLibrary1.MyClass.DoThing"/>
-            </member>
-            """;
-        var context = new XmlCommentParserContext
-        {
-            AddReferenceDelegate = null,
-        };
-
-        var commentModel = XmlComment.Parse(input, context);
-        Assert.Equal("ClassLibrary1.MyClass.DoThing", commentModel.InheritDoc);
-    }
-
-    [Fact]
     public void TestXmlCommentParserForXamlSource()
     {
         string inputFolder = Path.GetRandomFileName();

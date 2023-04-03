@@ -16,10 +16,6 @@ internal class MetadataItem : ICloneable
     [JsonIgnore]
     public bool IsInvalid { get; set; }
 
-    [YamlIgnore]
-    [JsonIgnore]
-    public string RawComment { get; set; }
-
     [JsonProperty(Constants.PropertyName.IsEii)]
     [YamlMember(Alias = Constants.PropertyName.IsEii)]
     public bool IsExplicitInterfaceImplementation { get; set; }
@@ -139,10 +135,6 @@ internal class MetadataItem : ICloneable
 
     [YamlIgnore]
     [JsonIgnore]
-    public string InheritDoc { get; set; }
-
-    [YamlIgnore]
-    [JsonIgnore]
     public XmlComment CommentModel { get; set; }
 
     public override string ToString()
@@ -153,28 +145,5 @@ internal class MetadataItem : ICloneable
     public object Clone()
     {
         return MemberwiseClone();
-    }
-
-    public void CopyInheritedData(MetadataItem src)
-    {
-        if (src == null)
-            throw new ArgumentNullException(nameof(src));
-
-        if (Summary == null)
-            Summary = src.Summary;
-        if (Remarks == null)
-            Remarks = src.Remarks;
-
-        if (Exceptions == null && src.Exceptions != null)
-            Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
-        if (SeeAlsos == null && src.SeeAlsos != null)
-            SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
-        if (Examples == null && src.Examples != null)
-            Examples = new List<string>(src.Examples);
-
-        if (CommentModel != null && src.CommentModel != null)
-            CommentModel.CopyInheritedData(src.CommentModel);
-        if (Syntax != null && src.Syntax != null)
-            Syntax.CopyInheritedData(src.Syntax);
     }
 }

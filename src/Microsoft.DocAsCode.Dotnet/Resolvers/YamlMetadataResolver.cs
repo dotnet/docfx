@@ -12,7 +12,6 @@ internal static class YamlMetadataResolver
     {
         new LayoutCheckAndCleanup(),
         new SetParent(),
-        new CopyInherited(),
         new ResolveReference(),
         new NormalizeSyntax(),
         new BuildMembers(),
