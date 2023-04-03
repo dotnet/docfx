@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.56.0",
     "browser-sync": "^2.29.1",
     "esbuild": "~0.16.17",
