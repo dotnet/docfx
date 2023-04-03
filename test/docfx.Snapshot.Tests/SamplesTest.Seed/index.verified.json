@@ -32,7 +32,52 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Test<T>"
+    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
+  },
+  "api/BuildFromProject.IInheritdoc.html": {
+    "href": "api/BuildFromProject.IInheritdoc.html",
+    "title": "Interface IInheritdoc | docfx seed website",
+    "keywords": "Interface IInheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public interface IInheritdoc Methods Issue7629() This method should do something... void Issue7629()"
+  },
+  "api/BuildFromProject.Inheritdoc.html": {
+    "href": "api/BuildFromProject.Inheritdoc.html",
+    "title": "Class Inheritdoc | docfx seed website",
+    "keywords": "Class Inheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc : IInheritdoc, IDisposable Inheritance object Inheritdoc Implements IInheritdoc IDisposable Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Dispose() public void Dispose() Issue7628() This method should do something... public void Issue7628() Issue7629() public void Issue7629()"
+  },
+  "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
+    "title": "Class Inheritdoc.Issue6366.Class1<T> | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue6366.Class1<T> Namespace BuildFromProject Assembly BuildFromProject.dll public abstract class Inheritdoc.Issue6366.Class1<T> Type Parameters T Inheritance object Inheritdoc.Issue6366.Class1<T> Derived Inheritdoc.Issue6366.Class2 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods TestMethod1(T, int) This text inherited. public abstract T TestMethod1(T parm1, int parm2) Parameters parm1 T This text NOT inherited. parm2 int This text inherited. Returns T This text inherited."
+  },
+  "api/BuildFromProject.Inheritdoc.Issue6366.Class2.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue6366.Class2.html",
+    "title": "Class Inheritdoc.Issue6366.Class2 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue6366.Class2 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool> Inheritance object Inheritdoc.Issue6366.Class1<bool> Inheritdoc.Issue6366.Class2 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods TestMethod1(bool, int) This text inherited. public override bool TestMethod1(bool parm1, int parm2) Parameters parm1 bool This text NOT inherited. parm2 int This text inherited. Returns bool This text inherited."
+  },
+  "api/BuildFromProject.Inheritdoc.Issue6366.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue6366.html",
+    "title": "Class Inheritdoc.Issue6366 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue6366 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue6366 Inheritance object Inheritdoc.Issue6366 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
+  },
+  "api/BuildFromProject.Inheritdoc.Issue7035.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue7035.html",
+    "title": "Class Inheritdoc.Issue7035 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue7035 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue7035 Inheritance object Inheritdoc.Issue7035 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods A() public void A() B() public void B()"
+  },
+  "api/BuildFromProject.Inheritdoc.Issue7484.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue7484.html",
+    "title": "Class Inheritdoc.Issue7484 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue7484 Namespace BuildFromProject Assembly BuildFromProject.dll This is a test class to have something for DocFX to document. public class Inheritdoc.Issue7484 Inheritance object Inheritdoc.Issue7484 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Remarks We're going to talk about things now. BoolReturningMethod(bool) Simple method to generate docs for. DoDad A string that could have something. Constructors Issue7484() This is a constructor to document. public Issue7484() Properties DoDad A string that could have something. public string DoDad { get; } Property Value string Methods BoolReturningMethod(bool) Simple method to generate docs for. public bool BoolReturningMethod(bool source) Parameters source bool A meaningless boolean value, much like most questions in the world. Returns bool An exactly equivalently meaningless boolean value, much like most answers in the world. Remarks I'd like to take a moment to thank all of those who helped me get to a place where I can write documentation like this."
+  },
+  "api/BuildFromProject.Inheritdoc.Issue8101.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue8101.html",
+    "title": "Class Inheritdoc.Issue8101 | docfx seed website",
+    "keywords": "Class Inheritdoc.Issue8101 Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc.Issue8101 Inheritance object Inheritdoc.Issue8101 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Tween(int, int, float, Action<int>) Create a new tween. public static object Tween(int from, int to, float duration, Action<int> onChange) Parameters from int The starting value. to int The end value. duration float Total tween duration in seconds. onChange Action<int> A callback that will be invoked every time the tween value changes. Returns object The newly created tween instance. Tween(float, float, float, Action<float>) Create a new tween. public static object Tween(float from, float to, float duration, Action<float> onChange) Parameters from float The starting value. to float The end value. duration float Total tween duration in seconds. onChange Action<float> A callback that will be invoked every time the tween value changes. Returns object The newly created tween instance."
+  },
+  "api/BuildFromProject.Inheritdoc.Issue8129.html": {
+    "href": "api/BuildFromProject.Inheritdoc.Issue8129.html",
+    "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
+    "keywords": "Struct Inheritdoc.Issue8129 Namespace BuildFromProject Assembly BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",

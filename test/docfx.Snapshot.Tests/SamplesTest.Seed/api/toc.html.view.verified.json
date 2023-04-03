@@ -66,6 +66,97 @@
           "level": 3.0,
           "items": [],
           "leaf": true
+        },
+        {
+          "name": "IInheritdoc",
+          "href": "BuildFromProject.IInheritdoc.html",
+          "topicHref": "BuildFromProject.IInheritdoc.html",
+          "topicUid": "BuildFromProject.IInheritdoc",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc",
+          "href": "BuildFromProject.Inheritdoc.html",
+          "topicHref": "BuildFromProject.Inheritdoc.html",
+          "topicUid": "BuildFromProject.Inheritdoc",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue6366",
+          "href": "BuildFromProject.Inheritdoc.Issue6366.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue6366.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue6366",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue6366.Class1<T>",
+          "href": "BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
+          "name.vb": "Inheritdoc.Issue6366.Class1(Of T)",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue6366.Class2",
+          "href": "BuildFromProject.Inheritdoc.Issue6366.Class2.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue6366.Class2.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue7035",
+          "href": "BuildFromProject.Inheritdoc.Issue7035.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue7035.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue7035",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue7484",
+          "href": "BuildFromProject.Inheritdoc.Issue7484.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue7484.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue7484",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue8101",
+          "href": "BuildFromProject.Inheritdoc.Issue8101.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue8101.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue8101",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Inheritdoc.Issue8129",
+          "href": "BuildFromProject.Inheritdoc.Issue8129.html",
+          "topicHref": "BuildFromProject.Inheritdoc.Issue8129.html",
+          "topicUid": "BuildFromProject.Inheritdoc.Issue8129",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
         }
       ],
       "tocHref": null,

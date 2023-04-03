@@ -144,6 +144,267 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.XmlCommentIncludeTag
   nameWithType: Class1.XmlCommentIncludeTag
+- uid: BuildFromProject.IInheritdoc
+  name: IInheritdoc
+  href: api/BuildFromProject.IInheritdoc.html
+  commentId: T:BuildFromProject.IInheritdoc
+  fullName: BuildFromProject.IInheritdoc
+  nameWithType: IInheritdoc
+- uid: BuildFromProject.IInheritdoc.Issue7629
+  name: Issue7629()
+  href: api/BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629
+  commentId: M:BuildFromProject.IInheritdoc.Issue7629
+  fullName: BuildFromProject.IInheritdoc.Issue7629()
+  nameWithType: IInheritdoc.Issue7629()
+- uid: BuildFromProject.IInheritdoc.Issue7629*
+  name: Issue7629
+  href: api/BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629_
+  commentId: Overload:BuildFromProject.IInheritdoc.Issue7629
+  isSpec: "True"
+  fullName: BuildFromProject.IInheritdoc.Issue7629
+  nameWithType: IInheritdoc.Issue7629
+- uid: BuildFromProject.Inheritdoc
+  name: Inheritdoc
+  href: api/BuildFromProject.Inheritdoc.html
+  commentId: T:BuildFromProject.Inheritdoc
+  fullName: BuildFromProject.Inheritdoc
+  nameWithType: Inheritdoc
+- uid: BuildFromProject.Inheritdoc.Dispose
+  name: Dispose()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Dispose
+  commentId: M:BuildFromProject.Inheritdoc.Dispose
+  fullName: BuildFromProject.Inheritdoc.Dispose()
+  nameWithType: Inheritdoc.Dispose()
+- uid: BuildFromProject.Inheritdoc.Dispose*
+  name: Dispose
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Dispose_
+  commentId: Overload:BuildFromProject.Inheritdoc.Dispose
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Dispose
+  nameWithType: Inheritdoc.Dispose
+- uid: BuildFromProject.Inheritdoc.Issue6366
+  name: Inheritdoc.Issue6366
+  href: api/BuildFromProject.Inheritdoc.Issue6366.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366
+  fullName: BuildFromProject.Inheritdoc.Issue6366
+  nameWithType: Inheritdoc.Issue6366
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1
+  name: Inheritdoc.Issue6366.Class1<T>
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366.Class1`1
+  name.vb: Inheritdoc.Issue6366.Class1(Of T)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T)
+  nameWithType: Inheritdoc.Issue6366.Class1<T>
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1(`0,System.Int32)
+  name: TestMethod1(T, int)
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_
+  commentId: M:BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1(`0,System.Int32)
+  name.vb: TestMethod1(T, Integer)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>.TestMethod1(T, int)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T).TestMethod1(T, Integer)
+  nameWithType: Inheritdoc.Issue6366.Class1<T>.TestMethod1(T, int)
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T).TestMethod1(T, Integer)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1*
+  name: TestMethod1
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue6366.Class1`1.TestMethod1
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class1<T>.TestMethod1
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class1(Of T).TestMethod1
+  nameWithType: Inheritdoc.Issue6366.Class1<T>.TestMethod1
+  nameWithType.vb: Inheritdoc.Issue6366.Class1(Of T).TestMethod1
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2
+  name: Inheritdoc.Issue6366.Class2
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue6366.Class2
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2
+  nameWithType: Inheritdoc.Issue6366.Class2
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(System.Boolean,System.Int32)
+  name: TestMethod1(bool, int)
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html#BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_
+  commentId: M:BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(System.Boolean,System.Int32)
+  name.vb: TestMethod1(Boolean, Integer)
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(bool, int)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1(Boolean, Integer)
+  nameWithType: Inheritdoc.Issue6366.Class2.TestMethod1(bool, int)
+  nameWithType.vb: Inheritdoc.Issue6366.Class2.TestMethod1(Boolean, Integer)
+- uid: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1*
+  name: TestMethod1
+  href: api/BuildFromProject.Inheritdoc.Issue6366.Class2.html#BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue6366.Class2.TestMethod1
+  nameWithType: Inheritdoc.Issue6366.Class2.TestMethod1
+- uid: BuildFromProject.Inheritdoc.Issue7035
+  name: Inheritdoc.Issue7035
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue7035
+  fullName: BuildFromProject.Inheritdoc.Issue7035
+  nameWithType: Inheritdoc.Issue7035
+- uid: BuildFromProject.Inheritdoc.Issue7035.A
+  name: A()
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_A
+  commentId: M:BuildFromProject.Inheritdoc.Issue7035.A
+  fullName: BuildFromProject.Inheritdoc.Issue7035.A()
+  nameWithType: Inheritdoc.Issue7035.A()
+- uid: BuildFromProject.Inheritdoc.Issue7035.A*
+  name: A
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_A_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7035.A
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7035.A
+  nameWithType: Inheritdoc.Issue7035.A
+- uid: BuildFromProject.Inheritdoc.Issue7035.B
+  name: B()
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_B
+  commentId: M:BuildFromProject.Inheritdoc.Issue7035.B
+  fullName: BuildFromProject.Inheritdoc.Issue7035.B()
+  nameWithType: Inheritdoc.Issue7035.B()
+- uid: BuildFromProject.Inheritdoc.Issue7035.B*
+  name: B
+  href: api/BuildFromProject.Inheritdoc.Issue7035.html#BuildFromProject_Inheritdoc_Issue7035_B_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7035.B
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7035.B
+  nameWithType: Inheritdoc.Issue7035.B
+- uid: BuildFromProject.Inheritdoc.Issue7484
+  name: Inheritdoc.Issue7484
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue7484
+  fullName: BuildFromProject.Inheritdoc.Issue7484
+  nameWithType: Inheritdoc.Issue7484
+- uid: BuildFromProject.Inheritdoc.Issue7484.#ctor
+  name: Issue7484()
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484__ctor
+  commentId: M:BuildFromProject.Inheritdoc.Issue7484.#ctor
+  name.vb: New()
+  fullName: BuildFromProject.Inheritdoc.Issue7484.Issue7484()
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.New()
+  nameWithType: Inheritdoc.Issue7484.Issue7484()
+  nameWithType.vb: Inheritdoc.Issue7484.New()
+- uid: BuildFromProject.Inheritdoc.Issue7484.#ctor*
+  name: Issue7484
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484__ctor_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Inheritdoc.Issue7484.Issue7484
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.New
+  nameWithType: Inheritdoc.Issue7484.Issue7484
+  nameWithType.vb: Inheritdoc.Issue7484.New
+- uid: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(System.Boolean)
+  name: BoolReturningMethod(bool)
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_
+  commentId: M:BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(System.Boolean)
+  name.vb: BoolReturningMethod(Boolean)
+  fullName: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(bool)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod(Boolean)
+  nameWithType: Inheritdoc.Issue7484.BoolReturningMethod(bool)
+  nameWithType.vb: Inheritdoc.Issue7484.BoolReturningMethod(Boolean)
+- uid: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod*
+  name: BoolReturningMethod
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7484.BoolReturningMethod
+  nameWithType: Inheritdoc.Issue7484.BoolReturningMethod
+- uid: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  name: DoDad
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_DoDad
+  commentId: P:BuildFromProject.Inheritdoc.Issue7484.DoDad
+  fullName: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  nameWithType: Inheritdoc.Issue7484.DoDad
+- uid: BuildFromProject.Inheritdoc.Issue7484.DoDad*
+  name: DoDad
+  href: api/BuildFromProject.Inheritdoc.Issue7484.html#BuildFromProject_Inheritdoc_Issue7484_DoDad_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7484.DoDad
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7484.DoDad
+  nameWithType: Inheritdoc.Issue7484.DoDad
+- uid: BuildFromProject.Inheritdoc.Issue7628
+  name: Issue7628()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7628
+  commentId: M:BuildFromProject.Inheritdoc.Issue7628
+  fullName: BuildFromProject.Inheritdoc.Issue7628()
+  nameWithType: Inheritdoc.Issue7628()
+- uid: BuildFromProject.Inheritdoc.Issue7628*
+  name: Issue7628
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7628_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7628
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7628
+  nameWithType: Inheritdoc.Issue7628
+- uid: BuildFromProject.Inheritdoc.Issue7629
+  name: Issue7629()
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7629
+  commentId: M:BuildFromProject.Inheritdoc.Issue7629
+  fullName: BuildFromProject.Inheritdoc.Issue7629()
+  nameWithType: Inheritdoc.Issue7629()
+- uid: BuildFromProject.Inheritdoc.Issue7629*
+  name: Issue7629
+  href: api/BuildFromProject.Inheritdoc.html#BuildFromProject_Inheritdoc_Issue7629_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue7629
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue7629
+  nameWithType: Inheritdoc.Issue7629
+- uid: BuildFromProject.Inheritdoc.Issue8101
+  name: Inheritdoc.Issue8101
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue8101
+  fullName: BuildFromProject.Inheritdoc.Issue8101
+  nameWithType: Inheritdoc.Issue8101
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween(System.Int32,System.Int32,System.Single,System.Action{System.Int32})
+  name: Tween(int, int, float, Action<int>)
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_System_Int32_System_Int32_System_Single_System_Action_System_Int32__
+  commentId: M:BuildFromProject.Inheritdoc.Issue8101.Tween(System.Int32,System.Int32,System.Single,System.Action{System.Int32})
+  name.vb: Tween(Integer, Integer, Single, Action(Of Integer))
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween(int, int, float, System.Action<int>)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8101.Tween(Integer, Integer, Single, System.Action(Of Integer))
+  nameWithType: Inheritdoc.Issue8101.Tween(int, int, float, Action<int>)
+  nameWithType.vb: Inheritdoc.Issue8101.Tween(Integer, Integer, Single, Action(Of Integer))
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween(System.Single,System.Single,System.Single,System.Action{System.Single})
+  name: Tween(float, float, float, Action<float>)
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_System_Single_System_Single_System_Single_System_Action_System_Single__
+  commentId: M:BuildFromProject.Inheritdoc.Issue8101.Tween(System.Single,System.Single,System.Single,System.Action{System.Single})
+  name.vb: Tween(Single, Single, Single, Action(Of Single))
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween(float, float, float, System.Action<float>)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8101.Tween(Single, Single, Single, System.Action(Of Single))
+  nameWithType: Inheritdoc.Issue8101.Tween(float, float, float, Action<float>)
+  nameWithType.vb: Inheritdoc.Issue8101.Tween(Single, Single, Single, Action(Of Single))
+- uid: BuildFromProject.Inheritdoc.Issue8101.Tween*
+  name: Tween
+  href: api/BuildFromProject.Inheritdoc.Issue8101.html#BuildFromProject_Inheritdoc_Issue8101_Tween_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue8101.Tween
+  isSpec: "True"
+  fullName: BuildFromProject.Inheritdoc.Issue8101.Tween
+  nameWithType: Inheritdoc.Issue8101.Tween
+- uid: BuildFromProject.Inheritdoc.Issue8129
+  name: Inheritdoc.Issue8129
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html
+  commentId: T:BuildFromProject.Inheritdoc.Issue8129
+  fullName: BuildFromProject.Inheritdoc.Issue8129
+  nameWithType: Inheritdoc.Issue8129
+- uid: BuildFromProject.Inheritdoc.Issue8129.#ctor(System.String)
+  name: Issue8129(string)
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html#BuildFromProject_Inheritdoc_Issue8129__ctor_System_String_
+  commentId: M:BuildFromProject.Inheritdoc.Issue8129.#ctor(System.String)
+  name.vb: New(String)
+  fullName: BuildFromProject.Inheritdoc.Issue8129.Issue8129(string)
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New(String)
+  nameWithType: Inheritdoc.Issue8129.Issue8129(string)
+  nameWithType.vb: Inheritdoc.Issue8129.New(String)
+- uid: BuildFromProject.Inheritdoc.Issue8129.#ctor*
+  name: Issue8129
+  href: api/BuildFromProject.Inheritdoc.Issue8129.html#BuildFromProject_Inheritdoc_Issue8129__ctor_
+  commentId: Overload:BuildFromProject.Inheritdoc.Issue8129.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Inheritdoc.Issue8129.Issue8129
+  fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New
+  nameWithType: Inheritdoc.Issue8129.Issue8129
+  nameWithType.vb: Inheritdoc.Issue8129.New
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html
