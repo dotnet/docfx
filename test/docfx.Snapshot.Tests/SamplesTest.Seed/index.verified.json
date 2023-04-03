@@ -42,7 +42,7 @@
   "api/BuildFromProject.Inheritdoc.html": {
     "href": "api/BuildFromProject.Inheritdoc.html",
     "title": "Class Inheritdoc | docfx seed website",
-    "keywords": "Class Inheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc : IInheritdoc, IDisposable Inheritance object Inheritdoc Implements IInheritdoc IDisposable Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Dispose() public void Dispose() Issue7628() This method should do something... public void Issue7628() Issue7629() public void Issue7629()"
+    "keywords": "Class Inheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc : IInheritdoc, IDisposable Inheritance object Inheritdoc Implements IInheritdoc IDisposable Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Dispose() Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. public void Dispose() Issue7628() This method should do something... public void Issue7628() Issue7629() This method should do something... public void Issue7629()"
   },
   "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html": {
     "href": "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
