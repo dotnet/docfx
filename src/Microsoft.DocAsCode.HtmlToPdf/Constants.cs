@@ -64,7 +64,6 @@ internal static class ManifestConstants
 
         public const string OutputRelativePath = "relative_path";
         public const string OutputLinkToPath = "link_to_path";
-        public const string OutputHash = "hash";
         public const string IsRawPage = "is_raw_page";
 
         public const string SkipPublish = "skip_publish";

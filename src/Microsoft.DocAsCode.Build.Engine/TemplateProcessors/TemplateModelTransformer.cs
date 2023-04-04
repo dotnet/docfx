@@ -273,9 +273,8 @@ public class TemplateModelTransformer
 
     private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, ManifestItem manifestItem, out List<XRefDetails> unresolvedXRefs)
     {
-        Task<byte[]> hashTask;
         unresolvedXRefs = new List<XRefDetails>();
-        using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithSha256Hash(out hashTask))
+        using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath))
         {
             using var sw = new StreamWriter(stream);
             if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
@@ -292,7 +291,6 @@ public class TemplateModelTransformer
         {
             RelativePath = destFilePath,
             LinkToPath = GetLinkToPath(destFilePath),
-            Hash = Convert.ToBase64String(hashTask.Result)
         };
         manifestItem.OutputFiles.Add(extension, ofi);
     }

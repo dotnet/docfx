@@ -15,9 +15,6 @@ public class FileOutput
     [JsonProperty(ManifestConstants.BuildManifestItem.OutputLinkToPath)]
     public string LinkToPath { get; set; }
 
-    [JsonProperty(ManifestConstants.BuildManifestItem.OutputHash)]
-    public string Hash { get; set; }
-
     [JsonProperty(ManifestConstants.BuildManifestItem.IsRawPage)]
     public bool IsRawPage { get; set; }
 
