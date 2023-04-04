@@ -29,9 +29,6 @@ internal class BuildCommandOptions : LogOptions, ICanPrintHelpMessage
     [OptionList('x', "xref", Separator = ',', HelpText = "Specify the urls of xrefmap used by content files.")]
     public List<string> XRefMaps { get; set; }
 
-    [OptionList("xrefService", Separator = ',', HelpText = "Specify the urls of xrefService for resolving xref used by content files.")]
-    public List<string> XRefService { get; set; }
-
     [OptionList('t', "template", Separator = ',', HelpText = "Specify the template name to apply to. If not specified, output YAML file will not be transformed.")]
     public List<string> Templates { get; set; }
 
