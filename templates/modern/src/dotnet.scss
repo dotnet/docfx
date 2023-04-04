@@ -103,6 +103,11 @@ body[data-yaml-mime="ManagedReference"] article {
     font-weight: 600;
   }
 
+  summary {
+    display: block;
+    cursor: inherit;
+  }
+
   li>span.term {
     font-weight: 600;
 
