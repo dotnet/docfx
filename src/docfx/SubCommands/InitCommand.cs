@@ -21,8 +21,6 @@ internal sealed class InitCommand : ISubCommand
     private readonly InitCommandOptions _options;
     private readonly IEnumerable<IQuestion> _metadataQuestions;
 
-    private readonly IEnumerable<IQuestion> _overallQuestion;
-
     private readonly IEnumerable<IQuestion> _buildQuestions;
 
     private readonly IEnumerable<IQuestion> _selectorQuestions;
@@ -38,16 +36,12 @@ internal sealed class InitCommand : ISubCommand
         _metadataQuestions = new IQuestion[]
         {
             new MultiAnswerQuestion(
-                "What are the locations of your source code files?",
+                "Where is your .NET assemblies or projects?",
                 (s, m, c) =>
                 {
                     if (s != null)
                     {
-                        var item = new FileMapping(
-                            new FileMappingItem(s)
-                            {
-                                SourceFolder = options.ApiSourceFolder
-                            });
+                        var item = new FileMapping(new FileMappingItem(s));
                         m.Metadata.Add(new MetadataJsonItemConfig
                         {
                              Source = item,
@@ -56,52 +50,16 @@ internal sealed class InitCommand : ISubCommand
                         m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml", "api/index.md"));
                     }
                 },
-                new string[] { options.ApiSourceGlobPattern ?? "src/**.csproj" })
+                new string[] { "bin/**/*.dll" })
                 {
                     Descriptions = new string[]
                     {
-                        "Supported project files could be .sln, .csproj, .vbproj project files, or assembly files .dll, or .cs, .vb source files",
-                        Hints.Glob,
-                        Hints.Enter,
-                    }
-                },
-            new MultiAnswerQuestion(
-                "What are the locations of your markdown files overwriting triple slash comments?",
-                (s, m, _) =>
-                {
-                    if (s != null)
-                    {
-                        var exclude = new FileItems(DefaultExcludeFiles);
-                        if(!string.IsNullOrEmpty(m.Build.Destination))
-                        {
-                            exclude.Add($"{m.Build.Destination}/**");
-                        }
-                        m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
-                    }
-                },
-                new string[] { "apidoc/**.md" })
-                {
-                    Descriptions = new string[]
-                    {
-                        "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
+                        "Supports assemblies, projects, solutions, or source code files",
                         Hints.Glob,
                         Hints.Enter,
                     }
                 },
         };
-        _overallQuestion = new IQuestion[]
-         {
-            new SingleAnswerQuestion(
-                "Where to save the generated documentation?",
-                (s, m, _) => m.Build.Destination = s,
-                "_site")
-            {
-                Descriptions = new string[]
-                {
-                    Hints.Enter,
-                }
-            },
-         };
         _buildQuestions = new IQuestion[]
          {
             // TODO: Check if the input glob pattern matches any files
@@ -146,43 +104,17 @@ internal sealed class InitCommand : ISubCommand
                     Hints.Glob,
                     Hints.Enter,
                 }
-            },
-            new MultiAnswerQuestion(
-                "Do you want to specify external API references?",
-                (s, m, _) =>
-                {
-                    if (s != null)
-                    {
-                        m.Build.XRefMaps = new ListWithStringFallback(s);
-                    }
-                },
-                null)
-            {
-                Descriptions = new string[]
-                {
-                    "Supported external API references can be in either JSON or YAML format.",
-                    Hints.Enter,
-                }
-            },
-            new MultiAnswerQuestion(
-                "What documentation templates do you want to use?",
-                (s, m, _) => { if (s != null) m.Build.Templates.AddRange(s); },
-                new string[] { "default" })
-            {
-                Descriptions = new string[]
-                {
-                    "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
-                    "Predefined templates in docfx are now: default, statictoc",
-                    Hints.Enter,
-                }
             }
          };
         _selectorQuestions = new IQuestion[]
          {
             new YesOrNoQuestion(
-                "Does the website contain API documentation from source code?", (s, m, c) =>
+                "Does the website contain .NET API documentation?", (s, m, c) =>
                 {
                     m.Build = new BuildJsonConfig();
+                    m.Build.Destination = "_site";
+                    m.Build.Templates.Add("default");
+                    m.Build.Templates.Add("modern");
                     if (s)
                     {
                         m.Metadata = new MetadataJsonConfig();
@@ -207,11 +139,6 @@ internal sealed class InitCommand : ISubCommand
                 Quiet = _options.Quiet
             };
             foreach (var question in _selectorQuestions)
-            {
-                question.Process(config, questionContext);
-            }
-
-            foreach (var question in _overallQuestion)
             {
                 question.Process(config, questionContext);
             }

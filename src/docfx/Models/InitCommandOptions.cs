@@ -22,10 +22,4 @@ internal class InitCommandOptions : ICanPrintHelpMessage
 
     [Option('f', "file", HelpText = "Generate config file docfx.json only, no project folder will be generated")]
     public bool OnlyConfigFile { get; set; }
-
-    [Option("apiGlobPattern", HelpText = "Specify the source project files' glob pattern to generate metadata")]
-    public string ApiSourceGlobPattern { get; set; }
-
-    [Option("apiSourceFolder", HelpText = "Specify the source working folder for source project files to start glob search")]
-    public string ApiSourceFolder { get; set; }
 }
