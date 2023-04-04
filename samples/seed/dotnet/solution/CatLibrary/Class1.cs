@@ -200,7 +200,7 @@ namespace CatLibrary
         /// This is index property of Cat. You can see that the visibility is different between <c>get</c> and <c>set</c> method.
         /// </summary>
         /// <param name="a">Cat's name.</param>
-        /// <returns>Cat's number.</returns>
+        /// <value>Cat's number.</value>
         public int this[string a]
         {
             protected get { return 1; }
