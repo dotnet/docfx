@@ -26,8 +26,6 @@ internal class ExtractMetadataWorker : IDisposable
     //Lacks UT for shared workspace
     private readonly MSBuildWorkspace _workspace;
 
-    internal const string IndexFileName = ".manifest";
-
     public ExtractMetadataWorker(ExtractMetadataConfig config, DotnetApiOptions options)
     {
         _config = config;
@@ -215,8 +213,6 @@ internal class ExtractMetadataWorker : IDisposable
         var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, _config.NamespaceLayout);
 
         var tocFileName = Constants.TocYamlFileName;
-        // 0. load last Manifest and remove files
-        CleanupHistoricalFile(_config.OutputFolder);
 
         // 1. generate toc.yml
         model.TocYamlViewModel.Type = MemberType.Toc;
@@ -233,8 +229,6 @@ internal class ExtractMetadataWorker : IDisposable
         outputFileNames.Add(tocFilePath, 1);
         yield return tocFileName;
 
-        ApiReferenceViewModel indexer = new();
-
         // 2. generate each item's yaml
         var members = model.Members;
         foreach (var memberModel in members)
@@ -247,46 +241,7 @@ internal class ExtractMetadataWorker : IDisposable
             memberViewModel.MemberLayout = _config.MemberLayout;
             YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
             Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
-            AddMemberToIndexer(memberModel, outputFileName, indexer);
             yield return outputFileName;
-        }
-
-        // 3. generate manifest file
-        var indexFilePath = Path.Combine(_config.OutputFolder, IndexFileName);
-
-        JsonUtility.Serialize(indexFilePath, indexer, Newtonsoft.Json.Formatting.Indented);
-        yield return IndexFileName;
-    }
-
-    private static void CleanupHistoricalFile(string outputFolder)
-    {
-        var indexFilePath = Path.Combine(outputFolder, IndexFileName);
-        ApiReferenceViewModel index;
-        if (!File.Exists(indexFilePath))
-        {
-            return;
-        }
-        try
-        {
-            index = JsonUtility.Deserialize<ApiReferenceViewModel>(indexFilePath);
-        }
-        catch (Exception e)
-        {
-            Logger.LogInfo($"{indexFilePath} is not in a valid metadata manifest file format, ignored: {e.Message}.");
-            return;
-        }
-
-        foreach (var pair in index)
-        {
-            var filePath = Path.Combine(outputFolder, pair.Value);
-            try
-            {
-                File.Delete(filePath);
-            }
-            catch (Exception e)
-            {
-                Logger.LogDiagnostic($"Error deleting file {filePath}: {e.Message}");
-            }
         }
     }
 
@@ -307,29 +262,6 @@ internal class ExtractMetadataWorker : IDisposable
         {
             existingFileNames[fileName] = 1;
             return fileName;
-        }
-    }
-
-    private static void AddMemberToIndexer(MetadataItem memberModel, string outputPath, ApiReferenceViewModel indexer)
-    {
-        if (memberModel.Type == MemberType.Namespace)
-        {
-            indexer.Add(memberModel.Name, outputPath);
-        }
-        else
-        {
-            TreeIterator.Preorder(memberModel, null, s => s.Items, (member, parent) =>
-            {
-                if (indexer.TryGetValue(member.Name, out string path))
-                {
-                    Logger.LogWarning($"{member.Name} already exists in {path}, the duplicate one {outputPath} will be ignored.");
-                }
-                else
-                {
-                    indexer.Add(member.Name, outputPath);
-                }
-                return true;
-            });
         }
     }
 
