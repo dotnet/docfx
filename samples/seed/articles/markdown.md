@@ -68,24 +68,6 @@ They look like this in rendered page:
 > [!WARNING]
 > Dangerous certain consequences of an action.
 
-
-## Video
-
-You can embed a video in your page by using the following Markdown syntax:
-
-```md
-> [!Video embed_link]
-```
-
-Example:
-```md
-> [!Video https://www.youtube.com/embed/Sz1lCeedcPI]
-```
-
-This will be rendered as:
-
-> [!Video https://www.youtube.com/embed/Sz1lCeedcPI]
-
 ## Image 
 
 You can embed a image in your page by using the following Markdown syntax:
