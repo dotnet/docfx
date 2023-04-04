@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="ICSharpCode.Decompiler" />
+    <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
     <PackageReference Include="System.Configuration.ConfigurationManager" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" />
@@ -32,4 +33,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
+  </ItemGroup>
+
 </Project>

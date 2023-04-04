@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Exceptions;
 
@@ -37,11 +38,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
+
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
             CommentId = VisitorHelper.GetCommentId(symbol),
-            RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
         };
 
         item.DisplayNames = new SortedList<SyntaxLanguage, string>();
@@ -50,13 +51,23 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
-        if (!(symbol is INamespaceSymbol))
+        if (symbol is not INamespaceSymbol)
         {
             var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
             item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
         }
 
-        VisitorHelper.FeedComments(item, GetXmlCommentParserContext(item));
+        var comment = symbol.GetDocumentationComment(_compilation, expandIncludes: true, expandInheritdoc: true);
+        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item)) is { } commentModel)
+        {
+            item.Summary = commentModel.Summary;
+            item.Remarks = commentModel.Remarks;
+            item.Exceptions = commentModel.Exceptions;
+            item.SeeAlsos = commentModel.SeeAlsos;
+            item.Examples = commentModel.Examples;
+            item.CommentModel = commentModel;
+        }
+
         if (item.Exceptions != null)
         {
             foreach (var exceptions in item.Exceptions)
@@ -82,7 +93,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
-            RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
         };
 
         item.DisplayNames = new SortedList<SyntaxLanguage, string>

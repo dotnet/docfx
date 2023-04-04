@@ -127,6 +127,561 @@
           "id": "BuildFromProject_Class1_Test_1",
           "hideTitleType": false,
           "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue6366"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue6366"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue6366",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366.Class1<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366.Class1(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366.Class1<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366.Class1(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue6366.Class1<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue6366.Class1(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class1`1\" text=\"Class1\"/>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class1`1\" text=\"Class1\"/>(Of T)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue6366_Class1_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366.Class2"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366.Class2"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue6366.Class2"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue6366.Class2"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue6366.Class2"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue6366.Class2"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class2\" text=\"Class2\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class2\" text=\"Class2\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue6366_Class2",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7035",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7035"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7035"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7035"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7035"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue7035"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue7035"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7035\" text=\"Issue7035\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7035\" text=\"Issue7035\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue7035",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue7484",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7484"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7484"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue7484"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue7484"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue7484"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue7484"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7484\" text=\"Issue7484\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7484\" text=\"Issue7484\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"2\">This is a test class to have something for DocFX to document.</p>\n",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue7484",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue8101",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue8101"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue8101"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue8101"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue8101"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue8101"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue8101"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8101\" text=\"Issue8101\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8101\" text=\"Issue8101\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue8101",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inStruct": true,
+      "typePropertyName": "inStruct",
+      "id": "structs",
+      "children": [
+        {
+          "uid": "BuildFromProject.Inheritdoc.Issue8129",
+          "isExtensionMethod": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue8129"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue8129"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Inheritdoc.Issue8129"
+            },
+            {
+              "lang": "vb",
+              "value": "Inheritdoc.Issue8129"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Inheritdoc.Issue8129"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Inheritdoc.Issue8129"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8129\" text=\"Issue8129\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8129\" text=\"Issue8129\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "struct",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Inheritdoc_Issue8129",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inInterface": true,
+      "typePropertyName": "inInterface",
+      "id": "interfaces",
+      "children": [
+        {
+          "uid": "BuildFromProject.IInheritdoc",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "IInheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "IInheritdoc"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "IInheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "IInheritdoc"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.IInheritdoc"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.IInheritdoc"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.IInheritdoc\" text=\"IInheritdoc\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.IInheritdoc\" text=\"IInheritdoc\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_IInheritdoc",
+          "hideTitleType": false,
+          "hideSubtitle": false
         }
       ]
     }

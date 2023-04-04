@@ -455,6 +455,7 @@
             "CSharp"
           ],
           "namespace": "CSharp11",
+          "example": [],
           "overridden": {
             "uid": "System.ValueType.ToString",
             "name": [
@@ -551,7 +552,6 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": null,
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_ToString",
           "hideTitleType": false,
@@ -731,6 +731,7 @@
             "CSharp"
           ],
           "namespace": "CSharp11",
+          "example": [],
           "overload": {
             "uid": "CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*",
             "name": [
@@ -825,7 +826,6 @@
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp11.cs/#L17",
           "remarks": "",
           "conceptual": "",
-          "example": "",
           "seealso": null,
           "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_",
           "hideTitleType": false,

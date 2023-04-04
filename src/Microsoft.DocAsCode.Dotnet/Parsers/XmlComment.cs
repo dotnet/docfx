@@ -48,6 +48,19 @@ internal class XmlComment
 
     private XmlComment(string xml, XmlCommentParserContext context)
     {
+        // Treat <doc> as <member>
+        if (xml.StartsWith("<doc>") && xml.EndsWith("</doc>"))
+        {
+            var innerXml = xml.Substring(5, xml.Length - 11);
+            var innerXmlTrim = innerXml.Trim();
+
+            // Workaround external XML doc not wrapped in summary tag: https://github.com/dotnet/roslyn/pull/66668
+            if (innerXmlTrim.StartsWith('<') && innerXmlTrim.EndsWith('>'))
+                xml = $"<member>{innerXml}</member>";
+            else
+                xml = $"<member><summary>{innerXml}</summary></member>";
+        }
+
         // Workaround: https://github.com/dotnet/roslyn/pull/66668
         if (!xml.StartsWith("<member", StringComparison.Ordinal) && !xml.EndsWith("</member>", StringComparison.Ordinal))
         {

@@ -898,6 +898,7 @@
             "CSharp"
           ],
           "namespace": "CSharp8",
+          "example": [],
           "overridden": {
             "uid": "System.ValueType.ToString",
             "name": [
@@ -994,7 +995,6 @@
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": null,
           "id": "CSharp8_ReadOnlyMembers_ToString",
           "hideTitleType": false,

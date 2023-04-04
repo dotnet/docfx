@@ -25,30 +25,4 @@ internal class SyntaxDetail
     [YamlMember(Alias = "return")]
     [JsonProperty("return")]
     public ApiParameter Return { get; set; }
-
-    internal void CopyInheritedData(SyntaxDetail src)
-    {
-        if (src == null)
-            throw new ArgumentNullException(nameof(src));
-
-        CopyInheritedParameterList(Parameters, src.Parameters);
-        CopyInheritedParameterList(TypeParameters, src.TypeParameters);
-        if (Return != null && src.Return != null)
-            Return.CopyInheritedData(src.Return);
-    }
-
-    static void CopyInheritedParameterList(List<ApiParameter> dest, List<ApiParameter> src)
-    {
-        if (dest == null || src == null || dest.Count != src.Count)
-            return;
-        for (int ndx = 0; ndx < dest.Count; ndx++)
-        {
-            var myParam = dest[ndx];
-            var srcParam = src[ndx];
-            if (myParam.Name == srcParam.Name && myParam.Type == srcParam.Type)
-            {
-                myParam.CopyInheritedData(srcParam);
-            }
-        }
-    }
 }
