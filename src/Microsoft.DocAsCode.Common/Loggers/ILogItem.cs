@@ -11,5 +11,4 @@ public interface ILogItem
     string File { get; }
     string Line { get; }
     string Code { get; }
-    string CorrelationId { get; }
 }

@@ -197,12 +197,5 @@ public static class Logger
         public string Phase { get; set; }
 
         public string Code { get; set; }
-
-        public string CorrelationId { get; }
-
-        public LogItem()
-        {
-            CorrelationId = AmbientContext.CurrentContext?.GenerateNextCorrelationId();
-        }
     }
 }

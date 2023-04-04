@@ -47,14 +47,6 @@ internal abstract class CommandCreator<TOptions, TCommand> : ISubCommandCreator 
             }
 
             Logger.WarningsAsErrors = logOption.WarningsAsErrors;
-
-            if (!string.IsNullOrEmpty(logOption.CorrelationId))
-            {
-                if (AmbientContext.CurrentContext == null)
-                {
-                    AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
-                }
-            }
         }
 
         return CreateCommand(options, controller);

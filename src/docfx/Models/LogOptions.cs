@@ -18,9 +18,6 @@ internal class LogOptions
     [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
     public string RepoRoot { get; set; }
 
-    [Option("correlationId", HelpText = "Specify the correlation id used for logging.")]
-    public string CorrelationId { get; set; }
-
     [Option("warningsAsErrors", HelpText = "Specify if warnings should be treated as errors.")]
     public bool WarningsAsErrors { get; set; }
 }
