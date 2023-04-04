@@ -5,18 +5,14 @@ using CommandLine;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("template list")]
-[OptionUsage("template export [<name>]")]
-internal class TemplateCommandOptions : ICanPrintHelpMessage
+[Verb("template", HelpText = "List or export existing template")]
+internal class TemplateCommandOptions
 {
-    [ValueList(typeof(List<string>))]
-    public List<string> Commands { get; set; }
+    [Value(0, MetaName = "command", HelpText = "Subcommand name")]
+    public IEnumerable<string> Commands { get; set; }
 
     [Option('A', "all", HelpText = "If specified, all the available templates will be exported.")]
     public bool All { get; set; }
-
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
 
     [Option('o', "output", HelpText = "Specify the output folder path for the exported templates")]
     public string OutputFolder { get; set; }

@@ -2,13 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using CommandLine;
-using Microsoft.DocAsCode.Dotnet;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("metadata [<docfx.json file path>]")]
-[OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
-internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
+[Verb("metadata", HelpText = "Generate YAML files from source code")]
+internal class MetadataCommandOptions : LogOptions
 {
     [Option("shouldSkipMarkup", HelpText = "Skip to markup the triple slash comments")]
     public bool ShouldSkipMarkup { get; set; }
@@ -16,11 +14,8 @@ internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
     [Option('o', "output", HelpText = "Specify the output base directory")]
     public string OutputFolder { get; set; }
 
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
-
-    [ValueList(typeof(List<string>))]
-    public List<string> Projects { get; set; }
+    [Value(0, MetaName = "config", HelpText = "Path to docfx.json")]
+    public IEnumerable<string> Projects { get; set; }
 
     [Option("filter", HelpText = "Specify the filter config file")]
     public string FilterConfigFile { get; set; }

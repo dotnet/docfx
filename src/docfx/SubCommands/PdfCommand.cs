@@ -7,23 +7,11 @@ using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class PdfCommand : ISubCommand
+internal static class PdfCommand
 {
-    internal readonly string BaseDirectory;
-    internal readonly string OutputFolder;
-
-    public string Name { get; } = nameof(PdfCommand);
-    public bool AllowReplay => true;
-
-    public PdfJsonConfig Config { get; }
-
-    public PdfCommand(PdfCommandOptions options)
+    public static void Exec(PdfCommandOptions options)
     {
-        Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
-    }
-
-    public void Exec(SubCommandRunningContext context)
-    {
+        var Config = ParseOptions(options, out var BaseDirectory, out var OutputFolder);
         RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
     }
 
@@ -64,7 +52,7 @@ internal sealed class PdfCommand : ISubCommand
     {
         BuildCommand.MergeOptionsToConfig(options, config, configDirectory);
 
-        if (options.ExcludedTocs?.Count > 0)
+        if (options.ExcludedTocs is not null && options.ExcludedTocs.Any())
         {
             config.ExcludedTocs = new ListWithStringFallback(options.ExcludedTocs);
         }

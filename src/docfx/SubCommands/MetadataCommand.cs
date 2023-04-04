@@ -9,31 +9,19 @@ using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class MetadataCommand : ISubCommand
+internal sealed class MetadataCommand
 {
-    internal readonly string BaseDirectory;
-    internal readonly string OutputFolder;
-
-    public string Name { get; } = nameof(MetadataCommand);
-    public bool AllowReplay => true;
-
-    public MetadataJsonConfig Config { get; }
-
-    public MetadataCommand(MetadataCommandOptions options)
+    public static void Exec(MetadataCommandOptions options)
     {
-        Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
+        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+        DotnetApiCatalog.Exec(config, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
     }
 
-    public void Exec(SubCommandRunningContext context)
-    {
-        DotnetApiCatalog.Exec(Config, new(), BaseDirectory, OutputFolder).GetAwaiter().GetResult();
-    }
-
-    private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
+    private static MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
     {
         MetadataJsonConfig config;
         baseDirectory = null;
-        if (TryGetJsonConfig(options.Projects, out string configFile))
+        if (TryGetJsonConfig(options.Projects.ToList(), out string configFile))
         {
             config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
             if (config == null)

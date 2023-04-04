@@ -5,10 +5,10 @@ using CommandLine;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("serve <folder path>")]
-internal class ServeCommandOptions : ICanPrintHelpMessage
+[Verb("serve", HelpText = "Host a local static website")]
+internal class ServeCommandOptions
 {
-    [ValueOption(0)]
+    [Value(0, MetaName = "directory", HelpText = "Path to the directory to serve")]
     public string Folder { get; set; }
 
     [Option('n', "hostname", HelpText = "Specify the hostname of the hosted website [localhost]")]
@@ -16,7 +16,4 @@ internal class ServeCommandOptions : ICanPrintHelpMessage
 
     [Option('p', "port", HelpText = "Specify the port of the hosted website [8080]")]
     public int? Port { get; set; }
-
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
 }

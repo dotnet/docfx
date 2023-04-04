@@ -5,15 +5,12 @@ using CommandLine;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("download [<output xref archive>]")]
-internal class DownloadCommandOptions : ICanPrintHelpMessage
+[Verb("download", HelpText = "Download remote xref map file and create an xref archive in local.")]
+internal class DownloadCommandOptions
 {
-    [ValueOption(0)]
+    [Value(0, MetaName = "path", HelpText = "Path to the archive file")]
     public string ArchiveFile { get; set; }
 
     [Option('x', "xref", HelpText = "Specify the url of xrefmap.")]
     public string Uri { get; set; }
-
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
 }

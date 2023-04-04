@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.SubCommands;
 
 internal class CompositeOptions
 {
-    [ValueOption(0)]
+    [Value(0, MetaName = "config", HelpText = "Path to docfx.json")]
     public string ConfigFile { get; set; }
 
     [Option("plugin")]

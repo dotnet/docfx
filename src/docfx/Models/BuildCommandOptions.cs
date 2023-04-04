@@ -5,35 +5,35 @@ using CommandLine;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("build [<config file path>]")]
-internal class BuildCommandOptions : LogOptions, ICanPrintHelpMessage
+[Verb("build", HelpText = "Generate client-only website combining API in YAML files and conceptual files")]
+internal class BuildCommandOptions : LogOptions
 {
     [Option('o', "output", HelpText = "Specify the output base directory")]
     public string OutputFolder { get; set; }
 
-    [ValueOption(0)]
+    [Value(0, MetaName = "config", HelpText = "Path to docfx.json")]
     public string ConfigFile { get; set; }
 
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
+    [Option("content", Separator = ',', HelpText = "Specify content files for generating documentation.")]
+    public IEnumerable<string> Content { get; set; }
 
-    [OptionList("content", Separator = ',', HelpText = "Specify content files for generating documentation.")]
-    public List<string> Content { get; set; }
+    [Option("resource", Separator = ',', HelpText = "Specify resources used by content files.")]
+    public IEnumerable<string> Resource { get; set; }
 
-    [OptionList("resource", Separator = ',', HelpText = "Specify resources used by content files.")]
-    public List<string> Resource { get; set; }
+    [Option("overwrite", Separator = ',', HelpText = "Specify overwrite files used by content files.")]
+    public IEnumerable<string> Overwrite { get; set; }
 
-    [OptionList("overwrite", Separator = ',', HelpText = "Specify overwrite files used by content files.")]
-    public List<string> Overwrite { get; set; }
+    [Option('x', "xref", Separator = ',', HelpText = "Specify the urls of xrefmap used by content files.")]
+    public IEnumerable<string> XRefMaps { get; set; }
 
-    [OptionList('x', "xref", Separator = ',', HelpText = "Specify the urls of xrefmap used by content files.")]
-    public List<string> XRefMaps { get; set; }
+    [Option("xrefService", Separator = ',', HelpText = "Specify the urls of xrefService for resolving xref used by content files.")]
+    public IEnumerable<string> XRefService { get; set; }
 
-    [OptionList('t', "template", Separator = ',', HelpText = "Specify the template name to apply to. If not specified, output YAML file will not be transformed.")]
-    public List<string> Templates { get; set; }
+    [Option('t', "template", Separator = ',', HelpText = "Specify the template name to apply to. If not specified, output YAML file will not be transformed.")]
+    public IEnumerable<string> Templates { get; set; }
 
-    [OptionList("theme", Separator = ',', HelpText = "Specify which theme to use. By default 'default' theme is offered.")]
-    public List<string> Themes { get; set; }
+    [Option("theme", Separator = ',', HelpText = "Specify which theme to use. By default 'default' theme is offered.")]
+    public IEnumerable<string> Themes { get; set; }
 
     [Option('s', "serve", HelpText = "Host the generated documentation to a website")]
     public bool Serve { get; set; }
@@ -56,14 +56,14 @@ internal class BuildCommandOptions : LogOptions, ICanPrintHelpMessage
     [Option("globalMetadataFile", HelpText = "Specify a JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
     public string GlobalMetadataFilePath { get; set; }
 
-    [OptionList("globalMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing globalMetadata settings, as similar to {\"key\":\"value\"}. It overrides the globalMetadata settings from the config file.")]
-    public List<string> GlobalMetadataFilePaths { get; set; }
+    [Option("globalMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing globalMetadata settings, as similar to {\"key\":\"value\"}. It overrides the globalMetadata settings from the config file.")]
+    public IEnumerable<string> GlobalMetadataFilePaths { get; set; }
 
     [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
     public string FileMetadataFilePath { get; set; }
 
-    [OptionList("fileMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing fileMetadata settings, as similar to {\"key\":\"value\"}. It overrides the fileMetadata settings from the config file.")]
-    public List<string> FileMetadataFilePaths { get; set; }
+    [Option("fileMetadataFiles", Separator = ',', HelpText = "Specify a list of JSON file path containing fileMetadata settings, as similar to {\"key\":\"value\"}. It overrides the fileMetadata settings from the config file.")]
+    public IEnumerable<string> FileMetadataFilePaths { get; set; }
 
     [Option("exportRawModel", HelpText = "If set to true, data model to run template script will be extracted in .raw.model.json extension")]
     public bool ExportRawModel { get; set; }
@@ -86,8 +86,8 @@ internal class BuildCommandOptions : LogOptions, ICanPrintHelpMessage
     [Option("markdownEngineProperties", HelpText = "Set the parameters for markdown engine, value should be a JSON string.")]
     public string MarkdownEngineProperties { get; set; }
 
-    [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
-    public List<string> PostProcessors { get; set; }
+    [Option("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
+    public IEnumerable<string> PostProcessors { get; set; }
 
     [Option("lruSize", HelpText = "Set the LRU cached model count (approximately the same as the count of input files). By default, it is 8192 for 64bit and 3072 for 32bit process. With LRU cache enabled, memory usage decreases and time consumed increases. If set to 0, Lru cache is disabled.")]
     public int? LruSize { get; set; }

@@ -3,38 +3,26 @@
 
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class DownloadCommand : ISubCommand
+internal static class DownloadCommand
 {
-    private readonly DownloadCommandOptions _options;
-
-    public string Name { get; } = nameof(DownloadCommand);
-
-    public bool AllowReplay => true;
-
-    public DownloadCommand(DownloadCommandOptions options)
+    public static void Exec(DownloadCommandOptions options)
     {
-        _options = options;
-    }
-
-    public void Exec(SubCommandRunningContext context)
-    {
-        if (string.IsNullOrWhiteSpace(_options.ArchiveFile))
+        if (string.IsNullOrWhiteSpace(options.ArchiveFile))
         {
             Logger.LogError("Please provide output file.");
             return;
         }
         var builder = new XRefArchiveBuilder();
-        if (Uri.TryCreate(_options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
+        if (Uri.TryCreate(options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
         {
-            builder.DownloadAsync(uri, _options.ArchiveFile).Wait();
+            builder.DownloadAsync(uri, options.ArchiveFile).Wait();
         }
         else
         {
-            Logger.LogError($"Invalid uri: {_options.Uri}");
+            Logger.LogError($"Invalid uri: {options.Uri}");
         }
     }
 }

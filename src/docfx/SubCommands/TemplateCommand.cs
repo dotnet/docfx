@@ -3,28 +3,23 @@
 
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Exceptions;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class TemplateCommand : ISubCommand
+internal class TemplateCommand
 {
     private const string DefaultOutputFolder = "_exported_templates";
 
-    private readonly string[] _templates;
+    private string[] _templates;
 
-    private readonly TemplateCommandType _commandType;
+    private TemplateCommandType _commandType;
 
-    private readonly ExportTemplateConfig _exportTemplateConfig = null;
+    private ExportTemplateConfig _exportTemplateConfig = null;
 
-    public string Name { get; } = nameof(TemplateCommand);
-
-    public bool AllowReplay => false;
-
-    public TemplateCommand(TemplateCommandOptions options)
+    public void Exec(TemplateCommandOptions options)
     {
-        if (options.Commands == null || options.Commands.Count == 0 || !Enum.TryParse(options.Commands[0], true, out _commandType))
+        if (options.Commands == null || !options.Commands.Any() || !Enum.TryParse(options.Commands.First(), true, out _commandType))
         {
             throw new InvalidOptionException("Neither 'list' nor 'export' is found. You must specify a command type.");
         }
@@ -44,10 +39,7 @@ internal sealed class TemplateCommand : ISubCommand
                 break;
         }
         _templates = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates")).Select(Path.GetFileName).ToArray();
-    }
 
-    public void Exec(SubCommandRunningContext context)
-    {
         switch (_commandType)
         {
             case TemplateCommandType.List:

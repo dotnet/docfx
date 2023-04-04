@@ -8,25 +8,12 @@ using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class BuildCommand : ISubCommand
+internal static class BuildCommand
 {
-    internal readonly string BaseDirectory;
-    internal readonly string OutputFolder;
-
-    public string Name { get; } = nameof(BuildCommand);
-
-    public BuildJsonConfig Config { get; }
-
-    public bool AllowReplay => true;
-
-    public BuildCommand(BuildCommandOptions options)
+    public static void Exec(BuildCommandOptions options)
     {
-        Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
-    }
-
-    public void Exec(SubCommandRunningContext context)
-    {
-        RunBuild.Exec(Config, new(), BaseDirectory, OutputFolder);
+        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+        RunBuild.Exec(config, new(), baseDirectory, outputFolder);
     }
 
     private static BuildJsonConfig ParseOptions(BuildCommandOptions options, out string baseDirectory, out string outputFolder)
@@ -89,17 +76,17 @@ internal sealed class BuildCommand : ISubCommand
         string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
         // Override config file with options from command line
-        if (options.Templates != null && options.Templates.Count > 0)
+        if (options.Templates != null && options.Templates.Any())
         {
             config.Templates = new ListWithStringFallback(options.Templates);
         }
 
-        if (options.PostProcessors != null && options.PostProcessors.Count > 0)
+        if (options.PostProcessors != null && options.PostProcessors.Any())
         {
             config.PostProcessors = new ListWithStringFallback(options.PostProcessors);
         }
 
-        if (options.Themes != null && options.Themes.Count > 0)
+        if (options.Themes != null && options.Themes.Any())
         {
             config.Themes = new ListWithStringFallback(options.Themes);
         }

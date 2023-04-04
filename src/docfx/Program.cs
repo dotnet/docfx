@@ -2,12 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
+using CommandLine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Exceptions;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.SubCommands;
-
-using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode;
 
@@ -15,85 +14,80 @@ internal class Program
 {
     internal static int Main(string[] args)
     {
-        return ExecSubCommand(args);
-    }
-
-    internal static int ExecSubCommand(string[] args)
-    {
         EnvironmentContext.SetVersion(typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
 
-        var consoleLogListener = new ConsoleLogListener();
-        Logger.RegisterListener(consoleLogListener);
+        var commandTypes = new[]
+        {
+            typeof(InitCommandOptions),
+            typeof(BuildCommandOptions),
+            typeof(MetadataCommandOptions),
+            typeof(ServeCommandOptions),
+            typeof(PdfCommandOptions),
+            typeof(TemplateCommandOptions),
+            typeof(DownloadCommandOptions),
+            typeof(MergeCommandOptions),
+        };
 
-        CommandController controller = null;
-        ISubCommand command;
-        try
+        return Parser.Default.ParseArguments(args, commandTypes)
+            .MapResult(
+                Run<InitCommandOptions>(new InitCommand().Exec),
+                Run<PdfCommandOptions>(PdfCommand.Exec, showSummary: true),
+                Run<BuildCommandOptions>(BuildCommand.Exec, showSummary: true),
+                Run<MetadataCommandOptions>(MetadataCommand.Exec, showSummary: true),
+                Run<ServeCommandOptions>(ServeCommand.Exec),
+                Run<TemplateCommandOptions>(new TemplateCommand().Exec),
+                Run<DownloadCommandOptions>(DownloadCommand.Exec),
+                Run<MergeCommandOptions>(MergeCommand.Exec, showSummary: true),
+                errors => 1);
+    }
+
+    private static Func<T, int> Run<T>(Action<T> run, bool showSummary = false)
+    {
+        return RunCore;
+
+        int RunCore(T options)
         {
-            controller = ArgsParser.Instance.Parse(args);
-            command = controller.Create();
-        }
-        catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException || e is JsonSerializationException)
-        {
-            Logger.LogError(e.Message);
-            return 1;
-        }
-        catch (Exception e) when (e is OptionParserException || e is InvalidOptionException)
-        {
-            Logger.LogError(e.Message);
-            if (controller != null)
+            var consoleLogListener = new ConsoleLogListener();
+            Logger.RegisterListener(consoleLogListener);
+
+            PerformanceScope scope = null;
+            try
             {
-                Console.WriteLine(controller.GetHelpText());
+                // TODO: For now reuse AllowReplay for overall elapsed time statistics
+                if (showSummary)
+                {
+                    scope = new PerformanceScope(string.Empty, LogLevel.Info);
+                }
+
+                run(options);
+
+                Logger.Flush();
+                Logger.UnregisterAllListeners();
+
+                if (showSummary)
+                {
+                    Logger.PrintSummary();
+                }
+
+                return Logger.HasError ? -1 : 0;
             }
-            return 1;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex.ToString(), code: ErrorCodes.Build.FatalError);
-            if (controller != null)
+            catch (AggregateException ae)
             {
-                Console.WriteLine(controller.GetHelpText());
+                foreach (var e in ae.Flatten().InnerExceptions)
+                {
+                    LogExceptionError(e);
+                }
+                return 1;
             }
-            return 1;
-        }
-
-        var context = new SubCommandRunningContext();
-        PerformanceScope scope = null;
-        try
-        {
-            // TODO: For now reuse AllowReplay for overall elapsed time statistics
-            if (command.AllowReplay)
-            {
-                scope = new PerformanceScope(string.Empty, LogLevel.Info);
-            }
-
-            command.Exec(context);
-
-            Logger.Flush();
-            Logger.UnregisterAllListeners();
-
-            if (command.AllowReplay)
-            {
-                Logger.PrintSummary();
-            }
-
-            return Logger.HasError ? -1 : 0;
-        }
-        catch (AggregateException ae)
-        {
-            foreach (var e in ae.Flatten().InnerExceptions)
+            catch (Exception e)
             {
                 LogExceptionError(e);
+                return 1;
             }
-            return 1;
-        }
-        catch (Exception e)
-        {
-            LogExceptionError(e);
-            return 1;
-        }
-        finally
-        {
-            scope?.Dispose();
+            finally
+            {
+                scope?.Dispose();
+            }
         }
     }
 

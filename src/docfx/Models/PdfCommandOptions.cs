@@ -5,7 +5,7 @@ using CommandLine;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("pdf [<config file path>]")]
+[Verb("pdf", HelpText = "Generate pdf file")]
 internal class PdfCommandOptions : BuildCommandOptions
 {
     [Option("name", HelpText = "Specify the name of the generated pdf")]
@@ -39,7 +39,7 @@ internal class PdfCommandOptions : BuildCommandOptions
     public string Locale { get; set; }
 
     [Option("excludedTocs", HelpText = "Specify the toc files to be excluded")]
-    public ListWithStringFallback ExcludedTocs { get; set; }
+    public IEnumerable<string> ExcludedTocs { get; set; }
 
     [Option("basePath", HelpText = "Specify the base path to generate external link, {host}/{locale}/{basePath}")]
     public string BasePath { get; set; }

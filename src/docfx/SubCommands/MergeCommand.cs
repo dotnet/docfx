@@ -8,37 +8,13 @@ using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class MergeCommand : ISubCommand
+internal static class MergeCommand
 {
-    internal readonly string BaseDirectory;
-    internal readonly string OutputFolder;
-
-    private static JsonSerializer GetSerializer() =>
-        new()
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            Converters =
-            {
-                new JObjectDictionaryToObjectDictionaryConverter(),
-            }
-        };
-
-    public string Name { get; } = nameof(MergeCommand);
-    public MergeJsonConfig Config { get; }
-    public bool AllowReplay => true;
-
-    public MergeCommand(MergeCommandOptions options)
+    public static void Exec(MergeCommandOptions options)
     {
-        Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
+        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+        RunMerge.Exec(config, baseDirectory);
     }
-
-    public void Exec(SubCommandRunningContext context)
-    {
-        RunMerge.Exec(Config, BaseDirectory);
-    }
-
-    #region MergeCommand ctor related
 
     private static MergeJsonConfig ParseOptions(MergeCommandOptions options, out string baseDirectory, out string outputFolder)
     {
@@ -124,6 +100,4 @@ internal sealed class MergeCommand : ISubCommand
         [JsonProperty("merge")]
         public MergeJsonConfig Item { get; set; }
     }
-
-    #endregion
 }

@@ -10,17 +10,6 @@ namespace Microsoft.DocAsCode.SubCommands;
 
 internal static class CommandUtility
 {
-    private static readonly Parser LooseParser = new(s =>
-    {
-        s.IgnoreUnknownArguments = true;
-        s.CaseSensitive = false;
-    });
-    private static readonly Parser StrictParser = Parser.Default;
-    public static Parser GetParser(SubCommandParseOption option)
-    {
-        return option == SubCommandParseOption.Loose ? LooseParser : StrictParser;
-    }
-
     public static T GetConfig<T>(string configFile)
     {
         if (string.IsNullOrEmpty(configFile))

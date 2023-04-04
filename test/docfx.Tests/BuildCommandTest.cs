@@ -16,8 +16,6 @@ public class BuildCommandTest : TestBase
     private readonly string _inputFolder;
     private readonly string _templateFolder;
 
-    private readonly string _configFile;
-
     private readonly string _globalMetadataFile1;
     private readonly string _globalMetadataFile2;
     private readonly string _deprecatedGlobalMetdataFile;
@@ -39,8 +37,6 @@ public class BuildCommandTest : TestBase
         _fileMetadataFile1 = Path.Combine(_outputFolder, "file1.json");
         _fileMetadataFile2 = Path.Combine(_outputFolder, "file2.json");
         _deprecatedFileMetadataFile = Path.Combine(_outputFolder, "file.deprecated.json");
-
-        _configFile = "Assets/docfx.sample.1.json";
 
         File.WriteAllLines(_globalMetadataFile1, new string[]
         {
@@ -155,13 +151,13 @@ public class BuildCommandTest : TestBase
         Logger.RegisterListener(console);
         try
         {
-            new BuildCommand(new BuildCommandOptions
+            BuildCommand.Exec(new()
             {
                 Content = new List<string> { conceptualFile1, conceptualFile2 },
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
                 Templates = new List<string> { Path.Combine(_templateFolder, "default") },
                 LruSize = 1,
-            }).Exec(null);
+            });
         }
         finally
         {
@@ -194,112 +190,5 @@ public class BuildCommandTest : TestBase
                 """,
             File.ReadAllText(file).Trim(),
             ignoreLineEndingDifferences: true);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestParseCommandOptionWithOnlyConfigFile()
-    {
-
-        var config = new BuildCommand(new BuildCommandOptions
-        {
-            ConfigFile = _configFile,
-        }).Config;
-        Assert.Equal("value", config.GlobalMetadata["key"]);
-
-        var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
-        Assert.Equal(new List<string>
-        {
-            "filepattern1: string",
-            "filePattern2: 2",
-            "filePattern3: True",
-            "filePattern4: System.Object[]",
-            "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]"
-        }, actual);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestParseCommandOptionWithConfigFileAndMetadataFilePath()
-    {
-        var config = new BuildCommand(new BuildCommandOptions
-        {
-            ConfigFile = _configFile,
-            GlobalMetadataFilePath = Path.GetFullPath(_deprecatedGlobalMetdataFile),
-            FileMetadataFilePath = Path.GetFullPath(_deprecatedFileMetadataFile)
-        }).Config;
-        Assert.Equal("global.deprecated.json", config.GlobalMetadata["key"]);
-        Assert.Equal("deprecated", config.GlobalMetadata["global.deprecated"]);
-
-        var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
-        Assert.Equal(new List<string>
-        {
-            "filepattern1: string",
-            "filePattern2: 2",
-            "filePattern3: True",
-            "filePattern4: System.Object[]",
-            "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "filepattern1: file.deprecated.json"
-        }, actual);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestParseCommandOptionWithConfigFileAndMetadataFilePathAndMetadatFilePaths()
-    {
-        var config = new BuildCommand(new BuildCommandOptions
-        {
-            ConfigFile = _configFile,
-            GlobalMetadataFilePaths = new List<string>
-            {
-                Path.GetFullPath(_globalMetadataFile1),
-                Path.GetFullPath(_globalMetadataFile2)
-            },
-            GlobalMetadataFilePath = Path.GetFullPath(_deprecatedGlobalMetdataFile),
-            FileMetadataFilePath = Path.GetFullPath(_deprecatedFileMetadataFile),
-            FileMetadataFilePaths = new List<string>
-            {
-                Path.GetFullPath(_fileMetadataFile1),
-                Path.GetFullPath(_fileMetadataFile2)
-            }
-        }).Config;
-        Assert.Equal("global2.json", config.GlobalMetadata["key"]);
-        Assert.Equal("1", config.GlobalMetadata["global1"]);
-        Assert.Equal("2", config.GlobalMetadata["global2"]);
-        Assert.Equal("deprecated", config.GlobalMetadata["global.deprecated"]);
-
-        var actual = config.FileMetadata["key"].Items.Select(item => $"{item.Glob.Raw}: {item.Value.ToString()}").ToList();
-        Assert.Equal(new List<string>
-        {
-            "filepattern1: string",
-            "filePattern2: 2",
-            "filePattern3: True",
-            "filePattern4: System.Object[]",
-            "filePattern5: System.Collections.Generic.Dictionary`2[System.String,System.Object]",
-            "filepattern1: file.deprecated.json",
-            "filepattern1: file1.json",
-            "filepattern1: file2.json"
-        }, actual);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestParseCommandOptionWithConfigFileAndMetadataFilePathAndMetadatFilePathsAndMetadata()
-    {
-        var config = new BuildCommand(new BuildCommandOptions
-        {
-            ConfigFile = _configFile,
-            GlobalMetadata = "{\"key\": \"--globalMetadata\"}",
-            GlobalMetadataFilePaths = new List<string>
-            {
-                Path.GetFullPath(_globalMetadataFile1),
-                Path.GetFullPath(_globalMetadataFile2)
-            },
-            GlobalMetadataFilePath = Path.GetFullPath(_deprecatedGlobalMetdataFile)
-        }).Config;
-        Assert.Equal("--globalMetadata", config.GlobalMetadata["key"]);
-        Assert.Equal("1", config.GlobalMetadata["global1"]);
-        Assert.Equal("2", config.GlobalMetadata["global2"]);
-        Assert.Equal("deprecated", config.GlobalMetadata["global.deprecated"]);
     }
 }

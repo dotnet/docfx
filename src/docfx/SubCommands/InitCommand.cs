@@ -9,28 +9,23 @@ using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class InitCommand : ISubCommand
+internal sealed class InitCommand
 {
-    #region private members
-
     private const string ConfigName = Constants.ConfigFileName;
     private const string DefaultOutputFolder = "docfx_project";
     private const string DefaultMetadataOutputFolder = "api";
     private static readonly string[] DefaultExcludeFiles = new string[] { "obj/**" };
-    private static readonly string[] DefaultSrcExcludeFiles = new string[] { "**/obj/**", "**/bin/**" };
-    private readonly InitCommandOptions _options;
-    private readonly IEnumerable<IQuestion> _metadataQuestions;
 
-    private readonly IEnumerable<IQuestion> _buildQuestions;
+    private InitCommandOptions _options;
+    private IEnumerable<IQuestion> _metadataQuestions;
 
-    private readonly IEnumerable<IQuestion> _selectorQuestions;
-    #endregion
+    private IEnumerable<IQuestion> _overallQuestion;
 
-    public string Name { get; } = nameof(InitCommand);
+    private IEnumerable<IQuestion> _buildQuestions;
 
-    public bool AllowReplay => false;
+    private IEnumerable<IQuestion> _selectorQuestions;
 
-    public InitCommand(InitCommandOptions options)
+    public void Exec(InitCommandOptions options)
     {
         _options = options;
         _metadataQuestions = new IQuestion[]
@@ -126,10 +121,7 @@ internal sealed class InitCommand : ISubCommand
                     }
                 }),
          };
-    }
 
-    public void Exec(SubCommandRunningContext context)
-    {
         string outputFolder = null;
         try
         {
