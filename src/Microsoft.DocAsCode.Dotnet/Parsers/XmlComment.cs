@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -11,7 +12,6 @@ using System.Xml.XPath;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
-using System.Globalization;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
@@ -44,8 +44,6 @@ internal class XmlComment
 
     public Dictionary<string, string> TypeParameters { get; private set; }
 
-    public string InheritDoc { get; private set; }
-
     private XmlComment(string xml, XmlCommentParserContext context)
     {
         // Treat <doc> as <member>
@@ -73,9 +71,9 @@ internal class XmlComment
         _context = context;
 
         ResolveLangword(doc);
-        ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
-        ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
-        ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+        ResolveSeeCref(doc, context.AddReferenceDelegate);
+        ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
+        ResolveExceptionCref(doc, context.AddReferenceDelegate);
             
         ResolveCodeSource(doc, context);
         var nav = doc.CreateNavigator();
@@ -88,7 +86,6 @@ internal class XmlComment
         Examples = GetExamples(nav, context);
         Parameters = GetParameters(nav, context);
         TypeParameters = GetTypeParameters(nav, context);
-        InheritDoc = GetInheritDoc(nav, context);
     }
 
     public static XmlComment Parse(string xml, XmlCommentParserContext context = null)
@@ -174,15 +171,6 @@ internal class XmlComment
         return null;
     }
 
-    /// <summary>
-    /// Get summary node out from triple slash comments
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="normalize"></param>
-    /// <returns></returns>
-    /// <example>
-    /// <code> <see cref="Hello"/></code>
-    /// </example>
     private string GetSummary(XPathNavigator nav, XmlCommentParserContext context)
     {
         // Resolve <see cref> to @ syntax
@@ -191,15 +179,6 @@ internal class XmlComment
         return GetSingleNodeValue(nav, selector);
     }
 
-    /// <summary>
-    /// Get remarks node out from triple slash comments
-    /// </summary>
-    /// <remarks>
-    /// <para>This is a sample of exception node</para>
-    /// </remarks>
-    /// <param name="xml"></param>
-    /// <param name="normalize"></param>
-    /// <returns></returns>
     private string GetRemarks(XPathNavigator nav, XmlCommentParserContext context)
     {
         string selector = "/member/remarks";
@@ -214,13 +193,6 @@ internal class XmlComment
         return GetSingleNodeValue(nav, selector);
     }
 
-    /// <summary>
-    /// Get exceptions nodes out from triple slash comments
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="normalize"></param>
-    /// <returns></returns>
-    /// <exception cref="XmlException">This is a sample of exception node</exception>
     private List<ExceptionInfo> GetExceptions(XPathNavigator nav, XmlCommentParserContext context)
     {
         string selector = "/member/exception";
@@ -232,14 +204,6 @@ internal class XmlComment
         return result;
     }
 
-    /// <summary>
-    /// To get `seealso` tags out
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    /// <seealso cref="WaitForChangedResult"/>
-    /// <seealso cref="http://google.com">ABCS</seealso>
     private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, XmlCommentParserContext context)
     {
         var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
@@ -250,73 +214,11 @@ internal class XmlComment
         return result;
     }
 
-    /// <summary>
-    /// To get `example` tags out
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    /// <example>
-    /// This sample shows how to call the <see cref="GetExceptions(string, XmlCommentParserContext)"/> method.
-    /// <code>
-    /// class TestClass
-    /// {
-    ///     static int Main()
-    ///     {
-    ///         return GetExceptions(null, null).Count();
-    ///     }
-    /// }
-    /// </code>
-    /// </example>
     private List<string> GetExamples(XPathNavigator nav, XmlCommentParserContext context)
     {
         // Resolve <see cref> to @ syntax
         // Also support <seealso cref>
         return GetMultipleExampleNodes(nav, "/member/example").ToList();
-    }
-
-    private string GetInheritDoc(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        var node = nav.SelectSingleNode("/member/inheritdoc");
-        if (node == null)
-        {
-            return null;
-        }
-
-        if (node.HasAttributes)
-        {
-            // The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
-            // These attributes allow changing the source of the inherited doc and controlling what is inherited.
-            // Only cref is supported currently
-            var cRef = node.GetAttribute("cref", node.NamespaceURI);
-            if (!string.IsNullOrEmpty(cRef))
-            {
-                // Strict check is needed as value could be an invalid href,
-                // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                var match = CommentIdRegex.Match(cRef);
-                if (match.Success)
-                {
-                    var id = match.Groups["id"].Value;
-                    var type = match.Groups["type"].Value;
-
-                    if (type == "Overload")
-                    {
-                        id += '*';
-                    }
-
-                    context.AddReferenceDelegate?.Invoke(id, cRef);
-                    return id;
-                }
-            }
-            else
-            {
-                Logger.LogWarning("Unsupported attribute on <inheritdoc />; inheritdoc element will be ignored.");
-                return null;
-            }
-        }
-
-        // Default inheritdoc (no explicit reference)
-        return string.Empty;
     }
 
     private void ResolveCodeSource(XDocument doc, XmlCommentParserContext context)
@@ -466,21 +368,21 @@ internal class XmlComment
         return GetListContent(navigator, "/member/typeparam", "type parameter", context);
     }
 
-    private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
+    private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
     {
         // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//seealso[@cref]", addReference, resolveCRef);
+        ResolveCrefLink(node, "//seealso[@cref]", addReference);
     }
 
-    private void ResolveSeeCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
+    private void ResolveSeeCref(XNode node, Action<string, string> addReference)
     {
         // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//see[@cref]", addReference, resolveCRef);
+        ResolveCrefLink(node, "//see[@cref]", addReference);
     }
 
-    private void ResolveExceptionCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
+    private void ResolveExceptionCref(XNode node, Action<string, string> addReference)
     {
-        ResolveCrefLink(node, "//exception[@cref]", addReference, resolveCRef);
+        ResolveCrefLink(node, "//exception[@cref]", addReference);
     }
 
     private void ResolveLangword(XNode node)
@@ -501,7 +403,7 @@ internal class XmlComment
         }
     }
 
-    private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
+    private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference)
     {
         if (node == null || string.IsNullOrEmpty(nodeSelector))
         {
@@ -516,66 +418,36 @@ internal class XmlComment
                 var cref = item.Attribute("cref").Value;
                 var success = false;
 
-                if (resolveCRef != null)
+                // Strict check is needed as value could be an invalid href,
+                // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
+                var match = CommentIdRegex.Match(cref);
+                if (match.Success)
                 {
-                    // The resolveCRef delegate resolves the cref and returns the name of a reference if successful.
-                    var cRefTarget = resolveCRef.Invoke(cref);
-                    if (cRefTarget != null)
+                    var id = match.Groups["id"].Value;
+                    var type = match.Groups["type"].Value;
+
+                    if (type == "Overload")
                     {
-                        if (item.Parent?.Parent == null)
-                        {   
-                            // <see> or <seealso> is top-level tag. Keep it, but set resolved references.
-                            item.SetAttributeValue("refId", cRefTarget.Id);
-                            item.SetAttributeValue("cref", cRefTarget.CommentId);
+                        id += '*';
+                    }
+
+                    // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
+                    if (item.Parent?.Parent != null)
+                    {
+                        XElement replacement;
+                        if(string.IsNullOrEmpty(item.Value))
+                        {
+                            replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                         }
                         else
                         {
-                            // <see> occurs in text. Replace it with an <xref> node using the resolved reference.
-                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(cRefTarget.Id)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                            item.ReplaceWith(replacement);
+                            replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(item.Value)}\" data-throw-if-not-resolved=\"false\"></xref>");
                         }
-                        success = true;
+                        item.ReplaceWith(replacement);
                     }
-                    else
-                    {
-                        // instead of just removing the whole ref, output the target
-                        item.ReplaceWith(cref);
-                        success = false;
-                    }
-                }
-                else
-                {
-                    // Strict check is needed as value could be an invalid href,
-                    // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    var match = CommentIdRegex.Match(cref);
-                    if (match.Success)
-                    {
-                        var id = match.Groups["id"].Value;
-                        var type = match.Groups["type"].Value;
 
-                        if (type == "Overload")
-                        {
-                            id += '*';
-                        }
-
-                        // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
-                        if (item.Parent?.Parent != null)
-                        {
-                            XElement replacement;
-                            if(string.IsNullOrEmpty(item.Value))
-                            {
-                                replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                            }
-                            else
-                            {
-                                replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(item.Value)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                            }
-                            item.ReplaceWith(replacement);
-                        }
-
-                        addReference?.Invoke(id, cref);
-                        success = true;
-                    }
+                    addReference?.Invoke(id, cref);
+                    success = true;
                 }
 
                 if (!success)

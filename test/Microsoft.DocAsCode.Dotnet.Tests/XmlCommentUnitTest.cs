@@ -165,7 +165,6 @@ public class XmlCommentUnitTest
         };
 
         var commentModel = XmlComment.Parse(input, context);
-        Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
         var summary = commentModel.Summary;
         Assert.Equal("""
@@ -292,7 +291,6 @@ public class XmlCommentUnitTest
         };
 
         var commentModel = XmlComment.Parse(input, context);
-        Assert.True(commentModel.InheritDoc == null, nameof(commentModel.InheritDoc));
 
         var summary = commentModel.Summary;
         Assert.Equal("""
