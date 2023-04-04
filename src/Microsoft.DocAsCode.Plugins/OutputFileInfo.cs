@@ -11,7 +11,6 @@ public class OutputFileInfo : INotifyPropertyChanged
 {
     private string _relativePath;
     private string _linkToPath;
-    private string _hash;
 
     [JsonProperty("relative_path")]
     public string RelativePath
@@ -34,18 +33,6 @@ public class OutputFileInfo : INotifyPropertyChanged
             var o = _linkToPath;
             _linkToPath = value;
             OnPropertyChanged(nameof(LinkToPath), o, value);
-        }
-    }
-
-    [JsonProperty("hash")]
-    public string Hash
-    {
-        get { return _hash; }
-        set
-        {
-            var o = _hash;
-            _hash = value;
-            OnPropertyChanged(nameof(Hash), o, value);
         }
     }
 
