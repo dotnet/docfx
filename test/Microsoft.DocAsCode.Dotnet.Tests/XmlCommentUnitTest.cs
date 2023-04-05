@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
-
 using Microsoft.DocAsCode.DataContracts.Common;
-
 using Xunit;
 
 namespace Microsoft.DocAsCode.Dotnet.Tests;
@@ -51,7 +48,6 @@ public class XmlCommentUnitTest
         string inputFolder = Path.GetRandomFileName();
         Directory.CreateDirectory(inputFolder);
         File.WriteAllText(Path.Combine(inputFolder, "Example.cs"), """
-
             using System;
 
             namespace Example
@@ -66,10 +62,9 @@ public class XmlCommentUnitTest
                 }
             #endregion
             }
-
             """);
-        string input = """
 
+        string input = """
             <member name='T:TestClass1.Partial1'>
                 <summary>
                     Partial classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
@@ -168,13 +163,12 @@ public class XmlCommentUnitTest
 
         var summary = commentModel.Summary;
         Assert.Equal("""
-
             Partial classes <xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref><xref href="System.AccessViolationException" data-throw-if-not-resolved="false"></xref>can not cross assemblies, Test <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>
 
             ```
             Classes in assemblies are by definition complete.
             ```
-            """, summary, ignoreLineEndingDifferences: true);
+            """, summary.Trim(), ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
         Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
@@ -184,22 +178,22 @@ public class XmlCommentUnitTest
 
         var remarks = commentModel.Remarks;
         Assert.Equal("""
-
             <a href="https://example.org">https://example.org</a>
             <a href="https://example.org">example</a>
             <p>This is <code data-dev-comment-type="paramref" class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
-            <pre><code class="lang-c#">public class XmlElement
-                : XmlLinkedNode</code></pre>
-            <ol><li>
-                        word inside list->listItem->list->listItem->para.>
-                        the second line.
-            </li><li>item2 in numbered list</li></ol>
-            </li><li>item2 in bullet list</li><li>
-            loose text <em>not</em> wrapped in description
-            </li></ul>
-
-            """, remarks, ignoreLineEndingDifferences: true);
+                        <pre><code class="lang-c#">
+                        public class XmlElement
+                            : XmlLinkedNode
+                        </code></pre>
+                        <ol><li>
+                                    word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
+                                    the second line.
+                                </li><li>item2 in numbered list</li></ol>
+                    </li><li>item2 in bullet list</li><li>
+                    loose text <em>not</em> wrapped in description
+                </li></ul>
+            """, remarks.Trim(), ignoreLineEndingDifferences: true);
 
         var exceptions = commentModel.Exceptions;
         Assert.Single(exceptions);
@@ -210,43 +204,38 @@ public class XmlCommentUnitTest
             commentModel.Examples,
             e => Assert.Equal(
                 """
-
                 This sample shows how to call the <see cref="M: Microsoft.DocAsCode.EntityModel.XmlCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.XmlCommentParserContext)"></see> method.
-                <pre><code>class TestClass
-                {
-                    static int Main()
-                    {
-                        return GetExceptions(null, null).Count();
-                    }
-                } </code></pre>
-
-                """, e, ignoreLineEndingDifferences: true),
+                 <pre><code>
+                class TestClass
+                 {
+                     static int Main()
+                     {
+                         return GetExceptions(null, null).Count();
+                     }
+                 } 
+                 </code></pre>
+                """, e.Trim(), ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
-
                 This is another example
-
-                """, e, ignoreLineEndingDifferences: true),
+                """, e.Trim(), ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
-
                 Check empty code.
                 <pre><code></code></pre>
-
-                """, e, ignoreLineEndingDifferences: true),
+                """, e.Trim(), ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
-
                 This is an example using source reference.
-                <pre><code source="Example.cs" region="Example">    static class Program
+                    <pre><code source="Example.cs" region="Example">static class Program
                 {
                     public int Main(string[] args)
                     {
                         Console.HelloWorld();
                     }
-                }</code></pre>
-
-                """, e, ignoreLineEndingDifferences: true)
+                }
+                </code></pre>
+                """, e.Trim(), ignoreLineEndingDifferences: true)
             );
 
         commentModel = XmlComment.Parse(input, context);
@@ -267,7 +256,6 @@ public class XmlCommentUnitTest
         string inputFolder = Path.GetRandomFileName();
         Directory.CreateDirectory(inputFolder);
         string input = """
-
             <member name='T:TestClass1.Partial1'>
                 <summary>
                     Class summary <see cref='T:System.AccessViolationException'>Exception type</see>
@@ -293,9 +281,8 @@ public class XmlCommentUnitTest
 
         var summary = commentModel.Summary;
         Assert.Equal("""
-
             Class summary <xref href="System.AccessViolationException?text=Exception+type" data-throw-if-not-resolved="false"></xref>
-            """, summary, ignoreLineEndingDifferences: true);
+            """, summary.Trim(), ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
         Assert.Equal("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
@@ -305,10 +292,8 @@ public class XmlCommentUnitTest
 
         var remarks = commentModel.Remarks;
         Assert.Equal("""
-
             See <xref href="System.Int?text=Integer" data-throw-if-not-resolved="false"></xref>.
-
-            """, remarks, ignoreLineEndingDifferences: true);
+            """, remarks.Trim(), ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -361,13 +346,12 @@ public class XmlCommentUnitTest
         var commentModel = XmlComment.Parse(input, context);
         Assert.Equal(
             """
-
             This is an example using source reference in a xaml file.
-            <pre><code source="Example.xaml" region="Example">    &gt;Grid&gt;
-                              &gt;TextBlock Text="Hello World" /&gt;
-                            &gt;/Grid&gt;</code></pre>
+            <pre><code source="Example.xaml" region="Example"><Grid>  &lt;TextBlock Text="Hello World" /&gt;
+            &lt;/Grid&gt;
+            </code></pre>
             """, 
-            commentModel.Examples.Single(),
+            commentModel.Examples.Single().Trim(),
             ignoreLineEndingDifferences: true);
     }
 
@@ -377,14 +361,5 @@ public class XmlCommentUnitTest
         var input = @"<summary>A</summary>";
         var commentModel = XmlComment.Parse(input, new XmlCommentParserContext());
         Assert.Equal("A", commentModel.Summary);
-    }
-
-    /// <summary>
-    /// Normalizes multiple whitespaces into 1 single whitespace to allow ignoring of insignificant whitespaces.
-    /// </summary>
-    private string NormalizeWhitespace(string s)
-    {
-        var regex = new Regex(@"(?<= ) +");
-        return regex.Replace(s, string.Empty);
     }
 }

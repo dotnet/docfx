@@ -24,7 +24,6 @@ internal class XmlComment
     private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
     private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
     private static readonly Regex LineBreakRegex = new(@"\r?\n", RegexOptions.Compiled);
-    private static readonly Regex CodeElementRegex = new(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
@@ -78,7 +77,7 @@ internal class XmlComment
         ResolveSeeCref(doc, context.AddReferenceDelegate);
         ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
         ResolveExceptionCref(doc, context.AddReferenceDelegate);
-            
+
         ResolveCodeSource(doc, context);
         var nav = doc.CreateNavigator();
         Summary = GetSummary(nav, context);
@@ -314,7 +313,7 @@ internal class XmlComment
             }
         }
 
-        element.SetValue(builder.ToString());
+        element.SetValue(RemoveLeadingSpaces(builder.ToString()));
     }
 
     private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, XmlCommentParserContext context)
@@ -622,18 +621,10 @@ internal class XmlComment
 
     private string GetXmlValue(XPathNavigator node)
     {
-        // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
-        // e.g.
-        // <remarks><para>Value</para></remarks>
-        // decode InnerXml as it encodes
-        // IXmlLineInfo.LinePosition starts from 1 and it would ignore '<'
-        // e.g.
-        // <summary/> the LinePosition is the column number of 's', so it should be minus 2
-        var lineInfo = node as IXmlLineInfo;
-        int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
-        var xml = _context.SkipMarkup ? node.InnerXml : GetInnerXmlAsMarkdown(node);
+        if (_context.SkipMarkup)
+            return node.InnerXml;
 
-        return NormalizeXml(RemoveLeadingSpaces(xml), column);
+        return GetInnerXmlAsMarkdown(RemoveLeadingSpaces(node.InnerXml));
     }
 
     /// <summary>
@@ -675,56 +666,12 @@ internal class XmlComment
         return string.Join("\n", normalized);
     }
 
-    /// <summary>
-    /// Split xml into lines. Trim meaningless whitespaces.
-    /// if a line starts with xml node, all leading whitespaces would be trimmed
-    /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
-    /// Trim newline character for code element.
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
-    /// <returns>normalized xml</returns>
-    private static string NormalizeXml(string xml, int parentIndex)
+    private static string GetInnerXmlAsMarkdown(string xml)
     {
-        var lines = LineBreakRegex.Split(xml);
-        var normalized = new List<string>();
+        if (!xml.Contains('&'))
+            return xml;
 
-        foreach (var line in lines)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                normalized.Add(string.Empty);
-            }
-            else
-            {
-                // TO-DO: special logic for TAB case
-                int index = line.TakeWhile(char.IsWhiteSpace).Count();
-                if (line[index] == '<')
-                {
-                    parentIndex = index;
-                }
-
-                normalized.Add(line.Substring(Math.Min(parentIndex, index)));
-            }
-        }
-
-        // trim newline character for code element
-        return CodeElementRegex.Replace(
-            string.Join("\n", normalized),
-            m =>
-            {
-                var group = m.Groups[1];
-                if (group.Length == 0)
-                {
-                    return m.Value;
-                }
-                return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
-            });
-    }
-
-    private static string GetInnerXmlAsMarkdown(XPathNavigator node)
-    {
-        var xml = HandleBlockQuote(node.InnerXml);
+        xml = HandleBlockQuote(xml);
         var markdown = Markdown.Parse(xml, trackTrivia: true);
         DecodeMarkdownCode(markdown);
         var sw = new StringWriter();
