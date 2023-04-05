@@ -153,18 +153,6 @@ internal sealed class BuildCommand : ISubCommand
                     .Distinct());
         }
 
-        if (options.XRefService != null)
-        {
-            config.XRefServiceUrls =
-                new ListWithStringFallback(
-                    (config.XRefServiceUrls ?? new ListWithStringFallback())
-                    .Concat(options.XRefService)
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .Distinct());
-        }
-
-        //to-do: get changelist from options
-
         if (options.Serve)
         {
             config.Serve = options.Serve;
