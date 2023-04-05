@@ -174,7 +174,6 @@ public class XmlCommentUnitTest
             ```
             Classes in assemblies are by definition complete.
             ```
-
             """, summary, ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
@@ -296,7 +295,6 @@ public class XmlCommentUnitTest
         Assert.Equal("""
 
             Class summary <xref href="System.AccessViolationException?text=Exception+type" data-throw-if-not-resolved="false"></xref>
-
             """, summary, ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
@@ -361,14 +359,16 @@ public class XmlCommentUnitTest
         };
 
         var commentModel = XmlComment.Parse(input, context);
-        
-        // using xml to get rid of escaped tags
-        var example = commentModel.Examples.Single();
-        var doc = XDocument.Parse($"<root>{example}</root>");
-        var codeNode = doc.Descendants("code").Single();
-        var actual = NormalizeWhitespace(codeNode.Value);
-        var expected = NormalizeWhitespace(expectedExampleContent);
-        Assert.Equal(expected, actual, ignoreLineEndingDifferences: true);
+        Assert.Equal(
+            """
+
+            This is an example using source reference in a xaml file.
+            <pre><code source="Example.xaml" region="Example">    &gt;Grid&gt;
+                              &gt;TextBlock Text="Hello World" /&gt;
+                            &gt;/Grid&gt;</code></pre>
+            """, 
+            commentModel.Examples.Single(),
+            ignoreLineEndingDifferences: true);
     }
 
     [Fact]

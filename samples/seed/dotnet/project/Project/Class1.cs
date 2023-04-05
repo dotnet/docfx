@@ -2,6 +2,8 @@
 
 public class Class1
 {
+    public class Test<T> { }
+
     /// <summary>
     /// This method should do something...
     /// </summary>
@@ -38,5 +40,24 @@ public class Class1
     /// </remarks>
     public void Issue7484() { }
 
-    public class Test<T> { }
+    /// <remarks>
+    /// > [!NOTE]
+    /// > This is a &lt;note&gt;. &amp; &quot; &apos;
+    ///
+    /// [link](https://www.github.com "title")
+    ///
+    /// ```csharp
+    /// for (var i = 0; i > 10; i++) &amp; &quot; &apos;
+    /// var range = new Range&lt;int&gt; { Min = 0, Max = 10 };
+    /// ```
+    /// <code>
+    /// var range = new Range&lt;int&gt; { Min = 0, Max = 10 };
+    /// </code>
+    /// </remarks>
+    public void Issue2723() { }
+
+    /// <remarks>
+    /// <c>@"\\?\"</c> `@"\\?\"`
+    /// </remarks>
+    public void Issue4392() { }
 }
