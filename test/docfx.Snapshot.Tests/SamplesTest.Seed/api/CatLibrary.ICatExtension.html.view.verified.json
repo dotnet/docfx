@@ -611,7 +611,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <strong>public</strong> and <strong>static</strong>.</p>\n<p>Also it shouldn&apos;t be a geneic class</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <strong>public</strong> and <strong>static</strong>.</p>\n<p>Also it shouldn't be a geneic class</p>\n",
   "example": [],
   "syntax": {
     "content": [
