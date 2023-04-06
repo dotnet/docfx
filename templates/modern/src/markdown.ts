@@ -34,7 +34,7 @@ function renderMermaid() {
   })
 
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
-  mermaid.initialize({ startOnLoad: true, theme })
+  mermaid.initialize({ startOnLoad: true, deterministicIds: true, theme })
 }
 
 /**
