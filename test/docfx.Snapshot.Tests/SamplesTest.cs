@@ -102,7 +102,7 @@ public class SamplesTest
             foreach (var url in s_screenshotUrls)
             {
                 await page.GotoAsync($"http://localhost:{port}/{url}");
-                await page.EvaluateAsync($"() => document.body.setAttribute('data-bs-theme', '{theme}')");
+                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
                 await page.WaitForFunctionAsync("window.docfx.ready");
                 await page.WaitForFunctionAsync("window.docfx.searchReady");
 
