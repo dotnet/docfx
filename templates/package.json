@@ -28,7 +28,7 @@
     "@default/url": "npm:@websanova/url@2.6.3",
     "@websanova/url": "^2.6.3",
     "anchor-js": "^5.0.0",
-    "bootstrap": "twbs/bootstrap#59c556cea60fdeb9c365031c09dc17884bf63bfb",
+    "bootstrap": "^5.3.0-alpha3",
     "bootstrap-icons": "^1.10.3",
     "highlight.js": "^11.7.0",
     "lit-html": "^2.7.0",
