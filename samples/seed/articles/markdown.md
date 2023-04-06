@@ -2,56 +2,7 @@
 
 [Markdown](https://daringfireball.net/projects/markdown/) is a lightweight markup language with plain text formatting syntax. Docfx supports [CommonMark](https://commonmark.org/) compliant Markdown parsed through the [Markdig](https://github.com/xoofx/markdig) parsing engine.
 
-## Markdown Extensions
-
-Docfx supports additional markdown syntax that provide richer content. These syntax are specific to docfx and won't be rendered elsewhere like GitHub.
-
-To use a custom markdown extension:
-
-1. Use docfx as a NuGet library:
-
-```xml
-<PackageReference Include="Microsoft.DocAsCode.App" Version="2.61.0" />
-```
-
-2. Configure the markdig markdown pipeline:
-
-```cs
-var options = new BuildOptions
-{
-    // Enable custom markdown extensions here
-    ConfigureMarkdig = pipeline => pipeline.UseCitations(),
-}
-
-await Docset.Build("docfx.json", options);
-```
-
-Here is a list of markdown extensions provided by docfx by default.
-
 ## Alerts
-
-Alerts are block quotes that render with colors and icons that indicate the significance of the content.
-
-The following alert types are supported:
-
-```markdown
-> [!NOTE]
-> Information the user should notice even if skimming.
-
-> [!TIP]
-> Optional information to help a user be more successful.
-
-> [!IMPORTANT]
-> Essential information required for user success.
-
-> [!CAUTION]
-> Negative potential consequences of an action.
-
-> [!WARNING]
-> Dangerous certain consequences of an action.
-```
-
-They look like this in rendered page:
 
 > [!NOTE]
 > Information the user should notice even if skimming.
@@ -70,71 +21,45 @@ They look like this in rendered page:
 
 ## Image 
 
-You can embed a image in your page by using the following Markdown syntax:
-
-```md
-![ <alt-text> ]( <image-link> )
-```
-
-Example:
-```md
-![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
-```
-
-This will be rendered as:
-
 ![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
 
-## Include Markdown Files
+## Mermaid Diagrams
 
-Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.
+Flowchart
 
-You can reuse a common text snippet within a sentence using inline include:
+```mermaid
+flowchart LR
 
-```markdown
-Text before [!INCLUDE [<title>](<filepath>)] and after.
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
 ```
 
-Or reuse an entire Markdown file as a block, nested within a section of an article. Block include is on its own line:
+Pie chart
 
-```markdown
-[!INCLUDE [<title>](<filepath>)]
+```mermaid
+pie
+"Dogs" : 386
+"Cats" : 85.9
+"Rats" : 15
 ```
 
-Where `<title>` is the name of the file and `<filepath>` is the relative path to the file.
+User Journey diagram
 
-Included markdown files needs to be excluded from build, they are usually placed in the `/includes` folder.
+```mermaid
+journey
+  title My working day
+  section Go to work
+    Make tea: 5: Me
+    Go upstairs: 3: Me
+    Do work: 1: Me, Cat
+  section Go home
+    Go downstairs: 5: Me
+    Sit down: 3: Me
+```
 
 ## Code Snippet
-
-There are several ways to include code in an article. The code snippet syntax replaces code from another file:
-
-```markdown
-[!code-csharp[](Program.cs)]
-```
-
-You can include selected lines from the code snippet using region or line range syntax:
-
-```markdown
-[!code-csharp[](Program.cs#region)]
-[!code-csharp[](Program.cs#L12-L16)]
-```
-
-Code snippets are indicated by using a specific link syntax described as follows:
-
-```markdown
-[!code-<language>[](<filepath><query-options>)]
-```
-
-Where `<language>` is the syntax highlighting language of the code and `<filepath>` is the relative path to the markdown file.
-
-### Highlight Selected Lines
-
-Code Snippets typically include more code than necessary in order to provide context. It helps readability when you highlight the key lines that you're focusing on. To highlight key lines, use the `highlight` query options:
-
-```markdown
-[!code-csharp[](Program.cs?highlight=2,5-7,9-)]
-```
 
 The example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.
 
@@ -153,10 +78,6 @@ This expression uses `\$` to display a dollar sign: $\sqrt{\$4}$
 To split <span>$</span>100 in half, we calculate $100/2$
 
 ## Tabs
-
-Tabs enable content that is multi-faceted. They allow sections of a document to contain variant content renderings and eliminates duplicate content.
-
-Here's an example of the tab experience:
 
 # [Linux](#tab/linux)
 
