@@ -4,11 +4,14 @@
 import { breakWord } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
+import mermaid from 'mermaid'
+import { getTheme } from './theme'
 
 /**
  * Initialize markdown rendering.
  */
 export function renderMarkdown() {
+  renderMermaid()
   renderWordBreaks()
   renderTables()
   renderAlerts()
@@ -17,6 +20,21 @@ export function renderMarkdown() {
   renderAnchor()
   renderCodeCopy()
   renderClickableImage()
+}
+
+/**
+ * Render mermaid diagrams.
+ */
+function renderMermaid() {
+  document.querySelectorAll('pre code.lang-mermaid').forEach(code => {
+    const pre = code.parentElement
+    pre.classList.add('mermaid')
+    code.remove()
+    pre.appendChild(document.createTextNode(code.textContent))
+  })
+
+  const theme = getTheme() === 'dark' ? 'dark' : 'default'
+  mermaid.initialize({ startOnLoad: true, theme })
 }
 
 /**

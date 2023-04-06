@@ -33,7 +33,8 @@
     "highlight.js": "^11.7.0",
     "lit-html": "^2.7.0",
     "lunr": "2.3.9",
-    "mathjax": "^3.2.2"
+    "mathjax": "^3.2.2",
+    "mermaid": "^10.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

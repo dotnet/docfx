@@ -25,11 +25,10 @@ declare global {
 window.docfx = {}
 
 document.addEventListener('DOMContentLoaded', function() {
-  highlight()
   enableSearch()
-
   renderMarkdown()
   renderFooter()
+  highlight()
 
   Promise.all([renderNavbar(), renderToc()])
     .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))
