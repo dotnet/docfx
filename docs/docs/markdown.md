@@ -129,6 +129,7 @@ $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \
 **The Cauchy-Schwarz Inequality**
 
 $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+
 ## Mermaid Diagrams
 
 You can embed [mermaid](https://mermaid.js.org/) diagrams using markdown code block:
@@ -156,7 +157,7 @@ C -->|Two| E[Result 2]
 ```
 
 > [!NOTE]
-> Mermaid diagrams only has built-in support in the `modern` template.
+> Mermaid diagrams is only supported in the `modern` template.
 
 There are plenty of other diagrams supported by mermaid such as:
 
