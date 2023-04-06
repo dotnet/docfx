@@ -32,7 +32,8 @@
     "bootstrap-icons": "^1.10.3",
     "highlight.js": "^11.7.0",
     "lit-html": "^2.7.0",
-    "lunr": "2.3.9"
+    "lunr": "2.3.9",
+    "mathjax": "^3.2.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

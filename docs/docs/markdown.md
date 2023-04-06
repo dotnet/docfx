@@ -103,6 +103,33 @@ This will be rendered as:
 
 ![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
 
+## Math Expressions
+
+Docfx supports [LaTeX formatted math expressions](https://en.wikibooks.org/wiki/LaTeX/Mathematics) within markdown using [MathJax](https://docs.mathjax.org/en/latest/#).
+
+> [!NOTE]
+> Math expressions is only supported in the `modern` template.
+
+To include a math expression inline with your text, delimit the expression with a dollar symbol $.
+
+```md
+This sentence uses `$` delimiters to show math inline:  $\sqrt{3x-1}+(1+x)^2$
+```
+
+This sentence uses `$` delimiters to show math inline:  $\sqrt{3x-1}+(1+x)^2$
+
+To add a math expression as a block, start a new line and delimit the expression with two dollar symbols $$.
+
+```md
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+```
+
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+
 ## Include Markdown Files
 
 Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.

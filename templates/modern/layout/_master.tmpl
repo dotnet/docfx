@@ -25,13 +25,21 @@
       {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
 
+      <script>
+        MathJax = {
+          options: {
+            processHtmlClass: ['tex2jax_process', 'math']
+          }
+        };
+      </script>
+
       <script type="text/javascript" src="{{_rel}}styles/docfx.min.js"></script>
       <script type="text/javascript" src="{{_rel}}styles/main.js"></script>
     {{/redirect_url}}
   </head>
 
   {{^redirect_url}}
-  <body data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
+  <body class="tex2jax_ignore" data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
