@@ -30,27 +30,11 @@ public static class Docset
     /// <returns>A task to await for build completion.</returns>
     public static Task Build(string configPath, BuildOptions options)
     {
-        var consoleLogListener = new ConsoleLogListener();
-        Logger.RegisterListener(consoleLogListener);
-
-        try
-        {
-            var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath));
-
-            var defaultSerializer = JsonUtility.DefaultSerializer.Value;
-
-            var config = JObject.Parse(File.ReadAllText(configPath));
-            if (config.TryGetValue("build", out var build))
-                RunBuild.Exec(build.ToObject<BuildJsonConfig>(defaultSerializer), options, configDirectory);
-
-            return Task.CompletedTask;
-        }
-        finally
-        {
-            Logger.Flush();
-            Logger.PrintSummary();
-            Logger.UnregisterAllListeners();
-        }
+        return Exec<BuildJsonConfig>(
+            configPath,
+            options,
+            "build",
+            RunBuild.Exec);
     }
 
     /// <summary>
