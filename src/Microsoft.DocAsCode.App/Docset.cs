@@ -69,8 +69,8 @@ public static class Docset
 
             var config = JObject.Parse(File.ReadAllText(configPath));
 
-            if (config.TryGetValue(elementKey, out var pdf))
-                execAction(pdf.ToObject<TConfig>(defaultSerializer), options, configDirectory, null);
+            if (config.TryGetValue(elementKey, out var value))
+                execAction(value.ToObject<TConfig>(defaultSerializer), options, configDirectory, null);
 
             return Task.CompletedTask;
         }
