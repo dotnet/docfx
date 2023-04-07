@@ -46,11 +46,3 @@
     href: ../tutorial/howto_add_a_customized_post_processor.md
   - name: "Advanced: Support Hyperlink"
     href: ../tutorial/advanced_support_hyperlink.md
-- name: "Additional Programming Languages"
-  items:
-  - name: Introduction
-    href: ../tutorial/universalreference/intro_multiple_langs_support.md
-  - name: JavaScript
-    href: ../tutorial/universalreference/gen_doc_for_js.md
-  - name: TypeScript
-    href: ../tutorial/universalreference/gen_doc_for_ts.md
