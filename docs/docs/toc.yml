@@ -1,8 +1,10 @@
 ﻿- name: Getting Started
+  expanded: true
   items:
   - name: Quick Start
     href: ../index.md
 - name: Essentials
+  expanded: true
   items:
   - name: Markdown
     href: markdown.md
