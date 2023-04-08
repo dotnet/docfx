@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal class XmlCommentParserContext
 {
-    public Action<string, string> AddReferenceDelegate { get; set; }
+    public Action<string, string> AddReferenceDelegate { get; init; }
 
-    public SourceDetail Source { get; set; }
+    public Func<string, string> ResolveCode { get; init; }
 
-    public string CodeSourceBasePath { get; set; }
+    public SourceDetail Source { get; init; }
 }
