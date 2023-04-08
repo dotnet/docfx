@@ -71,21 +71,21 @@ internal class XmlComment
         _context = context;
 
         ResolveLangword(doc);
-        ResolveSeeCref(doc, context.AddReferenceDelegate);
-        ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
-        ResolveExceptionCref(doc, context.AddReferenceDelegate);
-            
+        ResolveCrefLink(doc, "//seealso[@cref]", context.AddReferenceDelegate);
+        ResolveCrefLink(doc, "//see[@cref]", context.AddReferenceDelegate);
+        ResolveCrefLink(doc, "//exception[@cref]", context.AddReferenceDelegate);
+
         ResolveCodeSource(doc, context);
         var nav = doc.CreateNavigator();
-        Summary = GetSummary(nav, context);
-        Remarks = GetRemarks(nav, context);
-        Returns = GetReturns(nav, context);
+        Summary = GetSingleNodeValue(nav, "/member/summary");
+        Remarks = GetSingleNodeValue(nav, "/member/remarks");
+        Returns = GetSingleNodeValue(nav, "/member/returns");
 
-        Exceptions = GetExceptions(nav, context);
-        SeeAlsos = GetSeeAlsos(nav, context);
-        Examples = GetExamples(nav, context);
-        Parameters = GetParameters(nav, context);
-        TypeParameters = GetTypeParameters(nav, context);
+        Exceptions = GetMulitpleCrefInfo(nav, "/member/exception").ToList();
+        SeeAlsos = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
+        Examples = GetMultipleExampleNodes(nav, "/member/example").ToList();
+        Parameters = GetListContent(nav, "/member/param", "parameter", context);
+        TypeParameters = GetListContent(nav, "/member/typeparam", "type parameter", context);
     }
 
     public static XmlComment Parse(string xml, XmlCommentParserContext context = null)
@@ -108,117 +108,14 @@ internal class XmlComment
         }
     }
 
-    public void CopyInheritedData(XmlComment src)
-    {
-        if (src == null)
-        {
-            throw new ArgumentNullException(nameof(src));
-        }
-
-        Summary = Summary ?? src.Summary;
-        Remarks = Remarks ?? src.Remarks;
-        Returns = Returns ?? src.Returns;
-        if (Exceptions == null && src.Exceptions != null)
-        {
-            Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
-        }
-        if (SeeAlsos == null && src.SeeAlsos != null)
-        {
-            SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
-        }
-        if (Examples == null && src.Examples != null)
-        {
-            Examples = new List<string>(src.Examples);
-        }
-        if (Parameters == null && src.Parameters != null)
-        {
-            Parameters = new Dictionary<string, string>(src.Parameters);
-        }
-        if (TypeParameters == null && src.TypeParameters != null)
-        {
-            TypeParameters = new Dictionary<string, string>(src.TypeParameters);
-        }
-    }
-
     public string GetParameter(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return GetValue(name, Parameters);
+        return Parameters.TryGetValue(name, out var value) ? value : null;
     }
 
     public string GetTypeParameter(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return GetValue(name, TypeParameters);
-    }
-
-    private static string GetValue(string name, Dictionary<string, string> dictionary)
-    {
-        if (dictionary == null)
-        {
-            return null;
-        }
-        if (dictionary.TryGetValue(name, out string description))
-        {
-            return description;
-        }
-        return null;
-    }
-
-    private string GetSummary(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        string selector = "/member/summary";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private string GetRemarks(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        string selector = "/member/remarks";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private string GetReturns(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        string selector = "/member/returns";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private List<ExceptionInfo> GetExceptions(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        string selector = "/member/exception";
-        var result = GetMulitpleCrefInfo(nav, selector).ToList();
-        if (result.Count == 0)
-        {
-            return null;
-        }
-        return result;
-    }
-
-    private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
-        if (result.Count == 0)
-        {
-            return null;
-        }
-        return result;
-    }
-
-    private List<string> GetExamples(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        return GetMultipleExampleNodes(nav, "/member/example").ToList();
+        return TypeParameters.TryGetValue(name, out var value) ? value : null;
     }
 
     private void ResolveCodeSource(XDocument doc, XmlCommentParserContext context)
@@ -342,11 +239,6 @@ internal class XmlComment
         return result;
     }
 
-    private Dictionary<string, string> GetParameters(XPathNavigator navigator, XmlCommentParserContext context)
-    {
-        return GetListContent(navigator, "/member/param", "parameter", context);
-    }
-
     private static (Regex, Regex) GetRegionRegex(String source)
     {
         var ext = Path.GetExtension(source);
@@ -361,28 +253,6 @@ internal class XmlComment
         }
 
         return (RegionRegex, EndRegionRegex);
-    }
-
-    private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, XmlCommentParserContext context)
-    {
-        return GetListContent(navigator, "/member/typeparam", "type parameter", context);
-    }
-
-    private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
-    {
-        // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//seealso[@cref]", addReference);
-    }
-
-    private void ResolveSeeCref(XNode node, Action<string, string> addReference)
-    {
-        // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//see[@cref]", addReference);
-    }
-
-    private void ResolveExceptionCref(XNode node, Action<string, string> addReference)
-    {
-        ResolveCrefLink(node, "//exception[@cref]", addReference);
     }
 
     private void ResolveLangword(XNode node)
@@ -487,8 +357,7 @@ internal class XmlComment
         }
         foreach (XPathNavigator nav in iterator)
         {
-            string description = GetXmlValue(nav);
-            yield return description;
+            yield return GetXmlValue(nav);
         }
     }
 
@@ -502,11 +371,6 @@ internal class XmlComment
         foreach (XPathNavigator nav in iterator)
         {
             string description = GetXmlValue(nav);
-            if (string.IsNullOrEmpty(description))
-            {
-                description = null;
-            }
-
             string commentId = nav.GetAttribute("cref", string.Empty);
             string refId = nav.GetAttribute("refId", string.Empty);
             if (!string.IsNullOrEmpty(refId))
@@ -604,20 +468,14 @@ internal class XmlComment
 
     private string GetSingleNodeValue(XPathNavigator nav, string selector)
     {
-        var node = nav.Clone().SelectSingleNode(selector);
-        if (node == null)
-        {
-            // throw new ArgumentException(selector + " is not found");
-            return null;
-        }
-        else
-        {
-            return GetXmlValue(node);
-        }
+        return GetXmlValue(nav.Clone().SelectSingleNode(selector));
     }
 
     private string GetXmlValue(XPathNavigator node)
     {
+        if (node is null)
+            return null;
+
         // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
         // e.g.
         // <remarks><para>Value</para></remarks>
