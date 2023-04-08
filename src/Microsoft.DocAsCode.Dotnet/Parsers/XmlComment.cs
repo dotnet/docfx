@@ -19,8 +19,6 @@ internal class XmlComment
 {
     private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
     private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
-    private static readonly Regex LineBreakRegex = new(@"\r?\n", RegexOptions.Compiled);
-    private static readonly Regex CodeElementRegex = new(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
@@ -75,7 +73,8 @@ internal class XmlComment
         ResolveCrefLink(doc, "//see[@cref]", context.AddReferenceDelegate);
         ResolveCrefLink(doc, "//exception[@cref]", context.AddReferenceDelegate);
 
-        ResolveCodeSource(doc, context);
+        ResolveCode(doc, context);
+
         var nav = doc.CreateNavigator();
         Summary = GetSingleNodeValue(nav, "/member/summary");
         Remarks = GetSingleNodeValue(nav, "/member/remarks");
@@ -126,58 +125,41 @@ internal class XmlComment
         return TypeParameters.TryGetValue(name, out var value) ? value : null;
     }
 
-    private void ResolveCodeSource(XDocument doc, XmlCommentParserContext context)
+    private void ResolveCode(XDocument doc, XmlCommentParserContext context)
     {
-        foreach (XElement node in doc.XPathSelectElements("//code"))
+        foreach (var node in doc.XPathSelectElements("//code").ToList())
         {
-            var source = node.Attribute("source");
-            if (source == null || string.IsNullOrEmpty(source.Value))
-            {
-                continue;
-            }
-
-            var region = node.Attribute("region");
-
-            var path = source.Value;
-            if (!Path.IsPathRooted(path))
-            {
-                string basePath;
-
-                if (!string.IsNullOrEmpty(context.CodeSourceBasePath))
-                {
-                    basePath = context.CodeSourceBasePath;
-                }
-                else
-                {
-                    if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
-                    {
-                        Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
-                        continue;
-                    }
-
-                    basePath = Path.GetDirectoryName(Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Path));
-                }
-                
-                path = Path.Combine(basePath, path);
-            }
-
-            ResolveCodeSource(node, path, region?.Value);
+            var indent = ((IXmlLineInfo)node).LinePosition - 2;
+            var (lang, value) = ResolveCodeSource(node, context);
+            value = TrimEachLine(value ?? node.Value, new(' ', indent));
+            var code = new XElement("code", value);
+            code.SetAttributeValue("class", $"lang-{lang ?? "csharp"}");
+            node.ReplaceWith(new XElement("pre", code));
         }
     }
 
-    private void ResolveCodeSource(XElement element, string source, string region)
+    private (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
     {
-        if (!File.Exists(source))
-        {
-            Logger.LogWarning($"Source file '{source}' not found.");
-            return;
-        }
+        var source = node.Attribute("source")?.Value;
+        if (string.IsNullOrEmpty(source))
+            return default;
+
+        var lang = Path.GetExtension(source).TrimStart('.').ToLowerInvariant();
+
+        var code = context.ResolveCode?.Invoke(source);
+        if (code is null)
+            return (lang, null);
+
+        var region = node.Attribute("region")?.Value;
+        if (region is null)
+            return (lang, code);
 
         var (regionRegex, endRegionRegex) = GetRegionRegex(source);
 
         var builder = new StringBuilder();
         var regionCount = 0;
-        foreach (var line in File.ReadLines(source))
+
+        foreach (var line in ReadLines(code))
         {
             if (!string.IsNullOrEmpty(region))
             {
@@ -215,7 +197,17 @@ internal class XmlComment
             }
         }
 
-        element.SetValue(builder.ToString());
+        return (lang, builder.ToString());
+    }
+
+    private static IEnumerable<string> ReadLines(string text)
+    {
+        string line;
+        using var sr = new StringReader(text);
+        while ((line = sr.ReadLine()) != null)
+        {
+            yield return line;
+        }
     }
 
     private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, XmlCommentParserContext context)
@@ -484,103 +476,55 @@ internal class XmlComment
         if (node is null)
             return null;
 
-        // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
-        // e.g.
-        // <remarks><para>Value</para></remarks>
-        // decode InnerXml as it encodes
-        // IXmlLineInfo.LinePosition starts from 1 and it would ignore '<'
-        // e.g.
-        // <summary/> the LinePosition is the column number of 's', so it should be minus 2
-        var lineInfo = node as IXmlLineInfo;
-        int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
-
-        return NormalizeXml(RemoveLeadingSpaces(GetInnerXml(node)), column);
+        return TrimEachLine(GetInnerXml(node));
     }
 
-    /// <summary>
-    /// Remove least common whitespces in each line of xml
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <returns>xml after removing least common whitespaces</returns>
-    private static string RemoveLeadingSpaces(string xml)
+    private static string TrimEachLine(string text, string indent = "")
     {
-        var lines = LineBreakRegex.Split(xml);
-        var normalized = new List<string>();
-
-        var preIndex = 0;
-        var leadingSpaces = from line in lines
-                            where !string.IsNullOrWhiteSpace(line)
-                            select line.TakeWhile(char.IsWhiteSpace).Count();
-
-        if (leadingSpaces.Any())
-        {
-            preIndex = leadingSpaces.Min();
-        }
-
-        if (preIndex == 0)
-        {
-            return xml;
-        }
-
+        var minLeadingWhitespace = int.MaxValue;
+        var lines = ReadLines(text).ToList();
         foreach (var line in lines)
         {
             if (string.IsNullOrWhiteSpace(line))
-            {
-                normalized.Add(string.Empty);
-            }
-            else
-            {
-                normalized.Add(line.Substring(preIndex));
-            }
-        }
-        return string.Join("\n", normalized);
-    }
+                continue;
 
-    /// <summary>
-    /// Split xml into lines. Trim meaningless whitespaces.
-    /// if a line starts with xml node, all leading whitespaces would be trimmed
-    /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
-    /// Trim newline character for code element.
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
-    /// <returns>normalized xml</returns>
-    private static string NormalizeXml(string xml, int parentIndex)
-    {
-        var lines = LineBreakRegex.Split(xml);
-        var normalized = new List<string>();
+            var leadingWhitespace = 0;
+            while (leadingWhitespace < line.Length && char.IsWhiteSpace(line[leadingWhitespace]))
+                leadingWhitespace++;
+
+            minLeadingWhitespace = Math.Min(minLeadingWhitespace, leadingWhitespace);
+        }
+
+        var builder = new StringBuilder();
+
+        // Trim leading empty lines
+        var trimStart = true;
+
+        // Apply indentation to all lines except the first,
+        // since the first new line in <pre></code> is significant
+        var firstLine = true;
 
         foreach (var line in lines)
         {
+            if (trimStart && string.IsNullOrWhiteSpace(line))
+                continue;
+
+            if (firstLine)
+                firstLine = false;
+            else
+                builder.Append(indent);
+
             if (string.IsNullOrWhiteSpace(line))
             {
-                normalized.Add(string.Empty);
+                builder.AppendLine();
+                continue;
             }
-            else
-            {
-                // TO-DO: special logic for TAB case
-                int index = line.TakeWhile(char.IsWhiteSpace).Count();
-                if (line[index] == '<')
-                {
-                    parentIndex = index;
-                }
 
-                normalized.Add(line.Substring(Math.Min(parentIndex, index)));
-            }
+            trimStart = false;
+            builder.AppendLine(line.Substring(minLeadingWhitespace));
         }
 
-        // trim newline character for code element
-        return CodeElementRegex.Replace(
-            string.Join("\n", normalized),
-            m =>
-            {
-                var group = m.Groups[1];
-                if (group.Length == 0)
-                {
-                    return m.Value;
-                }
-                return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
-            });
+        return builder.ToString().TrimEnd();
     }
 
     /// <summary>
