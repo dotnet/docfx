@@ -44,14 +44,6 @@ public static class StringExtension
                 select ToNormalizedFullPath(p)).Distinct().OrderBy(s => s);
     }
 
-    public static IEnumerable<string> GetNormalizedPathList(this IEnumerable<string> paths)
-    {
-        if (paths == null) return null;
-        return (from p in paths
-                where !string.IsNullOrEmpty(p)
-                select ToNormalizedPath(p)).Distinct().OrderBy(s => s);
-    }
-
     /// <summary>
     /// Should not convert path to lower case as under Linux/Unix, path is case sensitive
     /// Also, Website URL should be case sensitive consider the server might be running under Linux/Unix

@@ -148,10 +148,6 @@ internal static class DocumentBuilderWrapper
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
             }
-            if (config.XRefServiceUrls != null)
-            {
-                parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
-            }
 
             string outputFolderForDebugFiles = null;
             if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))

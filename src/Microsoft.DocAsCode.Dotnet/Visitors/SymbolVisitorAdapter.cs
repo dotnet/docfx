@@ -6,8 +6,11 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Exceptions;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
@@ -19,16 +22,16 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
     private readonly IMethodSymbol[] _extensionMethods;
-    private readonly string _codeSourceBasePath;
+    private readonly ExtractMetadataConfig _config;
     private readonly SymbolFilter _filter;
 
-    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
+    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig config, SymbolFilter filter, IMethodSymbol[] extensionMethods)
     {
         _compilation = compilation;
         _generator = generator;
         _filter = filter;
+        _config = config;
         _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
-        _codeSourceBasePath = options.CodeSourceBasePath;
     }
 
     public override MetadataItem DefaultVisit(ISymbol symbol)
@@ -37,11 +40,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
+
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
             CommentId = VisitorHelper.GetCommentId(symbol),
-            RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
         };
 
         item.DisplayNames = new SortedList<SyntaxLanguage, string>();
@@ -50,13 +53,23 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
-        if (!(symbol is INamespaceSymbol))
+        if (symbol is not INamespaceSymbol)
         {
             var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
             item.NamespaceName = string.IsNullOrEmpty(namespaceName) ? null : namespaceName;
         }
 
-        VisitorHelper.FeedComments(item, GetXmlCommentParserContext(item));
+        var comment = symbol.GetDocumentationComment(_compilation, expandIncludes: true, expandInheritdoc: true);
+        if (XmlComment.Parse(comment.FullXmlFragment, GetXmlCommentParserContext(item)) is { } commentModel)
+        {
+            item.Summary = commentModel.Summary;
+            item.Remarks = commentModel.Remarks;
+            item.Exceptions = commentModel.Exceptions;
+            item.SeeAlsos = commentModel.SeeAlsos;
+            item.Examples = commentModel.Examples;
+            item.CommentModel = commentModel;
+        }
+
         if (item.Exceptions != null)
         {
             foreach (var exceptions in item.Exceptions)
@@ -82,7 +95,6 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
-            RawComment = symbol.GetDocumentationCommentXml(expandIncludes: true),
         };
 
         item.DisplayNames = new SortedList<SyntaxLanguage, string>
@@ -716,10 +728,40 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         return new XmlCommentParserContext
         {
-            AddReferenceDelegate = GetAddReferenceDelegate(item),
+            SkipMarkup = _config.ShouldSkipMarkup,
+            AddReferenceDelegate = AddReferenceDelegate,
             Source = item.Source,
-            CodeSourceBasePath = _codeSourceBasePath
+            ResolveCode = ResolveCode,
         };
+
+        void AddReferenceDelegate(string id, string commentId)
+        {
+            var r = AddReference(id, commentId);
+            if (item.References == null)
+            {
+                item.References = new Dictionary<string, ReferenceItem>();
+            }
+
+            // only record the id now, the value would be fed at later phase after merge
+            item.References[id] = null;
+        }
+
+        string ResolveCode(string source)
+        {
+            var basePath = _config.CodeSourceBasePath ?? (
+                item.Source?.Path is {} sourcePath
+                    ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
+                    : null);
+
+            var path = Path.GetFullPath(Path.Combine(basePath, source));
+            if (!File.Exists(path))
+            {
+                Logger.LogWarning($"Source file '{path}' not found.");
+                return null;
+            }
+
+            return File.ReadAllText(path);
+        }
     }
 
     private List<AttributeInfo> GetAttributeInfo(ImmutableArray<AttributeData> attributes)
@@ -845,20 +887,5 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         result.Type = AddSpecReference(arg.Type);
         return result;
-    }
-
-    private Action<string, string> GetAddReferenceDelegate(MetadataItem item)
-    {
-        return (id, commentId) =>
-        {
-            var r = AddReference(id, commentId);
-            if (item.References == null)
-            {
-                item.References = new Dictionary<string, ReferenceItem>();
-            }
-
-            // only record the id now, the value would be fed at later phase after merge
-            item.References[id] = null;
-        };
     }
 }

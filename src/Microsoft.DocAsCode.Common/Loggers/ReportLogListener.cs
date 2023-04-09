@@ -47,7 +47,6 @@ public sealed class ReportLogListener : ILoggerListener
             Line = line,
             DateTime = DateTime.UtcNow,
             Code = item.Code,
-            CorrelationId = item.CorrelationId
         };
 
         _writer.WriteLine(JsonUtility.Serialize(reportItem));
@@ -117,8 +116,6 @@ public sealed class ReportLogListener : ILoggerListener
         public MessageSeverity Severity { get; set; }
         [JsonProperty("code")]
         public string Code{ get; set; }
-        [JsonProperty("correlation_id")]
-        public string CorrelationId { get; set; }
     }
 
     public enum MessageSeverity

@@ -22,7 +22,4 @@ public static class HashUtility
 
     public static string GetSha256HashString(string content)
         => Convert.ToBase64String(GetSha256Hash(content));
-
-    public static string GetSha256HashString(Stream stream)
-        => Convert.ToBase64String(GetSha256Hash(stream));
 }

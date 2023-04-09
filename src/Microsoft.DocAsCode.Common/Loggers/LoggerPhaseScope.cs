@@ -7,7 +7,6 @@ public sealed class LoggerPhaseScope : IDisposable
 {
     private readonly string _originPhaseName;
     private readonly PerformanceScope _performanceScope;
-    private readonly AmbientContext? _ac;
 
     public LoggerPhaseScope(string phaseName)
         : this(phaseName, null, null) { }
@@ -25,8 +24,6 @@ public sealed class LoggerPhaseScope : IDisposable
             throw new ArgumentException("Phase name cannot be null or white space.", nameof(phaseName));
         }
 
-        _ac = AmbientContext.GetOrCreateAmbientContext().CreateBranch();
-
         _originPhaseName = GetPhaseName();
         phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
         SetPhaseName(phaseName);
@@ -39,11 +36,6 @@ public sealed class LoggerPhaseScope : IDisposable
     private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
     {
         _originPhaseName = GetPhaseName();
-        var context = captured.CurrentAmbientContext;
-        if (context.HasValue)
-        {
-            _ac = new AmbientContext(context.Value);
-        }
         SetPhaseName(captured.PhaseName);
         if (perfLogLevel != null)
         {
@@ -71,7 +63,6 @@ public sealed class LoggerPhaseScope : IDisposable
     {
         _performanceScope?.Dispose();
         SetPhaseName(_originPhaseName);
-        _ac?.Dispose();
     }
 
     internal static string GetPhaseName()
@@ -109,11 +100,8 @@ public sealed class LoggerPhaseScope : IDisposable
         public CapturedLoggerPhaseScope()
         {
             PhaseName = GetPhaseName();
-            CurrentAmbientContext = AmbientContext.CurrentContext;
         }
 
         public string PhaseName { get; }
-        public AmbientContext? CurrentAmbientContext { get; }
-
     }
 }

@@ -117,7 +117,6 @@ public class MetadataCommandTest : TestBase
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
             Projects = new List<string> { projectFile },
         }).Exec(null);
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -186,8 +185,6 @@ public class MetadataCommandTest : TestBase
                 OutputFolder = Path.GetFullPath(_outputFolder),
             }).Exec(null);
 
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
-
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
@@ -233,8 +230,6 @@ public class MetadataCommandTest : TestBase
             Projects = new List<string> { projectFile },
             FilterConfigFile = filterFile,
         }).Exec(null);
-
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -404,8 +399,6 @@ public class MetadataCommandTest : TestBase
 
     private void CheckResult()
     {
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
-
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;

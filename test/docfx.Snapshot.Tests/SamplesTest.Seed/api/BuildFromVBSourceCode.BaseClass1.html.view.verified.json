@@ -381,7 +381,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
+  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"1\">This is the BaseClass</p>\n",
   "example": [],
   "syntax": {
     "content": [

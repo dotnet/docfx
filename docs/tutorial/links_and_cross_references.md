@@ -290,21 +290,6 @@ The value of `xref` could be a string or a list of strings that contain the path
 > the website together with topic files so that others can directly use its url in `docfx.json` instead of downloading it to
 > local.
 
-### Cross reference services
-
-Cross reference services are hosted services that can be queried for cross reference information. When DocFX generates the metadata for your project, it will perform cross reference lookups against the service.
-
-To use a cross reference service, add a `xrefservice` config to the `build` section of `docfx.json`:
-
-```json
-{
-  "build": {
-    "xrefService": [ "<url_to_xrefservice>" ],
-    ...
-  }
-}
-```
-
 ## Advanced: more options for cross reference
 
 You can create a cross link with following options:

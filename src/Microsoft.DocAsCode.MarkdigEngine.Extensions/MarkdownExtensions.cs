@@ -14,7 +14,7 @@ public static class MarkdownExtensions
     public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
     {
         return pipeline
-            //.UseMathematics()
+            .UseMathematics()
             .UseEmphasisExtras(EmphasisExtraOptions.Strikethrough)
             .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
             .UseMediaLinks()

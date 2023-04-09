@@ -54,7 +54,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"2\">This is a test class.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">This is a test class.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,

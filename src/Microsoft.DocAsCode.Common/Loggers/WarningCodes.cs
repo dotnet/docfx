@@ -5,11 +5,6 @@ namespace Microsoft.DocAsCode.Common;
 
 public static class WarningCodes
 {
-    public static class Metadata
-    {
-
-    }
-
     public static class Build
     {
         public const string TooManyWarnings = "TooManyWarnings";

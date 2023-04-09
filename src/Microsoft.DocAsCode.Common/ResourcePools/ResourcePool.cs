@@ -10,10 +10,4 @@ public static class ResourcePool
     {
         return new ResourcePoolManager<T>(creator, maxResourceCount);
     }
-
-    public static ResourcePoolAsyncManager<T> Create<T>(Func<Task<T>> creator, int maxResourceCount)
-        where T : class
-    {
-        return new ResourcePoolAsyncManager<T>(creator, maxResourceCount);
-    }
 }
