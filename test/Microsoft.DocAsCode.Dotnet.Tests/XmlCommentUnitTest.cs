@@ -43,11 +43,35 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
-    public void TestXmlCommentParser()
+    public static void BasicCodeBlock()
     {
-        string inputFolder = Path.GetRandomFileName();
-        Directory.CreateDirectory(inputFolder);
-        File.WriteAllText(Path.Combine(inputFolder, "Example.cs"), """
+        var comment = XmlComment.Parse(
+            """
+            <remarks>
+                <code>
+                    public int Main(string[] args)
+                    {
+                        Console.HelloWorld();
+                    }
+                </code>
+            </remarks>
+            """);
+
+        Assert.Equal(
+            """
+            <pre><code class="lang-csharp">public int Main(string[] args)
+            {
+                Console.HelloWorld();
+            }</code></pre>
+            """,
+            comment.Remarks,
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public static void ExternalCodeBlockCSharp()
+    {
+        var example = """
             using System;
 
             namespace Example
@@ -62,9 +86,109 @@ public class XmlCommentUnitTest
                 }
             #endregion
             }
+            """;
+
+        var comment = XmlComment.Parse(
+            """
+            <remarks>
+                <code source="Example.cs" region="Example" />
+            </remarks>
+            """,
+            new() { ResolveCode = _ => example });
+
+        Assert.Equal(
+            """
+            <pre><code class="lang-cs">static class Program
+            {
+                public int Main(string[] args)
+                {
+                    Console.HelloWorld();
+                }
+            }</code></pre>
+            """,
+            comment.Remarks,
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public void ExternalCodeBlockXaml()
+    {
+        var example = """
+            <UserControl x:Class="Examples">
+                            <UserControl.Resources>
+
+                            <!-- <Example> -->
+                            <Grid>
+                              <TextBlock Text="Hello World" />
+                            </Grid>
+                            <!-- </Example> -->
+            </UserControl>
+            """;
+
+        var input = """
+            <member name='T:TestClass1.Partial1'>
+                <example>
+                This is an example using source reference in a xaml file.
+                <code source='Example.xaml' region='Example'/>
+                </example>
+            </member>
+            """;
+
+        var commentModel = XmlComment.Parse(input, new() { ResolveCode = _ => example });
+
+        Assert.Equal(
+            """
+            This is an example using source reference in a xaml file.
+            <pre><code class="lang-xaml">&lt;Grid&gt;
+              &lt;TextBlock Text="Hello World" /&gt;
+            &lt;/Grid&gt;</code></pre>
+            """,
+            commentModel.Examples.Single(),
+            ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public static void MarkdownCodeBlock()
+    {
+        var comment = XmlComment.Parse(
+            """
+            <summary>
+                public int Main(string[] args)
+                {
+                    Console.HelloWorld();
+                }
+            </summary>
+            <remarks>
+            For example:
+
+                public int Main(string[] args)
+                {
+                    Console.HelloWorld();
+                }
+            </remarks>
             """);
 
-        string input = """
+        Assert.Equal("""
+            public int Main(string[] args)
+            {
+                Console.HelloWorld();
+            }
+            """, comment.Summary, ignoreLineEndingDifferences: true);
+
+        Assert.Equal("""
+            For example:
+
+                public int Main(string[] args)
+                {
+                    Console.HelloWorld();
+                }
+            """, comment.Remarks, ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public void TestXmlCommentParser()
+    {
+        var input = """
             <member name='T:TestClass1.Partial1'>
                 <summary>
                     Partial classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
@@ -150,16 +274,8 @@ public class XmlCommentUnitTest
                 <seealso href="http://www.bing.com"/>
             </member>
             """;
-        var context = new XmlCommentParserContext
-        {
-            AddReferenceDelegate = null,
-            Source = new SourceDetail
-            {
-                Path = Path.Combine(inputFolder, "Source.cs"),
-            }
-        };
 
-        var commentModel = XmlComment.Parse(input, context);
+        var commentModel = XmlComment.Parse(input);
 
         var summary = commentModel.Summary;
         Assert.Equal("""
@@ -168,7 +284,7 @@ public class XmlCommentUnitTest
             ```
             Classes in assemblies are by definition complete.
             ```
-            """, summary.Trim(), ignoreLineEndingDifferences: true);
+            """, summary, ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
         Assert.Equal("Task<xref href=\"System.AccessViolationException\" data-throw-if-not-resolved=\"false\"></xref> returns", returns);
@@ -180,20 +296,18 @@ public class XmlCommentUnitTest
         Assert.Equal("""
             <a href="https://example.org">https://example.org</a>
             <a href="https://example.org">example</a>
-            <p>This is <code data-dev-comment-type="paramref" class="paramref">ref</code> a sample of exception node</p>
+            <p>This is <c class="paramref">ref</c> a sample of exception node</p>
             <ul><li>
-                        <pre><code class="lang-c#">
-                        public class XmlElement
-                            : XmlLinkedNode
-                        </code></pre>
+                        <pre><code class="lang-csharp">public class XmlElement
+                            : XmlLinkedNode</code></pre>
                         <ol><li>
                                     word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
                     </li><li>item2 in bullet list</li><li>
-                    loose text <em>not</em> wrapped in description
+                    loose text <i>not</i> wrapped in description
                 </li></ul>
-            """, remarks.Trim(), ignoreLineEndingDifferences: true);
+            """, remarks, ignoreLineEndingDifferences: true);
 
         var exceptions = commentModel.Exceptions;
         Assert.Single(exceptions);
@@ -205,40 +319,31 @@ public class XmlCommentUnitTest
             e => Assert.Equal(
                 """
                 This sample shows how to call the <see cref="M: Microsoft.DocAsCode.EntityModel.XmlCommentParser.GetExceptions(System.String, Microsoft.DocAsCode.EntityModel.XmlCommentParserContext)"></see> method.
-                 <pre><code>
-                class TestClass
+                <pre><code class="lang-csharp">class TestClass
                  {
                      static int Main()
                      {
                          return GetExceptions(null, null).Count();
                      }
-                 } 
-                 </code></pre>
-                """, e.Trim(), ignoreLineEndingDifferences: true),
+                 }</code></pre>
+                """, e, ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
                 This is another example
-                """, e.Trim(), ignoreLineEndingDifferences: true),
+                """, e, ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
                 Check empty code.
-                <pre><code></code></pre>
-                """, e.Trim(), ignoreLineEndingDifferences: true),
+                <pre><code class="lang-csharp"></code></pre>
+                """, e, ignoreLineEndingDifferences: true),
             e => Assert.Equal(
                 """
                 This is an example using source reference.
-                    <pre><code source="Example.cs" region="Example">static class Program
-                {
-                    public int Main(string[] args)
-                    {
-                        Console.HelloWorld();
-                    }
-                }
-                </code></pre>
-                """, e.Trim(), ignoreLineEndingDifferences: true)
+                <pre><code class="lang-cs"></code></pre>
+                """, e, ignoreLineEndingDifferences: true)
             );
 
-        commentModel = XmlComment.Parse(input, context);
+        commentModel = XmlComment.Parse(input);
 
         var seeAlsos = commentModel.SeeAlsos;
         Assert.Equal(3, seeAlsos.Count);
@@ -253,8 +358,6 @@ public class XmlCommentUnitTest
     [Fact]
     public void SeeAltText()
     {
-        string inputFolder = Path.GetRandomFileName();
-        Directory.CreateDirectory(inputFolder);
         string input = """
             <member name='T:TestClass1.Partial1'>
                 <summary>
@@ -268,21 +371,13 @@ public class XmlCommentUnitTest
                     <param name='input'>This is an <see cref='T:System.AccessViolationException'>Exception</see>.</param>
             </member>
             """;
-        var context = new XmlCommentParserContext
-        {
-            AddReferenceDelegate = null,
-            Source = new SourceDetail
-            {
-                Path = Path.Combine(inputFolder, "Source.cs"),
-            }
-        };
 
-        var commentModel = XmlComment.Parse(input, context);
+        var commentModel = XmlComment.Parse(input);
 
         var summary = commentModel.Summary;
         Assert.Equal("""
             Class summary <xref href="System.AccessViolationException?text=Exception+type" data-throw-if-not-resolved="false"></xref>
-            """, summary.Trim(), ignoreLineEndingDifferences: true);
+            """, summary, ignoreLineEndingDifferences: true);
 
         var returns = commentModel.Returns;
         Assert.Equal("Returns an <xref href=\"System.AccessViolationException?text=Exception\" data-throw-if-not-resolved=\"false\"></xref>.", returns);
@@ -293,66 +388,7 @@ public class XmlCommentUnitTest
         var remarks = commentModel.Remarks;
         Assert.Equal("""
             See <xref href="System.Int?text=Integer" data-throw-if-not-resolved="false"></xref>.
-            """, remarks.Trim(), ignoreLineEndingDifferences: true);
-    }
-
-    [Fact]
-    public void TestXmlCommentParserForXamlSource()
-    {
-        string inputFolder = Path.GetRandomFileName();
-        Directory.CreateDirectory(inputFolder);
-        var expectedExampleContent = """
-                            <Grid>
-                              <TextBlock Text="Hello World" />
-                            </Grid>
-            """;
-
-        File.WriteAllText(Path.Combine(inputFolder, "Example.xaml"), $@"
-<UserControl x:Class=""Examples""
-            xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
-            xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-            xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
-            xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
-            mc: Ignorable = ""d""
-            d:DesignHeight=""300"" d:DesignWidth=""300"" >
-                <UserControl.Resources>
-
-                <!-- <Example> -->
-{expectedExampleContent}
-                <!-- </Example> -->
-");
-        string input = """
-
-            <member name='T:TestClass1.Partial1'>
-                <summary>
-                </summary>
-                <returns>Something</returns>
-
-                <example>
-                This is an example using source reference in a xaml file.
-                <code source='Example.xaml' region='Example'/>
-                </example>
-            </member>
-            """;
-        var context = new XmlCommentParserContext
-        {
-            AddReferenceDelegate = null,
-            Source = new SourceDetail
-            {
-                Path = Path.Combine(inputFolder, "Source.cs"),
-            }
-        };
-
-        var commentModel = XmlComment.Parse(input, context);
-        Assert.Equal(
-            """
-            This is an example using source reference in a xaml file.
-            <pre><code source="Example.xaml" region="Example"><Grid>  &lt;TextBlock Text="Hello World" /&gt;
-            &lt;/Grid&gt;
-            </code></pre>
-            """, 
-            commentModel.Examples.Single().Trim(),
-            ignoreLineEndingDifferences: true);
+            """, remarks, ignoreLineEndingDifferences: true);
     }
 
     [Fact]

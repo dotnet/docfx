@@ -7,48 +7,10 @@
 
   <xsl:output method="xml" indent="yes" encoding="UTF-8" />
 
-  <xsl:param name="input:language"/>
-
   <xsl:template match="para">
     <p>
       <xsl:apply-templates />
     </p>
-  </xsl:template>
-
-  <xsl:template match="b">
-    <strong>
-      <xsl:apply-templates />
-    </strong>
-  </xsl:template>
-
-  <xsl:template match="i">
-    <em>
-      <xsl:apply-templates />
-    </em>
-  </xsl:template>
-
-  <xsl:template match="ui">
-    <strong>
-      <xsl:apply-templates />
-    </strong>
-  </xsl:template>
-
-  <xsl:template match="c">
-    <code>
-      <xsl:apply-templates />
-    </code>
-  </xsl:template>
-
-  <xsl:template match="code">
-    <xsl:element name="pre">
-      <xsl:element name="code">
-        <xsl:if test="normalize-space(@language)">
-          <xsl:attribute name="class">lang-<xsl:value-of select="@language" /></xsl:attribute>
-        </xsl:if>
-        <xsl:copy-of select="@source|@region"/>
-        <xsl:apply-templates />
-      </xsl:element>
-    </xsl:element>
   </xsl:template>
 
   <xsl:template match="value">
@@ -77,24 +39,24 @@
 
   <xsl:template match="paramref">
     <xsl:if test="normalize-space(@name)">
-      <code data-dev-comment-type="paramref" class="paramref">
+      <c class="paramref">
         <xsl:value-of select="@name" />
-      </code>
+      </c>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="typeparamref">
     <xsl:if test="normalize-space(@name)">
-      <code data-dev-comment-type="typeparamref" class="typeparamref">
+      <c class="typeparamref">
         <xsl:value-of select="@name" />
-      </code>
+      </c>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="languageKeyword">
-    <code data-dev-comment-type="languageKeyword" class="languageKeyword">
+    <c class="languageKeyword">
       <xsl:apply-templates />
-    </code>
+    </c>
   </xsl:template>
 
   <xsl:template match="note">

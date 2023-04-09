@@ -103,6 +103,128 @@ This will be rendered as:
 
 ![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
 
+## Math Expressions
+
+Docfx supports [LaTeX formatted math expressions](https://en.wikibooks.org/wiki/LaTeX/Mathematics) within markdown using [MathJax](https://docs.mathjax.org/en/latest/#).
+
+> [!NOTE]
+> Math expressions is only supported in the `modern` template.
+
+To include a math expression inline with your text, delimit the expression with a dollar symbol $.
+
+```md
+This sentence uses `$` delimiters to show math inline:  $\sqrt{3x-1}+(1+x)^2$
+```
+
+This sentence uses `$` delimiters to show math inline:  $\sqrt{3x-1}+(1+x)^2$
+
+To add a math expression as a block, start a new line and delimit the expression with two dollar symbols $$.
+
+```md
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+```
+
+**The Cauchy-Schwarz Inequality**
+
+$$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)$$
+
+## Mermaid Diagrams
+
+You can embed [mermaid](https://mermaid.js.org/) diagrams using markdown code block:
+
+Example:
+
+    ```mermaid
+    flowchart LR
+
+    A[Hard] -->|Text| B(Round)
+    B --> C{Decision}
+    C -->|One| D[Result 1]
+    C -->|Two| E[Result 2]
+    ```
+
+This will be rendered as:
+
+```mermaid
+flowchart LR
+
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+```
+
+> [!NOTE]
+> Mermaid diagrams is only supported in the `modern` template.
+
+There are plenty of other diagrams supported by mermaid such as:
+
+Pie chart
+
+```mermaid
+pie
+"Dogs" : 386
+"Cats" : 85.9
+"Rats" : 15
+```
+
+Bar chart
+
+```mermaid
+gantt
+    title Git Issues - days since last update
+    dateFormat  X
+    axisFormat %s
+
+    section Issue19062
+    71   : 0, 71
+    section Issue19401
+    36   : 0, 36
+    section Issue193
+    34   : 0, 34
+    section Issue7441
+    9    : 0, 9
+    section Issue1300
+    5    : 0, 5
+```
+
+User Journey diagram
+
+```mermaid
+journey
+  title My working day
+  section Go to work
+    Make tea: 5: Me
+    Go upstairs: 3: Me
+    Do work: 1: Me, Cat
+  section Go home
+    Go downstairs: 5: Me
+    Sit down: 3: Me
+```
+
+Class diagram
+
+```mermaid
+classDiagram
+Class01 <|-- AveryLongClass : Cool
+<<Interface>> Class01
+Class09 --> C2 : Where am I?
+Class09 --* C3
+Class09 --|> Class07
+Class07 : equals()
+Class07 : Object[] elementData
+Class01 : size()
+Class01 : int chimp
+Class01 : int gorilla
+class Class10 {
+  <<service>>
+  int id
+  size()
+}
+```
+
 ## Include Markdown Files
 
 Where markdown files need to be repeated in multiple articles, you can use an include file. The includes feature replace the reference with the contents of the included file at build time.

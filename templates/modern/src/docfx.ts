@@ -10,6 +10,7 @@ import { renderBreadcrumb, renderFooter, renderInThisArticle, renderNavbar } fro
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
+import 'mathjax/es5/tex-svg-full.js'
 
 declare global {
   interface Window {
@@ -17,18 +18,17 @@ declare global {
       ready?: boolean,
       searchReady?: boolean,
       searchResultReady?: boolean,
-    };
+    }
   }
 }
 
 window.docfx = {}
 
 document.addEventListener('DOMContentLoaded', function() {
-  highlight()
   enableSearch()
-
   renderMarkdown()
   renderFooter()
+  highlight()
 
   Promise.all([renderNavbar(), renderToc()])
     .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))

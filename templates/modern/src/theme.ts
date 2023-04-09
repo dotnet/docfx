@@ -16,6 +16,10 @@ function setTheme(theme: Theme) {
   }
 }
 
+export function getTheme(): 'light' | 'dark' {
+  return document.documentElement.getAttribute('data-bs-theme') as 'light' | 'dark'
+}
+
 export function themePicker(refresh: () => void) {
   const theme = localStorage.getItem('theme') as Theme || 'auto'
   setTheme(theme)
