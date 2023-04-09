@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 internal class XmlCommentParserContext
 {
+    public bool SkipMarkup { get; init; }
+
     public Action<string, string> AddReferenceDelegate { get; init; }
 
     public Func<string, string> ResolveCode { get; init; }

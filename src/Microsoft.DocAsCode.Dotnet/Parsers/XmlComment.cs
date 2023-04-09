@@ -1,13 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
+using Markdig;
+using Markdig.Helpers;
+using Markdig.Renderers.Roundtrip;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
@@ -484,7 +489,10 @@ internal class XmlComment
         if (node is null)
             return null;
 
-        return TrimEachLine(GetInnerXml(node));
+        if (_context.SkipMarkup)
+            return TrimEachLine(node.InnerXml);
+
+        return GetInnerXmlAsMarkdown(TrimEachLine(node.InnerXml));
     }
 
     private static string TrimEachLine(string text, string indent = "")
@@ -535,40 +543,71 @@ internal class XmlComment
         return builder.ToString().TrimEnd();
     }
 
-    /// <summary>
-    /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
-    /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
-    /// </summary>
-    /// <param name="node"></param>
-    /// <returns></returns>
-    private static string GetInnerXml(XPathNavigator node)
+    private static string GetInnerXmlAsMarkdown(string xml)
     {
-        using var sw = new StringWriter(CultureInfo.InvariantCulture);
-        using (var tw = new XmlWriterWithGtDecoded(sw))
+        if (!xml.Contains('&'))
+            return xml;
+
+        xml = HandleBlockQuote(xml);
+        var markdown = Markdown.Parse(xml, trackTrivia: true);
+        DecodeMarkdownCode(markdown);
+        var sw = new StringWriter();
+        var rr = new RoundtripRenderer(sw);
+        rr.Write(markdown);
+        return sw.ToString();
+
+        static string HandleBlockQuote(string xml)
         {
-            if (node.MoveToFirstChild())
+            // > is encoded to &gt; in XML. When interpreted as markdown, > is as blockquote
+            // Decode standalone &gt; to > to enable the block quote markdown syntax
+            return Regex.Replace(xml, @"^(\s*)&gt;", "$1>", RegexOptions.Multiline);
+        }
+
+        static void DecodeMarkdownCode(MarkdownObject node)
+        {
+            // Commonmark: Entity and numeric character references are treated as literal text in code spans and code blocks
+            switch (node)
             {
-                do
-                {
-                    tw.WriteNode(node, true);
-                } while (node.MoveToNext());
-                node.MoveToParent();
+                case CodeInline codeInline:
+                    codeInline.Content = XmlDecode(codeInline.Content);
+                    break;
+
+                case CodeBlock codeBlock:
+                    var lines = new StringLineGroup(codeBlock.Lines.Count);
+                    foreach (var line in codeBlock.Lines.Lines)
+                    {
+                        var newLine = line;
+                        newLine.Slice = new StringSlice(XmlDecode(line.Slice.ToString()), line.Slice.NewLine);
+                        lines.Add(newLine);
+                    }
+                    codeBlock.Lines = lines;
+                    break;
+
+                case ContainerBlock containerBlock:
+                    foreach (var child in containerBlock)
+                        DecodeMarkdownCode(child);
+                    break;
+
+                case ContainerInline containerInline:
+                    foreach (var child in containerInline)
+                        DecodeMarkdownCode(child);
+                    break;
+
+                case LeafBlock leafBlock when leafBlock.Inline is not null:
+                    foreach (var child in leafBlock.Inline)
+                        DecodeMarkdownCode(child);
+                    break;
             }
         }
 
-        return sw.ToString();
-    }
-
-    private sealed class XmlWriterWithGtDecoded : XmlTextWriter
-    {
-        public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
-
-        public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
-
-        public override void WriteString(string text)
+        static string XmlDecode(string xml)
         {
-            var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
-            WriteRaw(encoded);
+            return xml
+                .Replace("&gt;", ">")
+                .Replace("&lt;", "<")
+                .Replace("&amp;", "&")
+                .Replace("&quot;", "\"")
+                .Replace("&apos;", "'");
         }
     }
 }

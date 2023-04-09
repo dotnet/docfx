@@ -22,16 +22,16 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
     private readonly IMethodSymbol[] _extensionMethods;
-    private readonly string _codeSourceBasePath;
+    private readonly ExtractMetadataConfig _config;
     private readonly SymbolFilter _filter;
 
-    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
+    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig config, SymbolFilter filter, IMethodSymbol[] extensionMethods)
     {
         _compilation = compilation;
         _generator = generator;
         _filter = filter;
+        _config = config;
         _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
-        _codeSourceBasePath = options.CodeSourceBasePath;
     }
 
     public override MetadataItem DefaultVisit(ISymbol symbol)
@@ -728,6 +728,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         return new XmlCommentParserContext
         {
+            SkipMarkup = _config.ShouldSkipMarkup,
             AddReferenceDelegate = AddReferenceDelegate,
             Source = item.Source,
             ResolveCode = ResolveCode,
@@ -747,7 +748,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
         string ResolveCode(string source)
         {
-            var basePath = _codeSourceBasePath ?? (
+            var basePath = _config.CodeSourceBasePath ?? (
                 item.Source?.Path is {} sourcePath
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);

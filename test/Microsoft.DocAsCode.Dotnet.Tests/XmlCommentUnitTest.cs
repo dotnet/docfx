@@ -2,10 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
-
 using Microsoft.DocAsCode.DataContracts.Common;
-
 using Xunit;
 
 namespace Microsoft.DocAsCode.Dotnet.Tests;
@@ -142,9 +139,9 @@ public class XmlCommentUnitTest
         Assert.Equal(
             """
             This is an example using source reference in a xaml file.
-            <pre><code class="lang-xaml">&lt;Grid>
-              &lt;TextBlock Text=&quot;Hello World&quot; />
-            &lt;/Grid></code></pre>
+            <pre><code class="lang-xaml">&lt;Grid&gt;
+              &lt;TextBlock Text="Hello World" /&gt;
+            &lt;/Grid&gt;</code></pre>
             """,
             commentModel.Examples.Single(),
             ignoreLineEndingDifferences: true);
@@ -168,6 +165,13 @@ public class XmlCommentUnitTest
                 {
                     Console.HelloWorld();
                 }
+
+            ```js
+            function main()
+            {
+                return 0
+            }
+            ```
             </remarks>
             """);
 
@@ -185,6 +189,13 @@ public class XmlCommentUnitTest
                 {
                     Console.HelloWorld();
                 }
+
+            ```js
+            function main()
+            {
+                return 0
+            }
+            ```
             """, comment.Remarks, ignoreLineEndingDifferences: true);
     }
 
@@ -304,7 +315,7 @@ public class XmlCommentUnitTest
                         <pre><code class="lang-csharp">public class XmlElement
                             : XmlLinkedNode</code></pre>
                         <ol><li>
-                                    word inside list->listItem->list->listItem->para.>
+                                    word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
                                     the second line.
                                 </li><li>item2 in numbered list</li></ol>
                     </li><li>item2 in bullet list</li><li>
@@ -362,7 +373,6 @@ public class XmlCommentUnitTest
     public void SeeAltText()
     {
         string input = """
-
             <member name='T:TestClass1.Partial1'>
                 <summary>
                     Class summary <see cref='T:System.AccessViolationException'>Exception type</see>
