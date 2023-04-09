@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using Markdig;
+using Markdig.Helpers;
 using Markdig.Renderers.Roundtrip;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
@@ -489,7 +490,7 @@ internal class XmlComment
             return null;
 
         if (_context.SkipMarkup)
-            return node.InnerXml;
+            return TrimEachLine(node.InnerXml);
 
         return GetInnerXmlAsMarkdown(TrimEachLine(node.InnerXml));
     }
@@ -572,7 +573,14 @@ internal class XmlComment
                     break;
 
                 case CodeBlock codeBlock:
-                    codeBlock.Lines = new(XmlDecode(codeBlock.Lines.ToString()));
+                    var lines = new StringLineGroup(codeBlock.Lines.Count);
+                    foreach (var line in codeBlock.Lines.Lines)
+                    {
+                        var newLine = line;
+                        newLine.Slice = new StringSlice(XmlDecode(line.Slice.ToString()), line.Slice.NewLine);
+                        lines.Add(newLine);
+                    }
+                    codeBlock.Lines = lines;
                     break;
 
                 case ContainerBlock containerBlock:

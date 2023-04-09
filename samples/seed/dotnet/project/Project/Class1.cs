@@ -82,7 +82,7 @@ public class Class1
     /// [link](https://www.github.com "title")
     ///
     /// ```csharp
-    /// for (var i = 0; i > 10; i++) &amp; &quot; &apos;
+    /// for (var i = 0; i > 10; i++) // &amp; &quot; &apos;
     /// var range = new Range&lt;int&gt; { Min = 0, Max = 10 };
     /// ```
     ///

@@ -165,6 +165,13 @@ public class XmlCommentUnitTest
                 {
                     Console.HelloWorld();
                 }
+
+            ```js
+            function main()
+            {
+                return 0
+            }
+            ```
             </remarks>
             """);
 
@@ -182,6 +189,13 @@ public class XmlCommentUnitTest
                 {
                     Console.HelloWorld();
                 }
+
+            ```js
+            function main()
+            {
+                return 0
+            }
+            ```
             """, comment.Remarks, ignoreLineEndingDifferences: true);
     }
 
