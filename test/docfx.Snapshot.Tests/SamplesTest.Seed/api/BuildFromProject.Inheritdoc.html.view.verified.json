@@ -6,6 +6,7 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
@@ -520,11 +521,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629\" text=\"Issue7629\"/>()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject.IInheritdoc.Issue7629\">Issue7629</a>()"
                 },
                 {
                   "lang": "vb",
-                  "value": "<xref uid=\"BuildFromProject.IInheritdoc.Issue7629\" text=\"Issue7629\"/>()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject.IInheritdoc.Issue7629\">Issue7629</a>()"
                 }
               ]
             }
@@ -598,6 +599,7 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",

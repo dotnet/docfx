@@ -133,6 +133,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -193,6 +194,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue6366",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -226,11 +228,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>"
             }
           ],
           "level": 0.0,
@@ -253,6 +255,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue6366.Class1`1",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -286,11 +289,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class1`1\" text=\"Class1\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1-1.html\">Class1</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class1`1\" text=\"Class1\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1-1.html\">Class1</a>(Of T)"
             }
           ],
           "level": 0.0,
@@ -313,6 +316,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue6366.Class2",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -346,11 +350,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class2\" text=\"Class2\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class2.html\">Class2</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366\" text=\"Issue6366\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue6366.Class2\" text=\"Class2\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.html\">Issue6366</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class2.html\">Class2</a>"
             }
           ],
           "level": 0.0,
@@ -373,6 +377,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue7035",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -406,11 +411,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7035\" text=\"Issue7035\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue7035.html\">Issue7035</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7035\" text=\"Issue7035\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue7035.html\">Issue7035</a>"
             }
           ],
           "level": 0.0,
@@ -433,6 +438,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue7484",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -466,11 +472,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7484\" text=\"Issue7484\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue7484.html\">Issue7484</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue7484\" text=\"Issue7484\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue7484.html\">Issue7484</a>"
             }
           ],
           "level": 0.0,
@@ -493,6 +499,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue8101",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -526,11 +533,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8101\" text=\"Issue8101\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue8101.html\">Issue8101</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8101\" text=\"Issue8101\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue8101.html\">Issue8101</a>"
             }
           ],
           "level": 0.0,
@@ -560,6 +567,7 @@
         {
           "uid": "BuildFromProject.Inheritdoc.Issue8129",
           "isExtensionMethod": false,
+          "href": "BuildFromProject.Inheritdoc.html",
           "name": [
             {
               "lang": "csharp",
@@ -593,11 +601,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8129\" text=\"Issue8129\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue8129.html\">Issue8129</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Inheritdoc\" text=\"Inheritdoc\"/>.<xref uid=\"BuildFromProject.Inheritdoc.Issue8129\" text=\"Issue8129\"/>"
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.html\">Inheritdoc</a>.<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue8129.html\">Issue8129</a>"
             }
           ],
           "level": 0.0,
@@ -628,6 +636,7 @@
           "uid": "BuildFromProject.IInheritdoc",
           "isExtensionMethod": false,
           "parent": "BuildFromProject",
+          "href": "BuildFromProject.IInheritdoc.html",
           "name": [
             {
               "lang": "csharp",
