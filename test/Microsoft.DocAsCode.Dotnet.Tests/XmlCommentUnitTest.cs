@@ -24,7 +24,7 @@ public class XmlCommentUnitTest
     public static void SeeLangword()
     {
         Verify("<see langword=\"if\" />", "<a href=\"https://learn.microsoft.com/dotnet/csharp/language-reference/statements/selection-statements#the-if-statement\">if</a>");
-        Verify("<see langword=\"undefined-langword\" />", "<c>undefined-langword</c>");
+        Verify("<see langword=\"undefined-langword\" />", "<code>undefined-langword</code>");
     }
 
     [Fact]
@@ -299,7 +299,7 @@ public class XmlCommentUnitTest
         Assert.Equal("""
             <a href="https://example.org">https://example.org</a>
             <a href="https://example.org">example</a>
-            <p>This is <c class="paramref">ref</c> a sample of exception node</p>
+            <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
                         <pre><code class="lang-csharp">public class XmlElement
                             : XmlLinkedNode</code></pre>
