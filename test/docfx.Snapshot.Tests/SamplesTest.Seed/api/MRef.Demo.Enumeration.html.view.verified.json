@@ -53,7 +53,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/MRef.Demo.Enumeration.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
           "isEii": false,

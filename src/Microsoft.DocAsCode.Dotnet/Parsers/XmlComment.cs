@@ -78,6 +78,7 @@ internal class XmlComment
         ResolveCrefLink(doc, "//exception[@cref]", context.AddReferenceDelegate);
 
         ResolveCode(doc, context);
+
         var nav = doc.CreateNavigator();
         Summary = GetSingleNodeValue(nav, "/member/summary");
         Remarks = GetSingleNodeValue(nav, "/member/remarks");
@@ -132,6 +133,12 @@ internal class XmlComment
     {
         foreach (var node in doc.XPathSelectElements("//code").ToList())
         {
+            if (node.Attribute("data-inline") is { } inlineAttribute)
+            {
+                inlineAttribute.Remove();
+                continue;
+            }
+
             var indent = ((IXmlLineInfo)node).LinePosition - 2;
             var (lang, value) = ResolveCodeSource(node, context);
             value = TrimEachLine(value ?? node.Value, new(' ', indent));
@@ -271,7 +278,9 @@ internal class XmlComment
             }
             else
             {
-                item.ReplaceWith(new XElement("c", langword));
+                var code = new XElement("code", langword);
+                code.SetAttributeValue("data-inline", "true");
+                item.ReplaceWith(code);
             }
         }
     }

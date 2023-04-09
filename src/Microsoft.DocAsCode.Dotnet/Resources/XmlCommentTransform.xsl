@@ -13,6 +13,12 @@
     </p>
   </xsl:template>
 
+  <xsl:template match="c">
+    <code data-inline="true">
+      <xsl:apply-templates />
+    </code>
+  </xsl:template>
+
   <xsl:template match="value">
     <returns>
       <xsl:apply-templates />
@@ -39,24 +45,24 @@
 
   <xsl:template match="paramref">
     <xsl:if test="normalize-space(@name)">
-      <c class="paramref">
+      <code data-inline="true" class="paramref">
         <xsl:value-of select="@name" />
-      </c>
+      </code>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="typeparamref">
     <xsl:if test="normalize-space(@name)">
-      <c class="typeparamref">
+      <code data-inline="true" class="typeparamref">
         <xsl:value-of select="@name" />
-      </c>
+      </code>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="languageKeyword">
-    <c class="languageKeyword">
+    <code data-inline="true" class="languageKeyword">
       <xsl:apply-templates />
-    </c>
+    </code>
   </xsl:template>
 
   <xsl:template match="note">

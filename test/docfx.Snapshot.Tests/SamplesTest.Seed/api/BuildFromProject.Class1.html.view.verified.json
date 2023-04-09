@@ -175,7 +175,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">Pricing models are used to calculate theoretical option values</p>\n<ul><li><span class=\"term\">1</span>Black Scholes</li><li><span class=\"term\">2</span>Black76</li><li><span class=\"term\">3</span>Black76Fut</li><li><span class=\"term\">4</span>Equity Tree</li><li><span class=\"term\">5</span>Variance Swap</li><li><span class=\"term\">6</span>Dividend Forecast</li></ul>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Pricing models are used to calculate theoretical option values</p>\n<ul><li><span class=\"term\">1</span>Black Scholes</li><li><span class=\"term\">2</span>Black76</li><li><span class=\"term\">3</span>Black76Fut</li><li><span class=\"term\">4</span>Equity Tree</li><li><span class=\"term\">5</span>Variance Swap</li><li><span class=\"term\">6</span>Dividend Forecast</li></ul>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue1651.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue1651%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L31",
@@ -527,7 +527,7 @@
             "BuildFromProject"
           ],
           "namespace": "BuildFromProject",
-          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">There's really no reason to not believe that this class can test things.</p>\n<table><thead><tr><th class=\"term\">Term</th><th class=\"description\">Description</th></tr></thead><tbody><tr><td class=\"term\">A Term</td><td class=\"description\">A Description</td></tr><tr><td class=\"term\">Bee Term</td><td class=\"description\">Bee Description</td></tr></tbody></table>\n",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">There's really no reason to not believe that this class can test things.</p>\n<table><thead><tr><th class=\"term\">Term</th><th class=\"description\">Description</th></tr></thead><tbody><tr><td class=\"term\">A Term</td><td class=\"description\">A Description</td></tr><tr><td class=\"term\">Bee Term</td><td class=\"description\">Bee Description</td></tr></tbody></table>\n",
           "example": [],
           "overload": {
             "uid": "BuildFromProject.Class1.Issue7484*",
@@ -756,7 +756,7 @@
           ],
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">Test</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Test</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue896.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue896%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L18",
@@ -841,7 +841,7 @@
             "BuildFromProject"
           ],
           "namespace": "BuildFromProject",
-          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">This is remarks.</p>\n",
+          "remarks": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">This is remarks.</p>\n",
           "example": [],
           "overload": {
             "uid": "BuildFromProject.Class1.XmlCommentIncludeTag*",
@@ -889,7 +889,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"2\">This method should do something...</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_XmlCommentIncludeTag.md&value=---%0Auid%3A%20BuildFromProject.Class1.XmlCommentIncludeTag%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L11",
