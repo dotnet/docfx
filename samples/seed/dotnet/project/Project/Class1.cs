@@ -2,6 +2,8 @@
 
 public class Class1
 {
+    public class Test<T> { }
+
     /// <summary>
     /// This method should do something...
     /// </summary>
@@ -38,5 +40,38 @@ public class Class1
     /// </remarks>
     public void Issue7484() { }
 
-    public class Test<T> { }
+    /// <remarks>
+    /// <code>
+    ///         void Update()
+    ///         {
+    ///             myClass.Execute();
+    ///         }
+    /// </code>
+    /// </remarks>
+    /// <example>
+    ///     <code source="../../../../common/Example.cs" region="MessageDeleted"></code>
+    /// </example>
+    public void Issue4017() { }
+
+    /// <remarks>
+    ///     For example:
+    ///
+    ///         MyClass myClass = new MyClass();
+    ///
+    ///         void Update()
+    ///         {
+    ///             myClass.Execute();
+    ///         }
+    /// </remarks>
+    /// <example>
+    /// ```csharp
+    /// MyClass myClass = new MyClass();
+    ///
+    /// void Update()
+    /// {
+    ///     myClass.Execute();
+    /// }
+    /// ```
+    /// </example>
+    public void Issue2623() { }
 }

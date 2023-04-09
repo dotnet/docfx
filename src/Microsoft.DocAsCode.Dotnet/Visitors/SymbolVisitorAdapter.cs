@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Exceptions;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
@@ -726,10 +728,39 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         return new XmlCommentParserContext
         {
-            AddReferenceDelegate = GetAddReferenceDelegate(item),
+            AddReferenceDelegate = AddReferenceDelegate,
             Source = item.Source,
-            CodeSourceBasePath = _codeSourceBasePath
+            ResolveCode = ResolveCode,
         };
+
+        void AddReferenceDelegate(string id, string commentId)
+        {
+            var r = AddReference(id, commentId);
+            if (item.References == null)
+            {
+                item.References = new Dictionary<string, ReferenceItem>();
+            }
+
+            // only record the id now, the value would be fed at later phase after merge
+            item.References[id] = null;
+        }
+
+        string ResolveCode(string source)
+        {
+            var basePath = _codeSourceBasePath ?? (
+                item.Source?.Path is {} sourcePath
+                    ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
+                    : null);
+
+            var path = Path.GetFullPath(Path.Combine(basePath, source));
+            if (!File.Exists(path))
+            {
+                Logger.LogWarning($"Source file '{path}' not found.");
+                return null;
+            }
+
+            return File.ReadAllText(path);
+        }
     }
 
     private List<AttributeInfo> GetAttributeInfo(ImmutableArray<AttributeData> attributes)
@@ -855,20 +886,5 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         result.Type = AddSpecReference(arg.Type);
         return result;
-    }
-
-    private Action<string, string> GetAddReferenceDelegate(MetadataItem item)
-    {
-        return (id, commentId) =>
-        {
-            var r = AddReference(id, commentId);
-            if (item.References == null)
-            {
-                item.References = new Dictionary<string, ReferenceItem>();
-            }
-
-            // only record the id now, the value would be fed at later phase after merge
-            item.References[id] = null;
-        };
     }
 }

@@ -177,7 +177,7 @@
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ColorCount</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ColorCount</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L18",
@@ -364,7 +364,7 @@
           },
           "level": 0.0,
           "type": "property",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">GetColorCount</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">GetColorCount</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_GetColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.GetColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L50",
@@ -597,7 +597,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L68",
@@ -850,7 +850,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
   "example": [],
   "syntax": {
     "content": [
