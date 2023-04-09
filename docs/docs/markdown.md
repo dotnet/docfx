@@ -243,6 +243,11 @@ Or reuse an entire Markdown file as a block, nested within a section of an artic
 
 Where `<title>` is the name of the file and `<filepath>` is the relative path to the file.
 
+Example:
+```markdown
+[!INCLUDE [my-markdown-block](../../includes/my-markdown-block.md)]
+```
+
 Included markdown files needs to be excluded from build, they are usually placed in the `/includes` folder.
 
 ## Code Snippet

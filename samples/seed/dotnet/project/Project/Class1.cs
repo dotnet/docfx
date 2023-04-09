@@ -40,6 +40,7 @@ public class Class1
     /// </remarks>
     public void Issue7484() { }
 
+    /// <remarks>
     /// <code>
     ///         void Update()
     ///         {
@@ -84,6 +85,7 @@ public class Class1
     /// for (var i = 0; i > 10; i++) &amp; &quot; &apos;
     /// var range = new Range&lt;int&gt; { Min = 0, Max = 10 };
     /// ```
+    ///
     /// <code>
     /// var range = new Range&lt;int&gt; { Min = 0, Max = 10 };
     /// </code>

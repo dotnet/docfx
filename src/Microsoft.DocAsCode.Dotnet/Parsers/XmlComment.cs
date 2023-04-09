@@ -78,7 +78,6 @@ internal class XmlComment
         ResolveCrefLink(doc, "//exception[@cref]", context.AddReferenceDelegate);
 
         ResolveCode(doc, context);
-
         var nav = doc.CreateNavigator();
         Summary = GetSingleNodeValue(nav, "/member/summary");
         Remarks = GetSingleNodeValue(nav, "/member/remarks");
@@ -86,7 +85,7 @@ internal class XmlComment
 
         Exceptions = ToListNullOnEmpty(GetMulitpleCrefInfo(nav, "/member/exception"));
         SeeAlsos = ToListNullOnEmpty(GetMultipleLinkInfo(nav, "/member/seealso"));
-        Examples = ToListNullOnEmpty(GetMultipleExampleNodes(nav, "/member/example"));
+        Examples = GetMultipleExampleNodes(nav, "/member/example").ToList();
         Parameters = GetListContent(nav, "/member/param", "parameter", context);
         TypeParameters = GetListContent(nav, "/member/typeparam", "type parameter", context);
 
