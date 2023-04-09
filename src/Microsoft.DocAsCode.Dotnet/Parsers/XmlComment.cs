@@ -81,11 +81,19 @@ internal class XmlComment
         Remarks = GetSingleNodeValue(nav, "/member/remarks");
         Returns = GetSingleNodeValue(nav, "/member/returns");
 
-        Exceptions = GetMulitpleCrefInfo(nav, "/member/exception").ToList();
-        SeeAlsos = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
-        Examples = GetMultipleExampleNodes(nav, "/member/example").ToList();
+        Exceptions = ToListNullOnEmpty(GetMulitpleCrefInfo(nav, "/member/exception"));
+        SeeAlsos = ToListNullOnEmpty(GetMultipleLinkInfo(nav, "/member/seealso"));
+        Examples = ToListNullOnEmpty(GetMultipleExampleNodes(nav, "/member/example"));
         Parameters = GetListContent(nav, "/member/param", "parameter", context);
         TypeParameters = GetListContent(nav, "/member/typeparam", "type parameter", context);
+
+        // Nulls and empty list are treated differently in overwrite files:
+        //   null values can be replaced, but empty list are merged by merge key
+        static List<T> ToListNullOnEmpty<T>(IEnumerable<T> items)
+        {
+            var list = items.ToList();
+            return list.Count == 0 ? null : list;
+        }
     }
 
     public static XmlComment Parse(string xml, XmlCommentParserContext context = null)
