@@ -96,34 +96,6 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue1651
   nameWithType: Class1.Issue1651
-<<<<<<< HEAD
-- uid: BuildFromProject.Class1.Issue2723
-  name: Issue2723()
-  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723
-  commentId: M:BuildFromProject.Class1.Issue2723
-  fullName: BuildFromProject.Class1.Issue2723()
-  nameWithType: Class1.Issue2723()
-- uid: BuildFromProject.Class1.Issue2723*
-  name: Issue2723
-  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723_
-  commentId: Overload:BuildFromProject.Class1.Issue2723
-  isSpec: "True"
-  fullName: BuildFromProject.Class1.Issue2723
-  nameWithType: Class1.Issue2723
-- uid: BuildFromProject.Class1.Issue4392
-  name: Issue4392()
-  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392
-  commentId: M:BuildFromProject.Class1.Issue4392
-  fullName: BuildFromProject.Class1.Issue4392()
-  nameWithType: Class1.Issue4392()
-- uid: BuildFromProject.Class1.Issue4392*
-  name: Issue4392
-  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392_
-  commentId: Overload:BuildFromProject.Class1.Issue4392
-  isSpec: "True"
-  fullName: BuildFromProject.Class1.Issue4392
-  nameWithType: Class1.Issue4392
-=======
 - uid: BuildFromProject.Class1.Issue2623
   name: Issue2623()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2623
@@ -137,6 +109,19 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue2623
   nameWithType: Class1.Issue2623
+- uid: BuildFromProject.Class1.Issue2723
+  name: Issue2723()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723
+  commentId: M:BuildFromProject.Class1.Issue2723
+  fullName: BuildFromProject.Class1.Issue2723()
+  nameWithType: Class1.Issue2723()
+- uid: BuildFromProject.Class1.Issue2723*
+  name: Issue2723
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2723_
+  commentId: Overload:BuildFromProject.Class1.Issue2723
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue2723
+  nameWithType: Class1.Issue2723
 - uid: BuildFromProject.Class1.Issue4017
   name: Issue4017()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4017
@@ -150,7 +135,19 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue4017
   nameWithType: Class1.Issue4017
->>>>>>> main
+- uid: BuildFromProject.Class1.Issue4392
+  name: Issue4392()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392
+  commentId: M:BuildFromProject.Class1.Issue4392
+  fullName: BuildFromProject.Class1.Issue4392()
+  nameWithType: Class1.Issue4392()
+- uid: BuildFromProject.Class1.Issue4392*
+  name: Issue4392
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue4392_
+  commentId: Overload:BuildFromProject.Class1.Issue4392
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue4392
+  nameWithType: Class1.Issue4392
 - uid: BuildFromProject.Class1.Issue7484
   name: Issue7484()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue7484
