@@ -568,11 +568,11 @@ In general, the *glob* pattern contains the following rules:
 
 ## 5. Q & A
 
-1. Do we support files outside current project folder(the folder where `docfx.json` exists)?  
+1. Do we support files outside current project folder (the folder where `docfx.json` exists)?  
    A: YES. DO specify `src` and files outside of current folder will be copied to output folder keeping the same relative path to `src`.
-2. Do we support output folder outside current project folder(the folder where `docfx.json` exists)?  
+2. Do we support output folder outside current project folder (the folder where `docfx.json` exists)?  
    A: YES.
-3. Do we support **referencing** files outside of current project folder(the folder where `docfx.json` exists)?  
+3. Do we support **referencing** files outside of current project folder (the folder where `docfx.json` exists)?  
    A: NO.
 
 [1]: http://yaml.org/
