@@ -175,7 +175,7 @@
           },
           "level": 0.0,
           "type": "constructor",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Default constructor.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Default constructor.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122",
@@ -358,7 +358,7 @@
           },
           "level": 0.0,
           "type": "constructor",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Constructor with one generic parameter.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Constructor with one generic parameter.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor__0_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128",
@@ -681,7 +681,7 @@
           },
           "level": 0.0,
           "type": "constructor",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">It's a complex constructor. The parameter will have some attributes.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's a complex constructor. The parameter will have some attributes.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(System.String%2CSystem.Int32%40%2CSystem.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137",
@@ -835,7 +835,7 @@
             }
           ],
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Field with attribute.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Field with attribute.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_isHealthy.md&value=---%0Auid%3A%20CatLibrary.Cat%602.isHealthy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231",
@@ -1022,7 +1022,7 @@
           },
           "level": 0.0,
           "type": "property",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Hint cat's age.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Hint cat's age.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Age.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Age%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213",
@@ -1251,7 +1251,7 @@
           },
           "level": 0.0,
           "type": "property",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Item_System_String_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Item(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204",
@@ -1476,7 +1476,7 @@
             }
           ],
           "type": "property",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">EII property.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">EII property.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Name.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255",
@@ -2041,7 +2041,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Override the method of <code>Object.Equals(object obj).</code></p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Override the method of <code>Object.Equals(object obj).</code></p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Equals_System_Object_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165",
@@ -2316,7 +2316,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">It's an <code>unsafe</code> method.\nAs you see, <code data-dev-comment-type=\"paramref\" class=\"paramref\">catName</code> is a <strong>pointer</strong>, so we need to add <code data-dev-comment-type=\"languageKeyword\" class=\"languageKeyword\">unsafe</code> keyword.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's an <code>unsafe</code> method.\nAs you see, <code class=\"paramref\">catName</code> is a <b>pointer</b>, so we need to add <code class=\"languageKeyword\">unsafe</code> keyword.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___.md&value=---%0Auid%3A%20CatLibrary.Cat%602.GetTailLength(System.Int32*%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174",
@@ -2654,7 +2654,7 @@
             }
           ],
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">This method have attribute above it.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This method have attribute above it.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Jump__0__1_System_Boolean__.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Jump(%600%2C%601%2CSystem.Boolean%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154",
@@ -2796,7 +2796,7 @@
           "example": [],
           "level": 0.0,
           "type": "event",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Eat event of this cat</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Eat event of this cat</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_ownEat.md&value=---%0Auid%3A%20CatLibrary.Cat%602.ownEat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223",
@@ -3012,7 +3012,7 @@
                   }
                 ]
               },
-              "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Result with <em>int</em> type.</p>\n"
+              "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Result with <i>int</i> type.</p>\n"
             }
           },
           "source": {
@@ -3074,7 +3074,7 @@
           },
           "level": 0.0,
           "type": "operator",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Addition operator of this class.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Addition operator of this class.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Addition(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183",
@@ -3298,7 +3298,7 @@
           },
           "level": 0.0,
           "type": "operator",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Expilicit operator of this class.</p>\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Expilicit operator of this class.</p>\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Explicit(CatLibrary.Cat%7B%600%2C%601%7D)~CatLibrary.Tom%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196",
@@ -3566,7 +3566,7 @@
           },
           "level": 0.0,
           "type": "operator",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"2\">Similar with operaotr +, refer to that topic.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Similar with operaotr +, refer to that topic.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Subtraction(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188",
@@ -3688,10 +3688,10 @@
     ],
     "level": 0.0
   },
-  "summary": "<p>Here&apos;s main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">T</code> and <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
+  "summary": "<p>Here&apos;s main class of this <i>Demo</i>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code class=\"typeparamref\">T</code> and <code class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
   "remarks": "<p sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\"><em sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\">THIS</em> is remarks overridden in <em sourcefile=\"specs/Cat.md\" sourcestartlinenumber=\"1\">MARKDWON</em> file</p>\n",
   "example": [
-    "<p>Here&apos;s example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"lang-c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <code data-dev-comment-type=\"languageKeyword\" class=\"languageKeyword\">unsafe</code> keyword.</p>\n"
+    "<p>Here&apos;s example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"lang-csharp\">var a = new Cat(object, int)();\nint catNumber = new int();\nunsafe\n{\n    a.GetFeetLength(catNumber);\n}</code></pre>\n<p>As you see, here we bring in <b>pointer</b> so we need to add <code class=\"languageKeyword\">unsafe</code> keyword.</p>\n"
   ],
   "syntax": {
     "content": [

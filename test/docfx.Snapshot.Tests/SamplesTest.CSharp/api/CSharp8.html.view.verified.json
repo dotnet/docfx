@@ -112,7 +112,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"2\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
+          "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"1\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,

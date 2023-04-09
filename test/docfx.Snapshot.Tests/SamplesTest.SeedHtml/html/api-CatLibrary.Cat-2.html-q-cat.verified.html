@@ -468,10 +468,10 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
     <dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Here's main class of this <em>Demo</em>.</p>
+  <div class="markdown summary"><p>Here's main class of this <i>Demo</i>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>
 <p></p>
-<p>this class is a template class. It has two Generic parameter. they are: <code data-dev-comment-type="typeparamref" class="typeparamref">T</code> and <code data-dev-comment-type="typeparamref" class="typeparamref">K</code>.</p>
+<p>this class is a template class. It has two Generic parameter. they are: <code class="typeparamref">T</code> and <code class="typeparamref">K</code>.</p>
 <p>The extension method of this class can refer to <a class="xref" href="CatLibrary.ICatExtension.html">ICat<wbr>Extension</a> class</p>
 </div>
   <div class="markdown conceptual">
@@ -554,13 +554,13 @@ This is a CAT class</p>
 
   <h2 id="CatLibrary_Cat_2_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
   <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
-<pre><code class="lang-c# hljs language-c">    var a = new Cat(object, <span class="hljs-type">int</span>)();
-    <span class="hljs-type">int</span> catNumber = new <span class="hljs-type">int</span>();
-    unsafe
-    {
-        a.GetFeetLength(catNumber);
-    }</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
-<p>As you see, here we bring in <strong>pointer</strong> so we need to add <code data-dev-comment-type="languageKeyword" class="languageKeyword">unsafe</code> keyword.</p>
+<pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">var</span> a = <span class="hljs-keyword">new</span> Cat(<span class="hljs-built_in">object</span>, <span class="hljs-built_in">int</span>)();
+<span class="hljs-built_in">int</span> catNumber = <span class="hljs-keyword">new</span> <span class="hljs-built_in">int</span>();
+<span class="hljs-keyword">unsafe</span>
+{
+    a.GetFeetLength(catNumber);
+}</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+<p>As you see, here we bring in <b>pointer</b> so we need to add <code class="languageKeyword">unsafe</code> keyword.</p>
 
 
   <h2 id="CatLibrary_Cat_2_remarks">Remarks<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_remarks" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
@@ -912,7 +912,7 @@ This is a CAT class</p>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's an <code>unsafe</code> method.
-As you see, <code data-dev-comment-type="paramref" class="paramref">catName</code> is a <strong>pointer</strong>, so we need to add <code data-dev-comment-type="languageKeyword" class="languageKeyword">unsafe</code> keyword.</p>
+As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we need to add <code class="languageKeyword">unsafe</code> keyword.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1058,7 +1058,7 @@ As you see, <code data-dev-comment-type="paramref" class="paramref">catName</cod
   <h4 class="section" id="returns-3">Returns<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#returns-3" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
   <dl class="parameters">
     <dt><a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
-    <dd><p>Result with <em>int</em> type.</p>
+    <dd><p>Result with <i>int</i> type.</p>
 </dd>
   </dl>
 

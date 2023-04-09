@@ -177,7 +177,7 @@
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">blue</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">blue</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Blue.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Blue%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L33",
@@ -312,7 +312,7 @@
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">red</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">red</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Red.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Red%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L29",
@@ -447,7 +447,7 @@
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">yellow</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">yellow</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorType_Yellow.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorType.Yellow%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L37",
@@ -558,7 +558,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
   "example": [],
   "syntax": {
     "content": [

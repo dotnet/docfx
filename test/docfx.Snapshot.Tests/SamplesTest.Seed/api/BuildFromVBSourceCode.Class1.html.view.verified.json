@@ -177,7 +177,7 @@
           "example": [],
           "level": 0.0,
           "type": "field",
-          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">Value</em> type</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Value</em> type</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_ValueClass.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.ValueClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L14",
@@ -615,7 +615,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">Function</em></p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Function</em></p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Value_System_String_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Value(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L37",
@@ -884,7 +884,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">What is <strong sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">Sub</strong>?</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">What is <strong sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Sub</strong>?</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L26",
@@ -995,7 +995,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"2\">This is summary from vb class...</p>\n",
+  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is summary from vb class...</p>\n",
   "example": [],
   "syntax": {
     "content": [

@@ -194,7 +194,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
           "type": "struct",
           "platform": null,
           "isEii": false,
@@ -329,7 +329,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
           "isEii": false,
@@ -396,7 +396,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"2\">Delegate ContainersRefTypeDelegate</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,

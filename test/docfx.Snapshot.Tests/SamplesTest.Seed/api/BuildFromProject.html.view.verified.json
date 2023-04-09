@@ -472,7 +472,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"2\">This is a test class to have something for DocFX to document.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.Issue7484.yml\" sourcestartlinenumber=\"1\">This is a test class to have something for DocFX to document.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
