@@ -135,4 +135,3 @@ function renderNextArticle(items: TocNode[], node: TocNode) {
     return result
   }
 }
-
