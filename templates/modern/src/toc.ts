@@ -81,12 +81,16 @@ export async function renderToc(): Promise<TocNode[]> {
       const { href, name, items, expanded } = node
       const isLeaf = !items || items.length <= 0
 
+      const dom = href
+        ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
+        : (isLeaf
+          ? html`<span class='text-body-tertiary name-only'>${breakWordLit(name)}</a>`
+          : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
+
       return html`
         <li class=${classMap({ expanded })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
-          ${href
-            ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
-            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`}
+          ${dom}
           ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
         </li>`
 
@@ -117,8 +121,8 @@ function renderNextArticle(items: TocNode[], node: TocNode) {
     return
   }
 
-  const prevButton = prev ? html`<div class="prev"><span><i class='bi bi-chevron-left'></i> Previous</span> <a href="${prev.href}">${breakWordLit(prev.name)}</a></div>` : null
-  const nextButton = next ? html`<div class="next"><span>Next <i class='bi bi-chevron-right'></i></span> <a href="${next.href}">${breakWordLit(next.name)}</a></div>` : null
+  const prevButton = prev ? html`<div class="prev"><span><i class='bi bi-chevron-left'></i> Previous</span> <a href="${prev.href}" rel="prev">${breakWordLit(prev.name)}</a></div>` : null
+  const nextButton = next ? html`<div class="next"><span>Next <i class='bi bi-chevron-right'></i></span> <a href="${next.href}" rel="next">${breakWordLit(next.name)}</a></div>` : null
 
   render(html`${prevButton} ${nextButton}`, nextArticle)
 
