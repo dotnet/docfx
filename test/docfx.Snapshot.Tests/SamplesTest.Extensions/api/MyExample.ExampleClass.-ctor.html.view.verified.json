@@ -368,6 +368,7 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "_disableToc": false,
+  "_disableNextArticle": true,
   "inConstructor": true,
   "isCollection": true
 }

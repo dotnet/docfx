@@ -1126,5 +1126,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inInterface": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

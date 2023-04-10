@@ -382,5 +382,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inDelegate": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

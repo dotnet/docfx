@@ -601,5 +601,6 @@
   "isClass": false,
   "inEnum": true,
   "isEnum": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }
