@@ -81,12 +81,16 @@ export async function renderToc(): Promise<TocNode[]> {
       const { href, name, items, expanded } = node
       const isLeaf = !items || items.length <= 0
 
+      const dom = href
+        ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
+        : (isLeaf
+          ? html`<span class='name'>${breakWordLit(name)}</a>`
+          : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
+
       return html`
         <li class=${classMap({ expanded })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
-          ${href
-            ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
-            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`}
+          ${dom}
           ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
         </li>`
 
