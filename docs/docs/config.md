@@ -98,6 +98,7 @@ Name         | Type    | Description
 `_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
 `_disableToc`           | bool    | Whether to show the TOC.
 `_disableAffix`         | bool    | Whether to show the right rail.
+`_disableNextArticle`   | bool    | Whether to show the previous and next article link.
 `_noindex`              | bool  | Whether to include in search results
 `_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.

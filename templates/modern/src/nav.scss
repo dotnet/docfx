@@ -89,3 +89,33 @@
     }
   }
 }
+
+.next-article {
+  display: flex;
+
+  &:not(:has(div)) {
+    border-top-width: 0;
+  }
+
+  &:has(div) {
+    margin-top: 3rem;
+    padding-top: 1rem;
+  }
+
+  &>div {
+    flex: 1;
+
+    &.next {
+      text-align: right;
+    }
+
+    &>span {
+      opacity: .66;
+      font-size: 14px;
+    }
+
+    &>a {
+      display: block;
+    }
+  }
+}

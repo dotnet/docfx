@@ -25,6 +25,7 @@ export async function renderToc(): Promise<TocNode[]> {
   const { items } = await (await fetch(tocUrl)).json()
 
   const activeNodes = []
+  const selectedNodes = []
   items.forEach(initTocNodes)
 
   const tocContainer = document.getElementById('toc')
@@ -38,6 +39,10 @@ export async function renderToc(): Promise<TocNode[]> {
     }
   }
 
+  if (selectedNodes.length > 0) {
+    renderNextArticle(items, selectedNodes[0])
+  }
+
   return activeNodes.slice(0, -1)
 
   function initTocNodes(node: TocNode): boolean {
@@ -46,6 +51,9 @@ export async function renderToc(): Promise<TocNode[]> {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
       active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
+      if (active) {
+        selectedNodes.push(node)
+      }
     }
 
     if (node.items) {
@@ -94,3 +102,37 @@ export async function renderToc(): Promise<TocNode[]> {
     return url.pathname.replace(/\/index\.html$/gi, '/')
   }
 }
+
+function renderNextArticle(items: TocNode[], node: TocNode) {
+  const nextArticle = document.getElementById('nextArticle')
+  if (!nextArticle) {
+    return
+  }
+
+  const tocNodes = flattenTocNodesWithHref(items)
+  const i = tocNodes.findIndex(n => n === node)
+  const prev = tocNodes[i - 1]
+  const next = tocNodes[i + 1]
+  if (!prev && !next) {
+    return
+  }
+
+  const prevButton = prev ? html`<div class="prev"><span><i class='bi bi-chevron-left'></i> Previous</span> <a href="${prev.href}">${prev.name}</a></div>` : null
+  const nextButton = next ? html`<div class="next"><span>Next <i class='bi bi-chevron-right'></i></span> <a href="${next.href}">${next.name}</a></div>` : null
+
+  render(html`${prevButton} ${nextButton}`, nextArticle)
+
+  function flattenTocNodesWithHref(items: TocNode[]) {
+    const result = []
+    for (const item of items) {
+      if (item.href) {
+        result.push(item)
+      }
+      if (item.items) {
+        result.push(...flattenTocNodesWithHref(item.items))
+      }
+    }
+    return result
+  }
+}
+
