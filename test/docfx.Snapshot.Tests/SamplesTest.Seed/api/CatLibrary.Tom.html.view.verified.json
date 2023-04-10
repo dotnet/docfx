@@ -6,6 +6,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -150,11 +151,11 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;<xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>&gt;"
+                      "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;<a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>&gt;"
                     },
                     {
                       "lang": "vb",
-                      "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>)"
+                      "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>)"
                     }
                   ]
                 },
@@ -198,11 +199,11 @@
                   "specName": [
                     {
                       "lang": "csharp",
-                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>&gt;"
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>&gt;"
                     },
                     {
                       "lang": "vb",
-                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <xref uid=\"CatLibrary.Tom\" text=\"Tom\"/>)"
+                      "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>)"
                     }
                   ]
                 },
@@ -246,11 +247,11 @@
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>&gt;"
+                    "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>&gt;"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <xref uid=\"CatLibrary.TomFromBaseClass\" text=\"TomFromBaseClass\"/>)"
+                    "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>)"
                   }
                 ]
               },
@@ -447,11 +448,11 @@
                 "specName": [
                   {
                     "lang": "csharp",
-                    "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>&lt;T&gt;"
+                    "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>&lt;T&gt;"
                   },
                   {
                     "lang": "vb",
-                    "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>(Of T)"
+                    "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>(Of T)"
                   }
                 ]
               },
@@ -529,6 +530,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",

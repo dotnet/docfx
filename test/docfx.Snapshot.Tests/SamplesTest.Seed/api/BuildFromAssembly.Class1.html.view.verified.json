@@ -7,6 +7,7 @@
     "isEii": false,
     "isExtensionMethod": false,
     "isExternal": true,
+    "href": "BuildFromAssembly.html",
     "name": [
       {
         "lang": "csharp",
@@ -368,6 +369,7 @@
     "isEii": false,
     "isExtensionMethod": false,
     "isExternal": true,
+    "href": "BuildFromAssembly.html",
     "name": [
       {
         "lang": "csharp",

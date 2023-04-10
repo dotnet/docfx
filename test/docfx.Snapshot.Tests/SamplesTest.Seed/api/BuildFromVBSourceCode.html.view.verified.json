@@ -12,6 +12,7 @@
           "uid": "BuildFromVBSourceCode.BaseClass1",
           "isExtensionMethod": false,
           "parent": "BuildFromVBSourceCode",
+          "href": "BuildFromVBSourceCode.BaseClass1.html",
           "name": [
             {
               "lang": "csharp",
@@ -73,6 +74,7 @@
           "uid": "BuildFromVBSourceCode.Class1",
           "isExtensionMethod": false,
           "parent": "BuildFromVBSourceCode",
+          "href": "BuildFromVBSourceCode.Class1.html",
           "name": [
             {
               "lang": "csharp",

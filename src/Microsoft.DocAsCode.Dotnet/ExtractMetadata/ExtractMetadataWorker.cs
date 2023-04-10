@@ -142,11 +142,13 @@ internal class ExtractMetadataWorker : IDisposable
         var projectMetadataList = new List<MetadataItem>();
         var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods()).ToArray();
         var filter = new SymbolFilter(_config, _options);
+        var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.Item1), SymbolEqualityComparer.Default);
 
         foreach (var (assembly, compilation) in assemblies)
         {
             Logger.LogInfo($"Processing {assembly.Name}");
-            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(compilation, new(compilation), _config, filter, extensionMethods));
+            var projectMetadata = assembly.Accept(new SymbolVisitorAdapter(
+                compilation, new(compilation, _config.MemberLayout, allAssemblies), _config, filter, extensionMethods));
 
             if (projectMetadata != null)
                 projectMetadataList.Add(projectMetadata);

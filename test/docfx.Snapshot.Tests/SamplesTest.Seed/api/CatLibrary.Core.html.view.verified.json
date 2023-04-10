@@ -26,6 +26,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -59,11 +60,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
             }
           ],
           "level": 0.0,
@@ -86,6 +87,7 @@
         {
           "uid": "CatLibrary.Core.ExplicitLayoutClass",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ExplicitLayoutClass.html",
           "name": [
             {
               "lang": "csharp",
@@ -153,6 +155,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -220,6 +223,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -253,11 +257,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
             }
           ],
           "level": 0.0,
@@ -288,6 +292,7 @@
           "uid": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExtensionMethod": false,
           "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -321,11 +326,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
             }
           ],
           "level": 0.0,
@@ -355,6 +360,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -388,11 +394,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
             }
           ],
           "level": 0.0,

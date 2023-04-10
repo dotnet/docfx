@@ -6,6 +6,7 @@
     "uid": "CSharp9",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp9.html",
     "name": [
       {
         "lang": "csharp",
@@ -571,6 +572,7 @@
     "uid": "CSharp9",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp9.html",
     "name": [
       {
         "lang": "csharp",
@@ -681,6 +683,7 @@
       "isEii": false,
       "isExtensionMethod": false,
       "parent": "CSharp9",
+      "href": "CSharp9.RecordTypes.html",
       "name": [
         {
           "lang": "csharp",
@@ -714,11 +717,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
+          "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
         },
         {
           "lang": "vb",
-          "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
+          "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
         }
       ],
       "level": 0.0,
@@ -763,11 +766,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>&gt;"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>)"
         }
       ]
     },
@@ -807,11 +810,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>&gt;"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>)"
         }
       ]
     }
@@ -821,6 +824,7 @@
       "uid": "CSharp9.RecordTypes.Person.FirstName",
       "isExtensionMethod": false,
       "parent": "CSharp9.RecordTypes.Person",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9.RecordTypes.Person.FirstName",
       "name": [
         {
           "lang": "csharp",
@@ -871,6 +875,7 @@
       "uid": "CSharp9.RecordTypes.Person.LastName",
       "isExtensionMethod": false,
       "parent": "CSharp9.RecordTypes.Person",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9.RecordTypes.Person.LastName",
       "name": [
         {
           "lang": "csharp",

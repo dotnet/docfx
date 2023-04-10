@@ -11,6 +11,7 @@
         {
           "uid": "CatLibrary.Core",
           "isExtensionMethod": false,
+          "href": "CatLibrary.html",
           "name": [
             {
               "lang": "csharp",
@@ -44,11 +45,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
             }
           ],
           "level": 0.0,
@@ -79,6 +80,7 @@
           "uid": "CatLibrary.Cat`2",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.Cat-2.html",
           "name": [
             {
               "lang": "csharp",
@@ -112,11 +114,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Cat-2.html\">Cat</a>&lt;T, K&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Cat-2.html\">Cat</a>(Of T, K)"
             }
           ],
           "level": 0.0,
@@ -139,6 +141,7 @@
         {
           "uid": "CatLibrary.CatException`1",
           "isExtensionMethod": false,
+          "href": "CatLibrary.CatException-1.html",
           "name": [
             {
               "lang": "csharp",
@@ -172,11 +175,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>(Of T)"
             }
           ],
           "level": 0.0,
@@ -199,6 +202,7 @@
         {
           "uid": "CatLibrary.Complex`2",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Complex-2.html",
           "name": [
             {
               "lang": "csharp",
@@ -232,11 +236,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;T, J&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;T, J&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of T, J)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of T, J)"
             }
           ],
           "level": 0.0,
@@ -260,6 +264,7 @@
           "uid": "CatLibrary.ICatExtension",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.ICatExtension.html",
           "name": [
             {
               "lang": "csharp",
@@ -321,6 +326,7 @@
           "uid": "CatLibrary.Tom",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.Tom.html",
           "name": [
             {
               "lang": "csharp",
@@ -381,6 +387,7 @@
         {
           "uid": "CatLibrary.TomFromBaseClass",
           "isExtensionMethod": false,
+          "href": "CatLibrary.TomFromBaseClass.html",
           "name": [
             {
               "lang": "csharp",
@@ -449,6 +456,7 @@
           "uid": "CatLibrary.IAnimal",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.IAnimal.html",
           "name": [
             {
               "lang": "csharp",
@@ -510,6 +518,7 @@
           "uid": "CatLibrary.ICat",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.ICat.html",
           "name": [
             {
               "lang": "csharp",
@@ -577,6 +586,7 @@
         {
           "uid": "CatLibrary.FakeDelegate`1",
           "isExtensionMethod": false,
+          "href": "CatLibrary.FakeDelegate-1.html",
           "name": [
             {
               "lang": "csharp",
@@ -610,11 +620,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.FakeDelegate-1.html\">FakeDelegate</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.FakeDelegate-1.html\">FakeDelegate</a>(Of T)"
             }
           ],
           "level": 0.0,
@@ -637,6 +647,7 @@
         {
           "uid": "CatLibrary.MRefDelegate`3",
           "isExtensionMethod": false,
+          "href": "CatLibrary.MRefDelegate-3.html",
           "name": [
             {
               "lang": "csharp",
@@ -670,11 +681,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>&lt;K, T, L&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.MRefDelegate-3.html\">MRefDelegate</a>&lt;K, T, L&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>(Of K, T, L)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.MRefDelegate-3.html\">MRefDelegate</a>(Of K, T, L)"
             }
           ],
           "level": 0.0,
@@ -697,6 +708,7 @@
         {
           "uid": "CatLibrary.MRefNormalDelegate",
           "isExtensionMethod": false,
+          "href": "CatLibrary.MRefNormalDelegate.html",
           "name": [
             {
               "lang": "csharp",

@@ -243,6 +243,7 @@
     "uid": "MyExample",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "MyExample.html",
     "name": [
       {
         "lang": "csharp",

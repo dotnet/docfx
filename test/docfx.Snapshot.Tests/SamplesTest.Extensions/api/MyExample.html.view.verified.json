@@ -11,6 +11,7 @@
         {
           "uid": "MyExample.ExampleClass",
           "isExtensionMethod": false,
+          "href": "MyExample.ExampleClass.html",
           "name": [
             {
               "lang": "csharp",

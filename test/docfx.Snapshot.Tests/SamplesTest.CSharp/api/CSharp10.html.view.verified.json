@@ -11,6 +11,7 @@
         {
           "uid": "CSharp10.ConstantInterpolatedStrings",
           "isExtensionMethod": false,
+          "href": "CSharp10.ConstantInterpolatedStrings.html",
           "name": [
             {
               "lang": "csharp",
@@ -71,6 +72,7 @@
         {
           "uid": "CSharp10.Issue7737",
           "isExtensionMethod": false,
+          "href": "CSharp10.Issue7737.html",
           "name": [
             {
               "lang": "csharp",
@@ -131,6 +133,7 @@
         {
           "uid": "CSharp10.RecordClass",
           "isExtensionMethod": false,
+          "href": "CSharp10.RecordClass.html",
           "name": [
             {
               "lang": "csharp",
@@ -198,6 +201,7 @@
         {
           "uid": "CSharp10.ParameterlessStructConstructors",
           "isExtensionMethod": false,
+          "href": "CSharp10.ParameterlessStructConstructors.html",
           "name": [
             {
               "lang": "csharp",
@@ -258,6 +262,7 @@
         {
           "uid": "CSharp10.ReadOnlyRecordStruct",
           "isExtensionMethod": false,
+          "href": "CSharp10.ReadOnlyRecordStruct.html",
           "name": [
             {
               "lang": "csharp",
@@ -318,6 +323,7 @@
         {
           "uid": "CSharp10.RecordStruct",
           "isExtensionMethod": false,
+          "href": "CSharp10.RecordStruct.html",
           "name": [
             {
               "lang": "csharp",

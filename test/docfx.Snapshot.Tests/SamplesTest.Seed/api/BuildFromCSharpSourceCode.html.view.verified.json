@@ -11,6 +11,7 @@
         {
           "uid": "BuildFromCSharpSourceCode.CSharp",
           "isExtensionMethod": false,
+          "href": "BuildFromCSharpSourceCode.CSharp.html",
           "name": [
             {
               "lang": "csharp",

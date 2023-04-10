@@ -12,7 +12,7 @@
           "uid": "BuildFromAssembly.Class1",
           "isExtensionMethod": false,
           "isExternal": true,
-          "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "href": "BuildFromAssembly.Class1.html",
           "name": [
             {
               "lang": "csharp",
