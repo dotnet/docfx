@@ -297,6 +297,7 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "_disableToc": false,
+  "_disableNextArticle": true,
   "inEvent": true,
   "isItem": true
 }

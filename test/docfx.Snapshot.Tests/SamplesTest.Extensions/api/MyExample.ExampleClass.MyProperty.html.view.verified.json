@@ -415,6 +415,7 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "_disableToc": false,
+  "_disableNextArticle": true,
   "inProperty": true,
   "isCollection": true
 }

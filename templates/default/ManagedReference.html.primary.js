@@ -23,6 +23,7 @@ exports.transform = function (model) {
     model.isEnum = true;
   }
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  model._disableNextArticle = true;
 
   if (extension && extension.postTransform) {
     if (model._splitReference) {
