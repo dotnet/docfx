@@ -102,16 +102,16 @@ public class SamplesTest
             foreach (var url in s_screenshotUrls)
             {
                 await page.GotoAsync($"http://localhost:{port}/{url}");
-                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
                 await page.WaitForFunctionAsync("window.docfx.ready");
                 await page.WaitForFunctionAsync("window.docfx.searchReady");
+                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
 
                 if (url.Contains("?term=cat"))
                 {
                     if (isMobile)
                     {
-                        await (await page.QuerySelectorAsync("[data-bs-target='#navbar']")).ClickAsync();
-                        await page.WaitForSelectorAsync("#navbar.show");
+                        await (await page.QuerySelectorAsync("[data-bs-target='#navpanel']")).ClickAsync();
+                        await page.WaitForSelectorAsync("#navpanel.show");
                     }
 
                     await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
