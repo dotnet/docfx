@@ -25,14 +25,14 @@ $main-padding-bottom: 4rem;
 }
 
 html {
-  width: 100vw;
+  width: calc(100vw - var(--scrollbar-width));
   min-height: 100vh;
   overflow-x: hidden;
 }
 
 body,
 body[data-layout="landing"] {
-  width: 100vw;
+  width: calc(100vw - var(--scrollbar-width));
   min-height: 100vh;
   display: flex;
   flex-direction: column;

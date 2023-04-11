@@ -29,28 +29,29 @@ export async function renderNavbar(): Promise<NavItem[]> {
 
   const activeItem = findActiveItem(navItems)
   const navbar = document.getElementById('navbar')
-  if (navbar) {
-    const menu = html`
-      <ul class='navbar-nav'>${
-        navItems.map(item => {
-          const current = (item === activeItem ? 'page' : false)
-          const active = (item === activeItem ? 'active' : null)
-          return html`
-            <li class='nav-item'><a class='nav-link ${active}' aria-current=${current} href=${item.href}>${breakWordLit(item.name)}</a></li>`
-        })
-      }</ul>`
-
-    render(menu, navbar, { renderBefore: navbar.firstChild })
+  if (!navbar) {
+    return
   }
+
+  const menu = html`
+    <ul class='navbar-nav'>${
+      navItems.map(item => {
+        const current = (item === activeItem ? 'page' : false)
+        const active = (item === activeItem ? 'active' : null)
+        return html`
+          <li class='nav-item'><a class='nav-link ${active}' aria-current=${current} href=${item.href}>${breakWordLit(item.name)}</a></li>`
+      })
+    }</ul>`
+
+  const icons = html`<form class="icons">${githubLink()} ${themePicker(renderCore)}</form>`
+
+  function renderCore() {
+    render(html`${menu} ${icons}`, navbar)
+  }
+
+  renderCore()
 
   return activeItem ? [activeItem] : []
-}
-
-export function renderFooter() {
-  const footer = document.querySelector('footer>div') as HTMLElement
-  if (footer) {
-    render(html`${githubLink()} ${themePicker(renderFooter)}`, footer)
-  }
 
   function githubLink() {
     const docurl = meta('docfx:docurl')

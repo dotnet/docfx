@@ -5,8 +5,6 @@ import { html } from 'lit-html'
 
 type Theme = 'light' | 'dark' | 'auto'
 
-setTheme(localStorage.getItem('theme') as Theme || 'auto')
-
 function setTheme(theme: Theme) {
   localStorage.setItem('theme', theme)
   if (theme === 'auto') {
@@ -16,14 +14,16 @@ function setTheme(theme: Theme) {
   }
 }
 
+export function initTheme() {
+  setTheme(localStorage.getItem('theme') as Theme || 'auto')
+}
+
 export function getTheme(): 'light' | 'dark' {
   return document.documentElement.getAttribute('data-bs-theme') as 'light' | 'dark'
 }
 
 export function themePicker(refresh: () => void) {
   const theme = localStorage.getItem('theme') as Theme || 'auto'
-  setTheme(theme)
-
   const icon = theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'circle-half'
 
   return html`

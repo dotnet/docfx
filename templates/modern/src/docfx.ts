@@ -6,7 +6,8 @@ import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
 import { renderToc } from './toc'
-import { renderBreadcrumb, renderFooter, renderInThisArticle, renderNavbar } from './nav'
+import { initTheme } from './theme'
+import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
@@ -24,10 +25,11 @@ declare global {
 
 window.docfx = {}
 
+initTheme()
+
 document.addEventListener('DOMContentLoaded', function() {
   enableSearch()
   renderMarkdown()
-  renderFooter()
   highlight()
 
   Promise.all([renderNavbar(), renderToc()])
