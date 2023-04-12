@@ -569,7 +569,7 @@ internal class XmlComment
             switch (node)
             {
                 case CodeInline codeInline:
-                    codeInline.Content = XmlDecode(codeInline.Content);
+                    codeInline.ContentWithTrivia = new(XmlDecode(codeInline.ContentWithTrivia.ToString()), codeInline.ContentWithTrivia.NewLine);
                     break;
 
                 case CodeBlock codeBlock:
@@ -577,7 +577,7 @@ internal class XmlComment
                     foreach (var line in codeBlock.Lines.Lines)
                     {
                         var newLine = line;
-                        newLine.Slice = new StringSlice(XmlDecode(line.Slice.ToString()), line.Slice.NewLine);
+                        newLine.Slice = new(XmlDecode(line.Slice.ToString()), line.Slice.NewLine);
                         lines.Add(newLine);
                     }
                     codeBlock.Lines = lines;
