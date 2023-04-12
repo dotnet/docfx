@@ -218,9 +218,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "overload": {
             "uid": "BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword*",
@@ -331,9 +328,6 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "vb.temp.dll"
-  ],
   "namespace": {
     "uid": "BuildFromVBSourceCode",
     "isEii": false,
