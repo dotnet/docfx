@@ -7,36 +7,37 @@ namespace Microsoft.DocAsCode.Dotnet;
 
 partial class SymbolUrlResolver
 {
-    private static readonly Lazy<HashSet<string>> s_msLearnAssemblies = new(LoadMSLearnAssemblies);
-
     public static string? GetMicrosoftLearnUrl(ISymbol symbol)
     {
-        if (string.IsNullOrEmpty(symbol.ContainingAssembly?.Name) ||
-            !s_msLearnAssemblies.Value.Contains(symbol.ContainingAssembly.Name))
-        {
+        if (string.IsNullOrEmpty(symbol.ContainingAssembly?.Name))
             return null;
+
+        if (symbol.GetDocumentationCommentId() is not { } commentId)
+            return null;
+
+        foreach (var (baseUrl, assemblyNames) in s_msLearnAssemblies.Value)
+        {
+            if (assemblyNames.Contains(symbol.ContainingAssembly.Name))
+                return GetMicrosoftLearnUrl(commentId, symbol.IsEnumMember(), symbol.HasOverloads(), baseUrl);
         }
 
-        return symbol.GetDocumentationCommentId() is { } commentId ?
-            GetMicrosoftLearnUrl(commentId, symbol.IsEnumMember(), symbol.HasOverloads()) : null;
+        return null;
     }
 
-    public static string GetMicrosoftLearnUrl(string commentId, bool isEnumMember, bool hasOverloads)
+    public static string GetMicrosoftLearnUrl(string commentId, bool isEnumMember, bool hasOverloads, string baseUrl = "https://learn.microsoft.com/dotnet/api/")
     {
-        const string BaseUrl = "https://learn.microsoft.com/dotnet/api/";
-
         var parts = commentId.Split(':');
         var type = parts[0];
         var uid = parts[1].ToLowerInvariant();
 
         return type switch
         {
-            "N" or "T" => $"{BaseUrl}{uid.Replace('`', '-')}",
-            "F" when isEnumMember => $"{BaseUrl}{GetEnumMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}",
+            "N" or "T" => $"{baseUrl}{uid.Replace('`', '-')}",
+            "F" when isEnumMember => $"{baseUrl}{GetEnumMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}",
 
             "M" or "F" or "P" or "E" => hasOverloads
-                ? $"{BaseUrl}{GetMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}"
-                : $"{BaseUrl}{GetMemberPathFromUid(uid)}",
+                ? $"{baseUrl}{GetMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}"
+                : $"{baseUrl}{GetMemberPathFromUid(uid)}",
 
             _ => throw new NotSupportedException($"Unknown comment ID format '{type}"),
         };
@@ -134,24 +135,5 @@ partial class SymbolUrlResolver
         }
 
         return sb.ToString();
-    }
-
-    private static HashSet<string> LoadMSLearnAssemblies()
-    {
-        var assembly = typeof(SymbolUrlResolver).Assembly;
-        var path = $"{assembly.GetName().Name}.Resources.MSLearnAssemblies.txt";
-        using var stream = assembly.GetManifestResourceStream(path);
-        if (stream is null)
-            return new();
-
-        using var reader = new StreamReader(stream);
-        var result = new HashSet<string>();
-        string? line;
-        while ((line = reader.ReadLine()) != null)
-        {
-            if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith('/'))
-                result.Add(line);
-        }
-        return result;
     }
 }
