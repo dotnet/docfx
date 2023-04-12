@@ -141,10 +141,7 @@ public static class MarkdownTocReader
             if (state.Parents.Count > 0)
             {
                 var parent = state.Parents.Peek();
-                if (parent.Items == null)
-                {
-                    parent.Items = new TocViewModel();
-                }
+                parent.Items ??= new TocViewModel();
                 parent.Items.Add(item);
             }
             else

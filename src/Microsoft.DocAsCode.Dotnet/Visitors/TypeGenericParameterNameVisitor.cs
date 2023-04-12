@@ -27,10 +27,7 @@ internal sealed class TypeGenericParameterNameVisitor : SymbolVisitor<List<strin
         }
         if (symbol.TypeParameters.Length > 0)
         {
-            if (result == null)
-            {
-                result = new List<string>();
-            }
+            result ??= new List<string>();
             for (int i = 0; i < symbol.TypeParameters.Length; i++)
             {
                 result.Add(symbol.TypeParameters[i].Name);

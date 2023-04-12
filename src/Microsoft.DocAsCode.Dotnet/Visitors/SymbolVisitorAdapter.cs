@@ -157,10 +157,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Type = VisitorHelper.GetMemberTypeFromTypeKind(symbol.TypeKind);
-        if (item.Syntax == null)
-        {
-            item.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        item.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (item.Syntax.Content == null)
         {
             item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -211,10 +208,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
 
         if (symbol.TypeParameters.Length > 0)
         {
@@ -266,10 +260,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Content == null)
         {
             result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -294,10 +285,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Content == null)
         {
             result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -331,10 +319,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Parameters == null)
         {
             result.Syntax.Parameters = new List<ApiParameter>();
@@ -730,10 +715,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         void AddReferenceDelegate(string id, string commentId)
         {
             var r = AddReference(id, commentId);
-            if (item.References == null)
-            {
-                item.References = new Dictionary<string, ReferenceItem>();
-            }
+            item.References ??= new Dictionary<string, ReferenceItem>();
 
             // only record the id now, the value would be fed at later phase after merge
             item.References[id] = null;

@@ -34,10 +34,7 @@ internal class MetadataMerger
         {
             throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
         }
-        if (parameters.Metadata == null)
-        {
-            parameters.Metadata = ImmutableDictionary<string, object>.Empty;
-        }
+        parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
         using (new LoggerPhaseScope(PhaseName))
         {

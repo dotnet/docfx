@@ -312,10 +312,7 @@ internal class ExtractMetadataWorker : IDisposable
                         {
                             if (ns.Items != null)
                             {
-                                if (nsOther.Items == null)
-                                {
-                                    nsOther.Items = new List<MetadataItem>();
-                                }
+                                nsOther.Items ??= new List<MetadataItem>();
 
                                 foreach (var i in ns.Items)
                                 {
