@@ -431,14 +431,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         IReadOnlyList<string> typeGenericParameters = null,
         IReadOnlyList<string> methodGenericParameters = null)
     {
-        try
-        {
-            return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
-        }
-        catch (Exception ex)
-        {
-            throw new DocfxException($"Unable to generate spec reference for {VisitorHelper.GetCommentId(symbol)}", ex);
-        }
+        return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
     }
 
     private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
