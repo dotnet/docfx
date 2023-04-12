@@ -52,7 +52,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
         item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
-        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
+        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
         if (symbol is not INamespaceSymbol)
         {
             var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);

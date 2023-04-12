@@ -107,9 +107,6 @@
     }
   ],
   "type": "namespace",
-  "assemblies": [
-    "cs.temp.dll"
-  ],
   "level": 0.0,
   "_systemKeys": [
     "uid",
