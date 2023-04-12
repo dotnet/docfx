@@ -79,6 +79,8 @@ public class Class1
     /// > [!NOTE]
     /// > This is a &lt;note&gt;. &amp; &quot; &apos;
     ///
+    /// Inline `&lt;angle brackets&gt;`.
+    ///
     /// [link](https://www.github.com "title")
     ///
     /// ```csharp
