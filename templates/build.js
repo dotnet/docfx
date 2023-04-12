@@ -56,7 +56,7 @@ async function buildModernTemplate() {
   }
 
   if (watch) {
-    const context = await esbuild.context()
+    const context = await esbuild.context(config)
     await context.watch()
   } else {
     await esbuild.build(config)
