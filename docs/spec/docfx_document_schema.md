@@ -146,7 +146,7 @@ The value MUST be one of the following:
 | `ignore`   | `source` is not allowed to be merged.
 
 ### 6.6 xrefProperties
-The value of this keyword MUST be an array of `string`. Each `string` value is the property name of current object that will be exported to be [Cross Referenced](docfx_flavored_markdown.md#cross-reference) by others.
+The value of this keyword MUST be an array of `string`. Each `string` value is the property name of current object that will be exported to be cross referenced by others.
 To leverage this feature, a new `xref` syntax with `template` attribute is support:
 ```html
 <xref uid="{uid}" template="{path_of_partial_template}" />

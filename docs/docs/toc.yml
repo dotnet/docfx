@@ -1,4 +1,4 @@
-﻿- name: Getting Started
+﻿- name: Get started
 - name: Quick Start
   href: ../index.md
 
@@ -18,9 +18,11 @@
 - name: PDF
   href: pdf.md
 
-- name: Advanced
-- name: User Manual
-  href: ../tutorial/docfx.exe_user_manual.md
+- name: Reference
+- name: Docfx CLI reference
+  href: ../reference/docfx-cli-reference.md
+- name: Docfx.json configuration reference
+  href: ../reference/docfx-json-reference.md
 - name: Links and Cross References
   href: ../tutorial/links_and_cross_references.md
 - name: Overwrite Files

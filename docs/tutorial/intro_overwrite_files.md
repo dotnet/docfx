@@ -62,7 +62,7 @@ When processing *Conceptual File*s and *Metadata File*s, *Overwrite Model*s with
 
 Apply *Overwrite File*s
 -----------------------
-Inside `docfx.json`, [`overwrite`](../tutorial/docfx.exe_user_manual.md#32-properties-for-build) is used to specify the *Overwrite File*s.
+Inside `docfx.json`, [`overwrite`](../reference/docfx-json-reference.md#12-properties-for-build) is used to specify the *Overwrite File*s.
 
 Overwrite principles
 -----------------
