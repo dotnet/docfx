@@ -51,7 +51,7 @@ You can see the source file name (`.md`) is replaced with output file name (`.ht
 > [!Note]
 > DocFX does not simply replace the file extension here (`.md` to `.html`), it also tracks the mapping between input and
 > output files to make sure source file path will resolve to correct output path. For example, if in the above case,
-> `subfolder` is renamed to `subfolder2` using [file mapping](../technical_reference/docfx_json_reference.md#2-supported-file-mapping-format) in
+> `subfolder` is renamed to `subfolder2` using [file mapping](../reference/docfx-json-reference.md#2-supported-file-mapping-format) in
 > `docfx.json`, in output html, the link url will also resolve to `subfolder2/file2.html`.
 
 ### Relative path vs. absolute path

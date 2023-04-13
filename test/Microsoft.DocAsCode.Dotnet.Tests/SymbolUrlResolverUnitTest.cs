@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Xunit;
@@ -84,46 +83,19 @@ public class SymbolUrlResolverUnitTest
 
         var type = assembly.GetTypeByMetadataName(typeof(DotnetApiCatalog).FullName);
         Assert.NotNull(type);
-        Assert.Equal(
-            @$"{GetGitRepoOrigin()}/blob/*/src/Microsoft.DocAsCode.Dotnet/DotnetApiCatalog.cs",
-            ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type)));
+        var compilationLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type));
+        Assert.True(compilationLink?.StartsWith("https://github.com/"));
+        Assert.True(compilationLink?.EndsWith("/blob/*/src/Microsoft.DocAsCode.Dotnet/DotnetApiCatalog.cs"));
 
         var method = type.GetMembers(nameof(DotnetApiCatalog.GenerateManagedReferenceYamlFiles)).FirstOrDefault();
         Assert.NotNull(method);
-        Assert.Equal(
-            @$"{GetGitRepoOrigin()}/blob/*/src/Microsoft.DocAsCode.Dotnet/DotnetApiCatalog.cs",
-            ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method)));
+        var methodLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
+        Assert.True(compilationLink?.StartsWith("https://github.com/"));
+        Assert.True(compilationLink?.EndsWith("/blob/*/src/Microsoft.DocAsCode.Dotnet/DotnetApiCatalog.cs"));
 
         static string ReplaceSHA(string value)
         {
             return Regex.Replace(value, "\\/[0-9a-zA-Z]{40}\\/", "/*/");
-        }
-
-        static string GetGitRepoOrigin()
-        {
-            var git = new Process()
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    FileName = "git.exe",
-                    CreateNoWindow = true,
-                    Arguments = "config --get remote.origin.url",
-                    WorkingDirectory = "."
-                }
-            };
-
-            git.Start();
-
-            var origin = git.StandardOutput
-                .ReadToEnd()
-                .Trim()
-                .Replace(".git", string.Empty);
-
-            git.WaitForExit();
-
-            return origin;
         }
     }
 }

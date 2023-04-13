@@ -1,13 +1,13 @@
 ---
-uid: docfx_exe_cli_reference
-title: docfx.exe CLI reference
+uid: docfx_cli_reference
+title: docfx CLI reference
 ---
-`docfx.exe` CLI Reference
+`docfx` CLI Reference
 =========================
 
 ## Introduction
 
-`docfx.exe` is used to generate documentation for programs. It has the ability to:
+`docfx` is used to generate documentation for programs. It has the ability to:
 
 1. Extract language metadata for programing languages as defined in [Metadata Format Specification](../spec/metadata_format_spec.md). Currently `C#`, `VB` and `F#` are supported. The language metadata is saved in `YAML` format as described in [YAML 1.2][1].
 2. Look for available conceptual files as provided and link them with existing programs using the syntax described in [Metadata Yaml Format](../spec/metadata_format_spec.md). Supported conceptual files are *plain text* files, *html* files, and *markdown* files.
@@ -70,7 +70,7 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 
     2. From *docfx.json* file, as described in **Section3**.
 
-    3. If the argument is not specified, `docfx.exe` will try reading `docfx.json` under current directory.
+    3. If the argument is not specified, `docfx` will try reading `docfx.json` under current directory.
 
     The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 

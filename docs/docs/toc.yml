@@ -20,9 +20,9 @@
 
 - name: Reference
 - name: Docfx CLI reference
-  href: ../technical_reference/docfx_exe_cli_reference.md
+  href: ../reference/docfx-cli-reference.md
 - name: Docfx.json configuration reference
-  href: ../technical_reference/docfx_json_reference.md
+  href: ../reference/docfx-json-reference.md
 - name: Links and Cross References
   href: ../tutorial/links_and_cross_references.md
 - name: Overwrite Files
