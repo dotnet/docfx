@@ -91,10 +91,7 @@ internal static class TocRestructureUtility
                     {
                         return;
                     }
-                    if (item.Items == null)
-                    {
-                        item.Items = new TocViewModel();
-                    }
+                    item.Items ??= new TocViewModel();
 
                     var roots = GetRoots(restruction.RestructuredItems);
                     item.Items.AddRange(roots);
@@ -106,10 +103,7 @@ internal static class TocRestructureUtility
                     {
                         return;
                     }
-                    if (item.Items == null)
-                    {
-                        item.Items = new TocViewModel();
-                    }
+                    item.Items ??= new TocViewModel();
 
                     var roots = GetRoots(restruction.RestructuredItems);
                     item.Items.InsertRange(0, roots);

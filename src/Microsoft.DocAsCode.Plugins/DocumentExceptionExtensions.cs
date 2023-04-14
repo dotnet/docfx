@@ -22,10 +22,7 @@ public static class DocumentExceptionExtensions
             }
             catch (DocumentException ex)
             {
-                if (firstException == null)
-                {
-                    firstException = ex;
-                }
+                firstException ??= ex;
             }
         }
         if (firstException != null)
@@ -59,10 +56,7 @@ public static class DocumentExceptionExtensions
             }
             catch (DocumentException ex)
             {
-                if (firstException == null)
-                {
-                    firstException = ex;
-                }
+                firstException ??= ex;
             }
         }
         if (firstException != null)

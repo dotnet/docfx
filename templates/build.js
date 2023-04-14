@@ -36,7 +36,7 @@ async function build() {
 }
 
 async function buildModernTemplate() {
-  await esbuild.build({
+  const config = {
     bundle: true,
     minify: true,
     sourcemap: true,
@@ -53,16 +53,14 @@ async function buildModernTemplate() {
       sassPlugin()
     ],
     loader,
-    watch: watch && {
-      onRebuild(error, result) {
-        if (error) {
-          console.error('watch build failed:', error)
-        } else {
-          console.log('watch build succeeded:', result)
-        }
-      }
-    }
-  })
+  }
+
+  if (watch) {
+    const context = await esbuild.context(config)
+    await context.watch()
+  } else {
+    await esbuild.build(config)
+  }
 }
 
 async function buildDefaultTemplate() {

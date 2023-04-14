@@ -50,10 +50,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         }
         if (options.Content != null)
         {
-            if (config.Content == null)
-            {
-                config.Content = new FileMapping(new FileMappingItem());
-            }
+            config.Content ??= new FileMapping(new FileMappingItem());
             config.Content.Add(
                 new FileMappingItem
                 {
@@ -63,10 +60,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         }
         if (options.Resource != null)
         {
-            if (config.Resource == null)
-            {
-                config.Resource = new FileMapping(new FileMappingItem());
-            }
+            config.Resource ??= new FileMapping(new FileMappingItem());
             config.Resource.Add(
                 new FileMappingItem
                 {
@@ -76,10 +70,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         }
         if (options.Overwrite != null)
         {
-            if (config.Overwrite == null)
-            {
-                config.Overwrite = new FileMapping(new FileMappingItem());
-            }
+            config.Overwrite ??= new FileMapping(new FileMappingItem());
             config.Overwrite.Add(
                 new FileMappingItem
                 {

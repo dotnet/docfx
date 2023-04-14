@@ -323,10 +323,7 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public IXRefContainerReader GetReader()
     {
-        if (_reader == null)
-        {
-            _reader = new XRefArchiveReader(this);
-        }
+        _reader ??= new XRefArchiveReader(this);
         return _reader;
     }
 

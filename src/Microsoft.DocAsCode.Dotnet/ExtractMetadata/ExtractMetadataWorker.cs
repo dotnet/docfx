@@ -174,12 +174,9 @@ internal class ExtractMetadataWorker : IDisposable
         }
         else
         {
-            // TODO: need an intermediate folder? when to clean it up?
-            // Save output to output folder
-            List<string> outputFiles;
             using (new PerformanceScope("ResolveAndExport"))
             {
-                outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences).ToList();
+                ResolveAndExportYamlMetadata(allMembers, allReferences);
             }
         }
     }
@@ -208,7 +205,7 @@ internal class ExtractMetadataWorker : IDisposable
         return await project.GetCompilationAsync();
     }
 
-    private IEnumerable<string> ResolveAndExportYamlMetadata(
+    private void ResolveAndExportYamlMetadata(
         Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences)
     {
         var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -216,10 +213,9 @@ internal class ExtractMetadataWorker : IDisposable
 
         var tocFileName = Constants.TocYamlFileName;
 
-        // 1. generate toc.yml
+        // generate toc.yml
         model.TocYamlViewModel.Type = MemberType.Toc;
 
-        // TOC do not change
         var tocViewModel = new TocRootViewModel
         {
             Metadata = new() { ["memberLayout"] = _config.MemberLayout },
@@ -229,9 +225,10 @@ internal class ExtractMetadataWorker : IDisposable
 
         YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
         outputFileNames.Add(tocFilePath, 1);
-        yield return tocFileName;
 
-        // 2. generate each item's yaml
+        ApiReferenceViewModel indexer = new();
+
+        // generate each item's yaml
         var members = model.Members;
         foreach (var memberModel in members)
         {
@@ -243,8 +240,11 @@ internal class ExtractMetadataWorker : IDisposable
             memberViewModel.MemberLayout = _config.MemberLayout;
             YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
             Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
-            yield return outputFileName;
+            AddMemberToIndexer(memberModel, outputFileName, indexer);
         }
+
+        // generate manifest file
+        JsonUtility.Serialize(Path.Combine(_config.OutputFolder, ".manifest"), indexer, Newtonsoft.Json.Formatting.Indented);
     }
 
     private static string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
@@ -264,6 +264,29 @@ internal class ExtractMetadataWorker : IDisposable
         {
             existingFileNames[fileName] = 1;
             return fileName;
+        }
+    }
+
+    private static void AddMemberToIndexer(MetadataItem memberModel, string outputPath, ApiReferenceViewModel indexer)
+    {
+        if (memberModel.Type == MemberType.Namespace)
+        {
+            indexer.Add(memberModel.Name, outputPath);
+        }
+        else
+        {
+            TreeIterator.Preorder(memberModel, null, s => s.Items, (member, parent) =>
+            {
+                if (indexer.TryGetValue(member.Name, out string path))
+                {
+                    Logger.LogWarning($"{member.Name} already exists in {path}, the duplicate one {outputPath} will be ignored.");
+                }
+                else
+                {
+                    indexer.Add(member.Name, outputPath);
+                }
+                return true;
+            });
         }
     }
 
@@ -289,10 +312,7 @@ internal class ExtractMetadataWorker : IDisposable
                         {
                             if (ns.Items != null)
                             {
-                                if (nsOther.Items == null)
-                                {
-                                    nsOther.Items = new List<MetadataItem>();
-                                }
+                                nsOther.Items ??= new List<MetadataItem>();
 
                                 foreach (var i in ns.Items)
                                 {

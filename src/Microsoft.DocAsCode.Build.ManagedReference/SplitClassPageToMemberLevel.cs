@@ -284,10 +284,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             MergeWithReference(newPrimaryItem, referenceItem);
         }
 
-        if (newPrimaryItem.Name == null)
-        {
-            newPrimaryItem.Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor);
-        }
+        newPrimaryItem.Name ??= GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor);
 
         return newPrimaryItem;
     }

@@ -171,9 +171,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "example": [],
           "level": 0.0,
@@ -314,9 +311,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "overload": {
             "uid": "BuildFromVBSourceCode.Class1.Keyword*",
@@ -565,9 +559,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "example": [],
           "overload": {
@@ -791,9 +782,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "example": [],
           "overridden": {
@@ -947,9 +935,6 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "vb.temp.dll"
-  ],
   "namespace": {
     "uid": "BuildFromVBSourceCode",
     "isEii": false,

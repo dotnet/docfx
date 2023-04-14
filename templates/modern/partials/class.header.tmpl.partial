@@ -7,7 +7,7 @@
 
 <div class="facts text-secondary">
   <dl><dt>{{__global.namespace}}</dt><dd>{{{namespace.specName.0.value}}}</dd></dl>
-  <dl><dt>{{__global.assembly}}</dt><dd>{{assemblies.0}}.dll</dd></dl>
+  {{#assemblies.0}}<dl><dt>{{__global.assembly}}</dt><dd>{{assemblies.0}}.dll</dd></dl>{{/assemblies.0}}
 </div>
 
 <div class="markdown summary">{{{summary}}}</div>

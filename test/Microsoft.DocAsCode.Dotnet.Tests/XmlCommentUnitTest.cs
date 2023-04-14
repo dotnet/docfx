@@ -200,6 +200,12 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
+    public static void MarkdownCodeInline()
+    {
+        Verify("Inline `&lt;angle brackets&gt;`", "Inline `<angle brackets>`");
+    }
+
+    [Fact]
     public void TestXmlCommentParser()
     {
         var input = """

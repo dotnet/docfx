@@ -40,9 +40,16 @@ partial class SymbolUrlResolver
                 return null;
             }
 
-            return new(
-                new PEReader(File.OpenRead(pe.FilePath)),
-                MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdbPath)));
+            try
+            {
+                return new(
+                    new PEReader(File.OpenRead(pe.FilePath)),
+                    MetadataReaderProvider.FromPortablePdbStream(File.OpenRead(pdbPath)));
+            }
+            catch (BadImageFormatException)
+            {
+                return null;
+            }
         }
     }
 

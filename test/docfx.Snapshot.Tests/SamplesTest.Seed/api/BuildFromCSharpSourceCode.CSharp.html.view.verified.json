@@ -173,9 +173,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "cs.temp.dll"
-          ],
           "namespace": "BuildFromCSharpSourceCode",
           "overload": {
             "uid": "BuildFromCSharpSourceCode.CSharp.Main*",
@@ -286,9 +283,6 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "cs.temp.dll"
-  ],
   "namespace": {
     "uid": "BuildFromCSharpSourceCode",
     "isEii": false,

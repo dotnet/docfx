@@ -42,10 +42,7 @@ internal class MergeCommand : Command<MergeCommandOptions>
         if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
         if (options.Content != null)
         {
-            if (config.Content == null)
-            {
-                config.Content = new FileMapping(new FileMappingItem());
-            }
+            config.Content ??= new FileMapping(new FileMappingItem());
             config.Content.Add(
                 new FileMappingItem
                 {

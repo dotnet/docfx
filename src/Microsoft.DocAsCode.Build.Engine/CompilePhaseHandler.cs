@@ -80,10 +80,7 @@ internal class CompilePhaseHandler : IPhaseHandler
             hostService.Models.RunAll(
                 m =>
                 {
-                    if (m.LocalPathFromRoot == null)
-                    {
-                        m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-                    }
+                    m.LocalPathFromRoot ??= StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                 },
                 maxParallelism);
         }

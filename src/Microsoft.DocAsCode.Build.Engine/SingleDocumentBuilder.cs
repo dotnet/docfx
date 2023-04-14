@@ -58,10 +58,7 @@ public class SingleDocumentBuilder : IDisposable
         {
             parameters.MaxParallelism = Environment.ProcessorCount;
         }
-        if (parameters.Metadata == null)
-        {
-            parameters.Metadata = ImmutableDictionary<string, object>.Empty;
-        }
+        parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
         return BuildCore(parameters);
     }

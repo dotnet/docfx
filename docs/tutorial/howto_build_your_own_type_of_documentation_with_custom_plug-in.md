@@ -137,7 +137,7 @@ Enable plug-in
 --------------
 1.  Build our project.
 2.  Copy the output dll files to:
-    * Global: a folder you create, named `Plugins` under the folder where DocFX.exe resides.
+    * Global: a folder you create, named `Plugins` under the folder where the Docfx executable resides.
     * Non-global: a folder you create with the name `Plugins` under a template folder. Then run `DocFX build` command with parameter `-t {template}`.
 
       *Hint*: DocFX can merge templates so create a template that only contains the `Plugins` folder, then run the command `DocFX build` with parameter `-t {templateForRender},{templateForPlugins}`. 

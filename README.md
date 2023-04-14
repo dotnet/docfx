@@ -14,8 +14,11 @@ Build your technical documentation site with docfx, with landing pages, markdown
 
 > ⚠️⚠️⚠️ NOTICE ⚠️⚠️⚠️
 >
-> - For [Microsoft Learn](https://learn.microsoft.com/) users, the open source version of docfx [_will NOT_ be maintained to support Microsoft Learn content](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645). For Microsoft Learn feature requests, bug reports and other support ticks, use internal channels such as the [Learn Platform Support Channel](https://teams.microsoft.com/l/team/19%3a7ecffca1166a4a3986fed528cf0870ee%40thread.skype/conversations?groupId=de9ddba4-2574-4830-87ed-41668c07a1ca&tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47).
-> - V3 branch has been privatized to support [Microsoft Learn](https://learn.microsoft.com/), the development of V3 branch in the public is [officially stopped](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645).
+> DocFX is being transitioned to the .NET Foundatiopn as an official .NET project!
+
+> - The DocFX team is working on a public V3 build which will become the main branch. This will remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
+> - Due to [architectural changes in the site](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645), DocFX can no longer support building [Microsoft Learn](https://learn.microsoft.com/) content directly. The open source repos holding Markdown content for Microsoft Learn will still accept pull requests and changes, but are not directly buildable with DocFX.
+> - Moving forward, we will only be supporting this tool as a static site generator for new sites, not as a tool to build official Microsoft content on Microsoft Learn.  
 
 ## Getting Started
 
@@ -80,6 +83,7 @@ We use [Milestones](https://github.com/dotnet/docfx/milestones) to communicate u
 This project is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
+
 For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
 ## License
