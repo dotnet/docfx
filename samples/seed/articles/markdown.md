@@ -36,15 +36,6 @@ C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
 ```
 
-Pie chart
-
-```mermaid
-pie
-"Dogs" : 386
-"Cats" : 85.9
-"Rats" : 15
-```
-
 User Journey diagram
 
 ```mermaid
