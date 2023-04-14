@@ -48,27 +48,13 @@ internal sealed class HostService : IHostService, IDisposable
 
     #region Constructors
 
-    public HostService(string baseDir, IEnumerable<FileModel> models)
-        : this(baseDir, models, null, null, 0, null) { }
-
-    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize)
-        : this(baseDir, models, versionName, versionDir, lruSize, null, null) { }
-
-    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize, GroupInfo groupInfo)
-        : this(baseDir, models, versionName, versionDir, lruSize, groupInfo, null) { }
-
-    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize, GroupInfo groupInfo, IBuildParameters buildParameters)
+    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName = null, string versionDir = null, GroupInfo groupInfo = null, IBuildParameters buildParameters = null)
     {
         VersionName = versionName;
         VersionOutputFolder = versionDir;
         GroupInfo = groupInfo;
         BuildParameters = buildParameters;
 
-        // Disable LRU, when Content.get, it is possible that the value is Serialized before the modification on the content does not complete yet
-        //if (lruSize > 0)
-        //{
-        //    _lru = LruList<ModelWithCache>.CreateSynchronized(lruSize, OnLruRemoving);
-        //}
         LoadCore(models);
     }
 

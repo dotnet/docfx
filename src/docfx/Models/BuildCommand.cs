@@ -110,8 +110,6 @@ internal class BuildCommand : Command<BuildCommandOptions>
             new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
                 path => PathUtility.IsRelativePath(path) ? Path.Combine(configDirectory, path) : path).Reverse());
 
-        config.LruSize = options.LruSize ?? config.LruSize;
-
         config.KeepFileLink |= options.KeepFileLink;
         config.DisableGitFeatures |= options.DisableGitFeatures;
     }

@@ -139,9 +139,6 @@ internal class BuildJsonConfig
 
     }
 
-    [JsonProperty("lruSize")]
-    public int? LruSize { get; set; }
-
     [JsonProperty("keepFileLink")]
     public bool KeepFileLink { get; set; }
 

@@ -54,8 +54,6 @@ public sealed class DocumentBuildParameters : IBuildParameters
 
     public string CustomLinkResolver { get; set; }
 
-    public int LruSize { get; set; }
-
     public bool KeepFileLink { get; set; }
 
     public SitemapOptions SitemapOptions { get; set; }

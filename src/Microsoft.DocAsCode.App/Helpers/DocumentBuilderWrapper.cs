@@ -204,15 +204,6 @@ internal static class DocumentBuilderWrapper
 
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 
-            if (config.LruSize == null)
-            {
-                parameters.LruSize = Environment.Is64BitProcess ? 0x2000 : 0xC00;
-            }
-            else
-            {
-                parameters.LruSize = Math.Max(0, config.LruSize.Value);
-            }
-
             if (config.KeepFileLink)
             {
                 parameters.KeepFileLink = true;
