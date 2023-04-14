@@ -921,8 +921,7 @@ exports.getOptions = function (){
         Dictionary<string, object> metadata = null,
         ApplyTemplateSettings applyTemplateSettings = null,
         string templateFolder = null,
-        string versionDir = null,
-        string falName = null)
+        string versionDir = null)
     {
         using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
         if (applyTemplateSettings == null)
@@ -940,7 +939,6 @@ exports.getOptions = function (){
             TemplateDir = templateFolder,
             VersionDir = versionDir,
             XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
-            FALName = falName,
         };
         builder.Build(parameters);
     }

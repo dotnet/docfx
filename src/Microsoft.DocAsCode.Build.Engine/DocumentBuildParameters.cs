@@ -60,8 +60,6 @@ public sealed class DocumentBuildParameters : IBuildParameters
 
     public SitemapOptions SitemapOptions { get; set; }
 
-    public string FALName { get; set; }
-
     public bool DisableGitFeatures { get; set; }
 
     public ImmutableArray<FolderRedirectionRule> OverwriteFragmentsRedirectionRules { get; set; }

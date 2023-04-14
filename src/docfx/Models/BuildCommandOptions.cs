@@ -89,10 +89,6 @@ internal class BuildCommandOptions : LogOptions
     [CommandOption("--keepFileLink")]
     public bool KeepFileLink { get; set; }
 
-    [Description("Set the name of input file abstract layer builder.")]
-    [CommandOption("--falName")]
-    public string FALName { get; set; }
-
     [Description("Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
     [CommandOption("--disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }

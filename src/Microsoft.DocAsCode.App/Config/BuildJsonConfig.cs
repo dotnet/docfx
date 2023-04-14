@@ -148,9 +148,6 @@ internal class BuildJsonConfig
     [JsonProperty("sitemap")]
     public SitemapOptions SitemapOptions { get; set; }
 
-    [JsonProperty("falName")]
-    public string FALName { get; set; }
-
     [JsonProperty("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
 }

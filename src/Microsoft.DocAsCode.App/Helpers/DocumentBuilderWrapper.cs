@@ -127,7 +127,6 @@ internal static class DocumentBuilderWrapper
             {
                 OutputBaseDir = outputDirectory,
                 SitemapOptions = config.SitemapOptions,
-                FALName = config.FALName,
                 DisableGitFeatures = config.DisableGitFeatures,
                 TagParameters = config.TagParameters,
                 ConfigureMarkdig = options.ConfigureMarkdig,
