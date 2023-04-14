@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode;
 internal class DownloadCommandOptions : CommandSettings
 {
     [Description("Path to the archive file")]
-    [CommandArgument(0, "path")]
+    [CommandArgument(0, "<path>")]
     public string ArchiveFile { get; set; }
 
     [Description("Specify the url of xrefmap.")]

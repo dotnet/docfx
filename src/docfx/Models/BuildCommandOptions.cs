@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 [Description("Generate client-only website combining API in YAML files and conceptual files")]
 internal class BuildCommandOptions : LogOptions
@@ -14,7 +14,7 @@ internal class BuildCommandOptions : LogOptions
     public string OutputFolder { get; set; }
 
     [Description("Path to docfx.json")]
-    [CommandArgument(0, "config")]
+    [CommandArgument(0, "[config]")]
     public string ConfigFile { get; set; }
 
     [Description("Specify content files for generating documentation.")]
@@ -32,10 +32,6 @@ internal class BuildCommandOptions : LogOptions
     [Description("Specify the urls of xrefmap used by content files.")]
     [CommandOption("-x|--xref")]
     public IEnumerable<string> XRefMaps { get; set; }
-
-    [Description("Specify the urls of xrefService for resolving xref used by content files.")]
-    [CommandOption("--xrefService")]
-    public IEnumerable<string> XRefService { get; set; }
 
     [Description("Specify the template name to apply to. If not specified, output YAML file will not be transformed.")]
     [CommandOption("-t|--template")]

@@ -2,53 +2,28 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 using Spectre.Console.Cli;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class PdfCommand : Command<PdfCommandOptions>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] PdfCommandOptions options)
     {
-        var Config = ParseOptions(options, out var BaseDirectory, out var OutputFolder);
-        RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
-        return 0;
+        return CommandHelper.Run(options, () =>
+        {
+            var Config = ParseOptions(options, out var BaseDirectory, out var OutputFolder);
+            RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
+        });
     }
 
     private static PdfJsonConfig ParseOptions(PdfCommandOptions options, out string baseDirectory, out string outputFolder)
     {
-        var configFile = BuildCommand.GetConfigFilePath(options);
-
-        PdfJsonConfig config;
-        if (configFile == null)
-        {
-            if (options.Content == null && options.Resource == null)
-            {
-                throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
-            }
-
-            config = new PdfJsonConfig();
-            baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
-            outputFolder = options.OutputFolder;
-            MergeOptionsToConfig(options, config, baseDirectory);
-            return config;
-        }
-
-        config = CommandUtility.GetConfig<PdfConfig>(configFile).Item;
-        if (config == null)
-        {
-            var message = $"Unable to find pdf subcommand config in file '{configFile}'.";
-            Logger.LogError(message, code: ErrorCodes.Config.PdfConfigNotFound);
-            throw new DocumentException(message);
-        }
-
-        baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+        (var config, baseDirectory) = CommandHelper.GetConfig<PdfConfig>(options.ConfigFile);
         outputFolder = options.OutputFolder;
-        MergeOptionsToConfig(options, config, baseDirectory);
-        return config;
+        MergeOptionsToConfig(options, config.Item, baseDirectory);
+        return config.Item;
     }
 
     private static void MergeOptionsToConfig(PdfCommandOptions options, PdfJsonConfig config, string configDirectory)

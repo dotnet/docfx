@@ -2,54 +2,49 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Dotnet;
-using Microsoft.DocAsCode.Plugins;
-
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class MetadataCommand : Command<MetadataCommandOptions>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] MetadataCommandOptions settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] MetadataCommandOptions options)
     {
-        var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
-        DotnetApiCatalog.Exec(config, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
-        return 0;
+        return CommandHelper.Run(options, () =>
+        {
+            var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+            DotnetApiCatalog.Exec(config, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
+        });
     }
 
     private static MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
     {
-        MetadataJsonConfig config;
-        baseDirectory = null;
-        if (TryGetJsonConfig(options.Projects.ToList(), out string configFile))
-        {
-            config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
-            if (config == null)
-            {
-                var message = $"Unable to find metadata subcommand config in file '{configFile}'.";
-                Logger.LogError(message, code: ErrorCodes.Config.MetadataConfigNotFound);
-                throw new DocumentException(message);
-            }
+        MetadataConfig config;
 
-            baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), "docfx.json", StringComparison.OrdinalIgnoreCase))
+        {
+            config = new()
+            {
+                Item = new()
+                {
+                    new()
+                    {
+                        Destination = options.OutputFolder,
+                        Source = new FileMapping(new FileMappingItem(new[]{ options.Config })),
+                    }
+                }
+            };
+            baseDirectory = Directory.GetCurrentDirectory();
         }
         else
         {
-            config = new MetadataJsonConfig
-            {
-                new MetadataJsonItemConfig
-                {
-                    Destination = options.OutputFolder,
-                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
-                }
-            };
+            (config, baseDirectory) = CommandHelper.GetConfig<MetadataConfig>(options.Config);
         }
 
         var msbuildProperties = ResolveMSBuildProperties(options);
-        foreach (var item in config)
+        foreach (var item in config.Item)
         {
             item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
             item.DisableGitFeatures |= options.DisableGitFeatures;
@@ -81,7 +76,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
 
         outputFolder = options.OutputFolder;
 
-        return config;
+        return config.Item;
     }
 
     private static Dictionary<string, string> ResolveMSBuildProperties(MetadataCommandOptions options)
@@ -101,52 +96,6 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
         }
 
         return properties;
-    }
-
-    private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)
-    {
-        if (projects.Count == 0)
-        {
-            if (!File.Exists(Constants.ConfigFileName))
-            {
-                throw new OptionParserException("Either provide config file or specify project files to generate metadata.");
-            }
-            else
-            {
-                Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start generating metadata...");
-                jsonConfig = Constants.ConfigFileName;
-                return true;
-            }
-        }
-
-        // Get the first docfx.json config file
-        var configFiles = projects.FindAll(s => Path.GetExtension(s).Equals(Constants.ConfigFileExtension, StringComparison.OrdinalIgnoreCase) && !Path.GetFileName(s).Equals(Constants.SupportedProjectName));
-        var otherFiles = projects.Except(configFiles).ToList();
-
-        // Load and ONLY load docfx.json when it exists
-        if (configFiles.Count > 0)
-        {
-            jsonConfig = configFiles[0];
-            if (configFiles.Count > 1)
-            {
-                Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others \"{string.Join(", ", configFiles.Skip(1))}\" are ignored.");
-            }
-            else
-            {
-                if (otherFiles.Count > 0)
-                {
-                    Logger.Log(LogLevel.Warning, $"Config file \"{jsonConfig}\" is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters \"{string.Join(", ", otherFiles)}\" will be ignored.");
-                }
-                else Logger.Log(LogLevel.Verbose, $"Config file \"{jsonConfig}\" is used.");
-            }
-
-            return true;
-        }
-        else
-        {
-            jsonConfig = null;
-            return false;
-        }
     }
 
     private sealed class MetadataConfig

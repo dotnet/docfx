@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
+
 [Description("Generate YAML files from source code")]
 internal class MetadataCommandOptions : LogOptions
 {
@@ -17,8 +18,8 @@ internal class MetadataCommandOptions : LogOptions
     public string OutputFolder { get; set; }
 
     [Description("Path to docfx.json")]
-    [CommandArgument(0, "config")]
-    public IEnumerable<string> Projects { get; set; }
+    [CommandArgument(0, "[config]")]
+    public string Config { get; set; }
 
     [Description("Specify the filter config file")]
     [CommandOption("--filter")]

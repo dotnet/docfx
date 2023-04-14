@@ -4,7 +4,6 @@
 using Xunit;
 
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.SubCommands;
 using Microsoft.DocAsCode.Tests.Common;
 
 namespace Microsoft.DocAsCode.Tests;

@@ -6,21 +6,23 @@ using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class DownloadCommand : Command<DownloadCommandOptions>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] DownloadCommandOptions options)
     {
-        var builder = new XRefArchiveBuilder();
-        if (Uri.TryCreate(options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
+        return CommandHelper.Run(() =>
         {
-            builder.DownloadAsync(uri, options.ArchiveFile).Wait();
-        }
-        else
-        {
-            Logger.LogError($"Invalid uri: {options.Uri}");
-        }
-        return 0;
+            var builder = new XRefArchiveBuilder();
+            if (Uri.TryCreate(options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
+            {
+                builder.DownloadAsync(uri, options.ArchiveFile).Wait();
+            }
+            else
+            {
+                Logger.LogError($"Invalid uri: {options.Uri}");
+            }
+        });
     }
 }

@@ -15,7 +15,7 @@ using Microsoft.DocAsCode.Build.UniversalReference;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal static class DocumentBuilderWrapper
 {

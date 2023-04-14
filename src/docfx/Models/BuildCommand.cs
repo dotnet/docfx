@@ -1,74 +1,29 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
-
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class BuildCommand : Command<BuildCommandOptions>
 {
     public override int Execute(CommandContext context, BuildCommandOptions settings)
     {
-        var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
-        RunBuild.Exec(config, new(), baseDirectory, outputFolder);
-        return 0;
+        return CommandHelper.Run(settings, () =>
+        {
+            var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
+            RunBuild.Exec(config, new(), baseDirectory, outputFolder);
+        });
     }
 
     private static BuildJsonConfig ParseOptions(BuildCommandOptions options, out string baseDirectory, out string outputFolder)
     {
-        var configFile = GetConfigFilePath(options);
-
-        BuildJsonConfig config;
-        if (configFile == null)
-        {
-            if (options.Content == null && options.Resource == null)
-            {
-                throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
-            }
-
-            config = new BuildJsonConfig();
-            baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
-            outputFolder = options.OutputFolder;
-            MergeOptionsToConfig(options, config, baseDirectory);
-            return config;
-        }
-
-        config = CommandUtility.GetConfig<BuildConfig>(configFile).Item;
-        if (config == null)
-        {
-            var message = $"Unable to find build subcommand config in file '{configFile}'.";
-            Logger.LogError(message, code: ErrorCodes.Config.BuildConfigNotFound);
-            throw new DocumentException(message);
-        }
-
-        baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
+        (var config, baseDirectory) = CommandHelper.GetConfig<BuildConfig>(options.ConfigFile);
         outputFolder = options.OutputFolder;
-        MergeOptionsToConfig(options, config, baseDirectory);
-        return config;
-    }
-
-    internal static string GetConfigFilePath(BuildCommandOptions options)
-    {
-        var configFile = options.ConfigFile;
-        if (string.IsNullOrEmpty(configFile))
-        {
-            if (!File.Exists(Constants.ConfigFileName))
-            {
-                return null;
-            }
-            else
-            {
-                Logger.Log(LogLevel.Verbose, $"Config file {Constants.ConfigFileName} is found.");
-                return Constants.ConfigFileName;
-            }
-        }
-
-        return configFile;
+        MergeOptionsToConfig(options, config.Item, baseDirectory);
+        return config.Item;
     }
 
     internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config, string configDirectory)

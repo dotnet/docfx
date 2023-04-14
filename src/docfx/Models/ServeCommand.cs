@@ -4,16 +4,18 @@
 using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class ServeCommand : Command<ServeCommandOptions>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ServeCommandOptions options)
     {
-        RunServe.Exec(
-            options.Folder,
-            options.Host,
-            options.Port.HasValue ? options.Port.Value.ToString() : null);
-        return 0;
+        return CommandHelper.Run(() =>
+        {
+            RunServe.Exec(
+                options.Folder,
+                options.Host,
+                options.Port.HasValue ? options.Port.Value.ToString() : null);
+        });
     }
 }

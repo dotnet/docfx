@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode;
 internal class ServeCommandOptions : CommandSettings
 {
     [Description("Path to the directory to serve")]
-    [CommandArgument(0, "directory")]
+    [CommandArgument(0, "[directory]")]
     public string Folder { get; set; }
 
     [Description("Specify the hostname of the hosted website [localhost]")]

@@ -6,7 +6,7 @@ using Microsoft.DocAsCode.Common;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class InitCommand : Command<InitCommandOptions>
 {

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
-using Microsoft.DocAsCode.SubCommands;
 using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
@@ -44,7 +43,7 @@ internal class PdfCommandOptions : BuildCommandOptions
 
     [Description("Specify the hostname to link not-in-TOC articles")]
     [CommandOption("--host")]
-    public string Host { get; set; }
+    public new string Host { get; set; }
 
     [Description("Specify the locale of the pdf file")]
     [CommandOption("--locale")]

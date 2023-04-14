@@ -6,7 +6,6 @@ using Xunit;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
-using Microsoft.DocAsCode.SubCommands;
 using Microsoft.DocAsCode.Tests.Common;
 using Microsoft.DocAsCode.Dotnet;
 
@@ -36,10 +35,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
         });
 
         CheckResult();
@@ -70,10 +69,10 @@ public class MetadataCommandTest : TestBase
         var dllFile = Path.Combine(_projectFolder, "test.dll");
         File.Copy("Assets/test.dll.sample.1", dllFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { dllFile },
+            Config = dllFile,
         });
 
         CheckResult();
@@ -89,10 +88,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/multi-frameworks-test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             MSBuildProperties = "TargetFramework=net6.0"
         });
 
@@ -112,10 +111,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.vbproj.sample.1", projectFile);
         File.Copy("Assets/test.vb.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
         });
 
         var file = Path.Combine(_outputFolder, "toc.yml");
@@ -178,9 +177,9 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/docfx.json_metadata/docfxWithFilter.json", docfxFile);
         File.Copy("Assets/filter.yaml.sample", filterFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
-            Projects = new List<string> { docfxFile },
+            Config = docfxFile,
             OutputFolder = Path.GetFullPath(_outputFolder),
         });
 
@@ -223,10 +222,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
         File.Copy("Assets/filter.yaml.sample", filterFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             FilterConfigFile = filterFile,
         });
 
@@ -269,10 +268,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/ref.csproj.sample.1", refProjectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
         });
 
         CheckResult();
@@ -287,10 +286,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Nested
         });
 
@@ -324,10 +323,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Flattened
         });
 
@@ -361,10 +360,10 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace-withgaps.cs.sample.1", sourceFile);
 
-        MetadataCommand.Exec(new()
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Nested
         });
 

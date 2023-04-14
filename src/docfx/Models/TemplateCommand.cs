@@ -1,97 +1,72 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Exceptions;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
-internal class TemplateCommand : Command<TemplateCommandOptions>
+internal class TemplateCommand
 {
-    private const string DefaultOutputFolder = "_exported_templates";
-
-    private string[] _templates;
-
-    private TemplateCommandType _commandType;
-
-    private ExportTemplateConfig _exportTemplateConfig = null;
-
-    public override int Execute([NotNull] CommandContext context, [NotNull] TemplateCommandOptions options)
+    public class ListCommand : Command
     {
-        if (options.Commands == null || !options.Commands.Any() || !Enum.TryParse(options.Commands.First(), true, out _commandType))
+        public override int Execute(CommandContext context)
         {
-            throw new InvalidOptionException("Neither 'list' nor 'export' is found. You must specify a command type.");
+            Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates"))
+                .Select(Path.GetFileName)
+                .ToArray()
+                .WriteLinesToConsole(ConsoleColor.White);
+
+            return 0;
         }
-        switch (_commandType)
+    }
+
+    public class ExportCommand : Command<ExportCommand.Options>
+    {
+        [Description("Export existing template")]
+        internal class Options : CommandSettings
         {
-            case TemplateCommandType.Export:
-                _exportTemplateConfig = new ExportTemplateConfig
+            [Description("Template name.")]
+            [CommandArgument(0, "[template]")]
+            public string[] Templates { get; set; }
+
+            [Description("If specified, all the available templates will be exported.")]
+            [CommandOption("-a|--all")]
+            public bool All { get; set; }
+
+            [Description("Specify the output folder path for the exported templates")]
+            [CommandOption("-o|--output")]
+            public string OutputFolder { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Options options)
+        {
+            return CommandHelper.Run(() =>
+            {
+                var outputFolder = string.IsNullOrEmpty(options.OutputFolder) ? "_exported_templates" : options.OutputFolder;
+                Directory.CreateDirectory(outputFolder);
+
+                var templates = options.All || options.Templates is null || options.Templates.Length == 0 ?
+                    Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates"))
+                        .Select(Path.GetFileName)
+                        .ToArray()
+                    : options.Templates;
+
+                foreach (var template in templates)
                 {
-                    All = options.All,
-                    OutputFolder = options.OutputFolder,
-                    Templates = options.Commands.Skip(1).ToArray()
-                };
-                if (_exportTemplateConfig.Templates.Length == 0)
-                {
-                    _exportTemplateConfig.All = true;
+                    var manager = new TemplateManager(typeof(Docset).Assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
+                    if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
+                    {
+                        Logger.LogInfo($"{template} is exported to {outputFolder}");
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Cannot find template {template}.");
+                    }
                 }
-                break;
+            });
         }
-        _templates = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates")).Select(Path.GetFileName).ToArray();
-
-        switch (_commandType)
-        {
-            case TemplateCommandType.List:
-                ExecListTemplate();
-                break;
-            case TemplateCommandType.Export:
-                ExecExportTemplate();
-                break;
-        }
-        return 0;
-    }
-
-    private void ExecListTemplate()
-    {
-        _templates.WriteLinesToConsole(ConsoleColor.White);
-    }
-
-    private void ExecExportTemplate()
-    {
-        var outputFolder = string.IsNullOrEmpty(_exportTemplateConfig.OutputFolder) ? DefaultOutputFolder : _exportTemplateConfig.OutputFolder;
-        if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
-
-        var templates = _exportTemplateConfig.All ? _templates : _exportTemplateConfig.Templates;
-        foreach (var template in templates)
-        {
-            Logger.LogInfo($"Exporting {template} to {outputFolder}");
-            var manager = new TemplateManager(typeof(Docset).Assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
-            if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
-            {
-                Logger.LogInfo($"{template} is exported to {outputFolder}");
-            }
-            else
-            {
-                Logger.LogWarning($"{template} is not an embedded template.");
-            }
-        }
-    }
-
-    private enum TemplateCommandType
-    {
-        List,
-        Export,
-    }
-
-    private sealed class ExportTemplateConfig
-    {
-        public string[] Templates { get; set; }
-
-        public string OutputFolder { get; set; }
-
-        public bool All { get; set; }
     }
 }

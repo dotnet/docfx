@@ -2,71 +2,34 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
-
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class MergeCommand : Command<MergeCommandOptions>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] MergeCommandOptions options)
     {
-        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
-        RunMerge.Exec(config, baseDirectory);
-        return 0;
+        return CommandHelper.Run(options, () =>
+        {
+            var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+            RunMerge.Exec(config, baseDirectory);
+        });
     }
 
     private static MergeJsonConfig ParseOptions(MergeCommandOptions options, out string baseDirectory, out string outputFolder)
     {
-        var configFile = options.ConfigFile;
-        MergeJsonConfig config;
-        if (string.IsNullOrEmpty(configFile))
-        {
-            if (!File.Exists(DocAsCode.Constants.ConfigFileName))
-            {
-                if (options.Content == null)
-                {
-                    throw new ArgumentException("Either provide config file or specify content files to start building documentation.");
-                }
-                else
-                {
-                    config = new MergeJsonConfig();
-                    var item = new MergeJsonItemConfig();
-                    MergeOptionsToConfig(options, ref item);
-                    config.Add(item);
+        (var config, baseDirectory) = CommandHelper.GetConfig<MergeConfig>(options.Config);
 
-                    baseDirectory = string.IsNullOrEmpty(configFile) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(Path.GetFullPath(configFile));
-                    outputFolder = options.OutputFolder;
-                    return config;
-                }
-            }
-            else
-            {
-                Logger.Log(LogLevel.Verbose, $"Config file {DocAsCode.Constants.ConfigFileName} is found.");
-                configFile = DocAsCode.Constants.ConfigFileName;
-            }
-        }
-
-        config = CommandUtility.GetConfig<MergeConfig>(configFile).Item;
-        if (config == null)
+        for (int i = 0; i < config.Item.Count; i++)
         {
-            var message = $"Unable to find build subcommand config in file '{configFile}'.";
-            Logger.LogError(message, code: ErrorCodes.Config.BuildConfigNotFound);
-            throw new DocumentException(message);
-        }
-
-        for (int i = 0; i < config.Count; i++)
-        {
-            var round = config[i];
+            var round = config.Item[i];
             MergeOptionsToConfig(options, ref round);
         }
 
-        baseDirectory = Path.GetDirectoryName(Path.GetFullPath(configFile));
         outputFolder = options.OutputFolder;
-        return config;
+        return config.Item;
     }
 
     private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonItemConfig config)

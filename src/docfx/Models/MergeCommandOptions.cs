@@ -14,8 +14,8 @@ internal class MergeCommandOptions : LogOptions
     public string OutputFolder { get; set; }
 
     [Description("Path to docfx.json")]
-    [CommandArgument(0, "config")]
-    public string ConfigFile { get; set; }
+    [CommandArgument(0, "[config]")]
+    public string Config { get; set; }
 
     [Description("Specifies content files for generating documentation.")]
     [CommandOption("--content")]

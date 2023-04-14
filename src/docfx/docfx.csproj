@@ -18,8 +18,4 @@
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Cli" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SubCommands\" />
-  </ItemGroup>
 </Project>

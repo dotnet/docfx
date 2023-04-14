@@ -9,7 +9,6 @@ public static class EnvironmentContext
 {
     private static string _baseDirectory;
     private static string _outputDirectory;
-    private static string _version;
     private static bool _disableGitFeatures = false;
 
     /// <summary>
@@ -41,14 +40,6 @@ public static class EnvironmentContext
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static IFileAbstractLayer FileAbstractLayerImpl { get; set; }
-
-    public static string Version => string.IsNullOrEmpty(_version) ? typeof(EnvironmentContext).Assembly.GetName().Version.ToString() : _version;
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static void SetVersion(string version)
-    {
-        _version = version;
-    }
 
     public static bool GitFeaturesDisabled => _disableGitFeatures;
 
