@@ -17,18 +17,6 @@ internal class BuildCommandOptions : LogOptions
     [CommandArgument(0, "[config]")]
     public string ConfigFile { get; set; }
 
-    [Description("Specify content files for generating documentation.")]
-    [CommandOption("--content")]
-    public IEnumerable<string> Content { get; set; }
-
-    [Description("Specify resources used by content files.")]
-    [CommandOption("--resource")]
-    public IEnumerable<string> Resource { get; set; }
-
-    [Description("Specify overwrite files used by content files.")]
-    [CommandOption("--overwrite")]
-    public IEnumerable<string> Overwrite { get; set; }
-
     [Description("Specify the urls of xrefmap used by content files.")]
     [CommandOption("-x|--xref")]
     public IEnumerable<string> XRefMaps { get; set; }
@@ -60,26 +48,6 @@ internal class BuildCommandOptions : LogOptions
     [Description("The output folder for files generated for debugging purpose when in debug mode. If not specified, it is ${TempPath}/docfx")]
     [CommandOption("--debugOutput")]
     public string OutputFolderForDebugFiles { get; set; }
-
-    [Description("Specify global metadata key-value pair in json format. It overrides the globalMetadata settings from the config file.")]
-    [CommandOption("--globalMetadata")]
-    public string GlobalMetadata { get; set; }
-
-    [Description("Specify a JSON file path containing globalMetadata settings, as similar to {\"globalMetadata\":{\"key\":\"value\"}}. It overrides the globalMetadata settings from the config file.")]
-    [CommandOption("--globalMetadataFile")]
-    public string GlobalMetadataFilePath { get; set; }
-
-    [Description("Specify a list of JSON file path containing globalMetadata settings, as similar to {\"key\":\"value\"}. It overrides the globalMetadata settings from the config file.")]
-    [CommandOption("--globalMetadataFiles")]
-    public IEnumerable<string> GlobalMetadataFilePaths { get; set; }
-
-    [Description("Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
-    [CommandOption("--fileMetadataFile")]
-    public string FileMetadataFilePath { get; set; }
-
-    [Description("Specify a list of JSON file path containing fileMetadata settings, as similar to {\"key\":\"value\"}. It overrides the fileMetadata settings from the config file.")]
-    [CommandOption("--fileMetadataFiles")]
-    public IEnumerable<string> FileMetadataFilePaths { get; set; }
 
     [Description("If set to true, data model to run template script will be extracted in .raw.model.json extension")]
     [CommandOption("--exportRawModel")]

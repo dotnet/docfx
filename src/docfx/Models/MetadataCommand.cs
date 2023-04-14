@@ -32,7 +32,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
                     new()
                     {
                         Destination = options.OutputFolder,
-                        Source = new FileMapping(new FileMappingItem(new[]{ options.Config })),
+                        Source = new FileMapping(new FileMappingItem(new[]{ options.Config })) { Expanded = true },
                     }
                 }
             };

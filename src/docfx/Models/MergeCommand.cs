@@ -40,22 +40,6 @@ internal class MergeCommand : Command<MergeCommandOptions>
         string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
         if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
-        if (options.Content != null)
-        {
-            config.Content ??= new FileMapping(new FileMappingItem());
-            config.Content.Add(
-                new FileMappingItem
-                {
-                    Files = new FileItems(options.Content),
-                    SourceFolder = optionsBaseDirectory
-                });
-        }
-        config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, null);
-        config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, null, options.GlobalMetadata);
-        if (options.TocMetadata != null)
-        {
-            config.TocMetadata = new ListWithStringFallback(options.TocMetadata);
-        }
     }
 
     private sealed class MergeConfig

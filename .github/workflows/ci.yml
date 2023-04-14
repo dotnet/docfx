@@ -30,12 +30,12 @@ jobs:
     - run: choco install wkhtmltopdf
       if: matrix.os == 'windows-latest'
 
-    - run: dotnet test -c Release -f net8.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet test -c Release -f net7.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
 
-    - run: dotnet test -c Release -f net6.0 --filter Stage!=Snapshot --no-build --collect:"XPlat Code Coverage"
+    - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
 
     - uses: codecov/codecov-action@v3
@@ -60,9 +60,10 @@ jobs:
 
     - uses: ./.github/actions/build
 
-    - run: dotnet test -c Release --filter Stage=Snapshot --no-build
+    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot --no-build
       working-directory: test/docfx.Snapshot.Tests
       env:
+        SNAPSHOT_TEST: true
         BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
