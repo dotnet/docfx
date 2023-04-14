@@ -2,11 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Reflection;
-using CommandLine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Exceptions;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.SubCommands;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
 
@@ -16,29 +16,20 @@ internal class Program
     {
         EnvironmentContext.SetVersion(typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
 
-        var commandTypes = new[]
+        var app = new CommandApp();
+        app.Configure(config =>
         {
-            typeof(InitCommandOptions),
-            typeof(BuildCommandOptions),
-            typeof(MetadataCommandOptions),
-            typeof(ServeCommandOptions),
-            typeof(PdfCommandOptions),
-            typeof(TemplateCommandOptions),
-            typeof(DownloadCommandOptions),
-            typeof(MergeCommandOptions),
-        };
+            config.AddCommand<InitCommand>("init");
+            config.AddCommand<BuildCommand>("build");
+            config.AddCommand<MetadataCommand>("metadata");
+            config.AddCommand<ServeCommand>("serve");
+            config.AddCommand<PdfCommand>("pdf");
+            config.AddCommand<TemplateCommand>("template");
+            config.AddCommand<DownloadCommand>("download");
+            config.AddCommand<MergeCommand>("merge");
+        });
 
-        return Parser.Default.ParseArguments(args, commandTypes)
-            .MapResult(
-                Run<InitCommandOptions>(new InitCommand().Exec),
-                Run<PdfCommandOptions>(PdfCommand.Exec, showSummary: true),
-                Run<BuildCommandOptions>(BuildCommand.Exec, showSummary: true),
-                Run<MetadataCommandOptions>(MetadataCommand.Exec, showSummary: true),
-                Run<ServeCommandOptions>(ServeCommand.Exec),
-                Run<TemplateCommandOptions>(new TemplateCommand().Exec),
-                Run<DownloadCommandOptions>(DownloadCommand.Exec),
-                Run<MergeCommandOptions>(MergeCommand.Exec, showSummary: true),
-                errors => 1);
+        return app.Run(args);
     }
 
     private static Func<T, int> Run<T>(Action<T> run, bool showSummary = false)

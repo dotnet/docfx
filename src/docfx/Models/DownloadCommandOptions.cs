@@ -1,16 +1,19 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using CommandLine;
+using System.ComponentModel;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
 
-[Verb("download", HelpText = "Download remote xref map file and create an xref archive in local.")]
-internal class DownloadCommandOptions
+[Description("Download remote xref map file and create an xref archive in local.")]
+internal class DownloadCommandOptions : CommandSettings
 {
-    [Value(0, MetaName = "path", HelpText = "Path to the archive file")]
+    [Description("Path to the archive file")]
+    [CommandArgument(0, "path")]
     public string ArchiveFile { get; set; }
 
-    [Option('x', "xref", HelpText = "Specify the url of xrefmap.")]
+    [Description("Specify the url of xrefmap.")]
+    [CommandOption("-x|--xref")]
     public string Uri { get; set; }
 }

@@ -1,23 +1,28 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using Microsoft.DocAsCode.Common;
 
-using CommandLine;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
 
-internal class LogOptions
+internal class LogOptions : CommandSettings
 {
-    [Option('l', "log", HelpText = "Specify the file name to save processing log")]
+    [Description("Specify the file name to save processing log")]
+    [CommandOption("-l|--log")]
     public string LogFilePath { get; set; }
 
-    [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
+    [Description("Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
+    [CommandOption("--logLevel")]
     public LogLevel? LogLevel { get; set; }
 
-    [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
+    [Description("Specify the GIT repository root folder.")]
+    [CommandOption("--repositoryRoot")]
     public string RepoRoot { get; set; }
 
-    [Option("warningsAsErrors", HelpText = "Specify if warnings should be treated as errors.")]
+    [Description("Specify if warnings should be treated as errors.")]
+    [CommandOption("--warningsAsErrors")]
     public bool WarningsAsErrors { get; set; }
 }

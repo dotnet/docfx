@@ -1,19 +1,22 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
 using Newtonsoft.Json;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal static class BuildCommand
+internal class BuildCommand : Command<BuildCommandOptions>
 {
-    public static void Exec(BuildCommandOptions options)
+    public override int Execute(CommandContext context, BuildCommandOptions settings)
     {
-        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+        var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
         RunBuild.Exec(config, new(), baseDirectory, outputFolder);
+        return 0;
     }
 
     private static BuildJsonConfig ParseOptions(BuildCommandOptions options, out string baseDirectory, out string outputFolder)

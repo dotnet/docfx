@@ -1,20 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Dotnet;
 using Microsoft.DocAsCode.Plugins;
 
 using Newtonsoft.Json;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class MetadataCommand
+internal class MetadataCommand : Command<MetadataCommandOptions>
 {
-    public static void Exec(MetadataCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] MetadataCommandOptions settings)
     {
-        var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
+        var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
         DotnetApiCatalog.Exec(config, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
+        return 0;
     }
 
     private static MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)

@@ -1,13 +1,15 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Exceptions;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal class TemplateCommand
+internal class TemplateCommand : Command<TemplateCommandOptions>
 {
     private const string DefaultOutputFolder = "_exported_templates";
 
@@ -17,7 +19,7 @@ internal class TemplateCommand
 
     private ExportTemplateConfig _exportTemplateConfig = null;
 
-    public void Exec(TemplateCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] TemplateCommandOptions options)
     {
         if (options.Commands == null || !options.Commands.Any() || !Enum.TryParse(options.Commands.First(), true, out _commandType))
         {
@@ -49,6 +51,7 @@ internal class TemplateCommand
                 ExecExportTemplate();
                 break;
         }
+        return 0;
     }
 
     private void ExecListTemplate()

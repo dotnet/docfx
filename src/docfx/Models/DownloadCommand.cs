@@ -1,20 +1,17 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal static class DownloadCommand
+internal class DownloadCommand : Command<DownloadCommandOptions>
 {
-    public static void Exec(DownloadCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] DownloadCommandOptions options)
     {
-        if (string.IsNullOrWhiteSpace(options.ArchiveFile))
-        {
-            Logger.LogError("Please provide output file.");
-            return;
-        }
         var builder = new XRefArchiveBuilder();
         if (Uri.TryCreate(options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
         {
@@ -24,5 +21,6 @@ internal static class DownloadCommand
         {
             Logger.LogError($"Invalid uri: {options.Uri}");
         }
+        return 0;
     }
 }

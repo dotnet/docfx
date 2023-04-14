@@ -1,31 +1,27 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Exceptions;
-using Microsoft.DocAsCode.Plugins;
-
 using Newtonsoft.Json;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal sealed class InitCommand
+internal class InitCommand : Command<InitCommandOptions>
 {
     private const string ConfigName = Constants.ConfigFileName;
     private const string DefaultOutputFolder = "docfx_project";
     private const string DefaultMetadataOutputFolder = "api";
-    private static readonly string[] DefaultExcludeFiles = new string[] { "obj/**" };
 
     private InitCommandOptions _options;
     private IEnumerable<IQuestion> _metadataQuestions;
-
-    private IEnumerable<IQuestion> _overallQuestion;
 
     private IEnumerable<IQuestion> _buildQuestions;
 
     private IEnumerable<IQuestion> _selectorQuestions;
 
-    public void Exec(InitCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] InitCommandOptions options)
     {
         _options = options;
         _metadataQuestions = new IQuestion[]
@@ -123,45 +119,40 @@ internal sealed class InitCommand
          };
 
         string outputFolder = null;
-        try
+        var config = new DefaultConfigModel();
+        var questionContext = new QuestionContext
         {
-            var config = new DefaultConfigModel();
-            var questionContext = new QuestionContext
-            {
-                Quiet = _options.Quiet
-            };
-            foreach (var question in _selectorQuestions)
+            Quiet = _options.Quiet
+        };
+        foreach (var question in _selectorQuestions)
+        {
+            question.Process(config, questionContext);
+        }
+
+        if (questionContext.ContainsMetadata)
+        {
+            foreach (var question in _metadataQuestions)
             {
                 question.Process(config, questionContext);
             }
-
-            if (questionContext.ContainsMetadata)
-            {
-                foreach (var question in _metadataQuestions)
-                {
-                    question.Process(config, questionContext);
-                }
-            }
-
-            foreach (var question in _buildQuestions)
-            {
-                question.Process(config, questionContext);
-            }
-
-            if (_options.OnlyConfigFile)
-            {
-                GenerateConfigFile(_options.OutputFolder, config, _options.Quiet, _options.Overwrite);
-            }
-            else
-            {
-                outputFolder = Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder).ToDisplayPath();
-                GenerateSeedProject(outputFolder, config, _options.Quiet, _options.Overwrite);
-            }
         }
-        catch (Exception e)
+
+        foreach (var question in _buildQuestions)
         {
-            throw new DocfxInitException($"Error with init docfx project under \"{outputFolder}\" : {e.Message}", e);
+            question.Process(config, questionContext);
         }
+
+        if (_options.OnlyConfigFile)
+        {
+            GenerateConfigFile(_options.OutputFolder, config, _options.Quiet, _options.Overwrite);
+        }
+        else
+        {
+            outputFolder = Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder).ToDisplayPath();
+            GenerateSeedProject(outputFolder, config, _options.Quiet, _options.Overwrite);
+        }
+
+        return 0;
     }
 
     private void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)

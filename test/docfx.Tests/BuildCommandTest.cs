@@ -151,7 +151,7 @@ public class BuildCommandTest : TestBase
         Logger.RegisterListener(console);
         try
         {
-            BuildCommand.Exec(new()
+            new BuildCommand().Execute(null, new()
             {
                 Content = new List<string> { conceptualFile1, conceptualFile2 },
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),

@@ -4,15 +4,18 @@
 using Newtonsoft.Json;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
+using Spectre.Console.Cli;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal static class PdfCommand
+internal class PdfCommand : Command<PdfCommandOptions>
 {
-    public static void Exec(PdfCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] PdfCommandOptions options)
     {
         var Config = ParseOptions(options, out var BaseDirectory, out var OutputFolder);
         RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
+        return 0;
     }
 
     private static PdfJsonConfig ParseOptions(PdfCommandOptions options, out string baseDirectory, out string outputFolder)

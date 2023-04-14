@@ -1,19 +1,22 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
 using Newtonsoft.Json;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode.SubCommands;
 
-internal static class MergeCommand
+internal class MergeCommand : Command<MergeCommandOptions>
 {
-    public static void Exec(MergeCommandOptions options)
+    public override int Execute([NotNull] CommandContext context, [NotNull] MergeCommandOptions options)
     {
         var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
         RunMerge.Exec(config, baseDirectory);
+        return 0;
     }
 
     private static MergeJsonConfig ParseOptions(MergeCommandOptions options, out string baseDirectory, out string outputFolder)
