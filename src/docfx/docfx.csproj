@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser"/>
+    <PackageReference Include="Spectre.Console.Cli" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
-using Microsoft.DocAsCode.SubCommands;
 
 namespace Microsoft.DocAsCode;
 

@@ -4,7 +4,6 @@
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Exceptions;
 using Microsoft.DocAsCode.Plugins;
-using Microsoft.DocAsCode.SubCommands;
 
 namespace Microsoft.DocAsCode;
 

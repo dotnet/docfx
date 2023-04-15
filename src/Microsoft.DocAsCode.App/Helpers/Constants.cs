@@ -5,10 +5,7 @@ namespace Microsoft.DocAsCode;
 
 internal static class Constants
 {
-    public static Func<string, string> GetIndexFilePathFunc = new(s => Path.Combine(s, "index.yml"));
     public const string ConfigFileName = "docfx.json";
-    public const string SupportedProjectName = "project.json";
-    public const string ConfigFileExtension = ".json";
     public const string DefaultRootOutputFolderPath = "_site";
     public const string DefaultTemplateName = "default";
     public const string EmbeddedTemplateFolderName = "Template";

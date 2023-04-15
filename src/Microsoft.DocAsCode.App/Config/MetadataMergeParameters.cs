@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 using Microsoft.DocAsCode.Build.Engine;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class MetadataMergeParameters
 {

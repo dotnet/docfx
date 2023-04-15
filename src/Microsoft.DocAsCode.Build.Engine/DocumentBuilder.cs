@@ -99,18 +99,6 @@ public class DocumentBuilder : IDisposable
                         .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
                         .WriteToRealFileSystem(parameter.OutputBaseDir);
 
-                if (!string.IsNullOrEmpty(parameter.FALName))
-                {
-                    if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
-                        parameter.FALName, out var provider))
-                    {
-                        falBuilder = provider.Create(falBuilder, parameter);
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Input fal builder provider not found, name: {parameter.FALName}.");
-                    }
-                }
                 EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
 
                 if (parameter.Files.Count == 0)

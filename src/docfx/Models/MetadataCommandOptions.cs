@@ -1,42 +1,47 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using CommandLine;
-using Microsoft.DocAsCode.Dotnet;
+using System.ComponentModel;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("metadata [<docfx.json file path>]")]
-[OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
-internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
+[Description("Generate YAML files from source code")]
+internal class MetadataCommandOptions : LogOptions
 {
-    [Option("shouldSkipMarkup", HelpText = "Skip to markup the triple slash comments")]
+    [Description("Skip to markup the triple slash comments")]
+    [CommandOption("--shouldSkipMarkup")]
     public bool ShouldSkipMarkup { get; set; }
 
-    [Option('o', "output", HelpText = "Specify the output base directory")]
+    [Description("Specify the output base directory")]
+    [CommandOption("-o|--output")]
     public string OutputFolder { get; set; }
 
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
+    [Description("Path to docfx.json")]
+    [CommandArgument(0, "[config]")]
+    public string Config { get; set; }
 
-    [ValueList(typeof(List<string>))]
-    public List<string> Projects { get; set; }
-
-    [Option("filter", HelpText = "Specify the filter config file")]
+    [Description("Specify the filter config file")]
+    [CommandOption("--filter")]
     public string FilterConfigFile { get; set; }
 
-    [Option("globalNamespaceId", HelpText = "Specify the name to use for the global namespace")]
+    [Description("Specify the name to use for the global namespace")]
+    [CommandOption("--globalNamespaceId")]
     public string GlobalNamespaceId { get; set; }
 
-    [Option("property", HelpText = "--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
+    [Description("--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
+    [CommandOption("--property")]
     public string MSBuildProperties { get; set; }
 
-    [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
+    [Description("Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
+    [CommandOption("--disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
 
-    [Option("disableDefaultFilter", HelpText = "Disable the default API filter (default filter only generate public or protected APIs).")]
+    [Description("Disable the default API filter (default filter only generate public or protected APIs).")]
+    [CommandOption("--disableDefaultFilter")]
     public bool DisableDefaultFilter { get; set; }
 
-    [Option("namespaceLayout", HelpText = "Determines the namespace layout in table of contents.")]
+    [Description("Determines the namespace layout in table of contents.")]
+    [CommandOption("--namespaceLayout")]
     public NamespaceLayout? NamespaceLayout { get; set; }
 }

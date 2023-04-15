@@ -85,7 +85,7 @@ public class HelloWorld(){}}
 }}";
         var docfxJsonFile = Path.Combine(_projectFolder, "docfx.json");
         File.WriteAllText(docfxJsonFile, docfxJson);
-        Program.ExecSubCommand(new string[] { docfxJsonFile });
+        Program.Main(new string[] { docfxJsonFile });
         var filePath = Path.Combine(_outputFolder, "site", "api", "Hello.HelloWorld.html");
         Assert.True(File.Exists(filePath));
         var html = new HtmlDocument();
