@@ -30,13 +30,6 @@ public static class ErrorCodes
         public const string CircularTocInclusion = "CircularTocInclusion";
     }
 
-    public static class Config
-    {
-        public const string BuildConfigNotFound = "BuildConfigNotFound";
-        public const string MetadataConfigNotFound = "MetadataConfigNotFound";
-        public const string PdfConfigNotFound = "PdfConfigNotFound";
-    }
-
     public static class Template
     {
         public const string ApplyTemplatePreprocessorError = "ApplyTemplatePreprocessorError";

@@ -6,6 +6,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -705,6 +706,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -849,11 +851,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>&gt;"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>&lt;<a class=\"xref\" href=\"CSharp10.RecordClass.html\">RecordClass</a>&gt;"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <xref uid=\"CSharp10.RecordClass\" text=\"RecordClass\"/>)"
+          "value": "<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.iequatable-1\">IEquatable</a>(Of <a class=\"xref\" href=\"CSharp10.RecordClass.html\">RecordClass</a>)"
         }
       ]
     }
@@ -1323,5 +1325,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

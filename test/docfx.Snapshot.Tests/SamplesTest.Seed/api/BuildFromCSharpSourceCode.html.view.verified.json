@@ -11,6 +11,7 @@
         {
           "uid": "BuildFromCSharpSourceCode.CSharp",
           "isExtensionMethod": false,
+          "href": "BuildFromCSharpSourceCode.CSharp.html",
           "name": [
             {
               "lang": "csharp",
@@ -106,9 +107,6 @@
     }
   ],
   "type": "namespace",
-  "assemblies": [
-    "cs.temp.dll"
-  ],
   "level": 0.0,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
@@ -138,5 +136,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

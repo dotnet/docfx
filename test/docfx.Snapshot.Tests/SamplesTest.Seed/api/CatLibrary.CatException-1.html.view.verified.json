@@ -6,6 +6,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -103,6 +104,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -1220,5 +1222,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

@@ -6,6 +6,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -516,6 +517,7 @@
     "uid": "CSharp10",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp10.html",
     "name": [
       {
         "lang": "csharp",
@@ -1089,5 +1091,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

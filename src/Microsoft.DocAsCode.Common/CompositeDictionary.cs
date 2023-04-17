@@ -220,10 +220,7 @@ public class CompositeDictionary
             {
                 throw new ArgumentNullException(nameof(dict));
             }
-            if (valueConverter == null)
-            {
-                valueConverter = o => (TValue)o;
-            }
+            valueConverter ??= o => (TValue)o;
             if (_entries.Exists(e => e.Prefix == prefix))
             {
                 throw new InvalidOperationException();

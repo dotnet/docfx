@@ -7,6 +7,7 @@
     "isEii": false,
     "isExtensionMethod": false,
     "isExternal": true,
+    "href": "BuildFromAssembly.html",
     "name": [
       {
         "lang": "csharp",
@@ -368,6 +369,7 @@
     "isEii": false,
     "isExtensionMethod": false,
     "isExternal": true,
+    "href": "BuildFromAssembly.html",
     "name": [
       {
         "lang": "csharp",
@@ -410,7 +412,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"2\">This is a test class.</p>\n",
+  "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">This is a test class.</p>\n",
   "example": [],
   "syntax": {
     "content": [
@@ -847,5 +849,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

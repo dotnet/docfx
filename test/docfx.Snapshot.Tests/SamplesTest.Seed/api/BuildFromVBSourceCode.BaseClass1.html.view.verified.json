@@ -6,6 +6,7 @@
     "uid": "BuildFromVBSourceCode",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromVBSourceCode.html",
     "name": [
       {
         "lang": "csharp",
@@ -217,9 +218,6 @@
             "endLine": 0.0,
             "isExternal": false
           },
-          "assemblies": [
-            "vb.temp.dll"
-          ],
           "namespace": "BuildFromVBSourceCode",
           "overload": {
             "uid": "BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword*",
@@ -330,13 +328,11 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "vb.temp.dll"
-  ],
   "namespace": {
     "uid": "BuildFromVBSourceCode",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromVBSourceCode.html",
     "name": [
       {
         "lang": "csharp",
@@ -379,7 +375,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"2\">This is the BaseClass</p>\n",
+  "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.BaseClass1.yml\" sourcestartlinenumber=\"1\">This is the BaseClass</p>\n",
   "example": [],
   "syntax": {
     "content": [
@@ -451,6 +447,7 @@
       "isEii": false,
       "isExtensionMethod": false,
       "parent": "BuildFromVBSourceCode",
+      "href": "BuildFromVBSourceCode.Class1.html",
       "name": [
         {
           "lang": "csharp",
@@ -915,5 +912,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

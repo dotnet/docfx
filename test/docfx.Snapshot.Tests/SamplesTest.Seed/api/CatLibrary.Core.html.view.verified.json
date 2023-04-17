@@ -26,6 +26,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChild",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -59,11 +60,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild\" text=\"ContainersRefTypeChild\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefTypeChild</a>"
             }
           ],
           "level": 0.0,
@@ -86,6 +87,7 @@
         {
           "uid": "CatLibrary.Core.ExplicitLayoutClass",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ExplicitLayoutClass.html",
           "name": [
             {
               "lang": "csharp",
@@ -153,6 +155,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -194,7 +197,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"2\">Struct ContainersRefType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">Struct ContainersRefType</p>\n",
           "type": "struct",
           "platform": null,
           "isEii": false,
@@ -220,6 +223,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -253,11 +257,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface\" text=\"ContainersRefTypeChildInterface\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefTypeChildInterface</a>"
             }
           ],
           "level": 0.0,
@@ -288,6 +292,7 @@
           "uid": "CatLibrary.Core.ContainersRefType.ColorType",
           "isExtensionMethod": false,
           "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -321,15 +326,15 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ColorType\" text=\"ColorType\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"2\">Enumeration ColorType</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourcestartlinenumber=\"1\">Enumeration ColorType</p>\n",
           "type": "enum",
           "platform": null,
           "isEii": false,
@@ -355,6 +360,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
               "lang": "csharp",
@@ -388,15 +394,15 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Core.ContainersRefType\" text=\"ContainersRefType\"/>.<xref uid=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate\" text=\"ContainersRefTypeDelegate\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>.<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefTypeDelegate</a>"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"2\">Delegate ContainersRefTypeDelegate</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.yml\" sourcestartlinenumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,
@@ -482,5 +488,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

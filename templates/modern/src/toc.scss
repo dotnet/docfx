@@ -60,4 +60,10 @@ $expand-stub-width: .85rem;
   li.expanded > .expand-stub::before {
     transform: rotate(90deg);
   }
+
+  span.name-only {
+    font-weight: 600;
+    display: inline-block;
+    margin: .4rem 0;
+  }
 }

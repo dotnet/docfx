@@ -11,6 +11,7 @@
         {
           "uid": "CSharp9.FunctionPointers",
           "isExtensionMethod": false,
+          "href": "CSharp9.FunctionPointers.html",
           "name": [
             {
               "lang": "csharp",
@@ -71,6 +72,7 @@
         {
           "uid": "CSharp9.InitOnlySetters",
           "isExtensionMethod": false,
+          "href": "CSharp9.InitOnlySetters.html",
           "name": [
             {
               "lang": "csharp",
@@ -131,6 +133,7 @@
         {
           "uid": "CSharp9.NativeSizedIntegers",
           "isExtensionMethod": false,
+          "href": "CSharp9.NativeSizedIntegers.html",
           "name": [
             {
               "lang": "csharp",
@@ -191,6 +194,7 @@
         {
           "uid": "CSharp9.RecordTypes",
           "isExtensionMethod": false,
+          "href": "CSharp9.RecordTypes.html",
           "name": [
             {
               "lang": "csharp",
@@ -252,6 +256,7 @@
           "uid": "CSharp9.RecordTypes.Person",
           "isExtensionMethod": false,
           "parent": "CSharp9",
+          "href": "CSharp9.RecordTypes.html",
           "name": [
             {
               "lang": "csharp",
@@ -285,11 +290,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Person\" text=\"Person\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Person.html\">Person</a>"
             }
           ],
           "level": 0.0,
@@ -312,6 +317,7 @@
         {
           "uid": "CSharp9.RecordTypes.Teacher",
           "isExtensionMethod": false,
+          "href": "CSharp9.RecordTypes.html",
           "name": [
             {
               "lang": "csharp",
@@ -345,11 +351,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp9.RecordTypes\" text=\"RecordTypes\"/>.<xref uid=\"CSharp9.RecordTypes.Teacher\" text=\"Teacher\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp9.RecordTypes.html\">RecordTypes</a>.<a class=\"xref\" href=\"CSharp9.RecordTypes.Teacher.html\">Teacher</a>"
             }
           ],
           "level": 0.0,
@@ -533,5 +539,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

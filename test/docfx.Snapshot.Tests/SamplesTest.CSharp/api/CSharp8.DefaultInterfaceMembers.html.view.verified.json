@@ -6,6 +6,7 @@
     "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp8.html",
     "name": [
       {
         "lang": "csharp",
@@ -806,7 +807,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <xref uid=\"CSharp8.DefaultInterfaceMembers.op_UnaryPlus*\" text=\"+\"/>"
+                "value": "operator <a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html#CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\">+</a>"
               }
             ],
             "id": "CSharp8_DefaultInterfaceMembers_op_UnaryPlus_"
@@ -883,6 +884,7 @@
     "uid": "CSharp8",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CSharp8.html",
     "name": [
       {
         "lang": "csharp",
@@ -1059,5 +1061,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inInterface": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

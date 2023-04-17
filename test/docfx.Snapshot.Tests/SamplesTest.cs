@@ -19,6 +19,14 @@ namespace Microsoft.DocAsCode.Tests;
 [Trait("Stage", "Snapshot")]
 public class SamplesTest
 {
+    private class SnapshotFactAttribute : FactAttribute
+    {
+        public SnapshotFactAttribute()
+        {
+            Skip = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SNAPSHOT_TEST")) ? "Skip snapshot tests" : null;
+        }
+    }
+
     private static readonly string s_samplesDir = Path.GetFullPath("../../../../../samples");
 
     private static readonly string[] s_screenshotUrls = new[]
@@ -47,7 +55,7 @@ public class SamplesTest
         Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
     }
 
-    [Fact]
+    [SnapshotFact]
     public async Task Seed()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -69,8 +77,7 @@ public class SamplesTest
         await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
     }
 
-#if NET7_0_OR_GREATER
-    [Fact]
+    [SnapshotFact]
     public async Task SeedHtml()
     {
         var samplePath = $"{s_samplesDir}/seed";
@@ -102,16 +109,16 @@ public class SamplesTest
             foreach (var url in s_screenshotUrls)
             {
                 await page.GotoAsync($"http://localhost:{port}/{url}");
-                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
                 await page.WaitForFunctionAsync("window.docfx.ready");
                 await page.WaitForFunctionAsync("window.docfx.searchReady");
+                await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
 
                 if (url.Contains("?term=cat"))
                 {
                     if (isMobile)
                     {
-                        await (await page.QuerySelectorAsync("[data-bs-target='#navbar']")).ClickAsync();
-                        await page.WaitForSelectorAsync("#navbar.show");
+                        await (await page.QuerySelectorAsync("[data-bs-target='#navpanel']")).ClickAsync();
+                        await page.WaitForSelectorAsync("#navpanel.show");
                     }
 
                     await (await page.QuerySelectorAsync("#search-query")).TypeAsync("cat");
@@ -164,7 +171,7 @@ public class SamplesTest
         }
     }
 
-    [Fact]
+    [SnapshotFact]
     public async Task CSharp()
     {
         var samplePath = $"{s_samplesDir}/csharp";
@@ -184,9 +191,8 @@ public class SamplesTest
 
         await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
-#endif
 
-    [Fact]
+    [SnapshotFact]
     public Task Extensions()
     {
         var samplePath = $"{s_samplesDir}/extensions";

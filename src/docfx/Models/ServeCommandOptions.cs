@@ -1,22 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using CommandLine;
+using System.ComponentModel;
+using Spectre.Console.Cli;
 
 namespace Microsoft.DocAsCode;
 
-[OptionUsage("serve <folder path>")]
-internal class ServeCommandOptions : ICanPrintHelpMessage
+[Description("Host a local static website")]
+internal class ServeCommandOptions : CommandSettings
 {
-    [ValueOption(0)]
+    [Description("Path to the directory to serve")]
+    [CommandArgument(0, "[directory]")]
     public string Folder { get; set; }
 
-    [Option('n', "hostname", HelpText = "Specify the hostname of the hosted website [localhost]")]
+    [Description("Specify the hostname of the hosted website [localhost]")]
+    [CommandOption("-n|--hostname")]
     public string Host { get; set; }
 
-    [Option('p', "port", HelpText = "Specify the port of the hosted website [8080]")]
+    [Description("Specify the port of the hosted website [8080]")]
+    [CommandOption("-p|--port")]
     public int? Port { get; set; }
-
-    [Option('h', "help", HelpText = "Print help message for this sub-command")]
-    public bool PrintHelpMessage { get; set; }
 }

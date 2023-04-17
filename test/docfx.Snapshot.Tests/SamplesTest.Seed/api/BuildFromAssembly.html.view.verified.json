@@ -12,7 +12,7 @@
           "uid": "BuildFromAssembly.Class1",
           "isExtensionMethod": false,
           "isExternal": true,
-          "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "href": "BuildFromAssembly.Class1.html",
           "name": [
             {
               "lang": "csharp",
@@ -54,7 +54,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"2\">This is a test class.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">This is a test class.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -140,5 +140,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

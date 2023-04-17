@@ -139,17 +139,11 @@ internal class BuildJsonConfig
 
     }
 
-    [JsonProperty("lruSize")]
-    public int? LruSize { get; set; }
-
     [JsonProperty("keepFileLink")]
     public bool KeepFileLink { get; set; }
 
     [JsonProperty("sitemap")]
     public SitemapOptions SitemapOptions { get; set; }
-
-    [JsonProperty("falName")]
-    public string FALName { get; set; }
 
     [JsonProperty("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }

@@ -9,10 +9,14 @@ namespace Microsoft.DocAsCode.Dotnet;
 internal class YamlModelGenerator
 {
     private readonly Compilation _compilation;
+    private readonly MemberLayout _memberLayout;
+    private readonly HashSet<IAssemblySymbol> _allAssemblies;
 
-    public YamlModelGenerator(Compilation compilation)
+    public YamlModelGenerator(Compilation compilation, MemberLayout memberLayout, HashSet<IAssemblySymbol> allAssemblies)
     {
         _compilation = compilation;
+        _memberLayout = memberLayout;
+        _allAssemblies = allAssemblies;
     }
 
     public void DefaultVisit(ISymbol symbol, MetadataItem item)
@@ -35,9 +39,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.CSharp))
             reference.QualifiedNameParts.Add(SyntaxLanguage.CSharp, new());
 
-        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.CSharp, asOverload);
-        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.CSharp, asOverload);
-        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.CSharp, asOverload);
+        reference.NameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.NameWithTypeParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.QualifiedNameParts[SyntaxLanguage.CSharp] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.CSharp, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
 
         if (!reference.NameParts.ContainsKey(SyntaxLanguage.VB))
             reference.NameParts.Add(SyntaxLanguage.VB, new());
@@ -46,9 +50,9 @@ internal class YamlModelGenerator
         if (!reference.QualifiedNameParts.ContainsKey(SyntaxLanguage.VB))
             reference.QualifiedNameParts.Add(SyntaxLanguage.VB, new());
 
-        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.VB, asOverload);
-        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.VB, asOverload);
-        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, SyntaxLanguage.VB, asOverload);
+        reference.NameParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.NameWithTypeParts[SyntaxLanguage.VB] = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
+        reference.QualifiedNameParts[SyntaxLanguage.VB] = SymbolFormatter.GetQualifiedNameParts(symbol, SyntaxLanguage.VB, nullableReferenceType: false, asOverload).ToLinkItems(_compilation, _memberLayout, _allAssemblies, asOverload);
     }
 
     public void GenerateSyntax(ISymbol symbol, SyntaxDetail syntax, SymbolFilter filter)

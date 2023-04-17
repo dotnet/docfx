@@ -11,6 +11,7 @@
         {
           "uid": "CatLibrary.Core",
           "isExtensionMethod": false,
+          "href": "CatLibrary.html",
           "name": [
             {
               "lang": "csharp",
@@ -44,11 +45,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary\" text=\"CatLibrary\"/>.<xref uid=\"CatLibrary.Core\" text=\"Core\"/>"
+              "value": "<a class=\"xref\" href=\"CatLibrary.html\">CatLibrary</a>.<a class=\"xref\" href=\"CatLibrary.Core.html\">Core</a>"
             }
           ],
           "level": 0.0,
@@ -79,6 +80,7 @@
           "uid": "CatLibrary.Cat`2",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.Cat-2.html",
           "name": [
             {
               "lang": "csharp",
@@ -112,15 +114,15 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>&lt;T, K&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Cat-2.html\">Cat</a>&lt;T, K&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Cat`2\" text=\"Cat\"/>(Of T, K)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Cat-2.html\">Cat</a>(Of T, K)"
             }
           ],
           "level": 0.0,
-          "summary": "<p>Here&apos;s main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">T</code> and <code data-dev-comment-type=\"typeparamref\" class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
+          "summary": "<p>Here's main class of this <i>Demo</i>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <code class=\"typeparamref\">T</code> and <code class=\"typeparamref\">K</code>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -139,6 +141,7 @@
         {
           "uid": "CatLibrary.CatException`1",
           "isExtensionMethod": false,
+          "href": "CatLibrary.CatException-1.html",
           "name": [
             {
               "lang": "csharp",
@@ -172,11 +175,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.CatException`1\" text=\"CatException\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>(Of T)"
             }
           ],
           "level": 0.0,
@@ -199,6 +202,7 @@
         {
           "uid": "CatLibrary.Complex`2",
           "isExtensionMethod": false,
+          "href": "CatLibrary.Complex-2.html",
           "name": [
             {
               "lang": "csharp",
@@ -232,11 +236,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>&lt;T, J&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;T, J&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Complex`2\" text=\"Complex\"/>(Of T, J)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of T, J)"
             }
           ],
           "level": 0.0,
@@ -260,6 +264,7 @@
           "uid": "CatLibrary.ICatExtension",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.ICatExtension.html",
           "name": [
             {
               "lang": "csharp",
@@ -301,7 +306,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"2\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <strong>public</strong> and <strong>static</strong>.</p>\n<p>Also it shouldn&apos;t be a geneic class</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">It's the class that contains ICat interface's extension method.</p>\n<p>This class must be <b>public</b> and <b>static</b>.</p>\n<p>Also it shouldn't be a geneic class</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -321,6 +326,7 @@
           "uid": "CatLibrary.Tom",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.Tom.html",
           "name": [
             {
               "lang": "csharp",
@@ -362,7 +368,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"2\">Tom class is only inherit from Object. Not any member inside itself.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Tom.yml\" sourcestartlinenumber=\"1\">Tom class is only inherit from Object. Not any member inside itself.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -381,6 +387,7 @@
         {
           "uid": "CatLibrary.TomFromBaseClass",
           "isExtensionMethod": false,
+          "href": "CatLibrary.TomFromBaseClass.html",
           "name": [
             {
               "lang": "csharp",
@@ -422,7 +429,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"2\"><em sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"2\">TomFromBaseClass</em> inherits from @</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\"><em sourcefile=\"obj/api/CatLibrary.TomFromBaseClass.yml\" sourcestartlinenumber=\"1\">TomFromBaseClass</em> inherits from @</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -449,6 +456,7 @@
           "uid": "CatLibrary.IAnimal",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.IAnimal.html",
           "name": [
             {
               "lang": "csharp",
@@ -490,7 +498,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"2\">This is <strong>basic</strong> interface of all animal.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.IAnimal.yml\" sourcestartlinenumber=\"1\">This is <b>basic</b> interface of all animal.</p>\n",
           "type": "interface",
           "platform": null,
           "isEii": false,
@@ -510,6 +518,7 @@
           "uid": "CatLibrary.ICat",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
+          "href": "CatLibrary.ICat.html",
           "name": [
             {
               "lang": "csharp",
@@ -551,7 +560,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICat.yml\" sourcestartlinenumber=\"2\">Cat's interface</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.ICat.yml\" sourcestartlinenumber=\"1\">Cat's interface</p>\n",
           "type": "interface",
           "platform": null,
           "isEii": false,
@@ -577,6 +586,7 @@
         {
           "uid": "CatLibrary.FakeDelegate`1",
           "isExtensionMethod": false,
+          "href": "CatLibrary.FakeDelegate-1.html",
           "name": [
             {
               "lang": "csharp",
@@ -610,15 +620,15 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>&lt;T&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.FakeDelegate-1.html\">FakeDelegate</a>&lt;T&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.FakeDelegate`1\" text=\"FakeDelegate\"/>(Of T)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.FakeDelegate-1.html\">FakeDelegate</a>(Of T)"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.FakeDelegate-1.yml\" sourcestartlinenumber=\"2\">Fake delegate</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.FakeDelegate-1.yml\" sourcestartlinenumber=\"1\">Fake delegate</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,
@@ -637,6 +647,7 @@
         {
           "uid": "CatLibrary.MRefDelegate`3",
           "isExtensionMethod": false,
+          "href": "CatLibrary.MRefDelegate-3.html",
           "name": [
             {
               "lang": "csharp",
@@ -670,15 +681,15 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>&lt;K, T, L&gt;"
+              "value": "<a class=\"xref\" href=\"CatLibrary.MRefDelegate-3.html\">MRefDelegate</a>&lt;K, T, L&gt;"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.MRefDelegate`3\" text=\"MRefDelegate\"/>(Of K, T, L)"
+              "value": "<a class=\"xref\" href=\"CatLibrary.MRefDelegate-3.html\">MRefDelegate</a>(Of K, T, L)"
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"2\">Generic delegate with many constrains.</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefDelegate-3.yml\" sourcestartlinenumber=\"1\">Generic delegate with many constrains.</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,
@@ -697,6 +708,7 @@
         {
           "uid": "CatLibrary.MRefNormalDelegate",
           "isExtensionMethod": false,
+          "href": "CatLibrary.MRefNormalDelegate.html",
           "name": [
             {
               "lang": "csharp",
@@ -738,7 +750,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"2\">Delegate in the namespace</p>\n",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.MRefNormalDelegate.yml\" sourcestartlinenumber=\"1\">Delegate in the namespace</p>\n",
           "type": "delegate",
           "platform": null,
           "isEii": false,
@@ -824,5 +836,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

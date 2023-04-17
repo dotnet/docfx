@@ -64,13 +64,11 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "cs.temp.dll"
-  ],
   "namespace": {
     "uid": "MyExample",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "MyExample.html",
     "name": [
       {
         "lang": "csharp",
@@ -296,6 +294,7 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "_disableToc": false,
+  "_disableNextArticle": true,
   "inEvent": true,
   "isItem": true
 }

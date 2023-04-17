@@ -1,13 +1,18 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
+using Markdig;
+using Markdig.Helpers;
+using Markdig.Renderers.Roundtrip;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
@@ -19,8 +24,6 @@ internal class XmlComment
 {
     private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
     private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
-    private static readonly Regex LineBreakRegex = new(@"\r?\n", RegexOptions.Compiled);
-    private static readonly Regex CodeElementRegex = new(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
@@ -71,21 +74,30 @@ internal class XmlComment
         _context = context;
 
         ResolveLangword(doc);
-        ResolveSeeCref(doc, context.AddReferenceDelegate);
-        ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
-        ResolveExceptionCref(doc, context.AddReferenceDelegate);
-            
-        ResolveCodeSource(doc, context);
-        var nav = doc.CreateNavigator();
-        Summary = GetSummary(nav, context);
-        Remarks = GetRemarks(nav, context);
-        Returns = GetReturns(nav, context);
+        ResolveCrefLink(doc, "//seealso[@cref]", context.AddReferenceDelegate);
+        ResolveCrefLink(doc, "//see[@cref]", context.AddReferenceDelegate);
+        ResolveCrefLink(doc, "//exception[@cref]", context.AddReferenceDelegate);
 
-        Exceptions = GetExceptions(nav, context);
-        SeeAlsos = GetSeeAlsos(nav, context);
-        Examples = GetExamples(nav, context);
-        Parameters = GetParameters(nav, context);
-        TypeParameters = GetTypeParameters(nav, context);
+        ResolveCode(doc, context);
+
+        var nav = doc.CreateNavigator();
+        Summary = GetSingleNodeValue(nav, "/member/summary");
+        Remarks = GetSingleNodeValue(nav, "/member/remarks");
+        Returns = GetSingleNodeValue(nav, "/member/returns");
+
+        Exceptions = ToListNullOnEmpty(GetMulitpleCrefInfo(nav, "/member/exception"));
+        SeeAlsos = ToListNullOnEmpty(GetMultipleLinkInfo(nav, "/member/seealso"));
+        Examples = GetMultipleExampleNodes(nav, "/member/example").ToList();
+        Parameters = GetListContent(nav, "/member/param", "parameter", context);
+        TypeParameters = GetListContent(nav, "/member/typeparam", "type parameter", context);
+
+        // Nulls and empty list are treated differently in overwrite files:
+        //   null values can be replaced, but empty list are merged by merge key
+        static List<T> ToListNullOnEmpty<T>(IEnumerable<T> items)
+        {
+            var list = items.ToList();
+            return list.Count == 0 ? null : list;
+        }
     }
 
     public static XmlComment Parse(string xml, XmlCommentParserContext context = null)
@@ -108,171 +120,57 @@ internal class XmlComment
         }
     }
 
-    public void CopyInheritedData(XmlComment src)
-    {
-        if (src == null)
-        {
-            throw new ArgumentNullException(nameof(src));
-        }
-
-        Summary = Summary ?? src.Summary;
-        Remarks = Remarks ?? src.Remarks;
-        Returns = Returns ?? src.Returns;
-        if (Exceptions == null && src.Exceptions != null)
-        {
-            Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
-        }
-        if (SeeAlsos == null && src.SeeAlsos != null)
-        {
-            SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
-        }
-        if (Examples == null && src.Examples != null)
-        {
-            Examples = new List<string>(src.Examples);
-        }
-        if (Parameters == null && src.Parameters != null)
-        {
-            Parameters = new Dictionary<string, string>(src.Parameters);
-        }
-        if (TypeParameters == null && src.TypeParameters != null)
-        {
-            TypeParameters = new Dictionary<string, string>(src.TypeParameters);
-        }
-    }
-
     public string GetParameter(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return null;
-        }
-        return GetValue(name, Parameters);
+        return Parameters.TryGetValue(name, out var value) ? value : null;
     }
 
     public string GetTypeParameter(string name)
     {
-        if (string.IsNullOrEmpty(name))
+        return TypeParameters.TryGetValue(name, out var value) ? value : null;
+    }
+
+    private void ResolveCode(XDocument doc, XmlCommentParserContext context)
+    {
+        foreach (var node in doc.XPathSelectElements("//code").ToList())
         {
-            return null;
-        }
-        return GetValue(name, TypeParameters);
-    }
-
-    private static string GetValue(string name, Dictionary<string, string> dictionary)
-    {
-        if (dictionary == null)
-        {
-            return null;
-        }
-        if (dictionary.TryGetValue(name, out string description))
-        {
-            return description;
-        }
-        return null;
-    }
-
-    private string GetSummary(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        string selector = "/member/summary";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private string GetRemarks(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        string selector = "/member/remarks";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private string GetReturns(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        string selector = "/member/returns";
-        return GetSingleNodeValue(nav, selector);
-    }
-
-    private List<ExceptionInfo> GetExceptions(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        string selector = "/member/exception";
-        var result = GetMulitpleCrefInfo(nav, selector).ToList();
-        if (result.Count == 0)
-        {
-            return null;
-        }
-        return result;
-    }
-
-    private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
-        if (result.Count == 0)
-        {
-            return null;
-        }
-        return result;
-    }
-
-    private List<string> GetExamples(XPathNavigator nav, XmlCommentParserContext context)
-    {
-        // Resolve <see cref> to @ syntax
-        // Also support <seealso cref>
-        return GetMultipleExampleNodes(nav, "/member/example").ToList();
-    }
-
-    private void ResolveCodeSource(XDocument doc, XmlCommentParserContext context)
-    {
-        foreach (XElement node in doc.XPathSelectElements("//code"))
-        {
-            var source = node.Attribute("source");
-            if (source == null || string.IsNullOrEmpty(source.Value))
+            if (node.Attribute("data-inline") is { } inlineAttribute)
             {
+                inlineAttribute.Remove();
                 continue;
             }
 
-            var region = node.Attribute("region");
-
-            var path = source.Value;
-            if (!Path.IsPathRooted(path))
-            {
-                string basePath;
-
-                if (!string.IsNullOrEmpty(context.CodeSourceBasePath))
-                {
-                    basePath = context.CodeSourceBasePath;
-                }
-                else
-                {
-                    if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
-                    {
-                        Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
-                        continue;
-                    }
-
-                    basePath = Path.GetDirectoryName(Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Path));
-                }
-                
-                path = Path.Combine(basePath, path);
-            }
-
-            ResolveCodeSource(node, path, region?.Value);
+            var indent = ((IXmlLineInfo)node).LinePosition - 2;
+            var (lang, value) = ResolveCodeSource(node, context);
+            value = TrimEachLine(value ?? node.Value, new(' ', indent));
+            var code = new XElement("code", value);
+            code.SetAttributeValue("class", $"lang-{lang ?? "csharp"}");
+            node.ReplaceWith(new XElement("pre", code));
         }
     }
 
-    private void ResolveCodeSource(XElement element, string source, string region)
+    private (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
     {
-        if (!File.Exists(source))
-        {
-            Logger.LogWarning($"Source file '{source}' not found.");
-            return;
-        }
+        var source = node.Attribute("source")?.Value;
+        if (string.IsNullOrEmpty(source))
+            return default;
+
+        var lang = Path.GetExtension(source).TrimStart('.').ToLowerInvariant();
+
+        var code = context.ResolveCode?.Invoke(source);
+        if (code is null)
+            return (lang, null);
+
+        var region = node.Attribute("region")?.Value;
+        if (region is null)
+            return (lang, code);
 
         var (regionRegex, endRegionRegex) = GetRegionRegex(source);
 
         var builder = new StringBuilder();
         var regionCount = 0;
-        foreach (var line in File.ReadLines(source))
+
+        foreach (var line in ReadLines(code))
         {
             if (!string.IsNullOrEmpty(region))
             {
@@ -310,7 +208,17 @@ internal class XmlComment
             }
         }
 
-        element.SetValue(builder.ToString());
+        return (lang, builder.ToString());
+    }
+
+    private static IEnumerable<string> ReadLines(string text)
+    {
+        string line;
+        using var sr = new StringReader(text);
+        while ((line = sr.ReadLine()) != null)
+        {
+            yield return line;
+        }
     }
 
     private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, XmlCommentParserContext context)
@@ -342,11 +250,6 @@ internal class XmlComment
         return result;
     }
 
-    private Dictionary<string, string> GetParameters(XPathNavigator navigator, XmlCommentParserContext context)
-    {
-        return GetListContent(navigator, "/member/param", "parameter", context);
-    }
-
     private static (Regex, Regex) GetRegionRegex(String source)
     {
         var ext = Path.GetExtension(source);
@@ -363,28 +266,6 @@ internal class XmlComment
         return (RegionRegex, EndRegionRegex);
     }
 
-    private Dictionary<string, string> GetTypeParameters(XPathNavigator navigator, XmlCommentParserContext context)
-    {
-        return GetListContent(navigator, "/member/typeparam", "type parameter", context);
-    }
-
-    private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
-    {
-        // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//seealso[@cref]", addReference);
-    }
-
-    private void ResolveSeeCref(XNode node, Action<string, string> addReference)
-    {
-        // Resolve <see cref> to <xref>
-        ResolveCrefLink(node, "//see[@cref]", addReference);
-    }
-
-    private void ResolveExceptionCref(XNode node, Action<string, string> addReference)
-    {
-        ResolveCrefLink(node, "//exception[@cref]", addReference);
-    }
-
     private void ResolveLangword(XNode node)
     {
         foreach (var item in node.XPathSelectElements("//see[@langword]").ToList())
@@ -398,7 +279,9 @@ internal class XmlComment
             }
             else
             {
-                item.ReplaceWith(new XElement("c", langword));
+                var code = new XElement("code", langword);
+                code.SetAttributeValue("data-inline", "true");
+                item.ReplaceWith(code);
             }
         }
     }
@@ -487,8 +370,7 @@ internal class XmlComment
         }
         foreach (XPathNavigator nav in iterator)
         {
-            string description = GetXmlValue(nav);
-            yield return description;
+            yield return GetXmlValue(nav);
         }
     }
 
@@ -502,11 +384,6 @@ internal class XmlComment
         foreach (XPathNavigator nav in iterator)
         {
             string description = GetXmlValue(nav);
-            if (string.IsNullOrEmpty(description))
-            {
-                description = null;
-            }
-
             string commentId = nav.GetAttribute("cref", string.Empty);
             string refId = nav.GetAttribute("refId", string.Empty);
             if (!string.IsNullOrEmpty(refId))
@@ -604,153 +481,133 @@ internal class XmlComment
 
     private string GetSingleNodeValue(XPathNavigator nav, string selector)
     {
-        var node = nav.Clone().SelectSingleNode(selector);
-        if (node == null)
-        {
-            // throw new ArgumentException(selector + " is not found");
-            return null;
-        }
-        else
-        {
-            return GetXmlValue(node);
-        }
+        return GetXmlValue(nav.Clone().SelectSingleNode(selector));
     }
 
     private string GetXmlValue(XPathNavigator node)
     {
-        // NOTE: use node.InnerXml instead of node.Value, to keep decorative nodes,
-        // e.g.
-        // <remarks><para>Value</para></remarks>
-        // decode InnerXml as it encodes
-        // IXmlLineInfo.LinePosition starts from 1 and it would ignore '<'
-        // e.g.
-        // <summary/> the LinePosition is the column number of 's', so it should be minus 2
-        var lineInfo = node as IXmlLineInfo;
-        int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
+        if (node is null)
+            return null;
 
-        return NormalizeXml(RemoveLeadingSpaces(GetInnerXml(node)), column);
+        if (_context.SkipMarkup)
+            return TrimEachLine(node.InnerXml);
+
+        return GetInnerXmlAsMarkdown(TrimEachLine(node.InnerXml));
     }
 
-    /// <summary>
-    /// Remove least common whitespces in each line of xml
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <returns>xml after removing least common whitespaces</returns>
-    private static string RemoveLeadingSpaces(string xml)
+    private static string TrimEachLine(string text, string indent = "")
     {
-        var lines = LineBreakRegex.Split(xml);
-        var normalized = new List<string>();
-
-        var preIndex = 0;
-        var leadingSpaces = from line in lines
-                            where !string.IsNullOrWhiteSpace(line)
-                            select line.TakeWhile(char.IsWhiteSpace).Count();
-
-        if (leadingSpaces.Any())
+        var minLeadingWhitespace = int.MaxValue;
+        var lines = ReadLines(text).ToList();
+        foreach (var line in lines)
         {
-            preIndex = leadingSpaces.Min();
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            var leadingWhitespace = 0;
+            while (leadingWhitespace < line.Length && char.IsWhiteSpace(line[leadingWhitespace]))
+                leadingWhitespace++;
+
+            minLeadingWhitespace = Math.Min(minLeadingWhitespace, leadingWhitespace);
         }
 
-        if (preIndex == 0)
+        var builder = new StringBuilder();
+
+        // Trim leading empty lines
+        var trimStart = true;
+
+        // Apply indentation to all lines except the first,
+        // since the first new line in <pre></code> is significant
+        var firstLine = true;
+
+        foreach (var line in lines)
         {
+            if (trimStart && string.IsNullOrWhiteSpace(line))
+                continue;
+
+            if (firstLine)
+                firstLine = false;
+            else
+                builder.Append(indent);
+
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                builder.AppendLine();
+                continue;
+            }
+
+            trimStart = false;
+            builder.AppendLine(line.Substring(minLeadingWhitespace));
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static string GetInnerXmlAsMarkdown(string xml)
+    {
+        if (!xml.Contains('&'))
             return xml;
-        }
 
-        foreach (var line in lines)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                normalized.Add(string.Empty);
-            }
-            else
-            {
-                normalized.Add(line.Substring(preIndex));
-            }
-        }
-        return string.Join("\n", normalized);
-    }
-
-    /// <summary>
-    /// Split xml into lines. Trim meaningless whitespaces.
-    /// if a line starts with xml node, all leading whitespaces would be trimmed
-    /// otherwise text node start position always aligns with the start position of its parent line(the last previous line that starts with xml node)
-    /// Trim newline character for code element.
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="parentIndex">the start position of the last previous line that starts with xml node</param>
-    /// <returns>normalized xml</returns>
-    private static string NormalizeXml(string xml, int parentIndex)
-    {
-        var lines = LineBreakRegex.Split(xml);
-        var normalized = new List<string>();
-
-        foreach (var line in lines)
-        {
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                normalized.Add(string.Empty);
-            }
-            else
-            {
-                // TO-DO: special logic for TAB case
-                int index = line.TakeWhile(char.IsWhiteSpace).Count();
-                if (line[index] == '<')
-                {
-                    parentIndex = index;
-                }
-
-                normalized.Add(line.Substring(Math.Min(parentIndex, index)));
-            }
-        }
-
-        // trim newline character for code element
-        return CodeElementRegex.Replace(
-            string.Join("\n", normalized),
-            m =>
-            {
-                var group = m.Groups[1];
-                if (group.Length == 0)
-                {
-                    return m.Value;
-                }
-                return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
-            });
-    }
-
-    /// <summary>
-    /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
-    /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
-    /// </summary>
-    /// <param name="node"></param>
-    /// <returns></returns>
-    private static string GetInnerXml(XPathNavigator node)
-    {
-        using var sw = new StringWriter(CultureInfo.InvariantCulture);
-        using (var tw = new XmlWriterWithGtDecoded(sw))
-        {
-            if (node.MoveToFirstChild())
-            {
-                do
-                {
-                    tw.WriteNode(node, true);
-                } while (node.MoveToNext());
-                node.MoveToParent();
-            }
-        }
-
+        xml = HandleBlockQuote(xml);
+        var markdown = Markdown.Parse(xml, trackTrivia: true);
+        DecodeMarkdownCode(markdown);
+        var sw = new StringWriter();
+        var rr = new RoundtripRenderer(sw);
+        rr.Write(markdown);
         return sw.ToString();
-    }
 
-    private sealed class XmlWriterWithGtDecoded : XmlTextWriter
-    {
-        public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
-
-        public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
-
-        public override void WriteString(string text)
+        static string HandleBlockQuote(string xml)
         {
-            var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
-            WriteRaw(encoded);
+            // > is encoded to &gt; in XML. When interpreted as markdown, > is as blockquote
+            // Decode standalone &gt; to > to enable the block quote markdown syntax
+            return Regex.Replace(xml, @"^(\s*)&gt;", "$1>", RegexOptions.Multiline);
+        }
+
+        static void DecodeMarkdownCode(MarkdownObject node)
+        {
+            // Commonmark: Entity and numeric character references are treated as literal text in code spans and code blocks
+            switch (node)
+            {
+                case CodeInline codeInline:
+                    codeInline.ContentWithTrivia = new(XmlDecode(codeInline.ContentWithTrivia.ToString()), codeInline.ContentWithTrivia.NewLine);
+                    break;
+
+                case CodeBlock codeBlock:
+                    var lines = new StringLineGroup(codeBlock.Lines.Count);
+                    foreach (var line in codeBlock.Lines.Lines)
+                    {
+                        var newLine = line;
+                        newLine.Slice = new(XmlDecode(line.Slice.ToString()), line.Slice.NewLine);
+                        lines.Add(newLine);
+                    }
+                    codeBlock.Lines = lines;
+                    break;
+
+                case ContainerBlock containerBlock:
+                    foreach (var child in containerBlock)
+                        DecodeMarkdownCode(child);
+                    break;
+
+                case ContainerInline containerInline:
+                    foreach (var child in containerInline)
+                        DecodeMarkdownCode(child);
+                    break;
+
+                case LeafBlock leafBlock when leafBlock.Inline is not null:
+                    foreach (var child in leafBlock.Inline)
+                        DecodeMarkdownCode(child);
+                    break;
+            }
+        }
+
+        static string XmlDecode(string xml)
+        {
+            return xml
+                .Replace("&gt;", ">")
+                .Replace("&lt;", "<")
+                .Replace("&amp;", "&")
+                .Replace("&quot;", "\"")
+                .Replace("&apos;", "'");
         }
     }
 }

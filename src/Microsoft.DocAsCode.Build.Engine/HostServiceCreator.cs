@@ -33,7 +33,6 @@ internal class HostServiceCreator : IHostServiceCreator
             models,
             parameters.VersionName,
             parameters.VersionDir,
-            parameters.LruSize,
             parameters.GroupInfo,
             new BuildParameters(parameters.TagParameters))
         {

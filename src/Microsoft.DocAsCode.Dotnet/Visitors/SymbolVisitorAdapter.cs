@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Exceptions;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Dotnet;
 
@@ -20,16 +22,16 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
     private readonly IMethodSymbol[] _extensionMethods;
-    private readonly string _codeSourceBasePath;
+    private readonly ExtractMetadataConfig _config;
     private readonly SymbolFilter _filter;
 
-    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig options, SymbolFilter filter, IMethodSymbol[] extensionMethods)
+    public SymbolVisitorAdapter(Compilation compilation, YamlModelGenerator generator, ExtractMetadataConfig config, SymbolFilter filter, IMethodSymbol[] extensionMethods)
     {
         _compilation = compilation;
         _generator = generator;
         _filter = filter;
+        _config = config;
         _extensionMethods = extensionMethods?.Where(_filter.IncludeApi).ToArray() ?? Array.Empty<IMethodSymbol>();
-        _codeSourceBasePath = options.CodeSourceBasePath;
     }
 
     public override MetadataItem DefaultVisit(ISymbol symbol)
@@ -50,7 +52,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
         item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
-        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) ? null : new List<string> { assemblyName };
+        item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
         if (symbol is not INamespaceSymbol)
         {
             var namespaceName = VisitorHelper.GetId(symbol.ContainingNamespace);
@@ -155,10 +157,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Type = VisitorHelper.GetMemberTypeFromTypeKind(symbol.TypeKind);
-        if (item.Syntax == null)
-        {
-            item.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        item.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (item.Syntax.Content == null)
         {
             item.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -209,10 +208,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
 
         if (symbol.TypeParameters.Length > 0)
         {
@@ -264,10 +260,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Content == null)
         {
             result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -292,10 +285,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Content == null)
         {
             result.Syntax.Content = new SortedList<SyntaxLanguage, string>();
@@ -329,10 +319,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             return null;
         }
-        if (result.Syntax == null)
-        {
-            result.Syntax = new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
-        }
+        result.Syntax ??= new SyntaxDetail { Content = new SortedList<SyntaxLanguage, string>() };
         if (result.Syntax.Parameters == null)
         {
             result.Syntax.Parameters = new List<ApiParameter>();
@@ -429,14 +416,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         IReadOnlyList<string> typeGenericParameters = null,
         IReadOnlyList<string> methodGenericParameters = null)
     {
-        try
-        {
-            return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
-        }
-        catch (Exception ex)
-        {
-            throw new DocfxException($"Unable to generate spec reference for {VisitorHelper.GetCommentId(symbol)}", ex);
-        }
+        return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
     }
 
     private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
@@ -726,10 +706,37 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     {
         return new XmlCommentParserContext
         {
-            AddReferenceDelegate = GetAddReferenceDelegate(item),
+            SkipMarkup = _config.ShouldSkipMarkup,
+            AddReferenceDelegate = AddReferenceDelegate,
             Source = item.Source,
-            CodeSourceBasePath = _codeSourceBasePath
+            ResolveCode = ResolveCode,
         };
+
+        void AddReferenceDelegate(string id, string commentId)
+        {
+            var r = AddReference(id, commentId);
+            item.References ??= new Dictionary<string, ReferenceItem>();
+
+            // only record the id now, the value would be fed at later phase after merge
+            item.References[id] = null;
+        }
+
+        string ResolveCode(string source)
+        {
+            var basePath = _config.CodeSourceBasePath ?? (
+                item.Source?.Path is {} sourcePath
+                    ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
+                    : null);
+
+            var path = Path.GetFullPath(Path.Combine(basePath, source));
+            if (!File.Exists(path))
+            {
+                Logger.LogWarning($"Source file '{path}' not found.");
+                return null;
+            }
+
+            return File.ReadAllText(path);
+        }
     }
 
     private List<AttributeInfo> GetAttributeInfo(ImmutableArray<AttributeData> attributes)
@@ -855,20 +862,5 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         result.Type = AddSpecReference(arg.Type);
         return result;
-    }
-
-    private Action<string, string> GetAddReferenceDelegate(MetadataItem item)
-    {
-        return (id, commentId) =>
-        {
-            var r = AddReference(id, commentId);
-            if (item.References == null)
-            {
-                item.References = new Dictionary<string, ReferenceItem>();
-            }
-
-            // only record the id now, the value would be fed at later phase after merge
-            item.References[id] = null;
-        };
     }
 }

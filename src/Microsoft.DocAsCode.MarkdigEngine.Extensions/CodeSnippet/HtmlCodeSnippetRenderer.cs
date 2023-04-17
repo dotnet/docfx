@@ -488,10 +488,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 return false;
             }
 
-            if (codeRanges == null)
-            {
-                codeRanges = new List<CodeRange>();
-            }
+            codeRanges ??= new List<CodeRange>();
 
             codeRanges.Add(codeRange);
         }

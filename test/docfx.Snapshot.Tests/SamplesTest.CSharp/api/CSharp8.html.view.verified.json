@@ -11,6 +11,7 @@
         {
           "uid": "CSharp8.DefaultInterfaceMembers.Nested",
           "isExtensionMethod": false,
+          "href": "CSharp8.DefaultInterfaceMembers.html",
           "name": [
             {
               "lang": "csharp",
@@ -44,11 +45,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.Nested.html\">Nested</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.Nested\" text=\"Nested\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.Nested.html\">Nested</a>"
             }
           ],
           "level": 0.0,
@@ -71,6 +72,7 @@
         {
           "uid": "CSharp8.Issue4007",
           "isExtensionMethod": false,
+          "href": "CSharp8.Issue4007.html",
           "name": [
             {
               "lang": "csharp",
@@ -112,7 +114,7 @@
             }
           ],
           "level": 0.0,
-          "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"2\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
+          "summary": "<p sourcefile=\"api/CSharp8.Issue4007.yml\" sourcestartlinenumber=\"1\">This works: <xref href=\"CSharp8.Issue4007.SomeMethod(System.Int32)\" data-throw-if-not-resolved=\"false\"></xref>.\nThis does not work: <xref href=\"CSharp8.Issue4007.SomeOtherMethod\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n",
           "type": "class",
           "platform": null,
           "isEii": false,
@@ -131,6 +133,7 @@
         {
           "uid": "CSharp8.Misc",
           "isExtensionMethod": false,
+          "href": "CSharp8.Misc.html",
           "name": [
             {
               "lang": "csharp",
@@ -191,6 +194,7 @@
         {
           "uid": "CSharp8.NullableReferenceTypes",
           "isExtensionMethod": false,
+          "href": "CSharp8.NullableReferenceTypes.html",
           "name": [
             {
               "lang": "csharp",
@@ -258,6 +262,7 @@
         {
           "uid": "CSharp8.DisposableRefStructs",
           "isExtensionMethod": false,
+          "href": "CSharp8.DisposableRefStructs.html",
           "name": [
             {
               "lang": "csharp",
@@ -318,6 +323,7 @@
         {
           "uid": "CSharp8.ReadOnlyMembers",
           "isExtensionMethod": false,
+          "href": "CSharp8.ReadOnlyMembers.html",
           "name": [
             {
               "lang": "csharp",
@@ -386,6 +392,7 @@
           "uid": "CSharp8.DefaultInterfaceMembers",
           "isExtensionMethod": false,
           "parent": "CSharp8",
+          "href": "CSharp8.DefaultInterfaceMembers.html",
           "name": [
             {
               "lang": "csharp",
@@ -446,6 +453,7 @@
         {
           "uid": "CSharp8.DefaultInterfaceMembers.IA",
           "isExtensionMethod": false,
+          "href": "CSharp8.DefaultInterfaceMembers.html",
           "name": [
             {
               "lang": "csharp",
@@ -479,11 +487,11 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.IA.html\">IA</a>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"CSharp8.DefaultInterfaceMembers\" text=\"DefaultInterfaceMembers\"/>.<xref uid=\"CSharp8.DefaultInterfaceMembers.IA\" text=\"IA\"/>"
+              "value": "<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html\">DefaultInterfaceMembers</a>.<a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.IA.html\">IA</a>"
             }
           ],
           "level": 0.0,
@@ -667,5 +675,6 @@
   "hideSubtitle": false,
   "isNamespace": true,
   "inNamespace": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

@@ -113,13 +113,12 @@ public class CompositeDictionaryTest
         {
             get
             {
-                return _cd ??
-                    (_cd = CompositeDictionary
+                return _cd ??= CompositeDictionary
                         .CreateBuilder()
                         .Add("D1.", D1)
                         .Add("D2.", D2)
                         .Add("D3.", D3)
-                        .Create());
+                        .Create();
             }
         }
     }

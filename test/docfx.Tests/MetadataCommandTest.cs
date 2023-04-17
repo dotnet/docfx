@@ -6,7 +6,6 @@ using Xunit;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
-using Microsoft.DocAsCode.SubCommands;
 using Microsoft.DocAsCode.Tests.Common;
 using Microsoft.DocAsCode.Dotnet;
 
@@ -36,11 +35,11 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
-        }).Exec(null);
+            Config = projectFile,
+        });
 
         CheckResult();
     }
@@ -70,11 +69,11 @@ public class MetadataCommandTest : TestBase
         var dllFile = Path.Combine(_projectFolder, "test.dll");
         File.Copy("Assets/test.dll.sample.1", dllFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { dllFile },
-        }).Exec(null);
+            Config = dllFile,
+        });
 
         CheckResult();
     }
@@ -89,12 +88,12 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/multi-frameworks-test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             MSBuildProperties = "TargetFramework=net6.0"
-        }).Exec(null);
+        });
 
         CheckResult();
     }
@@ -112,11 +111,13 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.vbproj.sample.1", projectFile);
         File.Copy("Assets/test.vb.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
-        }).Exec(null);
+            Config = projectFile,
+        });
+
+        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -178,12 +179,13 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/docfx.json_metadata/docfxWithFilter.json", docfxFile);
         File.Copy("Assets/filter.yaml.sample", filterFile);
 
-        new MetadataCommand(
-            new MetadataCommandOptions
-            {
-                Projects = new List<string> { docfxFile },
-                OutputFolder = Path.GetFullPath(_outputFolder),
-            }).Exec(null);
+        new MetadataCommand().Execute(null, new()
+        {
+            Config = docfxFile,
+            OutputFolder = Path.GetFullPath(_outputFolder),
+        });
+
+        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -224,12 +226,14 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
         File.Copy("Assets/filter.yaml.sample", filterFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             FilterConfigFile = filterFile,
-        }).Exec(null);
+        });
+
+        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -270,11 +274,11 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/ref.csproj.sample.1", refProjectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
-        }).Exec(null);
+            Config = projectFile,
+        });
 
         CheckResult();
     }
@@ -288,12 +292,12 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Nested
-        }).Exec(null);
+        });
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -325,12 +329,12 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Flattened
-        }).Exec(null);
+        });
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -362,12 +366,12 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace-withgaps.cs.sample.1", sourceFile);
 
-        new MetadataCommand(new MetadataCommandOptions
+        new MetadataCommand().Execute(null, new()
         {
             OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Projects = new List<string> { projectFile },
+            Config = projectFile,
             NamespaceLayout = NamespaceLayout.Nested
-        }).Exec(null);
+        });
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -399,6 +403,8 @@ public class MetadataCommandTest : TestBase
 
     private void CheckResult()
     {
+        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
         var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;

@@ -6,6 +6,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -103,6 +104,7 @@
     "uid": "CatLibrary",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "CatLibrary.html",
     "name": [
       {
         "lang": "csharp",
@@ -145,7 +147,7 @@
     ],
     "level": 0.0
   },
-  "summary": "<p sourcefile=\"obj/api/CatLibrary.FakeDelegate-1.yml\" sourcestartlinenumber=\"2\">Fake delegate</p>\n",
+  "summary": "<p sourcefile=\"obj/api/CatLibrary.FakeDelegate-1.yml\" sourcestartlinenumber=\"1\">Fake delegate</p>\n",
   "example": [],
   "syntax": {
     "content": [
@@ -380,5 +382,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inDelegate": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

@@ -6,6 +6,7 @@
     "uid": "MyExample",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "MyExample.html",
     "name": [
       {
         "lang": "csharp",
@@ -369,13 +370,11 @@
     "endLine": 0.0,
     "isExternal": false
   },
-  "assemblies": [
-    "cs.temp.dll"
-  ],
   "namespace": {
     "uid": "MyExample",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "MyExample.html",
     "name": [
       {
         "lang": "csharp",
@@ -954,5 +953,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

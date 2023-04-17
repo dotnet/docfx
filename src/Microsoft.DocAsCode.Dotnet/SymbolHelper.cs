@@ -9,7 +9,7 @@ internal static class SymbolHelper
     public static MetadataItem? GenerateMetadataItem(this IAssemblySymbol assembly, Compilation compilation, ExtractMetadataConfig? config = null, DotnetApiOptions? options = null, IMethodSymbol[]? extensionMethods = null)
     {
         config ??= new();
-        return assembly.Accept(new SymbolVisitorAdapter(compilation, new(compilation), config, new(config, options ?? new()), extensionMethods));
+        return assembly.Accept(new SymbolVisitorAdapter(compilation, new(compilation, MemberLayout.SamePage, new(new[] { assembly }, SymbolEqualityComparer.Default)), config, new(config, options ?? new()), extensionMethods));
     }
 
     public static bool IsInstanceInterfaceMember(this ISymbol symbol)

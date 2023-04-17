@@ -15,7 +15,7 @@ using Microsoft.DocAsCode.Build.UniversalReference;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal static class DocumentBuilderWrapper
 {
@@ -127,7 +127,6 @@ internal static class DocumentBuilderWrapper
             {
                 OutputBaseDir = outputDirectory,
                 SitemapOptions = config.SitemapOptions,
-                FALName = config.FALName,
                 DisableGitFeatures = config.DisableGitFeatures,
                 TagParameters = config.TagParameters,
                 ConfigureMarkdig = options.ConfigureMarkdig,
@@ -204,15 +203,6 @@ internal static class DocumentBuilderWrapper
             parameters.TemplateDir = templateDir;
 
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
-
-            if (config.LruSize == null)
-            {
-                parameters.LruSize = Environment.Is64BitProcess ? 0x2000 : 0xC00;
-            }
-            else
-            {
-                parameters.LruSize = Math.Max(0, config.LruSize.Value);
-            }
 
             if (config.KeepFileLink)
             {

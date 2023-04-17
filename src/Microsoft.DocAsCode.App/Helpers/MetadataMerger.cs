@@ -11,7 +11,7 @@ using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.MarkdigEngine;
 
-namespace Microsoft.DocAsCode.SubCommands;
+namespace Microsoft.DocAsCode;
 
 internal class MetadataMerger
 {
@@ -34,10 +34,7 @@ internal class MetadataMerger
         {
             throw new ArgumentException("Source files cannot be null.", nameof(parameters) + "." + nameof(parameters.Files));
         }
-        if (parameters.Metadata == null)
-        {
-            parameters.Metadata = ImmutableDictionary<string, object>.Empty;
-        }
+        parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
         using (new LoggerPhaseScope(PhaseName))
         {

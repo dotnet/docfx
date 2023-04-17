@@ -5,13 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="CommandLineParser" Version="1.9.71" />
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.0.0.7246-preview3" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="iTextSharp" Version="5.5.13.3" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2049" />
-    <PackageVersion Include="JsonSchema.Net" Version="4.0.2" />
+    <PackageVersion Include="JsonSchema.Net" Version="4.0.3" />
     <PackageVersion Include="Markdig" Version="0.31.0" />
     <PackageVersion Include="Microsoft.Build" Version="17.5.0" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.5.5" />
@@ -25,20 +24,21 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.5.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.46.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="6.0.0" />
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="13.0.2" />
+    <PackageVersion Include="YamlDotNet" Version="13.1.0" />
 
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="3.2.0" />
-    <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.0.0" />
+    <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.32.0" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.6.0-preview.3.61" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.0" />
-    <PackageVersion Include="Verify.Xunit" Version="19.11.2" />
+    <PackageVersion Include="Verify.Xunit" Version="19.12.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageVersion Include="xunit" Version="2.4.2" />
   </ItemGroup>

@@ -288,10 +288,7 @@ public class ModelAttributeHandlerTest
             new UniqueIdentityReferenceHandler(),
             new MarkdownContentHandler(),
             new UrlContentHandler());
-        if (context == null)
-        {
-            context = GetDefaultContext();
-        }
+        context ??= GetDefaultContext();
         handler.Handle(model, context);
         return context;
     }

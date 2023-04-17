@@ -6,6 +6,7 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
@@ -377,6 +378,7 @@
     "uid": "BuildFromProject",
     "isEii": false,
     "isExtensionMethod": false,
+    "href": "BuildFromProject.html",
     "name": [
       {
         "lang": "csharp",
@@ -856,5 +858,6 @@
   "hideSubtitle": false,
   "isClass": true,
   "inClass": true,
-  "_disableToc": false
+  "_disableToc": false,
+  "_disableNextArticle": true
 }

@@ -209,19 +209,31 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
             <img id="logo" class="svg" src="../logo.svg" alt="Seed">
             Seed
           </a>
-          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
             <i class="bi bi-three-dots"></i>
           </button>
-          <div class="collapse navbar-collapse" id="navbar">
-      <ul class="navbar-nav">
-            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li>
-            <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
-            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
-            <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
-            <form class="d-flex ms-auto" role="search" id="search">
-              <i class="bi bi-search"></i>
-              <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
-            </form>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            
+    <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
+          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
+          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul> <form class="icons"><a title="GitHub" class="btn border-0" href="https://github.com/dotnet/docfx"><i class="bi bi-github"></i></a> 
+    <div class="dropdown">
+      <a title="Change theme" class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-circle-half"></i>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
+      </ul>
+    </div></form></div>
           </div>
         </div>
       </nav>
@@ -245,6 +257,11 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           <span class="expand-stub"></span>
           <a href="#" class="  ">Engineering Docs</a>
           <ul><ul>
+        <li class="  ">
+          
+          <span class="text-body-tertiary name-only">Section 1</span>
+          
+        </li>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/articles/engineering_guidelines.html">Engineering Guidelines</a>
@@ -468,6 +485,9 @@ Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
         <div class="contribution d-print-none">
           <a href="https://github.com/dotnet/docfx/blob/main/samples/seed/articles/csharp_coding_standards.md/#L1" class="edit-link">Edit this page</a>
         </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"><div class="prev"><span><i class="bi bi-chevron-left"></i> Previous</span> <a rel="prev" href="http://localhost:8089/articles/engineering_guidelines.html">Engineering Guidelines</a></div> <div class="next"><span>Next <i class="bi bi-chevron-right"></i></span> <a rel="next" href="http://localhost:8089/articles/markdown.html">Markdown</a></div></div>
+        
       </div>
 
       <div class="affix">
@@ -484,17 +504,7 @@ Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
         <div class="flex-fill">
           <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
         </div>
-      <a title="GitHub" class="btn border-0" href="https://github.com/dotnet/docfx"><i class="bi bi-github"></i></a> 
-    <div class="dropdown">
-      <a title="Change theme" class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-circle-half"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#"><i class="bi bi-sun"></i> Light</a></li>
-        <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
-        <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
-      </ul>
-    </div></div>
+      </div>
     </footer>
   
 </body></html>
