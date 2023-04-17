@@ -38,7 +38,7 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.32.0" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.6.0-preview.3.61" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.0" />
-    <PackageVersion Include="Verify.Xunit" Version="19.12.1" />
+    <PackageVersion Include="Verify.Xunit" Version="19.12.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageVersion Include="xunit" Version="2.4.2" />
   </ItemGroup>
