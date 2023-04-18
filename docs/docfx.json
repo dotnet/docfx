@@ -29,8 +29,7 @@
     "postProcessors": [ "ExtractSearchIndex" ],
     "globalMetadata": {
       "_appTitle": "docfx",
-      "_appName": "docfx",
-      "_appFooter": "<span>Supported by the <a href="https://dotnetfoundation.org">.NET Foundation</a></span>"
+      "_appName": "docfx"
     },
     "dest": "_site",
     "template": [
