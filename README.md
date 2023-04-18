@@ -7,8 +7,8 @@
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
 * [Roadmap](#roadmap)
-* [.NET Foundation](#net-foundation)
 * [License](#license)
+* [.NET Foundation](#net-foundation)
 
 Build your technical documentation site with docfx, with landing pages, markdown, API reference docs for .NET, REST API and more.
 
@@ -48,7 +48,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 ### Prerequisites
 
-- Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
+- Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
 - Install [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core) 6.x and 7.x.
 - Install NodeJS (16.x.x).
 - Optional: Install wkhtmltopdf on Windows to test PDF using `choco install wkhtmltopdf`.
@@ -78,14 +78,13 @@ We use [Milestones](https://github.com/dotnet/docfx/milestones) to communicate u
 
 - [Backlog](https://github.com/dotnet/docfx/milestone/49) is a set of feature candidates for some future releases, but are not being actively worked on.
 
+## License
+
+This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+
 ## .NET Foundation
 
 This project is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
-
-For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
-
-## License
-
-This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
+For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).
