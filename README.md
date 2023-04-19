@@ -7,16 +7,16 @@
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
 * [Roadmap](#roadmap)
-* [.NET Foundation](#net-foundation)
 * [License](#license)
+* [.NET Foundation](#net-foundation)
 
 Build your technical documentation site with docfx, with landing pages, markdown, API reference docs for .NET, REST API and more.
 
 > ⚠️⚠️⚠️ NOTICE ⚠️⚠️⚠️
 >
-> DocFX is being transitioned to the .NET Foundatiopn as an official .NET project!
+> DocFX is being transitioned to the .NET Foundation as an official .NET project!
 
-> - The DocFX team is working on a public V3 build which will become the main branch. This will remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
+> - The DocFX team is working on improving the main branch. This will introduce new features and bug fixes to the project, remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
 > - Due to [architectural changes in the site](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645), DocFX can no longer support building [Microsoft Learn](https://learn.microsoft.com/) content directly. The open source repos holding Markdown content for Microsoft Learn will still accept pull requests and changes, but are not directly buildable with DocFX.
 > - Moving forward, we will only be supporting this tool as a static site generator for new sites, not as a tool to build official Microsoft content on Microsoft Learn.  
 
@@ -48,7 +48,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 ### Prerequisites
 
-- Install [Visual Studio 2022 (Community or higher)]((https://www.visualstudio.com/)) and make sure you have the latest updates.
+- Install [Visual Studio 2022 (Community or higher)](https://www.visualstudio.com/) and make sure you have the latest updates.
 - Install [.NET Core SDK](https://dotnet.microsoft.com/download/dotnet-core) 6.x and 7.x.
 - Install NodeJS (16.x.x).
 - Optional: Install wkhtmltopdf on Windows to test PDF using `choco install wkhtmltopdf`.
@@ -78,14 +78,13 @@ We use [Milestones](https://github.com/dotnet/docfx/milestones) to communicate u
 
 - [Backlog](https://github.com/dotnet/docfx/milestone/49) is a set of feature candidates for some future releases, but are not being actively worked on.
 
+## License
+
+This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+
 ## .NET Foundation
 
 This project is supported by the [.NET Foundation](http://www.dotnetfoundation.org).
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
-
-For more information see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
-
-## License
-
-This project is licensed under the [MIT](https://github.com/dotnet/docfx/blob/main/LICENSE) License.
+This project has adopted the code of conduct defined by the Contributor Covenant to clarify expected behavior in our community.
+For more information see the [.NET Foundation Code of Conduct](https://dotnetfoundation.org/code-of-conduct).

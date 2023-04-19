@@ -20,6 +20,7 @@ internal static class RunServe
         host = string.IsNullOrWhiteSpace(host) ? "localhost" : host;
         port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
         var url = $"http://{host}:{port}";
+
         if (!Directory.Exists(folder))
         {
             throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));
@@ -33,11 +34,6 @@ internal static class RunServe
 
         // Fix the issue that .JSON file is 404 when running docfx serve
         fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
-
-        if (!File.Exists(Path.Combine(folder, "index.html")) && File.Exists(Path.Combine(folder, "toc.html")))
-        {
-            File.Copy(Path.Combine(folder, "toc.html"), Path.Combine(folder, "index.html"));
-        }
 
         try
         {
