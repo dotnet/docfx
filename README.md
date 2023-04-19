@@ -14,9 +14,9 @@ Build your technical documentation site with docfx, with landing pages, markdown
 
 > ⚠️⚠️⚠️ NOTICE ⚠️⚠️⚠️
 >
-> DocFX is being transitioned to the .NET Foundatiopn as an official .NET project!
+> DocFX is being transitioned to the .NET Foundation as an official .NET project!
 
-> - The DocFX team is working on a public V3 build which will become the main branch. This will remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
+> - The DocFX team is working on improving the main branch. This will introduce new features and bug fixes to the project, remove some older code and features that are no longer necessary, as well as update the dependencies and simplify the project structure. Stay tuned for a roadmap.
 > - Due to [architectural changes in the site](https://github.com/dotnet/docfx/discussions/8277#discussioncomment-4409645), DocFX can no longer support building [Microsoft Learn](https://learn.microsoft.com/) content directly. The open source repos holding Markdown content for Microsoft Learn will still accept pull requests and changes, but are not directly buildable with DocFX.
 > - Moving forward, we will only be supporting this tool as a static site generator for new sites, not as a tool to build official Microsoft content on Microsoft Learn.  
 
