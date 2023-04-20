@@ -15,23 +15,13 @@ export type NavItem = {
  * @returns active navbar items
  */
 export async function renderNavbar(): Promise<NavItem[]> {
-  const navrel = meta('docfx:navrel')
-  if (!navrel) {
-    return []
-  }
-
-  const navUrl = new URL(navrel.replace(/.html$/gi, '.json'), window.location.href)
-  const { items } = await fetch(navUrl).then(res => res.json())
-  const navItems = items.map(a => ({ name: a.name, href: new URL(a.href, navUrl) }))
-  if (navItems.length <= 0) {
-    return []
-  }
-
-  const activeItem = findActiveItem(navItems)
   const navbar = document.getElementById('navbar')
   if (!navbar) {
     return
   }
+
+  const navItems = await loadNavItems()
+  const activeItem = findActiveItem(navItems)
 
   const menu = html`
     <ul class='navbar-nav'>${
@@ -52,6 +42,17 @@ export async function renderNavbar(): Promise<NavItem[]> {
   renderCore()
 
   return activeItem ? [activeItem] : []
+
+  async function loadNavItems(): Promise<NavItem[]> {
+    const navrel = meta('docfx:navrel')
+    if (!navrel) {
+      return []
+    }
+
+    const navUrl = new URL(navrel.replace(/.html$/gi, '.json'), window.location.href)
+    const { items } = await fetch(navUrl).then(res => res.json())
+    return items.map(a => ({ name: a.name, href: new URL(a.href, navUrl) }))
+  }
 
   function githubLink() {
     const docurl = meta('docfx:docurl')
