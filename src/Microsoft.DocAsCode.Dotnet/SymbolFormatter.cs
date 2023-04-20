@@ -162,7 +162,7 @@ internal static partial class SymbolFormatter
 
             return result;
         }
-        catch (InvalidOperationException)
+        catch
         {
             return ImmutableArray<SymbolDisplayPart>.Empty;
         }
