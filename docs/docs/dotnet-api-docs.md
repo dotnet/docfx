@@ -31,7 +31,7 @@ Docfx generates .NET API docs in 2 stages:
 These 2 stages can run independently with the `docfx metadata` command and the `docfx build` command. The `docfx` root command runs both `metadata` and `build`.
 
 > [!NOTE]
-> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src` property 
+> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src.src` property 
 
 Docfx supports several source formats to generate .NET API docs:
 
