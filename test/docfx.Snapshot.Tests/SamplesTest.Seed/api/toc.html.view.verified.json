@@ -57,6 +57,16 @@
           "leaf": true
         },
         {
+          "name": "Class1.Issue8665",
+          "href": "BuildFromProject.Class1.Issue8665.html",
+          "topicHref": "BuildFromProject.Class1.Issue8665.html",
+          "topicUid": "BuildFromProject.Class1.Issue8665",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Class1.Test<T>",
           "href": "BuildFromProject.Class1.Test-1.html",
           "topicHref": "BuildFromProject.Class1.Test-1.html",

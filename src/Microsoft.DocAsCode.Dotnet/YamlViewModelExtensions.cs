@@ -237,6 +237,7 @@ internal static class YamlViewModelExtensions
         {
             return null;
         }
+
         var result = new ItemViewModel
         {
             Uid = model.Name,
@@ -244,7 +245,7 @@ internal static class YamlViewModelExtensions
             IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
             IsExtensionMethod = model.IsExtensionMethod,
             Parent = model.Parent?.Name,
-            Children = model.Items?.Select(x => x.Name).OrderBy(s => s).ToList(),
+            Children = model.Items?.Select(x => x.Name).OrderBy(s => s, StringComparer.Ordinal).ToList(),
             Type = model.Type,
             Source = model.Source,
             Documentation = model.Documentation,

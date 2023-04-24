@@ -41,6 +41,12 @@
           "topicUid": "BuildFromProject.Class1"
         },
         {
+          "name": "Class1.Issue8665",
+          "href": "BuildFromProject.Class1.Issue8665.html",
+          "topicHref": "BuildFromProject.Class1.Issue8665.html",
+          "topicUid": "BuildFromProject.Class1.Issue8665"
+        },
+        {
           "name": "Class1.Test<T>",
           "href": "BuildFromProject.Class1.Test-1.html",
           "topicHref": "BuildFromProject.Class1.Test-1.html",

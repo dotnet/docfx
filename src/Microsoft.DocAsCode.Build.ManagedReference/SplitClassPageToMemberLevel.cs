@@ -197,7 +197,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         model.Content = page;
 
         AddModelToDict(model, models, dupeModels);
-        return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName), splittedModels);
+        return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName, StringComparer.Ordinal), splittedModels);
     }
 
     private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
@@ -291,7 +291,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
     {
-        var items = children.SelectMany(selector).Distinct().OrderBy(s => s).ToList();
+        var items = children.SelectMany(selector).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         if (items.Count == 0)
         {
             return null;

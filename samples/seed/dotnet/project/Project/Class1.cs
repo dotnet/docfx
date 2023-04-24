@@ -98,4 +98,24 @@ public class Class1
     /// <c>@"\\?\"</c> `@"\\?\"`
     /// </remarks>
     public void Issue4392() { }
+
+    public class Issue8665
+    {
+        public int Foo { get; }
+        public char Bar { get; }
+        public string Baz { get; }
+
+        public Issue8665() : this(0, '\0', string.Empty) { }
+
+        public Issue8665(int foo) : this(foo, '\0', string.Empty) { }
+
+        public Issue8665(int foo, char bar) : this(foo, bar, string.Empty) { }
+
+        public Issue8665(int foo, char bar, string baz)
+        {
+            Foo = foo;
+            Bar = bar;
+            Baz = baz;
+        }
+    }
 }

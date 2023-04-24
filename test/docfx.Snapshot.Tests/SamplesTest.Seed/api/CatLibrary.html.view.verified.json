@@ -77,6 +77,67 @@
       "id": "classes",
       "children": [
         {
+          "uid": "CatLibrary.CatException`1",
+          "isExtensionMethod": false,
+          "href": "CatLibrary.CatException-1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatException(Of T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatException(Of T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.CatException<T>"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.CatException(Of T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>&lt;T&gt;"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>(Of T)"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CatLibrary_CatException_1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "CatLibrary.Cat`2",
           "isExtensionMethod": false,
           "parent": "CatLibrary",
@@ -135,67 +196,6 @@
           "example": "",
           "seealso": null,
           "id": "CatLibrary_Cat_2",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
-          "uid": "CatLibrary.CatException`1",
-          "isExtensionMethod": false,
-          "href": "CatLibrary.CatException-1.html",
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "CatException<T>"
-            },
-            {
-              "lang": "vb",
-              "value": "CatException(Of T)"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "CatException<T>"
-            },
-            {
-              "lang": "vb",
-              "value": "CatException(Of T)"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CatLibrary.CatException<T>"
-            },
-            {
-              "lang": "vb",
-              "value": "CatLibrary.CatException(Of T)"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>&lt;T&gt;"
-            },
-            {
-              "lang": "vb",
-              "value": "<a class=\"xref\" href=\"CatLibrary.CatException-1.html\">CatException</a>(Of T)"
-            }
-          ],
-          "level": 0.0,
-          "summary": "",
-          "type": "class",
-          "platform": null,
-          "isEii": false,
-          "docurl": "",
-          "sourceurl": "",
-          "remarks": "",
-          "conceptual": "",
-          "syntax": "",
-          "implements": "",
-          "example": "",
-          "seealso": null,
-          "id": "CatLibrary_CatException_1",
           "hideTitleType": false,
           "hideSubtitle": false
         },
