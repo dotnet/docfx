@@ -281,6 +281,11 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
         </li>
         <li class="  ">
           
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8665.html">Class1.<wbr>Issue8665</a>
+          
+        </li>
+        <li class="  ">
+          
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Test-1.html">Class1.<wbr>Test&lt;<wbr>T&gt;</a>
           
         </li>
@@ -612,23 +617,32 @@ This is a CAT class</p>
 
   <a id="CatLibrary_Cat_2__ctor_" data-uid="CatLibrary.Cat`2.#ctor*"></a>
 
-  <h3 id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">
-  Cat(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128"><i class="bi bi-code-slash"></i></a>
-  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+  <h3 id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">
+  Cat(string, out int, string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
-  <div class="markdown level1 summary"><p>Constructor with one generic parameter.</p>
+  <div class="markdown level1 summary"><p>It's a complex constructor. The parameter will have some attributes.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
   <dl class="parameters">
-    <dt><code>ownType</code> <span class="xref">T</span></dt>
-    <dd><p>This parameter type defined by class.</p>
+    <dt><code>nickName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd><p>it's string type.</p>
+</dd>
+    <dt><code>age</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
+    <dd><p>It's an out and ref parameter.</p>
+</dd>
+    <dt><code>realName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
+    <dd><p>It's an out paramter.</p>
+</dd>
+    <dt><code>isHealthy</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
+    <dd><p>It's an in parameter.</p>
 </dd>
   </dl>
 
@@ -645,32 +659,23 @@ This is a CAT class</p>
 
   <a id="CatLibrary_Cat_2__ctor_" data-uid="CatLibrary.Cat`2.#ctor*"></a>
 
-  <h3 id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">
-  Cat(string, out int, string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137"><i class="bi bi-code-slash"></i></a>
-  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+  <h3 id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">
+  Cat(T)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
-  <div class="markdown level1 summary"><p>It's a complex constructor. The parameter will have some attributes.</p>
+  <div class="markdown level1 summary"><p>Constructor with one generic parameter.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-1">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
   <dl class="parameters">
-    <dt><code>nickName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
-    <dd><p>it's string type.</p>
-</dd>
-    <dt><code>age</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.int32" target="_blank" rel="noopener noreferrer nofollow">int</a></dt>
-    <dd><p>It's an out and ref parameter.</p>
-</dd>
-    <dt><code>realName</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.string" target="_blank" rel="noopener noreferrer nofollow">string</a></dt>
-    <dd><p>It's an out paramter.</p>
-</dd>
-    <dt><code>isHealthy</code> <a class="xref external" href="https://learn.microsoft.com/dotnet/api/system.boolean" target="_blank" rel="noopener noreferrer nofollow">bool</a></dt>
-    <dd><p>It's an in parameter.</p>
+    <dt><code>ownType</code> <span class="xref">T</span></dt>
+    <dd><p>This parameter type defined by class.</p>
 </dd>
   </dl>
 
@@ -1176,7 +1181,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
       <div class="affix">
         <nav id="affix">
       <h5 class="border-bottom">In this article</h5>
-      <ul><li><h6>Constructors</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat() </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string,<wbr> out int,<wbr> string,<wbr> bool) </a></li><li><h6>Fields</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy </a></li><li><h6>Properties</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string] </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name </a></li><li><h6>Methods</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[]) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T,<wbr> K,<wbr> ref bool) </a></li><li><h6>Events</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat </a></li><li><h6>Operators</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li></ul></nav>
+      <ul><li><h6>Constructors</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor">Cat() </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_">Cat(string,<wbr> out int,<wbr> string,<wbr> bool) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2__ctor__0_">Cat(T) </a></li><li><h6>Fields</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_isHealthy">is<wbr>Healthy </a></li><li><h6>Properties</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Age">Age </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Item_System_String_">this[string] </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Name">Name </a></li><li><h6>Methods</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_">Override Calculate<wbr>Food Name </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Equals_System_Object_">Equals(object) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___">Get<wbr>Tail<wbr>Length(int*, params object[]) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__">Jump(T,<wbr> K,<wbr> ref bool) </a></li><li><h6>Events</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_ownEat">own<wbr>Eat </a></li><li><h6>Operators</h6></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_">operator +(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom">explicit operator Tom(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>) </a></li><li><a class="link-secondary" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_">operator -(Cat&lt;<wbr>T,<wbr> K&gt;<wbr>, int) </a></li></ul></nav>
       </div>
     </main>
 

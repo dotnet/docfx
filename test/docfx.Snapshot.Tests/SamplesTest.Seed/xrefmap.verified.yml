@@ -161,6 +161,97 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue7484
   nameWithType: Class1.Issue7484
+- uid: BuildFromProject.Class1.Issue8665
+  name: Class1.Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html
+  commentId: T:BuildFromProject.Class1.Issue8665
+  fullName: BuildFromProject.Class1.Issue8665
+  nameWithType: Class1.Issue8665
+- uid: BuildFromProject.Class1.Issue8665.#ctor
+  name: Issue8665()
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor
+  name.vb: New()
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665()
+  fullName.vb: BuildFromProject.Class1.Issue8665.New()
+  nameWithType: Class1.Issue8665.Issue8665()
+  nameWithType.vb: Class1.Issue8665.New()
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name: Issue8665(int, char, string)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_System_String_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name.vb: New(Integer, Char, String)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char, string)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char, String)
+  nameWithType: Class1.Issue8665.Issue8665(int, char, string)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char, String)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name: Issue8665(int, char)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name.vb: New(Integer, Char)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char)
+  nameWithType: Class1.Issue8665.Issue8665(int, char)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name: Issue8665(int)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer)
+  nameWithType: Class1.Issue8665.Issue8665(int)
+  nameWithType.vb: Class1.Issue8665.New(Integer)
+- uid: BuildFromProject.Class1.Issue8665.#ctor*
+  name: Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665
+  fullName.vb: BuildFromProject.Class1.Issue8665.New
+  nameWithType: Class1.Issue8665.Issue8665
+  nameWithType.vb: Class1.Issue8665.New
+- uid: BuildFromProject.Class1.Issue8665.Bar
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar
+  commentId: P:BuildFromProject.Class1.Issue8665.Bar
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Bar*
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Bar
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Baz
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz
+  commentId: P:BuildFromProject.Class1.Issue8665.Baz
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Baz*
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Baz
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Foo
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo
+  commentId: P:BuildFromProject.Class1.Issue8665.Foo
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
+- uid: BuildFromProject.Class1.Issue8665.Foo*
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Foo
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
 - uid: BuildFromProject.Class1.Issue896
   name: Issue896()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896
