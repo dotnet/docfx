@@ -13,7 +13,7 @@ internal class PdfJsonConfig : BuildJsonConfig
     public string Name { get; set; }
 
     [JsonProperty("host")]
-    public new string Host { get; set; }
+    public string Host { get; set; }
 
     [JsonProperty("locale")]
     public string Locale { get; set; }
@@ -77,5 +77,4 @@ internal class PdfJsonConfig : BuildJsonConfig
     /// </summary>
     [JsonProperty("noStdin")]
     public bool NoInputStreamArgs { get; set; }
-
-	}
+}

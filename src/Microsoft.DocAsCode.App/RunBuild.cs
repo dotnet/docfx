@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode;
 
 internal static class RunBuild
 {
-    public static void Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
+    public static string Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
     {
         if (config.Templates == null || config.Templates.Count == 0)
         {
@@ -53,10 +53,7 @@ internal static class RunBuild
         templateManager.ProcessTheme(outputFolder, true);
         // TODO: SEARCH DATA
 
-        if (config?.Serve ?? false)
-        {
-            RunServe.Exec(outputFolder, config.Host, config.Port);
-        }
         EnvironmentContext.Clean();
+        return outputFolder;
     }
 }

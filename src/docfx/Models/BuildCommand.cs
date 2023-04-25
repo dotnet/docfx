@@ -14,7 +14,10 @@ internal class BuildCommand : Command<BuildCommandOptions>
         return CommandHelper.Run(settings, () =>
         {
             var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
-            RunBuild.Exec(config, new(), baseDirectory, outputFolder);
+            var serveDirectory = RunBuild.Exec(config, new(), baseDirectory, outputFolder);
+
+            if (settings.Serve)
+                RunServe.Exec(serveDirectory, settings.Host, settings.Port);
         });
     }
 
@@ -59,18 +62,6 @@ internal class BuildCommand : Command<BuildCommandOptions>
                     .Distinct());
         }
 
-        if (options.Serve)
-        {
-            config.Serve = options.Serve;
-        }
-        if (options.Host != null)
-        {
-            config.Host = options.Host;
-        }
-        if (options.Port.HasValue)
-        {
-            config.Port = options.Port.Value.ToString();
-        }
         config.EnableDebugMode |= options.EnableDebugMode;
         config.ExportRawModel |= options.ExportRawModel;
         config.ExportViewModel |= options.ExportViewModel;

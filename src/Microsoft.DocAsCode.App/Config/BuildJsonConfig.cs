@@ -71,20 +71,11 @@ internal class BuildJsonConfig
     [JsonProperty("postProcessors")]
     public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
 
-    [JsonProperty("serve")]
-    public bool? Serve { get; set; }
-
     [JsonProperty("debug")]
     public bool? EnableDebugMode { get; set; }
 
     [JsonProperty("debugOutput")]
     public string OutputFolderForDebugFiles { get; set; }
-
-    [JsonProperty("host")]
-    public string Host { get; set; }
-
-    [JsonProperty("port")]
-    public string Port { get; set; }
 
     [JsonProperty("exportRawModel")]
     public bool? ExportRawModel { get; set; }

@@ -19,12 +19,6 @@ internal static class RunPdf
         var wkhtmltopdfFilePath = config.Wkhtmltopdf?.FilePath is null ? null : Path.Combine(baseDirectory, config.Wkhtmltopdf.FilePath);
         ConvertWrapper.PrerequisiteCheck(wkhtmltopdfFilePath);
 
-        if (config.Serve == true)
-        {
-            Logger.LogWarning("--serve is not supported in pdf command, ignored");
-            config.Serve = false;
-        }
-
         if (config.Templates == null || config.Templates.Count == 0)
         {
             config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
