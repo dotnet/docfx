@@ -32,7 +32,7 @@ Build your technical documentation site with docfx, with landing pages, markdown
 
    ```
    docfx init -q
-   docfx docfx_project\docfx.json --serve
+   docfx build docfx_project\docfx.json --serve
    ```
 
 3. Go to https://localhost:8080 to see the sample site.
