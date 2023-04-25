@@ -94,9 +94,12 @@
 
         {{^_disableContribution}}
         <div class="contribution d-print-none">
-          {{#docurl}}
+          {{#sourceurl}}
+          <a href="{{sourceurl}}" class="edit-link">Edit this page</a>
+          {{/sourceurl}}
+          {{^sourceurl}}{{#docurl}}
           <a href="{{docurl}}" class="edit-link">Edit this page</a>
-          {{/docurl}}
+          {{/docurl}}{{/sourceurl}}
         </div>
         {{/_disableContribution}}
 
