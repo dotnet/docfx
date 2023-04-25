@@ -11,15 +11,14 @@ namespace Microsoft.DocAsCode;
 
 internal static class RunServe
 {
-    public static void Exec(string folder, string host, string port)
+    public static void Exec(string folder, string host, int? port)
     {
         if (string.IsNullOrEmpty(folder))
             folder = Directory.GetCurrentDirectory();
 
         folder = Path.GetFullPath(folder);
-        host = string.IsNullOrWhiteSpace(host) ? "localhost" : host;
-        port = string.IsNullOrWhiteSpace(port) ? "8080" : port;
-        var url = $"http://{host}:{port}";
+
+        var url = $"http://{host ?? "localhost"}:{port ?? 8080}";
 
         if (!Directory.Exists(folder))
         {

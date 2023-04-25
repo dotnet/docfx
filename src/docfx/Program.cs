@@ -15,6 +15,7 @@ internal class Program
         app.Configure(config =>
         {
             config.SetApplicationName("docfx");
+            config.UseStrictParsing();
 
             config.AddCommand<InitCommand>("init");
             config.AddCommand<BuildCommand>("build");

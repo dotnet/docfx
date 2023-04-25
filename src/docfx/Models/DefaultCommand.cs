@@ -22,6 +22,18 @@ class DefaultCommand : Command<DefaultCommand.Options>
         [CommandOption("-o|--output")]
         public string OutputFolder { get; set; }
 
+        [Description("Host the generated documentation to a website")]
+        [CommandOption("-s|--serve")]
+        public bool Serve { get; set; }
+
+        [Description("Specify the hostname of the hosted website [localhost]")]
+        [CommandOption("-n|--hostname")]
+        public string Host { get; set; }
+
+        [Description("Specify the port of the hosted website [8080]")]
+        [CommandOption("-p|--port")]
+        public int? Port { get; set; }
+
         [Description("Path to docfx.json")]
         [CommandArgument(0, "[config]")]
         public string Config { get; set; }
@@ -39,13 +51,16 @@ class DefaultCommand : Command<DefaultCommand.Options>
         {
             var (config, baseDirectory) = CommandHelper.GetConfig<Config>(options.Config);
             var outputFolder = options.OutputFolder;
+            string serveDirectory = null;
 
             if (config.Metadata is not null)
                 DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
             if (config.Build is not null)
-                RunBuild.Exec(config.Build, new(), baseDirectory, outputFolder);
+                serveDirectory = RunBuild.Exec(config.Build, new(), baseDirectory, outputFolder);
             if (config.Pdf is not null)
                 RunPdf.Exec(config.Pdf, new(), baseDirectory, outputFolder);
+            if (options.Serve && serveDirectory is not null)
+                RunServe.Exec(serveDirectory, options.Host, options.Port);
         });
     }
 
