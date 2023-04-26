@@ -88,7 +88,7 @@ items:
     remote:
       path: src/MyProject/Extensions/DateOnlyExtensions.cs
       branch: main
-      repo: https://github.com/paytools-fdn/MyProject.git
+      repo: https://github.com/MyUser/MyProject.git
     id: AgeAt
     path: ../../MyProject/src/MyProject/Extensions/DateOnlyExtensions.cs
     startLine: 63
@@ -103,6 +103,9 @@ For the most part, it isn't important to know too much about the output of the `
 
 It's also worth knowing that the `metadata` step generates `toc.yml`, a table-of-contents file for the input source code, grouped by .NET namespace.  This is the only auto-generated table-of-contents file; all other `toc.yml` must be manually created/edited.
 
+> [!NOTE]
+> In additional to using `.csproj` files for input, it is also possible to generate the intermediate YAML output from compiled `.dll` (or `.exe`) and `.xml` files. See [.NET API Docs](dotnet-api-docs.html#generate-from-assemblies) for further details.
+
 ## Documentation Build Process
 
 The next step is called the ***build*** step and can be completed using the following command line:
@@ -113,10 +116,10 @@ docfx build path/to/docfx.json
 
 (You can append `--serve` to this step and Docfx will start a local web server so you can preview the final output.)
 
-Internally, there are many parts to the build step, but in short, Docfx does the following:
+Internally, there are many parts to this step, but in short, Docfx does the following during the `build` step:
 
 * resolve all cross-references
-* convert the YAML content from the `metadata` step into Markdown
+* convert the YAML content from the `metadata` step into a structured data format, for passing onto the template engine 
 * convert all Markdown content into HMTL
 * apply templates and themes
 
