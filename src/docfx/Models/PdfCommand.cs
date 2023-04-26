@@ -13,17 +13,10 @@ internal class PdfCommand : Command<PdfCommandOptions>
     {
         return CommandHelper.Run(options, () =>
         {
-            var Config = ParseOptions(options, out var BaseDirectory, out var OutputFolder);
-            RunPdf.Exec(Config, new(), BaseDirectory, OutputFolder);
+            var (config, baseDirectory) = CommandHelper.GetConfig<PdfConfig>(options.ConfigFile);
+            MergeOptionsToConfig(options, config.Item, baseDirectory);
+            RunPdf.Exec(config.Item, new(), baseDirectory, options.OutputFolder);
         });
-    }
-
-    private static PdfJsonConfig ParseOptions(PdfCommandOptions options, out string baseDirectory, out string outputFolder)
-    {
-        (var config, baseDirectory) = CommandHelper.GetConfig<PdfConfig>(options.ConfigFile);
-        outputFolder = options.OutputFolder;
-        MergeOptionsToConfig(options, config.Item, baseDirectory);
-        return config.Item;
     }
 
     private static void MergeOptionsToConfig(PdfCommandOptions options, PdfJsonConfig config, string configDirectory)

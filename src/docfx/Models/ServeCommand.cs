@@ -16,11 +16,11 @@ internal class ServeCommand : Command<ServeCommand.Settings>
         [CommandArgument(0, "[directory]")]
         public string Folder { get; set; }
 
-        [Description("Specify the hostname of the hosted website [localhost]")]
+        [Description("Specify the hostname of the hosted website")]
         [CommandOption("-n|--hostname")]
         public string Host { get; set; }
 
-        [Description("Specify the port of the hosted website [8080]")]
+        [Description("Specify the port of the hosted website")]
         [CommandOption("-p|--port")]
         public int? Port { get; set; }
     }
