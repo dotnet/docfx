@@ -98,3 +98,47 @@ items:
   summary: >-
     Calculates the age of a person on a certain date based on the supplied date of birth.  Takes account of leap years, using the convention that someone born on 29th February in a leap year is not legally one year older until 1st March of a non-leap year.
 ```
+
+For the most part, it isn't important to know too much about the output of the `metadata` step, except where you want to make reference to entities from your Markdown content.  When doing so, you need to reference the relevant `uid` from the YAML file.  However, as you can see, the `uid` is the same as the full signature of the entity or method including the namespace.
+
+It's also worth knowing that the `metadata` step generates `toc.yml`, a table-of-contents file for the input source code, grouped by .NET namespace.  This is the only auto-generated table-of-contents file; all other `toc.yml` must be manually created/edited.
+
+## Documentation Build Process
+
+The next step is called the ***build*** step and can be completed using the following command line:
+
+```shell
+docfx build path/to/docfx.json
+```
+
+(You can append `--serve` to this step and Docfx will start a local web server so you can preview the final output.)
+
+Internally, there are many parts to the build step, but in short, Docfx does the following:
+
+* resolve all cross-references
+* convert the YAML content from the `metadata` step into Markdown
+* convert all Markdown content into HMTL
+* apply templates and themes
+
+Conversion of Markdown to HTML is achieved using the [Markdig](https://github.com/xoofx/markdig) CommonMark-compliant Markdown processor.
+
+Template and theme processing is the one part of Docfx that is not coded in C#; instead the [Jint JavaScript interpreter](https://github.com/sebastienros/jint) is used to run a set of JavaScript scripts; this approach allows an extra level of customisation of the build process as Docfx provides a way to override the default scripts using the template section of the `docfx.json` file:
+
+```json
+  "build": {
+    ...
+    "dest": "_site",
+    "template": [
+      "default",
+      "modern",
+      "templates/mytemplate"
+    ]
+```
+
+In this example, Docfx first searches the `templates\mytemplate` folder, then the `modern` folder, then `default` folder for each `.css` or `.js` file.  Note that `default` and `modern` templates are included with Docfx and included in the Docfx installation packaged alongside the Docfx executable.
+
+(The embedded templates can be exported using the command
+```
+docfx template export default -o path/for/exported_templates
+```
+where `default` is the name of the template being exported.  The command `docfx template list` can be used to list the embedded templates within Docfx.)
