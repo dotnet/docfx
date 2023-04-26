@@ -27,13 +27,13 @@ Docfx can be used as a static site generator, but the real value of the tool is 
 
 can be used to generate output like this:
 
-![Example of Docfx output corresponding to the above source code](images/example-output.png)
+![Example of Docfx output corresponding to the above source code](../images/output-example.png)
 
-Static documentation pages are prepared using [Markdown](docs/markdown.md) (slightly enhanced to support specific features).  Markdown content can also be injected into the generated API documentation using a feature called 'Overwrites'.
+Static documentation pages are prepared using [Markdown](markdown.md) (slightly enhanced to support specific features).  Markdown content can also be injected into the generated API documentation using a feature called 'Overwrites'.
 
 Once the API documentation has been parsed from the source code, it is compiled along with the Markdown content into a set of HTML pages which can be published a website.  It is also possible to compile the final output into one or more PDFs for offline use.
 
-Docfx is a command-line tool that can be invoked directly, or as a .NET Core CLI tool using the `dotnet` command, but it can also be invoked from source code using the `Docset.Build` method in the `Microsoft.DocAsCode` namespace.  It is configured using a JSON configuration file, [`docfx.json`](reference/docfx-json-reference.md) which has sections for different parts of the build process.
+Docfx is a command-line tool that can be invoked directly, or as a .NET Core CLI tool using the `dotnet` command, but it can also be invoked from source code using the `Docset.Build` method in the `Microsoft.DocAsCode` namespace.  It is configured using a JSON configuration file, [`docfx.json`](../reference/docfx-json-reference.md) which has sections for different parts of the build process.
 
 ## Consuming .NET projects
 
@@ -104,7 +104,7 @@ For the most part, it isn't important to know too much about the output of the `
 It's also worth knowing that the `metadata` step generates `toc.yml`, a table-of-contents file for the input source code, grouped by .NET namespace.  This is the only auto-generated table-of-contents file; all other `toc.yml` must be manually created/edited.
 
 > [!NOTE]
-> In additional to using `.csproj` files for input, it is also possible to generate the intermediate YAML output from compiled `.dll` (or `.exe`) and `.xml` files. See [.NET API Docs](dotnet-api-docs.html#generate-from-assemblies) for further details.
+> In additional to using `.csproj` files for input, it is also possible to generate the intermediate YAML output from compiled `.dll` (or `.exe`) and `.xml` files. See [.NET API Docs](dotnet-api-docs.md) for further details.
 
 ## Documentation Build Process
 
