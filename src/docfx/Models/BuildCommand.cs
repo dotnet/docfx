@@ -13,20 +13,13 @@ internal class BuildCommand : Command<BuildCommandOptions>
     {
         return CommandHelper.Run(settings, () =>
         {
-            var config = ParseOptions(settings, out var baseDirectory, out var outputFolder);
-            var serveDirectory = RunBuild.Exec(config, new(), baseDirectory, outputFolder);
+            var (config, baseDirectory) = CommandHelper.GetConfig<BuildConfig>(settings.ConfigFile);
+            MergeOptionsToConfig(settings, config.Item, baseDirectory);
+            var serveDirectory = RunBuild.Exec(config.Item, new(), baseDirectory, settings.OutputFolder);
 
             if (settings.Serve)
                 RunServe.Exec(serveDirectory, settings.Host, settings.Port);
         });
-    }
-
-    private static BuildJsonConfig ParseOptions(BuildCommandOptions options, out string baseDirectory, out string outputFolder)
-    {
-        (var config, baseDirectory) = CommandHelper.GetConfig<BuildConfig>(options.ConfigFile);
-        outputFolder = options.OutputFolder;
-        MergeOptionsToConfig(options, config.Item, baseDirectory);
-        return config.Item;
     }
 
     internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config, string configDirectory)
