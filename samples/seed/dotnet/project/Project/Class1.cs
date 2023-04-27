@@ -1,6 +1,6 @@
 ﻿namespace BuildFromProject;
 
-public class Class1
+public class Class1 : IClass1
 {
     public class Test<T> { }
 
