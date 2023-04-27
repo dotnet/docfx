@@ -3,6 +3,8 @@
 - name: Articles
   href: articles/
 - name: API Documentation
-  href: obj/api/
-- name: REST API
-  href: restapi/
+  items:
+  - name: .NET API
+    href: obj/api/
+  - name: REST API
+    href: restapi/
