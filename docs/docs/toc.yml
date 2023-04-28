@@ -1,4 +1,6 @@
 ﻿- name: Get started
+- name: Basic Concepts
+  href: basic-concepts.md
 - name: Quick Start
   href: ../index.md
 
