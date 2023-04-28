@@ -131,6 +131,68 @@
           "hideSubtitle": false
         },
         {
+          "uid": "BuildFromProject.Class1.Issue8696Attribute",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8696Attribute"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8696Attribute"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8696Attribute"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8696Attribute"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue8696Attribute"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue8696Attribute"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue8696Attribute.html\">Issue8696Attribute</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue8696Attribute.html\">Issue8696Attribute</a>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_Issue8696Attribute",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "BuildFromProject.Class1.Test`1",
           "isExtensionMethod": false,
           "href": "BuildFromProject.Class1.html",
@@ -752,6 +814,75 @@
           "example": "",
           "seealso": null,
           "id": "BuildFromProject_IInheritdoc",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
+      "inEnum": true,
+      "typePropertyName": "inEnum",
+      "id": "enums",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.OptionType",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.OptionType"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.OptionType"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.OptionType"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.OptionType"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.OptionType"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.OptionType"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.OptionType.html\">OptionType</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.OptionType.html\">OptionType</a>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "enum",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_OptionType",
           "hideTitleType": false,
           "hideSubtitle": false
         }

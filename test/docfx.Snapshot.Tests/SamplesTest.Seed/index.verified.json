@@ -29,6 +29,16 @@
     "title": "Class Class1.Issue8665 | docfx seed website",
     "keywords": "Class Class1.Issue8665 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Issue8665 Inheritance object Class1.Issue8665 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Constructors Issue8665() public Issue8665() Issue8665(int) public Issue8665(int foo) Parameters foo int Issue8665(int, char) public Issue8665(int foo, char bar) Parameters foo int bar char Issue8665(int, char, string) public Issue8665(int foo, char bar, string baz) Parameters foo int bar char baz string Properties Bar public char Bar { get; } Property Value char Baz public string Baz { get; } Property Value string Foo public int Foo { get; } Property Value int"
   },
+  "api/BuildFromProject.Class1.Issue8696Attribute.html": {
+    "href": "api/BuildFromProject.Class1.Issue8696Attribute.html",
+    "title": "Class Class1.Issue8696Attribute | docfx seed website",
+    "keywords": "Class Class1.Issue8696Attribute Namespace BuildFromProject Assembly BuildFromProject.dll [AttributeUsage(AttributeTargets.Field)] public class Class1.Issue8696Attribute : Attribute Inheritance object Attribute Class1.Issue8696Attribute Inherited Members Attribute.Equals(object) Attribute.GetCustomAttribute(Assembly, Type) Attribute.GetCustomAttribute(Assembly, Type, bool) Attribute.GetCustomAttribute(MemberInfo, Type) Attribute.GetCustomAttribute(MemberInfo, Type, bool) Attribute.GetCustomAttribute(Module, Type) Attribute.GetCustomAttribute(Module, Type, bool) Attribute.GetCustomAttribute(ParameterInfo, Type) Attribute.GetCustomAttribute(ParameterInfo, Type, bool) Attribute.GetCustomAttributes(Assembly) Attribute.GetCustomAttributes(Assembly, bool) Attribute.GetCustomAttributes(Assembly, Type) Attribute.GetCustomAttributes(Assembly, Type, bool) Attribute.GetCustomAttributes(MemberInfo) Attribute.GetCustomAttributes(MemberInfo, bool) Attribute.GetCustomAttributes(MemberInfo, Type) Attribute.GetCustomAttributes(MemberInfo, Type, bool) Attribute.GetCustomAttributes(Module) Attribute.GetCustomAttributes(Module, bool) Attribute.GetCustomAttributes(Module, Type) Attribute.GetCustomAttributes(Module, Type, bool) Attribute.GetCustomAttributes(ParameterInfo) Attribute.GetCustomAttributes(ParameterInfo, bool) Attribute.GetCustomAttributes(ParameterInfo, Type) Attribute.GetCustomAttributes(ParameterInfo, Type, bool) Attribute.GetHashCode() Attribute.IsDefaultAttribute() Attribute.IsDefined(Assembly, Type) Attribute.IsDefined(Assembly, Type, bool) Attribute.IsDefined(MemberInfo, Type) Attribute.IsDefined(MemberInfo, Type, bool) Attribute.IsDefined(Module, Type) Attribute.IsDefined(Module, Type, bool) Attribute.IsDefined(ParameterInfo, Type) Attribute.IsDefined(ParameterInfo, Type, bool) Attribute.Match(object) Attribute.TypeId object.Equals(object, object) object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Constructors Issue8696Attribute(string, int, int, string[], bool, Type) public Issue8696Attribute(string description = null, int boundsMin = 0, int boundsMax = 0, string[] validGameModes = null, bool hasMultipleSelections = false, Type enumType = null) Parameters description string boundsMin int boundsMax int validGameModes string[] hasMultipleSelections bool enumType Type"
+  },
+  "api/BuildFromProject.Class1.OptionType.html": {
+    "href": "api/BuildFromProject.Class1.OptionType.html",
+    "title": "Enum Class1.OptionType | docfx seed website",
+    "keywords": "Enum Class1.OptionType Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.OptionType Fields [Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)] ServerName = 0"
+  },
   "api/BuildFromProject.Class1.Test-1.html": {
     "href": "api/BuildFromProject.Class1.Test-1.html",
     "title": "Class Class1.Test<T> | docfx seed website",
@@ -37,7 +47,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Issue8665 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
+    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Enums Class1.OptionType"
   },
   "api/BuildFromProject.IInheritdoc.html": {
     "href": "api/BuildFromProject.IInheritdoc.html",

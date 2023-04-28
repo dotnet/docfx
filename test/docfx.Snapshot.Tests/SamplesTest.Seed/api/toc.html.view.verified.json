@@ -67,6 +67,26 @@
           "leaf": true
         },
         {
+          "name": "Class1.Issue8696Attribute",
+          "href": "BuildFromProject.Class1.Issue8696Attribute.html",
+          "topicHref": "BuildFromProject.Class1.Issue8696Attribute.html",
+          "topicUid": "BuildFromProject.Class1.Issue8696Attribute",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Class1.OptionType",
+          "href": "BuildFromProject.Class1.OptionType.html",
+          "topicHref": "BuildFromProject.Class1.OptionType.html",
+          "topicUid": "BuildFromProject.Class1.OptionType",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "Class1.Test<T>",
           "href": "BuildFromProject.Class1.Test-1.html",
           "topicHref": "BuildFromProject.Class1.Test-1.html",
