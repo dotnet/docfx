@@ -118,4 +118,12 @@ public class Class1 : IClass1
             Baz = baz;
         }
     }
+
+    public class Issue8696Attribute : Attribute
+    {
+        [Issue8696Attribute("Changes the name of the server in the server list", 0, 0, null, false, null)]
+        public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)
+        {
+        }
+    }
 }

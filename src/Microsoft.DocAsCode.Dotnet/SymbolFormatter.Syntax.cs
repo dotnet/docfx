@@ -359,7 +359,7 @@ partial class SymbolFormatter
                     AddPunctuation(")");
                     break;
 
-                case TypedConstantKind.Array when typedConstant.Type is not null:
+                case TypedConstantKind.Array when !typedConstant.IsNull && typedConstant.Type is not null:
                     AddKeyword("new", "New");
                     AddSpace();
                     AddTypeName(typedConstant.Type);
