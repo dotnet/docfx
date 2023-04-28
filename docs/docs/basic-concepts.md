@@ -55,6 +55,8 @@ The most common use case for processing .NET projects is to specify one or more 
       "dest": "api"
     }
   ],
+  //...
+}
 ```
 
 Although Docfx can build a documentation website in one step, it's helpful to understand the separate steps the tool uses to generate its output.
@@ -128,14 +130,17 @@ Conversion of Markdown to HTML is achieved using the [Markdig](https://github.co
 Template and theme processing is the one part of Docfx that is not coded in C#; instead the [Jint JavaScript interpreter](https://github.com/sebastienros/jint) is used to run a set of JavaScript scripts; this approach allows an extra level of customisation of the build process as Docfx provides a way to override the default scripts using the template section of the `docfx.json` file:
 
 ```json
+{
   "build": {
-    ...
+    //...
     "dest": "_site",
     "template": [
       "default",
       "modern",
       "templates/mytemplate"
     ]
+  }
+}
 ```
 
 In this example, Docfx first searches the `templates\mytemplate` folder, then the `modern` folder, then `default` folder for each `.css` or `.js` file.  Note that `default` and `modern` templates are included with Docfx and included in the Docfx installation packaged alongside the Docfx executable.
