@@ -259,13 +259,13 @@ references:
   fullName: BuildFromProject.Class1.Issue8696Attribute
   nameWithType: Class1.Issue8696Attribute
 - uid: BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
-  name: Issue8696Attribute(string, int, int, string[], bool, Type)
+  name: Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
   href: api/BuildFromProject.Class1.Issue8696Attribute.html#BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_
   commentId: M:BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
   name.vb: New(String, Integer, Integer, String(), Boolean, Type)
-  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string, int, int, string[], bool, System.Type)
+  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, System.Type?)
   fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, System.Type)
-  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute(string, int, int, string[], bool, Type)
+  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
   nameWithType.vb: Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, Type)
 - uid: BuildFromProject.Class1.Issue8696Attribute.#ctor*
   name: Issue8696Attribute
@@ -290,18 +290,6 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue896
   nameWithType: Class1.Issue896
-- uid: BuildFromProject.Class1.OptionType
-  name: Class1.OptionType
-  href: api/BuildFromProject.Class1.OptionType.html
-  commentId: T:BuildFromProject.Class1.OptionType
-  fullName: BuildFromProject.Class1.OptionType
-  nameWithType: Class1.OptionType
-- uid: BuildFromProject.Class1.OptionType.ServerName
-  name: ServerName
-  href: api/BuildFromProject.Class1.OptionType.html#BuildFromProject_Class1_OptionType_ServerName
-  commentId: F:BuildFromProject.Class1.OptionType.ServerName
-  fullName: BuildFromProject.Class1.OptionType.ServerName
-  nameWithType: Class1.OptionType.ServerName
 - uid: BuildFromProject.Class1.Test`1
   name: Class1.Test<T>
   href: api/BuildFromProject.Class1.Test-1.html

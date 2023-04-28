@@ -64,7 +64,7 @@
           "name": [
             {
               "lang": "csharp",
-              "value": "Issue8696Attribute(string, int, int, string[], bool, Type)"
+              "value": "Issue8696Attribute(string?, int, int, string[]?, bool, Type?)"
             },
             {
               "lang": "vb",
@@ -74,7 +74,7 @@
           "nameWithType": [
             {
               "lang": "csharp",
-              "value": "Class1.Issue8696Attribute.Issue8696Attribute(string, int, int, string[], bool, Type)"
+              "value": "Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, Type?)"
             },
             {
               "lang": "vb",
@@ -84,7 +84,7 @@
           "fullName": [
             {
               "lang": "csharp",
-              "value": "BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string, int, int, string[], bool, System.Type)"
+              "value": "BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, System.Type?)"
             },
             {
               "lang": "vb",
@@ -94,22 +94,22 @@
           "specName": [
             {
               "lang": "csharp",
-              "value": "<xref uid=\"BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)\" text=\"Issue8696Attribute(string, int, int, string[], bool, Type)\"/>"
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)\" text=\"Issue8696Attribute(string?, int, int, string[]?, bool, Type?)\"/>"
             },
             {
               "lang": "vb",
-              "value": "<xref uid=\"BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)\" text=\"Issue8696Attribute(string, int, int, string[], bool, Type)\"/>"
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)\" text=\"Issue8696Attribute(string?, int, int, string[]?, bool, Type?)\"/>"
             }
           ],
           "syntax": {
             "content": [
               {
                 "lang": "csharp",
-                "value": "public Issue8696Attribute(string description = null, int boundsMin = 0, int boundsMax = 0, string[] validGameModes = null, bool hasMultipleSelections = false, Type enumType = null)"
+                "value": "[Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, null, false, null)]\npublic Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)"
               },
               {
                 "lang": "vb",
-                "value": "Public Sub New(description As String = Nothing, boundsMin As Integer = 0, boundsMax As Integer = 0, validGameModes As String() = Nothing, hasMultipleSelections As Boolean = False, enumType As Type = Nothing)"
+                "value": "<Class1.Issue8696(\"Changes the name of the server in the server list\", 0, 0, Nothing, False, Nothing)>\nPublic Sub New(description As String = Nothing, boundsMin As Integer = 0, boundsMax As Integer = 0, validGameModes As String() = Nothing, hasMultipleSelections As Boolean = False, enumType As Type = Nothing)"
               }
             ],
             "parameters": [
@@ -399,7 +399,7 @@
             },
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 124.0,
+            "startLine": 123.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -456,7 +456,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue8696Attribute.%23ctor(System.String%2CSystem.Int32%2CSystem.Int32%2CSystem.String%5B%5D%2CSystem.Boolean%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L125",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L124",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -570,11 +570,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "[AttributeUsage(AttributeTargets.Field)]\npublic class Class1.Issue8696Attribute : Attribute"
+        "value": "public class Class1.Issue8696Attribute : Attribute"
       },
       {
         "lang": "vb",
-        "value": "<AttributeUsage(AttributeTargets.Field)>\nPublic Class Class1.Issue8696Attribute Inherits Attribute"
+        "value": "Public Class Class1.Issue8696Attribute Inherits Attribute"
       }
     ]
   },
@@ -2739,18 +2739,6 @@
         }
       ],
       "level": 0.0
-    }
-  ],
-  "attributes": [
-    {
-      "type": "System.AttributeUsageAttribute",
-      "ctor": "System.AttributeUsageAttribute.#ctor(System.AttributeTargets)",
-      "arguments": [
-        {
-          "type": "System.AttributeTargets",
-          "value": 256.0
-        }
-      ]
     }
   ],
   "_appName": "Seed",
