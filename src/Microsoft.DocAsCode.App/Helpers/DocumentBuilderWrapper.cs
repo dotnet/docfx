@@ -95,7 +95,7 @@ internal static class DocumentBuilderWrapper
                 Assembly assembly;
                 try
                 {
-                    assembly = Assembly.LoadFile(assemblyFile);
+                    assembly = Assembly.LoadFrom(assemblyFile);
 
                     Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
 
