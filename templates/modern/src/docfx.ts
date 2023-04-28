@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import 'bootstrap'
+import { DocfxOptions } from './options'
 import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
@@ -15,7 +16,7 @@ import 'mathjax/es5/tex-svg-full.js'
 
 declare global {
   interface Window {
-    docfx: {
+    docfx: DocfxOptions & {
       ready?: boolean,
       searchReady?: boolean,
       searchResultReady?: boolean,
@@ -23,7 +24,7 @@ declare global {
   }
 }
 
-window.docfx = {}
+window.docfx = window.docfx || {}
 
 initTheme()
 

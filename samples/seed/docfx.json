@@ -44,7 +44,7 @@
     },
     "dest": "_site",
     "exportViewModel": true,
-    "template": ["default", "modern"]
+    "template": ["default", "modern", "template"]
   },
   "pdf": {
     "content": [
