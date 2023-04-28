@@ -67,10 +67,8 @@ internal static class DocumentBuilderWrapper
 
         Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
 
-        foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+        foreach (string assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
         {
-            Assembly assembly = null;
-
             // assume assembly name is the same with file name without extension
             string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
             if (!string.IsNullOrEmpty(assemblyName))
@@ -94,9 +92,10 @@ internal static class DocumentBuilderWrapper
                     continue;
                 }
 
+                Assembly assembly;
                 try
                 {
-                    assembly = Assembly.Load(assemblyName);
+                    assembly = Assembly.LoadFrom(assemblyFile);
 
                     Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
 
@@ -277,7 +276,7 @@ internal static class DocumentBuilderWrapper
         if (fileMapping == null) return;
         foreach (var item in fileMapping.Items)
         {
-            var version = item.GroupName ?? item.VersionName ?? string.Empty;
+            string version = item.GroupName ?? item.VersionName ?? string.Empty;
             if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
             {
                 if (parameters.TryGetValue(type, out FileMapping mapping))
@@ -321,7 +320,7 @@ internal static class DocumentBuilderWrapper
         {
             foreach (var file in mapping.Items)
             {
-                foreach (var item in file.Files)
+                foreach (string item in file.Files)
                 {
                     yield return Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
                 }
