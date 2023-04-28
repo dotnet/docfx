@@ -39,6 +39,16 @@ To customize URL pattern for a directory, use the `src` property to remove the d
 
 In this example, files in the `articles` directory uses `docs` as the base URL: The `articles/getting-started/installation.md` file is accessible by the `docs/getting-started/installation.html` URL.
 
+## URL Redirects
+
+The `redirect_url` metadata is a simple way to create redirects in your documentation. This metadata can be added to a Markdown file in your project, and it will be used to redirect users to a new URL when they try to access the original URL:
+
+    ---
+    redirect_url: [new URL]  
+    ---
+
+Replace [new URL] with the URL that you want to redirect users to. You can use any valid URL, including relative URLs or external URLs.
+
 ## Metadata
 
 Metadata are attributes attached to an file. It helps shape the look and feel of a page and provides extra context to the article.
@@ -80,55 +90,6 @@ To apply identical metadata values to a folder or a set of content, use the `fil
 ```
 
 When the same metadata key is defined in multiple places, YAML Front Matter takes precedence over `fileMetadata` which in turn takes precedence over `globalMetadata`.
-
-### Predefined Metadata
-
-Here is a list of predefined metadata to customize the docfx site template:
-
-# [Modern Template](#tab/modern)
-
-Name         | Type    | Description
-----------------------|---------|---------------------------
-`_appTitle`             | string  | A string append to every page title.
-`_appName`              | string  | The name of the site displayed after logo.
-`_appFooter`            | string  | The footer HTML.
-`_appLogoPath`          | string  | App logo URL path.
-`_appFaviconPath`       | string  | Favicon URL path.
-`_enableSearch`         | bool    | Whether to show the search box.
-`_enableNewTab`         | bool    | Whether to open external links in a new tab.
-`_noindex`              | bool  | Whether to include in search results
-`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
-`_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
-`_gitUrlPattern`        | string  | URL pattern of git links.
-`_disableNextArticle`   | bool    | Whether to show the previous and next article link.
-`redirect_url`          | string  | Redirects the current page to the specified redirect URL. URLs can be relative.
-`layout`                | string  | Determines the layout of the page. Supported values are `landing`, `conceptual`, `chromeless`.
-
-# [Default Template](#tab/default)
-
-Name         | Type    | Description
-----------------------|---------|---------------------------
-`_appTitle`             | string  | A string append to every page title.
-`_appName`              | string  | The name of the site displayed after logo.
-`_appFooter`            | string  | The footer HTML.
-`_appLogoPath`          | string  | App logo URL path.
-`_appFaviconPath`       | string  | Favicon URL path.
-`_enableSearch`         | bool    | Whether to show the search box.
-`_enableNewTab`         | bool    | Whether to open external links in a new tab.
-`_noindex`              | bool  | Whether to include in search results
-`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
-`_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
-`_gitUrlPattern`        | string  | URL pattern of git links.
-`_disableNavbar`        | bool    | Whether to show the navigation bar.
-`_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
-`_disableToc`           | bool    | Whether to show the TOC.
-`_disableAffix`         | bool    | Whether to show the right rail.
-`redirect_url`          | string  | Redirects the current page to the specified redirect URL. URLs can be relative.
-
----
-
-> [!TIP]
-> Docfx produces the right git links for major CI pipelines including [GitHub](https://github.com/features/actions), [GitLab](https://about.gitlab.com/gitlab-ci/), [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/), [AppVeyor](https://www.appveyor.com/), [TeamCity](https://www.jetbrains.com/teamcity/), [Jenkins](https://jenkins.io/). `_gitContribute` and `_gitUrlPattern` are optional on these platforms.
 
 ## Sitemap
 
