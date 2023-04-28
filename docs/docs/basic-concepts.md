@@ -120,7 +120,7 @@ Internally, there are many parts to this step, but in short, Docfx does the foll
 
 * resolve all cross-references
 * convert the YAML content from the `metadata` step into a structured data format, for passing onto the template engine 
-* convert all Markdown content into HMTL
+* convert all Markdown content into HTML
 * apply templates and themes
 
 Conversion of Markdown to HTML is achieved using the [Markdig](https://github.com/xoofx/markdig) CommonMark-compliant Markdown processor.
