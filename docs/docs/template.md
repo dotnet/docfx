@@ -2,11 +2,147 @@
 
 Template defines the appearance of the website. 
 
-Docfx ships a default website template with the same look and feel as this site. Additional templates are available at the [Template Gallery](../extensions/templates.yml).
+Docfx ships several built-in templates. We recommend using the modern template that matches the look and feel of this site. It supports dark mode, more features, rich customization options and.
 
-## Create a Custom Template
+Use the modern template by setting the `templates` property to `["default", "modern"]`:
+
+```json
+{
+  "build": {
+    "templates": [
+      "default",
+      "modern"
+    ]
+  }
+}
+```
+
+Additional templates are available at the [Template Gallery](../extensions/templates.yml).
+
+
+## Template Metadata
+
+The easiest way of customizing the the appearance of pages is using [metadata](./config.md#metadata). Here is a list of predefined metadata:
+
+# [Modern Template](#tab/modern)
+
+Name         | Type    | Description
+----------------------|---------|---------------------------
+`_appTitle`             | string  | A string append to every page title.
+`_appName`              | string  | The name of the site displayed after logo.
+`_appFooter`            | string  | The footer HTML.
+`_appLogoPath`          | string  | App logo URL path.
+`_appFaviconPath`       | string  | Favicon URL path.
+`_enableSearch`         | bool    | Whether to show the search box.
+`_enableNewTab`         | bool    | Whether to open external links in a new tab.
+`_noindex`              | bool  | Whether to include in search results
+`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
+`_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
+`_gitUrlPattern`        | string  | URL pattern of git links.
+`_disableNextArticle`   | bool    | Whether to show the previous and next article link.
+`layout`                | string  | Determines the layout of the page. Supported values are `landing`, `conceptual`, `chromeless`.
+
+# [Default Template](#tab/default)
+
+Name         | Type    | Description
+----------------------|---------|---------------------------
+`_appTitle`             | string  | A string append to every page title.
+`_appName`              | string  | The name of the site displayed after logo.
+`_appFooter`            | string  | The footer HTML.
+`_appLogoPath`          | string  | App logo URL path.
+`_appFaviconPath`       | string  | Favicon URL path.
+`_enableSearch`         | bool    | Whether to show the search box.
+`_enableNewTab`         | bool    | Whether to open external links in a new tab.
+`_noindex`              | bool  | Whether to include in search results
+`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
+`_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
+`_gitUrlPattern`        | string  | URL pattern of git links.
+`_disableNavbar`        | bool    | Whether to show the navigation bar.
+`_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
+`_disableToc`           | bool    | Whether to show the TOC.
+`_disableAffix`         | bool    | Whether to show the right rail.
+
+---
+
+> [!TIP]
+> Docfx produces the right git links for major CI pipelines including [GitHub](https://github.com/features/actions), [GitLab](https://about.gitlab.com/gitlab-ci/), [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/), [AppVeyor](https://www.appveyor.com/), [TeamCity](https://www.jetbrains.com/teamcity/), [Jenkins](https://jenkins.io/). `_gitContribute` and `_gitUrlPattern` are optional on these platforms.
+
+
+## Custom Template
 
 To build your own template, create a new folder and add it to `templates` config in `docfx.json`:
+
+# [Modern Template](#tab/modern)
+
+```json
+{
+  "build": {
+    "templates": [
+      "default",
+      "modern",
+      "my-template" // <-- Path to custom template
+    ]
+  }
+}
+```
+
+Add your custom CSS file to `my-template/public/main.css` to customize colors, show and hide elements, etc. This is an example stylesheet that adjust the font size of article headers.
+
+```css
+/* file: my-template/public/main.css */
+article h1 {
+  font-size: 40px;
+}
+```
+
+You can also use [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) to adjust the templates. There are many predefined CSS variables in [Bootstrap](https://getbootstrap.com/docs/5.3/customize/color/#colors) that can be used to customize the site:
+
+```css
+/* file: my-template/public/main.css */
+body {
+  --bs-link-color-rgb: 66, 184, 131 !important;
+  --bs-link-hover-color-rgb: 64, 180, 128 !important;
+}
+```
+
+The `my-template/public/main.js` file is the entry JavaScript file to customize docfx site behaviors. This is a basic setup that changes the default color mode to dark and adds some icon links in the header:
+
+```js
+/* file: my-template/public/main.js */
+export default {
+  defaultTheme: 'dark',
+  iconLinks?: [
+    {
+      icon: 'github',
+      href: 'https://github.com/dotnet/docfx'
+      title: 'GitHub'
+    },
+    {
+      icon: 'twitter',
+      href: 'https://twitter.com'
+      title: 'Twitter'
+    }
+  ]
+}
+```
+
+You can also configure syntax highlighting options using the `configureHljs` option:
+
+```js
+export default {
+  configureHljs: (hljs) => {
+    // Customize hightlight.js here
+  },
+}
+```
+
+See [this example](https://github.com/dotnet/docfx/blob/main/samples/seed/template/public/main.js) on how to enable `bicep` syntax highlighting.
+
+More customization options are available in the [docfx options object](https://github.com/dotnet/docfx/blob/main/templates/modern/src/options.d.ts).
+
+
+# [Default Template](#tab/default)
+
 
 ```json
 {
@@ -29,8 +165,6 @@ article h1 {
   font-size: 40px;
 }
 ```
-
-## Custom HTML Templates
 
 In addition to CSS and JavaScript, you can customize how docfx generates HTML using [Mustache Templates](https://mustache.github.io/).
 
@@ -67,4 +201,4 @@ Name | Description
 `_tocRel` | The relative path from current output file to its TOC file. For example, if the TOC file is `a/toc.html` from root output folder, the value is `../`.
 `_tocKey` | The original file path of the TOC file starting with `~/`. `~/` stands for the folder where `docfx.json` is in, for example, `~/a/toc.yml`.
 
-
+---

@@ -7,23 +7,24 @@
  | docfx seed website ">
       
       <link rel="icon" href="../favicon.ico">
-      <style class="anchorjs"></style><link rel="stylesheet" href="../styles/docfx.min.css">
-      <link rel="stylesheet" href="../styles/main.css">
+      <style class="anchorjs"></style><link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
       <meta name="docfx:navrel" content="../toc.html">
       <meta name="docfx:tocrel" content="toc.html">
       
       <meta name="docfx:rel" content="../">
       
 
-      <script>
-        MathJax = {
+      <script type="module">
+        import docfx from './../public/main.js'
+        window.docfx = docfx
+        window.MathJax = {
           options: {
             processHtmlClass: ['tex2jax_process', 'math']
           }
-        };
+        }
       </script>
-
-      <script type="text/javascript" src="../styles/docfx.min.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
+      <script type="text/javascript" src="../public/docfx.min.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
 .CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
 .CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
 .CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
@@ -62,7 +63,6 @@
 .CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
 .CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
 </style>
-      <script type="text/javascript" src="../styles/main.js"></script>
   <style id="MJX-SVG-styles">
 mjx-container[jax="SVG"] {
   direction: ltr;
@@ -227,7 +227,10 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
                 API Documentation
               </a>
               <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
-            </li></ul> <form class="icons"> 
+            </li></ul> 
+    <form class="icons">
+      <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
+      
     <div class="dropdown">
       <a title="Change theme" class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-circle-half"></i>
@@ -237,7 +240,8 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
       </ul>
-    </div></form></div>
+    </div>
+    </form></div>
           </div>
         </div>
       </nav>
@@ -590,7 +594,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
             <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../articles/markdown.html?q=cat">Markdown | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/articles/markdown.html</div>
-              <div class="item-brief">... \(\sqrt{3x-1}+(1+x)^2\) The Cauchy-Schwarz Inequality \(\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)\) This expression uses \$ to display a dollar sign: \(\sqrt{\$4}\) To split $100 in half, we calculate \(100/2\) Tabs Linux Windows Content for Linux... Content for Windows... The above tab group was created with the following syntax: # [Linux](#tab/linux) Content for Linux... # [Windows](#tab/windows) Content for Windows... --- Tabs are indi<b>cat</b>ed by using a specific link syntax within a Markdown header. The syntax can be described as follows: # [Tab Display Name](#tab/tab-id) A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with #tab/ and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the pag...</div>
+              <div class="item-brief">...right) \left( \sum_{k=1}^n b_k^2 \right)\) This expression uses \$ to display a dollar sign: \(\sqrt{\$4}\) To split $100 in half, we calculate \(100/2\) Custom Syntax Highlighting resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = { name: 'hello' // (...) } Tabs Linux Windows Content for Linux... Content for Windows... The above tab group was created with the following syntax: # [Linux](#tab/linux) Content for Linux... # [Windows](#tab/windows) Content for Windows... --- Tabs are indi<b>cat</b>ed by using a specific link syntax within a Markdown header. The syntax can be described as follows: # [Tab Display Name](#tab/tab-id) A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with #tab/ and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the pag...</div>
             </div>
         </div> </div>
 

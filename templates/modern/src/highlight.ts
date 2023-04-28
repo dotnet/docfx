@@ -4,6 +4,8 @@
 import hljs from 'highlight.js'
 
 export function highlight() {
+  window.docfx.configureHljs?.(hljs)
+
   document.querySelectorAll('pre code').forEach(block => {
     hljs.highlightElement(block as HTMLElement)
   })

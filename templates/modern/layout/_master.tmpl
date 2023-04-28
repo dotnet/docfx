@@ -1,6 +1,5 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-{{!include(/^styles/.*/)}}
-{{!include(/^fonts/.*/)}}
+{{!include(/^public/.*/)}}
 {{!include(favicon.ico)}}
 {{!include(logo.svg)}}
 {{!include(search-stopwords.json)}}
@@ -17,24 +16,24 @@
       <meta name="title" content="{{#title}}{{title}}{{/title}}{{^title}}{{>partials/title}}{{/title}} {{#_appTitle}}| {{_appTitle}} {{/_appTitle}}">
       {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
       <link rel="icon" href="{{_rel}}{{{_appFaviconPath}}}{{^_appFaviconPath}}favicon.ico{{/_appFaviconPath}}">
-      <link rel="stylesheet" href="{{_rel}}styles/docfx.min.css">
-      <link rel="stylesheet" href="{{_rel}}styles/main.css">
+      <link rel="stylesheet" href="{{_rel}}public/docfx.min.css">
+      <link rel="stylesheet" href="{{_rel}}public/main.css">
       <meta name="docfx:navrel" content="{{_navRel}}">
       <meta name="docfx:tocrel" content="{{_tocRel}}">
       {{#_noindex}}<meta name="searchOption" content="noindex">{{/_noindex}}
       {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
 
-      <script>
-        MathJax = {
+      <script type="module">
+        import docfx from './{{_rel}}public/main.js'
+        window.docfx = docfx
+        window.MathJax = {
           options: {
             processHtmlClass: ['tex2jax_process', 'math']
           }
-        };
+        }
       </script>
-
-      <script type="text/javascript" src="{{_rel}}styles/docfx.min.js"></script>
-      <script type="text/javascript" src="{{_rel}}styles/main.js"></script>
+      <script type="text/javascript" src="{{_rel}}public/docfx.min.js"></script>
     {{/redirect_url}}
   </head>
 

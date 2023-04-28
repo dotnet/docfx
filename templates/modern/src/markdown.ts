@@ -34,7 +34,7 @@ function renderMermaid() {
   })
 
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
-  mermaid.initialize({ startOnLoad: true, deterministicIds: true, theme })
+  mermaid.initialize(Object.assign({ startOnLoad: true, deterministicIds: true, theme }, window.docfx.mermaid))
 }
 
 /**
@@ -132,10 +132,11 @@ function renderLinks() {
  */
 function renderAnchor() {
   const anchors = new AnchorJs()
-  anchors.options = {
+  anchors.options = Object.assign({
     visible: 'hover',
     icon: '#'
-  }
+  }, window.docfx.anchors)
+
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 }
 
