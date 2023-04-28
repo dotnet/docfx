@@ -44,7 +44,7 @@ async function buildModernTemplate() {
       '.css': '.min.css',
       '.js': '.min.js'
     },
-    outdir: 'modern/styles',
+    outdir: 'modern/public',
     entryPoints: [
       'modern/src/docfx.ts',
       'modern/src/search-worker.ts',
@@ -129,12 +129,13 @@ function serve() {
     open: true,
     startPath: '/test',
     files: [
-      'modern/styles/**',
+      'modern/public/**',
       join(project, '_site', '**')
     ],
     server: {
       routes: {
-        '/test/styles': 'modern/styles',
+        '/test/public/main.js': join(project, '_site', 'public', 'main.js'),
+        '/test/public': 'modern/public',
         '/test': join(project, '_site')
       }
     }

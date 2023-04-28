@@ -52,7 +52,11 @@ export async function renderNavbar(): Promise<NavItem[]> {
       })
     }</ul>`
 
-  const icons = html`<form class="icons">${githubLink()} ${themePicker(renderCore)}</form>`
+  const icons = html`
+    <form class="icons">
+      ${window.docfx.iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
+      ${themePicker(renderCore)}
+    </form>`
 
   function renderCore() {
     render(html`${menu} ${icons}`, navbar)
@@ -76,21 +80,6 @@ export async function renderNavbar(): Promise<NavItem[]> {
       }
       return { name: a.name, href: new URL(a.href, navUrl) }
     })
-  }
-
-  function githubLink() {
-    const docurl = meta('docfx:docurl')
-    const github = parseGitHubRepo(docurl)
-    if (github) {
-      return html`<a href='${github}' title='GitHub' class='btn border-0'><i class='bi bi-github'></i></a>`
-    }
-  }
-
-  function parseGitHubRepo(url: string): string {
-    const match = /^https:\/\/github.com\/([^/]+\/[^/]+)/gi.exec(url)
-    if (match) {
-      return match[0]
-    }
   }
 }
 
