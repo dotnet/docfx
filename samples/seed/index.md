@@ -1,5 +1,6 @@
 ---
 layout: landing
+lang: zh-CN
 ---
 
 # docfx-seed

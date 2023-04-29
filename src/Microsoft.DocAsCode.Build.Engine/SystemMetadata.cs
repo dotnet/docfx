@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine;
 
 internal sealed class SystemMetadata
 {
-    [JsonProperty("_lang")]
-    public string Language { get; set; }
     [JsonProperty("_title")]
     public string Title { get; set; }
     [JsonProperty("_tocTitle")]

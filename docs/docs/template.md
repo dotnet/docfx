@@ -40,6 +40,7 @@ Name         | Type    | Description
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
+`lang`                 | string | Primary language of the page, default to `en`.
 `layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
 
 # [Default Template](#tab/default)
@@ -61,6 +62,7 @@ Name         | Type    | Description
 `_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
 `_disableToc`           | bool    | Whether to show the TOC.
 `_disableAffix`         | bool    | Whether to show the right rail.
+`lang`                 | string | Primary language of the page, default to `en`.
 
 ---
 
