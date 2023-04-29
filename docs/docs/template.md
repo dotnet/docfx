@@ -36,11 +36,11 @@ Name         | Type    | Description
 `_enableSearch`         | bool    | Whether to show the search box.
 `_enableNewTab`         | bool    | Whether to open external links in a new tab.
 `_noindex`              | bool  | Whether to include in search results
-`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
+`_disableContribution`  | bool    | Whether to show the _"Edit this page"_ button.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
-`layout`                | string  | Determines the layout of the page. Supported values are `landing`, `conceptual`, `chromeless`.
+`layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
 
 # [Default Template](#tab/default)
 
@@ -54,7 +54,7 @@ Name         | Type    | Description
 `_enableSearch`         | bool    | Whether to show the search box.
 `_enableNewTab`         | bool    | Whether to open external links in a new tab.
 `_noindex`              | bool  | Whether to include in search results
-`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source" buttons.
+`_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source"_ buttons.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
 `_disableNavbar`        | bool    | Whether to show the navigation bar.
