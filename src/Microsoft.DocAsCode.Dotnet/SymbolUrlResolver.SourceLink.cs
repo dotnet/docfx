@@ -36,7 +36,7 @@ partial class SymbolUrlResolver
             var pdbPath = Path.ChangeExtension(pe.FilePath, ".pdb");
             if (!File.Exists(pdbPath))
             {
-                Logger.LogVerbose($"No PDF file found for {pe.FilePath}, skip loading source link.");
+                Logger.LogVerbose($"No PDB file found for {pe.FilePath}, skip loading source link.");
                 return null;
             }
 
