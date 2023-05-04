@@ -15,6 +15,7 @@ public class Class1 : IClass1
     /// </summary>
     /// <param name="args"></param>
     /// <seealso cref="Test{T}"/>
+    /// <seealso cref="Class1"/>
     public void Issue896() { }
 
     /// <summary>

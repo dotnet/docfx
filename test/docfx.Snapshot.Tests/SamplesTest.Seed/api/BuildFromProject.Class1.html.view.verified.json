@@ -121,7 +121,7 @@
             },
             "id": "Issue1651",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 30.0,
+            "startLine": 31.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -179,7 +179,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Pricing models are used to calculate theoretical option values</p>\n<ul><li><span class=\"term\">1</span>Black Scholes</li><li><span class=\"term\">2</span>Black76</li><li><span class=\"term\">3</span>Black76Fut</li><li><span class=\"term\">4</span>Equity Tree</li><li><span class=\"term\">5</span>Variance Swap</li><li><span class=\"term\">6</span>Dividend Forecast</li></ul>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue1651.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue1651%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L31",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L32",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -254,7 +254,7 @@
             },
             "id": "Issue2623",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 75.0,
+            "startLine": 76.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -315,7 +315,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue2623.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue2623%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L76",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L77",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -389,7 +389,7 @@
             },
             "id": "Issue2723",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 94.0,
+            "startLine": 95.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -448,7 +448,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue2723.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue2723%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L95",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L96",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -522,7 +522,7 @@
             },
             "id": "Issue4017",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 53.0,
+            "startLine": 54.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -583,7 +583,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue4017.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue4017%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L54",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L55",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -657,7 +657,7 @@
             },
             "id": "Issue4392",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 99.0,
+            "startLine": 100.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -716,7 +716,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue4392.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue4392%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L100",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L101",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -790,7 +790,7 @@
             },
             "id": "Issue7484",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 40.0,
+            "startLine": 41.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -849,7 +849,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue7484.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue7484%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L41",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L42",
           "conceptual": "",
           "implements": "",
           "seealso": null,
@@ -923,7 +923,7 @@
             },
             "id": "Issue896",
             "path": "dotnet/project/Project/Class1.cs",
-            "startLine": 17.0,
+            "startLine": 18.0,
             "endLine": 0.0,
             "isExternal": false
           },
@@ -1023,6 +1023,53 @@
                 ]
               },
               "isCref": true
+            },
+            {
+              "linkType": "cRef",
+              "type": {
+                "uid": "BuildFromProject.Class1",
+                "name": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1"
+                  }
+                ],
+                "nameWithType": [
+                  {
+                    "lang": "csharp",
+                    "value": "Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "Class1"
+                  }
+                ],
+                "fullName": [
+                  {
+                    "lang": "csharp",
+                    "value": "BuildFromProject.Class1"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "BuildFromProject.Class1"
+                  }
+                ],
+                "specName": [
+                  {
+                    "lang": "csharp",
+                    "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>"
+                  },
+                  {
+                    "lang": "vb",
+                    "value": "<xref uid=\"BuildFromProject.Class1\" text=\"Class1\"/>"
+                  }
+                ]
+              },
+              "isCref": true
             }
           ],
           "level": 0.0,
@@ -1030,7 +1077,7 @@
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Class1.yml\" sourcestartlinenumber=\"1\">Test</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue896.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue896%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L18",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L19",
           "remarks": "",
           "conceptual": "",
           "implements": "",
