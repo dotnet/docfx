@@ -24,7 +24,7 @@ partial class SymbolUrlResolver
         return null;
     }
 
-    public static string GetMicrosoftLearnUrl(string commentId, bool isEnumMember, bool hasOverloads, string baseUrl = "https://learn.microsoft.com/dotnet/api/")
+    public static string? GetMicrosoftLearnUrl(string commentId, bool isEnumMember, bool hasOverloads, string baseUrl = "https://learn.microsoft.com/dotnet/api/")
     {
         var parts = commentId.Split(':');
         var type = parts[0];
@@ -32,6 +32,7 @@ partial class SymbolUrlResolver
 
         return type switch
         {
+            "!" => null,
             "N" or "T" => $"{baseUrl}{uid.Replace('`', '-')}",
             "F" when isEnumMember => $"{baseUrl}{GetEnumMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}",
 
@@ -39,7 +40,7 @@ partial class SymbolUrlResolver
                 ? $"{baseUrl}{GetMemberPathFromUid(uid)}#{GetUrlFragmentFromUid(uid)}"
                 : $"{baseUrl}{GetMemberPathFromUid(uid)}",
 
-            _ => throw new NotSupportedException($"Unknown comment ID format '{type}"),
+            _ => throw new NotSupportedException($"Unknown comment ID format '{type}'"),
         };
 
         static string GetEnumMemberPathFromUid(string uid)
