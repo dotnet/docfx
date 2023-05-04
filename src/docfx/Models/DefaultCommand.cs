@@ -34,7 +34,9 @@ class DefaultCommand : Command<DefaultCommand.Options>
             string serveDirectory = null;
 
             if (config.Metadata is not null)
-                DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
+            {
+                DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory).GetAwaiter().GetResult();
+            }
 
             if (config.Build is not null)
             {
