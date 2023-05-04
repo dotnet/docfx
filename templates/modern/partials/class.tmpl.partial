@@ -115,14 +115,12 @@
   <dd>
 {{/seealso.0}}
 {{#seealso}}
-  <div>
   {{#isCref}}
-    <div>{{{type.specName.0.value}}}</div>
+  <div>{{{type.specName.0.value}}}</div>
   {{/isCref}}
   {{^isCref}}
-    <div>{{{url}}}</div>
+  <div>{{{url}}}</div>
   {{/isCref}}
-  </div>
 {{/seealso}}
 {{#seealso.0}}
   </dd>
