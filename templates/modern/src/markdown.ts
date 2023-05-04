@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { breakWord } from './helper'
+import { breakWord, meta } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 import mermaid from 'mermaid'
@@ -118,6 +118,10 @@ function renderAlerts() {
  * Open external links to different host in a new window.
  */
 function renderLinks() {
+  if (meta('docfx:disablenewtab') === 'true') {
+    return
+  }
+
   document.querySelectorAll<HTMLAnchorElement>('article a[href]').forEach(a => {
     if (a.hostname !== window.location.hostname && a.innerText.trim() !== '') {
       a.target = '_blank'

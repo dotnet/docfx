@@ -34,11 +34,11 @@ Name         | Type    | Description
 `_appLogoPath`          | string  | App logo URL path.
 `_appFaviconPath`       | string  | Favicon URL path.
 `_enableSearch`         | bool    | Whether to show the search box.
-`_enableNewTab`         | bool    | Whether to open external links in a new tab.
-`_noindex`              | bool  | Whether to include in search results
+`_noindex`              | bool    | Whether to include in search results
 `_disableContribution`  | bool    | Whether to show the _"Edit this page"_ button.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
+`_disableNewTab`        | bool    | Whether to render external link indicator icons and open external links in a new tab.
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
 `lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
 `layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
