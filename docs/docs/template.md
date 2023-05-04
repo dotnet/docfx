@@ -40,6 +40,7 @@ Name         | Type    | Description
 `_gitUrlPattern`        | string  | URL pattern of git links.
 `_disableNewTab`        | bool    | Whether to render external link indicator icons and open external links in a new tab.
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
+`_disableTocFilter`     | bool    | Whether to show the table of content filter box.
 `lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
 `layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
 
