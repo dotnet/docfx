@@ -23,7 +23,7 @@ export async function renderToc(): Promise<TocNode[]> {
 
   const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
 
-  let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') ||  '')
+  let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
 
   const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
   const { items } = await (await fetch(tocUrl)).json()
@@ -93,8 +93,8 @@ export async function renderToc(): Promise<TocNode[]> {
       const dom = href
         ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
         : (isLeaf
-          ? html`<span class='text-body-tertiary name-only'>${breakWordLit(name)}</a>`
-          : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
+            ? html`<span class='text-body-tertiary name-only'>${breakWordLit(name)}</a>`
+            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
 
       const isExpanded = (tocFilter !== '' && expanded !== false && children != null) || expanded === true
 
@@ -116,7 +116,9 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderTocFilter(): TemplateResult {
-    return disableTocFilter ? null : html`
+    return disableTocFilter
+      ? null
+      : html`
       <form class='filter'>
         <i class='bi bi-filter'></i>
         <input class='form-control' @input=${filterToc} value='${tocFilter}' type='search' placeholder='Filter by title' autocomplete='off' aria-label='Filter by title'>
