@@ -26,7 +26,7 @@
 <h5 class="declaration">{{__global.declaration}}</h5>
 {{#syntax}}
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
+  <pre><code class="lang-csharp hljs">{{syntax.content.0.value}}</code></pre>
 </div>
 {{#parameters.0}}
 <h5 class="parameters">{{__global.parameters}}</h5>

@@ -540,7 +540,6 @@ exports.getOptions = function (){
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
-                ["_lang"] = "csharp",
                 ["_tocPath"] = $"{_inputFolder}/toc",
                 ["_rel"] = "../",
                 ["_path"] = $"{_inputFolder}/toc",
@@ -561,7 +560,6 @@ exports.getOptions = function (){
                     {
                         [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/toc",
                             ["_rel"] = "../",
                             ["_path"] = $"{_inputFolder}/toc",
@@ -580,7 +578,6 @@ exports.getOptions = function (){
                         },
                         [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/test/toc",
                             ["_rel"] = "../../",
                             ["_path"] = $"{_inputFolder}/test/toc",
@@ -612,7 +609,6 @@ exports.getOptions = function (){
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
-                ["_lang"] = "csharp",
                 ["_tocPath"] = $"{_inputFolder}/toc",
                 ["_rel"] = "../",
                 ["_path"] = $"{_inputFolder}/test.html",
@@ -645,7 +641,6 @@ exports.getOptions = function (){
                     {
                         [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/toc",
                             ["_rel"] = "../",
                             ["_path"] = $"{_inputFolder}/toc",
@@ -664,7 +659,6 @@ exports.getOptions = function (){
                         },
                         [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/test/toc",
                             ["_rel"] = "../../",
                             ["_path"] = $"{_inputFolder}/test/toc",

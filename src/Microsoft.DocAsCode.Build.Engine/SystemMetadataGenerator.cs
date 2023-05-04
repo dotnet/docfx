@@ -26,12 +26,8 @@ internal sealed class SystemMetadataGenerator
 
     public SystemMetadata Generate(InternalManifestItem item)
     {
-        var attrs = new SystemMetadata
-        {
-            Language = Constants.DefaultLanguage,
-        };
-
-        string key = GetFileKey(item.Key);
+        var attrs = new SystemMetadata();
+        var key = GetFileKey(item.Key);
         attrs.Key = ((RelativePath)key).RemoveWorkingFolder();
         var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 

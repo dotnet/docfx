@@ -435,7 +435,6 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "obj/api/toc.yml",
-  "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",

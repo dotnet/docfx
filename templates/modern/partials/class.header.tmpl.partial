@@ -15,7 +15,7 @@
 
 {{#syntax.content.0.value}}
 <div class="codewrapper">
-  <pre><code class="lang-{{_lang}} hljs">{{syntax.content.0.value}}</code></pre>
+  <pre><code class="lang-csharp hljs">{{syntax.content.0.value}}</code></pre>
 </div>
 {{/syntax.content.0.value}}
 
