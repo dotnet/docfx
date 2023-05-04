@@ -103,7 +103,7 @@ internal class InitCommand : Command<InitCommandOptions>
                 "Does the website contain .NET API documentation?", (s, m, c) =>
                 {
                     m.Build = new BuildJsonConfig();
-                    m.Build.Destination = "_site";
+                    m.Build.Output = "_site";
                     m.Build.Templates.Add("default");
                     m.Build.Templates.Add("modern");
                     if (s)

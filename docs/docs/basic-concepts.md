@@ -133,7 +133,7 @@ Template and theme processing is the one part of Docfx that is not coded in C#; 
 {
   "build": {
     //...
-    "dest": "_site",
+    "output": "_site",
     "template": [
       "default",
       "modern",

@@ -43,6 +43,9 @@ jobs:
 
     - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- docs/docfx.json
 
+    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- metadata samples/seed/docfx.json
+    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
+
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
       with:

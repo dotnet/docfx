@@ -24,7 +24,10 @@ internal static class RunPdf
             config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
         }
 
-        var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(outputDirectory) ? baseDirectory : outputDirectory, config.Destination ?? string.Empty));
+        var outputFolder = Path.GetFullPath(Path.Combine(
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory, 
+            config.Destination ?? ""));
+
         var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;
         var options = new PdfOptions
         {
