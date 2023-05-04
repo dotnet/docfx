@@ -41,7 +41,7 @@ public class BuildConceptualDocument : BaseDocumentBuildStep
 
         if (result.YamlHeader?.Count > 0)
         {
-            foreach (var item in result.YamlHeader)
+            foreach (var item in result.YamlHeader.OrderBy(i => i.Key, StringComparer.Ordinal))
             {
                 HandleYamlHeaderPair(item.Key, item.Value);
             }
