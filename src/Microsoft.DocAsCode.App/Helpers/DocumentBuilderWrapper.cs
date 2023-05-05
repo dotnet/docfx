@@ -192,7 +192,7 @@ internal static class DocumentBuilderWrapper
 
             if (config.MarkdownEngineProperties != null)
             {
-                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
+                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties;
             }
             if (config.CustomLinkResolver != null)
             {

@@ -1,43 +1,32 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections;
 using Microsoft.DocAsCode.Common;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 
-public sealed class CompositeResourceReader : ResourceFileReader
+public sealed class CompositeResourceReader : ResourceFileReader, IEnumerable<ResourceFileReader>
 {
-    private ResourceFileReader[] _collectionsInOverriddenOrder = null;
-    private bool disposed = false;
+    private readonly ResourceFileReader[] _readers;
 
     public override string Name => "Composite";
     public override IEnumerable<string> Names { get; }
     public override bool IsEmpty { get; }
 
-    public CompositeResourceReader(IEnumerable<ResourceFileReader> collectionsInOverriddenOrder)
+    public CompositeResourceReader(IEnumerable<ResourceFileReader> declaredReaders)
     {
-        if (collectionsInOverriddenOrder == null || !collectionsInOverriddenOrder.Any())
-        {
-            IsEmpty = true;
-        }
-        else
-        {
-            _collectionsInOverriddenOrder = collectionsInOverriddenOrder.ToArray();
-            Names = _collectionsInOverriddenOrder.SelectMany(s => s.Names).Distinct();
-        }
+        _readers = declaredReaders.ToArray();
+        IsEmpty = _readers.Length == 0;
+        Names = _readers.SelectMany(s => s.Names).Distinct();
     }
 
     public override Stream GetResourceStream(string name)
     {
-        if (IsEmpty) return null;
-        for (int i = _collectionsInOverriddenOrder.Length - 1; i > -1; i--)
+        for (var i = _readers.Length - 1; i >= 0; i--)
         {
-            var stream = _collectionsInOverriddenOrder[i].GetResourceStream(name);
-            if (stream != null)
-            {
-                Logger.LogDiagnostic($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
-                return stream;
-            }
+            if (_readers[i].GetResourceStream(name) is {} result)
+                return result;
         }
 
         return null;
@@ -45,18 +34,13 @@ public sealed class CompositeResourceReader : ResourceFileReader
 
     protected override void Dispose(bool disposing)
     {
-        if (disposed) return;
-        if (_collectionsInOverriddenOrder != null)
-        {
-            for (int i = 0; i < _collectionsInOverriddenOrder.Length; i++)
-            {
-                _collectionsInOverriddenOrder[i].Dispose();
-                _collectionsInOverriddenOrder[i] = null;
-            }
-
-            _collectionsInOverriddenOrder = null;
-        }
+        foreach (var reader in _readers)
+            reader.Dispose();
 
         base.Dispose(disposing);
     }
+
+    public IEnumerator<ResourceFileReader> GetEnumerator() => ((IEnumerable<ResourceFileReader>)_readers).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => _readers.GetEnumerator();
 }

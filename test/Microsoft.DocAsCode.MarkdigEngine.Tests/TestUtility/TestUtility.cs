@@ -36,10 +36,7 @@ public static class TestUtility
         var parameter = new MarkdownServiceParameters
         {
             BasePath = ".",
-            Extensions = new Dictionary<string, object>
-            {
-                { "EnableSourceInfo", false }
-            }
+            Extensions = new() { EnableSourceInfo = false },
         };
         var service = new MarkdigMarkdownService(parameter);
 
@@ -62,10 +59,7 @@ public static class TestUtility
         var parameter = new MarkdownServiceParameters
         {
             BasePath = ".",
-            Extensions = new Dictionary<string, object>
-            {
-                { "EnableSourceInfo", false }
-            }
+            Extensions = new() { EnableSourceInfo = false },
         };
 
         return new MarkdigMarkdownService(parameter);

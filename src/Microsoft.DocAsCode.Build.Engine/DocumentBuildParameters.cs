@@ -36,7 +36,7 @@ public sealed class DocumentBuildParameters : IBuildParameters
 
     public int MaxHttpParallelism { get; set; }
 
-    public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
+    public MarkdownServiceProperties MarkdownEngineParameters { get; set; } = new();
 
     public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; set; }
 

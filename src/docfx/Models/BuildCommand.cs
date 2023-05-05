@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
@@ -78,16 +79,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         }
         if (options.MarkdownEngineProperties != null)
         {
-            config.MarkdownEngineProperties =
-                JsonConvert.DeserializeObject<Dictionary<string, object>>(
-                    options.MarkdownEngineProperties,
-                    new JsonSerializerSettings
-                    {
-                        Converters =
-                        {
-                            new JObjectDictionaryToObjectDictionaryConverter()
-                        }
-                    });
+            config.MarkdownEngineProperties = JsonConvert.DeserializeObject<MarkdownServiceProperties>(options.MarkdownEngineProperties);
         }
 
         config.GlobalMetadataFilePaths =

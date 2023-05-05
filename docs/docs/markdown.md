@@ -89,6 +89,44 @@ They look like this in rendered page:
 > [!WARNING]
 > Dangerous certain consequences of an action.
 
+### Custom Alerts
+
+You can define custom alerts with the `build.markdownEngineProperties.alerts` property in `docfx.json` and use it in markdown files. The key specifies the markdown keyword without the surrounding `[!`, `]` symbols. The value is the CSS class names:
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
+  }
+}
+```
+
+```md
+> [!TODO]
+> This is a custom TODO section
+```
+
+The above custom alert looks like this in rendered page:
+
+> [!TODO]
+> This is a custom TODO section
+
+DocFX allows you to customize the display of alert titles in your documentation. By default, alert titles are displayed as the keyword in upper case. To change this behavior, you can create a custom template and use a `token.json` file to define your custom alert titles:
+
+1. **Create a custom template**: Follow the steps in the [Custom Template Guide]([create a custom template](./template.md#custom-template)) to create your own template.
+2. **Create a `token.json` file**: In your custom template folder, create a new file named `token.json`. This file will be used to define your custom alert titles. The format should be as follows:
+
+  ```md
+  {  
+    "todo": "MY TODO"  
+  }
+  ```
+  
+  In this example, the key is the alert keyword in **lower case** (e.g., "todo"), and the value is the custom display title of the alert (e.g., "MY TODO").
 
 ## Video
 
