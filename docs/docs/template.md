@@ -42,8 +42,8 @@ Name         | Type    | Description
 `_disableNextArticle`   | bool    | Whether to show the previous and next article link.
 `_disableTocFilter`     | bool    | Whether to show the table of content filter box.
 `_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
-`lang`                  | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
-`layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
+`_lang`                  | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
 
 # [Default Template](#tab/default)
 
@@ -64,7 +64,7 @@ Name         | Type    | Description
 `_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
 `_disableToc`           | bool    | Whether to show the TOC.
 `_disableAffix`         | bool    | Whether to show the right rail.
-`lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
 
 ---
 

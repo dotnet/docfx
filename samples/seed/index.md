@@ -1,7 +1,7 @@
 ---
-layout: landing
-lang: zh-CN
 _disableNewTab: true
+_lang: zh-CN
+_layout: landing
 ---
 
 # docfx-seed
