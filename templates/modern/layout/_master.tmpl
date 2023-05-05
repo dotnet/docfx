@@ -4,7 +4,7 @@
 {{!include(logo.svg)}}
 {{!include(search-stopwords.json)}}
 <!DOCTYPE html>
-<html {{#lang}}lang="{{lang}}"{{/lang}}>
+<html {{#_lang}}lang="{{_lang}}"{{/_lang}}>
   <head>
     <meta charset="utf-8">
     {{#redirect_url}}
@@ -50,7 +50,7 @@
   {{/_googleAnalyticsTagId}}
 
   {{^redirect_url}}
-  <body class="tex2jax_ignore" data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
+  <body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
