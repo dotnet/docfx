@@ -30,7 +30,8 @@
     "globalMetadata": {
       "_appTitle": "docfx",
       "_appName": "docfx",
-      "_appFooter": "<span>Supported by the <a href=\"https://dotnetfoundation.org\">.NET Foundation</a>. Made with <a href=\"https://dotnet.github.io/docfx\">docfx</a></span>"
+      "_appFooter": "<span>Supported by the <a href=\"https://dotnetfoundation.org\">.NET Foundation</a>. Made with <a href=\"https://dotnet.github.io/docfx\">docfx</a></span>",
+      "_googleAnalyticsTagId": "G-Q5N6XJHEX5"
     },
     "output": "_site",
     "template": [

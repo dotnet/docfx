@@ -39,6 +39,16 @@
     {{/redirect_url}}
   </head>
 
+  {{#_googleAnalyticsTagId}}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{_googleAnalyticsTagId}}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{_googleAnalyticsTagId}}');
+  </script>
+  {{/_googleAnalyticsTagId}}
+
   {{^redirect_url}}
   <body class="tex2jax_ignore" data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
