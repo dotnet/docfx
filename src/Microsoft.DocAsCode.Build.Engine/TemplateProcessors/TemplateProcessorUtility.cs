@@ -9,23 +9,44 @@ public static class TemplateProcessorUtility
 {
     public static IDictionary<string, string> LoadTokens(ResourceFileReader resource)
     {
-        if (resource == null)
+        if (resource is CompositeResourceReader compositeResourceReader)
         {
-            return null;
+            return Merge(compositeResourceReader.Select(LoadTokensCore));
         }
 
-        var tokenJson = resource.GetResource("token.json");
-        if (string.IsNullOrEmpty(tokenJson))
+        return LoadTokensCore(resource);
+
+        Dictionary<string, string> LoadTokensCore(ResourceFileReader resource)
         {
-            // also load `global.json` for backward compatibility
-            // TODO: remove this
-            tokenJson = resource.GetResource("global.json");
+            var tokenJson = resource.GetResource("token.json");
             if (string.IsNullOrEmpty(tokenJson))
             {
-                return null;
+                // also load `global.json` for backward compatibility
+                // TODO: remove this
+                tokenJson = resource.GetResource("global.json");
+                if (string.IsNullOrEmpty(tokenJson))
+                {
+                    return null;
+                }
             }
+
+            return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
         }
 
-        return JsonUtility.FromJsonString<Dictionary<string, string>>(tokenJson);
+        static Dictionary<string, string> Merge(IEnumerable<Dictionary<string, string>> items)
+        {
+            var result = new Dictionary<string, string>();
+            foreach (var item in items)
+            {
+                if (item != null)
+                {
+                    foreach (var (key, value) in item)
+                    {
+                        result[key] = value;
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

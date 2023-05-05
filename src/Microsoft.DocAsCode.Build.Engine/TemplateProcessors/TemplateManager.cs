@@ -34,8 +34,7 @@ public class TemplateManager
     public CompositeResourceReader CreateTemplateResource() => CreateTemplateResource(_templates);
 
     private CompositeResourceReader CreateTemplateResource(IEnumerable<string> resources) =>
-        new(
-            resources.Select(s => _finder.Find(s)).Where(s => s != null));
+        new(resources.Select(s => _finder.Find(s)).Where(s => s != null));
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
