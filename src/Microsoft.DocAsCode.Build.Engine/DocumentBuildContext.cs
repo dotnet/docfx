@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
@@ -45,7 +44,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         {
             _reader = new XRefCollection(
                 from u in parameters.XRefMaps
-                select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir, GetFallbackFolders(parameters.MarkdownEngineParameters));
+                select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir, parameters.MarkdownEngineParameters?.FallbackFolders);
         }
         RootTocPath = parameters.RootTocPath;
 
@@ -595,22 +594,5 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
             return null;
         }
         return YamlUtility.ConvertTo<XRefSpec>(vm);
-    }
-
-    private static IReadOnlyList<string> GetFallbackFolders(ImmutableDictionary<string, object> markdownEngineParameters)
-    {
-        IReadOnlyList<string> fallbackFolders = null;
-        if (markdownEngineParameters.TryGetValue("fallbackFolders", out object obj))
-        {
-            try
-            {
-                fallbackFolders = ((IEnumerable)obj).Cast<string>().ToList();
-            }
-            catch
-            {
-                // Swallow cast exception. 
-            }
-        }
-        return fallbackFolders;
     }
 }

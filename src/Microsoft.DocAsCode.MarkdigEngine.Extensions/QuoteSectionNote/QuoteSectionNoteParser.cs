@@ -9,13 +9,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 public class QuoteSectionNoteParser : BlockParser
 {
-    private List<string> _noteTypes = new() { "[!NOTE]", "[!TIP]", "[!WARNING]", "[!IMPORTANT]", "[!CAUTION]" };
+    private readonly List<string> _noteTypes;
     private readonly MarkdownContext _context;
 
-    public QuoteSectionNoteParser(MarkdownContext context)
+    public QuoteSectionNoteParser(MarkdownContext context, string[] noteTypes = null)
     {
         OpeningCharacters = new[] { '>' };
         _context = context;
+        _noteTypes = noteTypes.Select(s => $"[!{s}]").ToList();
     }
 
     public override BlockState TryOpen(BlockProcessor processor)
@@ -137,7 +138,9 @@ public class QuoteSectionNoteParser : BlockParser
         {
             // "> [!NOTE] content" is invalid, go to end to see it.
             processor.NextChar();
-            while (processor.CurrentChar.IsSpaceOrTab()) processor.NextChar();
+            while (processor.CurrentChar.IsSpaceOrTab())
+                processor.NextChar();
+
             var isNoteVideoDiv = (infoString.StartsWith("[!div", StringComparison.OrdinalIgnoreCase))   ||
                                  (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase)) ||
                                  IsNoteType(infoString);
@@ -184,14 +187,6 @@ public class QuoteSectionNoteParser : BlockParser
 
         processor.GoToColumn(originalColumn);
         return false;
-    }
-
-    private bool IsRestLineEmpty(BlockProcessor processor, int movedCharCount)
-    {
-        int column = processor.Column;
-        while (movedCharCount-- > 0) processor.NextChar();
-        while (processor.CurrentChar.IsSpaceOrTab()) processor.NextChar();
-        return processor.CurrentChar == '\0';
     }
 
     private bool IsNoteType(string infoString)

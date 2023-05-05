@@ -44,7 +44,12 @@
     },
     "output": "_site",
     "exportViewModel": true,
-    "template": ["default", "modern", "template"]
+    "template": ["default", "modern", "template"],
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
   },
   "pdf": {
     "content": [

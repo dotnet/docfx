@@ -89,6 +89,31 @@ They look like this in rendered page:
 > [!WARNING]
 > Dangerous certain consequences of an action.
 
+### Custom Alerts
+
+You can define custom alerts with the `build.markdownEngineProperties.alerts` property in `docfx.json` and use it in markdown files. The key specifies the markdown keyword without the surrounding `[!`, `]` symbols. The value is the CSS class names:
+
+```json
+{
+  "build": {
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
+  }
+}
+```
+
+```md
+> [!TODO]
+> This is a custom TODO section
+```
+
+The above custom alert looks like this in rendered page:
+
+> [!TODO]
+> This is a custom TODO section
 
 ## Video
 

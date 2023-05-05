@@ -99,8 +99,7 @@ internal class BuildJsonConfig
     public int? MaxParallelism { get; set; }
 
     [JsonProperty("markdownEngineProperties")]
-    [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
-    public Dictionary<string, object> MarkdownEngineProperties { get; set; }
+    public MarkdownServiceProperties MarkdownEngineProperties { get; set; }
 
     [JsonProperty("customLinkResolver")]
     public string CustomLinkResolver { get; set; }
