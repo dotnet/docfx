@@ -31,7 +31,8 @@ Name         | Type    | Description
 `_appTitle`             | string  | A string append to every page title.
 `_appName`              | string  | The name of the site displayed after logo.
 `_appFooter`            | string  | The footer HTML.
-`_appLogoPath`          | string  | App logo URL path.
+`_appLogoPath`          | string  | Path to the app logo.
+`_appLogoUrl`           | string  | URL for the app logo.
 `_appFaviconPath`       | string  | Favicon URL path.
 `_enableSearch`         | bool    | Whether to show the search box.
 `_noindex`              | bool    | Whether to include in search results
@@ -52,7 +53,8 @@ Name         | Type    | Description
 `_appTitle`             | string  | A string append to every page title.
 `_appName`              | string  | The name of the site displayed after logo.
 `_appFooter`            | string  | The footer HTML.
-`_appLogoPath`          | string  | App logo URL path.
+`_appLogoPath`          | string  | Path to the app logo.
+`_appLogoUrl`           | string  | URL for the app logo.
 `_appFaviconPath`       | string  | Favicon URL path.
 `_enableSearch`         | bool    | Whether to show the search box.
 `_enableNewTab`         | bool    | Whether to open external links in a new tab.
