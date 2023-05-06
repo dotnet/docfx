@@ -42,7 +42,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
   },
   "api/BuildFromProject.IInheritdoc.html": {
     "href": "api/BuildFromProject.IInheritdoc.html",
@@ -112,7 +112,7 @@
   "api/BuildFromProject.Issue8540.html": {
     "href": "api/BuildFromProject.Issue8540.html",
     "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
-    "keywords": "Namespace BuildFromProject.Issue8540 BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
+    "keywords": "Namespace BuildFromProject.Issue8540 Namespaces BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -187,7 +187,7 @@
   "api/CatLibrary.html": {
     "href": "api/CatLibrary.html",
     "title": "Namespace CatLibrary | docfx seed website",
-    "keywords": "Namespace CatLibrary CatLibrary.Core Classes CatException<T> Cat<T, K> Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks. this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to ICatExtension class Complex<T, J> ICatExtension It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class Tom Tom class is only inherit from Object. Not any member inside itself. TomFromBaseClass TomFromBaseClass inherits from @ Interfaces IAnimal This is basic interface of all animal. ICat Cat's interface Delegates FakeDelegate<T> Fake delegate MRefDelegate<K, T, L> Generic delegate with many constrains. MRefNormalDelegate Delegate in the namespace"
+    "keywords": "Namespace CatLibrary Namespaces CatLibrary.Core Classes CatException<T> Cat<T, K> Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks. this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to ICatExtension class Complex<T, J> ICatExtension It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class Tom Tom class is only inherit from Object. Not any member inside itself. TomFromBaseClass TomFromBaseClass inherits from @ Interfaces IAnimal This is basic interface of all animal. ICat Cat's interface Delegates FakeDelegate<T> Fake delegate MRefDelegate<K, T, L> Generic delegate with many constrains. MRefNormalDelegate Delegate in the namespace"
   },
   "api/CatLibrary.IAnimal.html": {
     "href": "api/CatLibrary.IAnimal.html",

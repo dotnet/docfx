@@ -20,7 +20,6 @@ exports.transform = function (model) {
       case 'namespace':
         model.isNamespace = true;
         if (model.children) groupChildren(model, namespaceCategory);
-        model[getTypePropertyName(model.type)] = true;
         break;
       case 'class':
       case 'interface':
