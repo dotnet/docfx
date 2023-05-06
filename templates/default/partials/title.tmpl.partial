@@ -2,9 +2,9 @@
 {{#inPackage}}
 Package {{name.0.value}}
 {{/inPackage}}
-{{#inNamespace}}
+{{#isNamespace}}
 Namespace {{name.0.value}}
-{{/inNamespace}}
+{{/isNamespace}}
 {{#inClass}}
 Class {{name.0.value}}
 {{/inClass}}
