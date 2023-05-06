@@ -573,6 +573,33 @@ references:
   fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New
   nameWithType: Inheritdoc.Issue8129.Issue8129
   nameWithType.vb: Inheritdoc.Issue8129.New
+- uid: BuildFromProject.Issue8540
+  name: BuildFromProject.Issue8540
+  href: api/BuildFromProject.Issue8540.html
+- uid: BuildFromProject.Issue8540.A
+  name: BuildFromProject.Issue8540.A
+  href: api/BuildFromProject.Issue8540.A.html
+  commentId: N:BuildFromProject.Issue8540.A
+  fullName: BuildFromProject.Issue8540.A
+  nameWithType: BuildFromProject.Issue8540.A
+- uid: BuildFromProject.Issue8540.A.A
+  name: A
+  href: api/BuildFromProject.Issue8540.A.A.html
+  commentId: T:BuildFromProject.Issue8540.A.A
+  fullName: BuildFromProject.Issue8540.A.A
+  nameWithType: A
+- uid: BuildFromProject.Issue8540.B
+  name: BuildFromProject.Issue8540.B
+  href: api/BuildFromProject.Issue8540.B.html
+  commentId: N:BuildFromProject.Issue8540.B
+  fullName: BuildFromProject.Issue8540.B
+  nameWithType: BuildFromProject.Issue8540.B
+- uid: BuildFromProject.Issue8540.B.B
+  name: B
+  href: api/BuildFromProject.Issue8540.B.B.html
+  commentId: T:BuildFromProject.Issue8540.B.B
+  fullName: BuildFromProject.Issue8540.B.B
+  nameWithType: B
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html
@@ -921,11 +948,9 @@ references:
   nameWithType: Complex<T, J>
   nameWithType.vb: Complex(Of T, J)
 - uid: CatLibrary.Core
-  name: Core
+  name: CatLibrary.Core
   href: api/CatLibrary.Core.html
   commentId: N:CatLibrary.Core
-  name.csharp: CatLibrary.Core
-  name.vb: CatLibrary.Core
   fullName: CatLibrary.Core
   nameWithType: CatLibrary.Core
 - uid: CatLibrary.Core.ContainersRefType

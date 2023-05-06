@@ -42,7 +42,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
+    "keywords": "Namespace BuildFromProject BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
   },
   "api/BuildFromProject.IInheritdoc.html": {
     "href": "api/BuildFromProject.IInheritdoc.html",
@@ -88,6 +88,31 @@
     "href": "api/BuildFromProject.Inheritdoc.Issue8129.html",
     "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
     "keywords": "Struct Inheritdoc.Issue8129 Namespace BuildFromProject Assembly BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
+  },
+  "api/BuildFromProject.Issue8540.A.A.html": {
+    "href": "api/BuildFromProject.Issue8540.A.A.html",
+    "title": "Class A | docfx seed website",
+    "keywords": "Class A Namespace BuildFromProject.Issue8540.A Assembly BuildFromProject.dll public class A Inheritance object A Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
+  },
+  "api/BuildFromProject.Issue8540.A.html": {
+    "href": "api/BuildFromProject.Issue8540.A.html",
+    "title": "Namespace BuildFromProject.Issue8540.A | docfx seed website",
+    "keywords": "Namespace BuildFromProject.Issue8540.A Classes A"
+  },
+  "api/BuildFromProject.Issue8540.B.B.html": {
+    "href": "api/BuildFromProject.Issue8540.B.B.html",
+    "title": "Class B | docfx seed website",
+    "keywords": "Class B Namespace BuildFromProject.Issue8540.B Assembly BuildFromProject.dll public class B Inheritance object B Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
+  },
+  "api/BuildFromProject.Issue8540.B.html": {
+    "href": "api/BuildFromProject.Issue8540.B.html",
+    "title": "Namespace BuildFromProject.Issue8540.B | docfx seed website",
+    "keywords": "Namespace BuildFromProject.Issue8540.B Classes B"
+  },
+  "api/BuildFromProject.Issue8540.html": {
+    "href": "api/BuildFromProject.Issue8540.html",
+    "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
+    "keywords": "Namespace BuildFromProject.Issue8540 BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",

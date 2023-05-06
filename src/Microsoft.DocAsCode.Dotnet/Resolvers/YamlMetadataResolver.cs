@@ -31,7 +31,7 @@ internal static class YamlMetadataResolver
         NamespaceLayout namespaceLayout)
     {
         MetadataModel viewModel = new();
-        viewModel.TocYamlViewModel = GenerateToc(allMembers, namespaceLayout);
+        viewModel.TocYamlViewModel = GenerateToc(allMembers, allReferences, namespaceLayout);
         viewModel.Members = new List<MetadataItem>();
         ResolverContext context = new()
         {
@@ -44,14 +44,14 @@ internal static class YamlMetadataResolver
         return viewModel;
     }
 
-    private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, NamespaceLayout namespaceLayout)
+    private static MetadataItem GenerateToc(Dictionary<string, MetadataItem> allMembers, Dictionary<string, ReferenceItem> allReferences, NamespaceLayout namespaceLayout)
     {
         var namespaces = allMembers.Where(s => s.Value.Type == MemberType.Namespace);
 
         return namespaceLayout switch
         {
             NamespaceLayout.Flattened => GenerateFlatToc(namespaces),
-            NamespaceLayout.Nested => GenerateNestedToc(namespaces),
+            NamespaceLayout.Nested => GenerateNestedToc(namespaces, allReferences),
             _ => GenerateFlatToc(namespaces),
         };
     }
@@ -67,7 +67,7 @@ internal static class YamlMetadataResolver
         };
     }
 
-    private static MetadataItem GenerateNestedTocStructure(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+    private static MetadataItem GenerateNestedTocStructure(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces, Dictionary<string, ReferenceItem> allReferences)
     {
         var root = new MetadataItem()
         {
@@ -98,7 +98,9 @@ internal static class YamlMetadataResolver
                             DisplayNamesWithType = new(),
                             DisplayQualifiedNames = new()
                         };
+                        missingNamespace.DisplayNames.Add(SyntaxLanguage.Default, partialParentNamespace);
                         namespacedItems[partialParentNamespace] = missingNamespace;
+                        allReferences.Add(partialParentNamespace, new());
 
                         if (!partialParentNamespace.Contains('.'))
                         {
@@ -109,7 +111,7 @@ internal static class YamlMetadataResolver
                         {
                             var parentNamespace = namespacedItems[partialParentNamespace.Substring(0, partialParentNamespace.LastIndexOf('.'))];
                             missingNamespace.Parent = parentNamespace;
-                            parentNamespace.Items.Add(missingNamespace);                                    
+                            parentNamespace.Items.Add(missingNamespace);
                         }
                     }
                 }
@@ -153,9 +155,9 @@ internal static class YamlMetadataResolver
         }
     }
 
-    private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces)
+    private static MetadataItem GenerateNestedToc(IEnumerable<KeyValuePair<string, MetadataItem>> namespaces, Dictionary<string, ReferenceItem> allReferences)
     {
-        var root = GenerateNestedTocStructure(namespaces);
+        var root = GenerateNestedTocStructure(namespaces, allReferences);
 
         Queue<MetadataItem> metadataItemQueue = new();
         metadataItemQueue.Enqueue(root);
@@ -170,16 +172,6 @@ internal static class YamlMetadataResolver
                     metadataItem.Parent.Parent.Items.Remove(metadataItem.Parent);
                     metadataItem.Parent = metadataItem.Parent.Parent;
                 }
-
-                var lastIndex = metadataItem.Name?.LastIndexOf('.');
-                if (metadataItem.Parent != root)
-                {
-                    if (metadataItem.Parent?.Name != null && metadataItem.Name.StartsWith(metadataItem.Parent.Name))
-                        metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(metadataItem.Parent.Name.Length + 1));
-                    else if (lastIndex >= 0 && metadataItem.Parent != root)
-                        metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name.Substring(lastIndex.Value + 1));
-                } else if (!metadataItem.DisplayNames.ContainsKey(SyntaxLanguage.Default))
-                    metadataItem.DisplayNames.Add(SyntaxLanguage.Default, metadataItem.Name);
             }
 
             if (metadataItem.Items != null)

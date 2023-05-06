@@ -103,7 +103,7 @@ internal static class YamlViewModelExtensions
         return shrinkedItem;
     }
 
-    public static TocViewModel ToTocViewModel(this MetadataItem item)
+    public static TocViewModel ToTocViewModel(this MetadataItem item, string parentNamespace = "")
     {
         if (item == null)
         {
@@ -120,7 +120,7 @@ internal static class YamlViewModelExtensions
                     .ThenBy(x => x.Name)
                 )
                 {
-                    result.Add(child.ToTocItemViewModel());
+                    result.Add(child.ToTocItemViewModel(parentNamespace));
                 }
                 return new TocViewModel(result);
             default:
@@ -128,26 +128,24 @@ internal static class YamlViewModelExtensions
         }
     }
 
-    public static TocItemViewModel ToTocItemViewModel(this MetadataItem item)
+    public static TocItemViewModel ToTocItemViewModel(this MetadataItem item, string parentNamespace)
     {
         var result = new TocItemViewModel
         {
             Uid = item.Name,
             Name = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.Default),
         };
-        var nameForCSharp = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.CSharp);
-        if (nameForCSharp != result.Name)
+
+        if (item.Type is MemberType.Namespace)
         {
-            result.NameForCSharp = nameForCSharp;
+            if (result.Name.StartsWith(parentNamespace))
+                result.Name = result.Name.Substring(parentNamespace.Length);
+            parentNamespace = $"{item.Name}.";
         }
-        var nameForVB = item.DisplayNames.GetLanguageProperty(SyntaxLanguage.VB);
-        if (nameForVB != result.Name)
-        {
-            result.NameForVB = nameForVB;
-        }
+
         if (item.Items != null)
         {
-            result.Items = item.ToTocViewModel();
+            result.Items = item.ToTocViewModel(parentNamespace);
         }
         return result;
     }

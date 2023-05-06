@@ -4,6 +4,44 @@
   "isExtensionMethod": false,
   "children": [
     {
+      "inNamespace": true,
+      "typePropertyName": "inNamespace",
+      "id": "namespaces",
+      "children": [
+        {
+          "uid": "BuildFromProject.Issue8540",
+          "isExtensionMethod": false,
+          "isExternal": true,
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Issue8540\" displayProperty=\"name\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Issue8540\" displayProperty=\"name\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "namespace",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Issue8540",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
+    },
+    {
       "inClass": true,
       "typePropertyName": "inClass",
       "id": "classes",
