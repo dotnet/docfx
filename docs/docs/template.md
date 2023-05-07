@@ -117,7 +117,7 @@ The `my-template/public/main.js` file is the entry JavaScript file to customize 
 /* file: my-template/public/main.js */
 export default {
   defaultTheme: 'dark',
-  iconLinks?: [
+  iconLinks: [
     {
       icon: 'github',
       href: 'https://github.com/dotnet/docfx',
