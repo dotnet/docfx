@@ -120,12 +120,12 @@ export default {
   iconLinks?: [
     {
       icon: 'github',
-      href: 'https://github.com/dotnet/docfx'
+      href: 'https://github.com/dotnet/docfx',
       title: 'GitHub'
     },
     {
       icon: 'twitter',
-      href: 'https://twitter.com'
+      href: 'https://twitter.com',
       title: 'Twitter'
     }
   ]
