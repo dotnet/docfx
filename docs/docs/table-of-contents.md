@@ -25,6 +25,7 @@ The YAML document is a tree of TOC nodes, each of which has these properties:
 - `name`: The display name for the TOC node.
 - `href`: The path the TOC node leads to. Optional because a node can exist just to parent other nodes.
 - `items`: If a node has children, they're listed in the items array.
+- `uid`: The uid of the article. Can be used instead of `href`.
 - `expanded`: Expand children on load, only works if the template is `modern`.
 
 ## Navigation Bar
