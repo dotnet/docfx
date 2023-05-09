@@ -38,6 +38,8 @@ async function build() {
 async function buildModernTemplate() {
   const config = {
     bundle: true,
+    format: 'esm',
+    splitting: true,
     minify: true,
     sourcemap: true,
     outExtension: {

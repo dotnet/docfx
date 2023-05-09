@@ -4,14 +4,12 @@
 import { breakWord, meta } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
-import mermaid from 'mermaid'
 import { getTheme } from './theme'
 
 /**
  * Initialize markdown rendering.
  */
-export function renderMarkdown() {
-  renderMermaid()
+export async function renderMarkdown() {
   renderWordBreaks()
   renderTables()
   renderAlerts()
@@ -20,21 +18,33 @@ export function renderMarkdown() {
   renderAnchor()
   renderCodeCopy()
   renderClickableImage()
+
+  await Promise.all([
+    renderMath(),
+    renderMermaid()
+  ])
+}
+
+async function renderMath() {
+  const math = document.querySelectorAll('.math')
+  if (math.length > 0) {
+    await import('mathjax/es5/tex-svg-full.js')
+  }
 }
 
 /**
  * Render mermaid diagrams.
  */
-function renderMermaid() {
-  document.querySelectorAll('pre code.lang-mermaid').forEach(code => {
-    const pre = code.parentElement
-    pre.classList.add('mermaid')
-    code.remove()
-    pre.appendChild(document.createTextNode(code.textContent))
-  })
+async function renderMermaid() {
+  const diagrams = document.querySelectorAll('pre code.lang-mermaid')
+  if (diagrams.length <= 0) {
+    return
+  }
 
+  const { default: mermaid } = await import('mermaid')
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
-  mermaid.initialize(Object.assign({ startOnLoad: true, deterministicIds: true, theme }, window.docfx.mermaid))
+  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds: true, theme }, window.docfx.mermaid))
+  mermaid.run({ querySelector: 'pre code.lang-mermaid' })
 }
 
 /**
