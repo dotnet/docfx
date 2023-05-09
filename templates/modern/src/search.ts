@@ -23,7 +23,7 @@ export function enableSearch() {
   }
 
   const relHref = meta('docfx:rel') || ''
-  const worker = new Worker(relHref + 'public/search-worker.min.js')
+  const worker = new Worker(relHref + 'public/search-worker.min.js', { type: 'module' })
   worker.onmessage = function(oEvent) {
     switch (oEvent.data.e) {
       case 'index-ready':

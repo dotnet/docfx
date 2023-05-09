@@ -12,7 +12,6 @@ import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
-import 'mathjax/es5/tex-svg-full.js'
 
 declare global {
   interface Window {
@@ -24,18 +23,23 @@ declare global {
   }
 }
 
-window.docfx = window.docfx || {}
+export async function init(options: DocfxOptions) {
+  window.docfx = Object.assign({}, options)
 
-initTheme()
-
-document.addEventListener('DOMContentLoaded', function() {
+  initTheme()
   enableSearch()
-  renderMarkdown()
-  highlight()
-
-  Promise.all([renderNavbar(), renderToc()])
-    .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))
-
   renderInThisArticle()
+
+  await Promise.all([
+    renderMarkdown(),
+    renderNav(),
+    highlight()
+  ])
+
   window.docfx.ready = true
-})
+
+  async function renderNav() {
+    const [navbar, toc] = await Promise.all([renderNavbar(), renderToc()])
+    renderBreadcrumb([...navbar, ...toc])
+  }
+}
