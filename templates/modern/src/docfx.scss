@@ -11,10 +11,10 @@ $container-max-widths: (
 
 @import "bootstrap/scss/bootstrap.scss";
 
-@import "highlight.js/scss/github.scss";
+@import "highlight.js/scss/vs.scss";
 
 @include color-mode(dark) {
-  @import "highlight.js/scss/github-dark.scss";
+  @import "highlight.js/scss/vs2015.scss";
 }
 
 @import "highlight.scss";
