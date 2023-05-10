@@ -20,6 +20,7 @@ jobs:
         dotnet-version: |
           6.x
           7.x
+          8.0.100-preview.2.23157.25
 
     - uses: github/codeql-action/init@v2
       with:
