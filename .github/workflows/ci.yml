@@ -63,7 +63,7 @@ jobs:
 
     - uses: ./.github/actions/build
 
-    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot --no-build
+    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
         SNAPSHOT_TEST: true
