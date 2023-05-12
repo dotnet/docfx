@@ -14,14 +14,16 @@ Add a `pdf` section in `docfx.json`:
 
 ```json
 {
-  "pdf": {
-    "content": [{
-      "files": [ "**/*.{md,yml}" ]
-    }],
-    "wkhtmltopdf": {
-      "additionalArguments": "--enable-local-file-access"
-    },
-  }
+	"pdf": {
+		"content": [
+			{
+				"files": [ "**/*.{md,yml}" ]
+			}
+		],
+		"wkhtmltopdf": {
+			"additionalArguments": "--enable-local-file-access"
+		}
+	}
 }
 ```
 

@@ -1,6 +1,6 @@
 name: ci
 on:
-  pull_request:
+  pull_request_target:
     branches: [ main, feature/*, hotfix/* ]
   push:
     branches: [ main, feature/*, hotfix/* ]
@@ -58,19 +58,27 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v3
+      if: github.event_name == 'pull_request_target'
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.head_ref }}
+        lfs: true
+
+    - uses: actions/checkout@v3
+      if: github.event_name != 'pull_request_target'
       with:
         lfs: true
 
     - uses: ./.github/actions/build
 
-    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot --no-build
+    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
         SNAPSHOT_TEST: true
-        BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
+        BUILD_SERVER: ${{ github.event_name != 'pull_request_target' }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       with:
         commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
 
