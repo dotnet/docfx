@@ -49,7 +49,7 @@ async function renderMermaid() {
     e.parentElement.classList.add('mermaid')
     e.parentElement.innerHTML = e.innerHTML
   })
-  mermaid.run()
+  await mermaid.run()
 }
 
 /**
