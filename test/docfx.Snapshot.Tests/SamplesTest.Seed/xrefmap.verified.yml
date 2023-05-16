@@ -277,6 +277,22 @@ references:
   fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New
   nameWithType: Class1.Issue8696Attribute.Issue8696Attribute
   nameWithType.vb: Class1.Issue8696Attribute.New
+- uid: BuildFromProject.Class1.Issue8764*
+  name: Issue8764
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764_
+  commentId: Overload:BuildFromProject.Class1.Issue8764
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8764
+  nameWithType: Class1.Issue8764
+- uid: BuildFromProject.Class1.Issue8764``1
+  name: Issue8764<T>()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764__1
+  commentId: M:BuildFromProject.Class1.Issue8764``1
+  name.vb: Issue8764(Of T)()
+  fullName: BuildFromProject.Class1.Issue8764<T>()
+  fullName.vb: BuildFromProject.Class1.Issue8764(Of T)()
+  nameWithType: Class1.Issue8764<T>()
+  nameWithType.vb: Class1.Issue8764(Of T)()
 - uid: BuildFromProject.Class1.Issue896
   name: Issue896()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896

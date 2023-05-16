@@ -858,6 +858,144 @@
           "hideSubtitle": false
         },
         {
+          "uid": "BuildFromProject.Class1.Issue8764``1",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject.Class1",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue8764(Of T)()"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8764(Of T)()"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue8764<T>()"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue8764(Of T)()"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8764``1\" text=\"Issue8764&lt;T&gt;()\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"BuildFromProject.Class1.Issue8764``1\" text=\"Issue8764&lt;T&gt;()\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public void Issue8764<T>() where T : unmanaged"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub Issue8764(Of T As Structure)()"
+              }
+            ],
+            "typeParameters": [
+              {
+                "id": "T"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/project/Project/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": "Issue8764",
+            "path": "dotnet/project/Project/Class1.cs",
+            "startLine": 102.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "BuildFromProject"
+          ],
+          "namespace": "BuildFromProject",
+          "overload": {
+            "uid": "BuildFromProject.Class1.Issue8764*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "Issue8764"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Class1.Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "Class1.Issue8764"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "BuildFromProject.Class1.Issue8764"
+              },
+              {
+                "lang": "vb",
+                "value": "BuildFromProject.Class1.Issue8764"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue8764*\" text=\"Issue8764\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"BuildFromProject.Class1.Issue8764*\" text=\"Issue8764\"/>"
+              }
+            ],
+            "id": "BuildFromProject_Class1_Issue8764_"
+          },
+          "level": 0.0,
+          "type": "method",
+          "summary": "",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Class1_Issue8764__1.md&value=---%0Auid%3A%20BuildFromProject.Class1.Issue8764%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Class1.cs/#L103",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_Issue8764__1",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "BuildFromProject.Class1.Issue896",
           "isEii": false,
           "isExtensionMethod": false,
