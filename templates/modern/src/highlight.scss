@@ -3,6 +3,12 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
+@import "highlight.js/scss/vs.scss";
+
+@include color-mode(dark) {
+  @import "highlight.js/scss/vs2015.scss";
+}
+
 .hljs {
   background-color: #f5f5f5;
 }
