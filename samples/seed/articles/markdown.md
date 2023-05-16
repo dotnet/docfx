@@ -39,20 +39,6 @@ C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
 ```
 
-User Journey diagram
-
-```mermaid
-journey
-  title My working day
-  section Go to work
-    Make tea: 5: Me
-    Go upstairs: 3: Me
-    Do work: 1: Me, Cat
-  section Go home
-    Go downstairs: 5: Me
-    Sit down: 3: Me
-```
-
 ## Code Snippet
 
 The example highlights lines 2, line 5 to 7 and lines 9 to the end of the file.

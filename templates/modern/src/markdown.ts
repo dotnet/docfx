@@ -44,7 +44,12 @@ async function renderMermaid() {
   const { default: mermaid } = await import('mermaid')
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
   mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds: true, theme }, window.docfx.mermaid))
-  mermaid.run({ querySelector: 'pre code.lang-mermaid' })
+
+  diagrams.forEach(e => {
+    e.parentElement.classList.add('mermaid')
+    e.parentElement.innerHTML = e.innerHTML
+  })
+  await mermaid.run()
 }
 
 /**
