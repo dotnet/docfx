@@ -100,6 +100,8 @@ public class Class1 : IClass1
     /// </remarks>
     public void Issue4392() { }
 
+    public void Issue8764<T>() where T: unmanaged { }
+
     public class Issue8665
     {
         public int Foo { get; }
