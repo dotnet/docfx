@@ -3,10 +3,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
 */
 
-@import "highlight.js/scss/vs.scss";
+@import "highlight.js/scss/vs";
 
 @include color-mode(dark) {
-  @import "highlight.js/scss/vs2015.scss";
+  /* stylelint-disable-next-line no-invalid-position-at-import-rule */
+  @import "highlight.js/scss/vs2015";
 }
 
 .hljs {

@@ -4,13 +4,19 @@
 */
 
 $enable-important-utilities: false;
-
 $container-max-widths: (
   xxl: 1768px
 ) !default;
 
-@import "bootstrap/scss/bootstrap.scss";
-@import "highlight.scss";
+@import "mixins";
+@import "bootstrap/scss/bootstrap";
+@import "highlight";
+@import "layout";
+@import "nav";
+@import "toc";
+@import "markdown";
+@import "search";
+@import "dotnet";
 
 h1,
 h2,
@@ -49,7 +55,7 @@ article {
   max-height: 200px;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   #mobile-indicator {
     display: block;
   }
@@ -67,26 +73,3 @@ article {
     display: none;
   }
 }
-
-@mixin adjust-icon {
-  font-family: bootstrap-icons;
-  position: relative;
-  margin-right: 0.5em;
-  top: 0.2em;
-  font-size: 1.25em;
-  font-weight: normal;
-}
-
-@mixin underline-on-hover {
-  text-decoration: none;
-  &:hover, &:focus {
-    text-decoration: underline;
-  }
-}
-
-@import "layout.scss";
-@import "nav.scss";
-@import "toc.scss";
-@import "markdown.scss";
-@import "search.scss";
-@import "dotnet.scss";
