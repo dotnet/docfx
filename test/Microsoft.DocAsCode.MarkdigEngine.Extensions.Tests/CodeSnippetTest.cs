@@ -292,7 +292,7 @@ public class MyClass
     }
 
     [Theory]
-            [Trait("Related", "DfmMarkdown")]
+    [Trait("Related", "DfmMarkdown")]
     #region Inline Data
     [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
@@ -607,6 +607,51 @@ public static void Foo()
         {
             { "api.json", apiJsonContent },
         });
+    }
+
+    [Fact]
+    public void Issue8777()
+    {
+        TestUtility.VerifyMarkup(
+            """
+            [!code-csharp[Main](Greet.cs?name=hello-world-message)]
+            """,
+            """
+            <pre><code class="lang-csharp" name="Main">
+            namespace HelloWorld
+            {
+                public class Greet
+                {
+                    public string Who { get; private set; }
+            
+                    public Greet(string who)
+                    {
+                        Who = who;
+                    }
+                }
+            }</code></pre>
+            """,
+            files: new Dictionary<string, string>
+            {
+                {
+                    "Greet.cs", """
+                        #region hello-world-message
+                        namespace HelloWorld
+                        {
+                            public class Greet
+                            {
+                                public string Who { get; private set; }
+
+                                public Greet(string who)
+                                {
+                                    Who = who;
+                                }
+                            }
+                        }
+                        #endregion
+                        """
+                },
+            });
     }
 
     [Fact]
