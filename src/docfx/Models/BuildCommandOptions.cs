@@ -19,14 +19,17 @@ internal class BuildCommandOptions : LogOptions
 
     [Description("Specify the urls of xrefmap used by content files.")]
     [CommandOption("-x|--xref")]
+    [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> XRefMaps { get; set; }
 
     [Description("Specify the template name to apply to. If not specified, output YAML file will not be transformed.")]
     [CommandOption("-t|--template")]
+    [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> Templates { get; set; }
 
     [Description("Specify which theme to use. By default 'default' theme is offered.")]
     [CommandOption("--theme")]
+    [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> Themes { get; set; }
 
     [Description("Host the generated documentation to a website")]
@@ -79,6 +82,7 @@ internal class BuildCommandOptions : LogOptions
 
     [Description("Set the order of post processors in plugins")]
     [CommandOption("--postProcessors")]
+    [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> PostProcessors { get; set; }
 
     [Description("If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.")]

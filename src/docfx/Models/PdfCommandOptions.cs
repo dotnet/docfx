@@ -51,6 +51,7 @@ internal class PdfCommandOptions : BuildCommandOptions
 
     [Description("Specify the toc files to be excluded")]
     [CommandOption("--excludedTocs")]
+    [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> ExcludedTocs { get; set; }
 
     [Description("Specify the base path to generate external link, {host}/{locale}/{basePath}")]
