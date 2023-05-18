@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 public class CodeSnippetExtractor
 {
-    private static readonly Regex TagnameFormat = new(@"^[\w\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex TagnameFormat = new(@"^[\w\.-]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private readonly string StartLineTemplate;
     private readonly string EndLineTemplate;
     private readonly bool IsEndLineContainsTagName;
