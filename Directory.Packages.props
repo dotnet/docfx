@@ -32,7 +32,7 @@
     <PackageVersion Include="YamlDotNet" Version="13.1.0" />
 
     <!-- Test only -->
-    <PackageVersion Include="coverlet.collector" Version="3.2.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.1.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.33.0" />
