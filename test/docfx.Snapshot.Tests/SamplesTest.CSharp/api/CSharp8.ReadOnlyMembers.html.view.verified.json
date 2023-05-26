@@ -880,7 +880,8 @@
                     "value": "<xref uid=\"System.String\" text=\"string\"/>"
                   }
                 ]
-              }
+              },
+              "description": "<p sourcefile=\"api/CSharp8.ReadOnlyMembers.yml\" sourcestartlinenumber=\"1\">The fully qualified type name.</p>\n"
             }
           },
           "source": {
@@ -989,7 +990,7 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "",
+          "summary": "<p sourcefile=\"api/CSharp8.ReadOnlyMembers.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_ToString.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L18",

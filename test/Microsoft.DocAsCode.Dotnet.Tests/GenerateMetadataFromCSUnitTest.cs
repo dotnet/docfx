@@ -2640,19 +2640,19 @@ namespace Test1
 
         var flagsDefault = output.Items[0].Items[0].Items[1];
         Assert.NotNull(flagsDefault);
-        Assert.Equal(@"public void EnumDefault(ConsoleSpecialKey? key = 0)", flagsDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void EnumDefault(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlC)", flagsDefault.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var flagsValue = output.Items[0].Items[0].Items[2];
         Assert.NotNull(flagsValue);
-        Assert.Equal(@"public void EnumValue(ConsoleSpecialKey? key = 1)", flagsValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void EnumValue(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlBreak)", flagsValue.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var enumUndefinedDefault = output.Items[0].Items[0].Items[3];
         Assert.NotNull(enumUndefinedDefault);
-        Assert.Equal(@"public void EnumUndefinedDefault(ConsoleKey? key = 0)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void EnumUndefinedDefault(ConsoleKey? key = (ConsoleKey)0)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var enumUndefinedValue = output.Items[0].Items[0].Items[4];
         Assert.NotNull(enumUndefinedValue);
-        Assert.Equal(@"public void EnumUndefinedValue(ConsoleKey? key = 999)", enumUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void EnumUndefinedValue(ConsoleKey? key = (ConsoleKey)999)", enumUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 
     [Fact]
@@ -2681,19 +2681,19 @@ namespace Test1
 
         var enumDefault = output.Items[0].Items[0].Items[1];
         Assert.NotNull(enumDefault);
-        Assert.Equal(@"public void FlagsDefault(Base64FormattingOptions? options = 0)", enumDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void FlagsDefault(Base64FormattingOptions? options = Base64FormattingOptions.None)", enumDefault.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var enumValue = output.Items[0].Items[0].Items[2];
         Assert.NotNull(enumValue);
-        Assert.Equal(@"public void FlagsValue(Base64FormattingOptions? options = 1)", enumValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void FlagsValue(Base64FormattingOptions? options = Base64FormattingOptions.InsertLineBreaks)", enumValue.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var flagsUndefinedDefault = output.Items[0].Items[0].Items[3];
         Assert.NotNull(flagsUndefinedDefault);
-        Assert.Equal(@"public void FlagsUndefinedDefault(AttributeTargets? targets = 0)", flagsUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void FlagsUndefinedDefault(AttributeTargets? targets = (AttributeTargets)0)", flagsUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var flagsUndefinedValue = output.Items[0].Items[0].Items[4];
         Assert.NotNull(flagsUndefinedValue);
-        Assert.Equal(@"public void FlagsUndefinedValue(AttributeTargets? targets = 65536)", flagsUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void FlagsUndefinedValue(AttributeTargets? targets = (AttributeTargets)65536)", flagsUndefinedValue.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 
     [Fact]
