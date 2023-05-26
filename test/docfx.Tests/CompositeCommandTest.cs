@@ -48,7 +48,7 @@ namespace Hello{
 /// }
 /// </code>
 /// </example>
-public class HelloWorld(){}}
+public class HelloWorld {}}
 ";
         var sourceFile = Path.Combine(_projectFolder, "src", "test.cs");
         CreateFile(sourceFile, sourceCode, "src");
