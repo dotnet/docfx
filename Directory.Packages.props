@@ -36,7 +36,7 @@
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.1.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.33.0" />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.6.0-preview.3.61" />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.6.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
     <PackageVersion Include="Verify.Xunit" Version="19.14.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
