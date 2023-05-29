@@ -11,7 +11,7 @@
     <PackageVersion Include="Jint" Version="3.0.0-beta-2049" />
     <PackageVersion Include="JsonSchema.Net" Version="4.1.1" />
     <PackageVersion Include="Markdig" Version="0.31.0" />
-    <PackageVersion Include="Microsoft.Build" Version="17.5.0" />
+    <PackageVersion Include="Microsoft.Build" Version="17.6.3" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.5.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.6.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.6.0" />
