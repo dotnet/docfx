@@ -23,7 +23,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.6.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="PdfPig" Version="0.1.8-alpha-20230522-c3dd6" />
+    <PackageVersion Include="PdfPig" Version="0.1.8-alpha-20230529-6daa2" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.46.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="6.0.0" />
