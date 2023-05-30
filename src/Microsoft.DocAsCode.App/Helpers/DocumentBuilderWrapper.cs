@@ -4,6 +4,8 @@
 using System.Collections.Immutable;
 using System.Net;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using Microsoft.DocAsCode.Build.ConceptualDocuments;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Build.ManagedReference;
@@ -73,10 +75,10 @@ internal static class DocumentBuilderWrapper
             string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
             if (!string.IsNullOrEmpty(assemblyName))
             {
-                if (assemblyName == "Microsoft.DocAsCode.EntityModel")
+                if (assemblyName == "Microsoft.DocAsCode.EntityModel" || assemblyName.StartsWith("System."))
                 {
                     // work around, don't load assembly Microsoft.DocAsCode.EntityModel.
-                    Logger.LogVerbose("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
+                    Logger.LogVerbose($"Skipping assembly: {assemblyName}");
                     continue;
                 }
                 if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
@@ -89,6 +91,12 @@ internal static class DocumentBuilderWrapper
                 if (defaultPluggedAssemblies.Select(n => n.GetName().Name).Contains(assemblyName))
                 {
                     Logger.LogVerbose($"Skipping default plugged assembly: {assemblyName}.");
+                    continue;
+                }
+
+                if (!IsDocfxPluginAssembly(assemblyFile))
+                {
+                    Logger.LogVerbose($"Skipping non-plugin assembly: {assemblyName}.");
                     continue;
                 }
 
@@ -112,6 +120,26 @@ internal static class DocumentBuilderWrapper
                 {
                     yield return assembly;
                 }
+            }
+        }
+
+        static bool IsDocfxPluginAssembly(string assemblyFile)
+        {
+            try
+            {
+                // Determines if the input assembly file is potentially a docfx plugin assembly
+                // by checking if referenced assemblies contains Microsoft.DocAsCode.Plugins using MetadataReader
+                using (var stream = File.OpenRead(assemblyFile))
+                using (var peReader = new PEReader(stream))
+                {
+                    var metadataReader = peReader.GetMetadataReader();
+                    return metadataReader.AssemblyReferences.Any(a => metadataReader.GetString(metadataReader.GetAssemblyReference(a).Name) == "Microsoft.DocAsCode.Plugins");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogVerbose($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                return false;
             }
         }
     }
