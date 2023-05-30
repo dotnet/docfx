@@ -47,7 +47,7 @@ public class ConceptualDocumentProcessorTest : TestBase
         // Prepare conceptual template
         var templateCreator = new FileCreator(_templateFolder);
         var file = templateCreator.CreateFile(@"{{{conceptual}}}", "conceptual.html.tmpl", "default");
-        _templateManager = new TemplateManager(null, null, new List<string> { "default" }, null, _templateFolder);
+        _templateManager = new TemplateManager(new List<string> { "default" }, null, _templateFolder);
     }
 
     public override void Dispose()

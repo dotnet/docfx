@@ -40,7 +40,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             RawModelExportSettings = { Export = true },
             TransformDocument = true,
         };
-        _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, "TestData/");
+        _templateManager = new TemplateManager(new List<string> { "template" }, null, "TestData/");
     }
 
     [Fact]

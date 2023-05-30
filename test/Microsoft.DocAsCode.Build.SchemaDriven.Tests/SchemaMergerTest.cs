@@ -37,7 +37,7 @@ public class SchemaMergerTest : TestBase
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
     }
 
     [Fact]

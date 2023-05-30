@@ -4,7 +4,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="tmpl\tmpl1.zip" />
     <None Include="PostProcessors\**;tmpl\tmpl1\sub\file1;tmpl\tmpl1\tmpl1.dot.$" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

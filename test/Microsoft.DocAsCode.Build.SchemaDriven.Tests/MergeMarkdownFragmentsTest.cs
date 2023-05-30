@@ -33,7 +33,7 @@ public class MergeMarkdownFragmentsTest : TestBase
         _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
         _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
-        _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
 
         _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
         _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
