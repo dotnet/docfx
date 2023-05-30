@@ -56,7 +56,7 @@ internal class TemplateCommand
 
                 foreach (var template in templates)
                 {
-                    var manager = new TemplateManager(typeof(Docset).Assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
+                    var manager = new TemplateManager(new List<string> { template }, null, null);
                     if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
                     {
                         Logger.LogInfo($"{template} is exported to {outputFolder}");

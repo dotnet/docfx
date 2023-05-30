@@ -16,8 +16,7 @@ internal static class RunBuild
             config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
         }
 
-        var assembly = typeof(Docset).Assembly;
-        var templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, config.Templates, config.Themes, configDirectory);
+        var templateManager = new TemplateManager(config.Templates, config.Themes, configDirectory);
 
         EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));

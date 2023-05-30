@@ -39,7 +39,7 @@ public class LimitationReachedTest : TestBase
             TransformDocument = true,
         };
 
-        _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
+        _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
     }
 
     [Fact(Skip = "Mannually run this testcase, as it will influence the result of other test cases")]
