@@ -2,6 +2,15 @@
 
 <head>
   <meta charset="utf-8">
+  {{#_googleTagId}}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{_googleTagId}}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{_googleTagId}}');
+  </script>
+  {{/_googleTagId}}
   {{#redirect_url}}
     <meta http-equiv="refresh" content="0;URL='{{redirect_url}}'">
   {{/redirect_url}}
