@@ -66,6 +66,7 @@ Name         | Type    | Description
 `_disableBreadcrumb`    | bool    | Whether to show the breadcrumb.
 `_disableToc`           | bool    | Whether to show the TOC.
 `_disableAffix`         | bool    | Whether to show the right rail.
+`_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
 `_lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
 
 ---
