@@ -34,23 +34,29 @@ public class TemplateManager
 
     private CompositeResourceReader CreateTemplateResource(IEnumerable<string> resources)
     {
-        return new(resources.Select(FindResource).Where(s => s != null));
+        return new(GetTemplateDirectories(resources).Select(path => new LocalFileResourceReader(path)));
+    }
 
-        ResourceFileReader? FindResource(string name)
+    public IEnumerable<string> GetTemplateDirectories()
+    {
+        return GetTemplateDirectories(_templates);
+    }
+
+    private IEnumerable<string> GetTemplateDirectories(IEnumerable<string> names)
+    {
+        foreach (var name in names)
         {
-            var directory = Path.Combine(AppContext.BaseDirectory, "templates", name);
+            var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "templates", name));
             if (Directory.Exists(directory))
             {
-                return new LocalFileResourceReader(directory);
+                yield return directory;
             }
 
-            directory = Path.Combine(_baseDirectory, name);
+            directory = Path.GetFullPath(Path.Combine(_baseDirectory, name));
             if (Directory.Exists(directory))
             {
-                return new LocalFileResourceReader(directory);
+                yield return directory;
             }
-
-            return null;
         }
     }
 

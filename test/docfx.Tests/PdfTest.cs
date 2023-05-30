@@ -2,9 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
-
 using Microsoft.DocAsCode.Tests.Common;
-
 using Xunit;
 
 namespace Microsoft.DocAsCode.Tests;

@@ -6,14 +6,7 @@ using System.Net;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
-using Microsoft.DocAsCode.Build.ConceptualDocuments;
 using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Build.ManagedReference;
-using Microsoft.DocAsCode.Build.ResourceFiles;
-using Microsoft.DocAsCode.Build.RestApi;
-using Microsoft.DocAsCode.Build.SchemaDriven;
-using Microsoft.DocAsCode.Build.TableOfContents;
-using Microsoft.DocAsCode.Build.UniversalReference;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
@@ -42,7 +35,9 @@ internal static class DocumentBuilderWrapper
             postProcessorNames = postProcessorNames.Add("SitemapGenerator");
         }
 
-        using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames);
+        var pluginAssemblies = templateManager.GetTemplateDirectories().Select(d => Path.Combine(d, "plugins")).SelectMany(LoadPluginAssemblies);
+
+        using var builder = new DocumentBuilder(s_pluginAssemblies.Concat(pluginAssemblies), postProcessorNames);
         using (new PerformanceScope("building documents", LogLevel.Info))
         {
             var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
@@ -52,20 +47,8 @@ internal static class DocumentBuilderWrapper
 
     private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
     {
-        var defaultPluggedAssemblies = new List<Assembly>
-        {
-            typeof(ConceptualDocumentProcessor).Assembly,
-            typeof(ManagedReferenceDocumentProcessor).Assembly,
-            typeof(ResourceDocumentProcessor).Assembly,
-            typeof(RestApiDocumentProcessor).Assembly,
-            typeof(TocDocumentProcessor).Assembly,
-            typeof(SchemaDrivenDocumentProcessor).Assembly,
-            typeof(UniversalReferenceDocumentProcessor).Assembly,
-        };
-        foreach (var assem in defaultPluggedAssemblies)
-        {
-            yield return assem;
-        }
+        if (!Directory.Exists(pluginDirectory))
+            yield break;
 
         Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
 
@@ -85,12 +68,6 @@ internal static class DocumentBuilderWrapper
                 {
                     // work around, don't load assembly that has ValidateBookmark, to prevent double loading
                     Logger.LogVerbose($"Skipping assembly: {assemblyName}.");
-                    continue;
-                }
-
-                if (defaultPluggedAssemblies.Select(n => n.GetName().Name).Contains(assemblyName))
-                {
-                    Logger.LogVerbose($"Skipping default plugged assembly: {assemblyName}.");
                     continue;
                 }
 

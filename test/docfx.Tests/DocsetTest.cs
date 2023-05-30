@@ -54,4 +54,26 @@ public class DocsetTest : TestBase
 
         Assert.Equal("<svg>my svg</svg>", outputs["logo.svg"]());
     }
+
+    [Fact]
+    public static async Task Load_Custom_Plugin_From_Template()
+    {
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                    {
+                        "build": {
+                            "content": [{ "files": [ "*.md" ] }],
+                            "template": ["default", "../../Assets/template"],
+                            "dest": "_site",
+                            "postProcessors": ["CustomPostProcessor"]
+                        }
+                    }
+                    """,
+            ["index.md"] = ""
+        });
+
+        Assert.Equal("customPostProcessor", outputs["customPostProcessor.txt"]());
+    }
 }
