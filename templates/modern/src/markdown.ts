@@ -32,24 +32,36 @@ async function renderMath() {
   }
 }
 
+let mermaidRenderCount = 0
+
 /**
  * Render mermaid diagrams.
  */
 async function renderMermaid() {
-  const diagrams = document.querySelectorAll('pre code.lang-mermaid')
+  const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
   if (diagrams.length <= 0) {
     return
   }
 
   const { default: mermaid } = await import('mermaid')
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
-  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds: true, theme }, window.docfx.mermaid))
 
+  // Turn off deterministic ids on re-render
+  const deterministicIds = mermaidRenderCount === 0
+  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, window.docfx.mermaid))
+  mermaidRenderCount++
+
+  const nodes = []
   diagrams.forEach(e => {
-    e.parentElement.classList.add('mermaid')
-    e.parentElement.innerHTML = e.innerHTML
+    // Rerender when elements becomes visible due to https://github.com/mermaid-js/mermaid/issues/1846
+    if (e.offsetParent) {
+      nodes.push(e.parentElement)
+      e.parentElement.classList.add('mermaid')
+      e.parentElement.innerHTML = e.innerHTML
+    }
   })
-  await mermaid.run()
+
+  await mermaid.run({ nodes })
 }
 
 /**
@@ -379,6 +391,7 @@ function renderTabs() {
       }
       updateTabsQueryStringParam(state)
     }
+    notifyContentUpdated()
     const top = info.anchor.getBoundingClientRect().top
     if (top !== originalTop && event instanceof MouseEvent) {
       window.scrollTo(0, window.pageYOffset + top - originalTop)
@@ -433,5 +446,9 @@ function renderTabs() {
     document.querySelectorAll('div.tabGroup>ul>li').forEach(e => e.classList.add('nav-item'))
     document.querySelectorAll('div.tabGroup>ul>li>a').forEach(e => e.classList.add('nav-link'))
     document.querySelectorAll('div.tabGroup>section').forEach(e => e.classList.add('card'))
+  }
+
+  function notifyContentUpdated() {
+    renderMermaid()
   }
 }
