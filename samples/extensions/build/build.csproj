@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Microsoft.DocAsCode.App\Microsoft.DocAsCode.App.csproj" />
+    <Content Include="..\..\..\templates\dist\**" Exclude="..\..\..\templates\dist\.gitignore" LinkBase="templates" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
   </ItemGroup>
 
   <!-- NOTE: Uncomment to use <PackageReference> for your own project. -->
