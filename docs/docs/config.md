@@ -101,7 +101,7 @@ The `sitemap` option in `docfx.json` controls how sitemaps are generated:
 {
   "build": {
     "sitemap": {
-      "baseUrl": "https://dotnet.github.iodocfx",
+      "baseUrl": "https://dotnet.github.io/docfx",
       "priority": 0.1,
       "changefreq": "monthly"
     }
@@ -111,8 +111,8 @@ The `sitemap` option in `docfx.json` controls how sitemaps are generated:
 
 Where:
 
-- `baseUrl` is the base URL for the website. It should start with `http` or `https` and end with a trailing slash. For example, `https://dotnet.github.io/docfx/`.
+- `baseUrl` is the base URL for the website. It should start with `http` or `https`. For example, `https://dotnet.github.io/docfx`.
 - [`lastmod`](https://www.sitemaps.org/protocol.html#lastmod) is the date of last modification of the page. If not specified, docfx sets the date to the build time.
 - [`changefreq`](https://www.sitemaps.org/protocol.html#changefreqdef) determines how frequently the page is likely to change. Valid values are `always`, `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `never`. Default to `daily`.
-- [`priority`](https://www.sitemaps.org/protocol.html#priority) is the priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0.
+- [`priority`](https://www.sitemaps.org/protocol.html#priority) is the priority of this URL relative to other URLs on your site. Valid values range from 0.0 to 1.0. Default to `0.5`
 - `fileOptions` is a per file config of the above options. The key is the file glob pattern and value is the sitemap options.

@@ -38,6 +38,11 @@
         "TODO": "alert alert-secondary"
       }
     },
+    "sitemap": {
+      "baseUrl": "https://dotnet.github.io/docfx",
+      "priority": 0.5,
+      "changefreq": "daily"
+    },
     "output": "_site",
     "template": [
       "default",
