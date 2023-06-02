@@ -17,6 +17,10 @@ internal class BuildCommandOptions : LogOptions
     [CommandArgument(0, "[config]")]
     public string ConfigFile { get; set; }
 
+    [Description("Specify a list of global metadata in key value pairs (e.g., --metadata _appTitle=\"My App\" --metadata _disableContribution)")]
+    [CommandOption("-m|--metadata")]
+    public string[] Metadata { get; set; }
+
     [Description("Specify the urls of xrefmap used by content files.")]
     [CommandOption("-x|--xref")]
     [TypeConverter(typeof(ArrayOptionConverter))]

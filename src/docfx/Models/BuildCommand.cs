@@ -86,8 +86,37 @@ internal class BuildCommand : Command<BuildCommandOptions>
             new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
                 path => PathUtility.IsRelativePath(path) ? Path.Combine(configDirectory, path) : path).Reverse());
 
+        SetGlobalMetadataFromCommandLineArgs();
+
         config.KeepFileLink |= options.KeepFileLink;
         config.DisableGitFeatures |= options.DisableGitFeatures;
+
+        void SetGlobalMetadataFromCommandLineArgs()
+        {
+            if (options.Metadata != null)
+            {
+                config.GlobalMetadata ??= new();
+                foreach (var metadata in options.Metadata)
+                {
+                    var (key, value) = ParseMetadata(metadata);
+                    config.GlobalMetadata[key] = value;
+                }
+            }
+
+            static (string key, object value) ParseMetadata(string metadata)
+            {
+                if (metadata.IndexOf('=') is int i && i < 0)
+                    return (metadata, true);
+
+                var key = metadata.Substring(0, i);
+                var value = metadata.Substring(i + 1);
+
+                if (bool.TryParse(value, out var boolean))
+                    return (key, boolean);
+
+                return (key, value);
+            }
+        }
     }
 
     private sealed class BuildConfig
