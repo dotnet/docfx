@@ -43,7 +43,7 @@
     "browser-sync": "^2.29.3",
     "esbuild": "~0.17.19",
     "esbuild-sass-plugin": "~2.9.0",
-    "eslint": "^8.41.0",
+    "eslint": "^8.42.0",
     "eslint-config-standard": "^17.0.0",
     "jest": "^29.5.0",
     "stylelint": "^15.6.2",
