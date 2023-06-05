@@ -70,6 +70,67 @@
           "hideSubtitle": false
         },
         {
+          "uid": "CSharp11.ScopedModifier",
+          "isExtensionMethod": false,
+          "href": "CSharp11.ScopedModifier.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.ScopedModifier"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CSharp11_ScopedModifier",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces",
           "isExtensionMethod": false,
           "href": "CSharp11.StaticAbstractMembersInInterfaces.html",

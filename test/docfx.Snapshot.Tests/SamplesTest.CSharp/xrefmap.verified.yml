@@ -637,6 +637,28 @@ references:
   isSpec: "True"
   fullName: CSharp11.RequiredModifier.MiddleName
   nameWithType: RequiredModifier.MiddleName
+- uid: CSharp11.ScopedModifier
+  name: ScopedModifier
+  href: api/CSharp11.ScopedModifier.html
+  commentId: T:CSharp11.ScopedModifier
+  fullName: CSharp11.ScopedModifier
+  nameWithType: ScopedModifier
+- uid: CSharp11.ScopedModifier.CreateSpan(System.Int32@)
+  name: CreateSpan(scoped ref int)
+  href: api/CSharp11.ScopedModifier.html#CSharp11_ScopedModifier_CreateSpan_System_Int32__
+  commentId: M:CSharp11.ScopedModifier.CreateSpan(System.Int32@)
+  name.vb: CreateSpan(Integer)
+  fullName: CSharp11.ScopedModifier.CreateSpan(scoped ref int)
+  fullName.vb: CSharp11.ScopedModifier.CreateSpan(Integer)
+  nameWithType: ScopedModifier.CreateSpan(scoped ref int)
+  nameWithType.vb: ScopedModifier.CreateSpan(Integer)
+- uid: CSharp11.ScopedModifier.CreateSpan*
+  name: CreateSpan
+  href: api/CSharp11.ScopedModifier.html#CSharp11_ScopedModifier_CreateSpan_
+  commentId: Overload:CSharp11.ScopedModifier.CreateSpan
+  isSpec: "True"
+  fullName: CSharp11.ScopedModifier.CreateSpan
+  nameWithType: ScopedModifier.CreateSpan
 - uid: CSharp11.StaticAbstractMembersInInterfaces
   name: StaticAbstractMembersInInterfaces
   href: api/CSharp11.StaticAbstractMembersInInterfaces.html
