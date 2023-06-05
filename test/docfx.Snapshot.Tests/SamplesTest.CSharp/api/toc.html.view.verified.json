@@ -98,6 +98,16 @@
           "leaf": true
         },
         {
+          "name": "ScopedModifier",
+          "href": "CSharp11.ScopedModifier.html",
+          "topicHref": "CSharp11.ScopedModifier.html",
+          "topicUid": "CSharp11.ScopedModifier",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "StaticAbstractMembersInInterfaces",
           "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
           "topicHref": "CSharp11.StaticAbstractMembersInInterfaces.html",
