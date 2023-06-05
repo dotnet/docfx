@@ -135,14 +135,10 @@ internal static class DocumentBuilderWrapper
                 TagParameters = config.TagParameters,
                 ConfigureMarkdig = options.ConfigureMarkdig,
             };
-            if (config.GlobalMetadata != null)
-            {
-                parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
-            }
-            if (config.FileMetadata != null)
-            {
-                parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
-            }
+
+            parameters.Metadata = GetGlobalMetadata(config);
+            parameters.FileMetadata = GetFileMetadata(baseDirectory, config);
+
             if (config.PostProcessors != null)
             {
                 parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
@@ -254,6 +250,66 @@ internal static class DocumentBuilderWrapper
         }
     }
 
+    private static ImmutableDictionary<string, object> GetGlobalMetadata(BuildJsonConfig config)
+    {
+        var result = new Dictionary<string, object>();
+
+        if (config.GlobalMetadata != null)
+        {
+            foreach (var (key, value) in config.GlobalMetadata)
+            {
+                result[key] = value;
+            }
+        }
+
+        if (config.GlobalMetadataFilePaths != null)
+        {
+            foreach (var path in config.GlobalMetadataFilePaths)
+            {
+                foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, object>>(path))
+                {
+                    result[key] = value;
+                }
+            }
+        }
+
+        return result.ToImmutableDictionary();
+    }
+
+    private static FileMetadata GetFileMetadata(string baseDirectory, BuildJsonConfig config)
+    {
+        var result = new Dictionary<string, List<FileMetadataItem>>();
+
+        if (config.FileMetadata != null)
+        {
+            foreach (var (key, value) in config.FileMetadata)
+            {
+                var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                foreach (var pair in value.Items)
+                {
+                    list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));
+                }
+            }
+        }
+
+        if (config.FileMetadataFilePaths != null)
+        {
+            foreach (var path in config.FileMetadataFilePaths)
+            {
+                foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path))
+                {
+                    var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                    foreach (var pair in value.Items)
+                    {
+                        list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));
+                    }
+                }
+            }
+        }
+
+        return new FileMetadata(baseDirectory, result.ToDictionary(p => p.Key, p => p.Value.ToImmutableArray()));
+    }
+
     /// <summary>
     /// Group FileMappings to a dictionary using VersionName as the key.
     /// As default version has no VersionName, using empty string as the key.
@@ -299,36 +355,6 @@ internal static class DocumentBuilderWrapper
                 {
                     [type] = new FileMapping(item)
                 };
-            }
-        }
-    }
-
-    private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
-    {
-        var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
-        foreach (var item in fileMetadata)
-        {
-            var list = new List<FileMetadataItem>();
-            foreach (var pair in item.Value.Items)
-            {
-                list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
-            }
-            result.Add(item.Key, list.ToImmutableArray());
-        }
-
-        return new FileMetadata(baseDirectory, result);
-    }
-
-    private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
-    {
-        if (mapping != null)
-        {
-            foreach (var file in mapping.Items)
-            {
-                foreach (string item in file.Files)
-                {
-                    yield return Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
-                }
             }
         }
     }

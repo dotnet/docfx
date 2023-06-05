@@ -89,19 +89,81 @@ public class DocsetTest : TestBase
                         "content": [{ "files": [ "*.md" ] }],
                         "dest": "_site",
                         "exportRawModel": true,
-                        "globalMetadataFiles": "projectMetadata.json"
+                        "globalMetadataFiles": ["projectMetadata1.json", "projectMetadata2.json"],
+                        "globalMetadata": {
+                            "meta1": "docfx.json",
+                            "meta3": "docfx.json"
+                        }
                     }
                 }
                 """,
-            ["projectMetadata.json"] =
+            ["projectMetadata1.json"] =
                 """
                 {
-                    "_appTitle": "Something Really Stupid",
+                    "meta1": "projectMetadata1.json",
+                    "meta2": "projectMetadata2.json"
+                }
+                """,
+            ["projectMetadata2.json"] =
+                """
+                {
+                    "meta2": "projectMetadata2.json"
                 }
                 """,
             ["index.md"] = ""
         });
 
-        Assert.Equal("Something Really Stupid", JsonDocument.Parse(outputs["index.raw.json"]()).RootElement.GetProperty("_appTitle").GetString());
+        var metadata = JsonDocument.Parse(outputs["index.raw.json"]()).RootElement;
+        Assert.Equal("projectMetadata1.json", metadata.GetProperty("meta1").GetString());
+        Assert.Equal("projectMetadata2.json", metadata.GetProperty("meta2").GetString());
+        Assert.Equal("docfx.json", metadata.GetProperty("meta3").GetString());
+    }
+
+    [Fact]
+    public static async Task Build_With_File_Metadata_Files()
+    {
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                {
+                    "build": {
+                        "content": [{ "files": [ "*.md" ] }],
+                        "dest": "_site",
+                        "exportRawModel": true,
+                        "fileMetadataFiles": ["fileMetadata1.json", "fileMetadata2.json"],
+                        "fileMetadata": {
+                            "meta1": {
+                              "a.md": "docfx.json"
+                            }
+                        }
+                    }
+                }
+                """,
+            ["fileMetadata1.json"] =
+                """
+                {
+                    "meta1": {
+                        "a.md": "fileMetadata1.json",
+                        "b.md": "fileMetadata1.json"
+                    }
+                }
+                """,
+            ["fileMetadata2.json"] =
+                """
+                {
+                    "meta1": {
+                        "b.md": "fileMetadata2.json"
+                    }
+                }
+                """,
+            ["a.md"] = "",
+            ["b.md"] = ""
+        });
+
+        var a = JsonDocument.Parse(outputs["a.raw.json"]()).RootElement;
+        var b = JsonDocument.Parse(outputs["b.raw.json"]()).RootElement;
+        Assert.Equal("fileMetadata1.json", a.GetProperty("meta1").GetString());
+        Assert.Equal("fileMetadata2.json", b.GetProperty("meta1").GetString());
     }
 }
