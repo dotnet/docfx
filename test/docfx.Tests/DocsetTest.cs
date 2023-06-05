@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.CompilerServices;
-
+using System.Text.Json;
 using Microsoft.DocAsCode.Tests.Common;
 
 using Xunit;
@@ -41,14 +41,14 @@ public class DocsetTest : TestBase
         {
             ["docfx.json"] =
                 """
-                    {
-                        "build": {
-                            "resource": [{ "files": [ "logo.svg" ] }],
-                            "template": ["default"],
-                            "dest": "_site"
-                        }
+                {
+                    "build": {
+                        "resource": [{ "files": [ "logo.svg" ] }],
+                        "template": ["default"],
+                        "dest": "_site"
                     }
-                    """,
+                }
+                """,
             ["logo.svg"] = "<svg>my svg</svg>"
         });
 
@@ -62,18 +62,46 @@ public class DocsetTest : TestBase
         {
             ["docfx.json"] =
                 """
-                    {
-                        "build": {
-                            "content": [{ "files": [ "*.md" ] }],
-                            "template": ["default", "../../Assets/template"],
-                            "dest": "_site",
-                            "postProcessors": ["CustomPostProcessor"]
-                        }
+                {
+                    "build": {
+                        "content": [{ "files": [ "*.md" ] }],
+                        "template": ["default", "../../Assets/template"],
+                        "dest": "_site",
+                        "postProcessors": ["CustomPostProcessor"]
                     }
-                    """,
+                }
+                """,
             ["index.md"] = ""
         });
 
         Assert.Equal("customPostProcessor", outputs["customPostProcessor.txt"]());
+    }
+
+    [Fact]
+    public static async Task Build_With_Global_Metadata_Files()
+    {
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                {
+                    "build": {
+                        "content": [{ "files": [ "*.md" ] }],
+                        "dest": "_site",
+                        "exportRawModel": true,
+                        "globalMetadataFiles": "projectMetadata.json"
+                    }
+                }
+                """,
+            ["projectMetadata.json"] =
+                """
+                {
+                    "_appTitle": "Something Really Stupid",
+                }
+                """,
+            ["index.md"] = ""
+        });
+
+        Assert.Equal("Something Really Stupid", JsonDocument.Parse(outputs["index.raw.json"]()).RootElement.GetProperty("_appTitle").GetString());
     }
 }
