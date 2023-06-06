@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\templates\dist\**" Exclude="..\..\templates\dist\.gitignore" LinkBase="templates" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="docfx.Snapshot.Tests" />
   </ItemGroup>
 
