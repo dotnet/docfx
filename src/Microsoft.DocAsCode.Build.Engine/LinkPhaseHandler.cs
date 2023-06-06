@@ -150,12 +150,11 @@ internal class LinkPhaseHandler : IPhaseHandler
                         ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
                         FileLinkInSource = path,
                         GroupInfo = Context.GroupInfo,
-                        Href = path.UrlEncode()
                     };
-
-                    if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != fli.Href)
+                    fli.Href = path.UrlEncode();
+                    if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != null)
                     {
-                        return; // if HrefGenerator returns new href. Skip InvalidFileLink check.
+                        return;
                     }
                 }
                 if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
