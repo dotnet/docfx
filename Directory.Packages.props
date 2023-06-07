@@ -26,7 +26,7 @@
     <PackageVersion Include="PdfPig" Version="0.1.8" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.47.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
-    <PackageVersion Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageVersion Include="YamlDotNet" Version="13.1.0" />
