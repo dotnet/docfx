@@ -4,12 +4,12 @@ Template defines the appearance of the website.
 
 Docfx ships several built-in templates. We recommend using the modern template that matches the look and feel of this site. It supports dark mode, more features, rich customization options and.
 
-Use the modern template by setting the `templates` property to `["default", "modern"]`:
+Use the modern template by setting the `template` property to `["default", "modern"]`:
 
 ```json
 {
   "build": {
-    "templates": [
+    "template": [
       "default",
       "modern"
     ]
@@ -77,14 +77,14 @@ Name         | Type    | Description
 
 ## Custom Template
 
-To build your own template, create a new folder and add it to `templates` config in `docfx.json`:
+To build your own template, create a new folder and add it to `template` config in `docfx.json`:
 
 # [Modern Template](#tab/modern)
 
 ```json
 {
   "build": {
-    "templates": [
+    "template": [
       "default",
       "modern",
       "my-template" // <-- Path to custom template
