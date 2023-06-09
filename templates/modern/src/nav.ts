@@ -52,13 +52,13 @@ export async function renderNavbar(): Promise<NavItem[]> {
       })
     }</ul>`
 
-  const icons = html`
-    <form class="icons">
-      ${window.docfx.iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
-      ${themePicker(renderCore)}
-    </form>`
-
   function renderCore() {
+    const icons = html`
+      <form class="icons">
+        ${window.docfx.iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
+        ${themePicker(renderCore)}
+      </form>`
+
     render(html`${menu} ${icons}`, navbar)
   }
 
