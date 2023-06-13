@@ -112,6 +112,7 @@ public class SamplesTest
                 await page.WaitForFunctionAsync("window.docfx.ready");
                 await page.WaitForFunctionAsync("window.docfx.searchReady");
                 await page.EvaluateAsync($"() => document.documentElement.setAttribute('data-bs-theme', '{theme}')");
+                await Task.Delay(200);
 
                 if (url.Contains("?term=cat"))
                 {
