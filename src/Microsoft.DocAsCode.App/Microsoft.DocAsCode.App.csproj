@@ -5,13 +5,6 @@
     <Description>Docfx published as a library for extensibility and advanced customization</Description>
   </PropertyGroup>
 
-  <Target Name="CheckSymbolicLinkExists"
-      BeforeTargets="PrepareForBuild"
-      Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <Warning Condition="!Exists('templates/default')"
-             Text="Symbolic link for `templates` directory is not configured." />
-  </Target>
-
   <ItemGroup>
     <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates"/>
   </ItemGroup>

@@ -9,6 +9,7 @@ _site
 _site_pdf
 docs/api
 samples/**/api
+src/Microsoft.DocAsCode.App/templates
 
 *.user
 *.log
