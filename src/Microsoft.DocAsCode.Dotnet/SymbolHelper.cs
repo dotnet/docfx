@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -82,6 +83,19 @@ namespace Microsoft.DocAsCode.Dotnet
                     stack.Push(child);
                 }
             }
+        }
+
+        public static bool TryGetExplicitInterfaceImplementations(ISymbol symbol, [MaybeNullWhen(false)] out IEnumerable<ISymbol> eiis)
+        {
+            eiis = symbol.Kind switch
+            {
+                SymbolKind.Method => ((IMethodSymbol)symbol).ExplicitInterfaceImplementations,
+                SymbolKind.Property => ((IPropertySymbol)symbol).ExplicitInterfaceImplementations,
+                SymbolKind.Event => ((IEventSymbol)symbol).ExplicitInterfaceImplementations,
+                _ => null,
+            };
+
+            return eiis != null;
         }
     }
 }

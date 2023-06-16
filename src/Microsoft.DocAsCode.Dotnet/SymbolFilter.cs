@@ -94,29 +94,19 @@ namespace Microsoft.DocAsCode.Dotnet
             if (symbol.IsImplicitlyDeclared && symbol.Kind is not SymbolKind.Namespace)
                 return false;
 
-            if (_config.IncludeExplicitInterfaceImplementations)
+            if (_config.IncludeExplicitInterfaceImplementations &&
+                SymbolHelper.TryGetExplicitInterfaceImplementations(symbol, out var eiis) &&
+                IsEiiAndIncludesContainingSymbols(eiis))
             {
-                bool isEii = symbol.Kind switch
-                {
-                    SymbolKind.Method => IsEiiAndIncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Property => IsEiiAndIncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Event => IsEiiAndIncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
-                    _ => false,
-                };
-
-                if (isEii)
                     return true;
             }
 
             if (_config.IncludePrivateMembers)
             {
-                return symbol.Kind switch
-                {
-                    SymbolKind.Method => IncludesContainingSymbols(((IMethodSymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Property => IncludesContainingSymbols(((IPropertySymbol)symbol).ExplicitInterfaceImplementations),
-                    SymbolKind.Event => IncludesContainingSymbols(((IEventSymbol)symbol).ExplicitInterfaceImplementations),
-                    _ => true,
-                };
+                if (SymbolHelper.TryGetExplicitInterfaceImplementations(symbol, out eiis))
+                    return IncludesContainingSymbols(eiis);
+
+                return true;
             }
 
             if (GetDisplayAccessibility(symbol) is null)
