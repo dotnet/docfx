@@ -13,7 +13,7 @@
   </Target>
 
   <ItemGroup>
-    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates"/>
   </ItemGroup>
 
   <ItemGroup>
