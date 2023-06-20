@@ -58,24 +58,6 @@ public class SitemapGenerator : IPostProcessor
         return manifest;
     }
 
-    private IEnumerable<Tuple<string, OutputFileInfo>> GetHtmlOutputFiles(Manifest manifest)
-    {
-        if (manifest.Files == null)
-        {
-            yield break;
-        }
-
-        foreach(var file in manifest.Files)
-        {
-            if (file.DocumentType != "Toc"
-                && file.OutputFiles.TryGetValue(HtmlExtension, out var info) 
-                && !string.IsNullOrEmpty(info.RelativePath))
-            {
-                yield return Tuple.Create(file.SourceRelativePath, info);
-            }
-        }
-    }
-
     private IEnumerable<XElement> GetElements(Manifest manifest, Uri baseUri)
     {
         if (manifest.Files == null)
