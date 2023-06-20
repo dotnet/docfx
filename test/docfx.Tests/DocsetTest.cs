@@ -166,4 +166,45 @@ public class DocsetTest : TestBase
         Assert.Equal("fileMetadata1.json", a.GetProperty("meta1").GetString());
         Assert.Equal("fileMetadata2.json", b.GetProperty("meta1").GetString());
     }
+
+    [Fact]
+    public static async Task Build_With_RedirectUri_Files()
+    {
+        // Act
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                {
+                    "build": {
+                        "content": [{ "files": [ "*.md" ] }],
+                        "dest": "_site",
+                        "exportRawModel": true
+                    }
+                }
+                """,
+            ["index.md"] =
+                """
+                ---
+                redirect_url: "redirected.html"
+                ---
+                # Dummy Heading1
+                """
+        });
+
+
+        // Assert
+        var result = outputs["index.html"]();
+        Assert.Equal(
+            """
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta http-equiv="refresh" content="0;URL='redirected.html'">
+              </head>
+            </html>
+            """, result);
+
+    }
 }
