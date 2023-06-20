@@ -13,6 +13,7 @@ public static class Constants
     public static class DocumentType
     {
         public const string Toc = "Toc";
+        public const string Redirection = "Redirection";
     }
 
     public static class PropertyName
@@ -60,6 +61,8 @@ public static class Constants
         public const string SystemKeys = "_systemKeys";
 
         public const string OutputFileName = "outputFileName";
+
+        public const string RedirectUrl = "redirect_url";
     }
 
     public static class MetadataName

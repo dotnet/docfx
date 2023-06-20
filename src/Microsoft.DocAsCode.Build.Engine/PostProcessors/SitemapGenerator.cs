@@ -87,6 +87,11 @@ public class SitemapGenerator : IPostProcessor
         {
             if (file.OutputFiles.TryGetValue(HtmlExtension, out var info) && !string.IsNullOrEmpty(info.RelativePath))
             {
+                if (file.DocumentType == DataContracts.Common.Constants.DocumentType.Redirection)
+                {
+                    continue;
+                }
+
                 var options = GetOptions(manifest.SitemapOptions, file.SourceRelativePath);
 
                 var currentBaseUri = baseUri;

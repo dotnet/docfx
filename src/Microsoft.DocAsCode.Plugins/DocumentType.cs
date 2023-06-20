@@ -10,4 +10,5 @@ public enum DocumentType
     Resource,
     Metadata,
     MarkdownFragments,
+    Redirection,
 }
