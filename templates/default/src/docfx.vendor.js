@@ -4,11 +4,11 @@
 require('@default/bootstrap/dist/css/bootstrap.css')
 require('@default/highlight.js/styles/github.css')
 
-window.$ = window.jQuery = require('@default/jquery')
+window.$ = window.jQuery = require('jquery')
 
 require('@default/bootstrap')
 require('@default/twbs-pagination')
-require('@default/mark.js/src/jquery.js')
+require('@default/mark.js/src/jquery')
 
 const AnchorJS = require('@default/anchor-js')
 window.anchors = new AnchorJS()
