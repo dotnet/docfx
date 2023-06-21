@@ -56,6 +56,9 @@ export async function renderToc(): Promise<TocNode[]> {
       node.href = url.href
       active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
       if (active) {
+        if (node.items) {
+          node.expanded = true
+        }
         selectedNodes.push(node)
       }
     }
