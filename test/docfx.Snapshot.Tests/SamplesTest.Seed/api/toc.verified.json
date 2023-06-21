@@ -223,18 +223,18 @@
           ]
         },
         {
-          "name": "Cat<T, K>",
-          "href": "CatLibrary.Cat-2.html",
-          "topicHref": "CatLibrary.Cat-2.html",
-          "topicUid": "CatLibrary.Cat`2",
-          "name.vb": "Cat(Of T, K)"
-        },
-        {
           "name": "CatException<T>",
           "href": "CatLibrary.CatException-1.html",
           "topicHref": "CatLibrary.CatException-1.html",
           "topicUid": "CatLibrary.CatException`1",
           "name.vb": "CatException(Of T)"
+        },
+        {
+          "name": "Cat<T, K>",
+          "href": "CatLibrary.Cat-2.html",
+          "topicHref": "CatLibrary.Cat-2.html",
+          "topicUid": "CatLibrary.Cat`2",
+          "name.vb": "Cat(Of T, K)"
         },
         {
           "name": "Complex<T, J>",
