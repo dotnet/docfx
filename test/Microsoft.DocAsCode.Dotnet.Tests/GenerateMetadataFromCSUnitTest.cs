@@ -1128,16 +1128,16 @@ namespace Test1
         var extensionMethods = output.Items[0].Items[1].ExtensionMethods;
         Assert.Equal(2, extensionMethods.Count);
         {
-            Assert.Equal("Test1.FooImple`1.Test1.Extension.Eat``1", extensionMethods[1]);
-            var reference = output.References[extensionMethods[1]];
+            Assert.Equal("Test1.FooImple`1.Test1.Extension.Eat``1", extensionMethods[0]);
+            var reference = output.References[extensionMethods[0]];
             Assert.False(reference.IsDefinition);
             Assert.Equal("Test1.Extension.Eat``1(Test1.FooImple{``0})", reference.Definition);
             Assert.Equal("Eat<T>(FooImple<T>)", string.Concat(reference.NameParts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
             Assert.Equal("Extension.Eat<T>(FooImple<T>)", string.Concat(reference.NameWithTypeParts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
         }
         {
-            Assert.Equal("Test1.Foo{`0[]}.Test1.Extension.Play``2({T}[],{Way})", extensionMethods[0]);
-            var reference = output.References[extensionMethods[0]];
+            Assert.Equal("Test1.Foo{`0[]}.Test1.Extension.Play``2({T}[],{Way})", extensionMethods[1]);
+            var reference = output.References[extensionMethods[1]];
             Assert.False(reference.IsDefinition);
             Assert.Equal("Test1.Extension.Play``2(Test1.Foo{``0},``0,``1)", reference.Definition);
             Assert.Equal("Play<T[], Way>(Foo<T[]>, T[], Way)", string.Concat(reference.NameParts[SyntaxLanguage.CSharp].Select(n => n.DisplayName)));
