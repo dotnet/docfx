@@ -5,6 +5,7 @@
     <TargetFrameworks Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(TargetFrameworks);net8.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
