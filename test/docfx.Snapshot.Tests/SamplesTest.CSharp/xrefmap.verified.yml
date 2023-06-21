@@ -718,25 +718,6 @@ references:
   fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.New
   nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.RepeatSequence
   nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.New
-- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  name: operator ++(RepeatSequence)
-  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_
-  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  name.vb: op_Increment(RepeatSequence)
-  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
-  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)
-  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
-- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*
-  name: operator ++
-  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_
-  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
-  isSpec: "True"
-  name.vb: op_Increment
-  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
-  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
-  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
-  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
 - uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.Text
   name: Text
   href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_Text
@@ -756,6 +737,25 @@ references:
   isSpec: "True"
   fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.ToString
   nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.ToString
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  name: operator ++(RepeatSequence)
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_
+  commentId: M:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  name.vb: op_Increment(RepeatSequence)
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++(StaticAbstractMembersInInterfaces.RepeatSequence)
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(StaticAbstractMembersInInterfaces.RepeatSequence)
+- uid: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment*
+  name: operator ++
+  href: api/CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_
+  commentId: Overload:CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
+  isSpec: "True"
+  name.vb: op_Increment
+  fullName: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
+  fullName.vb: CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
+  nameWithType: StaticAbstractMembersInInterfaces.RepeatSequence.operator ++
+  nameWithType.vb: StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment
 - uid: CSharp8
   name: CSharp8
   href: api/CSharp8.html
@@ -825,6 +825,12 @@ references:
   commentId: T:CSharp8.DefaultInterfaceMembers.Nested
   fullName: CSharp8.DefaultInterfaceMembers.Nested
   nameWithType: DefaultInterfaceMembers.Nested
+- uid: CSharp8.DefaultInterfaceMembers.X
+  name: X
+  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_X
+  commentId: F:CSharp8.DefaultInterfaceMembers.X
+  fullName: CSharp8.DefaultInterfaceMembers.X
+  nameWithType: DefaultInterfaceMembers.X
 - uid: CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)
   name: operator +(DefaultInterfaceMembers)
   href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_
@@ -844,12 +850,6 @@ references:
   fullName.vb: CSharp8.DefaultInterfaceMembers.+
   nameWithType: DefaultInterfaceMembers.operator +
   nameWithType.vb: DefaultInterfaceMembers.+
-- uid: CSharp8.DefaultInterfaceMembers.X
-  name: X
-  href: api/CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_X
-  commentId: F:CSharp8.DefaultInterfaceMembers.X
-  fullName: CSharp8.DefaultInterfaceMembers.X
-  nameWithType: DefaultInterfaceMembers.X
 - uid: CSharp8.DisposableRefStructs
   name: DisposableRefStructs
   href: api/CSharp8.DisposableRefStructs.html

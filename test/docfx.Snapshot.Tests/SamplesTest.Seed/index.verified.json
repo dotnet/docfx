@@ -19,11 +19,6 @@
     "title": "Namespace BuildFromCSharpSourceCode | docfx seed website",
     "keywords": "Namespace BuildFromCSharpSourceCode Classes CSharp"
   },
-  "api/BuildFromProject.Class1.html": {
-    "href": "api/BuildFromProject.Class1.html",
-    "title": "Class Class1 | docfx seed website",
-    "keywords": "Class Class1 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1 : IClass1 Inheritance object Class1 Implements IClass1 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Issue1651() Pricing models are used to calculate theoretical option values 1Black Scholes 2Black76 3Black76Fut 4Equity Tree 5Variance Swap 6Dividend Forecast public void Issue1651() Issue2623() public void Issue2623() Examples MyClass myClass = new MyClass(); void Update() { myClass.Execute(); } Remarks For example: MyClass myClass = new MyClass(); void Update() { myClass.Execute(); } Issue2723() public void Issue2723() Remarks Note This is a <note>. & \" ' Inline <angle brackets>. link for (var i = 0; i > 10; i++) // & \" ' var range = new Range<int> { Min = 0, Max = 10 }; var range = new Range<int> { Min = 0, Max = 10 }; Issue4017() public void Issue4017() Examples public void HookMessageDeleted(BaseSocketClient client) { client.MessageDeleted += HandleMessageDelete; } public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel) { // check if the message exists in cache; if not, we cannot report what was removed if (!cachedMessage.HasValue) return; var message = cachedMessage.Value; Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\" + Environment.NewLine + message.Content); return Task.CompletedTask; } Remarks void Update() { myClass.Execute(); } Issue4392() public void Issue4392() Remarks @\"\\\\?\\\" @\"\\\\?\\\" Issue7484() public void Issue7484() Remarks There's really no reason to not believe that this class can test things. Term Description A Term A Description Bee Term Bee Description Issue8764<T>() public void Issue8764<T>() where T : unmanaged Type Parameters T Issue896() Test public void Issue896() See Also Class1.Test<T> Class1 XmlCommentIncludeTag() This method should do something... public void XmlCommentIncludeTag() Remarks This is remarks."
-  },
   "api/BuildFromProject.Class1.Issue8665.html": {
     "href": "api/BuildFromProject.Class1.Issue8665.html",
     "title": "Class Class1.Issue8665 | docfx seed website",
@@ -39,20 +34,15 @@
     "title": "Class Class1.Test<T> | docfx seed website",
     "keywords": "Class Class1.Test<T> Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Test<T> Type Parameters T Inheritance object Class1.Test<T> Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
   },
-  "api/BuildFromProject.html": {
-    "href": "api/BuildFromProject.html",
-    "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
+  "api/BuildFromProject.Class1.html": {
+    "href": "api/BuildFromProject.Class1.html",
+    "title": "Class Class1 | docfx seed website",
+    "keywords": "Class Class1 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1 : IClass1 Inheritance object Class1 Implements IClass1 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Issue1651() Pricing models are used to calculate theoretical option values 1Black Scholes 2Black76 3Black76Fut 4Equity Tree 5Variance Swap 6Dividend Forecast public void Issue1651() Issue2623() public void Issue2623() Examples MyClass myClass = new MyClass(); void Update() { myClass.Execute(); } Remarks For example: MyClass myClass = new MyClass(); void Update() { myClass.Execute(); } Issue2723() public void Issue2723() Remarks Note This is a <note>. & \" ' Inline <angle brackets>. link for (var i = 0; i > 10; i++) // & \" ' var range = new Range<int> { Min = 0, Max = 10 }; var range = new Range<int> { Min = 0, Max = 10 }; Issue4017() public void Issue4017() Examples public void HookMessageDeleted(BaseSocketClient client) { client.MessageDeleted += HandleMessageDelete; } public Task HandleMessageDelete(Cacheable<IMessage, ulong> cachedMessage, ISocketMessageChannel channel) { // check if the message exists in cache; if not, we cannot report what was removed if (!cachedMessage.HasValue) return; var message = cachedMessage.Value; Console.WriteLine($\"A message ({message.Id}) from {message.Author} was removed from the channel {channel.Name} ({channel.Id}):\" + Environment.NewLine + message.Content); return Task.CompletedTask; } Remarks void Update() { myClass.Execute(); } Issue4392() public void Issue4392() Remarks @\"\\\\?\\\" @\"\\\\?\\\" Issue7484() public void Issue7484() Remarks There's really no reason to not believe that this class can test things. Term Description A Term A Description Bee Term Bee Description Issue8764<T>() public void Issue8764<T>() where T : unmanaged Type Parameters T Issue896() Test public void Issue896() See Also Class1.Test<T> Class1 XmlCommentIncludeTag() This method should do something... public void XmlCommentIncludeTag() Remarks This is remarks."
   },
   "api/BuildFromProject.IInheritdoc.html": {
     "href": "api/BuildFromProject.IInheritdoc.html",
     "title": "Interface IInheritdoc | docfx seed website",
     "keywords": "Interface IInheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public interface IInheritdoc Methods Issue7629() This method should do something... void Issue7629()"
-  },
-  "api/BuildFromProject.Inheritdoc.html": {
-    "href": "api/BuildFromProject.Inheritdoc.html",
-    "title": "Class Inheritdoc | docfx seed website",
-    "keywords": "Class Inheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc : IInheritdoc, IDisposable Inheritance object Inheritdoc Implements IInheritdoc IDisposable Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Dispose() Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. public void Dispose() Issue7628() This method should do something... public void Issue7628() Issue7629() This method should do something... public void Issue7629()"
   },
   "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html": {
     "href": "api/BuildFromProject.Inheritdoc.Issue6366.Class1-1.html",
@@ -89,6 +79,11 @@
     "title": "Struct Inheritdoc.Issue8129 | docfx seed website",
     "keywords": "Struct Inheritdoc.Issue8129 Namespace BuildFromProject Assembly BuildFromProject.dll public struct Inheritdoc.Issue8129 Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Constructors Issue8129(string) public Issue8129(string foo) Parameters foo string"
   },
+  "api/BuildFromProject.Inheritdoc.html": {
+    "href": "api/BuildFromProject.Inheritdoc.html",
+    "title": "Class Inheritdoc | docfx seed website",
+    "keywords": "Class Inheritdoc Namespace BuildFromProject Assembly BuildFromProject.dll public class Inheritdoc : IInheritdoc, IDisposable Inheritance object Inheritdoc Implements IInheritdoc IDisposable Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Dispose() Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. public void Dispose() Issue7628() This method should do something... public void Issue7628() Issue7629() This method should do something... public void Issue7629()"
+  },
   "api/BuildFromProject.Issue8540.A.A.html": {
     "href": "api/BuildFromProject.Issue8540.A.A.html",
     "title": "Class A | docfx seed website",
@@ -113,6 +108,11 @@
     "href": "api/BuildFromProject.Issue8540.html",
     "title": "Namespace BuildFromProject.Issue8540 | docfx seed website",
     "keywords": "Namespace BuildFromProject.Issue8540 Namespaces BuildFromProject.Issue8540.A BuildFromProject.Issue8540.B"
+  },
+  "api/BuildFromProject.html": {
+    "href": "api/BuildFromProject.html",
+    "title": "Namespace BuildFromProject | docfx seed website",
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces IInheritdoc"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -184,11 +184,6 @@
     "title": "Delegate FakeDelegate<T> | docfx seed website",
     "keywords": "Delegate FakeDelegate<T> Namespace CatLibrary Assembly CatLibrary.dll Fake delegate public delegate int FakeDelegate<T>(long num, string name, params object[] scores) Parameters num long Fake para name string Fake para scores object[] Optional Parameter. Returns int Return a fake number to confuse you. Type Parameters T Fake para"
   },
-  "api/CatLibrary.html": {
-    "href": "api/CatLibrary.html",
-    "title": "Namespace CatLibrary | docfx seed website",
-    "keywords": "Namespace CatLibrary Namespaces CatLibrary.Core Classes CatException<T> Cat<T, K> Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks. this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to ICatExtension class Complex<T, J> ICatExtension It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class Tom Tom class is only inherit from Object. Not any member inside itself. TomFromBaseClass TomFromBaseClass inherits from @ Interfaces IAnimal This is basic interface of all animal. ICat Cat's interface Delegates FakeDelegate<T> Fake delegate MRefDelegate<K, T, L> Generic delegate with many constrains. MRefNormalDelegate Delegate in the namespace"
-  },
   "api/CatLibrary.IAnimal.html": {
     "href": "api/CatLibrary.IAnimal.html",
     "title": "Interface IAnimal | docfx seed website",
@@ -223,6 +218,11 @@
     "href": "api/CatLibrary.TomFromBaseClass.html",
     "title": "Class TomFromBaseClass | docfx seed website",
     "keywords": "Class TomFromBaseClass Namespace CatLibrary Assembly CatLibrary.dll TomFromBaseClass inherits from @ public class TomFromBaseClass : Tom Inheritance object Tom TomFromBaseClass Inherited Members Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>) object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Constructors TomFromBaseClass(int) This is a #ctor with parameter public TomFromBaseClass(int k) Parameters k int"
+  },
+  "api/CatLibrary.html": {
+    "href": "api/CatLibrary.html",
+    "title": "Namespace CatLibrary | docfx seed website",
+    "keywords": "Namespace CatLibrary Namespaces CatLibrary.Core Classes CatException<T> Cat<T, K> Here's main class of this Demo. You can see mostly type of article within this class and you for more detail, please see the remarks. this class is a template class. It has two Generic parameter. they are: T and K. The extension method of this class can refer to ICatExtension class Complex<T, J> ICatExtension It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class Tom Tom class is only inherit from Object. Not any member inside itself. TomFromBaseClass TomFromBaseClass inherits from @ Interfaces IAnimal This is basic interface of all animal. ICat Cat's interface Delegates FakeDelegate<T> Fake delegate MRefDelegate<K, T, L> Generic delegate with many constrains. MRefNormalDelegate Delegate in the namespace"
   },
   "api/MRef.Demo.Enumeration.ColorType.html": {
     "href": "api/MRef.Demo.Enumeration.ColorType.html",
