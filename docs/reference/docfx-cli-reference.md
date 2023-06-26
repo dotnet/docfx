@@ -28,18 +28,16 @@ Generating offline documentation such as **PDF** is also supported.
 docfx <command> [<args>]
 ```
 
+Run `docfx --version` to get the version of the docfx.
+
+Run `docfx --help` or `docfx -h` to get a list of all available commands and options. Run `docfx <command> --help` or `docfx <command> -h` to get help on a specific command.
+
 ## Commands
 
-### 1. Init command `docfx init`
+### Init command `docfx init`
 `docfx init` helps generate an `docfx.json` file.
 
-### 2. Help command `docfx help`
-
-`docfx help -a` list available subcommands.
-
-`docfx help <command>` to read about a specific subcommand
-
-### 3. Extract language metadata command `docfx metadata`
+### Extract language metadata command `docfx metadata`
 
 **Syntax**
 ```
@@ -88,7 +86,7 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument.
 For example: `docfx metadata --property TargetFramework=net48` generates metadata files with .NET framework 4.8. This command can be used when the project supports multiple `TargetFrameworks`.
 
-### 4. Generate documentation command `docfx build`
+### Generate documentation command `docfx build`
 
 **Syntax**
 ```
@@ -153,7 +151,7 @@ homepage | The default content shown when no article is selected.
       |-- logo.ico
 ```
 
-### 5. Generate PDF documentation command `docfx pdf`
+### Generate PDF documentation command `docfx pdf`
 
 **Syntax**
 ```

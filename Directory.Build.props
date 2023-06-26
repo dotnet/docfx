@@ -5,6 +5,7 @@
     <TargetFrameworks Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(TargetFrameworks);net8.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
@@ -38,7 +39,7 @@
   
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
-    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
 
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
