@@ -25,8 +25,6 @@
           warning NU1507: There are 2 package sources defined in your configuration.
      -->
     <NoWarn>$(NoWarn);NU1507</NoWarn>
-
-    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
