@@ -3,6 +3,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Xml.Linq;
 using Microsoft.DocAsCode.Tests.Common;
 
 using Xunit;
@@ -213,11 +214,7 @@ public class DocsetTest : TestBase
 
         // Test redirect page.is excluded from sitemap.
         var sitemapXml = outputs["sitemap.xml"]();
-        Assert.Equal(
-            """
-            <?xml version="1.0" encoding="utf-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />
-            """,
-            sitemapXml);
+        var urls = XDocument.Parse(sitemapXml).Root.Elements();
+        Assert.True(urls.Count() == 0);
     }
 }
