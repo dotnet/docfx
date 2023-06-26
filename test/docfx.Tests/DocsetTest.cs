@@ -179,7 +179,12 @@ public class DocsetTest : TestBase
                     "build": {
                         "content": [{ "files": [ "*.md" ] }],
                         "dest": "_site",
-                        "exportRawModel": true
+                        "exportRawModel": true,
+                        "sitemap": {
+                          "baseUrl": "https://dotnet.github.io/docfx",
+                          "priority": 0.5,
+                          "changefreq": "daily"
+                        }
                     }
                 }
                 """,
@@ -206,5 +211,13 @@ public class DocsetTest : TestBase
             </html>
             """, result);
 
+        // Test redirect page.is excluded from sitemap.
+        var sitemapXml = outputs["sitemap.xml"]();
+        Assert.Equal(
+            """
+            <?xml version="1.0" encoding="utf-8"?>
+            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />
+            """,
+            sitemapXml);
     }
 }
