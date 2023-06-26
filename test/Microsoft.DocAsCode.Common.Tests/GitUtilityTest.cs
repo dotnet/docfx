@@ -7,6 +7,8 @@ using Microsoft.DocAsCode.Common.Git;
 
 namespace Microsoft.DocAsCode.Common.Tests;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 [Collection("docfx STA")]
     public class GitUtilityTest : IDisposable
 {
