@@ -29,7 +29,7 @@ public class YamlSerializer
     public YamlSerializer(SerializationOptions options = SerializationOptions.None, INamingConvention namingConvention = null)
     {
         _options = options;
-        _namingConvention = namingConvention ?? new NullNamingConvention();
+        _namingConvention = namingConvention ?? NullNamingConvention.Instance;
 
         Converters = new List<IYamlTypeConverter>();
         foreach (IYamlTypeConverter yamlTypeConverter in YamlTypeConverters.BuiltInConverters)

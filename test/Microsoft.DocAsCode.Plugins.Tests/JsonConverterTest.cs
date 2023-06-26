@@ -3,6 +3,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Xunit;
 
 namespace Microsoft.DocAsCode.Plugins.Tests;
@@ -33,7 +34,7 @@ public class JsonConverterTest
         {
             Converters =
             {
-                new StringEnumConverter { CamelCaseText = true },
+                new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() },
             }
         };
 

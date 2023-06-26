@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 using Microsoft.DocAsCode.Plugins;
+using Newtonsoft.Json.Serialization;
 
 namespace Microsoft.DocAsCode.Common;
 
@@ -17,7 +18,7 @@ public static class JsonUtility
             ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
             Converters =
             {
-                new StringEnumConverter { CamelCaseText = true },
+                new StringEnumConverter { NamingStrategy = new CamelCaseNamingStrategy() },
             }
         });
 
