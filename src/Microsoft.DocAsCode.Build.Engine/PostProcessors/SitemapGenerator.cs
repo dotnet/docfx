@@ -155,9 +155,11 @@ public class SitemapGenerator : IPostProcessor
         {
             switch (file.DocumentType)
             {
-                case "Toc":
-                case "Redirection":
-                    continue; // Skip non sitemap target files.
+                // Skip non sitemap target files.
+                case DataContracts.Common.Constants.DocumentType.Toc:
+                case DataContracts.Common.Constants.DocumentType.Redirection:
+                    continue;
+
                 default:
                     break;
             }

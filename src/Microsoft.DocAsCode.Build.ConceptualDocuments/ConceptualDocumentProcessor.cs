@@ -106,8 +106,8 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor
         {
             var properties = (IDictionary<string, object>)model.Content;
             documentType = properties.ContainsKey(Constants.PropertyName.RedirectUrl)
-              ? nameof(DocumentType.Redirection)
-              : "Conceptual";
+              ? Constants.DocumentType.Redirection
+              : Constants.DocumentType.Conceptual;
         }
 
         var result = new SaveResult
