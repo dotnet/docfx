@@ -161,6 +161,138 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue7484
   nameWithType: Class1.Issue7484
+- uid: BuildFromProject.Class1.Issue8665
+  name: Class1.Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html
+  commentId: T:BuildFromProject.Class1.Issue8665
+  fullName: BuildFromProject.Class1.Issue8665
+  nameWithType: Class1.Issue8665
+- uid: BuildFromProject.Class1.Issue8665.#ctor
+  name: Issue8665()
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor
+  name.vb: New()
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665()
+  fullName.vb: BuildFromProject.Class1.Issue8665.New()
+  nameWithType: Class1.Issue8665.Issue8665()
+  nameWithType.vb: Class1.Issue8665.New()
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name: Issue8665(int)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer)
+  nameWithType: Class1.Issue8665.Issue8665(int)
+  nameWithType.vb: Class1.Issue8665.New(Integer)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name: Issue8665(int, char)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char)
+  name.vb: New(Integer, Char)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char)
+  nameWithType: Class1.Issue8665.Issue8665(int, char)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char)
+- uid: BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name: Issue8665(int, char, string)
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_System_Int32_System_Char_System_String_
+  commentId: M:BuildFromProject.Class1.Issue8665.#ctor(System.Int32,System.Char,System.String)
+  name.vb: New(Integer, Char, String)
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665(int, char, string)
+  fullName.vb: BuildFromProject.Class1.Issue8665.New(Integer, Char, String)
+  nameWithType: Class1.Issue8665.Issue8665(int, char, string)
+  nameWithType.vb: Class1.Issue8665.New(Integer, Char, String)
+- uid: BuildFromProject.Class1.Issue8665.#ctor*
+  name: Issue8665
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665__ctor_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Class1.Issue8665.Issue8665
+  fullName.vb: BuildFromProject.Class1.Issue8665.New
+  nameWithType: Class1.Issue8665.Issue8665
+  nameWithType.vb: Class1.Issue8665.New
+- uid: BuildFromProject.Class1.Issue8665.Bar
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar
+  commentId: P:BuildFromProject.Class1.Issue8665.Bar
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Bar*
+  name: Bar
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Bar_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Bar
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Bar
+  nameWithType: Class1.Issue8665.Bar
+- uid: BuildFromProject.Class1.Issue8665.Baz
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz
+  commentId: P:BuildFromProject.Class1.Issue8665.Baz
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Baz*
+  name: Baz
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Baz_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Baz
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Baz
+  nameWithType: Class1.Issue8665.Baz
+- uid: BuildFromProject.Class1.Issue8665.Foo
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo
+  commentId: P:BuildFromProject.Class1.Issue8665.Foo
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
+- uid: BuildFromProject.Class1.Issue8665.Foo*
+  name: Foo
+  href: api/BuildFromProject.Class1.Issue8665.html#BuildFromProject_Class1_Issue8665_Foo_
+  commentId: Overload:BuildFromProject.Class1.Issue8665.Foo
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8665.Foo
+  nameWithType: Class1.Issue8665.Foo
+- uid: BuildFromProject.Class1.Issue8696Attribute
+  name: Class1.Issue8696Attribute
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html
+  commentId: T:BuildFromProject.Class1.Issue8696Attribute
+  fullName: BuildFromProject.Class1.Issue8696Attribute
+  nameWithType: Class1.Issue8696Attribute
+- uid: BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+  name: Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html#BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_
+  commentId: M:BuildFromProject.Class1.Issue8696Attribute.#ctor(System.String,System.Int32,System.Int32,System.String[],System.Boolean,System.Type)
+  name.vb: New(String, Integer, Integer, String(), Boolean, Type)
+  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, System.Type?)
+  fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, System.Type)
+  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+  nameWithType.vb: Class1.Issue8696Attribute.New(String, Integer, Integer, String(), Boolean, Type)
+- uid: BuildFromProject.Class1.Issue8696Attribute.#ctor*
+  name: Issue8696Attribute
+  href: api/BuildFromProject.Class1.Issue8696Attribute.html#BuildFromProject_Class1_Issue8696Attribute__ctor_
+  commentId: Overload:BuildFromProject.Class1.Issue8696Attribute.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: BuildFromProject.Class1.Issue8696Attribute.Issue8696Attribute
+  fullName.vb: BuildFromProject.Class1.Issue8696Attribute.New
+  nameWithType: Class1.Issue8696Attribute.Issue8696Attribute
+  nameWithType.vb: Class1.Issue8696Attribute.New
+- uid: BuildFromProject.Class1.Issue8764*
+  name: Issue8764
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764_
+  commentId: Overload:BuildFromProject.Class1.Issue8764
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8764
+  nameWithType: Class1.Issue8764
+- uid: BuildFromProject.Class1.Issue8764``1
+  name: Issue8764<T>()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue8764__1
+  commentId: M:BuildFromProject.Class1.Issue8764``1
+  name.vb: Issue8764(Of T)()
+  fullName: BuildFromProject.Class1.Issue8764<T>()
+  fullName.vb: BuildFromProject.Class1.Issue8764(Of T)()
+  nameWithType: Class1.Issue8764<T>()
+  nameWithType.vb: Class1.Issue8764(Of T)()
 - uid: BuildFromProject.Class1.Issue896
   name: Issue896()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896
@@ -457,6 +589,33 @@ references:
   fullName.vb: BuildFromProject.Inheritdoc.Issue8129.New
   nameWithType: Inheritdoc.Issue8129.Issue8129
   nameWithType.vb: Inheritdoc.Issue8129.New
+- uid: BuildFromProject.Issue8540
+  name: BuildFromProject.Issue8540
+  href: api/BuildFromProject.Issue8540.html
+- uid: BuildFromProject.Issue8540.A
+  name: BuildFromProject.Issue8540.A
+  href: api/BuildFromProject.Issue8540.A.html
+  commentId: N:BuildFromProject.Issue8540.A
+  fullName: BuildFromProject.Issue8540.A
+  nameWithType: BuildFromProject.Issue8540.A
+- uid: BuildFromProject.Issue8540.A.A
+  name: A
+  href: api/BuildFromProject.Issue8540.A.A.html
+  commentId: T:BuildFromProject.Issue8540.A.A
+  fullName: BuildFromProject.Issue8540.A.A
+  nameWithType: A
+- uid: BuildFromProject.Issue8540.B
+  name: BuildFromProject.Issue8540.B
+  href: api/BuildFromProject.Issue8540.B.html
+  commentId: N:BuildFromProject.Issue8540.B
+  fullName: BuildFromProject.Issue8540.B
+  nameWithType: BuildFromProject.Issue8540.B
+- uid: BuildFromProject.Issue8540.B.B
+  name: B
+  href: api/BuildFromProject.Issue8540.B.B.html
+  commentId: T:BuildFromProject.Issue8540.B.B
+  fullName: BuildFromProject.Issue8540.B.B
+  nameWithType: B
 - uid: BuildFromVBSourceCode
   name: BuildFromVBSourceCode
   href: api/BuildFromVBSourceCode.html
@@ -542,6 +701,15 @@ references:
   commentId: N:CatLibrary
   fullName: CatLibrary
   nameWithType: CatLibrary
+- uid: CatLibrary.CatException`1
+  name: CatException<T>
+  href: api/CatLibrary.CatException-1.html
+  commentId: T:CatLibrary.CatException`1
+  name.vb: CatException(Of T)
+  fullName: CatLibrary.CatException<T>
+  fullName.vb: CatLibrary.CatException(Of T)
+  nameWithType: CatException<T>
+  nameWithType.vb: CatException(Of T)
 - uid: CatLibrary.Cat`2
   name: Cat<T, K>
   href: api/CatLibrary.Cat-2.html
@@ -560,15 +728,6 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).New()
   nameWithType: Cat<T, K>.Cat()
   nameWithType.vb: Cat(Of T, K).New()
-- uid: CatLibrary.Cat`2.#ctor(`0)
-  name: Cat(T)
-  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor__0_
-  commentId: M:CatLibrary.Cat`2.#ctor(`0)
-  name.vb: New(T)
-  fullName: CatLibrary.Cat<T, K>.Cat(T)
-  fullName.vb: CatLibrary.Cat(Of T, K).New(T)
-  nameWithType: Cat<T, K>.Cat(T)
-  nameWithType.vb: Cat(Of T, K).New(T)
 - uid: CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)
   name: Cat(string, out int, string, bool)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_
@@ -578,6 +737,15 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).New(String, Integer, String, Boolean)
   nameWithType: Cat<T, K>.Cat(string, out int, string, bool)
   nameWithType.vb: Cat(Of T, K).New(String, Integer, String, Boolean)
+- uid: CatLibrary.Cat`2.#ctor(`0)
+  name: Cat(T)
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor__0_
+  commentId: M:CatLibrary.Cat`2.#ctor(`0)
+  name.vb: New(T)
+  fullName: CatLibrary.Cat<T, K>.Cat(T)
+  fullName.vb: CatLibrary.Cat(Of T, K).New(T)
+  nameWithType: Cat<T, K>.Cat(T)
+  nameWithType.vb: Cat(Of T, K).New(T)
 - uid: CatLibrary.Cat`2.#ctor*
   name: Cat
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2__ctor_
@@ -659,14 +827,6 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).GetTailLength
   nameWithType: Cat<T, K>.GetTailLength
   nameWithType.vb: Cat(Of T, K).GetTailLength
-- uid: CatLibrary.Cat`2.isHealthy
-  name: isHealthy
-  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_isHealthy
-  commentId: F:CatLibrary.Cat`2.isHealthy
-  fullName: CatLibrary.Cat<T, K>.isHealthy
-  fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
-  nameWithType: Cat<T, K>.isHealthy
-  nameWithType.vb: Cat(Of T, K).isHealthy
 - uid: CatLibrary.Cat`2.Item(System.String)
   name: this[string]
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_Item_System_String_
@@ -721,6 +881,14 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).Name
   nameWithType: Cat<T, K>.Name
   nameWithType.vb: Cat(Of T, K).Name
+- uid: CatLibrary.Cat`2.isHealthy
+  name: isHealthy
+  href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_isHealthy
+  commentId: F:CatLibrary.Cat`2.isHealthy
+  fullName: CatLibrary.Cat<T, K>.isHealthy
+  fullName.vb: CatLibrary.Cat(Of T, K).isHealthy
+  nameWithType: Cat<T, K>.isHealthy
+  nameWithType.vb: Cat(Of T, K).isHealthy
 - uid: CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)
   name: operator +(Cat<T, K>, int)
   href: api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_
@@ -786,15 +954,6 @@ references:
   fullName.vb: CatLibrary.Cat(Of T, K).ownEat
   nameWithType: Cat<T, K>.ownEat
   nameWithType.vb: Cat(Of T, K).ownEat
-- uid: CatLibrary.CatException`1
-  name: CatException<T>
-  href: api/CatLibrary.CatException-1.html
-  commentId: T:CatLibrary.CatException`1
-  name.vb: CatException(Of T)
-  fullName: CatLibrary.CatException<T>
-  fullName.vb: CatLibrary.CatException(Of T)
-  nameWithType: CatException<T>
-  nameWithType.vb: CatException(Of T)
 - uid: CatLibrary.Complex`2
   name: Complex<T, J>
   href: api/CatLibrary.Complex-2.html
@@ -805,11 +964,9 @@ references:
   nameWithType: Complex<T, J>
   nameWithType.vb: Complex(Of T, J)
 - uid: CatLibrary.Core
-  name: Core
+  name: CatLibrary.Core
   href: api/CatLibrary.Core.html
   commentId: N:CatLibrary.Core
-  name.csharp: CatLibrary.Core
-  name.vb: CatLibrary.Core
   fullName: CatLibrary.Core
   nameWithType: CatLibrary.Core
 - uid: CatLibrary.Core.ContainersRefType
@@ -1094,36 +1251,6 @@ references:
   fullName.vb: CatLibrary.TomFromBaseClass.New
   nameWithType: TomFromBaseClass.TomFromBaseClass
   nameWithType.vb: TomFromBaseClass.New
-- uid: graph.windows.net/myorganization/Contacts/1.6
-  name: Contacts
-  href: restapi/contacts.html
-- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact
-  name: delete contact
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact
-- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact manager by id
-  name: delete contact manager by id
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id
-- uid: graph.windows.net/myorganization/Contacts/1.6/get contact by id
-  name: get contact by id
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id
-- uid: graph.windows.net/myorganization/Contacts/1.6/get contact direct reports links
-  name: get contact direct reports links
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links
-- uid: graph.windows.net/myorganization/Contacts/1.6/get contact manager link
-  name: get contact manager link
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link
-- uid: graph.windows.net/myorganization/Contacts/1.6/get contact memberOf links
-  name: get contact memberOf links
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links
-- uid: graph.windows.net/myorganization/Contacts/1.6/get contacts
-  name: get contacts
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contacts
-- uid: graph.windows.net/myorganization/Contacts/1.6/update contact
-  name: update contact
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact
-- uid: graph.windows.net/myorganization/Contacts/1.6/update contact manager
-  name: update contact manager
-  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact_manager
 - uid: MRef.Demo.Enumeration
   name: MRef.Demo.Enumeration
   href: api/MRef.Demo.Enumeration.html
@@ -1154,6 +1281,36 @@ references:
   commentId: F:MRef.Demo.Enumeration.ColorType.Yellow
   fullName: MRef.Demo.Enumeration.ColorType.Yellow
   nameWithType: ColorType.Yellow
+- uid: graph.windows.net/myorganization/Contacts/1.6
+  name: Contacts
+  href: restapi/contacts.html
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact
+  name: delete contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/delete contact manager by id
+  name: delete contact manager by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact by id
+  name: get contact by id
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact direct reports links
+  name: get contact direct reports links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact manager link
+  name: get contact manager link
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contact memberOf links
+  name: get contact memberOf links
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links
+- uid: graph.windows.net/myorganization/Contacts/1.6/get contacts
+  name: get contacts
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_get_contacts
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact
+  name: update contact
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact
+- uid: graph.windows.net/myorganization/Contacts/1.6/update contact manager
+  name: update contact manager
+  href: restapi/contacts.html#graph_windows_net_myorganization_Contacts_1_6_update_contact_manager
 - uid: petstore.swagger.io/v2/Swagger Petstore/1.0.0
   name: Swagger Petstore
   href: restapi/petstore.html

@@ -1,6 +1,7 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Web;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 
@@ -9,10 +10,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
 {
     private readonly MarkdownContext _context;
+    private readonly Dictionary<string, string> _notes;
 
-    public QuoteSectionNoteRender(MarkdownContext context)
+    public QuoteSectionNoteRender(MarkdownContext context, Dictionary<string, string> notes)
     {
         _context = context;
+        _notes = notes;
     }
 
     protected override void Write(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
@@ -39,8 +42,17 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
 
     private void WriteNote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
     {
-        var noteHeading = _context.GetToken(obj.NoteTypeString.ToLower()) ?? $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
-        renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
+        var noteHeadingText = _context.GetToken(obj.NoteTypeString.ToLower()) ?? obj.NoteTypeString.ToUpper();
+
+        // Trim <h5></h5> for backward compatibility
+        if (noteHeadingText.StartsWith("<h5>") && noteHeadingText.EndsWith("</h5>"))
+        {
+            noteHeadingText = noteHeadingText[4..^5];
+        }
+
+        var noteHeading = $"<h5>{HttpUtility.HtmlEncode(noteHeadingText)}</h5>";
+        var classNames = _notes.TryGetValue(obj.NoteTypeString, out var value) ? value : obj.NoteTypeString.ToUpper();
+        renderer.Write("<div").Write($" class=\"{classNames}\"").WriteAttributes(obj).WriteLine(">");
         var savedImplicitParagraph = renderer.ImplicitParagraph;
         renderer.ImplicitParagraph = false;
         renderer.WriteLine(noteHeading);

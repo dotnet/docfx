@@ -1,17 +1,12 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
 using System.Net;
 using System.Reflection;
-using Microsoft.DocAsCode.Build.ConceptualDocuments;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Build.ManagedReference;
-using Microsoft.DocAsCode.Build.ResourceFiles;
-using Microsoft.DocAsCode.Build.RestApi;
-using Microsoft.DocAsCode.Build.SchemaDriven;
-using Microsoft.DocAsCode.Build.TableOfContents;
-using Microsoft.DocAsCode.Build.UniversalReference;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
 
@@ -40,7 +35,9 @@ internal static class DocumentBuilderWrapper
             postProcessorNames = postProcessorNames.Add("SitemapGenerator");
         }
 
-        using var builder = new DocumentBuilder(s_pluginAssemblies, postProcessorNames);
+        var pluginAssemblies = templateManager.GetTemplateDirectories().Select(d => Path.Combine(d, "plugins")).SelectMany(LoadPluginAssemblies);
+
+        using var builder = new DocumentBuilder(s_pluginAssemblies.Concat(pluginAssemblies), postProcessorNames);
         using (new PerformanceScope("building documents", LogLevel.Info))
         {
             var parameters = ConfigToParameter(config, options, templateManager, baseDirectory, outputDirectory, templateDirectory);
@@ -50,35 +47,21 @@ internal static class DocumentBuilderWrapper
 
     private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
     {
-        var defaultPluggedAssemblies = new List<Assembly>
-        {
-            typeof(ConceptualDocumentProcessor).Assembly,
-            typeof(ManagedReferenceDocumentProcessor).Assembly,
-            typeof(ResourceDocumentProcessor).Assembly,
-            typeof(RestApiDocumentProcessor).Assembly,
-            typeof(TocDocumentProcessor).Assembly,
-            typeof(SchemaDrivenDocumentProcessor).Assembly,
-            typeof(UniversalReferenceDocumentProcessor).Assembly,
-        };
-        foreach (var assem in defaultPluggedAssemblies)
-        {
-            yield return assem;
-        }
+        if (!Directory.Exists(pluginDirectory))
+            yield break;
 
         Logger.LogInfo($"Searching custom plugins in directory {pluginDirectory}...");
 
-        foreach (var assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
+        foreach (string assemblyFile in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.TopDirectoryOnly))
         {
-            Assembly assembly = null;
-
             // assume assembly name is the same with file name without extension
             string assemblyName = Path.GetFileNameWithoutExtension(assemblyFile);
             if (!string.IsNullOrEmpty(assemblyName))
             {
-                if (assemblyName == "Microsoft.DocAsCode.EntityModel")
+                if (assemblyName == "Microsoft.DocAsCode.EntityModel" || assemblyName.StartsWith("System."))
                 {
                     // work around, don't load assembly Microsoft.DocAsCode.EntityModel.
-                    Logger.LogVerbose("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
+                    Logger.LogVerbose($"Skipping assembly: {assemblyName}");
                     continue;
                 }
                 if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
@@ -88,15 +71,16 @@ internal static class DocumentBuilderWrapper
                     continue;
                 }
 
-                if (defaultPluggedAssemblies.Select(n => n.GetName().Name).Contains(assemblyName))
+                if (!IsDocfxPluginAssembly(assemblyFile))
                 {
-                    Logger.LogVerbose($"Skipping default plugged assembly: {assemblyName}.");
+                    Logger.LogVerbose($"Skipping non-plugin assembly: {assemblyName}.");
                     continue;
                 }
 
+                Assembly assembly;
                 try
                 {
-                    assembly = Assembly.Load(assemblyName);
+                    assembly = Assembly.LoadFrom(assemblyFile);
 
                     Logger.LogVerbose($"Scanning assembly file {assemblyFile}...");
 
@@ -115,6 +99,26 @@ internal static class DocumentBuilderWrapper
                 }
             }
         }
+
+        static bool IsDocfxPluginAssembly(string assemblyFile)
+        {
+            try
+            {
+                // Determines if the input assembly file is potentially a docfx plugin assembly
+                // by checking if referenced assemblies contains Microsoft.DocAsCode.Plugins using MetadataReader
+                using (var stream = File.OpenRead(assemblyFile))
+                using (var peReader = new PEReader(stream))
+                {
+                    var metadataReader = peReader.GetMetadataReader();
+                    return metadataReader.AssemblyReferences.Any(a => metadataReader.GetString(metadataReader.GetAssemblyReference(a).Name) == "Microsoft.DocAsCode.Plugins");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogVerbose($"Skipping file {assemblyFile} due to load failure: {ex.Message}");
+                return false;
+            }
+        }
     }
 
     private static List<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, BuildOptions options, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDir)
@@ -131,14 +135,10 @@ internal static class DocumentBuilderWrapper
                 TagParameters = config.TagParameters,
                 ConfigureMarkdig = options.ConfigureMarkdig,
             };
-            if (config.GlobalMetadata != null)
-            {
-                parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
-            }
-            if (config.FileMetadata != null)
-            {
-                parameters.FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata);
-            }
+
+            parameters.Metadata = GetGlobalMetadata(config);
+            parameters.FileMetadata = GetFileMetadata(baseDirectory, config);
+
             if (config.PostProcessors != null)
             {
                 parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
@@ -193,7 +193,7 @@ internal static class DocumentBuilderWrapper
 
             if (config.MarkdownEngineProperties != null)
             {
-                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
+                parameters.MarkdownEngineParameters = config.MarkdownEngineProperties;
             }
             if (config.CustomLinkResolver != null)
             {
@@ -250,6 +250,66 @@ internal static class DocumentBuilderWrapper
         }
     }
 
+    private static ImmutableDictionary<string, object> GetGlobalMetadata(BuildJsonConfig config)
+    {
+        var result = new Dictionary<string, object>();
+
+        if (config.GlobalMetadata != null)
+        {
+            foreach (var (key, value) in config.GlobalMetadata)
+            {
+                result[key] = value;
+            }
+        }
+
+        if (config.GlobalMetadataFilePaths != null)
+        {
+            foreach (var path in config.GlobalMetadataFilePaths)
+            {
+                foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, object>>(path))
+                {
+                    result[key] = value;
+                }
+            }
+        }
+
+        return result.ToImmutableDictionary();
+    }
+
+    private static FileMetadata GetFileMetadata(string baseDirectory, BuildJsonConfig config)
+    {
+        var result = new Dictionary<string, List<FileMetadataItem>>();
+
+        if (config.FileMetadata != null)
+        {
+            foreach (var (key, value) in config.FileMetadata)
+            {
+                var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                foreach (var pair in value.Items)
+                {
+                    list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));
+                }
+            }
+        }
+
+        if (config.FileMetadataFilePaths != null)
+        {
+            foreach (var path in config.FileMetadataFilePaths)
+            {
+                foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path))
+                {
+                    var list = result.TryGetValue(key, out var items) ? items : result[key] = new();
+                    foreach (var pair in value.Items)
+                    {
+                        list.Add(new FileMetadataItem(pair.Glob, key, pair.Value));
+                    }
+                }
+            }
+        }
+
+        return new FileMetadata(baseDirectory, result.ToDictionary(p => p.Key, p => p.Value.ToImmutableArray()));
+    }
+
     /// <summary>
     /// Group FileMappings to a dictionary using VersionName as the key.
     /// As default version has no VersionName, using empty string as the key.
@@ -277,7 +337,7 @@ internal static class DocumentBuilderWrapper
         if (fileMapping == null) return;
         foreach (var item in fileMapping.Items)
         {
-            var version = item.GroupName ?? item.VersionName ?? string.Empty;
+            string version = item.GroupName ?? item.VersionName ?? string.Empty;
             if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
             {
                 if (parameters.TryGetValue(type, out FileMapping mapping))
@@ -295,36 +355,6 @@ internal static class DocumentBuilderWrapper
                 {
                     [type] = new FileMapping(item)
                 };
-            }
-        }
-    }
-
-    private static FileMetadata ConvertToFileMetadataItem(string baseDirectory, Dictionary<string, FileMetadataPairs> fileMetadata)
-    {
-        var result = new Dictionary<string, ImmutableArray<FileMetadataItem>>();
-        foreach (var item in fileMetadata)
-        {
-            var list = new List<FileMetadataItem>();
-            foreach (var pair in item.Value.Items)
-            {
-                list.Add(new FileMetadataItem(pair.Glob, item.Key, pair.Value));
-            }
-            result.Add(item.Key, list.ToImmutableArray());
-        }
-
-        return new FileMetadata(baseDirectory, result);
-    }
-
-    private static IEnumerable<string> GetFilesFromFileMapping(FileMapping mapping)
-    {
-        if (mapping != null)
-        {
-            foreach (var file in mapping.Items)
-            {
-                foreach (var item in file.Files)
-                {
-                    yield return Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
-                }
             }
         }
     }

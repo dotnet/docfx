@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="iTextSharp" />
+    <PackageReference Include="PdfPig" />
   </ItemGroup>
 
   <ItemGroup>

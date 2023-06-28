@@ -112,7 +112,6 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "obj/api/BuildFromCSharpSourceCode.yml",
-  "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",
@@ -135,7 +134,6 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "isNamespace": true,
-  "inNamespace": true,
   "_disableToc": false,
   "_disableNextArticle": true
 }

@@ -1,5 +1,5 @@
 ﻿- name: Articles
-  href: ../articles/toc.md
+  href: ../articles/toc.yml
 - name: API Documentation
   href: ../obj/api/toc.yml
 - name: REST API

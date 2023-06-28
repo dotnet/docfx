@@ -26,12 +26,16 @@ To add API docs for a .NET project, add a `metadata` section before the `build` 
 Docfx generates .NET API docs in 2 stages:
 1. The _metadata_ stage uses the `metadata` config to produce [.NET API YAML files](dotnet-yaml-format.md) at the `metadata.dest` directory.
 
+> [!NOTE]
+> The [`Docset.Build`](../api/Microsoft.DocAsCode.Docset.yml) method does not run the _metadata_ stage,
+> invoke the [`DotnetApiCatalog.GenerateManagedReferenceYamlFiles`](../api/Microsoft.DocAsCode.Dotnet.DotnetApiCatalog.yml) method to run the _metadata_ stage before the _build_ stage.
+
 2. The _build_ stage transforms the generated .NET API YAML files specified in `build.content` config into HTML files.
 
 These 2 stages can run independently with the `docfx metadata` command and the `docfx build` command. The `docfx` root command runs both `metadata` and `build`.
 
 > [!NOTE]
-> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src` property 
+> Glob patterns in docfx currently does not support crawling files outside the directory containing `docfx.json`. Use the `metadata.src.src` property 
 
 Docfx supports several source formats to generate .NET API docs:
 

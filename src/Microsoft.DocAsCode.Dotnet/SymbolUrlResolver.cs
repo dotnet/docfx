@@ -34,7 +34,7 @@ internal static partial class SymbolUrlResolver
             "M" or "F" or "P" or "E" => memberLayout is MemberLayout.SeparatePages && !symbol.IsEnumMember()
                 ? $"{VisitorHelper.GetId(symbol).Replace('`', '-')}.html"
                 : $"{VisitorHelper.GetId(symbol.ContainingType).Replace('`', '-')}.html#{Regex.Replace(uid, @"/\W/", "_")}",
-            _ => throw new NotSupportedException($"Unknown comment ID format '{type}"),
+            _ => throw new NotSupportedException($"Unknown comment ID format '{type}'"),
         };
     }
 }

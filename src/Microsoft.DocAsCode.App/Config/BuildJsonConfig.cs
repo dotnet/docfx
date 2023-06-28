@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
@@ -39,6 +39,9 @@ internal class BuildJsonConfig
     [JsonProperty("dest")]
     public string Destination { get; set; }
 
+    [JsonProperty("output")]
+    public string Output { get; set; }
+
     [JsonProperty("globalMetadata")]
     [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
     public Dictionary<string, object> GlobalMetadata { get; set; }
@@ -71,20 +74,11 @@ internal class BuildJsonConfig
     [JsonProperty("postProcessors")]
     public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
 
-    [JsonProperty("serve")]
-    public bool? Serve { get; set; }
-
     [JsonProperty("debug")]
     public bool? EnableDebugMode { get; set; }
 
     [JsonProperty("debugOutput")]
     public string OutputFolderForDebugFiles { get; set; }
-
-    [JsonProperty("host")]
-    public string Host { get; set; }
-
-    [JsonProperty("port")]
-    public string Port { get; set; }
 
     [JsonProperty("exportRawModel")]
     public bool? ExportRawModel { get; set; }
@@ -105,8 +99,7 @@ internal class BuildJsonConfig
     public int? MaxParallelism { get; set; }
 
     [JsonProperty("markdownEngineProperties")]
-    [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
-    public Dictionary<string, object> MarkdownEngineProperties { get; set; }
+    public MarkdownServiceProperties MarkdownEngineProperties { get; set; }
 
     [JsonProperty("customLinkResolver")]
     public string CustomLinkResolver { get; set; }

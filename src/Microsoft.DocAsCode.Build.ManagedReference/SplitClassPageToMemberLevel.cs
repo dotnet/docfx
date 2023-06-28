@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
 using System.Composition;
@@ -197,7 +197,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         model.Content = page;
 
         AddModelToDict(model, models, dupeModels);
-        return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName), splittedModels);
+        return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName, StringComparer.Ordinal), splittedModels);
     }
 
     private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
@@ -291,7 +291,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
     private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
     {
-        var items = children.SelectMany(selector).Distinct().OrderBy(s => s).ToList();
+        var items = children.SelectMany(selector).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         if (items.Count == 0)
         {
             return null;

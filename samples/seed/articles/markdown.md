@@ -19,6 +19,9 @@
 > [!WARNING]
 > Dangerous certain consequences of an action.
 
+> [!TODO]
+> This is a TODO.
+
 ## Image 
 
 ![alt-text](https://learn.microsoft.com/en-us/media/learn/not-found/learn-not-found-light-mode.png?branch=main)
@@ -34,20 +37,6 @@ A[Hard] -->|Text| B(Round)
 B --> C{Decision}
 C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
-```
-
-User Journey diagram
-
-```mermaid
-journey
-  title My working day
-  section Go to work
-    Make tea: 5: Me
-    Go upstairs: 3: Me
-    Do work: 1: Me, Cat
-  section Go home
-    Go downstairs: 5: Me
-    Sit down: 3: Me
 ```
 
 ## Code Snippet
@@ -67,6 +56,15 @@ $$\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \
 This expression uses `\$` to display a dollar sign: $\sqrt{\$4}$
 
 To split <span>$</span>100 in half, we calculate $100/2$
+
+## Custom Syntax Highlighting
+
+```bicep
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+  name: 'hello'
+  // (...)
+}
+```
 
 ## Tabs
 
@@ -125,6 +123,15 @@ TypeScript content for Windows...
 # [REST API](#tab/rest)
 
 REST API content, independent of platform...
+
+```mermaid
+flowchart LR
+
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
+```
 
 ---
 

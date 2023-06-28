@@ -796,7 +796,6 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "restapi/contacts_swagger2.json",
-  "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",

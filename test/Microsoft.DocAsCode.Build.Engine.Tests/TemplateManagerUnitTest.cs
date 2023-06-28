@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
@@ -23,29 +23,11 @@ public class TemplateManagerUnitTest : TestBase
 
     [Trait("Related", "ResourceFinder")]
     [Fact]
-    public void TestResourceFinderFromAssembly()
-    {
-        var testFinder = new ResourceFinder(this.GetType().Assembly, "tmpl");
-
-        // 1. Support tmpl1.zip
-        using var result = testFinder.Find("tmpl1");
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Names.Count());
-        var item = result.GetResource("tmpl1.dot.$");
-        Assert.Equal("This is file with complex filename characters", item);
-
-        // backslash is also supported
-        item = result.GetResource(@"sub\file1");
-        Assert.Equal("This is file inside a subfolder", item);
-    }
-
-    [Trait("Related", "ResourceFinder")]
-    [Fact]
     public void TestTemplateManagerWithMutipleThemesShouldWork()
     {
         // If the same resource name exists in the override folder, use the overriden one
         var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
-        var manager = new TemplateManager(GetType().Assembly, "tmpl", null, themes, null);
+        var manager = new TemplateManager(null, themes, null);
         var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
         manager.ProcessTheme(outputFolder, true);
         // 1. Support tmpl1.zip
@@ -569,9 +551,8 @@ exports.transform = function (model){
         if (Directory.Exists(templateFolder))
             Directory.Delete(templateFolder, true);
         WriteTemplate(templateFolder, templateFiles);
-        using var resource = new ResourceFinder(null, null).Find(templateFolder);
         var context = new DocumentBuildContext(inputFolder);
-        var processor = new TemplateProcessor(resource, context, 4);
+        var processor = new TemplateProcessor(new LocalFileResourceReader(templateFolder), context, 4);
         foreach (var item in items)
         {
             if (item.ResourceFile != null)

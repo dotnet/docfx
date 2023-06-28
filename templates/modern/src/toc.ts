@@ -1,7 +1,7 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-import { html, render } from 'lit-html'
+import { TemplateResult, html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
 import { breakWordLit, meta } from './helper'
 
@@ -20,6 +20,10 @@ export async function renderToc(): Promise<TocNode[]> {
   if (!tocrel) {
     return []
   }
+
+  const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
+
+  let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
 
   const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
   const { items } = await (await fetch(tocUrl)).json()
@@ -52,6 +56,9 @@ export async function renderToc(): Promise<TocNode[]> {
       node.href = url.href
       active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
       if (active) {
+        if (node.items) {
+          node.expanded = true
+        }
         selectedNodes.push(node)
       }
     }
@@ -73,33 +80,62 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderToc() {
-    render(renderTocNodes(items), tocContainer)
+    render(html`${renderTocFilter()} ${renderTocNodes(items) || renderNoFilterResult()}`, tocContainer)
   }
 
-  function renderTocNodes(nodes: TocNode[]) {
-    return html`<ul>${nodes.map(node => {
+  function renderTocNodes(nodes: TocNode[]): TemplateResult {
+    const result = nodes.map(node => {
       const { href, name, items, expanded } = node
       const isLeaf = !items || items.length <= 0
+
+      const children = isLeaf ? null : renderTocNodes(items)
+      if (tocFilter !== '' && !children && !name.toLowerCase().includes(tocFilter.toLowerCase())) {
+        return null
+      }
 
       const dom = href
         ? html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href=${href}>${breakWordLit(name)}</a>`
         : (isLeaf
-          ? html`<span class='text-body-tertiary name-only'>${breakWordLit(name)}</a>`
-          : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
+            ? html`<span class='text-body-tertiary name-only'>${breakWordLit(name)}</a>`
+            : html`<a class='${classMap({ 'nav-link': !activeNodes.includes(node) })}' href='#' @click=${toggleExpand}>${breakWordLit(name)}</a>`)
+
+      const isExpanded = (tocFilter !== '' && expanded !== false && children != null) || expanded === true
 
       return html`
-        <li class=${classMap({ expanded })}>
+        <li class=${classMap({ expanded: isExpanded, active: activeNodes.includes(node) })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
           ${dom}
-          ${isLeaf ? null : html`<ul>${renderTocNodes(items)}</ul>`}
+          ${children}
         </li>`
 
       function toggleExpand(e) {
         e.preventDefault()
-        node.expanded = !node.expanded
+        node.expanded = !isExpanded
         renderToc()
       }
-    })}</ul>`
+    }).filter(node => node)
+
+    return result.length > 0 ? html`<ul>${result}</ul>` : null
+  }
+
+  function renderTocFilter(): TemplateResult {
+    return disableTocFilter
+      ? null
+      : html`
+      <form class='filter'>
+        <i class='bi bi-filter'></i>
+        <input class='form-control' @input=${filterToc} value='${tocFilter}' type='search' placeholder='Filter by title' autocomplete='off' aria-label='Filter by title'>
+      </form>`
+
+    function filterToc(e: Event) {
+      tocFilter = (<HTMLInputElement>e.target).value.trim()
+      localStorage?.setItem('tocFilter', tocFilter)
+      renderToc()
+    }
+  }
+
+  function renderNoFilterResult(): TemplateResult {
+    return tocFilter === '' ? null : html`<div class='no-result'>No results for "${tocFilter}"</div>`
   }
 
   function normalizeUrlPath(url: { pathname: string }): string {

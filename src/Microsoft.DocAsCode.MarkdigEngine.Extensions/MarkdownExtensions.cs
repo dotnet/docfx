@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 public static class MarkdownExtensions
 {
-    public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+    public static MarkdownPipelineBuilder UseDocfxExtensions(this MarkdownPipelineBuilder pipeline, MarkdownContext context, Dictionary<string, string> notes = null)
     {
         return pipeline
             .UseMathematics()
@@ -24,7 +24,7 @@ public static class MarkdownExtensions
             .UseIncludeFile(context)
             .UseCodeSnippet(context)
             .UseDFMCodeInfoPrefix()
-            .UseQuoteSectionNote(context)
+            .UseQuoteSectionNote(context, notes)
             .UseXref()
             .UseEmojiAndSmiley(false)
             .UseTabGroup(context)
@@ -99,9 +99,9 @@ public static class MarkdownExtensions
         return pipeline;
     }
 
-    public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context)
+    public static MarkdownPipelineBuilder UseQuoteSectionNote(this MarkdownPipelineBuilder pipeline, MarkdownContext context, Dictionary<string, string> notes = null)
     {
-        pipeline.Extensions.AddIfNotAlready(new QuoteSectionNoteExtension(context));
+        pipeline.Extensions.AddIfNotAlready(new QuoteSectionNoteExtension(context, notes));
         return pipeline;
     }
 

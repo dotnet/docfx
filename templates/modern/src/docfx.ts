@@ -1,7 +1,8 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 import 'bootstrap'
+import { DocfxOptions } from './options'
 import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
@@ -11,11 +12,10 @@ import { renderBreadcrumb, renderInThisArticle, renderNavbar } from './nav'
 
 import 'bootstrap-icons/font/bootstrap-icons.scss'
 import './docfx.scss'
-import 'mathjax/es5/tex-svg-full.js'
 
 declare global {
   interface Window {
-    docfx: {
+    docfx: DocfxOptions & {
       ready?: boolean,
       searchReady?: boolean,
       searchResultReady?: boolean,
@@ -23,18 +23,23 @@ declare global {
   }
 }
 
-window.docfx = {}
+export async function init(options: DocfxOptions) {
+  window.docfx = Object.assign({}, options)
 
-initTheme()
-
-document.addEventListener('DOMContentLoaded', function() {
+  initTheme()
   enableSearch()
-  renderMarkdown()
-  highlight()
-
-  Promise.all([renderNavbar(), renderToc()])
-    .then(([navbar, toc]) => renderBreadcrumb([...navbar, ...toc]))
-
   renderInThisArticle()
+
+  await Promise.all([
+    renderMarkdown(),
+    renderNav(),
+    highlight()
+  ])
+
   window.docfx.ready = true
-})
+
+  async function renderNav() {
+    const [navbar, toc] = await Promise.all([renderNavbar(), renderToc()])
+    renderBreadcrumb([...navbar, ...toc])
+  }
+}

@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
 using System.Reflection;
@@ -12,19 +12,11 @@ namespace Microsoft.DocAsCode;
 class DefaultCommand : Command<DefaultCommand.Options>
 {
     [Description("Runs metadata, build and pdf commands")]
-    internal class Options : LogOptions
+    internal class Options : BuildCommandOptions
     {
         [Description("Prints version information")]
         [CommandOption("-v|--version")]
         public bool Version { get;set; }
-
-        [Description("Specify the output base directory")]
-        [CommandOption("-o|--output")]
-        public string OutputFolder { get; set; }
-
-        [Description("Path to docfx.json")]
-        [CommandArgument(0, "[config]")]
-        public string Config { get; set; }
     }
 
     public override int Execute(CommandContext context, Options options)
@@ -37,15 +29,31 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
         return CommandHelper.Run(options, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<Config>(options.Config);
+            var (config, baseDirectory) = CommandHelper.GetConfig<Config>(options.ConfigFile);
             var outputFolder = options.OutputFolder;
+            string serveDirectory = null;
 
             if (config.Metadata is not null)
-                DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
+            {
+                DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory).GetAwaiter().GetResult();
+            }
+
             if (config.Build is not null)
-                RunBuild.Exec(config.Build, new(), baseDirectory, outputFolder);
+            {
+                BuildCommand.MergeOptionsToConfig(options, config.Build, baseDirectory);
+                serveDirectory = RunBuild.Exec(config.Build, new(), baseDirectory, outputFolder);
+            }
+
             if (config.Pdf is not null)
+            {
+                BuildCommand.MergeOptionsToConfig(options, config.Pdf, baseDirectory);
                 RunPdf.Exec(config.Pdf, new(), baseDirectory, outputFolder);
+            }
+
+            if (options.Serve && serveDirectory is not null)
+            {
+                RunServe.Exec(serveDirectory, options.Host, options.Port);
+            }
         });
     }
 

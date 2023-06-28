@@ -1,27 +1,26 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System.Reflection;
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.DocAsCode.Common;
 
+#nullable enable
+
 namespace Microsoft.DocAsCode.Build.Engine;
 
-[Serializable]
 public class TemplateManager
 {
-    private readonly List<string> _templates = new();
-    private readonly List<string> _themes = new();
-    private readonly ResourceFinder _finder;
+    private readonly List<string> _templates;
+    private readonly List<string>? _themes;
+    private readonly string _baseDirectory;
 
-    public TemplateManager(Assembly assembly, string rootNamespace, List<string> templates, List<string> themes, string baseDirectory)
+    public TemplateManager(List<string> templates, List<string>? themes, string? baseDirectory)
     {
-        _finder = new ResourceFinder(assembly, rootNamespace, baseDirectory);
         _templates = templates;
         _themes = themes;
+        _baseDirectory = baseDirectory ?? Directory.GetCurrentDirectory();
     }
 
-    public bool TryExportTemplateFiles(string outputDirectory, string regexFilter = null)
+    public bool TryExportTemplateFiles(string outputDirectory, string? regexFilter = null)
     {
         return TryExportResourceFiles(_templates, outputDirectory, true, regexFilter);
     }
@@ -33,9 +32,33 @@ public class TemplateManager
 
     public CompositeResourceReader CreateTemplateResource() => CreateTemplateResource(_templates);
 
-    private CompositeResourceReader CreateTemplateResource(IEnumerable<string> resources) =>
-        new(
-            resources.Select(s => _finder.Find(s)).Where(s => s != null));
+    private CompositeResourceReader CreateTemplateResource(IEnumerable<string> resources)
+    {
+        return new(GetTemplateDirectories(resources).Select(path => new LocalFileResourceReader(path)));
+    }
+
+    public IEnumerable<string> GetTemplateDirectories()
+    {
+        return GetTemplateDirectories(_templates);
+    }
+
+    private IEnumerable<string> GetTemplateDirectories(IEnumerable<string> names)
+    {
+        foreach (var name in names)
+        {
+            var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "templates", name));
+            if (Directory.Exists(directory))
+            {
+                yield return directory;
+            }
+
+            directory = Path.GetFullPath(Path.Combine(_baseDirectory, name));
+            if (Directory.Exists(directory))
+            {
+                yield return directory;
+            }
+        }
+    }
 
     public void ProcessTheme(string outputDirectory, bool overwrite)
     {
@@ -49,10 +72,14 @@ public class TemplateManager
         }
     }
 
-    private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string regexFilter = null)
+    private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
     {
-        if (string.IsNullOrEmpty(outputDirectory)) throw new ArgumentNullException(nameof(outputDirectory));
-        if (!resourceNames.Any()) return false;
+        if (string.IsNullOrEmpty(outputDirectory))
+            throw new ArgumentNullException(nameof(outputDirectory));
+
+        if (!resourceNames.Any())
+            return false;
+
         bool isEmpty = true;
 
         using (new LoggerPhaseScope("ExportResourceFiles", LogLevel.Verbose))

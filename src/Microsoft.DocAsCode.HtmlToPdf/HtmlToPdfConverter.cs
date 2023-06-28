@@ -1,14 +1,18 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Web;
 
-using iTextSharp.text.pdf;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
+
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Actions;
+using UglyToad.PdfPig.Outline;
+using UglyToad.PdfPig.Outline.Destinations;
+using UglyToad.PdfPig.Writer;
 
 namespace Microsoft.DocAsCode.HtmlToPdf;
 
@@ -58,7 +62,7 @@ public class HtmlToPdfConverter
             new ParallelOptions { MaxDegreeOfParallelism = _htmlToPdfOptions.MaxDegreeOfParallelism },
             htmlFilePath =>
             {
-                var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -", reader => reader.NumberOfPages);
+                var numberOfPages = Convert($"{WrapQuoteToPath(htmlFilePath)} -");
 
                 PartialPdfModel pdfModel = new()
                 {
@@ -126,7 +130,7 @@ public class HtmlToPdfConverter
                 Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : (" " + arguments)),
             }
         };
-        using(new LoggerPhaseScope(Constants.PdfCommandName))
+        using (new LoggerPhaseScope(Constants.PdfCommandName))
         {
             Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} ({arguments})");
             process.Start();
@@ -161,77 +165,58 @@ public class HtmlToPdfConverter
         }
     }
 
-    private void CreateOutlines(Dictionary<string, object> rootOutline, IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
+    private BookmarkNode[] CreateOutlines(IList<HtmlModel> htmlModels, IDictionary<string, PartialPdfModel> pdfPages)
     {
-        if (htmlModels?.Count > 0)
+        if (htmlModels is null || htmlModels.Count is 0)
+            return Array.Empty<BookmarkNode>();
+
+        return htmlModels.Select<HtmlModel, BookmarkNode>(htmlModel =>
         {
-            foreach (var htmlModel in htmlModels)
+            if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
             {
-                var outline = new Dictionary<string, object>
-                {
-                    { "Title", htmlModel.Title },
-                    { OutLineKidsName, new List<Dictionary<string, object>>() }
-                };
-
-                if (!string.IsNullOrEmpty(htmlModel.ExternalLink))
-                {
-                    outline.Add("Action", "URI");
-                    outline.Add("URI", htmlModel.ExternalLink);
-                }
-                else
-                {
-                    int pageNumber = 0;
-
-                    if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
-                    {
-                        string filePath = GetFilePath(htmlModel.HtmlFilePath);
-
-                        if (pdfPages.ContainsKey(filePath))
-                        {
-                            PartialPdfModel pdfModel = pdfPages[filePath];
-
-                            if (!pdfModel.PageNumber.HasValue)
-                            {
-                                pdfModel.PageNumber = _currentNumberOfPages;
-                                _currentNumberOfPages += pdfModel.NumberOfPages;
-                            }
-
-                            pageNumber = pdfModel.PageNumber.Value;
-                        }
-                    }
-                    else
-                    {
-                        // this is a parent node for the next topic
-                        pageNumber = _currentNumberOfPages;
-                    }
-
-                    outline.Add("Action", "GoTo");
-
-                    // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
-                    outline.Add("Page", $"{pageNumber} FitH");
-                }
-
-                ((List<Dictionary<string, object>>)rootOutline[OutLineKidsName]).Add(outline);
-                CreateOutlines(outline, htmlModel.Children, pdfPages);
+                return new UriBookmarkNode(htmlModel.Title, 0, htmlModel.ExternalLink, CreateOutlines(htmlModel.Children, pdfPages));
             }
-        }
+
+            int pageNumber = 0;
+
+            if (!string.IsNullOrEmpty(htmlModel.HtmlFilePath))
+            {
+                string filePath = GetFilePath(htmlModel.HtmlFilePath);
+
+                if (pdfPages.ContainsKey(filePath))
+                {
+                    PartialPdfModel pdfModel = pdfPages[filePath];
+
+                    if (!pdfModel.PageNumber.HasValue)
+                    {
+                        pdfModel.PageNumber = _currentNumberOfPages;
+                        _currentNumberOfPages += pdfModel.NumberOfPages;
+                    }
+
+                    pageNumber = pdfModel.PageNumber.Value;
+                }
+            }
+            else
+            {
+                // this is a parent node for the next topic
+                pageNumber = _currentNumberOfPages;
+            }
+
+            return new DocumentBookmarkNode(
+                htmlModel.Title, 0,
+                new(pageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                CreateOutlines(htmlModel.Children, pdfPages));
+        }).ToArray();
     }
 
-    private List<Dictionary<string, object>> ConvertOutlines()
+    private BookmarkNode[] ConvertOutlines()
     {
         var pdfFileNumberOfPages = GetPartialPdfModels(new List<string>(_htmlFilePaths));
         _currentNumberOfPages = 1;
-
-        var rootOutline = new Dictionary<string, object>
-        {
-            { OutLineKidsName, new List<Dictionary<string, object>>() }
-        };
-
-        CreateOutlines(rootOutline, _htmlModels, pdfFileNumberOfPages);
-        return (List<Dictionary<string, object>>)rootOutline[OutLineKidsName];
+        return CreateOutlines(_htmlModels, pdfFileNumberOfPages);
     }
 
-    private IList<Dictionary<string, object>> GetOutlines()
+    private BookmarkNode[] GetOutlines()
     {
         switch (_htmlToPdfOptions.OutlineOption)
         {
@@ -275,25 +260,44 @@ public class HtmlToPdfConverter
     {
         if (_htmlFilePaths.Count > 0)
         {
-            var outlines = GetOutlines();
             using var pdfStream = new MemoryStream();
             ConvertToStream($"{string.Join(" ", _htmlFilePaths.Select(WrapQuoteToPath))} -", pdfStream);
             pdfStream.Position = 0;
 
-            using var pdfReader = new PdfReader(pdfStream);
-            using var pdfStamper = new PdfStamper(pdfReader, stream);
-            pdfStamper.Outlines = outlines;
+            WriteOutlines(pdfStream, stream);
         }
     }
 
-    private T Convert<T>(string arguments, Func<PdfReader, T> readerFunc)
+    private int Convert(string arguments)
     {
         using var pdfStream = new MemoryStream();
         ConvertToStream(arguments, pdfStream);
         pdfStream.Position = 0;
 
-        using var pdfReader = new PdfReader(pdfStream);
-        return readerFunc(pdfReader);
+        using var document = PdfDocument.Open(pdfStream);
+        return document.NumberOfPages;
+    }
+
+    private void WriteOutlines(MemoryStream input, Stream output)
+    {
+        using var document = PdfDocument.Open(input);
+        using var builder = new PdfDocumentBuilder(output);
+
+        for (var i = 1; i <= document.NumberOfPages; i++)
+        {
+            builder.AddPage(document, i, CopyLink);
+        }
+
+        builder.Bookmarks = new(GetOutlines());
+
+        PdfAction CopyLink(PdfAction action)
+        {
+            return action switch
+            {
+                GoToAction link => new GoToAction(new(link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
+                _ => action,
+            };
+        }
     }
 
     #endregion

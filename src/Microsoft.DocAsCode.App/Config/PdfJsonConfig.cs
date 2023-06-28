@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.DocAsCode.HtmlToPdf;
 using Newtonsoft.Json;
@@ -13,7 +13,7 @@ internal class PdfJsonConfig : BuildJsonConfig
     public string Name { get; set; }
 
     [JsonProperty("host")]
-    public new string Host { get; set; }
+    public string Host { get; set; }
 
     [JsonProperty("locale")]
     public string Locale { get; set; }
@@ -77,5 +77,4 @@ internal class PdfJsonConfig : BuildJsonConfig
     /// </summary>
     [JsonProperty("noStdin")]
     public bool NoInputStreamArgs { get; set; }
-
-	}
+}

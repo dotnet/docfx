@@ -1,5 +1,8 @@
 ---
-layout: landing
+_disableNewTab: true
+_lang: zh-CN
+_layout: landing
+_appLogoUrl: https://github.com/dotnet/docfx
 ---
 
 # docfx-seed

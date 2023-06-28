@@ -70,6 +70,67 @@
           "hideSubtitle": false
         },
         {
+          "uid": "CSharp11.ScopedModifier",
+          "isExtensionMethod": false,
+          "href": "CSharp11.ScopedModifier.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "ScopedModifier"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CSharp11.ScopedModifier"
+            },
+            {
+              "lang": "vb",
+              "value": "CSharp11.ScopedModifier"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CSharp11.ScopedModifier\" text=\"ScopedModifier\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CSharp11_ScopedModifier",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "CSharp11.StaticAbstractMembersInInterfaces",
           "isExtensionMethod": false,
           "href": "CSharp11.StaticAbstractMembersInInterfaces.html",
@@ -407,7 +468,6 @@
     "additionalNotes"
   ],
   "_key": "api/CSharp11.yml",
-  "_lang": "csharp",
   "_path": "api/CSharp11.html",
   "_rel": "../",
   "_tocKey": "~/api/toc.yml",
@@ -460,11 +520,11 @@
     "exceptions": "Exceptions",
     "condition": "Condition",
     "extensionMethods": "Extension Methods",
-    "note": "<h5>Note</h5>",
-    "warning": "<h5>Warning</h5>",
-    "tip": "<h5>Tip</h5>",
-    "important": "<h5>Important</h5>",
-    "caution": "<h5>Caution</h5>",
+    "note": "Note",
+    "warning": "Warning",
+    "tip": "Tip",
+    "important": "Important",
+    "caution": "Caution",
     "tocToggleButton": "Show / Hide Table of Contents",
     "tocFilter": "Enter here to filter...",
     "search": "Search",
@@ -491,7 +551,6 @@
   "hideTitleType": false,
   "hideSubtitle": false,
   "isNamespace": true,
-  "inNamespace": true,
   "_disableToc": false,
   "_disableNextArticle": true
 }

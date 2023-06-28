@@ -1,211 +1,38 @@
-﻿<!DOCTYPE html><html data-bs-theme="light"><head>
+﻿<!DOCTYPE html><html lang="zh-CN" data-bs-theme="light"><head>
     <meta charset="utf-8">
       <title>docfx-seed | docfx seed website </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="docfx-seed | docfx seed website ">
       
       <link rel="icon" href="favicon.ico">
-      <style class="anchorjs"></style><link rel="stylesheet" href="styles/docfx.min.css">
-      <link rel="stylesheet" href="styles/main.css">
+      <style class="anchorjs"></style><link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
       <meta name="docfx:navrel" content="toc.html">
       <meta name="docfx:tocrel" content="toc.html">
       
       <meta name="docfx:rel" content="">
+      <meta name="docfx:disablenewtab" content="true">
+      
       <meta name="docfx:docurl" content="https://github.com/dotnet/docfx/blob/main/samples/seed/index.md/#L1">
+  <script type="module">
+    import options from './public/main.js'
+    import { init } from './public/docfx.min.js'
+    init(options)
+  </script><script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script></head>
 
-      <script>
-        MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        };
-      </script>
+  
 
-      <script type="text/javascript" src="styles/docfx.min.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
-.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
-.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
-.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
-</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
-.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
-.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
-.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
-.CtxtMenu_MenuClose:hover:focus {  outline:none}
-</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
-.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
-.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
-.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
-.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
-.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
-.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
-.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
-.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
-.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
-.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
-.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
-.CtxtMenu_MenuSlider {  left: .1em;}
-.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
-.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
-.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
-.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
-.CtxtMenu_MenuDisabled {  color:GrayText}
-.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
-.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
-.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
-.CtxtMenu_ContextMenu:focus {  outline:none}
-.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
-.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
-.CtxtMenu_SelectionItem {  padding-right: 1em;}
-.CtxtMenu_Selection {  right: 40%; width:50%; }
-.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
-.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
-.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
-</style>
-      <script type="text/javascript" src="styles/main.js"></script>
-  <style id="MJX-SVG-styles">
-mjx-container[jax="SVG"] {
-  direction: ltr;
-}
+  
 
-mjx-container[jax="SVG"] > svg {
-  overflow: visible;
-  min-height: 1px;
-  min-width: 1px;
-}
-
-mjx-container[jax="SVG"] > svg a {
-  fill: blue;
-  stroke: blue;
-}
-
-mjx-assistive-mml {
-  position: absolute !important;
-  top: 0px;
-  left: 0px;
-  clip: rect(1px, 1px, 1px, 1px);
-  padding: 1px 0px 0px 0px !important;
-  border: 0px !important;
-  display: block !important;
-  width: auto !important;
-  overflow: hidden !important;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-mjx-assistive-mml[display="block"] {
-  width: 100% !important;
-}
-
-mjx-container[jax="SVG"][display="true"] {
-  display: block;
-  text-align: center;
-  margin: 1em 0;
-}
-
-mjx-container[jax="SVG"][display="true"][width="full"] {
-  display: flex;
-}
-
-mjx-container[jax="SVG"][justify="left"] {
-  text-align: left;
-}
-
-mjx-container[jax="SVG"][justify="right"] {
-  text-align: right;
-}
-
-g[data-mml-node="merror"] > g {
-  fill: red;
-  stroke: red;
-}
-
-g[data-mml-node="merror"] > rect[data-background] {
-  fill: yellow;
-  stroke: none;
-}
-
-g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
-  stroke-dasharray: 140;
-}
-
-g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
-  stroke-linecap: round;
-  stroke-dasharray: 0,140;
-}
-
-g[data-mml-node="mtable"] > g > svg {
-  overflow: visible;
-}
-
-[jax="SVG"] mjx-tool {
-  display: inline-block;
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-[jax="SVG"] mjx-tool > mjx-tip {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-mjx-tool > mjx-tip {
-  display: inline-block;
-  padding: .2em;
-  border: 1px solid #888;
-  font-size: 70%;
-  background-color: #F8F8F8;
-  color: black;
-  box-shadow: 2px 2px 5px #AAAAAA;
-}
-
-g[data-mml-node="maction"][data-toggle] {
-  cursor: pointer;
-}
-
-mjx-status {
-  display: block;
-  position: fixed;
-  left: 1em;
-  bottom: 1em;
-  min-width: 25%;
-  padding: .2em .4em;
-  border: 1px solid #888;
-  font-size: 90%;
-  background-color: #F8F8F8;
-  color: black;
-}
-
-foreignObject[data-mjx-xml] {
-  font-family: initial;
-  line-height: normal;
-  overflow: visible;
-}
-
-mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
-  stroke-width: 3;
-}
-</style></head>
 
   <body class="tex2jax_ignore" data-layout="landing" data-yaml-mime="">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
-          <a class="navbar-brand" href="index.html">
+          <a class="navbar-brand" href="https://github.com/dotnet/docfx">
             <img id="logo" class="svg" src="logo.svg" alt="Seed">
             Seed
           </a>
@@ -219,11 +46,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
                 <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             
-    <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul> <form class="icons"><a title="GitHub" class="btn border-0" href="https://github.com/dotnet/docfx"><i class="bi bi-github"></i></a> 
+    <ul class="navbar-nav"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/index.html">Home</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
+            <li class="nav-item dropdown">
+              <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle ">
+                API Documentation
+              </a>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+            </li></ul> 
+      <form class="icons">
+        <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
+        
     <div class="dropdown">
       <a title="Change theme" class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-circle-half"></i>
@@ -233,7 +65,8 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
       </ul>
-    </div></form></div>
+    </div>
+      </form></div>
           </div>
         </div>
       </nav>
@@ -247,8 +80,12 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
-            <nav class="toc" id="toc"><ul>
-        <li class="  ">
+            <nav class="toc" id="toc">
+      <form class="filter">
+        <i class="bi bi-filter"></i>
+        <input class="form-control" type="search" placeholder="Filter by title" autocomplete="off" aria-label="Filter by title" value="">
+      </form> <ul>
+        <li class=" active ">
           
           <a class="  " href="http://localhost:8089/index.html">Home</a>
           
@@ -259,14 +96,19 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           
         </li>
         <li class="  ">
+          <span class="expand-stub"></span>
+          <a href="#" class=" nav-link ">API Documentation</a>
+          <ul>
+        <li class="  ">
           
-          <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a>
           
         </li>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/restapi/petstore.html">REST API</a>
           
+        </li></ul>
         </li></ul></nav>
           </div>
         </div>
@@ -290,21 +132,21 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 <h2 id="description">Description<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#description" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <p>This is a sample docfx documentation project. It contains .NET source code and markdown files.
 <code>docfx.json</code> is the configuration file for running <code>docfx</code>.
-<code>docfx</code> will generate a static website as similar to <a href="http://docascode.github.io/docfx-seed/index.html" target="_blank" rel="noopener noreferrer nofollow" class="external">http://docascode.github.io/docfx-seed</a>.</p>
+<code>docfx</code> will generate a static website as similar to <a href="http://docascode.github.io/docfx-seed/index.html">http://docascode.github.io/docfx-seed</a>.</p>
 <h2 id="how-to-run">How to run<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#how-to-run" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
 <h3 id="under-windows">Under Windows<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#under-windows" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 <ul>
-<li>Download and unzip <a href="https://github.com/dotnet/docfx/releases/latest" target="_blank" rel="noopener noreferrer nofollow" class="external">docfx.zip</a> to run <code>docfx.exe</code> directly!</li>
+<li>Download and unzip <a href="https://github.com/dotnet/docfx/releases/latest">docfx.zip</a> to run <code>docfx.exe</code> directly!</li>
 <li>Run <code>docfx</code> under current repo! Website will be generated under <code>_site</code> folder.</li>
 <li>Run any web hosting tool to host <code>_site</code> folder, e.g. <code>docfx serve _site</code>.</li>
 </ul>
 <h3 id="cross-platform-and-use-dnx">Cross platform and use <code>dnx</code><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#cross-platform-and-use-dnx" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
-<p>As a prerequisite, you will need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm" target="_blank" rel="noopener noreferrer nofollow" class="external">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx" target="_blank" rel="noopener noreferrer nofollow" class="external">DNX</a>.
+<p>As a prerequisite, you will need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx">DNX</a>.
 ###Quick Start</p>
 <ul>
 <li><p><code>dnvm upgrade</code> to get the latest dnvm.</p>
 </li>
-<li><p>Add feed <a href="https://www.myget.org/F/aspnetrelease/api/v2/" target="_blank" rel="noopener noreferrer nofollow" class="external">https://www.myget.org/F/aspnetrelease/api/v2/</a> to Nuget.config</p>
+<li><p>Add feed <a href="https://www.myget.org/F/aspnetrelease/api/v2/">https://www.myget.org/F/aspnetrelease/api/v2/</a> to Nuget.config</p>
 <blockquote>
 <p>For Windows, the nuget config file is  <strong>%AppData%\NuGet\NuGet.config</strong>.</p>
 </blockquote>
@@ -321,7 +163,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 </li>
 </ul>
 <h2 id="further-information-about-docfx">Further information about <code>docfx</code><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#further-information-about-docfx" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
-<p><code>docfx</code> is a tool to generate documentation towards .NET source code and markdown files. Please refer to <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html" target="_blank" rel="noopener noreferrer nofollow" class="external">docfx</a> to get start. The <code>docfx</code> website itself is generated by <code>docfx</code>!</p>
+<p><code>docfx</code> is a tool to generate documentation towards .NET source code and markdown files. Please refer to <a href="http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html">docfx</a> to get start. The <code>docfx</code> website itself is generated by <code>docfx</code>!</p>
 </article>
 
         <div class="contribution d-print-none">

@@ -1,15 +1,16 @@
 /**
- * Copyright (c) Microsoft Corporation. All Rights Reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
-*/
+ * Licensed to the .NET Foundation under one or more agreements.
+ * The .NET Foundation licenses this file to you under the MIT license.
+ */
 
 $expand-stub-width: .85rem;
 
 .toc {
   min-width: 0;
-  font-size: 14px;
+  width: 100%;
 
   ul {
+    font-size: 14px;
     flex-direction: column;
     list-style-type: none;
     padding-left: 0;
@@ -65,5 +66,27 @@ $expand-stub-width: .85rem;
     font-weight: 600;
     display: inline-block;
     margin: .4rem 0;
+  }
+
+  form.filter {
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    >i.bi {
+      position: absolute;
+      left: .6rem;
+      opacity: .5;
+    }
+
+    >input {
+      padding-left: 2rem;
+    }
+  }
+
+  >.no-result {
+    font-size: .9em;
+    color: $secondary;
   }
 }

@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
 
@@ -342,7 +342,7 @@ internal class ExtractMetadataWorker : IDisposable
                     {
                         if (allMembers.TryGetValue(s.Name, out MetadataItem existingMetadata))
                         {
-                            Logger.Log(LogLevel.Warning, $"Duplicate member {s.Name} is found from {existingMetadata.Source.Path} and {s.Source.Path}, use the one in {existingMetadata.Source.Path} and ignore the one from {s.Source.Path}");
+                            Logger.Log(LogLevel.Warning, $"Duplicate member {s.Name} is found from {existingMetadata.Source?.Path} and {s.Source?.Path}, use the one in {existingMetadata.Source?.Path} and ignore the one from {s.Source?.Path}");
                         }
                         else
                         {
@@ -353,7 +353,7 @@ internal class ExtractMetadataWorker : IDisposable
                         {
                             if (allMembers.TryGetValue(s1.Name, out MetadataItem existingMetadata1))
                             {
-                                Logger.Log(LogLevel.Warning, $"Duplicate member {s1.Name} is found from {existingMetadata1.Source.Path} and {s1.Source.Path}, use the one in {existingMetadata1.Source.Path} and ignore the one from {s1.Source.Path}");
+                                Logger.Log(LogLevel.Warning, $"Duplicate member {s1.Name} is found from {existingMetadata1.Source?.Path} and {s1.Source?.Path}, use the one in {existingMetadata1.Source?.Path} and ignore the one from {s1.Source?.Path}");
                             }
                             else
                             {

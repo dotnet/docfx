@@ -1,8 +1,7 @@
 {
   "extends": "stylelint-config-standard-scss",
   "ignoreFiles": [
-    "**/*.ts",
-    "**/docfx.scss"
+    "**/*.ts"
   ],
   "rules": {
     "selector-class-pattern": null,

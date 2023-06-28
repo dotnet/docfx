@@ -1,6 +1,6 @@
 ﻿namespace BuildFromProject;
 
-public class Class1
+public class Class1 : IClass1
 {
     public class Test<T> { }
 
@@ -15,6 +15,7 @@ public class Class1
     /// </summary>
     /// <param name="args"></param>
     /// <seealso cref="Test{T}"/>
+    /// <seealso cref="Class1"/>
     public void Issue896() { }
 
     /// <summary>
@@ -98,4 +99,34 @@ public class Class1
     /// <c>@"\\?\"</c> `@"\\?\"`
     /// </remarks>
     public void Issue4392() { }
+
+    public void Issue8764<T>() where T: unmanaged { }
+
+    public class Issue8665
+    {
+        public int Foo { get; }
+        public char Bar { get; }
+        public string Baz { get; }
+
+        public Issue8665() : this(0, '\0', string.Empty) { }
+
+        public Issue8665(int foo) : this(foo, '\0', string.Empty) { }
+
+        public Issue8665(int foo, char bar) : this(foo, bar, string.Empty) { }
+
+        public Issue8665(int foo, char bar, string baz)
+        {
+            Foo = foo;
+            Bar = bar;
+            Baz = baz;
+        }
+    }
+
+    public class Issue8696Attribute : Attribute
+    {
+        [Issue8696Attribute("Changes the name of the server in the server list", 0, 0, null, false, null)]
+        public Issue8696Attribute(string? description = null, int boundsMin = 0, int boundsMax = 0, string[]? validGameModes = null, bool hasMultipleSelections = false, Type? enumType = null)
+        {
+        }
+    }
 }

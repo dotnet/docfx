@@ -42,9 +42,14 @@
       "_appName": "Seed",
       "_enableSearch": true
     },
-    "dest": "_site",
+    "output": "_site",
     "exportViewModel": true,
-    "template": ["default", "modern"]
+    "template": ["default", "modern", "template"],
+    "markdownEngineProperties": {
+      "alerts": {
+        "TODO": "alert alert-secondary"
+      }
+    }
   },
   "pdf": {
     "content": [
@@ -69,6 +74,6 @@
       "filePath": "C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe",
       "additionalArguments": "--enable-local-file-access"
     },
-    "dest": "_site_pdf"
+    "output": "_site_pdf"
   }
 }

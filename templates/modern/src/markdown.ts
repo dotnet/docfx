@@ -1,17 +1,15 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-import { breakWord } from './helper'
+import { breakWord, meta } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
-import mermaid from 'mermaid'
 import { getTheme } from './theme'
 
 /**
  * Initialize markdown rendering.
  */
-export function renderMarkdown() {
-  renderMermaid()
+export async function renderMarkdown() {
   renderWordBreaks()
   renderTables()
   renderAlerts()
@@ -20,21 +18,50 @@ export function renderMarkdown() {
   renderAnchor()
   renderCodeCopy()
   renderClickableImage()
+
+  await Promise.all([
+    renderMath(),
+    renderMermaid()
+  ])
 }
+
+async function renderMath() {
+  const math = document.querySelectorAll('.math')
+  if (math.length > 0) {
+    await import('mathjax/es5/tex-svg-full.js')
+  }
+}
+
+let mermaidRenderCount = 0
 
 /**
  * Render mermaid diagrams.
  */
-function renderMermaid() {
-  document.querySelectorAll('pre code.lang-mermaid').forEach(code => {
-    const pre = code.parentElement
-    pre.classList.add('mermaid')
-    code.remove()
-    pre.appendChild(document.createTextNode(code.textContent))
+async function renderMermaid() {
+  const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
+  if (diagrams.length <= 0) {
+    return
+  }
+
+  const { default: mermaid } = await import('mermaid')
+  const theme = getTheme() === 'dark' ? 'dark' : 'default'
+
+  // Turn off deterministic ids on re-render
+  const deterministicIds = mermaidRenderCount === 0
+  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, window.docfx.mermaid))
+  mermaidRenderCount++
+
+  const nodes = []
+  diagrams.forEach(e => {
+    // Rerender when elements becomes visible due to https://github.com/mermaid-js/mermaid/issues/1846
+    if (e.offsetParent) {
+      nodes.push(e.parentElement)
+      e.parentElement.classList.add('mermaid')
+      e.parentElement.innerHTML = e.innerHTML
+    }
   })
 
-  const theme = getTheme() === 'dark' ? 'dark' : 'default'
-  mermaid.initialize({ startOnLoad: true, deterministicIds: true, theme })
+  await mermaid.run({ nodes })
 }
 
 /**
@@ -118,6 +145,10 @@ function renderAlerts() {
  * Open external links to different host in a new window.
  */
 function renderLinks() {
+  if (meta('docfx:disablenewtab') === 'true') {
+    return
+  }
+
   document.querySelectorAll<HTMLAnchorElement>('article a[href]').forEach(a => {
     if (a.hostname !== window.location.hostname && a.innerText.trim() !== '') {
       a.target = '_blank'
@@ -132,10 +163,11 @@ function renderLinks() {
  */
 function renderAnchor() {
   const anchors = new AnchorJs()
-  anchors.options = {
+  anchors.options = Object.assign({
     visible: 'hover',
     icon: '#'
-  }
+  }, window.docfx.anchors)
+
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 }
 
@@ -359,6 +391,7 @@ function renderTabs() {
       }
       updateTabsQueryStringParam(state)
     }
+    notifyContentUpdated()
     const top = info.anchor.getBoundingClientRect().top
     if (top !== originalTop && event instanceof MouseEvent) {
       window.scrollTo(0, window.pageYOffset + top - originalTop)
@@ -413,5 +446,9 @@ function renderTabs() {
     document.querySelectorAll('div.tabGroup>ul>li').forEach(e => e.classList.add('nav-item'))
     document.querySelectorAll('div.tabGroup>ul>li>a').forEach(e => e.classList.add('nav-link'))
     document.querySelectorAll('div.tabGroup>section').forEach(e => e.classList.add('card'))
+  }
+
+  function notifyContentUpdated() {
+    renderMermaid()
   }
 }

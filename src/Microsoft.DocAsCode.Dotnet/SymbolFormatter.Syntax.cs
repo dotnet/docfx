@@ -359,7 +359,7 @@ partial class SymbolFormatter
                     AddPunctuation(")");
                     break;
 
-                case TypedConstantKind.Array when typedConstant.Type is not null:
+                case TypedConstantKind.Array when !typedConstant.IsNull && typedConstant.Type is not null:
                     AddKeyword("new", "New");
                     AddSpace();
                     AddTypeName(typedConstant.Type);
@@ -507,9 +507,16 @@ partial class SymbolFormatter
 
         private ImmutableArray<SymbolDisplayPart> GetDisplayParts(ISymbol symbol, SymbolDisplayFormat format)
         {
-            return Language is SyntaxLanguage.VB
-                ? VB.SymbolDisplay.ToDisplayParts(symbol, format)
-                : CS.SymbolDisplay.ToDisplayParts(symbol, format);
+            try
+            {
+                return Language is SyntaxLanguage.VB
+                    ? VB.SymbolDisplay.ToDisplayParts(symbol, format)
+                    : CS.SymbolDisplay.ToDisplayParts(symbol, format);
+            }
+            catch
+            {
+                return ImmutableArray<SymbolDisplayPart>.Empty;
+            }
         }
     }
 }

@@ -189,189 +189,6 @@
           "hideSubtitle": false
         },
         {
-          "uid": "CatLibrary.Cat`2.#ctor(`0)",
-          "isEii": false,
-          "isExtensionMethod": false,
-          "parent": "CatLibrary.Cat`2",
-          "isExternal": false,
-          "name": [
-            {
-              "lang": "csharp",
-              "value": "Cat(T)"
-            },
-            {
-              "lang": "vb",
-              "value": "New(T)"
-            }
-          ],
-          "nameWithType": [
-            {
-              "lang": "csharp",
-              "value": "Cat<T, K>.Cat(T)"
-            },
-            {
-              "lang": "vb",
-              "value": "Cat(Of T, K).New(T)"
-            }
-          ],
-          "fullName": [
-            {
-              "lang": "csharp",
-              "value": "CatLibrary.Cat<T, K>.Cat(T)"
-            },
-            {
-              "lang": "vb",
-              "value": "CatLibrary.Cat(Of T, K).New(T)"
-            }
-          ],
-          "specName": [
-            {
-              "lang": "csharp",
-              "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
-            },
-            {
-              "lang": "vb",
-              "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
-            }
-          ],
-          "syntax": {
-            "content": [
-              {
-                "lang": "csharp",
-                "value": "public Cat(T ownType)"
-              },
-              {
-                "lang": "vb",
-                "value": "Public Sub New(ownType As T)"
-              }
-            ],
-            "parameters": [
-              {
-                "id": "ownType",
-                "type": {
-                  "uid": "{T}",
-                  "definition": "T",
-                  "name": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "nameWithType": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "fullName": [
-                    {
-                      "lang": "csharp",
-                      "value": "T"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "T"
-                    }
-                  ],
-                  "specName": [
-                    {
-                      "lang": "csharp",
-                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                    },
-                    {
-                      "lang": "vb",
-                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
-                    }
-                  ]
-                },
-                "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This parameter type defined by class.</p>\n"
-              }
-            ]
-          },
-          "source": {
-            "remote": {
-              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
-              "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
-            },
-            "id": ".ctor",
-            "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 127.0,
-            "endLine": 0.0,
-            "isExternal": false
-          },
-          "assemblies": [
-            "CatLibrary"
-          ],
-          "namespace": "CatLibrary",
-          "example": [],
-          "overload": {
-            "uid": "CatLibrary.Cat`2.#ctor*",
-            "name": [
-              {
-                "lang": "csharp",
-                "value": "Cat"
-              },
-              {
-                "lang": "vb",
-                "value": "New"
-              }
-            ],
-            "nameWithType": [
-              {
-                "lang": "csharp",
-                "value": "Cat<T, K>.Cat"
-              },
-              {
-                "lang": "vb",
-                "value": "Cat(Of T, K).New"
-              }
-            ],
-            "fullName": [
-              {
-                "lang": "csharp",
-                "value": "CatLibrary.Cat<T, K>.Cat"
-              },
-              {
-                "lang": "vb",
-                "value": "CatLibrary.Cat(Of T, K).New"
-              }
-            ],
-            "specName": [
-              {
-                "lang": "csharp",
-                "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
-              },
-              {
-                "lang": "vb",
-                "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
-              }
-            ],
-            "id": "CatLibrary_Cat_2__ctor_"
-          },
-          "level": 0.0,
-          "type": "constructor",
-          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Constructor with one generic parameter.</p>\n",
-          "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor__0_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128",
-          "remarks": "",
-          "conceptual": "",
-          "implements": "",
-          "seealso": null,
-          "id": "CatLibrary_Cat_2__ctor__0_",
-          "hideTitleType": false,
-          "hideSubtitle": false
-        },
-        {
           "uid": "CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)",
           "isEii": false,
           "isExtensionMethod": false,
@@ -691,6 +508,189 @@
           "implements": "",
           "seealso": null,
           "id": "CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Cat`2.#ctor(`0)",
+          "isEii": false,
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Cat`2",
+          "isExternal": false,
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Cat(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "New(T)"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Cat<T, K>.Cat(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "Cat(Of T, K).New(T)"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Cat<T, K>.Cat(T)"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Cat(Of T, K).New(T)"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Cat`2.#ctor(`0)\" text=\"Cat(T)\"/>"
+            }
+          ],
+          "syntax": {
+            "content": [
+              {
+                "lang": "csharp",
+                "value": "public Cat(T ownType)"
+              },
+              {
+                "lang": "vb",
+                "value": "Public Sub New(ownType As T)"
+              }
+            ],
+            "parameters": [
+              {
+                "id": "ownType",
+                "type": {
+                  "uid": "{T}",
+                  "definition": "T",
+                  "name": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "nameWithType": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "fullName": [
+                    {
+                      "lang": "csharp",
+                      "value": "T"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "T"
+                    }
+                  ],
+                  "specName": [
+                    {
+                      "lang": "csharp",
+                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                    },
+                    {
+                      "lang": "vb",
+                      "value": "<xref uid=\"{T}\" text=\"T\"/>"
+                    }
+                  ]
+                },
+                "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This parameter type defined by class.</p>\n"
+              }
+            ]
+          },
+          "source": {
+            "remote": {
+              "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
+              "branch": "main",
+              "repo": "https://github.com/dotnet/docfx"
+            },
+            "id": ".ctor",
+            "path": "dotnet/solution/CatLibrary/Class1.cs",
+            "startLine": 127.0,
+            "endLine": 0.0,
+            "isExternal": false
+          },
+          "assemblies": [
+            "CatLibrary"
+          ],
+          "namespace": "CatLibrary",
+          "example": [],
+          "overload": {
+            "uid": "CatLibrary.Cat`2.#ctor*",
+            "name": [
+              {
+                "lang": "csharp",
+                "value": "Cat"
+              },
+              {
+                "lang": "vb",
+                "value": "New"
+              }
+            ],
+            "nameWithType": [
+              {
+                "lang": "csharp",
+                "value": "Cat<T, K>.Cat"
+              },
+              {
+                "lang": "vb",
+                "value": "Cat(Of T, K).New"
+              }
+            ],
+            "fullName": [
+              {
+                "lang": "csharp",
+                "value": "CatLibrary.Cat<T, K>.Cat"
+              },
+              {
+                "lang": "vb",
+                "value": "CatLibrary.Cat(Of T, K).New"
+              }
+            ],
+            "specName": [
+              {
+                "lang": "csharp",
+                "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
+              },
+              {
+                "lang": "vb",
+                "value": "<xref uid=\"CatLibrary.Cat`2.#ctor*\" text=\"Cat\"/>"
+              }
+            ],
+            "id": "CatLibrary_Cat_2__ctor_"
+          },
+          "level": 0.0,
+          "type": "constructor",
+          "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Constructor with one generic parameter.</p>\n",
+          "platform": null,
+          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor__0_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128",
+          "remarks": "",
+          "conceptual": "",
+          "implements": "",
+          "seealso": null,
+          "id": "CatLibrary_Cat_2__ctor__0_",
           "hideTitleType": false,
           "hideSubtitle": false
         }
@@ -4266,7 +4266,6 @@
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "obj/api/CatLibrary.Cat-2.yml",
-  "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "../toc.html",

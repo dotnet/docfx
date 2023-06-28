@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
 using System.Net;
@@ -57,6 +57,7 @@ public class DocumentBuilderTest : TestBase
             {
                 "# [test1](test.md#bookmark)",
                 "## [test2](test/test.md)",
+                "## [GitHub](GitHub.md?shouldBeAbbreviated=true#test)",
                 "# Api",
                 "## [Console](@System.Console)",
                 "## [ConsoleColor](xref:System.ConsoleColor)",
@@ -97,6 +98,7 @@ public class DocumentBuilderTest : TestBase
                 "Test external xref with absolute URL and anchor: @str",
                 "Test invalid autolink xref: <xref:?displayProperty=fullName>",
                 "Test href generator: [GitHub](GitHub.md?shouldBeAbbreviated=true#test)",
+                "Test href generator: [Git](Git.md?shouldBeAbbreviated=true#test)",
                 "<p>",
                 "test",
             },
@@ -205,6 +207,8 @@ tagRules : [
                 Assert.NotNull(model[0].Items);
                 Assert.Equal("test2", model[0].Items[0].Name);
                 Assert.Equal("test/test.html", model[0].Items[0].Href);
+                Assert.Equal("GitHub", model[0].Items[1].Name);
+                Assert.Equal("GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test", model[0].Items[1].Href);
                 Assert.Equal("Api", model[1].Name);
                 Assert.Null(model[1].Href);
                 Assert.NotNull(model[1].Items);
@@ -213,7 +217,7 @@ tagRules : [
                 Assert.Equal("ConsoleColor", model[1].Items[1].Name);
                 Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
             }
-
+            
             {
                 // check conceptual.
                 var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
@@ -251,7 +255,8 @@ tagRules : [
                         "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
                         $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"30\"></xref>",
                         $"Test invalid autolink xref: <xref href=\"?displayProperty=fullName\" data-throw-if-not-resolved=\"True\" data-raw-source=\"&lt;xref:?displayProperty=fullName&gt;\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"31\"></xref>",
-                        $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\">GitHub</a></p>",
+                        $"Test href generator: <a href=\"GitHub.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"32\">GitHub</a>",
+                        $"Test href generator: <a href=\"Git.md?shouldBeAbbreviated=true#test\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"33\">Git</a></p>",
                         "<p>",
                         @"test",
                         "</p>"),
@@ -284,7 +289,8 @@ tagRules : [
                         "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                         "Test external xref with absolute URL and anchor: <a class=\"xref\" href=\"https://docs.python.org/3.5/library/stdtypes.html#str\">str</a>",
                         "Test invalid autolink xref: &lt;xref:?displayProperty=fullName&gt;",
-                        "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a></p>",
+                        "Test href generator: <a href=\"GH.md?isAbbreviated=true&shouldBeAbbreviated=true#test\">GitHub</a>",
+                        "Test href generator: <a href=\"Git.md?shouldBeAbbreviated=true#test\">Git</a></p>",
                         "<p>",
                         "test",
                         "</p>"),
@@ -540,7 +546,6 @@ exports.getOptions = function (){
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
-                ["_lang"] = "csharp",
                 ["_tocPath"] = $"{_inputFolder}/toc",
                 ["_rel"] = "../",
                 ["_path"] = $"{_inputFolder}/toc",
@@ -561,7 +566,6 @@ exports.getOptions = function (){
                     {
                         [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/toc",
                             ["_rel"] = "../",
                             ["_path"] = $"{_inputFolder}/toc",
@@ -580,7 +584,6 @@ exports.getOptions = function (){
                         },
                         [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/test/toc",
                             ["_rel"] = "../../",
                             ["_path"] = $"{_inputFolder}/test/toc",
@@ -612,7 +615,6 @@ exports.getOptions = function (){
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
             var expected = new Dictionary<string, object>
             {
-                ["_lang"] = "csharp",
                 ["_tocPath"] = $"{_inputFolder}/toc",
                 ["_rel"] = "../",
                 ["_path"] = $"{_inputFolder}/test.html",
@@ -645,7 +647,6 @@ exports.getOptions = function (){
                     {
                         [$"~/{_inputFolder}/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/toc",
                             ["_rel"] = "../",
                             ["_path"] = $"{_inputFolder}/toc",
@@ -664,7 +665,6 @@ exports.getOptions = function (){
                         },
                         [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                         {
-                            ["_lang"] = "csharp",
                             ["_tocPath"] = $"{_inputFolder}/test/toc",
                             ["_rel"] = "../../",
                             ["_path"] = $"{_inputFolder}/test/toc",
@@ -935,7 +935,7 @@ exports.getOptions = function (){
             OutputBaseDir = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
             ApplyTemplateSettings = applyTemplateSettings,
             Metadata = metadata?.ToImmutableDictionary(),
-            TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
+            TemplateManager = new TemplateManager(new List<string> { _templateFolder }, null, null),
             TemplateDir = templateFolder,
             VersionDir = versionDir,
             XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),

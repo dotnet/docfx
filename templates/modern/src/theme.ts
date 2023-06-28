@@ -1,9 +1,8 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 import { html } from 'lit-html'
-
-type Theme = 'light' | 'dark' | 'auto'
+import { Theme } from './options'
 
 function setTheme(theme: Theme) {
   localStorage.setItem('theme', theme)
@@ -14,8 +13,12 @@ function setTheme(theme: Theme) {
   }
 }
 
+function getDefaultTheme() {
+  return localStorage.getItem('theme') as Theme || window.docfx.defaultTheme || 'auto'
+}
+
 export function initTheme() {
-  setTheme(localStorage.getItem('theme') as Theme || 'auto')
+  setTheme(getDefaultTheme())
 }
 
 export function getTheme(): 'light' | 'dark' {
@@ -23,7 +26,7 @@ export function getTheme(): 'light' | 'dark' {
 }
 
 export function themePicker(refresh: () => void) {
-  const theme = localStorage.getItem('theme') as Theme || 'auto'
+  const theme = getDefaultTheme()
   const icon = theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'circle-half'
 
   return html`

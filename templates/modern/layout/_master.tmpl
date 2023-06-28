@@ -1,11 +1,10 @@
-{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
-{{!include(/^styles/.*/)}}
-{{!include(/^fonts/.*/)}}
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+{{!include(/^public/.*/)}}
 {{!include(favicon.ico)}}
 {{!include(logo.svg)}}
 {{!include(search-stopwords.json)}}
 <!DOCTYPE html>
-<html>
+<html {{#_lang}}lang="{{_lang}}"{{/_lang}}>
   <head>
     <meta charset="utf-8">
     {{#redirect_url}}
@@ -17,33 +16,45 @@
       <meta name="title" content="{{#title}}{{title}}{{/title}}{{^title}}{{>partials/title}}{{/title}} {{#_appTitle}}| {{_appTitle}} {{/_appTitle}}">
       {{#_description}}<meta name="description" content="{{_description}}">{{/_description}}
       <link rel="icon" href="{{_rel}}{{{_appFaviconPath}}}{{^_appFaviconPath}}favicon.ico{{/_appFaviconPath}}">
-      <link rel="stylesheet" href="{{_rel}}styles/docfx.min.css">
-      <link rel="stylesheet" href="{{_rel}}styles/main.css">
+      <link rel="stylesheet" href="{{_rel}}public/docfx.min.css">
+      <link rel="stylesheet" href="{{_rel}}public/main.css">
       <meta name="docfx:navrel" content="{{_navRel}}">
       <meta name="docfx:tocrel" content="{{_tocRel}}">
       {{#_noindex}}<meta name="searchOption" content="noindex">{{/_noindex}}
       {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
+      {{#_disableNewTab}}<meta name="docfx:disablenewtab" content="true">{{/_disableNewTab}}
+      {{#_disableTocFilter}}<meta name="docfx:disabletocfilter" content="true">{{/_disableTocFilter}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
-
-      <script>
-        MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        };
-      </script>
-
-      <script type="text/javascript" src="{{_rel}}styles/docfx.min.js"></script>
-      <script type="text/javascript" src="{{_rel}}styles/main.js"></script>
     {{/redirect_url}}
   </head>
 
   {{^redirect_url}}
-  <body class="tex2jax_ignore" data-layout="{{layout}}" data-yaml-mime="{{yamlmime}}">
+  <script type="module">
+    import options from './{{_rel}}public/main.js'
+    import { init } from './{{_rel}}public/docfx.min.js'
+    init(options)
+  </script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+  {{#_googleAnalyticsTagId}}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{_googleAnalyticsTagId}}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '{{_googleAnalyticsTagId}}');
+  </script>
+  {{/_googleAnalyticsTagId}}
+
+  <body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
     <header class="bg-body border-bottom">
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
-          <a class="navbar-brand" href="{{_rel}}index.html">
+          <a class="navbar-brand" href="{{_appLogoUrl}}{{^_appLogoUrl}}{{_rel}}index.html{{/_appLogoUrl}}">
             <img id="logo" class="svg" src="{{_rel}}{{{_appLogoPath}}}{{^_appLogoPath}}logo.svg{{/_appLogoPath}}" alt="{{_appName}}" >
             {{_appName}}
           </a>
@@ -94,9 +105,12 @@
 
         {{^_disableContribution}}
         <div class="contribution d-print-none">
-          {{#docurl}}
+          {{#sourceurl}}
+          <a href="{{sourceurl}}" class="edit-link">Edit this page</a>
+          {{/sourceurl}}
+          {{^sourceurl}}{{#docurl}}
           <a href="{{docurl}}" class="edit-link">Edit this page</a>
-          {{/docurl}}
+          {{/docurl}}{{/sourceurl}}
         </div>
         {{/_disableContribution}}
 

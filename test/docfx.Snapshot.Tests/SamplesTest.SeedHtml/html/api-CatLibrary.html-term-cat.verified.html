@@ -7,201 +7,28 @@
  | docfx seed website ">
       
       <link rel="icon" href="../favicon.ico">
-      <style class="anchorjs"></style><link rel="stylesheet" href="../styles/docfx.min.css">
-      <link rel="stylesheet" href="../styles/main.css">
+      <style class="anchorjs"></style><link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
       <meta name="docfx:navrel" content="../toc.html">
       <meta name="docfx:tocrel" content="toc.html">
       
       <meta name="docfx:rel" content="../">
       
+      
+      
+  <script type="module">
+    import options from './../public/main.js'
+    import { init } from './../public/docfx.min.js'
+    init(options)
+  </script><script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script></head>
 
-      <script>
-        MathJax = {
-          options: {
-            processHtmlClass: ['tex2jax_process', 'math']
-          }
-        };
-      </script>
+  
 
-      <script type="text/javascript" src="../styles/docfx.min.js"></script><style type="text/css">.CtxtMenu_InfoClose {  top:.2em; right:.2em;}
-.CtxtMenu_InfoContent {  overflow:auto; text-align:left; font-size:80%;  padding:.4em .6em; border:1px inset; margin:1em 0px;  max-height:20em; max-width:30em; background-color:#EEEEEE;  white-space:normal;}
-.CtxtMenu_Info.CtxtMenu_MousePost {outline:none;}
-.CtxtMenu_Info {  position:fixed; left:50%; width:auto; text-align:center;  border:3px outset; padding:1em 2em; background-color:#DDDDDD;  color:black;  cursor:default; font-family:message-box; font-size:120%;  font-style:normal; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 15px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius:15px;               /* Safari and Chrome */  -moz-border-radius:15px;                  /* Firefox */  -khtml-border-radius:15px;                /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */  filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color="gray", Positive="true"); /* IE */}
-</style><style type="text/css">.CtxtMenu_MenuClose {  position:absolute;  cursor:pointer;  display:inline-block;  border:2px solid #AAA;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  font-family: "Courier New", Courier;  font-size:24px;  color:#F0F0F0}
-.CtxtMenu_MenuClose span {  display:block; background-color:#AAA; border:1.5px solid;  border-radius:18px;  -webkit-border-radius: 18px;             /* Safari and Chrome */  -moz-border-radius: 18px;                /* Firefox */  -khtml-border-radius: 18px;              /* Konqueror */  line-height:0;  padding:8px 0 6px     /* may need to be browser-specific */}
-.CtxtMenu_MenuClose:hover {  color:white!important;  border:2px solid #CCC!important}
-.CtxtMenu_MenuClose:hover span {  background-color:#CCC!important}
-.CtxtMenu_MenuClose:hover:focus {  outline:none}
-</style><style type="text/css">.CtxtMenu_Menu {  position:absolute;  background-color:white;  color:black;  width:auto; padding:5px 0px;  border:1px solid #CCCCCC; margin:0; cursor:default;  font: menu; text-align:left; text-indent:0; text-transform:none;  line-height:normal; letter-spacing:normal; word-spacing:normal;  word-wrap:normal; white-space:nowrap; float:none; z-index:201;  border-radius: 5px;                     /* Opera 10.5 and IE9 */  -webkit-border-radius: 5px;             /* Safari and Chrome */  -moz-border-radius: 5px;                /* Firefox */  -khtml-border-radius: 5px;              /* Konqueror */  box-shadow:0px 10px 20px #808080;         /* Opera 10.5 and IE9 */  -webkit-box-shadow:0px 10px 20px #808080; /* Safari 3 & Chrome */  -moz-box-shadow:0px 10px 20px #808080;    /* Forefox 3.5 */  -khtml-box-shadow:0px 10px 20px #808080;  /* Konqueror */}
-.CtxtMenu_MenuItem {  padding: 1px 2em;  background:transparent;}
-.CtxtMenu_MenuArrow {  position:absolute; right:.5em; padding-top:.25em; color:#666666;  font-family: null; font-size: .75em}
-.CtxtMenu_MenuActive .CtxtMenu_MenuArrow {color:white}
-.CtxtMenu_MenuArrow.CtxtMenu_RTL {left:.5em; right:auto}
-.CtxtMenu_MenuCheck {  position:absolute; left:.7em;  font-family: null}
-.CtxtMenu_MenuCheck.CtxtMenu_RTL { right:.7em; left:auto }
-.CtxtMenu_MenuRadioCheck {  position:absolute; left: .7em;}
-.CtxtMenu_MenuRadioCheck.CtxtMenu_RTL {  right: .7em; left:auto}
-.CtxtMenu_MenuInputBox {  padding-left: 1em; right:.5em; color:#666666;  font-family: null;}
-.CtxtMenu_MenuInputBox.CtxtMenu_RTL {  left: .1em;}
-.CtxtMenu_MenuComboBox {  left:.1em; padding-bottom:.5em;}
-.CtxtMenu_MenuSlider {  left: .1em;}
-.CtxtMenu_SliderValue {  position:absolute; right:.1em; padding-top:.25em; color:#333333;  font-size: .75em}
-.CtxtMenu_SliderBar {  outline: none; background: #d3d3d3}
-.CtxtMenu_MenuLabel {  padding: 1px 2em 3px 1.33em;  font-style:italic}
-.CtxtMenu_MenuRule {  border-top: 1px solid #DDDDDD;  margin: 4px 3px;}
-.CtxtMenu_MenuDisabled {  color:GrayText}
-.CtxtMenu_MenuActive {  background-color: #606872;  color: white;}
-.CtxtMenu_MenuDisabled:focus {  background-color: #E8E8E8}
-.CtxtMenu_MenuLabel:focus {  background-color: #E8E8E8}
-.CtxtMenu_ContextMenu:focus {  outline:none}
-.CtxtMenu_ContextMenu .CtxtMenu_MenuItem:focus {  outline:none}
-.CtxtMenu_SelectionMenu {  position:relative; float:left;  border-bottom: none; -webkit-box-shadow:none; -webkit-border-radius:0px; }
-.CtxtMenu_SelectionItem {  padding-right: 1em;}
-.CtxtMenu_Selection {  right: 40%; width:50%; }
-.CtxtMenu_SelectionBox {  padding: 0em; max-height:20em; max-width: none;  background-color:#FFFFFF;}
-.CtxtMenu_SelectionDivider {  clear: both; border-top: 2px solid #000000;}
-.CtxtMenu_Menu .CtxtMenu_MenuClose {  top:-10px; left:-10px}
-</style>
-      <script type="text/javascript" src="../styles/main.js"></script>
-  <style id="MJX-SVG-styles">
-mjx-container[jax="SVG"] {
-  direction: ltr;
-}
+  
 
-mjx-container[jax="SVG"] > svg {
-  overflow: visible;
-  min-height: 1px;
-  min-width: 1px;
-}
-
-mjx-container[jax="SVG"] > svg a {
-  fill: blue;
-  stroke: blue;
-}
-
-mjx-assistive-mml {
-  position: absolute !important;
-  top: 0px;
-  left: 0px;
-  clip: rect(1px, 1px, 1px, 1px);
-  padding: 1px 0px 0px 0px !important;
-  border: 0px !important;
-  display: block !important;
-  width: auto !important;
-  overflow: hidden !important;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-mjx-assistive-mml[display="block"] {
-  width: 100% !important;
-}
-
-mjx-container[jax="SVG"][display="true"] {
-  display: block;
-  text-align: center;
-  margin: 1em 0;
-}
-
-mjx-container[jax="SVG"][display="true"][width="full"] {
-  display: flex;
-}
-
-mjx-container[jax="SVG"][justify="left"] {
-  text-align: left;
-}
-
-mjx-container[jax="SVG"][justify="right"] {
-  text-align: right;
-}
-
-g[data-mml-node="merror"] > g {
-  fill: red;
-  stroke: red;
-}
-
-g[data-mml-node="merror"] > rect[data-background] {
-  fill: yellow;
-  stroke: none;
-}
-
-g[data-mml-node="mtable"] > line[data-line], svg[data-table] > g > line[data-line] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > rect[data-frame], svg[data-table] > g > rect[data-frame] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > .mjx-dashed, svg[data-table] > g > .mjx-dashed {
-  stroke-dasharray: 140;
-}
-
-g[data-mml-node="mtable"] > .mjx-dotted, svg[data-table] > g > .mjx-dotted {
-  stroke-linecap: round;
-  stroke-dasharray: 0,140;
-}
-
-g[data-mml-node="mtable"] > g > svg {
-  overflow: visible;
-}
-
-[jax="SVG"] mjx-tool {
-  display: inline-block;
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-[jax="SVG"] mjx-tool > mjx-tip {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-mjx-tool > mjx-tip {
-  display: inline-block;
-  padding: .2em;
-  border: 1px solid #888;
-  font-size: 70%;
-  background-color: #F8F8F8;
-  color: black;
-  box-shadow: 2px 2px 5px #AAAAAA;
-}
-
-g[data-mml-node="maction"][data-toggle] {
-  cursor: pointer;
-}
-
-mjx-status {
-  display: block;
-  position: fixed;
-  left: 1em;
-  bottom: 1em;
-  min-width: 25%;
-  padding: .2em .4em;
-  border: 1px solid #888;
-  font-size: 90%;
-  background-color: #F8F8F8;
-  color: black;
-}
-
-foreignObject[data-mjx-xml] {
-  font-family: initial;
-  line-height: normal;
-  overflow: visible;
-}
-
-mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
-  stroke-width: 3;
-}
-</style></head>
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference" data-search="true">
     <header class="bg-body border-bottom">
@@ -221,11 +48,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
                 <input class="form-control" id="search-query" type="search" placeholder="Search" autocomplete="off" aria-label="Search">
               </form>
             
-    <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
-          <li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul> <form class="icons"> 
+    <ul class="navbar-nav"><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/index.html">Home</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/articles/docfx_getting_started.html">Articles</a></li>
+            <li class="nav-item dropdown">
+              <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" class="nav-link dropdown-toggle active">
+                API Documentation
+              </a>
+              <ul class="dropdown-menu"><li class="nav-item"><a class="nav-link active" aria-current="page" href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li><li class="nav-item"><a class="nav-link " aria-current="false" href="http://localhost:8089/restapi/petstore.html">REST API</a></li></ul>
+            </li></ul> 
+      <form class="icons">
+        <a class="btn border-0" href="https://github.com/dotnet/docfx" title="GitHub"><i class="bi bi-github"></i></a><a class="btn border-0" href="https://twitter.com/" title="Twitter"><i class="bi bi-twitter"></i></a>
+        
     <div class="dropdown">
       <a title="Change theme" class="btn border-0 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-circle-half"></i>
@@ -235,7 +67,8 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
         <li><a class="dropdown-item" href="#"><i class="bi bi-moon"></i> Dark</a></li>
         <li><a class="dropdown-item" href="#"><i class="bi bi-circle-half"></i> Auto</a></li>
       </ul>
-    </div></form></div>
+    </div>
+      </form></div>
           </div>
         </div>
       </nav>
@@ -249,34 +82,73 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
-            <nav class="toc" id="toc"><ul>
+            <nav class="toc" id="toc">
+      <form class="filter">
+        <i class="bi bi-filter"></i>
+        <input class="form-control" type="search" placeholder="Filter by title" autocomplete="off" aria-label="Filter by title" value="">
+      </form> <ul>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.html">Build<wbr>From<wbr>Assembly</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromAssembly.Class1.html">Class1</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.html">Build<wbr>From<wbr>CSharp<wbr>Source<wbr>Code</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromCSharpSourceCode.CSharp.html">CSharp</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.html">Build<wbr>From<wbr>Project</a>
-          <ul><ul>
+          <ul>
+        <li class="  ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.html">Issue8540</a>
+          <ul>
+        <li class="  ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.html">A</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.A.A.html">A</a>
+          
+        </li></ul>
+        </li>
+        <li class="  ">
+          <span class="expand-stub"></span>
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.html">B</a>
+          <ul>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Issue8540.B.B.html">B</a>
+          
+        </li></ul>
+        </li></ul>
+        </li>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.html">Class1</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8665.html">Class1.<wbr>Issue8665</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Class1.Issue8696Attribute.html">Class1.<wbr>Issue8696<wbr>Attribute</a>
           
         </li>
         <li class="  ">
@@ -328,12 +200,12 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromProject.Inheritdoc.Issue8129.html">Inheritdoc.<wbr>Issue8129</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.html">Build<wbr>From<wbr>VBSource<wbr>Code</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.BaseClass1.html">Base<wbr>Class1</a>
@@ -343,16 +215,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           
           <a class=" nav-link " href="http://localhost:8089/api/BuildFromVBSourceCode.Class1.html">Class1</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li>
-        <li class="  ">
+        <li class=" expanded active ">
           <span class="expand-stub"></span>
           <a class="  " href="http://localhost:8089/api/CatLibrary.html">Cat<wbr>Library</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.html">Core</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ContainersRefType.html">Containers<wbr>Ref<wbr>Type</a>
@@ -382,16 +254,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Core.ExplicitLayoutClass.html">Explicit<wbr>Layout<wbr>Class</a>
           
-        </li></ul></ul>
-        </li>
-        <li class="  ">
-          
-          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Cat-2.html">Cat&lt;<wbr>T,<wbr> K&gt;</a>
-          
+        </li></ul>
         </li>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.CatException-1.html">Cat<wbr>Exception&lt;<wbr>T&gt;</a>
+          
+        </li>
+        <li class="  ">
+          
+          <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.Cat-2.html">Cat&lt;<wbr>T,<wbr> K&gt;</a>
           
         </li>
         <li class="  ">
@@ -438,17 +310,17 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
           
           <a class=" nav-link " href="http://localhost:8089/api/CatLibrary.TomFromBaseClass.html">Tom<wbr>From<wbr>Base<wbr>Class</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li>
         <li class="  ">
           <span class="expand-stub"></span>
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.html">MRef.<wbr>Demo.<wbr>Enumeration</a>
-          <ul><ul>
+          <ul>
         <li class="  ">
           
           <a class=" nav-link " href="http://localhost:8089/api/MRef.Demo.Enumeration.ColorType.html">Color<wbr>Type</a>
           
-        </li></ul></ul>
+        </li></ul>
         </li></ul></nav>
           </div>
         </div>
@@ -462,7 +334,7 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 
           <nav id="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="http://localhost:8089/api/BuildFromAssembly.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="http://localhost:8089/api/BuildFromAssembly.html">.NET API</a></li>
         </ol></nav>
         </div>
 
@@ -473,12 +345,16 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
   <div class="markdown level0 conceptual"></div>
   <div class="markdown level0 remarks"></div>
 
-    <h3 id="namespaces"><a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#namespaces" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+    <h3 id="namespaces">Namespaces<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#namespaces" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
     <dl class="jumplist">
       <dt><a class="xref" href="CatLibrary.Core.html">Cat<wbr>Library.<wbr>Core</a></dt>
       <dd></dd>
     </dl>
     <h3 id="classes">Classes<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#classes" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
+    <dl class="jumplist">
+      <dt><a class="xref" href="CatLibrary.CatException-1.html">CatException&lt;T&gt;</a></dt>
+      <dd></dd>
+    </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="CatLibrary.Cat-2.html">Cat&lt;T, K&gt;</a></dt>
       <dd><p>Here's main class of this <i>Demo</i>.</p>
@@ -487,10 +363,6 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 <p>this class is a template class. It has two Generic parameter. they are: <code class="typeparamref">T</code> and <code class="typeparamref">K</code>.</p>
 <p>The extension method of this class can refer to <a class="xref" href="CatLibrary.ICatExtension.html">ICat<wbr>Extension</a> class</p>
 </dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="CatLibrary.CatException-1.html">CatException&lt;T&gt;</a></dt>
-      <dd></dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="CatLibrary.Complex-2.html">Complex&lt;T, J&gt;</a></dt>
@@ -553,17 +425,17 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
       <div class="affix">
         <nav id="affix">
       <h5 class="border-bottom">In this article</h5>
-      <ul><li><a class="link-secondary" href="#namespaces"></a></li><li><a class="link-secondary" href="#classes">Classes</a></li><li><a class="link-secondary" href="#interfaces">Interfaces</a></li><li><a class="link-secondary" href="#delegates">Delegates</a></li></ul></nav>
+      <ul><li><a class="link-secondary" href="#namespaces">Namespaces</a></li><li><a class="link-secondary" href="#classes">Classes</a></li><li><a class="link-secondary" href="#interfaces">Interfaces</a></li><li><a class="link-secondary" href="#delegates">Delegates</a></li></ul></nav>
       </div>
     </main>
 
     <div class="container-xxl search-results" id="search-results">
-        <div class="search-list">4 results for "cat"</div>
+        <div class="search-list">3 results for "cat"</div>
         <div class="sr-items">
             <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../api/CatLibrary.Cat-2.html?q=cat">Class <b>Cat</b>&lt;T, K&gt; | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/api/<b>Cat</b>Library.Cat-2.html</div>
-              <div class="item-brief">... used for this parameter. Inheritance object <b>Cat</b>&lt;T, K&gt; Implements ICat IAnimal Inherited Members object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Extension Methods ICatExtension.Play(ICat, ContainersRefType.ColorType) ICatExtension.Sleep(ICat, long) Examples Here's example of how to create an instance of this class. As T is limited with class and K is limited with struct. var a = new Cat(object, int)(); int catNumber = new int(); unsafe { a.GetFeetLength(catNumber); } As you see, here we bring in pointer so we need to add unsafe keyword. Remarks THIS is remarks overridden in MARKDWON file Constructors Cat() Default constructor. public Cat() Cat(T) Constructor with one generic parameter. public Cat(T ownType) Parameters ownType T This parameter type defined by class. Cat(string, out int, string, bool) It's a complex constructor. The parameter will have some attributes. public Cat(string nickName, out int age, s...</div>
+              <div class="item-brief">... used for this parameter. Inheritance object <b>Cat</b>&lt;T, K&gt; Implements ICat IAnimal Inherited Members object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Extension Methods ICatExtension.Play(ICat, ContainersRefType.ColorType) ICatExtension.Sleep(ICat, long) Examples Here's example of how to create an instance of this class. As T is limited with class and K is limited with struct. var a = new Cat(object, int)(); int catNumber = new int(); unsafe { a.GetFeetLength(catNumber); } As you see, here we bring in pointer so we need to add unsafe keyword. Remarks THIS is remarks overridden in MARKDWON file Constructors Cat() Default constructor. public Cat() Cat(string, out int, string, bool) It's a complex constructor. The parameter will have some attributes. public Cat(string nickName, out int age, string realName, bool isHealthy) Parameters nickName string it's string type. age int It's an out and ref parameter. realName str...</div>
             </div>
             <div class="sr-item">
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../api/CatLibrary.ICat.html?q=cat">Interface I<b>Cat</b> | docfx seed website</a></div>
@@ -574,11 +446,6 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
               <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../api/CatLibrary.ICatExtension.html?q=cat">Class I<b>Cat</b>Extension | docfx seed website</a></div>
               <div class="item-href">http:/localhost:8089/api/<b>Cat</b>Library.ICatExtension.html</div>
               <div class="item-brief">...ass I<b>Cat</b>Extension Namespace CatLibrary Assembly CatLibrary.dll It's the class that contains ICat interface's extension method. This class must be public and static. Also it shouldn't be a geneic class public static class ICatExtension Inheritance object ICatExtension Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Play(ICat, ColorType) Extension method to let cat play public static void Play(this ICat icat, ContainersRefType.ColorType toy) Parameters icat ICat Cat toy ContainersRefType.ColorType Something to play Sleep(ICat, long) Extension method hint that how long the cat can sleep. public static void Sleep(this ICat icat, long hours) Parameters icat ICat The type will be extended. hours long The length of sleep....</div>
-            </div>
-            <div class="sr-item">
-              <div class="item-title"><a target="_blank" rel="noopener noreferrer" href="../articles/markdown.html?q=cat">Markdown | docfx seed website</a></div>
-              <div class="item-href">http:/localhost:8089/articles/markdown.html</div>
-              <div class="item-brief">... \(\sqrt{3x-1}+(1+x)^2\) The Cauchy-Schwarz Inequality \(\left( \sum_{k=1}^n a_k b_k \right)^2 \leq \left( \sum_{k=1}^n a_k^2 \right) \left( \sum_{k=1}^n b_k^2 \right)\) This expression uses \$ to display a dollar sign: \(\sqrt{\$4}\) To split $100 in half, we calculate \(100/2\) Tabs Linux Windows Content for Linux... Content for Windows... The above tab group was created with the following syntax: # [Linux](#tab/linux) Content for Linux... # [Windows](#tab/windows) Content for Windows... --- Tabs are indi<b>cat</b>ed by using a specific link syntax within a Markdown header. The syntax can be described as follows: # [Tab Display Name](#tab/tab-id) A tab starts with a Markdown header, #, and is followed by a Markdown link [](). The text of the link will become the text of the tab header, displayed to the customer. In order for the header to be recognized as a tab, the link itself must start with #tab/ and be followed by an ID representing the content of the tab. The ID is used to sync all same-ID tabs across the pag...</div>
             </div>
         </div> </div>
 

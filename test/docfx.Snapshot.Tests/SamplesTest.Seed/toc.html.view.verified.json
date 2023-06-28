@@ -20,29 +20,36 @@
     },
     {
       "name": "API Documentation",
-      "href": "api/BuildFromAssembly.html",
-      "tocHref": "api/toc.html",
-      "topicHref": "api/BuildFromAssembly.html",
-      "topicUid": "BuildFromAssembly",
-      "level": 2.0,
-      "items": [],
-      "leaf": true
-    },
-    {
-      "name": "REST API",
-      "href": "restapi/petstore.html",
-      "tocHref": "restapi/toc.html",
-      "topicHref": "restapi/petstore.html",
-      "level": 2.0,
-      "items": [],
-      "leaf": true
+      "items": [
+        {
+          "name": ".NET API",
+          "href": "api/BuildFromAssembly.html",
+          "tocHref": "api/toc.html",
+          "topicHref": "api/BuildFromAssembly.html",
+          "topicUid": "BuildFromAssembly",
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "REST API",
+          "href": "restapi/petstore.html",
+          "tocHref": "restapi/toc.html",
+          "topicHref": "restapi/petstore.html",
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "topicHref": null,
+      "tocHref": null,
+      "level": 2.0
     }
   ],
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
   "_key": "toc.yml",
-  "_lang": "csharp",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
   "_navRel": "toc.html",

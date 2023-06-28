@@ -1,9 +1,16 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
-import hljs from 'highlight.js'
+export async function highlight() {
+  const codeBlocks = document.querySelectorAll('pre code')
+  if (codeBlocks.length <= 0) {
+    return
+  }
 
-export function highlight() {
+  const { default: hljs } = await import('highlight.js')
+
+  window.docfx.configureHljs?.(hljs)
+
   document.querySelectorAll('pre code').forEach(block => {
     hljs.highlightElement(block as HTMLElement)
   })

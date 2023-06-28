@@ -35,10 +35,58 @@
       "topicUid": "BuildFromProject",
       "items": [
         {
+          "name": "Issue8540",
+          "href": "BuildFromProject.Issue8540.html",
+          "topicHref": "BuildFromProject.Issue8540.html",
+          "topicUid": "BuildFromProject.Issue8540",
+          "items": [
+            {
+              "name": "A",
+              "href": "BuildFromProject.Issue8540.A.html",
+              "topicHref": "BuildFromProject.Issue8540.A.html",
+              "topicUid": "BuildFromProject.Issue8540.A",
+              "items": [
+                {
+                  "name": "A",
+                  "href": "BuildFromProject.Issue8540.A.A.html",
+                  "topicHref": "BuildFromProject.Issue8540.A.A.html",
+                  "topicUid": "BuildFromProject.Issue8540.A.A"
+                }
+              ]
+            },
+            {
+              "name": "B",
+              "href": "BuildFromProject.Issue8540.B.html",
+              "topicHref": "BuildFromProject.Issue8540.B.html",
+              "topicUid": "BuildFromProject.Issue8540.B",
+              "items": [
+                {
+                  "name": "B",
+                  "href": "BuildFromProject.Issue8540.B.B.html",
+                  "topicHref": "BuildFromProject.Issue8540.B.B.html",
+                  "topicUid": "BuildFromProject.Issue8540.B.B"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "Class1",
           "href": "BuildFromProject.Class1.html",
           "topicHref": "BuildFromProject.Class1.html",
           "topicUid": "BuildFromProject.Class1"
+        },
+        {
+          "name": "Class1.Issue8665",
+          "href": "BuildFromProject.Class1.Issue8665.html",
+          "topicHref": "BuildFromProject.Class1.Issue8665.html",
+          "topicUid": "BuildFromProject.Class1.Issue8665"
+        },
+        {
+          "name": "Class1.Issue8696Attribute",
+          "href": "BuildFromProject.Class1.Issue8696Attribute.html",
+          "topicHref": "BuildFromProject.Class1.Issue8696Attribute.html",
+          "topicUid": "BuildFromProject.Class1.Issue8696Attribute"
         },
         {
           "name": "Class1.Test<T>",
@@ -172,16 +220,7 @@
               "topicHref": "CatLibrary.Core.ExplicitLayoutClass.html",
               "topicUid": "CatLibrary.Core.ExplicitLayoutClass"
             }
-          ],
-          "name.csharp": "CatLibrary.Core",
-          "name.vb": "CatLibrary.Core"
-        },
-        {
-          "name": "Cat<T, K>",
-          "href": "CatLibrary.Cat-2.html",
-          "topicHref": "CatLibrary.Cat-2.html",
-          "topicUid": "CatLibrary.Cat`2",
-          "name.vb": "Cat(Of T, K)"
+          ]
         },
         {
           "name": "CatException<T>",
@@ -189,6 +228,13 @@
           "topicHref": "CatLibrary.CatException-1.html",
           "topicUid": "CatLibrary.CatException`1",
           "name.vb": "CatException(Of T)"
+        },
+        {
+          "name": "Cat<T, K>",
+          "href": "CatLibrary.Cat-2.html",
+          "topicHref": "CatLibrary.Cat-2.html",
+          "topicUid": "CatLibrary.Cat`2",
+          "name.vb": "Cat(Of T, K)"
         },
         {
           "name": "Complex<T, J>",

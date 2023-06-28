@@ -53,3 +53,8 @@ file class FileScopedType
 {
 
 }
+
+public class ScopedModifier
+{
+    public Span<int> CreateSpan(scoped ref int parameter) => throw new NotImplementedException();
+}

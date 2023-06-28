@@ -1,5 +1,5 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
 
@@ -150,11 +150,12 @@ internal class LinkPhaseHandler : IPhaseHandler
                         ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
                         FileLinkInSource = path,
                         GroupInfo = Context.GroupInfo,
+                        Href = path.UrlEncode()
                     };
-                    fli.Href = path.UrlEncode();
-                    if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != null)
+
+                    if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != fli.Href)
                     {
-                        return;
+                        return; // if HrefGenerator returns new href. Skip InvalidFileLink check.
                     }
                 }
                 if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))

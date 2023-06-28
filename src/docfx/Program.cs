@@ -1,5 +1,5 @@
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using Spectre.Console.Cli;
 
@@ -15,6 +15,7 @@ internal class Program
         app.Configure(config =>
         {
             config.SetApplicationName("docfx");
+            config.UseStrictParsing();
 
             config.AddCommand<InitCommand>("init");
             config.AddCommand<BuildCommand>("build");

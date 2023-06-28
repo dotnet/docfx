@@ -13,6 +13,7 @@ updates:
   ignore:
      # Ignore default template dependency update due to missing tests
   - dependency-name: '@default/*'
+  - dependency-name: 'jquery'
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 

@@ -13,16 +13,21 @@
     },
     {
       "name": "API Documentation",
-      "href": "api/BuildFromAssembly.html",
-      "tocHref": "api/toc.html",
-      "topicHref": "api/BuildFromAssembly.html",
-      "topicUid": "BuildFromAssembly"
-    },
-    {
-      "name": "REST API",
-      "href": "restapi/petstore.html",
-      "tocHref": "restapi/toc.html",
-      "topicHref": "restapi/petstore.html"
+      "items": [
+        {
+          "name": ".NET API",
+          "href": "api/BuildFromAssembly.html",
+          "tocHref": "api/toc.html",
+          "topicHref": "api/BuildFromAssembly.html",
+          "topicUid": "BuildFromAssembly"
+        },
+        {
+          "name": "REST API",
+          "href": "restapi/petstore.html",
+          "tocHref": "restapi/toc.html",
+          "topicHref": "restapi/petstore.html"
+        }
+      ]
     }
   ]
 }

@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <RollForward>Major</RollForward>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <Description>The docfx command line tool published as .NET tool</Description>
   </PropertyGroup>
 
