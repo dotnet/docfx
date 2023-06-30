@@ -163,7 +163,7 @@
             "remote": {
               "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "ValueClass",
             "path": "dotnet/vb/Class1.vb",
@@ -177,8 +177,8 @@
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Value</em> type</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_ValueClass.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.ValueClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L14",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_ValueClass.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.ValueClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L14",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -303,7 +303,7 @@
             "remote": {
               "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Keyword",
             "path": "dotnet/vb/Class1.vb",
@@ -376,8 +376,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Keyword.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Keyword%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L16",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Keyword.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Keyword%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L16",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -551,7 +551,7 @@
             "remote": {
               "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Value",
             "path": "dotnet/vb/Class1.vb",
@@ -609,8 +609,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">This is a <em sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Function</em></p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Value_System_String_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Value(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L37",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_Value_System_String_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.Value(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L37",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -774,7 +774,7 @@
             "remote": {
               "path": "samples/seed/dotnet/vb/Class1.vb",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "WithDeclarationKeyword",
             "path": "dotnet/vb/Class1.vb",
@@ -875,8 +875,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">What is <strong sourcefile=\"obj/api/BuildFromVBSourceCode.Class1.yml\" sourcestartlinenumber=\"1\">Sub</strong>?</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L26",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L26",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -927,7 +927,7 @@
     "remote": {
       "path": "samples/seed/dotnet/vb/Class1.vb",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "Class1",
     "path": "dotnet/vb/Class1.vb",
@@ -1505,8 +1505,8 @@
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L6",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromVBSourceCode_Class1.md&value=---%0Auid%3A%20BuildFromVBSourceCode.Class1%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/vb/Class1.vb/#L6",
   "remarks": "",
   "conceptual": "",
   "implements": "",

@@ -163,7 +163,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "ColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
@@ -180,8 +180,8 @@
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ColorCount</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L18",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L18",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -306,7 +306,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "GetColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
@@ -367,8 +367,8 @@
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">GetColorCount</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_GetColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.GetColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L50",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_GetColorCount.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.GetColorCount%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L50",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -539,7 +539,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "ContainersRefTypeNonRefMethod",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
@@ -600,8 +600,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Core.ContainersRefType.yml\" sourcestartlinenumber=\"1\">ContainersRefTypeNonRefMethod</p>\n<param name=\"parmsArray\">array\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L68",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeNonRefMethod(System.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L68",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -725,7 +725,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "ContainersRefTypeEventHandler",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
@@ -741,8 +741,8 @@
           "type": "event",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L86",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType.ContainersRefTypeEventHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L86",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -794,7 +794,7 @@
     "remote": {
       "path": "samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "ContainersRefType",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
@@ -1176,8 +1176,8 @@
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L12",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_ContainersRefType.md&value=---%0Auid%3A%20CatLibrary.Core.ContainersRefType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary.Core/BaseClass.cs/#L12",
   "remarks": "",
   "conceptual": "",
   "implements": "",

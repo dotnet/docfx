@@ -164,7 +164,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Counter",
             "path": "src/CSharp8.cs",
@@ -224,8 +224,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Counter.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Counter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L21",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Counter.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Counter%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L21",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -344,7 +344,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "X",
             "path": "src/CSharp8.cs",
@@ -404,8 +404,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_X.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L10",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_X.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L10",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -524,7 +524,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Y",
             "path": "src/CSharp8.cs",
@@ -584,8 +584,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Y.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L11",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Y.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L11",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -709,7 +709,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Sum",
             "path": "src/CSharp8.cs",
@@ -769,8 +769,8 @@
           "type": "method",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Sum.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Sum%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L13",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_Sum.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.Sum%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L13",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -888,7 +888,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp8.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "ToString",
             "path": "src/CSharp8.cs",
@@ -992,8 +992,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"api/CSharp8.ReadOnlyMembers.yml\" sourcestartlinenumber=\"1\">Returns the fully qualified type name of this instance.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_ToString.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L18",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers_ToString.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers.ToString%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L18",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -1044,7 +1044,7 @@
     "remote": {
       "path": "samples/csharp/src/CSharp8.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "ReadOnlyMembers",
     "path": "src/CSharp8.cs",
@@ -1469,8 +1469,8 @@
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L8",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp8_ReadOnlyMembers.md&value=---%0Auid%3A%20CSharp8.ReadOnlyMembers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp8.cs/#L8",
   "summary": "",
   "remarks": "",
   "conceptual": "",

@@ -213,7 +213,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Play",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
@@ -274,8 +274,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Extension method to let cat play</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CCatLibrary.Core.ContainersRefType.ColorType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L341",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CCatLibrary.Core.ContainersRefType.ColorType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L341",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -442,7 +442,7 @@
             "remote": {
               "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Sleep",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
@@ -503,8 +503,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Extension method hint that how long the cat can sleep.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Sleep(CatLibrary.ICat%2CSystem.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L334",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Sleep(CatLibrary.ICat%2CSystem.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L334",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -555,7 +555,7 @@
     "remote": {
       "path": "samples/seed/dotnet/solution/CatLibrary/Class1.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "ICatExtension",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
@@ -1038,8 +1038,8 @@
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L327",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L327",
   "remarks": "",
   "conceptual": "",
   "implements": "",

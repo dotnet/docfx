@@ -117,7 +117,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": ".ctor",
             "path": "src/CSharp10.cs",
@@ -177,8 +177,8 @@
           "type": "constructor",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors__ctor.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L15",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors__ctor.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L15",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -303,7 +303,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "X",
             "path": "src/CSharp10.cs",
@@ -319,8 +319,8 @@
           "type": "field",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_X.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L11",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_X.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.X%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L11",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -446,7 +446,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Description",
             "path": "src/CSharp10.cs",
@@ -506,8 +506,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_Description.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.Description%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L13",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_Description.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.Description%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L13",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -626,7 +626,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Y",
             "path": "src/CSharp10.cs",
@@ -686,8 +686,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_Y.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L12",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors_Y.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors.Y%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L12",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -739,7 +739,7 @@
     "remote": {
       "path": "samples/csharp/src/CSharp10.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "ParameterlessStructConstructors",
     "path": "src/CSharp10.cs",
@@ -1213,8 +1213,8 @@
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L9",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_ParameterlessStructConstructors.md&value=---%0Auid%3A%20CSharp10.ParameterlessStructConstructors%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L9",
   "summary": "",
   "remarks": "",
   "conceptual": "",

@@ -117,7 +117,7 @@
             "remote": {
               "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Dispose",
             "path": "dotnet/project/Project/Inheritdoc.cs",
@@ -223,8 +223,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Dispose.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L13",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Dispose.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L13",
           "remarks": "",
           "conceptual": "",
           "seealso": null,
@@ -294,7 +294,7 @@
             "remote": {
               "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Issue7628",
             "path": "dotnet/project/Project/Inheritdoc.cs",
@@ -355,8 +355,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7628.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7628%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L18",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7628.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7628%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L18",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -427,7 +427,7 @@
             "remote": {
               "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "Issue7629",
             "path": "dotnet/project/Project/Inheritdoc.cs",
@@ -533,8 +533,8 @@
           "type": "method",
           "summary": "<p sourcefile=\"obj/api/BuildFromProject.Inheritdoc.yml\" sourcestartlinenumber=\"1\">This method should do something...</p>\n",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7629.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7629%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L15",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc_Issue7629.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc.Issue7629%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L15",
           "remarks": "",
           "conceptual": "",
           "seealso": null,
@@ -584,7 +584,7 @@
     "remote": {
       "path": "samples/seed/dotnet/project/Project/Inheritdoc.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "Inheritdoc",
     "path": "dotnet/project/Project/Inheritdoc.cs",
@@ -1153,8 +1153,8 @@
   "_tocPath": "api/toc.html",
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L11",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=BuildFromProject_Inheritdoc.md&value=---%0Auid%3A%20BuildFromProject.Inheritdoc%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/project/Project/Inheritdoc.cs/#L11",
   "summary": "",
   "remarks": "",
   "conceptual": "",

@@ -40,14 +40,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contacts.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contacts%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -98,14 +98,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -400,14 +400,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -452,14 +452,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -520,14 +520,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_manager_link.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20manager%20link%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -593,14 +593,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_update_contact_manager.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fupdate%20contact%20manager%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -645,14 +645,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_delete_contact_manager_by_id.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fdelete%20contact%20manager%20by%20id%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -703,14 +703,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_direct_reports_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20direct%20reports%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -761,14 +761,14 @@
         "remote": {
           "path": "samples/seed/restapi/contacts_swagger2.json",
           "branch": "main",
-          "repo": "https://github.com/dotnet/docfx"
+          "repo": "https://github.com/filzrev/docfx"
         },
         "startLine": 0.0,
         "endLine": 0.0,
         "isExternal": false
       },
-      "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-      "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+      "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6_get_contact_memberOf_links.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%2Fget%20contact%20memberOf%20links%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+      "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
       "conceptual": "",
       "footer": "",
       "remarks": ""
@@ -786,7 +786,7 @@
     "remote": {
       "path": "samples/seed/restapi/contacts_swagger2.json",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "startLine": 0.0,
     "endLine": 0.0,
@@ -806,8 +806,8 @@
   "_tocRel": "toc.html",
   "_jsonPath": "contacts.swagger.json",
   "title": "Contacts",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
   "_disableToc": false,
   "_disableNextArticle": true
 }

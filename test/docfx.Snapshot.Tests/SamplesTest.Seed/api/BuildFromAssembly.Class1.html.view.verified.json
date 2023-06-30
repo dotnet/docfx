@@ -115,7 +115,7 @@
             ]
           },
           "source": {
-            "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+            "href": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
             "endLine": 0.0,
             "isExternal": false
@@ -173,7 +173,7 @@
           "summary": "",
           "platform": null,
           "docurl": "",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -249,7 +249,7 @@
             ]
           },
           "source": {
-            "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+            "href": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
             "endLine": 0.0,
             "isExternal": false
@@ -258,6 +258,7 @@
             "BuildFromAssembly"
           ],
           "namespace": "BuildFromAssembly",
+          "example": [],
           "overload": {
             "uid": "BuildFromAssembly.Class1.HelloWorld*",
             "name": [
@@ -304,14 +305,13 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "",
+          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">HelloWorld method.</p>\n",
           "platform": null,
           "docurl": "",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": null,
           "id": "BuildFromAssembly_Class1_HelloWorld",
           "hideTitleType": false,
@@ -356,7 +356,7 @@
   ],
   "type": "class",
   "source": {
-    "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+    "href": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
     "startLine": 0.0,
     "endLine": 0.0,
     "isExternal": false
@@ -838,7 +838,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
   "remarks": "",
   "conceptual": "",
   "implements": "",

@@ -211,7 +211,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": ".ctor",
             "path": "src/CSharp10.cs",
@@ -271,8 +271,8 @@
           "type": "constructor",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp10.RecordClass.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass__ctor_System_String_System_String_.md&value=---%0Auid%3A%20CSharp10.RecordClass.%23ctor(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -398,7 +398,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "FirstName",
             "path": "src/CSharp10.cs",
@@ -458,8 +458,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_FirstName.md&value=---%0Auid%3A%20CSharp10.RecordClass.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_FirstName.md&value=---%0Auid%3A%20CSharp10.RecordClass.FirstName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -578,7 +578,7 @@
             "remote": {
               "path": "samples/csharp/src/CSharp10.cs",
               "branch": "main",
-              "repo": "https://github.com/dotnet/docfx"
+              "repo": "https://github.com/filzrev/docfx"
             },
             "id": "LastName",
             "path": "src/CSharp10.cs",
@@ -638,8 +638,8 @@
           "type": "property",
           "summary": "",
           "platform": null,
-          "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_LastName.md&value=---%0Auid%3A%20CSharp10.RecordClass.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+          "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass_LastName.md&value=---%0Auid%3A%20CSharp10.RecordClass.LastName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+          "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -691,7 +691,7 @@
     "remote": {
       "path": "samples/csharp/src/CSharp10.cs",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "id": "RecordClass",
     "path": "src/CSharp10.cs",
@@ -1312,8 +1312,8 @@
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
-  "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass.md&value=---%0Auid%3A%20CSharp10.RecordClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
+  "docurl": "https://github.com/filzrev/docfx/new/main/apiSpec/new?filename=CSharp10_RecordClass.md&value=---%0Auid%3A%20CSharp10.RecordClass%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
+  "sourceurl": "https://github.com/filzrev/docfx/blob/main/samples/csharp/src/CSharp10.cs/#L7",
   "summary": "",
   "remarks": "",
   "conceptual": "",

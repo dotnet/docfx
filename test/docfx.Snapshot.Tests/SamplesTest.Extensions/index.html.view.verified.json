@@ -5,7 +5,7 @@
     "remote": {
       "path": "samples/extensions/index.md",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "startLine": 0.0,
     "endLine": 0.0,
@@ -16,7 +16,7 @@
     "remote": {
       "path": "samples/extensions/index.md",
       "branch": "main",
-      "repo": "https://github.com/dotnet/docfx"
+      "repo": "https://github.com/filzrev/docfx"
     },
     "startLine": 0.0,
     "endLine": 0.0,
@@ -109,5 +109,5 @@
     "_shared": {}
   },
   "_disableToc": true,
-  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/extensions/index.md/#L1"
+  "docurl": "https://github.com/filzrev/docfx/blob/main/samples/extensions/index.md/#L1"
 }
