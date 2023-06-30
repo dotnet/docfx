@@ -6,13 +6,11 @@ using System.Composition;
 using System.Composition.Hosting;
 using System.Reflection;
 using System.Text;
-
-using Newtonsoft.Json;
-
 using Microsoft.DocAsCode.Build.SchemaDriven;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.MarkdigEngine;
 using Microsoft.DocAsCode.Plugins;
+using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 

@@ -3,14 +3,12 @@
 
 using System.Collections.Immutable;
 using System.Web;
-
-using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Build.ConceptualDocuments;
+using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Tests.Common;
-
 using Newtonsoft.Json.Linq;
 using Xunit;
 

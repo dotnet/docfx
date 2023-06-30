@@ -4,14 +4,12 @@
 using System.Collections.Immutable;
 using System.Dynamic;
 using System.Text;
-
-using Newtonsoft.Json;
-
 using Microsoft.DocAsCode.Build.Common;
 using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.MarkdigEngine;
 using Microsoft.DocAsCode.Plugins;
+using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven;
 

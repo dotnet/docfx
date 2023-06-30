@@ -452,9 +452,9 @@ exports.transform = function (model){
         var model = new
         {
             model = new
-           {
-               name = longName,
-           }
+            {
+                name = longName,
+            }
         };
 
         string inputFolder = null;

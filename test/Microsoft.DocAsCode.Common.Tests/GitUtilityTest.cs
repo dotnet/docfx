@@ -1,14 +1,13 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 using Microsoft.DocAsCode.Common.Git;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Common.Tests;
 
 [Collection("docfx STA")]
-    public class GitUtilityTest : IDisposable
+public class GitUtilityTest : IDisposable
 {
     private string _originalBranchName;
     private const string envName = "DOCFX_SOURCE_BRANCH_NAME";

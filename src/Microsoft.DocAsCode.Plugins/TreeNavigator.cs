@@ -40,7 +40,7 @@ public class TreeNavigator
             return false;
         }
 
-        foreach(var item in _current.Items)
+        foreach (var item in _current.Items)
         {
             if (comparer(item.Current))
             {
@@ -130,7 +130,7 @@ public class TreeNavigator
         }
         return false;
     }
-    
+
     private class NavigatorTreeItem
     {
         public NavigatorTreeItem Parent { get; set; }

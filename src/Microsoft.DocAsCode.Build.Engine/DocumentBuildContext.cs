@@ -20,7 +20,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public DocumentBuildContext(string buildOutputFolder)
         : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
-    
+
     public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
         : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
 
@@ -287,11 +287,11 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
         var mapTasks = (from url in _xrefMapUrls
-            select LoadXRefMap(url, _client)).ToArray();
+                        select LoadXRefMap(url, _client)).ToArray();
         Task.WaitAll(mapTasks);
         return (from t in mapTasks
-            where t.Result != null
-            select t.Result).ToList();
+                where t.Result != null
+                select t.Result).ToList();
     }
 
     private async Task<XRefMap> LoadXRefMap(string url, HttpClient client)

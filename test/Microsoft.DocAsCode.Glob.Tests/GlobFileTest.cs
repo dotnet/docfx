@@ -1,8 +1,8 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
 using Microsoft.DocAsCode.Tests.Common;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Glob.Tests;
 
@@ -50,8 +50,8 @@ public class GlobFileTest : TestBase
         };
         CreateFilesOrFolders(_workingDirectory, files);
         var result = FileGlob.GetFiles(
-            _workingDirectory, 
-            new string[] { "**.md" }, 
+            _workingDirectory,
+            new string[] { "**.md" },
             null).ToArray();
         Assert.Equal(3, result.Length);
         result = FileGlob.GetFiles(
@@ -84,7 +84,7 @@ public class GlobFileTest : TestBase
     private static void CreateFilesOrFolders(string cwd, params string[] items)
     {
         if (string.IsNullOrEmpty(cwd)) cwd = ".";
-        foreach(var i in items)
+        foreach (var i in items)
         {
             var item = cwd + "/" + i;
             if (item.EndsWith("/"))

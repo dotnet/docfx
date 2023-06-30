@@ -1,8 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Stubble.Core.Interfaces;
 using System.Collections.Concurrent;
+using Stubble.Core.Interfaces;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 

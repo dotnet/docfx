@@ -7,7 +7,7 @@ internal class SymbolFilterData
 {
     public string Id { get; set; }
 
-    public ExtendedSymbolKind? Kind { get; set;  }
+    public ExtendedSymbolKind? Kind { get; set; }
 
     public IEnumerable<AttributeFilterData> Attributes { get; set; }
 }

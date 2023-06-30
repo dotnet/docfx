@@ -2,17 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
 using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Build.TableOfContents;
 using Microsoft.DocAsCode.Build.OperationLevelRestApi;
+using Microsoft.DocAsCode.Build.TableOfContents;
 using Microsoft.DocAsCode.Build.TagLevelRestApi;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.RestApi;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Tests.Common;
-
 using Newtonsoft.Json.Linq;
 using Xunit;
 

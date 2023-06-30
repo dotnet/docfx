@@ -1,13 +1,12 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Xunit;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
-using Microsoft.DocAsCode.Tests.Common;
 using Microsoft.DocAsCode.Dotnet;
+using Microsoft.DocAsCode.Tests.Common;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Tests;
 

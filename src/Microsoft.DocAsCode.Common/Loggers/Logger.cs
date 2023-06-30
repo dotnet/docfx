@@ -180,7 +180,7 @@ public static class Logger
         }
 
         ConsoleUtility.WriteLine($"    {_warningCount} warning(s)", _warningCount > 0 ? ConsoleColor.Yellow : ConsoleColor.White);
-        ConsoleUtility.WriteLine($"    { _errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
+        ConsoleUtility.WriteLine($"    {_errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
     }
 
     [Serializable]

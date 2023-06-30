@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection;
-using Xunit;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
-
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Dotnet.Tests;
 
@@ -524,7 +522,7 @@ namespace Test1
                 new[] { "Foo", "<", "string", "[", "]", ">" },
                 item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Test1", ".", "Foo", "<", "string", "[","]", ">" },
+                new[] { "Test1", ".", "Foo", "<", "string", "[", "]", ">" },
                 item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
         }
     }

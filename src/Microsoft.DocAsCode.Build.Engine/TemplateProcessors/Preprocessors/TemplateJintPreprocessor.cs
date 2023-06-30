@@ -1,10 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Jint.Native.Function;
-
 using Jint;
 using Jint.Native;
+using Jint.Native.Function;
 using Jint.Native.Object;
 using Microsoft.DocAsCode.Common;
 
@@ -178,7 +177,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         var newEngine = CreateDefaultEngine();
         if (sharedVariables != null)
         {
-            foreach(var sharedVariable in sharedVariables)
+            foreach (var sharedVariable in sharedVariables)
             {
                 newEngine.SetValue(sharedVariable, engine.GetValue(sharedVariable));
             }

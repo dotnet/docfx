@@ -25,7 +25,7 @@ public class GlobMatcherTest
     [InlineData("a{b,c}d", new string[] { "abd", "acd" })]
     [InlineData("a{b,c,d}e{d}{}", new string[] { "abed", "aced", "aded" })]
     [InlineData("{{a,b}}", new string[] { "a", "b" })]
-    [InlineData("z{a,b{,c}d", new string[] { } )]
+    [InlineData("z{a,b{,c}d", new string[] { })]
     [InlineData(@"a\{b,c}d", new string[] { })]
     public void TestGroupedGlobShouldExpand(string source, string[] expected)
     {
@@ -44,7 +44,7 @@ public class GlobMatcherTest
     {
         "a"
     }, true)]
-    [InlineData("a*", new string[] 
+    [InlineData("a*", new string[]
     {
         "a", "abc", "abd", "abe"
     }, true)]
@@ -61,7 +61,7 @@ public class GlobMatcherTest
         "b/a/a/a/b.cs"
     }, true)]
     // ** is a shortcut for **/*
-    [InlineData("**", new string[] 
+    [InlineData("**", new string[]
     {
         "a", "b", "abc", "bdir/cfile"
     }, true)]
@@ -202,7 +202,7 @@ public class GlobMatcherTest
     public void TestGlobMatchWithoutDotMatchShouldMatchNonDotFiles(string pattern, string[] files, bool expected)
     {
         var glob = new GlobMatcher(pattern);
-        foreach(var file in files)
+        foreach (var file in files)
         {
             var match = glob.Match(file);
             Assert.Equal(expected, match);

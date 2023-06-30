@@ -3,14 +3,12 @@
 
 using System.ComponentModel;
 using System.Web;
-
-using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.YamlSerialization;
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
 

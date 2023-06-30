@@ -53,7 +53,7 @@ internal class ListWithStringFallbackConverter : JsonConverter
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteStartArray();
-        foreach(var item in (ListWithStringFallback)value)
+        foreach (var item in (ListWithStringFallback)value)
         {
             serializer.Serialize(writer, item);
         }

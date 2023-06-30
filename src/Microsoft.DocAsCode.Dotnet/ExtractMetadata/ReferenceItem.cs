@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
-
-using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.Dotnet;
 

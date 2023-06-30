@@ -21,7 +21,7 @@ public static class Docset
     {
         return Build(configPath, new());
     }
-    
+
     /// <summary>
     /// Builds a docset specified by docfx.json config.
     /// </summary>

@@ -4,16 +4,14 @@
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Web;
-
-using Newtonsoft.Json.Linq;
-using Xunit;
-
 using Microsoft.DocAsCode.Build.ConceptualDocuments;
 using Microsoft.DocAsCode.Build.Engine;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Tests.Common;
+using Newtonsoft.Json.Linq;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Build.TableOfContents.Tests;
 
@@ -569,7 +567,7 @@ items:
         var files = new FileCollection(_inputFolder);
         files.Add(DocumentType.Article, new[] { toc });
 
-        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude});
+        var listener = TestLoggerListener.CreateLoggerListenerWithCodesFilter(new List<string> { WarningCodes.Build.InvalidTocInclude });
         Logger.RegisterListener(listener);
         using (new LoggerPhaseScope(nameof(TocDocumentProcessorTest)))
         {
@@ -838,7 +836,7 @@ items:
   href: a%20b.md";
         var files = new FileCollection(_inputFolder);
         var tocFile = _fileCreator.CreateFile(tocContent, FileType.YamlToc);
-        var markdownFile = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension:"a b");
+        var markdownFile = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension: "a b");
         files.Add(DocumentType.Article, new[] { tocFile, markdownFile });
 
         // Act

@@ -102,7 +102,7 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
             if (uidDefinitions.Count == 0)
             {
                 Logger.LogWarning(
-                    $"Unable to find UidDefinition for Uid: { overwriteDocumentModel.Uid}",
+                    $"Unable to find UidDefinition for Uid: {overwriteDocumentModel.Uid}",
                     code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                 continue;
             }

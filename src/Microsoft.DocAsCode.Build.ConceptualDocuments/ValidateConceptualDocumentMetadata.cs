@@ -30,7 +30,7 @@ public class ValidateConceptualDocumentMetadata : BaseDocumentBuildStep
             return;
         }
         var metadata = ((Dictionary<string, object>)model.Content).ToImmutableDictionary().Remove(ConceptualKey);
-        if(!model.Properties.IsUserDefinedTitle)
+        if (!model.Properties.IsUserDefinedTitle)
         {
             metadata = metadata.Remove(Constants.PropertyName.Title);
         }

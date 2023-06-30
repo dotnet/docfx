@@ -112,7 +112,7 @@ public class MonikerRangeParser : BlockParser
 
         ExtensionsHelper.SkipSpaces(ref slice);
 
-        if(!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
+        if (!ExtensionsHelper.MatchStart(ref slice, new string(':', monikerRange.ColonCount)))
         {
             ExtensionsHelper.ResetLineIndent(processor);
             return BlockState.Continue;

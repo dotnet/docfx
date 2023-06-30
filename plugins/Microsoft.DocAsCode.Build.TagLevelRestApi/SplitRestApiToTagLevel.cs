@@ -153,7 +153,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         {
             LocalPathFromRoot = model.LocalPathFromRoot,
             Uids = CalculateUids(tagModel).Select(i => new UidDefinition(i, model.LocalPathFromRoot)).ToImmutableArray()
-    };
+        };
 
         return newModel;
     }

@@ -1,6 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Microsoft.DocAsCode.YamlSerialization.Helpers;
+using Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
+using Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers;
+using Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
+using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -10,12 +15,6 @@ using YamlDotNet.Serialization.NodeTypeResolvers;
 using YamlDotNet.Serialization.TypeResolvers;
 using YamlDotNet.Serialization.Utilities;
 using YamlDotNet.Serialization.ValueDeserializers;
-
-using Microsoft.DocAsCode.YamlSerialization.Helpers;
-using Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
-using Microsoft.DocAsCode.YamlSerialization.NodeTypeResolvers;
-using Microsoft.DocAsCode.YamlSerialization.ObjectFactories;
-using Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 
 namespace Microsoft.DocAsCode.YamlSerialization;
 

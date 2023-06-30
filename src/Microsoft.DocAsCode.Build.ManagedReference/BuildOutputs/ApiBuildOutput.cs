@@ -1,14 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-
-using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Common.EntityMergers;
+using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.YamlSerialization;
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
 

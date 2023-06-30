@@ -64,7 +64,7 @@ public class ValidateBookmarkTest : TestBase
             {
                 new HtmlPostProcessor
                 {
-                    Handlers = {new ValidateBookmark()}
+                    Handlers = { new ValidateBookmark() }
                 }.Process(manifest, _outputFolder);
             }
         }
@@ -111,7 +111,7 @@ public class ValidateBookmarkTest : TestBase
             {
                 new HtmlPostProcessor
                 {
-                    Handlers = {new ValidateBookmark()}
+                    Handlers = { new ValidateBookmark() }
                 }.Process(manifest, _outputFolder);
             }
         }

@@ -118,7 +118,5 @@ public static class ApiBuildOutputUtility
     }
 
     public static string GetHref(string url, string altText = null) =>
-        $@"<span><a href=""{url}"">{
-            HttpUtility.HtmlEncode(altText ?? string.Empty)
-            }</a></span>";
+        $@"<span><a href=""{url}"">{HttpUtility.HtmlEncode(altText ?? string.Empty)}</a></span>";
 }

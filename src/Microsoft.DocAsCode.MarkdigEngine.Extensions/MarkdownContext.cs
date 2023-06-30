@@ -54,7 +54,7 @@ public class MarkdownContext
     /// <summary>
     /// Log info
     /// </summary>
-    public LogActionDelegate LogInfo{ get; }
+    public LogActionDelegate LogInfo { get; }
 
     /// <summary>
     /// Log suggestion
