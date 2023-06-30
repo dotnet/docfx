@@ -40,7 +40,7 @@ internal abstract class ConfigFilterRuleItem
             throw new ArgumentNullException("symbol");
         }
         var id = symbol.Id;
-        
+
         return (_uidRegex == null || (id != null && _uidRegex.IsMatch(id))) &&
             (Kind == null || Kind.Value.Contains(symbol)) &&
             (Attribute == null || Attribute.ContainedIn(symbol));

@@ -23,7 +23,7 @@ public static class ConsoleUtility
 
     public static void WriteLine(string message, ConsoleColor color)
     {
-        
+
         try
         {
             if (color == ConsoleColor.White)

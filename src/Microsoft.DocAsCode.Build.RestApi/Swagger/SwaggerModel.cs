@@ -38,7 +38,7 @@ public class SwaggerModel
     [YamlMember(Alias = "basePath")]
     [JsonProperty("basePath")]
     public string BasePath { get; set; }
-    
+
     /// <summary>
     /// Required. The available paths and operations for the API.
     /// </summary>

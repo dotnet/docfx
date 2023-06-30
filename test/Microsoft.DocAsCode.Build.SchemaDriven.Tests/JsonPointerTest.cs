@@ -8,7 +8,7 @@ using Microsoft.DocAsCode.Tests.Common;
 using Xunit;
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests;
-    public class JsonPointerTest : TestBase
+public class JsonPointerTest : TestBase
 {
     [Fact]
     public void TestJsonPointerSpec()

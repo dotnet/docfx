@@ -31,7 +31,7 @@ internal sealed class SpecIdHelper
         {
             id = SpecExtensionMethodReceiverType(symbol as IMethodSymbol, id);
         }
-        
+
         return id;
     }
 

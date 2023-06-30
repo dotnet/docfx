@@ -524,7 +524,7 @@ namespace Test1
                 new[] { "Foo", "<", "string", "[", "]", ">" },
                 item.NameWithTypeParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
             Assert.Equal(
-                new[] { "Test1", ".", "Foo", "<", "string", "[","]", ">" },
+                new[] { "Test1", ".", "Foo", "<", "string", "[", "]", ">" },
                 item.QualifiedNameParts[SyntaxLanguage.CSharp].Select(p => p.DisplayName));
         }
     }

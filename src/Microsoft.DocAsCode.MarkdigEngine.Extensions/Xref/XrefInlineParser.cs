@@ -35,15 +35,15 @@ public class XrefInlineParser : InlineParser
             c = slice.NextChar();
         }
 
-        while(c != startChar && c != '>')
+        while (c != startChar && c != '>')
         {
             href.Append(c);
             c = slice.NextChar();
         }
 
-        if(startChar != '\0')
+        if (startChar != '\0')
         {
-            if(c != startChar)
+            if (c != startChar)
             {
                 return false;
             }

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Microsoft.DocAsCode.Build.Common;
 
-public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T: Attribute
+public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T : Attribute
 {
     private const int MaximumNestedLevel = 32;
     private readonly TypeInfo _typeInfo;

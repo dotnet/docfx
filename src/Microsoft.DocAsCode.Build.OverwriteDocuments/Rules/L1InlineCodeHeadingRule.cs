@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
 
-public sealed class L1InlineCodeHeadingRule :InlineCodeHeadingRule
+public sealed class L1InlineCodeHeadingRule : InlineCodeHeadingRule
 {
     public override string TokenName => "L1InlineCodeHeading";
 

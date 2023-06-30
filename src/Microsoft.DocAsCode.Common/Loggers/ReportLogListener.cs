@@ -115,7 +115,7 @@ public sealed class ReportLogListener : ILoggerListener
         [JsonProperty("message_severity")]
         public MessageSeverity Severity { get; set; }
         [JsonProperty("code")]
-        public string Code{ get; set; }
+        public string Code { get; set; }
     }
 
     public enum MessageSeverity

@@ -318,7 +318,7 @@ internal class XmlComment
                     if (item.Parent?.Parent != null)
                     {
                         XElement replacement;
-                        if(string.IsNullOrEmpty(item.Value))
+                        if (string.IsNullOrEmpty(item.Value))
                         {
                             replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                         }

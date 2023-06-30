@@ -70,7 +70,8 @@ public class NestedColumnParser : BlockParser
                 return BlockState.None;
             }
 
-        } else
+        }
+        else
         {
             columnWidth.Append("1"); // default span is one
         }

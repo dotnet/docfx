@@ -217,7 +217,7 @@ tagRules : [
                 Assert.Equal("ConsoleColor", model[1].Items[1].Name);
                 Assert.Equal("../System.ConsoleColor.csyml", model[1].Items[1].Href);
             }
-            
+
             {
                 // check conceptual.
                 var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));

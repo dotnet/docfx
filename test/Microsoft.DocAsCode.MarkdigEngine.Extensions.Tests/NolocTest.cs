@@ -30,7 +30,7 @@ public class NolocTest
         // MultipleLines
         TestUtility.VerifyMarkup(
             @":::no-loc text=""I am crossing\
-a line"":::", 
+a line"":::",
             @"<p>:::no-loc text=&quot;I am crossing<br />a line&quot;:::</p>");
 
         // Spaces not exactly match

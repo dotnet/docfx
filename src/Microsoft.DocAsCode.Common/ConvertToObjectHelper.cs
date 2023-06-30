@@ -71,7 +71,7 @@ public static class ConvertToObjectHelper
         if (obj is ExpandoObject eo)
         {
             result = cache[obj] = new Dictionary<string, object>();
-            foreach(var pair in eo)
+            foreach (var pair in eo)
             {
                 ((Dictionary<string, object>)result)[pair.Key] = ConvertExpandoObjectToObjectCore(pair.Value, cache);
             }

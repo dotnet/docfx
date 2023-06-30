@@ -50,8 +50,8 @@ public class GlobFileTest : TestBase
         };
         CreateFilesOrFolders(_workingDirectory, files);
         var result = FileGlob.GetFiles(
-            _workingDirectory, 
-            new string[] { "**.md" }, 
+            _workingDirectory,
+            new string[] { "**.md" },
             null).ToArray();
         Assert.Equal(3, result.Length);
         result = FileGlob.GetFiles(
@@ -84,7 +84,7 @@ public class GlobFileTest : TestBase
     private static void CreateFilesOrFolders(string cwd, params string[] items)
     {
         if (string.IsNullOrEmpty(cwd)) cwd = ".";
-        foreach(var i in items)
+        foreach (var i in items)
         {
             var item = cwd + "/" + i;
             if (item.EndsWith("/"))

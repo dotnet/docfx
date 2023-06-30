@@ -15,7 +15,7 @@ public class ManifestItemCollectionConverter : JsonConverter
     public override object ReadJson(JsonReader reader, Type objecType, object existingValue,
         JsonSerializer serializer)
     {
-        var manifestCollectionList = (List<ManifestItem>) serializer.Deserialize(reader, typeof(List<ManifestItem>));
+        var manifestCollectionList = (List<ManifestItem>)serializer.Deserialize(reader, typeof(List<ManifestItem>));
         if (existingValue != null)
         {
             ((ManifestItemCollection)existingValue).AddRange(manifestCollectionList);

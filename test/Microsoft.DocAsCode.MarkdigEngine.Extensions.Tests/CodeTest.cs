@@ -1860,7 +1860,7 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         {
             { filename, content }
         });
-        
+
     }
 
     [Theory]
@@ -1892,7 +1892,8 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         {
             filename = "source.crazy";
             content = contentCrazy;
-        } else
+        }
+        else
         {
             filename = "source.missing";
             content = string.Empty;
@@ -1901,7 +1902,7 @@ gem &#39;activerecord-session_store&#39;, &#39;~&gt; 1.1&#39;
         // act
 
         // assert
-        TestUtility.VerifyMarkup(source, null, errors:new string[] { "invalid-code" }, files: new Dictionary<string, string>
+        TestUtility.VerifyMarkup(source, null, errors: new string[] { "invalid-code" }, files: new Dictionary<string, string>
         {
             { filename, content }
         });

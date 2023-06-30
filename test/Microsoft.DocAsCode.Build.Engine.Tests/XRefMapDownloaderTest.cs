@@ -29,10 +29,10 @@ public class XRefMapDownloadTest
         var basePath = Path.GetRandomFileName();
         var fallbackFolders = new List<string>() { Path.Combine(Directory.GetCurrentDirectory(), "TestData") };
         var xrefmaps = new List<string>() { "xrefmap.yml" };
-        
+
         // Get fallback TestData/xrefmap.yml which contains uid: 'str'
         var reader = await new XRefCollection(from u in xrefmaps
-                                        select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(basePath, fallbackFolders);
+                                              select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(basePath, fallbackFolders);
 
         var xrefSpec = reader.Find("str");
         Assert.NotNull(xrefSpec);

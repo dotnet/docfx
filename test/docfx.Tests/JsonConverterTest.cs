@@ -171,7 +171,8 @@ internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
             && !typeof(string).IsAssignableFrom(property.PropertyType)
             && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
         {
-            Predicate<object> newShouldSerialize = obj => {
+            Predicate<object> newShouldSerialize = obj =>
+            {
                 return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
             };
             Predicate<object> oldShouldSerialize = property.ShouldSerialize;

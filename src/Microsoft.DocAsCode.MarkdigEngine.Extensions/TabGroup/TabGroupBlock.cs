@@ -29,6 +29,6 @@ public class TabGroupBlock : ContainerBlock
         }
 
         var length = blocks.Length;
-        Span = new SourceSpan(startSpan, blocks[length-1].Content.Span.End);
+        Span = new SourceSpan(startSpan, blocks[length - 1].Content.Span.End);
     }
 }

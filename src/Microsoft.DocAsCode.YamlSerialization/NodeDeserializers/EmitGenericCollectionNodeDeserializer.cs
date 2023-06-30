@@ -20,7 +20,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
 {
     private static readonly MethodInfo DeserializeHelperMethod =
         typeof(EmitGenericCollectionNodeDeserializer).GetMethod(nameof(DeserializeHelper));
-        private readonly IObjectFactory _objectFactory;
+    private readonly IObjectFactory _objectFactory;
     private readonly Dictionary<Type, Type> _gpCache =
         new();
     private readonly Dictionary<Type, Action<IParser, Type, Func<IParser, Type, object>, object>> _actionCache =

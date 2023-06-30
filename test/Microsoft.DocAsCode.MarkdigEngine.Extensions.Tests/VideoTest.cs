@@ -32,7 +32,7 @@ public class VideoTest
     {
         TestUtility.VerifyMarkup(source, expected);
     }
-    
+
     [Theory]
     [InlineData(@":::video source="""" title=""My title"":::", @"<p>:::video source=&quot;&quot; title=&quot;My title&quot;:::</p>
 ")]

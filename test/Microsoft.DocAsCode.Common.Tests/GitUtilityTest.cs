@@ -8,7 +8,7 @@ using Microsoft.DocAsCode.Common.Git;
 namespace Microsoft.DocAsCode.Common.Tests;
 
 [Collection("docfx STA")]
-    public class GitUtilityTest : IDisposable
+public class GitUtilityTest : IDisposable
 {
     private string _originalBranchName;
     private const string envName = "DOCFX_SOURCE_BRANCH_NAME";

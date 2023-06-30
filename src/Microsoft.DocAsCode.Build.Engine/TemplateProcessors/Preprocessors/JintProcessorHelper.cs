@@ -20,7 +20,7 @@ public static class JintProcessorHelper
         }
         else if (raw is IList<object> list)
         {
-            var jsArray = new JsArray(engine, (uint) list.Count);
+            var jsArray = new JsArray(engine, (uint)list.Count);
             foreach (var item in list)
             {
                 jsArray.Push(ConvertObjectToJsValue(engine, item));

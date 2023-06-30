@@ -54,7 +54,7 @@ public class YamlHeaderTest
         var marked = SimpleMarkup(source);
         Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
     }
-    
+
     [Fact]
     public void TestDfmYamlHeader_General()
     {

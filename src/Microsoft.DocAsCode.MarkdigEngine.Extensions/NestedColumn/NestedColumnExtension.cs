@@ -25,7 +25,7 @@ public class NestedColumnExtension : IMarkdownExtension
         else
         {
             pipeline.BlockParsers.AddIfNotAlready(new NestedColumnParser(_context));
-        }            
+        }
     }
 
     public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

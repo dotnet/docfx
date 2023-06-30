@@ -26,7 +26,7 @@ public class JObjectDictionaryToObjectDictionaryConverter : JsonConverter
         foreach (var item in ((Dictionary<string, object>)value))
         {
             writer.WritePropertyName(item.Key);
-            serializer.Serialize(writer, item.Value); 
+            serializer.Serialize(writer, item.Value);
         }
         writer.WriteEndObject();
     }

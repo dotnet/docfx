@@ -178,7 +178,7 @@ public class TemplateJintPreprocessor : ITemplatePreprocessor
         var newEngine = CreateDefaultEngine();
         if (sharedVariables != null)
         {
-            foreach(var sharedVariable in sharedVariables)
+            foreach (var sharedVariable in sharedVariables)
             {
                 newEngine.SetValue(sharedVariable, engine.GetValue(sharedVariable));
             }

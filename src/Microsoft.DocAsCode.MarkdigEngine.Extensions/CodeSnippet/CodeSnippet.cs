@@ -102,7 +102,7 @@ public class CodeSnippet : LeafBlock
 
         var highlightRangesString = GetHighlightLinesString();
 
-        if(highlightRangesString != string.Empty)
+        if (highlightRangesString != string.Empty)
         {
             sb.Append($@" highlight-lines=""{highlightRangesString}""");
         }

@@ -11,7 +11,7 @@ class HtmlTabContentBlockRenderer : HtmlObjectRenderer<TabContentBlock>
 {
     protected override void Write(HtmlRenderer renderer, TabContentBlock block)
     {
-        foreach(var item in block)
+        foreach (var item in block)
         {
             if (!(item is ThematicBreakBlock))
             {

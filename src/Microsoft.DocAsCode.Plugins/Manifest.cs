@@ -100,7 +100,7 @@ public class Manifest
                         RemoveItem(ofi.RelativePath, ofi);
                         ofi.PropertyChanged -= OutputFileInfoPropertyChanged;
                     }
-                   item.OutputFiles.CollectionChanged -= ManifestItemOutputChanged;
+                    item.OutputFiles.CollectionChanged -= ManifestItemOutputChanged;
                 }
             }
         }

@@ -16,8 +16,8 @@ internal class MarkdownObjectValidatorAdapter : IMarkdownObjectRewriter
     public ImmutableArray<IMarkdownObjectValidator> Validators { get; }
 
     public MarkdownObjectValidatorAdapter(
-        IEnumerable<IMarkdownObjectValidator> validators, 
-        Action<IMarkdownObject> preProcess, 
+        IEnumerable<IMarkdownObjectValidator> validators,
+        Action<IMarkdownObject> preProcess,
         Action<IMarkdownObject> postProcess)
     {
         Validators = validators.ToImmutableArray();

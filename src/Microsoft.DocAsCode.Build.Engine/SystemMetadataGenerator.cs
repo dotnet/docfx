@@ -154,7 +154,7 @@ internal sealed class SystemMetadataGenerator
 
         public string FilePath { get; set; }
 
-        public RelativePath RelativePath{ get; set; }
+        public RelativePath RelativePath { get; set; }
 
         public FileInfo(string key, string filePath)
         {

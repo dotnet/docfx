@@ -16,7 +16,7 @@ public class InclusionBlock : ContainerBlock
 
     public string GetRawToken() => $"[!include[{Title}]({IncludedFilePath})]";
 
-    public InclusionBlock(BlockParser parser): base(parser)
+    public InclusionBlock(BlockParser parser) : base(parser)
     {
 
     }

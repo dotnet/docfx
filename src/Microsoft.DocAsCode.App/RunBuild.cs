@@ -23,7 +23,7 @@ internal static class RunBuild
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
         var baseDirectory = EnvironmentContext.BaseDirectory;
         var outputFolder = Path.GetFullPath(Path.Combine(
-            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory, 
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
             config.Destination ?? ""));
 
         try

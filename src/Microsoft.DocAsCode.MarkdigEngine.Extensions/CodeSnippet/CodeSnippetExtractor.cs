@@ -27,11 +27,11 @@ public class CodeSnippetExtractor
         var result = new Dictionary<string, CodeRange>(StringComparer.OrdinalIgnoreCase);
         var tagStack = new Stack<string>();
 
-        for(int index = 0; index < lines.Length; index++)
+        for (int index = 0; index < lines.Length; index++)
         {
             var line = lines[index];
 
-            if(MatchTag(line, EndLineTemplate, out var tagName, IsEndLineContainsTagName))
+            if (MatchTag(line, EndLineTemplate, out var tagName, IsEndLineContainsTagName))
             {
                 tagLines.Add(index);
                 if (!IsEndLineContainsTagName)
@@ -39,7 +39,7 @@ public class CodeSnippetExtractor
                     tagName = tagStack.Count > 0 ? tagStack.Pop() : string.Empty;
                 }
 
-                if(result.ContainsKey(tagName))
+                if (result.ContainsKey(tagName))
                 {
                     if (result[tagName].End == 0)
                     {
@@ -90,7 +90,7 @@ public class CodeSnippetExtractor
 
         //match tagname
         var sb = new StringBuilder();
-        while(column < line.Length && (afterTagName == string.Empty || line[column] != afterTagName[0]))
+        while (column < line.Length && (afterTagName == string.Empty || line[column] != afterTagName[0]))
         {
             sb.Append(line[column]);
             column++;
@@ -99,7 +99,7 @@ public class CodeSnippetExtractor
 
         //match after tagname
         index = 0;
-        while(column < line.Length && index < afterTagName.Length)
+        while (column < line.Length && index < afterTagName.Length)
         {
             if (!CharHelper.IsWhitespace(line[column]))
             {

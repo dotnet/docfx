@@ -25,7 +25,7 @@ public class TagsInterpreter : IInterpreter
         }
         var val = value;
 
-        foreach(var tag in schema.Tags)
+        foreach (var tag in schema.Tags)
         {
             foreach (var i in _tagInterpreters.Where(t => t.Matches(tag)).OrderBy(t => t.Order))
             {

@@ -109,7 +109,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once." }, item);
     }
 
     [Fact]

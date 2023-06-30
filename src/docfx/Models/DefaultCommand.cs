@@ -16,7 +16,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
     {
         [Description("Prints version information")]
         [CommandOption("-v|--version")]
-        public bool Version { get;set; }
+        public bool Version { get; set; }
     }
 
     public override int Execute(CommandContext context, Options options)

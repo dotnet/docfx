@@ -349,7 +349,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
         if (item.Inheritance != null)
         {
-            foreach(var i in GetInheritanceUidReference(item.Inheritance))
+            foreach (var i in GetInheritanceUidReference(item.Inheritance))
             {
                 yield return i;
             }

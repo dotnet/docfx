@@ -194,7 +194,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
     {
         FileCollection files = new(_defaultFiles);
         files.RemoveAll(s => true);
-        files.Add(DocumentType.Article, new [] { "TestData/mref/System.String.yml" }, "TestData/");
+        files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
 
         BuildDocument(files);
 
