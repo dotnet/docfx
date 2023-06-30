@@ -58,53 +58,27 @@ public class SitemapGenerator : IPostProcessor
         return manifest;
     }
 
-    private IEnumerable<Tuple<string, OutputFileInfo>> GetHtmlOutputFiles(Manifest manifest)
+    private static IEnumerable<XElement> GetElements(Manifest manifest, Uri baseUri)
     {
-        if (manifest.Files == null)
-        {
-            yield break;
-        }
+        var sitemapOptions = manifest.SitemapOptions;
+        var sitemapTargetFiles = GetManifestFilesForSitemap(manifest).OrderBy(x => x.relativeHtmlPath);
 
-        foreach(var file in manifest.Files)
+        foreach (var (relativeHtmlPath, file) in sitemapTargetFiles)
         {
-            if (file.DocumentType != "Toc"
-                && file.OutputFiles.TryGetValue(HtmlExtension, out var info) 
-                && !string.IsNullOrEmpty(info.RelativePath))
+            var options = GetOptions(sitemapOptions, file.SourceRelativePath);
+
+            var currentBaseUri = baseUri;
+            if (options.BaseUrl != sitemapOptions.BaseUrl && !Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out currentBaseUri))
             {
-                yield return Tuple.Create(file.SourceRelativePath, info);
+                Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.SitemapOptions.BaseUrl} instead.");
+                currentBaseUri = baseUri;
             }
+
+            yield return GetElement(relativeHtmlPath, currentBaseUri, options);
         }
     }
 
-    private IEnumerable<XElement> GetElements(Manifest manifest, Uri baseUri)
-    {
-        if (manifest.Files == null)
-        {
-            yield break;
-        }
-
-        foreach (var file in (from f in manifest.Files where f.DocumentType != "Toc" orderby f.SourceRelativePath select f))
-        {
-            if (file.OutputFiles.TryGetValue(HtmlExtension, out var info) && !string.IsNullOrEmpty(info.RelativePath))
-            {
-                var options = GetOptions(manifest.SitemapOptions, file.SourceRelativePath);
-
-                var currentBaseUri = baseUri;
-                if (options.BaseUrl != manifest.SitemapOptions.BaseUrl)
-                {
-                    if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out currentBaseUri))
-                    {
-                        Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.SitemapOptions.BaseUrl} instead.");
-                        currentBaseUri = baseUri;
-                    }
-                }
-
-                yield return GetElement(info.RelativePath, currentBaseUri, options);
-            }
-        }
-    }
-
-    private XElement GetElement(string relativePath, Uri baseUri, SitemapElementOptions options)
+    private static XElement GetElement(string relativePath, Uri baseUri, SitemapElementOptions options)
     {
         var uri = new Uri(baseUri, relativePath);
 
@@ -117,7 +91,7 @@ public class SitemapGenerator : IPostProcessor
              );
     }
 
-    private SitemapElementOptions GetOptions(SitemapOptions rootOptions, string sourcePath)
+    private static SitemapElementOptions GetOptions(SitemapOptions rootOptions, string sourcePath)
     {
         var options = GetMatchingOptions(rootOptions, sourcePath);
         if (options == rootOptions)
@@ -151,7 +125,7 @@ public class SitemapGenerator : IPostProcessor
         return options;
     }
 
-    private SitemapElementOptions GetMatchingOptions(SitemapOptions options, string sourcePath)
+    private static SitemapElementOptions GetMatchingOptions(SitemapOptions options, string sourcePath)
     {
         if (options.FileOptions != null)
         {
@@ -168,5 +142,41 @@ public class SitemapGenerator : IPostProcessor
         }
 
         return options;
+    }
+
+    private static IEnumerable<(string relativeHtmlPath, ManifestItem manifestItem)> GetManifestFilesForSitemap(Manifest manifest)
+    {
+        if (manifest.Files == null)
+        {
+            yield break;
+        }
+
+        foreach (var file in manifest.Files)
+        {
+            switch (file.DocumentType)
+            {
+                // Skip non sitemap target files.
+                case DataContracts.Common.Constants.DocumentType.Toc:
+                case DataContracts.Common.Constants.DocumentType.Redirection:
+                    continue;
+
+                default:
+                    break;
+            }
+
+            // Skip if manifest don't contains HTML output file.
+            if (!file.OutputFiles.TryGetValue(HtmlExtension, out var info))
+            {
+                continue;
+            }
+
+            // Skip if output HTML relative path is empty.
+            if (string.IsNullOrEmpty(info.RelativePath))
+            {
+                continue;
+            }
+
+            yield return (info.RelativePath, file);
+        }
     }
 }
