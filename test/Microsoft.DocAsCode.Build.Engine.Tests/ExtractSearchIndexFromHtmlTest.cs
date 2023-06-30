@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
-
-using Microsoft.DocAsCode.Plugins;
-
 using HtmlAgilityPack;
+using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests;

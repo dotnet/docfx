@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Globalization;
-
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.YamlSerialization.Helpers;
-
+using YamlDotNet.Serialization;
 using IObjectGraphVisitor = System.Object;
 using IObjectGraphVisitorContext = System.Object;
 

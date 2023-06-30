@@ -4,12 +4,10 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Reflection.Emit;
-
+using Microsoft.DocAsCode.YamlSerialization.Helpers;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-
-using Microsoft.DocAsCode.YamlSerialization.Helpers;
 
 namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers;
 

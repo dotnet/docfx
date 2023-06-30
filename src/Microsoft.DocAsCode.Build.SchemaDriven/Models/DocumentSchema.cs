@@ -3,10 +3,9 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
-using Microsoft.DocAsCode.Exceptions;
-using Microsoft.DocAsCode.Common;
 using Json.Schema;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Exceptions;
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven;
 

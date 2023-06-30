@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Xml.Linq;
-
+using HtmlAgilityPack;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Tests.Common;
-
-using HtmlAgilityPack;
 using Xunit;
 
 namespace Microsoft.DocAsCode.Tests;

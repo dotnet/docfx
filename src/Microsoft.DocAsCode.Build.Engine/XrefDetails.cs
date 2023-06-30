@@ -4,11 +4,9 @@
 using System.Collections.Specialized;
 using System.Net;
 using System.Web;
-
-using Microsoft.DocAsCode.Plugins;
-using Microsoft.DocAsCode.Common;
-
 using HtmlAgilityPack;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 

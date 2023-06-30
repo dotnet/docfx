@@ -2,13 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
-using Newtonsoft.Json.Linq;
-
 using Microsoft.DocAsCode.Build.Common;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
 using Microsoft.DocAsCode.Plugins;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.DocAsCode.Build.ManagedReference;
 

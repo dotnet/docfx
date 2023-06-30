@@ -4,10 +4,6 @@
 using System.Collections.Immutable;
 using System.Net;
 using System.Reflection;
-
-using Newtonsoft.Json.Linq;
-using Xunit;
-
 using Microsoft.DocAsCode.Build.ConceptualDocuments;
 using Microsoft.DocAsCode.Build.ManagedReference;
 using Microsoft.DocAsCode.Build.ResourceFiles;
@@ -16,6 +12,8 @@ using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Tests.Common;
+using Newtonsoft.Json.Linq;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests;
 

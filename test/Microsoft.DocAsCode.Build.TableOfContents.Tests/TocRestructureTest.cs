@@ -2,12 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using Xunit;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Tests.Common;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Build.TableOfContents.Tests;
 

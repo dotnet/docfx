@@ -2,9 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
-using Xunit;
 using Microsoft.DocAsCode.Tests.Common;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Common.Tests;
 

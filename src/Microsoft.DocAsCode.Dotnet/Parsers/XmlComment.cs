@@ -7,16 +7,14 @@ using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Renderers.Roundtrip;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-
 using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.DataContracts.ManagedReference;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Dotnet;
 

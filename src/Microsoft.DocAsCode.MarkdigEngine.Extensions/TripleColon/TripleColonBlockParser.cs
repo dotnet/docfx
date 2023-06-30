@@ -1,11 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.ObjectModel;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
-using System.Collections.ObjectModel;
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 

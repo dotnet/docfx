@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection;
-
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.Common;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.Dotnet;
 

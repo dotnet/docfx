@@ -3,12 +3,10 @@
 
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
-
-using Xunit;
-
 using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.MarkdigEngine;
+using Microsoft.DocAsCode.Plugins;
+using Xunit;
 
 namespace Microsoft.DocAsCode.Build.Common.Tests;
 

@@ -2,13 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
-using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.MarkdigEngine;
 

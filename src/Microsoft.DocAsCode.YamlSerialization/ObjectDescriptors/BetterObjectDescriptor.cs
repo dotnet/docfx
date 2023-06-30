@@ -1,10 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Microsoft.DocAsCode.YamlSerialization.Helpers;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
-
-using Microsoft.DocAsCode.YamlSerialization.Helpers;
 
 namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
 
