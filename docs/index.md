@@ -53,7 +53,7 @@ jobs:
   publish-docs:
     runs-on: ubuntu-latest
     steps:
-    - name: Chekout
+    - name: Checkout
       uses: actions/checkout@v3
     - name: Dotnet Setup
       uses: actions/setup-dotnet@v3
