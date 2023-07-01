@@ -22,7 +22,13 @@ src                      | Defines the source projects to have metadata generate
 dest                     | Defines the output folder of the generated metadata files. Relative paths are relative to the docfx.json file being used. To go up a folder use `../`.
 shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
 filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](../tutorial/howto_filter_out_unwanted_apis_attributes.md) for more details.
-properties               |  Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
+disableDefaultFilter     | Disables the default filter configuration file.
+disableGitFeatures       | Disables generation of view source links.
+properties               | Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
+noRestore                | Do not run `dotnet restore` before building the projects.
+namespaceLayout          | Defines how namespaces in TOC are organized. When set to *flattened*, renders namespaces as a single flat list. When set to *nested*, renders namespaces in a nested tree form. The default is *flattened*.
+memberLayout             | Defines how member pages are organized. When set to *samePage*, places members in the same page as their containing type. When set to *separatePages*, places members in separate pages. The default is *samePage*.
+allowCompilationErrors   | When enabled, continues documentation generation in case of compilation errors.
 
 **Sample**
 ```json
