@@ -21,7 +21,7 @@ public static class Docset
     {
         return Build(configPath, new());
     }
-    
+
     /// <summary>
     /// Builds a docset specified by docfx.json config.
     /// </summary>
@@ -34,7 +34,17 @@ public static class Docset
             configPath,
             options,
             "build",
-            RunBuild.Exec);
+            (config, exeOptions, configDirectory, outputDirectory) => RunBuild.Exec(config, exeOptions, configDirectory, outputDirectory));
+    }
+
+    /// <summary>
+    /// Builds a pdf specified by docfx.json config.
+    /// </summary>
+    /// <param name="configPath">The path to docfx.json config file.</param>
+    /// <returns>A task to await for build completion.</returns>
+    public static Task Pdf(string configPath)
+    {
+        return Pdf(configPath, new());
     }
 
     /// <summary>
@@ -49,14 +59,14 @@ public static class Docset
             configPath,
             options,
             "pdf",
-            RunPdf.Exec);
+            (config, exeOptions, configDirectory, outputDirectory) => RunPdf.Exec(config, exeOptions, configDirectory, outputDirectory));
     }
 
     private static Task Exec<TConfig>(
         string configPath,
         BuildOptions options,
         string elementKey,
-        Action<TConfig, BuildOptions, string, string?> execAction)
+        Action<TConfig, BuildOptions, string, string> execAction)
     {
         var consoleLogListener = new ConsoleLogListener();
         Logger.RegisterListener(consoleLogListener);
@@ -70,7 +80,13 @@ public static class Docset
             var config = JObject.Parse(File.ReadAllText(configPath));
 
             if (config.TryGetValue(elementKey, out var value))
+            {
                 execAction(value.ToObject<TConfig>(defaultSerializer), options, configDirectory, null);
+            }
+            else
+            {
+                Logger.LogError($"Unable to find '{elementKey}' in '{configPath}'.");
+            }
 
             return Task.CompletedTask;
         }
