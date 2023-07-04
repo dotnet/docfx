@@ -1,0 +1,38 @@
+{
+  // Uncomment next line to enable intellisense.
+  // "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/launchsettings.json",
+  "profiles": {
+    // Run `docfx build` command.
+    "docfx build": {
+      "commandName": "Project",
+      "commandLineArgs": "build ../../docs/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx metadata` command.
+    "docfx metadata": {
+      "commandName": "Project",
+      "commandLineArgs": "metadata ../../docs/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx serve` command and launch browser.
+    "docfx serve": {
+      "commandName": "Project",
+      "commandLineArgs": "serve ../../docs/_site --open-browser",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
+    // Run `docfx` command.
+    "docfx": {
+      "commandName": "Project",
+      "commandLineArgs": "../../docs/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    }
+  }
+}
