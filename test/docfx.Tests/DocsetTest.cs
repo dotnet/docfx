@@ -92,18 +92,22 @@ public class DocsetTest : TestBase
                 {
                     "pdf": {
                         "content" : [
-                          {"files": "**/*.{md,yml}" }
+                          {
+                            "files": ["*.md"]
+                          },
+                          {"files": "pdf/toc.yml"}
                          ],
-                        "resource": [{ "files": [ "logo.svg" ] }],
                         "dest": "_pdf",
-                        "wkhtmltopdf": { "additionalArguments": "--enable-local-file-access" }
+                        "wkhtmltopdf": { "additionalArguments": "-q --enable-local-file-access" },
+                        "cleanupCacheHistory": false,
+                        "force" : true
                     }
                 }
                 """,
             ["logo.svg"] = "<svg>my svg</svg>",
-            ["toc.yml"] = "- name: Introduction\r\n  href: intro.md",
+            ["pdf/toc.yml"] = "- name: Introduction\r\n  href: ../intro.md\r\n- name: Another Page\r\n  href: ../anotherpage.md",
             ["intro.md"] = "# Introduction",
-            ["cover.md"] = "# My Cover Page",
+            ["anotherpage.md"] = "# Another Page"
         });
 
         Assert.Equal("<svg>my svg</svg>", outputs["logo.svg"]());
