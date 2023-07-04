@@ -23,10 +23,18 @@ internal class ServeCommand : Command<ServeCommand.Settings>
         [Description("Specify the port of the hosted website")]
         [CommandOption("-p|--port")]
         public int? Port { get; set; }
+
+        [Description("Open a web browser when the hosted website starts.")]
+        [CommandOption("--open-browser")]
+        public bool OpenBrowser { get; set; }
+
+        [Description("Specify the relative path to open.")]
+        [CommandOption("--open-browser-relative-path")]
+        public string OpenBrowserRelativePath { get; set; }
     }
 
     public override int Execute([NotNull] CommandContext context, [NotNull] Settings options)
     {
-        return CommandHelper.Run(() => RunServe.Exec(options.Folder, options.Host, options.Port));
+        return CommandHelper.Run(() => RunServe.Exec(options.Folder, options.Host, options.Port, options.OpenBrowser, options.OpenBrowserRelativePath));
     }
 }
