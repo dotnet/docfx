@@ -69,15 +69,15 @@ public class ApplyPlatformVersion : BaseDocumentBuildStep
             return collection.OfType<string>().ToList();
         }
 
-        if (value is JArray jarray)
+        if (value is JArray jArray)
         {
             try
             {
-                return jarray.ToObject<List<string>>();
+                return jArray.ToObject<List<string>>();
             }
             catch (Exception)
             {
-                Logger.LogWarning($"Unknown platform-version metadata: {jarray.ToString()}");
+                Logger.LogWarning($"Unknown platform-version metadata: {jArray.ToString()}");
             }
         }
 

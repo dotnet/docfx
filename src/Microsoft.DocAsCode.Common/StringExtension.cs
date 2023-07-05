@@ -32,8 +32,8 @@ public static class StringExtension
         if (list == null) return null;
 
         // make sure the order consistent
-        var nomalizedPaths = GetNormalizedFullPathList(list);
-        return nomalizedPaths.ToDelimitedString();
+        var normalizedPaths = GetNormalizedFullPathList(list);
+        return normalizedPaths.ToDelimitedString();
     }
 
     public static IEnumerable<string> GetNormalizedFullPathList(this IEnumerable<string> paths)

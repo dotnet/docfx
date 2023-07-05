@@ -56,7 +56,7 @@ public class ZoneExtension : ITripleColonExtensionInfo
 
         if (target == string.Empty && pivot == string.Empty)
         {
-            logError("Either target or privot must be specified.");
+            logError("Either target or pivot must be specified.");
             return false;
         }
         if (target == "pdf" && pivot != string.Empty)

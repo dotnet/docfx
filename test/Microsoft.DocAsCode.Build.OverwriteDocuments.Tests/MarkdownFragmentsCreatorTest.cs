@@ -7,14 +7,14 @@ using Xunit;
 
 namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests;
 
-public class MarkdownFragmentsCreaterTest
+public class MarkdownFragmentsCreatorTest
 {
     [Fact]
     public void BaseTest()
     {
         var markdown = File.ReadAllText("TestData/System.String.yml.md");
         var ast = Markdown.Parse(markdown);
-        var model = new MarkdownFragmentsCreater().Create(ast).ToList();
+        var model = new MarkdownFragmentsCreator().Create(ast).ToList();
 
         Assert.Equal(2, model.Count);
         Assert.Equal("System.String", model[0].Uid);
@@ -41,7 +41,7 @@ markdown content
 ";
         var ast = Markdown.Parse(markdown);
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreator().Create(ast).ToList());
         Assert.Equal("Expect L1InlineCodeHeading", ex.Message);
         Assert.Equal(0, ex.Position);
     }
@@ -61,7 +61,7 @@ markdown content
 ";
         var ast = Markdown.Parse(markdown);
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreator().Create(ast).ToList());
         Assert.Equal("Expect L1InlineCodeHeading", ex.Message);
         Assert.Equal(8, ex.Position);
     }
@@ -80,7 +80,7 @@ c: d
 ```
 ";
         var ast = Markdown.Parse(markdown);
-        var model = new MarkdownFragmentsCreater().Create(ast).ToList();
+        var model = new MarkdownFragmentsCreator().Create(ast).ToList();
 
         Assert.Null(model[0].YamlCodeBlock);
         Assert.Null(model[0].YamlCodeBlockSource);

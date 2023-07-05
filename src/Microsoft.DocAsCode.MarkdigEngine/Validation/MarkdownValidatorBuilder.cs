@@ -171,17 +171,17 @@ public class MarkdownValidatorBuilder
 
         if (templateDir != null)
         {
-            var configFolder = Path.Combine(templateDir, MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName);
+            var configFolder = Path.Combine(templateDir, MarkdownStyleDefinition.MarkdownStyleDefinitionFolderName);
             if (Directory.Exists(configFolder))
             {
                 LoadValidatorDefinition(configFolder, builder);
             }
         }
 
-        var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
+        var configFile = Path.Combine(baseDir, MarkdownStyleConfig.MarkdownStyleFileName);
         if (EnvironmentContext.FileAbstractLayer.Exists(configFile))
         {
-            var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
+            var config = JsonUtility.Deserialize<MarkdownStyleConfig>(configFile);
             builder.AddValidators(config.Rules);
             builder.AddTagValidators(config.TagRules);
             builder.AddSettings(config.Settings);
@@ -193,11 +193,11 @@ public class MarkdownValidatorBuilder
     {
         if (Directory.Exists(mdStyleDefPath))
         {
-            foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix))
+            foreach (var configFile in Directory.GetFiles(mdStyleDefPath, "*" + MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix))
             {
                 var fileName = Path.GetFileName(configFile);
-                var category = fileName.Remove(fileName.Length - MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
-                var config = JsonUtility.Deserialize<MarkdownSytleDefinition>(configFile);
+                var category = fileName.Remove(fileName.Length - MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix.Length);
+                var config = JsonUtility.Deserialize<MarkdownStyleDefinition>(configFile);
                 builder.AddTagValidators(category, config.TagRules);
                 builder.AddValidators(category, config.Rules);
             }

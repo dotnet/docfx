@@ -29,20 +29,20 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         {
             throw item.Error;
         }
-        if (container == null || item.ExtensibleProperies.Count == 0)
+        if (container == null || item.ExtensibleProperties.Count == 0)
         {
             // all static information
             return _propertyDescriptorCache.GetOrAdd(type, GetPropertyDescriptors(item).ToList());
         }
         return GetPropertyDescriptors(item).Concat(
-            from ep in item.ExtensibleProperies
+            from ep in item.ExtensibleProperties
             from key in ep.GetAllKeys(container) ?? Enumerable.Empty<string>()
             select new ExtensiblePropertyDescriptor(ep, ep.Prefix + key, _resolver));
     }
 
     private IEnumerable<IPropertyDescriptor> GetPropertyDescriptors(CachingItem item)
     {
-        return from p in item.Properies select new EmitPropertyDescriptor(p, _resolver);
+        return from p in item.Properties select new EmitPropertyDescriptor(p, _resolver);
     }
 
     public override IPropertyDescriptor GetProperty(Type type, object container, string name)
@@ -52,11 +52,11 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
         {
             throw item.Error;
         }
-        if (item.ExtensibleProperies.Count == 0)
+        if (item.ExtensibleProperties.Count == 0)
         {
             return null;
         }
-        return (from ep in item.ExtensibleProperies
+        return (from ep in item.ExtensibleProperties
                 where name.StartsWith(ep.Prefix, StringComparison.Ordinal)
                 select new ExtensiblePropertyDescriptor(ep, name, _resolver)).FirstOrDefault();
     }
@@ -67,9 +67,9 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
 
         public Exception Error { get; private set; }
 
-        public List<EmitPropertyDescriptorSkeleton> Properies { get; } = new List<EmitPropertyDescriptorSkeleton>();
+        public List<EmitPropertyDescriptorSkeleton> Properties { get; } = new List<EmitPropertyDescriptorSkeleton>();
 
-        public List<ExtensiblePropertyDescriptorSkeleton> ExtensibleProperies { get; } = new List<ExtensiblePropertyDescriptorSkeleton>();
+        public List<ExtensiblePropertyDescriptorSkeleton> ExtensibleProperties { get; } = new List<ExtensiblePropertyDescriptorSkeleton>();
 
         public static CachingItem Create(Type type)
         {
@@ -91,7 +91,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
                 if (extAttr == null)
                 {
                     var setMethod = prop.GetSetMethod();
-                    result.Properies.Add(new EmitPropertyDescriptorSkeleton
+                    result.Properties.Add(new EmitPropertyDescriptorSkeleton
                     {
                         CanWrite = setMethod != null,
                         Name = prop.Name,
@@ -111,7 +111,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
                         return result;
                     }
 
-                    result.ExtensibleProperies.Add(
+                    result.ExtensibleProperties.Add(
                         new ExtensiblePropertyDescriptorSkeleton
                         {
                             KeyReader = CreateDictionaryKeyReader(getMethod, valueType),
@@ -124,7 +124,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             }
 
             // order by the length of Prefix descending.
-            result.ExtensibleProperies.Sort((left, right) => right.Prefix.Length - left.Prefix.Length);
+            result.ExtensibleProperties.Sort((left, right) => right.Prefix.Length - left.Prefix.Length);
             return result;
         }
 

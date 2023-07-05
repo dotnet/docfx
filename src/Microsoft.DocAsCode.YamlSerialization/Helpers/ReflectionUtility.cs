@@ -7,11 +7,11 @@ internal static class ReflectionUtility
 {
     public static Type GetImplementedGenericInterface(Type type, Type genericInterfaceType)
     {
-        foreach (var interfacetype in GetImplementedInterfaces(type))
+        foreach (var interfaceType in GetImplementedInterfaces(type))
         {
-            if (interfacetype.IsGenericType && interfacetype.GetGenericTypeDefinition() == genericInterfaceType)
+            if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericInterfaceType)
             {
-                return interfacetype;
+                return interfaceType;
             }
         }
         return null;

@@ -287,7 +287,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
     private static bool ProcessOverwriteQuestion(string message, bool quiet, bool overwriteResult)
     {
-        bool overwrited = true;
+        bool overwritten = true;
 
         IQuestion overwriteQuestion;
         if (overwriteResult)
@@ -298,7 +298,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             {
                 if (!s)
                 {
-                    overwrited = false;
+                    overwritten = false;
                 }
             });
         }
@@ -310,14 +310,14 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             {
                 if (!s)
                 {
-                    overwrited = false;
+                    overwritten = false;
                 }
             });
         }
 
-        overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwrited, Quiet = quiet });
+        overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwritten, Quiet = quiet });
 
-        return overwrited;
+        return overwritten;
     }
 
     #region Question classes

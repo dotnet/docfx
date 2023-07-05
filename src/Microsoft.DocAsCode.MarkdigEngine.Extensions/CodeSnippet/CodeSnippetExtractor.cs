@@ -63,14 +63,14 @@ public class CodeSnippetExtractor
         return result;
     }
 
-    private bool MatchTag(string line, string template, out string tagName, bool containTagname = true)
+    private bool MatchTag(string line, string template, out string tagName, bool containTagName = true)
     {
         tagName = string.Empty;
         if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;
 
-        var splitedTemplate = template.Split(new[] { TagNamePlaceHolder }, StringSplitOptions.None);
-        var beforeTagName = splitedTemplate[0];
-        var afterTagName = splitedTemplate.Length == 2 ? splitedTemplate[1] : string.Empty;
+        var splittedTemplate = template.Split(new[] { TagNamePlaceHolder }, StringSplitOptions.None);
+        var beforeTagName = splittedTemplate[0];
+        var afterTagName = splittedTemplate.Length == 2 ? splittedTemplate[1] : string.Empty;
 
         int column = 0;
         int index = 0;
@@ -112,6 +112,6 @@ public class CodeSnippetExtractor
         if (index != afterTagName.Length) return false;
         while (column < line.Length && CharHelper.IsWhitespace(line[column])) column++;
 
-        return column == line.Length && (!containTagname || TagnameFormat.IsMatch(tagName));
+        return column == line.Length && (!containTagName || TagnameFormat.IsMatch(tagName));
     }
 }

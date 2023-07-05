@@ -28,14 +28,14 @@ public class XrefClient
     public XrefClient(HttpClient client)
         : this(null, null) { }
 
-    public XrefClient(int maxParallism)
-        : this(null, new SemaphoreSlim(maxParallism)) { }
+    public XrefClient(int maxParallelism)
+        : this(null, new SemaphoreSlim(maxParallelism)) { }
 
     public XrefClient(SemaphoreSlim semaphore)
         : this(null, semaphore) { }
 
-    public XrefClient(HttpClient client, int maxParallism)
-        : this(client, new SemaphoreSlim(maxParallism)) { }
+    public XrefClient(HttpClient client, int maxParallelism)
+        : this(client, new SemaphoreSlim(maxParallelism)) { }
 
     public XrefClient(HttpClient client, SemaphoreSlim semaphore)
     {

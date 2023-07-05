@@ -107,9 +107,9 @@ public class CompositeCommandTest : TestBase
         var sitemap = Path.Combine(_outputFolder, "site", "sitemap.xml");
         Assert.True(File.Exists(sitemap));
 
-        XDocument xdoc = XDocument.Load(sitemap);
+        XDocument xDoc = XDocument.Load(sitemap);
 
-        var documentElement = xdoc.Elements().FirstOrDefault();
+        var documentElement = xDoc.Elements().FirstOrDefault();
         Assert.NotNull(documentElement);
         var ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
         Assert.Equal(ns, documentElement.GetDefaultNamespace());

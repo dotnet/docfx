@@ -120,7 +120,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             }
             else
             {
-                // new file path already exist but doesnt have suffix (special case) 
+                // new file path already exist but doesn't have suffix (special case) 
                 newFileName = newFileName + "_1";
                 newFilePaths[newFilePath] = 2;
             }
@@ -603,15 +603,15 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             return collection.OfType<string>().ToList();
         }
 
-        if (value is JArray jarray)
+        if (value is JArray jArray)
         {
             try
             {
-                return jarray.ToObject<List<string>>();
+                return jArray.ToObject<List<string>>();
             }
             catch (Exception)
             {
-                Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                Logger.LogWarning($"Unknown version metadata: {jArray.ToString()}");
             }
         }
 

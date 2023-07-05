@@ -32,15 +32,15 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
             {
                 collection.AddRange(result.Item1);
 
-                var tocRestuctions = result.Item2;
-                var duplicateKeys = tocRestuctions.Where(t => treeItemRestructions.Any(i => i.Key == t.Key)).Select(i => i.Key);
+                var tocRestructions = result.Item2;
+                var duplicateKeys = tocRestructions.Where(t => treeItemRestructions.Any(i => i.Key == t.Key)).Select(i => i.Key);
                 if (duplicateKeys.Any())
                 {
                     Logger.LogWarning($"Model with the key {string.Join(",", duplicateKeys)} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
                 }
                 else
                 {
-                    treeItemRestructions.AddRange(tocRestuctions);
+                    treeItemRestructions.AddRange(tocRestructions);
                 }
             }
         }

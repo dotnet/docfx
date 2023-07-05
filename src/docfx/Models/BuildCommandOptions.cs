@@ -97,7 +97,7 @@ internal class BuildCommandOptions : LogOptions
     [TypeConverter(typeof(ArrayOptionConverter))]
     public IEnumerable<string> PostProcessors { get; set; }
 
-    [Description("If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.")]
+    [Description("If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside manifest.json to indicate the physical location of that file.")]
     [CommandOption("--keepFileLink")]
     public bool KeepFileLink { get; set; }
 

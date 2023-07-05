@@ -82,7 +82,7 @@ C: Good!
     }
 
     [Fact]
-    public void TestBasicClassWithNullCharactor()
+    public void TestBasicClassWithNullCharacter()
     {
         var sw = new StringWriter();
         YamlUtility.Serialize(sw, new BasicClass { B = 1, C = "~" }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");

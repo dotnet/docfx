@@ -9,10 +9,10 @@ public static class JintProcessorHelper
 {
     public static JsValue ConvertObjectToJsValue(Jint.Engine engine, object raw)
     {
-        if (raw is IDictionary<string, object> idict)
+        if (raw is IDictionary<string, object> dict)
         {
             var jsObject = new JsObject(engine);
-            foreach (var pair in idict)
+            foreach (var pair in dict)
             {
                 jsObject.FastSetDataProperty(pair.Key, ConvertObjectToJsValue(engine, pair.Value));
             }

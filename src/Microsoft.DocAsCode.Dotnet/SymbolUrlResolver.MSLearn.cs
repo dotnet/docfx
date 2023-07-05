@@ -80,7 +80,7 @@ partial class SymbolUrlResolver
         // Prettify URL fragment from UID:
         //
         // - Transform to lower case
-        // - Transform special charactors:
+        // - Transform special characters:
         //   - Map <> [] {} to () () (())
         //   - Keep a-z, 0-9, ()*@
         //   - Drop "'%^\

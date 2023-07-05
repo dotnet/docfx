@@ -430,8 +430,8 @@ public class RelativePathTest
     [InlineData("../../", "../", false)]
     [InlineData("../", "../../", false)]
     [InlineData("~/a/b", "~/../", false)]
-    public void TestStartsWith(string source, string dest, bool isStarstsWith)
+    public void TestStartsWith(string source, string dest, bool isStartsWith)
     {
-        Assert.Equal(isStarstsWith, ((RelativePath)source).InDirectory((RelativePath)dest));
+        Assert.Equal(isStartsWith, ((RelativePath)source).InDirectory((RelativePath)dest));
     }
 }

@@ -340,7 +340,7 @@ public static class GitUtility
         }, outputStreamWriter, errorStreamWriter, GitTimeOut);
 
         // writer streams have to be flushed before reading from memory streams
-        // make sure that streamwriter is not closed before reading from memory stream
+        // make sure that StreamWriter is not closed before reading from memory stream
         outputStreamWriter.Flush();
         errorStreamWriter.Flush();
 

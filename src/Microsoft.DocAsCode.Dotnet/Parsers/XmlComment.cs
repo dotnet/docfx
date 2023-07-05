@@ -83,7 +83,7 @@ internal class XmlComment
         Remarks = GetSingleNodeValue(nav, "/member/remarks");
         Returns = GetSingleNodeValue(nav, "/member/returns");
 
-        Exceptions = ToListNullOnEmpty(GetMulitpleCrefInfo(nav, "/member/exception"));
+        Exceptions = ToListNullOnEmpty(GetMultipleCrefInfo(nav, "/member/exception"));
         SeeAlsos = ToListNullOnEmpty(GetMultipleLinkInfo(nav, "/member/seealso"));
         Examples = GetMultipleExampleNodes(nav, "/member/example").ToList();
         Parameters = GetListContent(nav, "/member/param", "parameter", context);
@@ -372,7 +372,7 @@ internal class XmlComment
         }
     }
 
-    private IEnumerable<ExceptionInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
+    private IEnumerable<ExceptionInfo> GetMultipleCrefInfo(XPathNavigator navigator, string selector)
     {
         var iterator = navigator.Clone().Select(selector);
         if (iterator == null)
@@ -563,7 +563,7 @@ internal class XmlComment
 
         static void DecodeMarkdownCode(MarkdownObject node)
         {
-            // Commonmark: Entity and numeric character references are treated as literal text in code spans and code blocks
+            // CommonMark: Entity and numeric character references are treated as literal text in code spans and code blocks
             switch (node)
             {
                 case CodeInline codeInline:

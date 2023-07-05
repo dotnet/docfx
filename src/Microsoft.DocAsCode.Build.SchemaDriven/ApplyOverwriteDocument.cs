@@ -45,15 +45,15 @@ public class ApplyOverwriteDocument : BaseDocumentBuildStep
         var schema = model.Properties.Schema as DocumentSchema;
         using (new LoggerFileScope(model.LocalPathFromRoot))
         {
-            var uidDefiniton = model.Uids.Where(s => s.Name == uid).ToList();
-            if (uidDefiniton.Count == 0)
+            var uidDefinition = model.Uids.Where(s => s.Name == uid).ToList();
+            if (uidDefinition.Count == 0)
             {
                 throw new DocfxException($"Unable to find UidDefinition for Uid {uid}");
             }
 
             try
             {
-                foreach (var ud in uidDefiniton)
+                foreach (var ud in uidDefinition)
                 {
                     var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
                     var schemaForCurrentUid = jsonPointer.FindSchema(schema);

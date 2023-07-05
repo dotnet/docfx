@@ -68,7 +68,7 @@ description: include file
 
     [Fact]
     [Trait("Related", "IncludeFile")]
-    public void TestBlockLevelInclusion_Esacape()
+    public void TestBlockLevelInclusion_Escape()
     {
         var root = @"
 # Hello World
@@ -503,11 +503,11 @@ markdown token1.md content end.";
         // 1. Prepare data
         var root = @"markdown root.md main content start.
 
-mardown a content in root.md content start
+markdown a content in root.md content start
 
 [!include[a](a_folder/a.md ""This is a.md"")]
 
-mardown a content in root.md content end
+markdown a content in root.md content end
 
 sample 1 code in root.md content start
 
@@ -558,13 +558,13 @@ markdown a.md a.md content end.";
         var rootMarked = service.Markup("place", "holder");
         var rootDependency = rootMarked.Dependency;
         Assert.Equal(@"<p>markdown root.md main content start.</p>
-<p>mardown a content in root.md content start</p>
+<p>markdown a content in root.md content start</p>
 <p>markdown a.md main content start.</p>
 <p>code_in_a code in a.md content start</p>
 <pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
 </code></pre><p>code_in_a in a.md content end</p>
 <p>markdown a.md a.md content end.</p>
-<p>mardown a content in root.md content end</p>
+<p>markdown a content in root.md content end</p>
 <p>sample 1 code in root.md content start</p>
 <pre><code class=""lang-cs"" name=""this is sample 1 code"">namespace sample1{}
 </code></pre><p>sample 1 code in root.md content end</p>

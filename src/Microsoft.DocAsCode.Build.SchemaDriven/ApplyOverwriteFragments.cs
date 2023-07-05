@@ -77,7 +77,7 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
     private void BuildCore(FileModel model, IHostService host)
     {
         var markdownService = (MarkdigMarkdownService)model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService;
-        var overwriteDocumentModelCreater = new OverwriteDocumentModelCreater(model.MarkdownFragmentsModel.OriginalFileAndType.File);
+        var overwriteDocumentModelCreator = new OverwriteDocumentModelCreator(model.MarkdownFragmentsModel.OriginalFileAndType.File);
         var overwriteApplier = new OverwriteApplier(host, OverwriteModelType.MarkdownFragments);
         var schema = model.Properties.Schema as DocumentSchema;
         List<OverwriteDocumentModel> overwriteDocumentModels;
@@ -86,13 +86,13 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
         var ast = markdownService.Parse((string)model.MarkdownFragmentsModel.Content, model.MarkdownFragmentsModel.OriginalFileAndType.File);
 
         // 2 AST(MarkdownDocument) => MarkdownFragmentModel
-        var fragments = new MarkdownFragmentsCreater().Create(ast).ToList();
+        var fragments = new MarkdownFragmentsCreator().Create(ast).ToList();
 
         // 3. MarkdownFragmentModel => OverwriteDocument
-        overwriteDocumentModels = fragments.Select(overwriteDocumentModelCreater.Create).ToList();
+        overwriteDocumentModels = fragments.Select(overwriteDocumentModelCreator.Create).ToList();
         model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
 
-        // Validate here as OverwriteDocumentModelCreater already filtered some invalid cases, e.g. duplicated H2
+        // Validate here as OverwriteDocumentModelCreator already filtered some invalid cases, e.g. duplicated H2
         ValidateWithSchema(fragments, model);
 
         // 4. Apply schema to OverwriteDocument, and merge with skeleton YAML object
