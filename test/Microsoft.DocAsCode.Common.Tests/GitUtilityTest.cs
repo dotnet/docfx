@@ -42,6 +42,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(10_000, GitUtility.GetGitTimeout());
     }
 
+    [Obsolete]
     [Fact]
     public void TestParseGitRepoInfo()
     {
@@ -68,6 +69,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(RepoType.Vso, repoInfo.RepoType);
     }
 
+    [Obsolete]
     [Fact]
     public void TestCombineGitUrl()
     {

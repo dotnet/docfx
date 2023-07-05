@@ -8,6 +8,9 @@ using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Common;
 
+#pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+
 public static class ManifestUtility
 {
     public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)

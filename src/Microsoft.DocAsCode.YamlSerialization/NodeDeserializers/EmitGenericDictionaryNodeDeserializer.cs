@@ -52,7 +52,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
             return false;
         }
 
-        reader.Expect<MappingStart>();
+        reader.Consume<MappingStart>();
 
         value = _objectFactory.Create(expectedType);
         var cacheKey = Tuple.Create(gp[0], gp[1]);
@@ -72,7 +72,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
         }
         action(reader, expectedType, nestedObjectDeserializer, value);
 
-        reader.Expect<MappingEnd>();
+        reader.Consume<MappingEnd>();
 
         return true;
     }
@@ -80,7 +80,7 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void DeserializeHelper<TKey, TValue>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, IDictionary<TKey, TValue> result)
     {
-        while (!reader.Accept<MappingEnd>())
+        while (!reader.Accept<MappingEnd>(out _))
         {
             var key = nestedObjectDeserializer(reader, typeof(TKey));
             var keyPromise = key as IValuePromise;

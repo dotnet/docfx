@@ -177,7 +177,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
             action = GetTraverseGenericDictionaryHelper(entryTypes[0], entryTypes[1], typeof(TContext));
             _traverseGenericDictionaryCache[key] = action;
         }
-        action(this, dictionary.Value, v, currentDepth, _namingConvention ?? new NullNamingConvention(), c);
+        action(this, dictionary.Value, v, currentDepth, _namingConvention ?? NullNamingConvention.Instance, c);
 
         v.VisitMappingEnd(dictionary, c);
     }

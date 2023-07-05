@@ -78,8 +78,8 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     {
         var list = result as IList<TItem>;
 
-        reader.Expect<SequenceStart>();
-        while (!reader.Accept<SequenceEnd>())
+        reader.Consume<SequenceStart>();
+        while (!reader.Accept<SequenceEnd>(out _))
         {
             var current = reader.Current;
 
@@ -103,6 +103,6 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
                 );
             }
         }
-        reader.Expect<SequenceEnd>();
+        reader.Consume<SequenceEnd>();
     }
 }
