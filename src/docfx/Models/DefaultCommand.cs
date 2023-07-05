@@ -52,7 +52,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
             if (options.Serve && serveDirectory is not null)
             {
-                RunServe.Exec(serveDirectory, options.Host, options.Port);
+                RunServe.Exec(serveDirectory, options.Host, options.Port, options.OpenBrowser, options.OpenFile);
             }
         });
     }

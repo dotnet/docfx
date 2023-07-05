@@ -48,6 +48,14 @@ internal class BuildCommandOptions : LogOptions
     [CommandOption("-p|--port")]
     public int? Port { get; set; }
 
+    [Description("Open a web browser when the hosted website starts.")]
+    [CommandOption("--open-browser")]
+    public bool OpenBrowser { get; set; }
+
+    [Description("Open a file in a web browser When the hosted website starts,")]
+    [CommandOption("--open-file <RELATIVE_PATH>")]
+    public string OpenFile { get; set; }
+
     [Description("Run in debug mode. With debug mode, raw model and view model will be exported automatically when it encounters error when applying templates. If not specified, it is false.")]
     [CommandOption("--debug")]
     public bool EnableDebugMode { get; set; }
