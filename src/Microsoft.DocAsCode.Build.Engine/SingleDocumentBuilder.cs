@@ -7,6 +7,9 @@ using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 
+#pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
+
 public class SingleDocumentBuilder : IDisposable
 {
     private const string PhaseName = "Build Document";

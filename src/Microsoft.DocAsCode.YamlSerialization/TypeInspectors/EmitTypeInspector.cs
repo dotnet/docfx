@@ -4,12 +4,10 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
-
-using YamlDotNet.Core;
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.YamlSerialization.Helpers;
 using Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
+using YamlDotNet.Core;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.YamlSerialization.TypeInspectors;
 

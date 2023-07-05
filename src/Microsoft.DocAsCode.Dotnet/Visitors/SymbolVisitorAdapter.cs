@@ -724,7 +724,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         string ResolveCode(string source)
         {
             var basePath = _config.CodeSourceBasePath ?? (
-                item.Source?.Path is {} sourcePath
+                item.Source?.Path is { } sourcePath
                     ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
                     : null);
 

@@ -23,17 +23,16 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
 
     bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
     {
-        var mapping = reader.Allow<MappingStart>();
-        if (mapping == null)
+        if (!reader.TryConsume<MappingStart>(out _))
         {
             value = null;
             return false;
         }
 
         value = _objectFactory.Create(expectedType);
-        while (!reader.Accept<MappingEnd>())
+        while (!reader.Accept<MappingEnd>(out _))
         {
-            var propertyName = reader.Expect<Scalar>();
+            var propertyName = reader.Consume<Scalar>();
             var property = _typeDescriptor.GetProperty(expectedType, value, propertyName.Value, _ignoreUnmatched);
             if (property == null)
             {
@@ -58,7 +57,7 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
             }
         }
 
-        reader.Expect<MappingEnd>();
+        reader.Consume<MappingEnd>();
         return true;
     }
 }

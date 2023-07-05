@@ -10,7 +10,7 @@ public class HtmlTabTitleBlockRenderer : HtmlObjectRenderer<TabTitleBlock>
 {
     protected override void Write(HtmlRenderer renderer, TabTitleBlock block)
     {
-        foreach(var inline in block.Inline)
+        foreach (var inline in block.Inline)
         {
             renderer.Render(inline);
         }

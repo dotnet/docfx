@@ -19,7 +19,7 @@ public static class FileAbstractLayerExtensions
         using var reader = OpenReadText(fal, file);
         string line;
         var list = new List<string>();
-        while ((line = reader.ReadLine()) !=null)
+        while ((line = reader.ReadLine()) != null)
         {
             list.Add(line);
         }

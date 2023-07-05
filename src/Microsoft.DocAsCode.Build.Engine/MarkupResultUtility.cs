@@ -3,11 +3,9 @@
 
 using System.Collections.Immutable;
 using System.Net;
-
+using HtmlAgilityPack;
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.Plugins;
-
-using HtmlAgilityPack;
 
 namespace Microsoft.DocAsCode.Build.Engine;
 

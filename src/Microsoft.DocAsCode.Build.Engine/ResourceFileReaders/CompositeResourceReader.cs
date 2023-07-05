@@ -25,7 +25,7 @@ public sealed class CompositeResourceReader : ResourceFileReader, IEnumerable<Re
     {
         for (var i = _readers.Length - 1; i >= 0; i--)
         {
-            if (_readers[i].GetResourceStream(name) is {} result)
+            if (_readers[i].GetResourceStream(name) is { } result)
                 return result;
         }
 

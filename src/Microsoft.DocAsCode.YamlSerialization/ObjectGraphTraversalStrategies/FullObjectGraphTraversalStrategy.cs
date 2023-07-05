@@ -6,13 +6,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Reflection.Emit;
-
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-
 using Microsoft.DocAsCode.YamlSerialization.Helpers;
 using Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors;
-
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 using IObjectGraphVisitor = System.Object;
 using IObjectGraphVisitorContext = System.Object;
 
@@ -180,7 +177,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
             action = GetTraverseGenericDictionaryHelper(entryTypes[0], entryTypes[1], typeof(TContext));
             _traverseGenericDictionaryCache[key] = action;
         }
-        action(this, dictionary.Value, v, currentDepth, _namingConvention ?? new NullNamingConvention(), c);
+        action(this, dictionary.Value, v, currentDepth, _namingConvention ?? NullNamingConvention.Instance, c);
 
         v.VisitMappingEnd(dictionary, c);
     }

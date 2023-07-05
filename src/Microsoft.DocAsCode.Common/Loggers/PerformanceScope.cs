@@ -25,7 +25,7 @@ public sealed class PerformanceScope : IDisposable
     }
 
     public PerformanceScope(Action<TimeSpan> logger = null)
-    { 
+    {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _stopwatch.Restart();
     }

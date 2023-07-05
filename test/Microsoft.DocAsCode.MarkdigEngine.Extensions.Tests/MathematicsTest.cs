@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests;
 
 public class MathematicsTest
 {
-    [Fact(Skip ="Disable math support")]
+    [Fact(Skip = "Disable math support")]
     public void Test_Mathematics_Support_0()
     {
         var source = "$ math inline $";
@@ -16,7 +16,7 @@ public class MathematicsTest
         TestUtility.VerifyMarkup(source, expected);
     }
 
-    [Fact(Skip ="Disable math support")]
+    [Fact(Skip = "Disable math support")]
     public void Test_Mathematics_Support_1()
     {
         var source = "$ math^0 **inline** $";

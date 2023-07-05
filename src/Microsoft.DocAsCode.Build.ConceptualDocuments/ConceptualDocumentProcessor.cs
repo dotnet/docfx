@@ -101,9 +101,18 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor
             throw new NotSupportedException();
         }
 
+        string documentType = model.DocumentType;
+        if (string.IsNullOrEmpty(documentType))
+        {
+            var properties = (IDictionary<string, object>)model.Content;
+            documentType = properties.ContainsKey(Constants.PropertyName.RedirectUrl)
+              ? Constants.DocumentType.Redirection
+              : Constants.DocumentType.Conceptual;
+        }
+
         var result = new SaveResult
         {
-            DocumentType = model.DocumentType ?? "Conceptual",
+            DocumentType = documentType,
             FileWithoutExtension = Path.ChangeExtension(model.File, null),
             LinkToFiles = model.LinkToFiles.ToImmutableArray(),
             LinkToUids = model.LinkToUids,

@@ -24,7 +24,7 @@ public struct FileLinkInfo
 
     public bool IsResolved => ToFileInDest != null;
 
-    public GroupInfo GroupInfo { get;set; }
+    public GroupInfo GroupInfo { get; set; }
 
     public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
     {

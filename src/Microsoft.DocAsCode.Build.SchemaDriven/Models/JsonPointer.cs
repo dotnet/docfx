@@ -65,7 +65,7 @@ public class JsonPointer
         }
 
         BaseSchema schema = rootSchema;
-        foreach(var part in _parts)
+        foreach (var part in _parts)
         {
             schema = GetChildSchema(schema, part);
         }

@@ -1,16 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Reflection;
 using System.Collections;
-
+using System.Reflection;
+using Microsoft.DocAsCode.Common;
+using Microsoft.DocAsCode.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Xunit;
-
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
 
 namespace Microsoft.DocAsCode.Tests;
 
@@ -171,7 +169,8 @@ internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
             && !typeof(string).IsAssignableFrom(property.PropertyType)
             && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
         {
-            Predicate<object> newShouldSerialize = obj => {
+            Predicate<object> newShouldSerialize = obj =>
+            {
                 return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
             };
             Predicate<object> oldShouldSerialize = property.ShouldSerialize;

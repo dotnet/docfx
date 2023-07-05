@@ -3,10 +3,9 @@
 
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
-
+using Microsoft.DocAsCode.YamlSerialization;
 using Xunit;
 using YamlDotNet.Core;
-using Microsoft.DocAsCode.YamlSerialization;
 
 namespace Microsoft.DocAsCode.Common.Tests;
 

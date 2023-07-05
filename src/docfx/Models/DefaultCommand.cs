@@ -16,7 +16,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
     {
         [Description("Prints version information")]
         [CommandOption("-v|--version")]
-        public bool Version { get;set; }
+        public bool Version { get; set; }
     }
 
     public override int Execute(CommandContext context, Options options)
@@ -52,7 +52,7 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
             if (options.Serve && serveDirectory is not null)
             {
-                RunServe.Exec(serveDirectory, options.Host, options.Port);
+                RunServe.Exec(serveDirectory, options.Host, options.Port, options.OpenBrowser, options.OpenFile);
             }
         });
     }

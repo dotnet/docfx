@@ -103,7 +103,7 @@ public static class ExtensionsHelper
         return index == startString.Length;
     }
 
-		public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
+    public static bool MatchLink(ref StringSlice slice, ref string title, ref string path)
     {
         if (MatchTitle(ref slice, ref title) && MatchPath(ref slice, ref path))
         {

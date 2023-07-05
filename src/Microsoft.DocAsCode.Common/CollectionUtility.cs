@@ -52,7 +52,7 @@ public static class CollectionUtility
     }
 
     public static ImmutableDictionary<string, ImmutableList<T>> Merge<T, TRight>(this ImmutableDictionary<string, ImmutableList<T>> left, IEnumerable<KeyValuePair<string, TRight>> right)
-        where TRight: IEnumerable<T>
+        where TRight : IEnumerable<T>
     {
         if (right == null)
         {

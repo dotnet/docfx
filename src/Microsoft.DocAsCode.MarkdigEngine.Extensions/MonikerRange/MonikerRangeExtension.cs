@@ -25,7 +25,7 @@ public class MonikerRangeExtension : IMarkdownExtension
         else
         {
             pipeline.BlockParsers.AddIfNotAlready(new MonikerRangeParser(_context));
-        }            
+        }
     }
 
     public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

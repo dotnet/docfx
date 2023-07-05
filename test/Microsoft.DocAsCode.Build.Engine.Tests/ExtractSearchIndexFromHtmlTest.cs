@@ -2,10 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
-
-using Microsoft.DocAsCode.Plugins;
-
 using HtmlAgilityPack;
+using Microsoft.DocAsCode.Plugins;
 using Xunit;
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests;
@@ -109,7 +107,7 @@ public class ExtractSearchIndexFromHtmlTest
         html.LoadHtml(rawHtml);
         var href = "http://dotnet.github.io/docfx";
         var item = _extractor.ExtractItem(html, href);
-        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}, item);
+        Assert.Equal(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once." }, item);
     }
 
     [Fact]

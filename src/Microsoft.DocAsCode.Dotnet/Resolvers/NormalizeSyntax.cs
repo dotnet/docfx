@@ -21,7 +21,7 @@ internal class NormalizeSyntax : IResolverPipeline
                 {
                     SyntaxLanguage[] keys = new SyntaxLanguage[member.Syntax.Content.Count];
                     member.Syntax.Content.Keys.CopyTo(keys, 0);
-                    foreach(var key in keys)
+                    foreach (var key in keys)
                     {
                         member.Syntax.Content[key] = NormalizeLines(member.Syntax.Content[key]);
                     }

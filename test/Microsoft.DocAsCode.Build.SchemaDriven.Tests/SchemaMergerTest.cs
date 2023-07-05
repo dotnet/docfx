@@ -235,7 +235,7 @@ Overwrite with content
         var rawModelFilePath = GetRawModelFilePath(inputFileName);
         Assert.True(File.Exists(rawModelFilePath));
         var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
-            
+
         Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
         Assert.Equal(2, rawModel["intValue"].Value<int>());
         Assert.Equal("string1", rawModel["stringValue"].Value<string>());

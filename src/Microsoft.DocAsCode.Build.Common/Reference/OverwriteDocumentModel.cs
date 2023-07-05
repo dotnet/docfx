@@ -2,14 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
-using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.DataContracts.Common;
 using Microsoft.DocAsCode.Plugins;
 using Microsoft.DocAsCode.YamlSerialization;
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.Build.Common;
 

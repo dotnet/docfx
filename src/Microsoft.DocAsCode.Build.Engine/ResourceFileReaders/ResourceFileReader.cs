@@ -21,7 +21,7 @@ public abstract class ResourceFileReader : IResourceFileReader, IDisposable
 
     public IEnumerable<ResourceInfo> GetResources(string selector = null)
     {
-        foreach(var pair in GetResourceStreams(selector))
+        foreach (var pair in GetResourceStreams(selector))
         {
             using (pair.Value)
             {

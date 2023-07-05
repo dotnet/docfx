@@ -3,6 +3,7 @@
 
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Xml.Linq;
 using Microsoft.DocAsCode.Tests.Common;
 
 using Xunit;
@@ -192,6 +193,55 @@ public class DocsetTest : TestBase
         var b = JsonDocument.Parse(outputs["b.raw.json"]()).RootElement;
         Assert.Equal("fileMetadata1.json", a.GetProperty("meta1").GetString());
         Assert.Equal("fileMetadata2.json", b.GetProperty("meta1").GetString());
+    }
+
+    public static async Task Build_With_RedirectUri_Files()
+    {
+        // Act
+        var outputs = await Build(new()
+        {
+            ["docfx.json"] =
+                """
+                {
+                    "build": {
+                        "content": [{ "files": [ "*.md" ] }],
+                        "dest": "_site",
+                        "exportRawModel": true,
+                        "sitemap": {
+                          "baseUrl": "https://dotnet.github.io/docfx",
+                          "priority": 0.5,
+                          "changefreq": "daily"
+                        }
+                    }
+                }
+                """,
+            ["index.md"] =
+                """
+                ---
+                redirect_url: "redirected.html"
+                ---
+                # Dummy Heading1
+                """
+        });
+
+
+        // Assert
+        var result = outputs["index.html"]();
+        Assert.Equal(
+            """
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta http-equiv="refresh" content="0;URL='redirected.html'">
+              </head>
+            </html>
+            """, result);
+
+        // Test redirect page.is excluded from sitemap.
+        var sitemapXml = outputs["sitemap.xml"]();
+        var urls = XDocument.Parse(sitemapXml).Root.Elements();
+        Assert.True(urls.Count() == 0);
     }
 
     [Fact]

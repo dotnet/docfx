@@ -152,7 +152,7 @@ print(azureml.core.VERSION)</code></pre>";
         TestUtility.VerifyMarkup(
             source,
             expected,
-            errors: new[] { "multiple-tags-with-same-name"},
+            errors: new[] { "multiple-tags-with-same-name" },
             files: new Dictionary<string, string>
             {
                 { "Program.ipynb", content },

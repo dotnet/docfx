@@ -12,21 +12,9 @@
   <PropertyGroup>
     <!--
       Suppress warnings similar to the following:
-          warning CS0612: 'StringHelper.LegacyEscapeMarkdown(string)' is obsolete
-     -->
-    <NoWarn>$(NoWarn);CS0612</NoWarn>
-    <!--
-      Suppress warnings similar to the following:
-          warning CS0618: 'MarkdownLHeadingBlockRule.LHeading' is obsolete: 'Please use LHeadingMatcher.'
-     -->
-    <NoWarn>$(NoWarn);CS0618</NoWarn>
-    <!--
-      Suppress warnings similar to the following:
           warning NU1507: There are 2 package sources defined in your configuration.
      -->
     <NoWarn>$(NoWarn);NU1507</NoWarn>
-
-    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>

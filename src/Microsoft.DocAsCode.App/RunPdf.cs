@@ -25,7 +25,7 @@ internal static class RunPdf
         }
 
         var outputFolder = Path.GetFullPath(Path.Combine(
-            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory, 
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
             config.Destination ?? ""));
 
         var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;

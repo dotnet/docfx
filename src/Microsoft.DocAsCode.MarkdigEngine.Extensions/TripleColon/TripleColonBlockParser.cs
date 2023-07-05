@@ -1,11 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.ObjectModel;
 using Markdig.Helpers;
 using Markdig.Parsers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
-using System.Collections.ObjectModel;
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
@@ -69,7 +69,7 @@ public class TripleColonBlockParser : BlockParser
 
         if (extension.GetType() == typeof(ImageExtension))
         {
-            if(htmlAttributes != null
+            if (htmlAttributes != null
             && !ImageExtension.RequiresClosingTripleColon(attributes))
             {
                 return BlockState.None;
@@ -78,7 +78,8 @@ public class TripleColonBlockParser : BlockParser
             processor.NewBlocks.Push(block);
             block.EndingTripleColons = true;
             return BlockState.ContinueDiscard;
-        } else
+        }
+        else
         {
             processor.NewBlocks.Push(block);
         }
@@ -96,7 +97,7 @@ public class TripleColonBlockParser : BlockParser
         var slice = processor.Line;
         var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
 
-        if(((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension)
+        if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension)
             || endingTripleColons)
         {
             if (processor.IsBlankLine)

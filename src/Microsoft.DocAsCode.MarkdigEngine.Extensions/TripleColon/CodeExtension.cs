@@ -105,7 +105,7 @@ public class CodeExtension : ITripleColonExtensionInfo
             return false;
         }
 
-        if(string.IsNullOrEmpty(language))
+        if (string.IsNullOrEmpty(language))
         {
             language = InferLanguageFromFile(source, logError);
         }
@@ -121,16 +121,16 @@ public class CodeExtension : ITripleColonExtensionInfo
 
         return true;
     }
-    
+
     private string InferLanguageFromFile(string source, Action<string> logError)
     {
         var fileExtension = Path.GetExtension(source);
-        if(fileExtension == null)
+        if (fileExtension == null)
         {
             logError("Language is not set, and your source has no file type. Cannot infer language.");
         }
         var language = HtmlCodeSnippetRenderer.GetLanguageByFileExtension(fileExtension);
-        if(string.IsNullOrEmpty(language))
+        if (string.IsNullOrEmpty(language))
         {
             logError("Language is not set, and we could not infer language from the file type.");
         }

@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
-
-using Newtonsoft.Json;
-using YamlDotNet.Serialization;
-
 using Microsoft.DocAsCode.Common;
 using Microsoft.DocAsCode.YamlSerialization;
+using Newtonsoft.Json;
+using YamlDotNet.Serialization;
 
 namespace Microsoft.DocAsCode.DataContracts.Common;
 
