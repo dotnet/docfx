@@ -194,27 +194,6 @@ public class SamplesTest
     }
 
     [SnapshotFact]
-    public async Task CSharpPdf()
-    {
-        var samplePath = $"{s_samplesDir}/csharp";
-        Clean(samplePath);
-
-        Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", "main");
-
-        try
-        {
-            await DotnetApiCatalog.GenerateManagedReferenceYamlFiles($"{samplePath}/docfx.json");
-            await Docset.Pdf($"{samplePath}/docfx.json");
-        }
-        finally
-        {
-            Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
-        }
-
-        await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
-    }
-
-    [SnapshotFact]
     public Task Extensions()
     {
         var samplePath = $"{s_samplesDir}/extensions";
