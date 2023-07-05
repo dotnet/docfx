@@ -2,7 +2,7 @@
   "api/BuildFromAssembly.Class1.html": {
     "href": "api/BuildFromAssembly.Class1.html",
     "title": "Class Class1 | docfx seed website",
-    "keywords": "Class Class1 Namespace BuildFromAssembly Assembly BuildFromAssembly.dll This is a test class. public class Class1 Inheritance object Class1 Inherited Members object.GetType() object.MemberwiseClone() object.ToString() object.Equals(object) object.Equals(object, object) object.ReferenceEquals(object, object) object.GetHashCode() Constructors Class1() public Class1() Methods HelloWorld() public static void HelloWorld()"
+    "keywords": "Class Class1 Namespace BuildFromAssembly Assembly BuildFromAssembly.dll This is a test class. public class Class1 Inheritance object Class1 Inherited Members object.GetType() object.MemberwiseClone() object.ToString() object.Equals(object) object.Equals(object, object) object.ReferenceEquals(object, object) object.GetHashCode() Constructors Class1() public Class1() Methods HelloWorld() Hello World. public static void HelloWorld()"
   },
   "api/BuildFromAssembly.html": {
     "href": "api/BuildFromAssembly.html",

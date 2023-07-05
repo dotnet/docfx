@@ -258,6 +258,7 @@
             "BuildFromAssembly"
           ],
           "namespace": "BuildFromAssembly",
+          "example": [],
           "overload": {
             "uid": "BuildFromAssembly.Class1.HelloWorld*",
             "name": [
@@ -304,14 +305,13 @@
           },
           "level": 0.0,
           "type": "method",
-          "summary": "",
+          "summary": "<p sourcefile=\"obj/api/BuildFromAssembly.Class1.yml\" sourcestartlinenumber=\"1\">Hello World.</p>\n",
           "platform": null,
           "docurl": "",
           "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
           "remarks": "",
           "conceptual": "",
           "implements": "",
-          "example": "",
           "seealso": null,
           "id": "BuildFromAssembly_Class1_HelloWorld",
           "hideTitleType": false,
