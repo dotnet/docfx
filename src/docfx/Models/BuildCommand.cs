@@ -19,7 +19,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
             var serveDirectory = RunBuild.Exec(config.Item, new(), baseDirectory, settings.OutputFolder);
 
             if (settings.Serve)
-                RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenBrowserRelativePath);
+                RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
         });
     }
 

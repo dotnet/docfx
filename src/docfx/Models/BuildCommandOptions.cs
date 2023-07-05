@@ -52,9 +52,9 @@ internal class BuildCommandOptions : LogOptions
     [CommandOption("--open-browser")]
     public bool OpenBrowser { get; set; }
 
-    [Description("Specify the relative path to open.")]
-    [CommandOption("--open-browser-relative-path")]
-    public string OpenBrowserRelativePath { get; set; }
+    [Description("Open a file in a web browser When the hosted website starts,")]
+    [CommandOption("--open-file <RELATIVE_PATH>")]
+    public string OpenFile { get; set; }
 
     [Description("Run in debug mode. With debug mode, raw model and view model will be exported automatically when it encounters error when applying templates. If not specified, it is false.")]
     [CommandOption("--debug")]

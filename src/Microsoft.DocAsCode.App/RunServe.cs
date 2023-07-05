@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode;
 
 internal static class RunServe
 {
-    public static void Exec(string folder, string host, int? port, bool openBrowser, string openBrowserRelativePath)
+    public static void Exec(string folder, string host, int? port, bool openBrowser, string openFile)
     {
         if (string.IsNullOrEmpty(folder))
             folder = Directory.GetCurrentDirectory();
@@ -48,25 +48,22 @@ internal static class RunServe
             using var app = builder.Build();
             app.UseFileServer(fileServerOptions);
 
-            if (openBrowser)
+            if (openBrowser || !string.IsNullOrEmpty(openFile))
             {
-                string relativePath = openBrowserRelativePath;
+                string relativePath = openFile;
                 var launchUrl = string.IsNullOrEmpty(relativePath)
                     ? url
-                    : Path.Combine(url, ResolveOutputHtmlRelativePath(folder, relativePath));
+                    : ResolveOutputHtmlRelativePath(baseUrl: url, folder, relativePath);
 
                 // Start web server.
                 app.Start();
 
                 // Launch browser process.
-
-                Console.WriteLine($"Launching browser with url: {url}.");
-                using var process = LaunchBrowser(launchUrl);
+                Console.WriteLine($"Launching browser with url: {launchUrl}.");
+                LaunchBrowser(launchUrl);
 
                 // Wait until server exited.
                 app.WaitForShutdown();
-
-                // process object is disposed. (Note:Launched process remain running.after dispose)
             }
             else
             {
@@ -81,12 +78,13 @@ internal static class RunServe
 
     /// <summary>
     /// Resolve output HTML file path by `manifest.json` file.
+    /// If failed to resolve path. return baseUrl.
     /// </summary>
-    private static string ResolveOutputHtmlRelativePath(string folder, string relativePath)
+    private static string ResolveOutputHtmlRelativePath(string baseUrl, string folder, string relativePath)
     {
         var manifestPath = Path.GetFullPath(Path.Combine(folder, "manifest.json"));
         if (!File.Exists(manifestPath))
-            return string.Empty;
+            return baseUrl;
 
         try
         {
@@ -104,47 +102,52 @@ internal static class RunServe
                                        .FirstOrDefault(x => x.OutputFiles.TryGetValue(".html", out outputFileInfo));
 
             if (outputFileInfo != null)
-                return outputFileInfo.RelativePath;
+            {
+                var baseUri = new Uri(baseUrl);
+                return new Uri(baseUri, relativeUri: outputFileInfo.RelativePath).ToString();
+            }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw; // Unexpected exception occurred.(e.g. Failed to deserialize Manifest)
+            Logger.LogError($"Failed to resolve output HTML file by exception. file - {relativePath} with error - {ex.Message}");
+            return baseUrl;
         }
 
         // Failed to resolve output HTML file.
-        Logger.LogError($"Failed to resolve output HTML file path. sourceRelativePath: {relativePath}");
-        return string.Empty;
+        Logger.LogError($"Failed to resolve output HTML file. file - {relativePath}");
+        return baseUrl;
     }
 
-    private static Process LaunchBrowser(string url)
+    private static void LaunchBrowser(string url)
     {
         try
         {
             // Windows
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return Process.Start("cmd", new[] { "/C", "start", url });
+                Process.Start("cmd", new[] { "/C", "start", url });
+                return;
             }
 
             // Linux
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return Process.Start("xdg-open", url);
+                Process.Start("xdg-open", url);
+                return;
             }
 
             // OSX
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return Process.Start("open", url);
+                Process.Start("open", url);
+                return;
             }
 
             Logger.LogError($"Could not launch the browser process. Unknown OS platform: {RuntimeInformation.OSDescription}");
         }
         catch (Exception ex)
         {
-            Logger.LogError($"Could not launch the browser process, with error - {ex.Message}");
+            Logger.LogError($"Could not launch the browser process. with error - {ex.Message}");
         }
-
-        return null;
     }
 }

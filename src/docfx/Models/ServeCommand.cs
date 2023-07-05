@@ -28,13 +28,13 @@ internal class ServeCommand : Command<ServeCommand.Settings>
         [CommandOption("--open-browser")]
         public bool OpenBrowser { get; set; }
 
-        [Description("Specify the relative path to open.")]
-        [CommandOption("--open-browser-relative-path")]
-        public string OpenBrowserRelativePath { get; set; }
+        [Description("Open a file in a web browser When the hosted website starts,")]
+        [CommandOption("--open-file <RELATIVE_PATH>")]
+        public string OpenFile { get; set; }
     }
 
     public override int Execute([NotNull] CommandContext context, [NotNull] Settings options)
     {
-        return CommandHelper.Run(() => RunServe.Exec(options.Folder, options.Host, options.Port, options.OpenBrowser, options.OpenBrowserRelativePath));
+        return CommandHelper.Run(() => RunServe.Exec(options.Folder, options.Host, options.Port, options.OpenBrowser, options.OpenFile));
     }
 }
