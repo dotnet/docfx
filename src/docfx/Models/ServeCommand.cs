@@ -28,7 +28,7 @@ internal class ServeCommand : Command<ServeCommand.Settings>
         [CommandOption("--open-browser")]
         public bool OpenBrowser { get; set; }
 
-        [Description("Open a file in a web browser When the hosted website starts,")]
+        [Description("Open a file in a web browser when the hosted website starts.")]
         [CommandOption("--open-file <RELATIVE_PATH>")]
         public string OpenFile { get; set; }
     }
