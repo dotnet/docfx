@@ -65,7 +65,7 @@ public sealed class YamlDeserializer
         bool ignoreNotFoundAnchor = true)
     {
         objectFactory = objectFactory ?? new DefaultEmitObjectFactory();
-        namingConvention = namingConvention ?? new NullNamingConvention();
+        namingConvention = namingConvention ?? NullNamingConvention.Instance;
 
         _typeDescriptor.TypeDescriptor =
             new ExtensibleYamlAttributesTypeInspector(
@@ -170,12 +170,12 @@ public sealed class YamlDeserializer
             throw new ArgumentNullException("type");
         }
 
-        var hasStreamStart = parser.Allow<StreamStart>() != null;
+        var hasStreamStart = parser.TryConsume<StreamStart>(out _);
 
-        var hasDocumentStart = parser.Allow<DocumentStart>() != null;
+        var hasDocumentStart = parser.TryConsume<DocumentStart>(out _);
         deserializer = deserializer ?? _valueDeserializer;
         object result = null;
-        if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
+        if (!parser.Accept<DocumentEnd>(out _) && !parser.Accept<StreamEnd>(out _))
         {
             using var state = new SerializerState();
             result = deserializer.DeserializeValue(parser, type, state, deserializer);
@@ -184,12 +184,12 @@ public sealed class YamlDeserializer
 
         if (hasDocumentStart)
         {
-            parser.Expect<DocumentEnd>();
+            parser.Consume<DocumentEnd>();
         }
 
         if (hasStreamStart)
         {
-            parser.Expect<StreamEnd>();
+            parser.Consume<StreamEnd>();
         }
 
         return result;
@@ -267,8 +267,7 @@ public sealed class YamlDeserializer
         public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
         {
             object value;
-            var alias = reader.Allow<AnchorAlias>();
-            if (alias != null)
+            if (reader.TryConsume<AnchorAlias>(out var alias))
             {
                 var aliasState = state.Get<AliasState>();
                 if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
@@ -282,8 +281,7 @@ public sealed class YamlDeserializer
 
             AnchorName? anchor = null;
 
-            var nodeEvent = reader.Peek<NodeEvent>();
-            if (nodeEvent != null && !nodeEvent.Anchor.IsEmpty)
+            if (reader.Accept<NodeEvent>(out var nodeEvent) && !nodeEvent.Anchor.IsEmpty)
             {
                 anchor = nodeEvent.Anchor;
             }
