@@ -11,7 +11,7 @@ public class MarkdownServiceProperties
     /// <summary>
     /// Enables line numbers.
     /// </summary>
-    [JsonProperty("EnableSourceInfo")]
+    [JsonProperty("enableSourceInfo")]
     public bool EnableSourceInfo { get; set; } = true;
 
     /// <summary>

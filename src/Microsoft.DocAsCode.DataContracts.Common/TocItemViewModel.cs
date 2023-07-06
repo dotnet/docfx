@@ -88,8 +88,8 @@ public class TocItemViewModel
     [JsonProperty("homepage")]
     public string Homepage { get; set; }
 
-    [YamlMember(Alias = "originallHomepage")]
-    [JsonProperty("originallHomepage")]
+    [YamlMember(Alias = "originalHomepage")]
+    [JsonProperty("originalHomepage")]
     public string OriginalHomepage { get; set; }
 
     [YamlMember(Alias = "homepageUid")]
