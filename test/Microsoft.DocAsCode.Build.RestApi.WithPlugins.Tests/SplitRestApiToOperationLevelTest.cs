@@ -83,7 +83,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             var child = model.Children[0];
             Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
             Assert.Null(child.HtmlId);
-            Assert.Null(child.Summary); // Summary is poped to operation page
+            Assert.Null(child.Summary); // Summary is popped to operation page
             Assert.Empty(child.Tags);
         }
     }
@@ -126,7 +126,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             var child = model.Children[0];
             Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
             Assert.Null(child.HtmlId);
-            Assert.Null(child.Summary); // Summary has been poped to operation page
+            Assert.Null(child.Summary); // Summary has been popped to operation page
             Assert.Empty(child.Tags);
         }
         {
@@ -202,7 +202,7 @@ public class SplitRestApiToOperationLevelTest : TestBase
             var child = model.Children[0];
             Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
             Assert.Null(child.HtmlId);
-            Assert.Null(child.Summary); // Summary has been poped to operation page
+            Assert.Null(child.Summary); // Summary has been popped to operation page
             Assert.Empty(child.Tags);
         }
         {

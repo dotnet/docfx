@@ -23,12 +23,12 @@ public class TemplateManagerUnitTest : TestBase
 
     [Trait("Related", "ResourceFinder")]
     [Fact]
-    public void TestTemplateManagerWithMutipleThemesShouldWork()
+    public void TestTemplateManagerWithMultipleThemesShouldWork()
     {
-        // If the same resource name exists in the override folder, use the overriden one
+        // If the same resource name exists in the override folder, use the overridden one
         var themes = new List<string> { "tmpl1", "tmpl/tmpl1" };
         var manager = new TemplateManager(null, themes, null);
-        var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MutipleThemes");
+        var outputFolder = Path.Combine(_outputFolder, "TestTemplateManager_MultipleThemes");
         manager.ProcessTheme(outputFolder, true);
         // 1. Support tmpl1.zip
         var file1 = Path.Combine(outputFolder, "tmpl1.dot.$");

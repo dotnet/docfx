@@ -31,14 +31,14 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
             {
                 collection.AddRange(result.Item1);
 
-                var tocRestuction = result.Item2;
-                if (treeItemRestructions.Any(i => i.Key == tocRestuction.Key))
+                var tocRestruction = result.Item2;
+                if (treeItemRestructions.Any(i => i.Key == tocRestruction.Key))
                 {
-                    Logger.LogWarning($"Model with the key {tocRestuction.Key} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
+                    Logger.LogWarning($"Model with the key {tocRestruction.Key} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
                 }
                 else
                 {
-                    treeItemRestructions.Add(tocRestuction);
+                    treeItemRestructions.Add(tocRestruction);
                 }
             }
         }

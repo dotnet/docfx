@@ -71,7 +71,7 @@ public class UriTemplateTest
     }
 
     [Fact]
-    public void TestUriTemplate_PipelineInEnviroment()
+    public void TestUriTemplate_PipelineInEnvironment()
     {
         Environment.SetEnvironmentVariable("pipeline", "|>trim|>warpWord < >");
         var template = UriTemplate<string>.Parse(

@@ -19,7 +19,7 @@ public class GenerateMetadataFromVBUnitTest
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithClass()
+    public void TestGenerateMetadataWithClass()
     {
         string code = @"
 Imports System.Collections.Generic
@@ -72,7 +72,7 @@ End Namespace
     }
 
     [Fact]
-    public void TestGenereateMetadataWithEnum()
+    public void TestGenerateMetadataWithEnum()
     {
         string code = @"
 Namespace Test1
@@ -114,7 +114,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithInterface()
+    public void TestGenerateMetadataWithInterface()
     {
         string code = @"
 Namespace Test1
@@ -157,7 +157,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithStructure()
+    public void TestGenerateMetadataWithStructure()
     {
         string code = @"
 Namespace Test1
@@ -279,7 +279,7 @@ Namespace Test1
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithDelegate()
+    public void TestGenerateMetadataWithDelegate()
     {
         string code = @"
 Namespace Test1
@@ -317,7 +317,7 @@ End Namespace
     }
 
     [Fact]
-    public void TestGenereateMetadataWithModule()
+    public void TestGenerateMetadataWithModule()
     {
         string code = @"
 Namespace Test1
@@ -340,7 +340,7 @@ End Namespace
     [Trait("Related", "Generic")]
     [Trait("Related", "Inheritance")]
     [Fact]
-    public void TestGenereateMetadataWithMethod()
+    public void TestGenerateMetadataWithMethod()
     {
         string code = @"
 Namespace Test1
@@ -496,7 +496,7 @@ End Namespace
     }
 
     [Fact]
-    public void TestGenereateMetadataWithOperator()
+    public void TestGenerateMetadataWithOperator()
     {
         string code = @"
 Namespace Test1
@@ -770,7 +770,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithConstructor()
+    public void TestGenerateMetadataWithConstructor()
     {
         string code = @"
 Namespace Test1
@@ -820,7 +820,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithField()
+    public void TestGenerateMetadataWithField()
     {
         string code = @"
 Namespace Test1
@@ -908,7 +908,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithEvent()
+    public void TestGenerateMetadataWithEvent()
     {
         string code = @"
 Imports System
@@ -969,7 +969,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithProperty()
+    public void TestGenerateMetadataWithProperty()
     {
         string code = @"
 Namespace Test1
@@ -1128,7 +1128,7 @@ End Namespace
 
     [Trait("Related", "Generic")]
     [Fact]
-    public void TestGenereateMetadataWithIndex()
+    public void TestGenerateMetadataWithIndex()
     {
         string code = @"
 Imports System
@@ -1301,7 +1301,7 @@ End Namespace
     [Trait("Related", "Generic")]
     [Trait("Related", "Multilanguage")]
     [Fact]
-    public void TestGenereateMetadataAsyncWithMultilanguage()
+    public void TestGenerateMetadataAsyncWithMultilanguage()
     {
         string code = @"
 Namespace Test1

@@ -28,11 +28,11 @@ public class RemoveQueryStringTransformer : ITransformer
                         foreach (var tag in tags)
                         {
                             var src = tag.Attributes["href"].Value;
-                            var resovedUrl = src.RemoveUrlQueryString();
+                            var resolvedUrl = src.RemoveUrlQueryString();
 
-                            if (src != resovedUrl)
+                            if (src != resolvedUrl)
                             {
-                                tag.Attributes["href"].Value = string.IsNullOrEmpty(resovedUrl) ? "#" : resovedUrl;
+                                tag.Attributes["href"].Value = string.IsNullOrEmpty(resolvedUrl) ? "#" : resolvedUrl;
                                 isTransformed = true;
                             }
                         }

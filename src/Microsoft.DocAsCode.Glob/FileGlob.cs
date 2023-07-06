@@ -61,11 +61,11 @@ public class FileGlob
 
     private static string GetRelativeFilePath(string directory, string file)
     {
-        var subpath = file.Substring(directory.Length);
+        var subPath = file.Substring(directory.Length);
         // directory could be
         // 1. root folder, e.g. E:\ or /
         // 2. sub folder, e.g. a or a/ or a\
-        return subpath.TrimStart('\\', '/');
+        return subPath.TrimStart('\\', '/');
     }
 
     private static string GetRelativeDirectoryPath(string parentDirectory, string directory)

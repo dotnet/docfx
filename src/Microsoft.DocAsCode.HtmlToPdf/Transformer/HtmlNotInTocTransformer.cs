@@ -24,7 +24,7 @@ public class HtmlNotInTocTransformer : ITransformer
     }
 
     /// <summary>
-    /// 1. Retrive <a href=''></a> from each html.
+    /// 1. Retrieve <a href=''></a> from each html.
     /// 2. Foreach link, try to fix it.
     ///    2.1 If the link is full path, just keep it.
     ///    2.2 If the link is root path(/a/b), just add host in prefix.
@@ -34,7 +34,7 @@ public class HtmlNotInTocTransformer : ITransformer
     ///        2.3.3 If the link NOT in TOC and NOT in Manifest, log warning to the invalid link.
     ///    2.4 Others, keep it as the origin.
     /// </summary>
-    /// <param name="htmlFilePaths">The htmls' relative path in TOC.</param>
+    /// <param name="htmlFilePaths">The html's relative path in TOC.</param>
     public void Transform(IEnumerable<string> htmlFilePaths)
     {
         Guard.ArgumentNotNull(htmlFilePaths, nameof(htmlFilePaths));

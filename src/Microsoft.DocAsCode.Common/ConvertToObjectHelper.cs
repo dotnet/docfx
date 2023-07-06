@@ -118,11 +118,11 @@ public static class ConvertToObjectHelper
                 ((IDictionary<string, Object>)result).Add(key, ConvertToDynamicCore(pair.Value, cache));
             }
         }
-        else if (obj is IDictionary<string, object> sdict)
+        else if (obj is IDictionary<string, object> sDict)
         {
             result = cache[obj] = new ExpandoObject();
 
-            foreach (var pair in sdict)
+            foreach (var pair in sDict)
             {
                 ((IDictionary<string, Object>)result).Add(pair.Key, ConvertToDynamicCore(pair.Value, cache));
             }

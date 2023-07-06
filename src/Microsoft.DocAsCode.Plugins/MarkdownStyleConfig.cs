@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Microsoft.DocAsCode.Plugins;
 
-public class MarkdownSytleConfig
+public class MarkdownStyleConfig
 {
     public const string MarkdownStyleFileName = "md.style";
 

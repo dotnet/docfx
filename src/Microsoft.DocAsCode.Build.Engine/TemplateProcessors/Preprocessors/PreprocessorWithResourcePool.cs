@@ -10,9 +10,9 @@ internal class PreprocessorWithResourcePool : ITemplatePreprocessor
 {
     private readonly ResourcePoolManager<ITemplatePreprocessor> _preprocessorPool;
 
-    public PreprocessorWithResourcePool(Func<ITemplatePreprocessor> creater, int maxParallelism)
+    public PreprocessorWithResourcePool(Func<ITemplatePreprocessor> creator, int maxParallelism)
     {
-        _preprocessorPool = ResourcePool.Create(creater, maxParallelism);
+        _preprocessorPool = ResourcePool.Create(creator, maxParallelism);
         try
         {
             using var preprocessor = _preprocessorPool.Rent();

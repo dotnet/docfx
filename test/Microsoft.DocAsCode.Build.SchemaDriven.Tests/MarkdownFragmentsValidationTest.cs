@@ -28,7 +28,7 @@ public class MarkdownFragmentsValidationTest : TestBase
     private const string RawModelFileExtension = ".raw.json";
 
     [Fact]
-    public void OverwriteUneditableTest()
+    public void OverwriteUnEditableTest()
     {
         _outputFolder = GetRandomFolder();
         _inputFolder = GetRandomFolder();

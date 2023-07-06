@@ -140,10 +140,10 @@ public class DocumentBuilderTest : TestBase
                 "  c: e",
                 "---",
                 "# Hello World",
-                "Test xrefmap with duplicate uid in different fiels: XRef2 should be recorded with file test/test.md"
+                "Test xrefmap with duplicate uid in different files: XRef2 should be recorded with file test/test.md"
             },
             _inputFolder);
-        File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+        File.WriteAllText(MarkdownStyleConfig.MarkdownStyleFileName, @"{
 rules : [
     ""foo"",
     { name: ""bar"", disable: true}
@@ -397,14 +397,14 @@ tagRules : [
             _inputFolder);
 
         File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
-        File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+        File.WriteAllText(MarkdownStyleConfig.MarkdownStyleFileName, @"{
 settings : [
     { category: ""div"", disable: true},
     { category: ""p"", id: ""p-3"", disable: true}
 ],
 }");
         CreateFile(
-            MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/p" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+            MarkdownStyleDefinition.MarkdownStyleDefinitionFolderName + "/p" + MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix,
             @"{
     tagRules : {
         ""p-1"": {
@@ -430,7 +430,7 @@ settings : [
 }
 ", _templateFolder);
         CreateFile(
-            MarkdownSytleDefinition.MarkdownStyleDefinitionFolderName + "/div" + MarkdownSytleDefinition.MarkdownStyleDefinitionFilePostfix,
+            MarkdownStyleDefinition.MarkdownStyleDefinitionFolderName + "/div" + MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix,
             @"{
     tagRules : {
         ""div-1"": {

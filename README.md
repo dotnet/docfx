@@ -64,7 +64,7 @@ We welcome code contributions through pull requests, issues tagged as **[`help-w
 
 ### Branch and Release
 
-The `main` branch is the default branch for pull requests and most other development activities. We occationally use `feature/*` branches for epic feature development.
+The `main` branch is the default branch for pull requests and most other development activities. We occasionally use `feature/*` branches for epic feature development.
 
 Releases are based on a stable `main` branch commit using [GitHub Releases](https://github.com/dotnet/docfx/releases). Use of [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) is encouraged.
 

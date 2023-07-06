@@ -369,8 +369,8 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var memberType = GetMemberTypeFromSymbol(symbol);
         if (memberType == MemberType.Default)
         {
-            Debug.Fail("Unexpected membertype.");
-            throw new InvalidOperationException("Unexpected membertype.");
+            Debug.Fail("Unexpected member type.");
+            throw new InvalidOperationException("Unexpected member type.");
         }
         return _generator.AddReference(symbol, _references, this);
     }
@@ -406,8 +406,8 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             case MemberType.Operator:
                 return _generator.AddOverloadReference(symbol, _references, this);
             default:
-                Debug.Fail("Unexpected membertype.");
-                throw new InvalidOperationException("Unexpected membertype.");
+                Debug.Fail("Unexpected member type.");
+                throw new InvalidOperationException("Unexpected member type.");
         }
     }
 
@@ -546,7 +546,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             var type = symbol;
             var inheritance = new List<string>();
             dict = new Dictionary<string, string>();
-            var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
+            var typeParameterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
             while (type != null)
             {
                 // TODO: special handles for errorType: change to System.Object
@@ -558,10 +558,10 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 
                 if (!type.Equals(symbol, SymbolEqualityComparer.Default))
                 {
-                    inheritance.Add(AddSpecReference(type, typeParamterNames));
+                    inheritance.Add(AddSpecReference(type, typeParameterNames));
                 }
 
-                AddInheritedMembers(symbol, type, dict, typeParamterNames);
+                AddInheritedMembers(symbol, type, dict, typeParameterNames);
                 type = type.BaseType;
             }
 
@@ -574,7 +574,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
             {
                 item.Implements = (from t in symbol.AllInterfaces
                                    where _filter.IncludeApi(t)
-                                   select AddSpecReference(t, typeParamterNames)).ToList();
+                                   select AddSpecReference(t, typeParameterNames)).ToList();
                 if (item.Implements.Count == 0)
                 {
                     item.Implements = null;
@@ -584,11 +584,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         else if (symbol.TypeKind == TypeKind.Interface)
         {
             dict = new Dictionary<string, string>();
-            var typeParamterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
-            AddInheritedMembers(symbol, symbol, dict, typeParamterNames);
+            var typeParameterNames = symbol.IsGenericType ? symbol.Accept(TypeGenericParameterNameVisitor.Instance) : EmptyListOfString;
+            AddInheritedMembers(symbol, symbol, dict, typeParameterNames);
             for (int i = 0; i < symbol.AllInterfaces.Length; i++)
             {
-                AddInheritedMembers(symbol, symbol.AllInterfaces[i], dict, typeParamterNames);
+                AddInheritedMembers(symbol, symbol.AllInterfaces[i], dict, typeParameterNames);
             }
         }
         if (dict != null)
@@ -658,7 +658,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         item.ExtensionMethods = extensions.Count > 0 ? extensions : null;
     }
 
-    private void AddInheritedMembers(INamedTypeSymbol symbol, INamedTypeSymbol type, Dictionary<string, string> dict, IReadOnlyList<string> typeParamterNames)
+    private void AddInheritedMembers(INamedTypeSymbol symbol, INamedTypeSymbol type, Dictionary<string, string> dict, IReadOnlyList<string> typeParameterNames)
     {
         foreach (var m in from m in type.GetMembers()
                           where !(m is INamedTypeSymbol)
@@ -667,10 +667,10 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
                           where IsInheritable(m)
                           select m)
         {
-            var sig = MemberSigRegex.Replace(SpecIdHelper.GetSpecId(m, typeParamterNames), string.Empty);
+            var sig = MemberSigRegex.Replace(SpecIdHelper.GetSpecId(m, typeParameterNames), string.Empty);
             if (!dict.ContainsKey(sig))
             {
-                dict.Add(sig, type.Equals(symbol, SymbolEqualityComparer.Default) ? null : AddSpecReference(m, typeParamterNames));
+                dict.Add(sig, type.Equals(symbol, SymbolEqualityComparer.Default) ? null : AddSpecReference(m, typeParameterNames));
             }
         }
     }
