@@ -195,6 +195,7 @@ public class DocsetTest : TestBase
         Assert.Equal("fileMetadata2.json", b.GetProperty("meta1").GetString());
     }
 
+    [Fact]
     public static async Task Build_With_RedirectUri_Files()
     {
         // Act
