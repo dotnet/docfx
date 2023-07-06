@@ -37,7 +37,7 @@ public class TemplateProcessor : IDisposable
         _templateCollection = new TemplateCollection(resourceProvider, context, maxParallelism);
         if (_templateCollection.Count == 0)
         {
-            Logger.LogWarning("No template bundles were found, no template will be applied to the documents. 1) Check your docfx.json 2) or your working directory has the templates subfolder");
+            Logger.LogWarning("No template bundles were found, no template will be applied to the documents. 1) Check your docfx.json 2) the templates subfolder exists inside your application folder or your docfx.json directory.");
         }
         Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider) ?? new Dictionary<string, string>();
     }
