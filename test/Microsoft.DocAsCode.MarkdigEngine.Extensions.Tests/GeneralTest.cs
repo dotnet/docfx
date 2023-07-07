@@ -234,20 +234,19 @@ content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -";
-        var groupId = "bHGHmlrG6S";
-        var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
+        var expected = $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"">title-a</a>
+<a href=""#tabpanel_1_a"" role=""tab"" aria-controls=""tabpanel_1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"">title-a</a>
 </li>
 <li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
-<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"">title-b</a>
+<a href=""#tabpanel_1_b_c"" role=""tab"" aria-controls=""tabpanel_1_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"">title-b</a>
 </li>
 </ul>
-<section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
+<section id=""tabpanel_1_a"" role=""tabpanel"" data-tab=""a"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""2"">content-a</p>
 </section>
-<section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
+<section id=""tabpanel_1_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""4"">content-b</p>
 </section>
 </div>
@@ -269,37 +268,36 @@ content-a
 # [title-b](#tab/b/a)
 content-b
 - - -";
-        var groupId = "bHGHmlrG6S";
-        var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
+        var expected = $@"<div class=""tabGroup"" id=""tabgroup_1"" sourceFile=""test.md"" sourceStartLineNumber=""1"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"">title-a</a>
+<a href=""#tabpanel_1_a"" role=""tab"" aria-controls=""tabpanel_1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"">title-a</a>
 </li>
 <li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
-<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"">title-b</a>
+<a href=""#tabpanel_1_b_c"" role=""tab"" aria-controls=""tabpanel_1_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"">title-b</a>
 </li>
 </ul>
-<section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
+<section id=""tabpanel_1_a"" role=""tabpanel"" data-tab=""a"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""2"">content-a</p>
 </section>
-<section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
+<section id=""tabpanel_1_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""4"">content-b</p>
 </section>
 </div>
-<div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""test.md"" sourceStartLineNumber=""6"">
+<div class=""tabGroup"" id=""tabgroup_2"" sourceFile=""test.md"" sourceStartLineNumber=""6"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"">title-a</a>
+<a href=""#tabpanel_2_a"" role=""tab"" aria-controls=""tabpanel_2_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_{groupId}-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"">title-b</a>
+<a href=""#tabpanel_2_b_a"" role=""tab"" aria-controls=""tabpanel_2_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"">title-b</a>
 </li>
 </ul>
-<section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">
+<section id=""tabpanel_2_a"" role=""tabpanel"" data-tab=""a"">
 
 <p sourceFile=""test.md"" sourceStartLineNumber=""7"">content-a</p>
 </section>
-<section id=""tabpanel_{groupId}-1_b_a"" role=""tabpanel"" data-tab=""b"" data-condition=""a"" aria-hidden=""true"" hidden=""hidden"">
+<section id=""tabpanel_2_b_a"" role=""tabpanel"" data-tab=""b"" data-condition=""a"" aria-hidden=""true"" hidden=""hidden"">
 
 <p sourceFile=""test.md"" sourceStartLineNumber=""9"">content-b</p>
 </section>

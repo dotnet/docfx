@@ -9,15 +9,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions;
 
 public class TabGroupBlock : ContainerBlock
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
 
     public int ActiveTabIndex { get; set; }
 
     public ImmutableArray<TabItemBlock> Items { get; set; }
 
-    public TabGroupBlock(string id, ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex) : base(null)
+    public TabGroupBlock(ImmutableArray<TabItemBlock> blocks, int startLine, int startSpan, int activeTabIndex) : base(null)
     {
-        Id = id;
         ActiveTabIndex = activeTabIndex;
         Items = blocks;
         Line = startLine;
