@@ -4,8 +4,7 @@
       "src": [
         {
           "files": [
-            "src/Docfx.App/*.csproj",
-            "src/Docfx.Dotnet/*.csproj"
+            "src/**/*.csproj"
           ],
           "src": "../"
         }
