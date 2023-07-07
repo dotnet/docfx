@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.DocAsCode.Dotnet;
+using Docfx.Dotnet;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class MetadataCommand : Command<MetadataCommandOptions>
 {

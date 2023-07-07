@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.DocAsCode.Common;
+using Docfx.Common;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class InitCommand : Command<InitCommandOptions>
 {

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\plugins\Docfx.Build.OperationLevelRestApi\Docfx.Build.OperationLevelRestApi.csproj" />
+    <ProjectReference Include="..\..\plugins\Docfx.Build.TagLevelRestApi\Docfx.Build.TagLevelRestApi.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Build.TableOfContents\Docfx.Build.TableOfContents.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.RestApi\Docfx.DataContracts.RestApi.csproj" />
+    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
+  </ItemGroup>
+</Project>

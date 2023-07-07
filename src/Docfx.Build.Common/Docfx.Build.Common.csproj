@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
+    <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" />
+    <PackageReference Include="System.Composition" />
+  </ItemGroup>
+
+</Project>

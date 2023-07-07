@@ -9,11 +9,11 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using ImageMagick;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Dotnet;
+using Docfx.Common;
+using Docfx.Dotnet;
 using Microsoft.Playwright;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 [UsesVerify]
 [Trait("Stage", "Snapshot")]
@@ -51,7 +51,7 @@ public class SamplesTest
 
     static SamplesTest()
     {
-        Playwright.Program.Main(new[] { "install" });
+        Microsoft.Playwright.Program.Main(new[] { "install" });
         Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
     }
 
@@ -90,7 +90,7 @@ public class SamplesTest
         const int port = 8089;
         var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }));
 
-        using var playwright = await Playwright.Playwright.CreateAsync();
+        using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
         var htmlUrls = new ConcurrentDictionary<string, string>();
 

@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class ArrayOptionConverter : TypeConverter
 {

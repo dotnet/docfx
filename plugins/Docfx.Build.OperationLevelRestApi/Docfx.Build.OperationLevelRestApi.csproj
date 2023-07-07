@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.RestApi\Docfx.DataContracts.RestApi.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Plugins\Docfx.Plugins.csproj" />
+  </ItemGroup>
+</Project>

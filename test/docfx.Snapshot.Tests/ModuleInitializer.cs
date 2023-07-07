@@ -4,7 +4,7 @@
 using System.Runtime.CompilerServices;
 using DiffEngine;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 public static class ModuleInitializer
 {

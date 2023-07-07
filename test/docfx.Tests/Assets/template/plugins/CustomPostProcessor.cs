@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using Microsoft.DocAsCode.Plugins;
+using Docfx.Plugins;
 
 [Export(nameof(CustomPostProcessor), typeof(IPostProcessor))]
 public class CustomPostProcessor : IPostProcessor

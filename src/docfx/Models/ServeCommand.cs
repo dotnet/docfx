@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class ServeCommand : Command<ServeCommand.Settings>
 {

@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
-using Microsoft.DocAsCode.Tests.Common;
+using Docfx.Tests.Common;
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 [Collection("docfx STA")]
 public class PdfTest : TestBase

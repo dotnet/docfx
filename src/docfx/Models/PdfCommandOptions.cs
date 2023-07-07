@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 [Description("Generate pdf file")]
 internal class PdfCommandOptions : BuildCommandOptions

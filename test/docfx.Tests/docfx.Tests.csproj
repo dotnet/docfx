@@ -4,9 +4,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
     <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Tests.Common\Docfx.Tests.Common.csproj" />
   </ItemGroup>
 </Project>

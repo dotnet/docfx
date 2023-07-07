@@ -11,7 +11,7 @@ namespace RtfDocumentProcessors
     using System.Threading.Tasks.Schedulers;
 
     using MarkupConverter;
-    using Microsoft.DocAsCode.Plugins;
+    using Docfx.Plugins;
 
     [Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
     public class RtfBuildStep : IDocumentBuildStep

@@ -1,14 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.DataContracts.Common;
-using Microsoft.DocAsCode.DataContracts.ManagedReference;
-using Microsoft.DocAsCode.Dotnet;
-using Microsoft.DocAsCode.Tests.Common;
+using Docfx.Common;
+using Docfx.DataContracts.Common;
+using Docfx.DataContracts.ManagedReference;
+using Docfx.Dotnet;
+using Docfx.Tests.Common;
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 [Collection("docfx STA")]
 public class MetadataCommandTest : TestBase

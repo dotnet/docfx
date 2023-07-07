@@ -1,5 +1,5 @@
-﻿using Microsoft.DocAsCode;
-using Microsoft.DocAsCode.Dotnet;
+﻿using Docfx;
+using Docfx.Dotnet;
 using Markdig;
 
 await DotnetApiCatalog.GenerateManagedReferenceYamlFiles("docfx.json", new()

@@ -3,7 +3,7 @@
 
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class Program
 {

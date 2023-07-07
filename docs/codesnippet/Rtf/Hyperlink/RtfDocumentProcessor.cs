@@ -12,8 +12,8 @@ namespace RtfDocumentProcessors
     using System.Web;
     using System.Xml.Linq;
 
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
+    using Docfx.Plugins;
+    using Docfx.Utility;
 
     [Export(typeof(IDocumentProcessor))]
     public class RtfDocumentProcessor : IDocumentProcessor
