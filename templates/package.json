@@ -49,7 +49,7 @@
     "stylelint": "^15.10.1",
     "stylelint-config-standard-scss": "^10.0.0",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.1.3",
+    "typescript": "^5.1.6",
     "yargs": "^17.7.2"
   }
 }
