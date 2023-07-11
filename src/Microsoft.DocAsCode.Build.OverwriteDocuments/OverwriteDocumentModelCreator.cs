@@ -8,11 +8,11 @@ using Microsoft.DocAsCode.Common;
 
 namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
 
-public class OverwriteDocumentModelCreater
+public class OverwriteDocumentModelCreator
 {
     string _file;
 
-    public OverwriteDocumentModelCreater(string file)
+    public OverwriteDocumentModelCreator(string file)
     {
         _file = file ?? throw new ArgumentNullException(nameof(file));
     }

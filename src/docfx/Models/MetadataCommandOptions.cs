@@ -29,7 +29,7 @@ internal class MetadataCommandOptions : LogOptions
     [CommandOption("--globalNamespaceId")]
     public string GlobalNamespaceId { get; set; }
 
-    [Description("--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
+    [Description("--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to MSBuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
     [CommandOption("--property")]
     public string MSBuildProperties { get; set; }
 

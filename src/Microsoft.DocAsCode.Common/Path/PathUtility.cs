@@ -35,7 +35,7 @@ public static class PathUtility
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static bool IsVaildFilePath(string path)
+    public static bool IsValidFilePath(string path)
     {
         FileInfo fi = null;
         try

@@ -10,8 +10,8 @@ public class OverwriteUtilityTest
     [Fact]
     public void ParseOPathTest()
     {
-        var OPathstring = "a/f[c= \"d\"]/g/b[c =\"d/d_d d\"]/e";
-        var OPathSegments = OverwriteUtility.ParseOPath(OPathstring);
+        var OPathString = "a/f[c= \"d\"]/g/b[c =\"d/d_d d\"]/e";
+        var OPathSegments = OverwriteUtility.ParseOPath(OPathString);
         Assert.Equal(5, OPathSegments.Count);
         Assert.Equal("a,f,g,b,e", OPathSegments.Select(o => o.SegmentName).Aggregate((a, b) => a + "," + b));
         Assert.Equal("c", OPathSegments[1].Key);

@@ -398,10 +398,10 @@ public class RestApiDocumentProcessorTest : TestBase
     }
 
     [Fact]
-    public void ProcessSwaggerWithUnmergableOverwriteShouldSucceed()
+    public void ProcessSwaggerWithUnmergeableOverwriteShouldSucceed()
     {
         FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
+        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergeable.md" });
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("contacts.json");
@@ -430,7 +430,7 @@ public class RestApiDocumentProcessorTest : TestBase
     {
         var files = new FileCollection(_defaultFiles);
         files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.multi.uid.md" });
-        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
+        files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergeable.md" });
         BuildDocument(files);
         {
             var outputRawModelPath = GetRawModelFilePath("contacts.json");

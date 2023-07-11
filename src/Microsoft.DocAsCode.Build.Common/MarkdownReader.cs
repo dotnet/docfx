@@ -52,7 +52,7 @@ public class MarkdownReader
             throw new InvalidDataException(checkPropertyMessage);
         }
 
-        var overriden = RemoveRequiredProperties(properties, RequiredProperties);
+        var overridden = RemoveRequiredProperties(properties, RequiredProperties);
         var repoInfo = GitUtility.TryGetFileDetail(filePath);
 
         return new OverwriteDocumentModel
@@ -62,7 +62,7 @@ public class MarkdownReader
             LinkToUids = new HashSet<string>(part.LinkToUids),
             FileLinkSources = part.FileLinkSources.ToDictionary(p => p.Key, p => p.Value.ToList()),
             UidLinkSources = part.UidLinkSources.ToDictionary(p => p.Key, p => p.Value.ToList()),
-            Metadata = overriden,
+            Metadata = overridden,
             Conceptual = part.Conceptual,
             Documentation = new SourceDetail
             {
@@ -109,16 +109,16 @@ public class MarkdownReader
             return null;
         }
 
-        var overridenProperties = new Dictionary<string, object>(properties.OrderBy(p => p.Key));
+        var overriddenProperties = new Dictionary<string, object>(properties.OrderBy(p => p.Key));
         foreach (var requiredProperty in requiredProperties)
         {
             if (requiredProperty != null)
             {
-                overridenProperties.Remove(requiredProperty);
+                overriddenProperties.Remove(requiredProperty);
             }
         }
 
-        return overridenProperties;
+        return overriddenProperties;
     }
 
     private static bool CheckRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredKeys, out string message)

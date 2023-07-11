@@ -66,21 +66,12 @@ public class TabGroupAggregator : BlockAggregator<HeadingBlock>
         int offset
         )
     {
-        var groupId = GetHashString(items[0]?.Content?.ToString() ?? string.Empty).Replace("/", "-").Remove(10);
-
         context.AggregateTo(new TabGroupBlock(
-                            groupId,
                             items.ToImmutableArray(),
                             startLine,
                             startSpan,
                             0),
                             offset);
-    }
-
-    private static string GetHashString(string content)
-    {
-        using var sha256 = SHA256.Create();
-        return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
     private static TabItemBlock CreateTabItem(

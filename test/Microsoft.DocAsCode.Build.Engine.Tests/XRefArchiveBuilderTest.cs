@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests;
 
-[Trait("Related", "XRefAtchive")]
+[Trait("Related", "XRefArchive")]
 public class XRefArchiveBuilderTest
 {
     [Fact]

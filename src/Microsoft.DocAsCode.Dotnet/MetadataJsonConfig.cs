@@ -59,7 +59,7 @@ internal class MetadataJsonItemConfig
 
     /// <summary>
     /// An optional set of MSBuild properties used when interpreting project files. These
-    ///  are the same properties that are passed to msbuild via the /property:&lt;n&gt;=&lt;v&gt;
+    ///  are the same properties that are passed to MSBuild via the /property:&lt;n&gt;=&lt;v&gt;
     ///  command line argument.
     /// </summary>
     [JsonProperty("properties")]

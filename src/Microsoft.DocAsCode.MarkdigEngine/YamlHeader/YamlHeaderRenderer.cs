@@ -41,7 +41,7 @@ public class YamlHeaderRenderer : HtmlObjectRenderer<YamlFrontMatterBlock>
         }
         catch (Exception ex)
         {
-            // not a valid ymlheader, do nothing
+            // not a valid yml header, do nothing
             _context.LogWarning("invalid-yaml-header", ex.Message, obj);
         }
     }

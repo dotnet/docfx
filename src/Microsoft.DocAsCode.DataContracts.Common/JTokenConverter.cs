@@ -14,9 +14,9 @@ public static class JTokenConverter
             return (T)obj;
         }
 
-        if (obj is JToken jtoken)
+        if (obj is JToken jToken)
         {
-            return jtoken.ToObject<T>();
+            return jToken.ToObject<T>();
         }
         throw new InvalidCastException();
     }

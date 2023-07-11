@@ -12,7 +12,7 @@ public class ManifestItemCollectionConverter : JsonConverter
         return objectType == typeof(ManifestItemCollection);
     }
 
-    public override object ReadJson(JsonReader reader, Type objecType, object existingValue,
+    public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
         JsonSerializer serializer)
     {
         var manifestCollectionList = (List<ManifestItem>)serializer.Deserialize(reader, typeof(List<ManifestItem>));

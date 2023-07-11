@@ -75,7 +75,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         { "csharp", new string[] {"cs"} },
         { "cuda", new string[] {"cu", "cuh" } },
         { "d", new string[] {"dlang"} },
-        { "everything", new string[] {"example" } }, //this is the catch all to try and process unforseen languages
+        { "everything", new string[] {"example" } }, //this is the catch all to try and process unforeseen languages
         { "erlang", new string[] {"erl" } },
         { "fsharp", new string[] {"fs", "fsi", "fsx" } },
         { "go", new string[] {"golang" } },
@@ -300,9 +300,9 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
             foreach (var extractor in extractors)
             {
                 HashSet<int> tagLines = new();
-                var tagToCoderangeMapping = extractor.GetAllTags(allLines, ref tagLines);
-                if (tagToCoderangeMapping.TryGetValue(obj.TagName, out var cr)
-                    || tagToCoderangeMapping.TryGetValue(tagWithPrefix, out cr))
+                var tagToCodeRangeMapping = extractor.GetAllTags(allLines, ref tagLines);
+                if (tagToCodeRangeMapping.TryGetValue(obj.TagName, out var cr)
+                    || tagToCodeRangeMapping.TryGetValue(tagWithPrefix, out cr))
                 {
                     return GetCodeLines(allLines, obj, new List<CodeRange> { cr }, tagLines);
                 }

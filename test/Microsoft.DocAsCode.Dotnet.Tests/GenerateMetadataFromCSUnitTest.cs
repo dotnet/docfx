@@ -161,17 +161,17 @@ namespace Test1
             Assert.Equal("public TResult? Func1<TResult>(T? x, IEnumerable<T> y) where TResult : struct", function.Syntax.Content[SyntaxLanguage.CSharp]);
         }
         {
-            var proptery = output.Items[0].Items[0].Items[1];
-            Assert.NotNull(proptery);
-            Assert.Equal("Items", proptery.DisplayNames.First().Value);
-            Assert.Equal("Class1<T>.Items", proptery.DisplayNamesWithType.First().Value);
-            Assert.Equal("Test1.Class1<T>.Items", proptery.DisplayQualifiedNames.First().Value);
-            Assert.Equal("Test1.Class1`1.Items", proptery.Name);
-            Assert.Empty(proptery.Syntax.Parameters);
-            var returnValue = proptery.Syntax.Return;
+            var property = output.Items[0].Items[0].Items[1];
+            Assert.NotNull(property);
+            Assert.Equal("Items", property.DisplayNames.First().Value);
+            Assert.Equal("Class1<T>.Items", property.DisplayNamesWithType.First().Value);
+            Assert.Equal("Test1.Class1<T>.Items", property.DisplayQualifiedNames.First().Value);
+            Assert.Equal("Test1.Class1`1.Items", property.Name);
+            Assert.Empty(property.Syntax.Parameters);
+            var returnValue = property.Syntax.Return;
             Assert.NotNull(returnValue.Type);
             Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
-            Assert.Equal(@"public IEnumerable<T> Items { get; set; }", proptery.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public IEnumerable<T> Items { get; set; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
         }
         {
             var event1 = output.Items[0].Items[0].Items[2];
@@ -207,17 +207,17 @@ namespace Test1
             Assert.Equal("public static bool operator ==(Class1<T> x, Class1<T> y)", operator1.Syntax.Content[SyntaxLanguage.CSharp]);
         }
         {
-            var proptery = output.Items[0].Items[0].Items[4];
-            Assert.NotNull(proptery);
-            Assert.Equal("Items2", proptery.DisplayNames.First().Value);
-            Assert.Equal("Class1<T>.Items2", proptery.DisplayNamesWithType.First().Value);
-            Assert.Equal("Test1.Class1<T>.Items2", proptery.DisplayQualifiedNames.First().Value);
-            Assert.Equal("Test1.Class1`1.Items2", proptery.Name);
-            Assert.Empty(proptery.Syntax.Parameters);
-            var returnValue = proptery.Syntax.Return;
+            var property = output.Items[0].Items[0].Items[4];
+            Assert.NotNull(property);
+            Assert.Equal("Items2", property.DisplayNames.First().Value);
+            Assert.Equal("Class1<T>.Items2", property.DisplayNamesWithType.First().Value);
+            Assert.Equal("Test1.Class1<T>.Items2", property.DisplayQualifiedNames.First().Value);
+            Assert.Equal("Test1.Class1`1.Items2", property.Name);
+            Assert.Empty(property.Syntax.Parameters);
+            var returnValue = property.Syntax.Return;
             Assert.NotNull(returnValue.Type);
             Assert.Equal("System.Collections.Generic.IEnumerable{{T}}", returnValue.Type);
-            Assert.Equal(@"public IEnumerable<T> Items2 { get; }", proptery.Syntax.Content[SyntaxLanguage.CSharp]);
+            Assert.Equal(@"public IEnumerable<T> Items2 { get; }", property.Syntax.Content[SyntaxLanguage.CSharp]);
         }
         // check references
         {
@@ -225,13 +225,13 @@ namespace Test1
             Assert.True(output.References.Count > 0);
 
             Assert.True(output.References.ContainsKey("Test1.Class1`1"));
-            var refenence = output.References["Test1.Class1`1"];
-            Assert.True(refenence.IsDefinition);
-            Assert.Equal("Test1", refenence.Parent);
+            var reference = output.References["Test1.Class1`1"];
+            Assert.True(reference.IsDefinition);
+            Assert.Equal("Test1", reference.Parent);
             Assert.True(output.References.ContainsKey("Test1"));
-            refenence = output.References["Test1"];
-            Assert.True(refenence.IsDefinition);
-            Assert.Null(refenence.Parent);
+            reference = output.References["Test1"];
+            Assert.True(reference.IsDefinition);
+            Assert.Null(reference.Parent);
 
             Assert.True(output.References.ContainsKey("System.Collections.Generic.Dictionary`2"));
             Assert.NotNull(output.References["System.Collections.Generic.Dictionary`2"]);
@@ -311,26 +311,26 @@ namespace Test1
         MetadataItem output = Verify(code);
         Assert.Single(output.Items);
 
-        var ifoo = output.Items[0].Items[0];
-        Assert.NotNull(ifoo);
-        Assert.Equal("IFoo", ifoo.DisplayNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("IFoo", ifoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-        Assert.Equal("Test1.IFoo", ifoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("public interface IFoo", ifoo.Syntax.Content[SyntaxLanguage.CSharp]);
+        var iFoo = output.Items[0].Items[0];
+        Assert.NotNull(iFoo);
+        Assert.Equal("IFoo", iFoo.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("IFoo", iFoo.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("Test1.IFoo", iFoo.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("public interface IFoo", iFoo.Syntax.Content[SyntaxLanguage.CSharp]);
 
-        var ibar = output.Items[0].Items[1];
-        Assert.NotNull(ibar);
-        Assert.Equal("IBar", ibar.DisplayNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("IBar", ibar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-        Assert.Equal("Test1.IBar", ibar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("public interface IBar : IFoo", ibar.Syntax.Content[SyntaxLanguage.CSharp]);
+        var iBar = output.Items[0].Items[1];
+        Assert.NotNull(iBar);
+        Assert.Equal("IBar", iBar.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("IBar", iBar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("Test1.IBar", iBar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("public interface IBar : IFoo", iBar.Syntax.Content[SyntaxLanguage.CSharp]);
 
-        var ifoobar = output.Items[0].Items[2];
-        Assert.NotNull(ifoobar);
-        Assert.Equal("IFooBar", ifoobar.DisplayNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("IFooBar", ifoobar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-        Assert.Equal("Test1.IFooBar", ifoobar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("public interface IFooBar : IBar, IFoo", ifoobar.Syntax.Content[SyntaxLanguage.CSharp]);
+        var iFooBar = output.Items[0].Items[2];
+        Assert.NotNull(iFooBar);
+        Assert.Equal("IFooBar", iFooBar.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("IFooBar", iFooBar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("Test1.IFooBar", iFooBar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("public interface IFooBar : IBar, IFoo", iFooBar.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 
     [Fact]
@@ -444,14 +444,14 @@ namespace Test1
         Assert.Equal(new[] { "System.Object", "Test1.Foo{{T}[]}" }, bar.Inheritance);
         Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar" }, bar.Implements);
 
-        var foobar = output.Items[0].Items[2];
-        Assert.NotNull(foobar);
-        Assert.Equal("FooBar", foobar.DisplayNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("FooBar", foobar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
-        Assert.Equal("Test1.FooBar", foobar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
-        Assert.Equal("public class FooBar : Bar<string>, IFooBar, IFoo, IBar", foobar.Syntax.Content[SyntaxLanguage.CSharp]);
-        Assert.Equal(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, foobar.Inheritance);
-        Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s), foobar.Implements.OrderBy(s => s));
+        var fooBar = output.Items[0].Items[2];
+        Assert.NotNull(fooBar);
+        Assert.Equal("FooBar", fooBar.DisplayNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("FooBar", fooBar.DisplayNamesWithType[SyntaxLanguage.CSharp]);
+        Assert.Equal("Test1.FooBar", fooBar.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+        Assert.Equal("public class FooBar : Bar<string>, IFooBar, IFoo, IBar", fooBar.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(new[] { "System.Object", "Test1.Foo{System.String[]}", "Test1.Bar{System.String}" }, fooBar.Inheritance);
+        Assert.Equal(new[] { "Test1.IFoo", "Test1.IBar", "Test1.IFooBar" }.OrderBy(s => s), fooBar.Implements.OrderBy(s => s));
 
         Assert.NotNull(output.References);
         Assert.Equal(19, output.References.Count);
@@ -1220,7 +1220,7 @@ namespace Test1
         public static bool operator <(Foo x, int y) => false;
         public static bool operator >=(Foo x, int y) => false;
         public static bool operator <=(Foo x, int y) => false;
-        // convertion
+        // conversion
         public static implicit operator Foo (int x) => null;
         public static explicit operator int (Foo x) => 0;
     }

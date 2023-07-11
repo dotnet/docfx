@@ -12,9 +12,9 @@ using Xunit;
 
 namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests;
 
-public class OverwriteDocumentModelCreaterTest
+public class OverwriteDocumentModelCreatorTest
 {
-    private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creater");
+    private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creator");
 
     [Fact]
     public void YamlCodeBlockTest()
@@ -28,7 +28,7 @@ definitions:
   - name: displayName
     description: overwrite in yaml block";
         var testYamlCodeBlock = Markdown.Parse($"```\n{yamlCodeBlockString}\n```")[0];
-        var actual = JObject.FromObject(OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock));
+        var actual = JObject.FromObject(OverwriteDocumentModelCreator.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock));
         Assert.Equal("name overwrite", actual["name"].ToString());
         Assert.Equal("Application 1", actual["definitions"][0]["name"].ToString());
         Assert.Equal("id", actual["definitions"][0]["properties"][0]["name"].ToString());
@@ -60,7 +60,7 @@ definitions:
             });
         }
 
-        var contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
+        var contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
         Assert.Equal(3, contentsMetadata.Count);
         Assert.Equal("summary,return,function", ExtractDictionaryKeys(contentsMetadata));
         Assert.Equal(2, ((Dictionary<object, object>)contentsMetadata["return"]).Count);
@@ -100,9 +100,9 @@ definitions:
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("overwrite_document_model_creater"))
+            using (new LoggerPhaseScope("overwrite_document_model_creator"))
             {
-                contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
+                contentsMetadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents);
             }
         }
         finally
@@ -130,7 +130,7 @@ definitions:
   - name: displayName
     description: overwrite in yaml block";
         var testYamlCodeBlock = Markdown.Parse($"```\n{yamlCodeBlockString}\n```")[0];
-        var yamlMetadata = OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock);
+        var yamlMetadata = OverwriteDocumentModelCreator.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock);
 
         // Markdown section
         var testBlockList = Markdown.Parse("Test").ToList();
@@ -156,9 +156,9 @@ definitions:
         Logger.RegisterListener(_listener);
         try
         {
-            using (new LoggerPhaseScope("overwrite_document_model_creater"))
+            using (new LoggerPhaseScope("overwrite_document_model_creator"))
             {
-                metadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(yamlMetadata, contents);
+                metadata = new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(yamlMetadata, contents);
             }
         }
         finally
@@ -196,7 +196,7 @@ definitions:
             });
         }
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
         Assert.Equal(
             "A(parameters) is not expected to be an array like \"A[c=d]/B\", however it is used as an array in line 0 with `parameters[id=\"para1\"]/...`",
             ex.Message);
@@ -223,7 +223,7 @@ definitions:
             });
         }
 
-        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
+        var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreator("test.yml.md").ConvertContents(new Dictionary<object, object>(), contents));
         Assert.Equal(
             "A(parameters) is not expected to be an object like \"A/B\", however it is used as an object in line 0 with `parameters/...`",
             ex.Message);

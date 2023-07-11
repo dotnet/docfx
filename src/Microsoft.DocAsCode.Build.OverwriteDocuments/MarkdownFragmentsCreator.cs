@@ -5,7 +5,7 @@ using Markdig.Syntax;
 
 namespace Microsoft.DocAsCode.Build.OverwriteDocuments;
 
-public class MarkdownFragmentsCreater
+public class MarkdownFragmentsCreator
 {
 
     /*

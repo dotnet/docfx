@@ -12,6 +12,13 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
+# Visual Studio Spell checker configs (https://learn.microsoft.com/en-us/visualstudio/ide/text-spell-checker?view=vs-2022)
+[*]
+spelling_languages       = en-us
+spelling_checkable_types = strings,identifiers,comments
+spelling_error_severity  = warning
+spelling_exclusion_path  = ./SpellingExclusions.dic
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true

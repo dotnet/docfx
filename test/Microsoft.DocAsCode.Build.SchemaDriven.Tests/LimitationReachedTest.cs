@@ -42,7 +42,7 @@ public class LimitationReachedTest : TestBase
         _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
     }
 
-    [Fact(Skip = "Mannually run this testcase, as it will influence the result of other test cases")]
+    [Fact(Skip = "Manually run this testcase, as it will influence the result of other test cases")]
     public void TestSchemaReachedLimits()
     {
         // Json.NET schema has limitation of 1000 calls per hour

@@ -185,8 +185,8 @@ public static class ReflectionHelper
             return true;
         }
 
-        return ImplementsGenericDefintion(type, typeof(IDictionary<,>)) ||
-            ImplementsGenericDefintion(type, typeof(IReadOnlyDictionary<,>));
+        return ImplementsGenericDefinition(type, typeof(IDictionary<,>)) ||
+            ImplementsGenericDefinition(type, typeof(IReadOnlyDictionary<,>));
     }
 
     public static bool IsIEnumerableType(Type t)
@@ -225,7 +225,7 @@ public static class ReflectionHelper
         return genericType != null;
     }
 
-    public static bool ImplementsGenericDefintion(Type type, Type genericTypeDefinition)
+    public static bool ImplementsGenericDefinition(Type type, Type genericTypeDefinition)
     {
         return GetGenericType(type, genericTypeDefinition) != null;
     }
