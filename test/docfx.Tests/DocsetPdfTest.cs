@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
+using docfx.Tests.Attributes;
 using Microsoft.DocAsCode.Tests.Common;
 
 using Xunit;
@@ -36,7 +37,7 @@ public class DocsetPdfTest : TestBase
                 f => new Func<string>(() => File.ReadAllText(f)));
     }
 
-    [Fact]
+    [WindowsOnlyFact]
     public static async Task Pdf_Basic()
     {
         var outputs = await Pdf(new()
@@ -70,7 +71,7 @@ public class DocsetPdfTest : TestBase
         Assert.True(outputs.ContainsKey("Pdf_Basic_pdf.pdf"));
     }
 
-    [Fact]
+    [WindowsOnlyFact]
     public static async Task Pdf_With_Cover_Page()
     {
         var outputs = await Pdf(new()
@@ -105,7 +106,7 @@ public class DocsetPdfTest : TestBase
         Assert.True(outputs.ContainsKey("Pdf_With_Cover_Page_pdf.pdf"));
     }
 
-    [Fact]
+    [WindowsOnlyFact]
     public static async Task Pdf_With_Global_Metadata_Files()
     {
         var outputs = await Pdf(new()
@@ -147,7 +148,7 @@ public class DocsetPdfTest : TestBase
         Assert.True(outputs.ContainsKey("Pdf_With_Global_Metadata_Files.pdf"));
     }
 
-    [Fact]
+    [WindowsOnlyFact]
     public static async Task Pdf_With_File_Metadata_Files()
     {
         var outputs = await Pdf(new()
