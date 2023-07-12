@@ -32,11 +32,6 @@ jobs:
     - name: dotnet pack
       run: dotnet pack -c Release /p:Version=${GITHUB_REF_NAME#v} -o drop/nuget
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: nuget
-        path: drop/nuget
-
     - name: dotnet publish
       run: |
         dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
@@ -44,12 +39,43 @@ jobs:
         dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
         mkdir -p drop/bin
 
+    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23274.1
+
+    - run: >
+        ./sign code azure-key-vault
+        drop/nuget/**/*.*
+        --description "Docfx code sign"
+        --description-url "https://dotnet.github.io/docfx"
+        --azure-key-vault-managed-identity true
+        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
+        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
+        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
+        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
+
+    - run: >
+        ./sign code azure-key-vault
+        bin/**/*.*
+        --description "Docfx code sign"
+        --description-url "https://dotnet.github.io/docfx"
+        --azure-key-vault-managed-identity true
+        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
+        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
+        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
+        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
+
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/win-x64
     - run: zip -r ../../bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/linux-x64
     - run: zip -r ../../bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/osx-x64
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: nuget
+        path: drop/nuget
 
     - uses: actions/upload-artifact@v3
       with:
@@ -64,11 +90,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
-    # Run publish as the last step as `gh run download` does not download actions in running state
-    - name: publish
-      uses: Azure/pipelines@v1.2
-      with:
-        azure-devops-project-url: https://dev.azure.com/ceapex/Engineering
-        azure-pipeline-name: 'dotnet.docfx'
-        azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
-        azure-pipeline-variables: '{"GH_RUNID": "${{github.run_id}}"}'
+    - run: |
+        dotnet nuget push $(Pipeline.Workspace)\nuget\*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
+      env:
+        NUGET_KEY: $(NUGET_KEY)
