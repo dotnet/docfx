@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
@@ -200,9 +200,9 @@ public class SamplesTest
         Clean(samplePath);
 
 #if DEBUG
-        Assert.Equal(0, Exec("dotnet", "run --project build", workingDirectory: samplePath));
+        Assert.Equal(0, Exec("dotnet", "run --no-build --project build", workingDirectory: samplePath));
 #else
-        Assert.Equal(0, Exec("dotnet", "run -c Release --project build", workingDirectory: samplePath));
+        Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
         return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
