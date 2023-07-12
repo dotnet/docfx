@@ -4,11 +4,11 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Xml.Linq;
-using Microsoft.DocAsCode.Tests.Common;
+using Docfx.Tests.Common;
 
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 [Collection("docfx STA")]
 public class DocsetTest : TestBase

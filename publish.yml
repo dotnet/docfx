@@ -81,8 +81,7 @@ jobs:
     artifact: nuget
 
   - powershell: |
-      dotnet nuget push $(Pipeline.Workspace)\nuget\Microsoft.DocAsCode.*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
-      dotnet nuget push $(Pipeline.Workspace)\nuget\docfx.*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
+      dotnet nuget push $(Pipeline.Workspace)\nuget\*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
     displayName: dotnet nuget push
     env:
       NUGET_KEY: $(NUGET_KEY)

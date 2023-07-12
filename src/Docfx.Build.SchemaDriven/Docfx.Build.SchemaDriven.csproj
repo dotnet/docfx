@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\schemas\v1.0\schema.json" Link="schemas\v1.0\schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Build.OverwriteDocuments\Docfx.Build.OverwriteDocuments.csproj" />
+    <ProjectReference Include="..\Docfx.MarkdigEngine\Docfx.MarkdigEngine.csproj" />
+    <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" />
+    <PackageReference Include="Markdig" />
+  </ItemGroup>
+</Project>

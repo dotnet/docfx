@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="System.Composition" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="System.Collections.Immutable" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.MarkdigEngine.Extensions\Docfx.MarkdigEngine.Extensions.csproj" />
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
+  </ItemGroup>
+
+</Project>

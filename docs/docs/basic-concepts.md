@@ -33,7 +33,7 @@ Static documentation pages are prepared using [Markdown](markdown.md) (slightly 
 
 Once the API documentation has been parsed from the source code, it is compiled along with the Markdown content into a set of HTML pages which can be published on a website.  It is also possible to compile the final output into one or more PDFs for offline use.
 
-Docfx is a command-line tool that can be invoked directly, or as a .NET Core CLI tool using the `dotnet` command, but it can also be invoked from source code using the `Docset.Build` method in the `Microsoft.DocAsCode` namespace.  It is configured using a JSON configuration file, [`docfx.json`](../reference/docfx-json-reference.md) which has sections for different parts of the build process.
+Docfx is a command-line tool that can be invoked directly, or as a .NET Core CLI tool using the `dotnet` command, but it can also be invoked from source code using the `Docset.Build` method in the `Docfx` namespace.  It is configured using a JSON configuration file, [`docfx.json`](../reference/docfx-json-reference.md) which has sections for different parts of the build process.
 
 ## Consuming .NET projects
 

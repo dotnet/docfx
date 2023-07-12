@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <EnablePackageValidation>false</EnablePackageValidation>
+    <PackageValidationBaselineVersion>2.60.0</PackageValidationBaselineVersion>
+    <Description>Docfx published as a library for extensibility and advanced customization</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="docfx" />
+    <InternalsVisibleTo Include="docfx.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Build.ConceptualDocuments\Docfx.Build.ConceptualDocuments.csproj" />
+    <ProjectReference Include="..\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
+    <ProjectReference Include="..\Docfx.Build.ResourceFiles\Docfx.Build.ResourceFiles.csproj" />
+    <ProjectReference Include="..\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
+    <ProjectReference Include="..\Docfx.Build.SchemaDriven\Docfx.Build.SchemaDriven.csproj" />
+    <ProjectReference Include="..\Docfx.Build.TableOfContents\Docfx.Build.TableOfContents.csproj" />
+    <ProjectReference Include="..\Docfx.Build.UniversalReference\Docfx.Build.UniversalReference.csproj" />
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.HtmlToPdf\Docfx.HtmlToPdf.csproj" />
+    <ProjectReference Include="..\Docfx.MarkdigEngine\Docfx.MarkdigEngine.csproj" />
+    <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
+    <ProjectReference Include="..\Docfx.Glob\Docfx.Glob.csproj" />
+  </ItemGroup>
+</Project>

@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 [Description("Generate YAML files from source code")]
 internal class MetadataCommandOptions : LogOptions

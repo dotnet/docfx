@@ -3,11 +3,11 @@
 
 using System.Xml.Linq;
 using HtmlAgilityPack;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Tests.Common;
+using Docfx.Common;
+using Docfx.Tests.Common;
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 [Collection("docfx STA")]
 public class CompositeCommandTest : TestBase

@@ -3,11 +3,11 @@
 
 using System.ComponentModel;
 using System.Reflection;
-using Microsoft.DocAsCode.Dotnet;
+using Docfx.Dotnet;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 class DefaultCommand : Command<DefaultCommand.Options>
 {

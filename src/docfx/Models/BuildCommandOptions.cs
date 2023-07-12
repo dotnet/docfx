@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 [Description("Generate client-only website combining API in YAML files and conceptual files")]
 internal class BuildCommandOptions : LogOptions

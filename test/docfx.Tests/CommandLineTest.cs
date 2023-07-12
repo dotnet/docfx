@@ -3,7 +3,7 @@
 
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 public static class CommandLineTest
 {

@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.MarkdigEngine.Extensions\Docfx.MarkdigEngine.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.MarkdigEngine\Docfx.MarkdigEngine.csproj" />
+    <ProjectReference Include="..\..\src\Docfx.Plugins\Docfx.Plugins.csproj" />
+  </ItemGroup>
+</Project>

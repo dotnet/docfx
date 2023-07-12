@@ -11,7 +11,7 @@ To use a custom markdown extension:
 1. Use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Microsoft.DocAsCode.App" Version="2.61.0" />
+<PackageReference Include="Docfx.App" Version="2.70.0" />
 ```
 
 2. Configure the markdig markdown pipeline:

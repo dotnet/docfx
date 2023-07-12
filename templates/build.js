@@ -13,7 +13,7 @@ const argv = yargs(hideBin(process.argv)).argv
 
 const watch = argv.watch
 const project = argv.project || '../samples/seed'
-const distdir = '../src/Microsoft.DocAsCode.App/templates'
+const distdir = '../src/Docfx.App/templates'
 
 const loader = {
   '.eot': 'file',

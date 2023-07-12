@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
-using Microsoft.DocAsCode.Common;
+using Docfx.Common;
 
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class LogOptions : CommandSettings
 {
