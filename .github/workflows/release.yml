@@ -1,13 +1,11 @@
 name: release
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -39,32 +37,6 @@ jobs:
         dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
         mkdir -p drop/bin
 
-    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23274.1
-
-    - run: >
-        ./sign code azure-key-vault
-        drop/nuget/**/*.*
-        --description "Docfx code sign"
-        --description-url "https://dotnet.github.io/docfx"
-        --azure-key-vault-managed-identity true
-        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
-        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
-        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
-        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
-        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
-
-    - run: >
-        ./sign code azure-key-vault
-        bin/**/*.*
-        --description "Docfx code sign"
-        --description-url "https://dotnet.github.io/docfx"
-        --azure-key-vault-managed-identity true
-        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
-        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
-        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
-        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
-        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
-
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .
       working-directory: drop/publish/win-x64
     - run: zip -r ../../bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip .
@@ -79,8 +51,69 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: bin
-        path: drop/bin
+        name: publish
+        path: drop/publish
+
+  sign:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.x
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: nuget
+        path: drop/nuget
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: publish
+        path: drop/publish
+
+    - run: dotnet tool install --tool-path . sign --version 0.9.1-beta.23274.1
+
+    - run: >
+        ./sign code azure-key-vault
+        drop/nuget/**/*.*
+        --description "Docfx code sign"
+        --description-url "https://dotnet.github.io/docfx"
+        --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
+        --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
+        --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
+        --azure-key-vault-client-id "${{ secrets.SIGN_KEY_VAULT_CLIENT_ID }}"
+        --azure-key-vault-client-secret "${{ secrets.SIGN_KEY_VAULT_CLIENT_SECRET }}"
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: nuget-signed
+        path: drop/nuget
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: sign
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.x
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: nuget-signed
+        path: drop/nuget
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: publish
+        path: drop/publish
+
+    - run: |
+        dotnet nuget push $(Pipeline.Workspace)\nuget\*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
+      env:
+        NUGET_KEY: $(NUGET_KEY)
 
     - name: Upload GitHub release
       run: |
@@ -89,8 +122,3 @@ jobs:
         gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
-
-    - run: |
-        dotnet nuget push $(Pipeline.Workspace)\nuget\*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
-      env:
-        NUGET_KEY: $(NUGET_KEY)
