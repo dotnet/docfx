@@ -1,7 +1,7 @@
 name: release
 on:
   release:
-    types: [published, edited]
+    types: [published]
 
 jobs:
   build:
@@ -111,7 +111,7 @@ jobs:
         path: drop/publish
 
     - run: |
-        dotnet nuget push $(Pipeline.Workspace)\nuget\*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://nuget.org
+        dotnet nuget push drop/nuget/*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://api.nuget.org/v3/index.json
       env:
         NUGET_KEY: $(NUGET_KEY)
 
