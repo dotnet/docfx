@@ -8,6 +8,8 @@ using Spectre.Console.Cli;
 
 namespace Docfx;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 internal class InitCommand : Command<InitCommandOptions>
 {
     private const string ConfigName = Constants.ConfigFileName;
