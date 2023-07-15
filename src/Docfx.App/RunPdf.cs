@@ -8,6 +8,8 @@ using Docfx.Plugins;
 
 namespace Docfx;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 internal static class RunPdf
 {
     public static void Exec(PdfJsonConfig config, BuildOptions buildOptions, string configDirectory, string outputDirectory = null)

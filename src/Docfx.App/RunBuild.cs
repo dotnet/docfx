@@ -7,6 +7,8 @@ using Docfx.Plugins;
 
 namespace Docfx;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 internal static class RunBuild
 {
     public static string Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
