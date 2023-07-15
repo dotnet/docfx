@@ -5,6 +5,11 @@ using Newtonsoft.Json;
 
 namespace Docfx;
 
+/// <summary>
+/// FileMetadataPairs.
+/// </summary>
+/// <see cref="BuildJsonConfig.FileMetadata"/>
+/// <see cref="MergeJsonItemConfig.FileMetadata"/>
 [Serializable]
 [JsonConverter(typeof(FileMetadataPairsConverter))]
 internal class FileMetadataPairs
@@ -12,6 +17,9 @@ internal class FileMetadataPairs
     // Order matters, the latter one overrides the former one
     private List<FileMetadataPairsItem> _items;
 
+    /// <summary>
+    /// Gets FileMetadataPairs items.
+    /// </summary>
     public IReadOnlyList<FileMetadataPairsItem> Items
     {
         get
@@ -20,16 +28,25 @@ internal class FileMetadataPairs
         }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMetadataPairs"/> class.
+    /// </summary>
     public FileMetadataPairs(List<FileMetadataPairsItem> items)
     {
         _items = items;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMetadataPairs"/> class.
+    /// </summary>
     public FileMetadataPairs(FileMetadataPairsItem item)
     {
         _items = new List<FileMetadataPairsItem> { item };
     }
 
+    /// <summary>
+    /// Gets the element at the specified index.
+    /// </summary>
     public FileMetadataPairsItem this[int index]
     {
         get
@@ -38,6 +55,9 @@ internal class FileMetadataPairs
         }
     }
 
+    /// <summary>
+    /// Gets the number of elements.
+    /// </summary>
     public int Count
     {
         get

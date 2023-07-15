@@ -6,13 +6,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx;
 
+/// <summary>
+/// JsonConverter for <see cref="MergeJsonConfig"/>.
+/// </summary>
 internal class MergeJsonConfigConverter : JsonConverter
 {
+    /// <inheritdoc/>
     public override bool CanConvert(Type objectType)
     {
         return objectType == typeof(MergeJsonConfig);
     }
 
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         var model = new MergeJsonConfig();
@@ -51,6 +56,7 @@ internal class MergeJsonConfigConverter : JsonConverter
         return model;
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         serializer.Serialize(writer, ((MergeJsonConfig)value).ToArray());

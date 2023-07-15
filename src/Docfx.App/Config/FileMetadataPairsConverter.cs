@@ -8,13 +8,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx;
 
+/// <summary>
+/// JsonConverter for FileMetadataPairs
+/// </summary>
 internal class FileMetadataPairsConverter : JsonConverter
 {
+    /// <inheritdoc/>
     public override bool CanConvert(Type objectType)
     {
         return objectType == typeof(FileMetadataPairs);
     }
 
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         var value = reader.Value;
@@ -27,6 +32,7 @@ internal class FileMetadataPairsConverter : JsonConverter
         return new FileMetadataPairs(jItems.Select(ParseItem).ToList());
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteStartObject();
