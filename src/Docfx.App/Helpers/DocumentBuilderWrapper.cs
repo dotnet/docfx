@@ -188,9 +188,6 @@ internal static class DocumentBuilderWrapper
                 }
             }
 
-            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
-            ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
-
             if (config.MarkdownEngineProperties != null)
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties;

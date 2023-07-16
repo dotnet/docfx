@@ -34,8 +34,6 @@ public sealed class DocumentBuildParameters : IBuildParameters
 
     public int MaxParallelism { get; set; }
 
-    public int MaxHttpParallelism { get; set; }
-
     public MarkdownServiceProperties MarkdownEngineParameters { get; set; } = new();
 
     public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; set; }

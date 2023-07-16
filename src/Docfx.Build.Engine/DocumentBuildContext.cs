@@ -38,7 +38,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         GroupInfo = parameters.GroupInfo;
         XRefTags = parameters.XRefTags;
         MaxParallelism = parameters.MaxParallelism;
-        MaxHttpParallelism = parameters.MaxHttpParallelism;
 
         if (parameters.XRefMaps.Length > 0)
         {
@@ -88,7 +87,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         GroupInfo = groupInfo;
         XRefTags = xrefTags;
         MaxParallelism = maxParallelism;
-        MaxHttpParallelism = maxParallelism * 2;
         if (xrefMaps.Length > 0)
         {
             _reader = new XRefCollection(
@@ -128,8 +126,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
     public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
     public int MaxParallelism { get; }
-
-    public int MaxHttpParallelism { get; }
 
     public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
