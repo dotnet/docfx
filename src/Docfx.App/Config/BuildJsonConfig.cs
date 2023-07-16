@@ -43,6 +43,7 @@ internal class BuildJsonConfig
     /// <summary>
     /// Specifies pairing that is used for folder redirection rules.
     /// </summary>
+    [Obsolete("May be removed in a future release.")]
     [JsonProperty("pairing")]
     public List<ContentPairingInfo> Pairing { get; set; }
 
@@ -61,7 +62,7 @@ internal class BuildJsonConfig
     /// <summary>
     /// Defines the output folder of the generated build files.
     /// </summary>
-    [Obsolete("Use output instead")]
+    [Obsolete("Use output instead.")]
     [JsonProperty("dest")]
     public string Destination { get; set; }
 
@@ -95,8 +96,9 @@ internal class BuildJsonConfig
     public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
     /// <summary>
-    /// Specify tag parameters that are used by SchemaDrivenDocumentProcessor's 
+    /// Specify tag parameters that are used by SchemaDrivenDocumentProcessor 
     /// </summary>
+    [Obsolete("May be removed in a future release.")]
     [JsonProperty("tagParameters")]
     public Dictionary<string, JArray> TagParameters { get; set; }
 
