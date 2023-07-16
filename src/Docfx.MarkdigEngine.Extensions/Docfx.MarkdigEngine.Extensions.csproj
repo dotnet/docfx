@@ -4,8 +4,4 @@
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Docfx.MarkdigEngine.Validators\Docfx.MarkdigEngine.Validators.csproj" />
-  </ItemGroup>
-
 </Project>

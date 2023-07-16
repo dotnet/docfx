@@ -22,12 +22,11 @@ public class MarkdigMarkdownService : IMarkdownService
 
     public MarkdigMarkdownService(
         MarkdownServiceParameters parameters,
-        ICompositionContainer container = null,
         Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> configureMarkdig = null)
     {
         _parameters = parameters;
         _configureMarkdig = configureMarkdig;
-        _mvb = MarkdownValidatorBuilder.Create(parameters, container);
+        _mvb = MarkdownValidatorBuilder.Create(parameters);
         _context = new MarkdownContext(
             key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
             (code, message, origin, line) => Logger.LogInfo(message, null, InclusionContext.File.ToString(), line?.ToString(), code),

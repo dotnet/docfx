@@ -8,11 +8,10 @@ namespace Docfx.MarkdigEngine;
 
 public class MarkdigServiceProvider : IMarkdownServiceProvider
 {
-    public ICompositionContainer Container { get; init; }
     public Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> ConfigureMarkdig { get; init; }
 
     public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
     {
-        return new MarkdigMarkdownService(parameters, Container, ConfigureMarkdig);
+        return new MarkdigMarkdownService(parameters, ConfigureMarkdig);
     }
 }
