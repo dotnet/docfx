@@ -53,7 +53,7 @@ internal class BuildJsonConfig
     public ListWithStringFallback XrefTags { get; set; }
 
     /// <summary>
-    /// Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, ftp, file, embedded.
+    /// Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.
     /// </summary>
     [JsonProperty("xref")]
     public ListWithStringFallback XRefMaps { get; set; }
