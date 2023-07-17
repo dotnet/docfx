@@ -16,7 +16,6 @@ public class MarkdigMarkdownService : IMarkdownService
     public string Name => "markdig";
 
     private readonly MarkdownServiceParameters _parameters;
-    private readonly MarkdownValidatorBuilder _mvb;
     private readonly MarkdownContext _context;
     private readonly Func<MarkdownPipelineBuilder, MarkdownPipelineBuilder> _configureMarkdig;
 
@@ -26,7 +25,6 @@ public class MarkdigMarkdownService : IMarkdownService
     {
         _parameters = parameters;
         _configureMarkdig = configureMarkdig;
-        _mvb = MarkdownValidatorBuilder.Create(parameters);
         _context = new MarkdownContext(
             key => _parameters.Tokens.TryGetValue(key, out var value) ? value : null,
             (code, message, origin, line) => Logger.LogInfo(message, null, InclusionContext.File.ToString(), line?.ToString(), code),
@@ -40,10 +38,10 @@ public class MarkdigMarkdownService : IMarkdownService
 
     public MarkupResult Markup(string content, string filePath)
     {
-        return Markup(content, filePath, false, false);
+        return Markup(content, filePath, false);
     }
 
-    public MarkupResult Markup(string content, string filePath, bool enableValidation, bool multipleYamlHeader)
+    public MarkupResult Markup(string content, string filePath, bool multipleYamlHeader)
     {
         if (content == null)
         {
@@ -55,7 +53,7 @@ public class MarkdigMarkdownService : IMarkdownService
             throw new ArgumentException("file path can't be null or empty.");
         }
 
-        var pipeline = CreateMarkdownPipeline(isInline: false, enableValidation, multipleYamlHeader);
+        var pipeline = CreateMarkdownPipeline(isInline: false, multipleYamlHeader);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -84,7 +82,7 @@ public class MarkdigMarkdownService : IMarkdownService
             throw new ArgumentException("file path can't be null or empty.");
         }
 
-        var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
+        var pipeline = CreateMarkdownPipeline(isInline);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -112,7 +110,7 @@ public class MarkdigMarkdownService : IMarkdownService
             throw new ArgumentNullException("file path can't be found in AST.");
         }
 
-        var pipeline = CreateMarkdownPipeline(isInline, enableValidation: false);
+        var pipeline = CreateMarkdownPipeline(isInline);
 
         using (InclusionContext.PushFile((RelativePath)filePath))
         {
@@ -130,7 +128,7 @@ public class MarkdigMarkdownService : IMarkdownService
         }
     }
 
-    private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool enableValidation, bool multipleYamlHeader = false)
+    private MarkdownPipeline CreateMarkdownPipeline(bool isInline, bool multipleYamlHeader = false)
     {
         var enableSourceInfo = _parameters?.Extensions?.EnableSourceInfo ?? true;
 
@@ -142,11 +140,6 @@ public class MarkdigMarkdownService : IMarkdownService
         if (enableSourceInfo)
         {
             builder.UseLineNumber(file => ((RelativePath)file).RemoveWorkingFolder());
-        }
-
-        if (enableValidation)
-        {
-            builder.Extensions.Add(new ValidationExtension(_mvb, _context));
         }
 
         if (isInline)

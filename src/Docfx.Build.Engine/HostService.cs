@@ -104,20 +104,7 @@ internal sealed class HostService : IHostService, IDisposable
 
     public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse)
     {
-        return Markup(markdown, ft, omitParse, false);
-    }
-
-    public MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
-    {
-        if (markdown == null)
-        {
-            throw new ArgumentNullException(nameof(markdown));
-        }
-        if (ft == null)
-        {
-            throw new ArgumentNullException(nameof(ft));
-        }
-        return MarkupCore(markdown, ft, omitParse, enableValidation);
+        return MarkupCore(markdown, ft, omitParse);
     }
 
     public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
@@ -125,12 +112,12 @@ internal sealed class HostService : IHostService, IDisposable
         return MarkupUtility.Parse(markupResult, ft.File, SourceFiles);
     }
 
-    private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse, bool enableValidation)
+    private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
     {
         try
         {
             var mr = MarkdownService is MarkdigMarkdownService markdig
-                ? markdig.Markup(markdown, ft.File, enableValidation, ft.Type is DocumentType.Overwrite)
+                ? markdig.Markup(markdown, ft.File, ft.Type is DocumentType.Overwrite)
                 : MarkdownService.Markup(markdown, ft.File);
             if (omitParse)
             {

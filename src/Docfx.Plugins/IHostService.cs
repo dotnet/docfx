@@ -26,7 +26,6 @@ public interface IHostService
     MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
     MarkupResult Markup(string markdown, FileAndType ft);
     MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
-    MarkupResult Markup(string markdown, FileAndType ft, bool omitParse, bool enableValidation);
     ImmutableDictionary<string, FileAndType> SourceFiles { get; }
     ImmutableHashSet<string> GetAllUids();
     ImmutableList<FileModel> GetModels(DocumentType? type = null);
