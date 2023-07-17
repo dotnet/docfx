@@ -83,6 +83,28 @@ references:
   commentId: T:BuildFromProject.Class1
   fullName: BuildFromProject.Class1
   nameWithType: Class1
+- uid: BuildFromProject.Class1.IIssue8948
+  name: Class1.IIssue8948
+  href: api/BuildFromProject.Class1.IIssue8948.html
+  commentId: T:BuildFromProject.Class1.IIssue8948
+  fullName: BuildFromProject.Class1.IIssue8948
+  nameWithType: Class1.IIssue8948
+- uid: BuildFromProject.Class1.IIssue8948.DoNothing*
+  name: DoNothing
+  href: api/BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing_
+  commentId: Overload:BuildFromProject.Class1.IIssue8948.DoNothing
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.IIssue8948.DoNothing
+  nameWithType: Class1.IIssue8948.DoNothing
+- uid: BuildFromProject.Class1.IIssue8948.DoNothing``1
+  name: DoNothing<T>()
+  href: api/BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing__1
+  commentId: M:BuildFromProject.Class1.IIssue8948.DoNothing``1
+  name.vb: DoNothing(Of T)()
+  fullName: BuildFromProject.Class1.IIssue8948.DoNothing<T>()
+  fullName.vb: BuildFromProject.Class1.IIssue8948.DoNothing(Of T)()
+  nameWithType: Class1.IIssue8948.DoNothing<T>()
+  nameWithType.vb: Class1.IIssue8948.DoNothing(Of T)()
 - uid: BuildFromProject.Class1.Issue1651
   name: Issue1651()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1651
@@ -96,6 +118,19 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue1651
   nameWithType: Class1.Issue1651
+- uid: BuildFromProject.Class1.Issue1887
+  name: Issue1887()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1887
+  commentId: M:BuildFromProject.Class1.Issue1887
+  fullName: BuildFromProject.Class1.Issue1887()
+  nameWithType: Class1.Issue1887()
+- uid: BuildFromProject.Class1.Issue1887*
+  name: Issue1887
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue1887_
+  commentId: Overload:BuildFromProject.Class1.Issue1887
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue1887
+  nameWithType: Class1.Issue1887
 - uid: BuildFromProject.Class1.Issue2623
   name: Issue2623()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue2623
@@ -293,6 +328,28 @@ references:
   fullName.vb: BuildFromProject.Class1.Issue8764(Of T)()
   nameWithType: Class1.Issue8764<T>()
   nameWithType.vb: Class1.Issue8764(Of T)()
+- uid: BuildFromProject.Class1.Issue8948
+  name: Class1.Issue8948
+  href: api/BuildFromProject.Class1.Issue8948.html
+  commentId: T:BuildFromProject.Class1.Issue8948
+  fullName: BuildFromProject.Class1.Issue8948
+  nameWithType: Class1.Issue8948
+- uid: BuildFromProject.Class1.Issue8948.DoNothing*
+  name: DoNothing
+  href: api/BuildFromProject.Class1.Issue8948.html#BuildFromProject_Class1_Issue8948_DoNothing_
+  commentId: Overload:BuildFromProject.Class1.Issue8948.DoNothing
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue8948.DoNothing
+  nameWithType: Class1.Issue8948.DoNothing
+- uid: BuildFromProject.Class1.Issue8948.DoNothing``1
+  name: DoNothing<T>()
+  href: api/BuildFromProject.Class1.Issue8948.html#BuildFromProject_Class1_Issue8948_DoNothing__1
+  commentId: M:BuildFromProject.Class1.Issue8948.DoNothing``1
+  name.vb: DoNothing(Of T)()
+  fullName: BuildFromProject.Class1.Issue8948.DoNothing<T>()
+  fullName.vb: BuildFromProject.Class1.Issue8948.DoNothing(Of T)()
+  nameWithType: Class1.Issue8948.DoNothing<T>()
+  nameWithType.vb: Class1.Issue8948.DoNothing(Of T)()
 - uid: BuildFromProject.Class1.Issue896
   name: Issue896()
   href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue896

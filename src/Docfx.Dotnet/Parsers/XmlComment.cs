@@ -291,71 +291,70 @@ internal class XmlComment
             return;
         }
 
-        try
+        var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
+        foreach (var item in nodes)
         {
-            var nodes = node.XPathSelectElements(nodeSelector + "[@cref]").ToList();
-            foreach (var item in nodes)
+            var cref = item.Attribute("cref").Value;
+            var success = false;
+
+            // Strict check is needed as value could be an invalid href,
+            // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
+            var match = CommentIdRegex.Match(cref);
+            if (match.Success)
             {
-                var cref = item.Attribute("cref").Value;
-                var success = false;
+                var id = match.Groups["id"].Value;
+                var type = match.Groups["type"].Value;
 
-                // Strict check is needed as value could be an invalid href,
-                // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                var match = CommentIdRegex.Match(cref);
-                if (match.Success)
+                if (type == "Overload")
                 {
-                    var id = match.Groups["id"].Value;
-                    var type = match.Groups["type"].Value;
-
-                    if (type == "Overload")
-                    {
-                        id += '*';
-                    }
-
-                    // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
-                    if (item.Parent?.Parent != null)
-                    {
-                        XElement replacement;
-                        if (string.IsNullOrEmpty(item.Value))
-                        {
-                            replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                        }
-                        else
-                        {
-                            replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(item.Value)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                        }
-                        item.ReplaceWith(replacement);
-                    }
-
-                    addReference?.Invoke(id, cref);
-                    success = true;
+                    id += '*';
                 }
 
-                if (!success)
+                // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
+                if (item.Parent?.Parent != null)
                 {
-                    var detailedInfo = new StringBuilder();
-                    if (_context != null && _context.Source != null)
+                    XElement replacement;
+                    if (string.IsNullOrEmpty(item.Value))
                     {
-                        if (!string.IsNullOrEmpty(_context.Source.Name))
-                        {
-                            detailedInfo.Append(" for ");
-                            detailedInfo.Append(_context.Source.Name);
-                        }
-                        if (!string.IsNullOrEmpty(_context.Source.Path))
-                        {
-                            detailedInfo.Append(" defined in ");
-                            detailedInfo.Append(_context.Source.Path);
-                            detailedInfo.Append(" Line ");
-                            detailedInfo.Append(_context.Source.StartLine);
-                        }
+                        replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                     }
+                    else
+                    {
+                        replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}?text={HttpUtility.UrlEncode(item.Value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                    }
+                    item.ReplaceWith(replacement);
+                }
 
-                    Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in triple-slash-comments{detailedInfo}, ignored.");
+                addReference?.Invoke(id, cref);
+                success = true;
+            }
+
+            if (!success)
+            {
+                var detailedInfo = new StringBuilder();
+                if (_context != null && _context.Source != null)
+                {
+                    if (!string.IsNullOrEmpty(_context.Source.Name))
+                    {
+                        detailedInfo.Append(" for ");
+                        detailedInfo.Append(_context.Source.Name);
+                    }
+                    if (!string.IsNullOrEmpty(_context.Source.Path))
+                    {
+                        detailedInfo.Append(" defined in ");
+                        detailedInfo.Append(_context.Source.Path);
+                        detailedInfo.Append(" Line ");
+                        detailedInfo.Append(_context.Source.StartLine);
+                    }
+                }
+
+                Logger.Log(LogLevel.Warning, $"Invalid cref value \"{cref}\" found in XML documentation comment {detailedInfo}.");
+
+                if (cref.StartsWith("!:"))
+                {
+                    item.ReplaceWith(cref.Substring(2));
                 }
             }
-        }
-        catch
-        {
         }
     }
 

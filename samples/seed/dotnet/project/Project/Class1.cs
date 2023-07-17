@@ -129,4 +129,24 @@ public class Class1 : IClass1
         {
         }
     }
+
+    public interface IIssue8948
+    {
+        /// <summary>
+        /// Does nothing with generic type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">A generic type.</typeparam>
+        void DoNothing<T>();
+    }
+
+    public class Issue8948 : IIssue8948
+    {
+        /// <inheritdoc/>
+        public void DoNothing<T>() { }
+    }
+
+    /// <summary>
+    /// <see cref="IConfiguration"/> related helper and extension routines.
+    /// </summary>
+    public void Issue1887() { }
 }
