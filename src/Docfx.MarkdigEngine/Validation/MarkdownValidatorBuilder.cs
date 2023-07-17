@@ -3,49 +3,27 @@
 
 using System.Collections.Immutable;
 
-using Markdig.Syntax;
 using Docfx.Common;
-using Docfx.MarkdigEngine.Validators;
 using Docfx.Plugins;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
 public class MarkdownValidatorBuilder
 {
-    private readonly List<RuleWithId<MarkdownValidationRule>> _validators =
-        new();
-    private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators =
-        new();
-    private readonly Dictionary<string, MarkdownValidationRule> _globalValidators =
-        new();
-    private readonly List<MarkdownValidationSetting> _settings =
-        new();
-    private List<IMarkdownObjectValidatorProvider> _validatorProviders =
-        new();
+    private readonly List<RuleWithId<MarkdownValidationRule>> _validators = new();
+    private readonly List<RuleWithId<MarkdownTagValidationRule>> _tagValidators = new();
+    private readonly Dictionary<string, MarkdownValidationRule> _globalValidators = new();
+    private readonly List<MarkdownValidationSetting> _settings = new();
 
     public const string DefaultValidatorName = "default";
     public const string MarkdownValidatePhaseName = "Markdown style";
 
-    private ICompositionContainer Container { get; }
-
-    public MarkdownValidatorBuilder(ICompositionContainer container)
+    public static MarkdownValidatorBuilder Create(MarkdownServiceParameters parameters)
     {
-        Container = container;
-    }
-
-    public static MarkdownValidatorBuilder Create(
-        MarkdownServiceParameters parameters,
-        ICompositionContainer container)
-    {
-        var builder = new MarkdownValidatorBuilder(container);
+        var builder = new MarkdownValidatorBuilder();
         if (parameters != null)
         {
             LoadValidatorConfig(parameters.BasePath, parameters.TemplateDir, builder);
-        }
-
-        if (container != null)
-        {
-            builder.LoadEnabledRulesProvider();
         }
 
         return builder;
@@ -53,17 +31,7 @@ public class MarkdownValidatorBuilder
 
     public IMarkdownObjectRewriter CreateRewriter(MarkdownContext context)
     {
-        var tagValidator = new TagValidator(GetEnabledTagRules().ToImmutableList(), context);
-        var validators = from vp in _validatorProviders
-                         from p in vp.GetValidators()
-                         select p;
-
-        return MarkdownObjectRewriterFactory.FromValidators(
-                validators.Concat(
-                    new[]
-                    {
-                        MarkdownObjectValidatorFactory.FromLambda<IMarkdownObject>(tagValidator.Validate)
-                    }));
+        return new TagValidator(GetEnabledTagRules().ToImmutableList(), context);
     }
 
     public void AddValidators(MarkdownValidationRule[] rules)
@@ -202,36 +170,6 @@ public class MarkdownValidatorBuilder
                 builder.AddValidators(category, config.Rules);
             }
         }
-    }
-
-    public void LoadEnabledRulesProvider()
-    {
-        HashSet<string> enabledContractName = new();
-        foreach (var item in _validators)
-        {
-            if (IsDisabledBySetting(item) ?? item.Rule.Disable)
-            {
-                enabledContractName.Remove(item.Rule.ContractName);
-            }
-            else
-            {
-                enabledContractName.Add(item.Rule.ContractName);
-            }
-        }
-        foreach (var pair in _globalValidators)
-        {
-            if (pair.Value.Disable)
-            {
-                enabledContractName.Remove(pair.Value.ContractName);
-            }
-            else
-            {
-                enabledContractName.Add(pair.Value.ContractName);
-            }
-        }
-        _validatorProviders = (from name in enabledContractName
-                               from vp in Container?.GetExports<IMarkdownObjectValidatorProvider>(name)
-                               select vp).ToList();
     }
 
     private IEnumerable<MarkdownTagValidationRule> GetEnabledTagRules()

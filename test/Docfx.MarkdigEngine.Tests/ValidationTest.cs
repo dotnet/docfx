@@ -1,13 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Composition.Hosting;
-
 using Markdig;
-using Markdig.Syntax;
 using Docfx.Common;
 using Docfx.MarkdigEngine.Extensions;
-using Docfx.MarkdigEngine.Validators;
 using Docfx.Plugins;
 using Xunit;
 
@@ -42,12 +38,7 @@ public class ValidationTest
 </div>
 <script>alert(1);</script>";
 
-        var builder = MarkdownValidatorBuilder.Create(
-            null,
-            new CompositionContainer(
-                new ContainerConfiguration()
-                    .WithAssembly(typeof(ValidationTest).Assembly)
-                    .CreateContainer()));
+        var builder = MarkdownValidatorBuilder.Create(null);
 
         builder.AddTagValidators(new[]
         {
@@ -79,15 +70,6 @@ public class ValidationTest
             }
         });
 
-        builder.AddValidators(new[]
-        {
-            new MarkdownValidationRule
-            {
-                ContractName =  HtmlMarkdownObjectValidatorProvider.ContractName,
-            }
-        });
-
-        builder.LoadEnabledRulesProvider();
         var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(MarkdownValidatePhaseName);
         using (new LoggerPhaseScope(MarkdownValidatePhaseName))
         {
@@ -106,10 +88,8 @@ public class ValidationTest
 <script>alert(1);</script>
 ".Replace("\r\n", "\n"), html);
         }
-        Assert.Equal(8, listener.Items.Count);
         Assert.Equal(new[]
         {
-            "Html Tag!",
             "Invalid tag(div)!",
             "Invalid tag(EM)!",
             "Warning tag(h1)!",
@@ -137,7 +117,7 @@ public class ValidationTest
 </div>
 <script>alert(1);</script>";
 
-        var builder = MarkdownValidatorBuilder.Create(null, null);
+        var builder = MarkdownValidatorBuilder.Create(null);
         builder.AddTagValidators(new[]
         {
             new MarkdownTagValidationRule
@@ -185,12 +165,7 @@ public class ValidationTest
 
 <script>alert(1);</script> end.";
 
-        var builder = MarkdownValidatorBuilder.Create(
-            null,
-            new CompositionContainer(
-                new ContainerConfiguration()
-                    .WithAssembly(typeof(ValidationTest).Assembly)
-                    .CreateContainer()));
+        var builder = MarkdownValidatorBuilder.Create(null);
 
         builder.AddTagValidators(new[]
         {
@@ -242,130 +217,6 @@ public class ValidationTest
             "Warning tag(h1)!",
             "Warning tag(script)!"
         }, from item in listener.Items select item.Message);
-    }
-
-    [Fact]
-    [Trait("Related", "Validation")]
-    public void TestTokenValidator()
-    {
-        const string content = "# Hello World";
-        const string expected = "<h1>Hello World</h1>\n";
-        const string expectedMessage = "a space is expected after '#'";
-        string message = null;
-
-        var rewriter = MarkdownObjectRewriterFactory.FromValidator(
-            MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
-                block =>
-                {
-                    if (!block.Lines.ToString().StartsWith("# "))
-                    {
-                        message = expectedMessage;
-                    }
-                })
-            );
-
-        var html = Markup(content, rewriter, null);
-        Assert.Equal(expected.Replace("\r\n", "\n"), html);
-        Assert.Equal(expectedMessage, message);
-    }
-
-    [Fact]
-    [Trait("Related", "Validation")]
-    public void TestValidatorWithContext()
-    {
-        const string content = @"# Title-1
-# Title-2";
-        const string expected = @"<h1>Title-1</h1>
-<h1>Title-2</h1>
-";
-        const string expectedMessage = "expected one title in one document.";
-        string message = null;
-
-        var context = new Dictionary<string, object>();
-        var validator = MarkdownObjectValidatorFactory.FromLambda<HeadingBlock>(
-            block =>
-            {
-                if (block.Level == 1)
-                {
-                    if (context.TryGetValue("count", out object countObj) && countObj is int count)
-                    {
-                        context["count"] = count + 1;
-                    }
-                }
-            },
-            tree =>
-            {
-                context.Add("count", 0);
-            },
-            tree =>
-            {
-                if (context.TryGetValue("count", out object countObj) && countObj is int count)
-                {
-                    if (count != 1)
-                    {
-                        message = expectedMessage;
-                    }
-                }
-            }
-            );
-
-        var rewriter = MarkdownObjectRewriterFactory.FromValidator(validator);
-        var html = Markup(content, rewriter, null);
-        Assert.Equal(expected.Replace("\r\n", "\n"), html);
-        Assert.Equal(expectedMessage, message);
-    }
-
-    [Fact]
-    [Trait("Related", "Validation")]
-    public void TestMarkdownDocumentValidator()
-    {
-        const string content = "## Hello World";
-        const string expected = "<h2>Hello World</h2>\n";
-        const string expectedMessage = "H1 should be in the first line";
-        string message = null;
-
-        var rewriter = MarkdownObjectRewriterFactory.FromValidator(
-            MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
-                root =>
-                {
-                    if (root.First() is HeadingBlock heading)
-                    {
-                        if (heading.Level != 1)
-                        {
-                            message = expectedMessage;
-                        }
-                    }
-                })
-            );
-
-        var html = Markup(content, rewriter, null);
-        Assert.Equal(expected.Replace("\r\n", "\n"), html);
-        Assert.Equal(expectedMessage, message);
-    }
-
-    [Fact]
-    [Trait("Related", "Validation")]
-    public void TestGetSchemaName()
-    {
-        const string expectedSchemaName = "YamlMime:ModuleUnit";
-        const string yamlFilename = "moduleunit.yml";
-        const string yamlContent = @"### YamlMime:ModuleUnit
-uid: learn.azure.introduction";
-        File.WriteAllText(yamlFilename, yamlContent);
-        InclusionContext.PushFile(yamlFilename);
-        InclusionContext.PushInclusion("introduction-included.md");
-
-        string schemaName = string.Empty;
-
-        var rewriter = MarkdownObjectRewriterFactory.FromValidator(
-           MarkdownObjectValidatorFactory.FromLambda<MarkdownDocument>(
-               root =>
-               {
-                   schemaName = root.GetData("SchemaName")?.ToString();
-               })
-           );
-        var html = Markup("# Hello World", rewriter, null);
-        Assert.Equal(expectedSchemaName, schemaName);
     }
 
     private string Markup(string content, IMarkdownObjectRewriter rewriter, TestLoggerListener listener = null)

@@ -8,7 +8,7 @@ using Docfx.Plugins;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-internal class TagValidator
+internal class TagValidator : IMarkdownObjectRewriter
 {
     public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
@@ -63,5 +63,15 @@ internal class TagValidator
             default:
                 return;
         }
+    }
+
+    void IMarkdownObjectRewriter.PreProcess(IMarkdownObject markdownObject) { }
+
+    void IMarkdownObjectRewriter.PostProcess(IMarkdownObject markdownObject) { }
+
+    IMarkdownObject IMarkdownObjectRewriter.Rewrite(IMarkdownObject markdownObject)
+    {
+        Validate(markdownObject);
+        return markdownObject;
     }
 }

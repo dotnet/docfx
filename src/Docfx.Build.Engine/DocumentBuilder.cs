@@ -205,7 +205,6 @@ public class DocumentBuilder : IDisposable
         {
             return new MarkdigServiceProvider
             {
-                Container = _container.GetExport<ICompositionContainer>(),
                 ConfigureMarkdig = parameters[0].ConfigureMarkdig
             };
         }
@@ -277,7 +276,6 @@ public class DocumentBuilder : IDisposable
                 Extensions = parameters.MarkdownEngineParameters,
                 Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider)?.ToImmutableDictionary(),
             },
-            new CompositionContainer(CompositionContainer.DefaultContainer),
             parameters.ConfigureMarkdig);
     }
 
