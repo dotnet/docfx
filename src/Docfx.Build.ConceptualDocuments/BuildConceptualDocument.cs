@@ -29,7 +29,7 @@ public class BuildConceptualDocument : BaseDocumentBuildStep
         }
         var content = (Dictionary<string, object>)model.Content;
         var markdown = (string)content[ConceptualKey];
-        var result = host.Markup(markdown, model.OriginalFileAndType, false, true);
+        var result = host.Markup(markdown, model.OriginalFileAndType, false);
 
         var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
         content["rawTitle"] = htmlInfo.RawTitle;

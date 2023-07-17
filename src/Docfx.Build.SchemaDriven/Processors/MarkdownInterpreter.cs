@@ -31,7 +31,7 @@ public class MarkdownInterpreter : IInterpreter
     {
         var host = context.Host;
 
-        var mr = host.Markup(content, context.GetOriginalContentFile(path), false, true);
+        var mr = host.Markup(content, context.GetOriginalContentFile(path), false);
         (context.FileLinkSources).Merge(mr.FileLinkSources);
         (context.UidLinkSources).Merge(mr.UidLinkSources);
         (context.Dependency).UnionWith(mr.Dependency);

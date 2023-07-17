@@ -143,20 +143,6 @@ public class DocumentBuilderTest : TestBase
                 "Test xrefmap with duplicate uid in different files: XRef2 should be recorded with file test/test.md"
             },
             _inputFolder);
-        File.WriteAllText(MarkdownStyleConfig.MarkdownStyleFileName, @"{
-rules : [
-    ""foo"",
-    { name: ""bar"", disable: true}
-],
-tagRules : [
-    {
-        tagNames: [""p""],
-        behavior: ""Warning"",
-        messageFormatter: ""Tag {0} is not valid."",
-        openingTagOnly: true
-    }
-]
-}");
 
         FileCollection files = new(Directory.GetCurrentDirectory());
         files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
@@ -182,17 +168,6 @@ tagRules : [
                     applyTemplateSettings: applyTemplateSettings,
                     templateFolder: _templateFolder);
 
-            }
-
-            {
-                // check log for markdown stylecop.
-                Assert.Equal(2, Listener.Items.Count);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
             }
 
             {
@@ -331,153 +306,6 @@ tagRules : [
         finally
         {
             CleanUp();
-        }
-    }
-
-    [Fact]
-    public void TestMarkdownStyleInPlugins()
-    {
-        #region Prepare test data
-        var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
-        var resourceMetaFile = resourceFile + ".meta";
-
-        CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
-
-        var tocFile = CreateFile("toc.md",
-            new[]
-            {
-                "# [test1](test.md)",
-                "## [test2](test/test.md)",
-                "# Api",
-                "## [Console](@System.Console)",
-                "## [ConsoleColor](xref:System.ConsoleColor)",
-            },
-            _inputFolder);
-        var conceptualFile = CreateFile("test.md",
-            new[]
-            {
-                "---",
-                "uid: XRef1",
-                "a: b",
-                "b:",
-                "  c: e",
-                "---",
-                "# Hello World",
-                "Test XRef: @XRef1",
-                "Test link: [link text](test/test.md)",
-                "Test link: [link text 2](../" + resourceFile + ")",
-                "Test link style xref: [link text 3](xref:XRef2 \"title\")",
-                "Test link style xref with anchor: [link text 4](xref:XRef2#anchor \"title\")",
-                "Test encoded link style xref with anchor: [link text 5](xref:%58%52%65%66%32#anchor \"title\")",
-                "Test invalid link style xref with anchor: [link text 6](xref:invalid#anchor \"title\")",
-                "Test autolink style xref: <xref:XRef2>",
-                "Test autolink style xref with anchor: <xref:XRef2#anchor>",
-                "Test encoded autolink style xref with anchor: <xref:%58%52%65%66%32#anchor>",
-                "Test invalid autolink style xref with anchor: <xref:invalid#anchor>",
-                "Test short xref: @XRef2",
-                "<p>",
-                "test",
-            },
-            _inputFolder);
-        var conceptualFile2 = CreateFile("test/test.md",
-            new[]
-            {
-                "---",
-                "uid: XRef2",
-                "a: b",
-                "b:",
-                "  c: e",
-                "---",
-                "# Hello World",
-                "Test XRef: @XRef2",
-                "Test link: [link text](../test.md)",
-                "<p><div>",
-                "test",
-            },
-            _inputFolder);
-
-        File.WriteAllText(resourceMetaFile, @"{ abc: ""xyz"", uid: ""r1"" }");
-        File.WriteAllText(MarkdownStyleConfig.MarkdownStyleFileName, @"{
-settings : [
-    { category: ""div"", disable: true},
-    { category: ""p"", id: ""p-3"", disable: true}
-],
-}");
-        CreateFile(
-            MarkdownStyleDefinition.MarkdownStyleDefinitionFolderName + "/p" + MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix,
-            @"{
-    tagRules : {
-        ""p-1"": {
-            tagNames: [""p""],
-            behavior: ""Warning"",
-            messageFormatter: ""Tag {0} is not valid."",
-            openingTagOnly: true
-        },
-        ""p-2"": {
-            tagNames: [""p""],
-            behavior: ""Warning"",
-            messageFormatter: ""Tag {0} is not valid."",
-            openingTagOnly: false,
-            disable: true
-        },
-        ""p-3"": {
-            tagNames: [""p""],
-            behavior: ""Warning"",
-            messageFormatter: ""Tag {0} is not valid."",
-            openingTagOnly: false,
-        }
-    }
-}
-", _templateFolder);
-        CreateFile(
-            MarkdownStyleDefinition.MarkdownStyleDefinitionFolderName + "/div" + MarkdownStyleDefinition.MarkdownStyleDefinitionFilePostfix,
-            @"{
-    tagRules : {
-        ""div-1"": {
-            tagNames: [""div""],
-            behavior: ""Warning"",
-            messageFormatter: ""Tag {0} is not valid."",
-            openingTagOnly: true
-        }
-    }
-}
-", _templateFolder);
-
-        FileCollection files = new(Directory.GetCurrentDirectory());
-        files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
-        files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
-        files.Add(DocumentType.Resource, new[] { resourceFile });
-        #endregion
-
-        Init("Markdown style");
-        try
-        {
-            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
-            {
-                BuildDocument(
-                    files,
-                    new Dictionary<string, object>
-                    {
-                        ["meta"] = "Hello world!",
-                    },
-                    templateFolder: _templateFolder);
-            }
-
-            {
-                // check log for markdown stylecop.
-                Assert.Equal(2, Listener.Items.Count);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[0].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[0].LogLevel);
-
-                Assert.Equal("Tag p is not valid.", Listener.Items[1].Message);
-                Assert.Equal(LogLevel.Warning, Listener.Items[1].LogLevel);
-            }
-        }
-        finally
-        {
-            CleanUp();
-            File.Delete(resourceMetaFile);
         }
     }
 
