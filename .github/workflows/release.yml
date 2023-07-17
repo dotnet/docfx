@@ -79,6 +79,7 @@ jobs:
         drop/nuget/**/*.*
         --description "Docfx code sign"
         --description-url "https://dotnet.github.io/docfx"
+        --timestamp-url http://timestamp.digicert.com
         --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
         --azure-key-vault-certificate "${{ secrets.SIGN_KEY_VAULT_CERTIFICATE }}"
         --azure-key-vault-tenant-id "${{ secrets.SIGN_KEY_VAULT_TENANT_ID }}"
