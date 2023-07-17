@@ -6,13 +6,18 @@ using Newtonsoft.Json.Linq;
 
 namespace Docfx;
 
+/// <summary>
+/// JsonConverter for <see cref="ListWithStringFallback"/>.
+/// </summary>
 internal class ListWithStringFallbackConverter : JsonConverter
 {
+    /// <inheritdoc/>
     public override bool CanConvert(Type objectType)
     {
         return objectType == typeof(FileMapping);
     }
 
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         var model = new ListWithStringFallback();
@@ -50,6 +55,7 @@ internal class ListWithStringFallbackConverter : JsonConverter
         return model;
     }
 
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
     {
         writer.WriteStartArray();

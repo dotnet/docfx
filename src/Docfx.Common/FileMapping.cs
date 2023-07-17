@@ -32,19 +32,35 @@ public class FileMapping
 {
     private List<FileMappingItem> _items = new();
 
+    /// <summary>
+    /// Flags to distinguish items are expanded or not.
+    /// </summary>
     public bool Expanded { get; set; }
 
+    /// <summary>
+    /// File mapping items.
+    /// </summary>
     public IReadOnlyList<FileMappingItem> Items
     {
         get { return _items.AsReadOnly(); }
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMapping"/> class.
+    /// </summary>
     public FileMapping() : base() { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMapping"/> class.
+    /// </summary>
     public FileMapping(IEnumerable<FileMappingItem> items)
     {
         foreach (var item in items) this.Add(item);
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMapping"/> class.
+    /// </summary>
     public FileMapping(FileMappingItem item)
     {
         this.Add(item);

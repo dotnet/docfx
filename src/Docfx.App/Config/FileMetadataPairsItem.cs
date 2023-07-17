@@ -6,9 +6,16 @@ using Docfx.Glob;
 
 namespace Docfx;
 
+/// <summary>
+/// Glob/Value pair to define define file's metadata.
+/// </summary>
+/// <see cref="FileMetadataPairs"/>
 [Serializable]
 internal class FileMetadataPairsItem
 {
+    /// <summary>
+    /// The glob pattern to match the files.
+    /// </summary>
     public GlobMatcher Glob { get; }
 
     /// <summary>
@@ -16,6 +23,9 @@ internal class FileMetadataPairsItem
     /// </summary>
     public object Value { get; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileMetadataPairsItem"/> class.
+    /// </summary>
     public FileMetadataPairsItem(string pattern, object value)
     {
         Glob = new GlobMatcher(pattern);

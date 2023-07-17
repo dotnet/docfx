@@ -7,15 +7,27 @@ using Newtonsoft.Json;
 
 namespace Docfx;
 
+/// <summary>
+/// MergeJsonItemConfig.
+/// </summary>
 [Serializable]
 internal class MergeJsonItemConfig
 {
+    /// <summary>
+    /// Defines the files to merge.
+    /// </summary>
     [JsonProperty("content")]
     public FileMapping Content { get; set; }
 
+    /// <summary>
+    /// Defines the output folder of the generated merge files.
+    /// </summary>
     [JsonProperty("dest")]
     public string Destination { get; set; }
 
+    /// <summary>
+    /// Contains metadata that will be applied to every file, in key-value pair format.
+    /// </summary>
     [JsonProperty("globalMetadata")]
     [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
     public Dictionary<string, object> GlobalMetadata { get; set; }
@@ -30,6 +42,9 @@ internal class MergeJsonItemConfig
     [JsonProperty("fileMetadata")]
     public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
+    /// <summary>
+    /// Metadata that applies to toc files.
+    /// </summary>
     [JsonProperty("tocMetadata")]
     public ListWithStringFallback TocMetadata { get; set; }
 }
