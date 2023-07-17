@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.YamlSerialization\Docfx.YamlSerialization.csproj" />
+    <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+  </ItemGroup>
+</Project>

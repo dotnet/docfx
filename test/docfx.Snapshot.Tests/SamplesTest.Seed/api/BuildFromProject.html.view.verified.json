@@ -231,6 +231,67 @@
           "hideSubtitle": false
         },
         {
+          "uid": "BuildFromProject.Class1.Issue8948",
+          "isExtensionMethod": false,
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8948"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue8948"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue8948"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue8948.html\">Issue8948</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue8948.html\">Issue8948</a>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_Issue8948",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
+        {
           "uid": "BuildFromProject.Class1.Test`1",
           "isExtensionMethod": false,
           "href": "BuildFromProject.Class1.html",
@@ -793,6 +854,68 @@
       "typePropertyName": "inInterface",
       "id": "interfaces",
       "children": [
+        {
+          "uid": "BuildFromProject.Class1.IIssue8948",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.IIssue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.IIssue8948"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.IIssue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.IIssue8948"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.IIssue8948"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.IIssue8948"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html\">IIssue8948</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html\">IIssue8948</a>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "interface",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_IIssue8948",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        },
         {
           "uid": "BuildFromProject.IInheritdoc",
           "isExtensionMethod": false,

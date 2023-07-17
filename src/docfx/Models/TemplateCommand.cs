@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
-using Microsoft.DocAsCode.Build.Engine;
-using Microsoft.DocAsCode.Common;
+using Docfx.Build.Engine;
+using Docfx.Common;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class TemplateCommand
 {

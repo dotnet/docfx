@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 [Description("Download remote xref map file and create an xref archive in local.")]
 internal class DownloadCommandOptions : CommandSettings

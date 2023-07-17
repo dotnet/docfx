@@ -77,6 +77,12 @@
           "topicUid": "BuildFromProject.Class1"
         },
         {
+          "name": "Class1.IIssue8948",
+          "href": "BuildFromProject.Class1.IIssue8948.html",
+          "topicHref": "BuildFromProject.Class1.IIssue8948.html",
+          "topicUid": "BuildFromProject.Class1.IIssue8948"
+        },
+        {
           "name": "Class1.Issue8665",
           "href": "BuildFromProject.Class1.Issue8665.html",
           "topicHref": "BuildFromProject.Class1.Issue8665.html",
@@ -87,6 +93,12 @@
           "href": "BuildFromProject.Class1.Issue8696Attribute.html",
           "topicHref": "BuildFromProject.Class1.Issue8696Attribute.html",
           "topicUid": "BuildFromProject.Class1.Issue8696Attribute"
+        },
+        {
+          "name": "Class1.Issue8948",
+          "href": "BuildFromProject.Class1.Issue8948.html",
+          "topicHref": "BuildFromProject.Class1.Issue8948.html",
+          "topicUid": "BuildFromProject.Class1.Issue8948"
         },
         {
           "name": "Class1.Test<T>",

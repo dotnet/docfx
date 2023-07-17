@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Compile Remove="Manifest.cs" />
+    <Compile Remove="ManifestItem.cs" />
+    <Compile Remove="ManifestItemType.cs" />
+    <Compile Remove="ManifestItemWithAssetId.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PdfPig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Build.ConceptualDocuments\Docfx.Build.ConceptualDocuments.csproj" />
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+  </ItemGroup>
+</Project>

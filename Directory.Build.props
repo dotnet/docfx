@@ -25,9 +25,9 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources> 
   
-    <Authors>Microsoft</Authors>
-    <Company>Microsoft</Company>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
+    <Description>Technical documentation tool with markdown, API docs for .NET, REST API and more.</Description>
 
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>

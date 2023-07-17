@@ -75,16 +75,16 @@ jobs:
 You can also use docfx as a NuGet library:
 
 ```xml
-<PackageReference Include="Microsoft.DocAsCode.App" Version="2.60.0" />
+<PackageReference Include="Docfx.App" Version="2.70.0" />
 ```
 
 Then build a docset using:
 
 ```cs
-await Microsoft.DocAsCode.Docset.Build("docfx.json");
+await Docfx.Docset.Build("docfx.json");
 ```
 
-See [API References](api/Microsoft.DocAsCode.yml) for additional APIs.
+See [API References](api/Docfx.yml) for additional APIs.
 
 ## Next Steps
 

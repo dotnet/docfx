@@ -73,7 +73,7 @@ Every project also needs a `project.json` and a matching `.xproj` file. This `pr
 Solution need to contain solution folders that match the physical folder (`src`, `test`, `tools`, etc.).
 
 ### Assembly naming pattern
-The general naming pattern is `Microsoft.DocAsCode.<area>.<subarea>`.
+The general naming pattern is `Docfx.<area>.<subarea>`.
 
 ### Unit tests
 We use *xUnit.net* for all unit testing. 

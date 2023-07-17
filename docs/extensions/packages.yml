@@ -11,7 +11,7 @@ items:
     homepage: https://www.nuget.org/packages/rest.tagpage/
     repository:
       type: git
-      url: "https://github.com/dotnet/docfx/tree/master/plugins/Microsoft.DocAsCode.Build.TagLevelRestApi"
+      url: "https://github.com/dotnet/docfx/tree/master/plugins/Docfx.Build.TagLevelRestApi"
     usage:
       init: "nuget install rest.tagpage -OutputDirectory <output>"
       command: "-t default,<output>/rest.tagpage.<version>/content"
@@ -23,7 +23,7 @@ items:
     homepage: https://www.nuget.org/packages/rest.operationpage/
     repository:
       type: git
-      url: "https://github.com/dotnet/docfx/tree/master/plugins/Microsoft.DocAsCode.Build.OperationLevelRestApi"
+      url: "https://github.com/dotnet/docfx/tree/master/plugins/Docfx.Build.OperationLevelRestApi"
     usage:
       init: "nuget install rest.operationpage -OutputDirectory <output>"
       command: "-t default,<output>/rest.operationpage.<version>/content"

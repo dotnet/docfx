@@ -4,7 +4,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 [Description("Merge .net base API in YAML files and toc files.")]
 internal class MergeCommandOptions : LogOptions

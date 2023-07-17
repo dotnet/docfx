@@ -63,7 +63,7 @@ Prepare
 1.  Open the rtf plug-in library project in `Visual Studio`.
 
 2.  Add nuget packages:  
-    for plug-in: `Microsoft.DocAsCode.Utility`
+    for plug-in: `Docfx.Utility`
 
 3.  Add framework assembly reference:
     `System.Core`, `System.Web`, `System.Xml.Linq`

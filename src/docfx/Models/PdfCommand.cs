@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
-namespace Microsoft.DocAsCode;
+namespace Docfx;
 
 internal class PdfCommand : Command<PdfCommandOptions>
 {

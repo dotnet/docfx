@@ -9,7 +9,7 @@ _site
 _site_pdf
 docs/api
 samples/**/api
-src/Microsoft.DocAsCode.App/templates
+src/Docfx.App/templates
 
 *.user
 *.log

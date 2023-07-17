@@ -3,14 +3,14 @@
 
 using System.Collections;
 using System.Reflection;
-using Microsoft.DocAsCode.Common;
-using Microsoft.DocAsCode.Plugins;
+using Docfx.Common;
+using Docfx.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Xunit;
 
-namespace Microsoft.DocAsCode.Tests;
+namespace Docfx.Tests;
 
 public class JsonConverterTest
 {

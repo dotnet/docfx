@@ -11,9 +11,9 @@ In this topic, we will show how to add a customized post-processor.
 * Add nuget packages:
     * [`System.Collections.Immutable`](https://www.nuget.org/packages/System.Collections.Immutable/1.3.1) with version 1.3.1
     * [`Microsoft.Composition`](https://www.nuget.org/packages/Microsoft.Composition/1.0.31) with version 1.0.31
-* Add `Microsoft.DocAsCode.Plugins`
+* Add `Docfx.Plugins`
 If you are building DocFX from source code, add this reference to the project,
-otherwise add the nuget package `Microsoft.DocAsCode.Plugins` with the same version as DocFX.
+otherwise add the nuget package `Docfx.Plugins` with the same version as DocFX.
 
 ## Step1: Create a new class (MyProcessor.cs) with the following code:
 

@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
+    <ProjectReference Include="..\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\Docfx.Plugins\Docfx.Plugins.csproj" />
+  </ItemGroup>
+</Project>

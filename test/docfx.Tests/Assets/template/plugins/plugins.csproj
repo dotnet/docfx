@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\..\..\..\..\src\Docfx.Plugins\Docfx.Plugins.csproj" />
   </ItemGroup>
 
   <ItemGroup>
