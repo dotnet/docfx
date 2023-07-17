@@ -43,6 +43,13 @@ public class XmlCommentUnitTest
     }
 
     [Fact]
+    public static void Issue8965()
+    {
+        Verify("<seealso href=\"https://github.com\"><em>See also on MDN</em></seealso>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
+        Verify("<see href=\"https://github.com\"><em>See also on MDN</em></see>", "<a href=\"https://github.com\">\n  <em>See also on MDN</em>\n</a>");
+    }
+
+    [Fact]
     public static void BasicCodeBlock()
     {
         var comment = XmlComment.Parse(

@@ -28,7 +28,7 @@
   <xsl:template match="see[@href and not(parent::member)]">
     <a>
       <xsl:apply-templates select="@*|node()"/>
-      <xsl:if test="not(text())">
+      <xsl:if test="not(node())">
         <xsl:value-of select="@href"/>
       </xsl:if>
     </a>
@@ -37,7 +37,7 @@
   <xsl:template match="seealso[@href and not(parent::member)]">
     <a>
       <xsl:apply-templates select="@*|node()"/>
-      <xsl:if test="not(text())">
+      <xsl:if test="not(node())">
         <xsl:value-of select="@href"/>
       </xsl:if>
     </a>
