@@ -2,8 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
+using Docfx;
 using docfx.Tests.Attributes;
-using Microsoft.DocAsCode.Tests.Common;
+using Docfx.Tests.Common;
 
 using Xunit;
 
