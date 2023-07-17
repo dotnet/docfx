@@ -5,7 +5,7 @@
     // Run `docfx build` command.
     "docfx build": {
       "commandName": "Project",
-      "commandLineArgs": "build ../../docs/docfx.json",
+      "commandLineArgs": "build ../../samples/seed/docfx.json",
       "workingDirectory": ".",
       "environmentVariables": {
       }
@@ -13,7 +13,7 @@
     // Run `docfx metadata` command.
     "docfx metadata": {
       "commandName": "Project",
-      "commandLineArgs": "metadata ../../docs/docfx.json",
+      "commandLineArgs": "metadata ../../samples/seed/docfx.json",
       "workingDirectory": ".",
       "environmentVariables": {
       }
@@ -21,7 +21,7 @@
     // Run `docfx serve` command and launch browser.
     "docfx serve": {
       "commandName": "Project",
-      "commandLineArgs": "serve ../../docs/_site --open-browser",
+      "commandLineArgs": "serve ../../samples/seed/_site --open-browser",
       "workingDirectory": ".",
       "environmentVariables": {
       }
@@ -29,7 +29,7 @@
     // Run `docfx` command.
     "docfx": {
       "commandName": "Project",
-      "commandLineArgs": "../../docs/docfx.json",
+      "commandLineArgs": "../../samples/seed/docfx.json",
       "workingDirectory": ".",
       "environmentVariables": {
       }
