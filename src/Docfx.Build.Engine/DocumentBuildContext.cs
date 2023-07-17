@@ -13,10 +13,8 @@ namespace Docfx.Build.Engine;
 
 public sealed class DocumentBuildContext : IDocumentBuildContext
 {
-    private static readonly HttpClient _client = new(new HttpClientHandler { CheckCertificateRevocationList = true });
     private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new(FilePathComparer.OSPlatformSensitiveStringComparer);
     private readonly Task<IXRefContainerReader> _reader;
-    private ImmutableArray<string> _xrefMapUrls { get; }
 
     public DocumentBuildContext(string buildOutputFolder)
         : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
@@ -34,7 +32,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         ApplyTemplateSettings = parameters.ApplyTemplateSettings;
         HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
         AllSourceFiles = GetAllSourceFiles(parameters.Files.EnumerateFiles());
-        _xrefMapUrls = parameters.XRefMaps;
         GroupInfo = parameters.GroupInfo;
         XRefTags = parameters.XRefTags;
         MaxParallelism = parameters.MaxParallelism;
@@ -83,7 +80,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         HrefGenerator = applyTemplateSetting?.HrefGenerator;
         AllSourceFiles = GetAllSourceFiles(allSourceFiles);
         ExternalReferencePackages = externalReferencePackages;
-        _xrefMapUrls = xrefMaps;
         GroupInfo = groupInfo;
         XRefTags = xrefTags;
         MaxParallelism = maxParallelism;
@@ -275,45 +271,8 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
                 list.Add(uid);
             }
         }
-        Logger.LogInfo($"{uidList.Count - list.Count} external references found in {_xrefMapUrls.Length} xref maps.");
+        Logger.LogInfo($"{uidList.Count - list.Count} external references found in xref maps.");
         return list;
-    }
-
-    private List<XRefMap> LoadXRefMaps()
-    {
-        Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
-        var mapTasks = (from url in _xrefMapUrls
-                        select LoadXRefMap(url, _client)).ToArray();
-        Task.WaitAll(mapTasks);
-        return (from t in mapTasks
-                where t.Result != null
-                select t.Result).ToList();
-    }
-
-    private async Task<XRefMap> LoadXRefMap(string url, HttpClient client)
-    {
-        try
-        {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
-                uri.Scheme != "http" &&
-                uri.Scheme != "https")
-            {
-                Logger.LogWarning($"Ignore invalid url: {url}");
-                return null;
-            }
-
-            using var stream = await client.GetStreamAsync(uri);
-            using var sr = new StreamReader(stream);
-            var map = YamlUtility.Deserialize<XRefMap>(sr);
-            map.UpdateHref(uri);
-            Logger.LogVerbose($"Xref map ({url}) downloaded.");
-            return map;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogWarning($"Unable to download xref map from {url}, detail:{Environment.NewLine}{ex.ToString()}");
-            return null;
-        }
     }
 
     public string GetFilePath(string key)
