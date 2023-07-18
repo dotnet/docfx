@@ -4,12 +4,12 @@ updates:
   target-branch: main
   directory: "/"
   schedule:
-    interval: weekly
+    interval: daily
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
   schedule:
-    interval: weekly
+    interval: daily
   ignore:
      # Ignore default template dependency update due to missing tests
   - dependency-name: '@default/*'
@@ -17,5 +17,5 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 
-    interval: weekly
+    interval: daily
   target-branch: main
