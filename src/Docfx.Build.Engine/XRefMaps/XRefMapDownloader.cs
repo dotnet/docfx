@@ -109,6 +109,7 @@ public class XRefMapDownloader
 
     private static IXRefContainer ReadLocalFile(string filePath)
     {
+        Logger.LogVerbose($"Reading from file: {filePath}");
         if (".zip".Equals(Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
         {
             return XRefArchive.Open(filePath, XRefArchiveMode.Read);
@@ -120,6 +121,7 @@ public class XRefMapDownloader
 
     protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
     {
+        Logger.LogVerbose($"Reading from web: {uri.OriginalString}");
         var baseUrl = uri.GetLeftPart(UriPartial.Path);
         baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 

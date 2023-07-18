@@ -45,13 +45,14 @@ internal sealed class XRefCollection
         {
             AddToDownloadList(_uris);
             var dict = new Dictionary<string, IXRefContainer>();
-            foreach (var item in _processing)
+            while (_processing.Any())
             {
-                var task = item.Key;
-                var uri = item.Value;
+                Task<IXRefContainer> task = await Task.WhenAny(_processing.Keys);
+                Uri uri = _processing[task];
+                _processing.Remove(task);
                 try
                 {
-                    var container = await task;
+                    IXRefContainer container = await task;
                     if (!container.IsEmbeddedRedirections)
                     {
                         AddToDownloadList(
