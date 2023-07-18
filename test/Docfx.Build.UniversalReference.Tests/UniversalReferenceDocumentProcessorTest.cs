@@ -176,8 +176,8 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         using var listener = new TestListenerScope(nameof(UniversalReferenceDocumentProcessorTest));
         BuildDocument(files);
         Assert.NotNull(listener.Items);
-        Assert.Single(listener.Items);
-        Assert.Contains("Uid must not be null or empty", listener.Items[0].Message);
+        Assert.Equal(2, listener.Items.Count);
+        Assert.Contains("Uid must not be null or empty", listener.Items[1].Message);
     }
 
     private void BuildDocument(FileCollection files)

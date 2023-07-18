@@ -294,7 +294,7 @@ public class RestApiDocumentProcessorTest : TestBase
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.invalid.links.second.md" });
             BuildDocument(files);
 
-            Assert.Equal(6, listener.Items.Count); // Additional warning for "There is no template processing document type(s): RestApi"
+            Assert.Equal(7, listener.Items.Count); // Additional warning for "There is no template processing document type(s): RestApi"
 
             var outputRawModelPath = GetRawModelFilePath("contacts.json");
             Assert.True(File.Exists(outputRawModelPath));

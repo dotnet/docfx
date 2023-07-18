@@ -222,7 +222,7 @@ Overwrite with content
         BuildDocument(files);
 
         // One plugin warning for yml and one plugin warning for overwrite file
-        Assert.Equal(6, listener.Items.Count);
+        Assert.Equal(7, listener.Items.Count);
         Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): testmerger")));
         Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/stringArrayValue/0\" in overwrite object fails to overwrite \"/stringArrayValue\" for \"uid1\" because it does not match any existing item.")));
         Assert.Equal(1, listener.Items.Count(s => s.Message.StartsWith("\"/intArrayValue/0\" in overwrite object fails to overwrite \"/intArrayValue\" for \"uid1\" because it does not match any existing item.")));

@@ -321,7 +321,7 @@ title: Web Apps Documentation
             BuildDocument(files);
         }
 
-        Assert.Equal(3, listener.Items.Count);
+        Assert.Equal(4, listener.Items.Count);
         Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest,Toc")));
         listener.Items.Clear();
 
@@ -433,7 +433,7 @@ uid: azure.hello1
             },
         });
 
-        Assert.Equal(2, listener.Items.Count);
+        Assert.Equal(3, listener.Items.Count);
         Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): PatternedUid")));
         listener.Items.Clear();
 

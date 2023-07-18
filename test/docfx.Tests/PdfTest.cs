@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Runtime.CompilerServices;
+using docfx.Tests.Attributes;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -10,11 +11,6 @@ namespace Docfx.Tests;
 [Collection("docfx STA")]
 public class PdfTest : TestBase
 {
-    class PdfFact : FactAttribute
-    {
-        public override string Skip => OperatingSystem.IsWindows() ? null : "Skip PDF test on non-windows platforms";
-    }
-
     private static async Task<string> Build(Dictionary<string, string> files, [CallerMemberName] string testName = null)
     {
         var testDirectory = $"{nameof(PdfTest)}/{testName}";
@@ -35,7 +31,7 @@ public class PdfTest : TestBase
         return outputDirectory;
     }
 
-    [PdfFact]
+    [WindowsOnlyFact]
     public static async Task BuildPdf_GeneratesPdfFile()
     {
         var outputDirectory = await Build(new()
