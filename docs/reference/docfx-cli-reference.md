@@ -97,16 +97,17 @@ docfx build [-o:<output_path>] [-t:<template folder>]
 If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar. Path in `toc.yml` or `toc.md` are relative to the TOC file.
 
 > [!Note]
-> Please note that `homepage` is not supported in `toc.md`.
-> And if `href` is referencing to a **folder**, it must end with `/`.
+> `homepage` is not supported in `toc.md`.
+> If `href` is referencing a **folder**, it must end with `/`.
 
 **toc.yml syntax**
+
 `toc.yml` is an array of items. Each item can have following properties:
 
 Property | Description
 ---------|-----------------------------
 name     | **Required**. The title of the navigation page.
-href     | **Required**. Can be a folder or a file *UNDER* current folder. A folder must end with `/`. In case of a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as a sidebar.
+href     | **Required**. A folder or a file *UNDER* the current folder. A folder must end with `/`. If referencing a folder, a TOC.md file inside the folder will be rendered as a second level TABLE-OF-CONTENT. As in website, it will be rendered as a sidebar.
 homepage | The default content shown when no article is selected.
 
   **TOC.yml Sample**
