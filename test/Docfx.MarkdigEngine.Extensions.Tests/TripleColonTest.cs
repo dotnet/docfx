@@ -98,4 +98,16 @@ public class TripleColonTest
 
         TestUtility.VerifyMarkup(source, expected);
     }
+
+    [Fact]
+    public void Issue8999()
+    {
+        TestUtility.VerifyMarkup(
+            """
+            **CONTACT POINT** Use the :::image type="icon" source="../images/copy.png"::: button on the right side of the screen to copy the top value, **CONTACT POINT**
+            """,
+            """
+            <p><strong>CONTACT POINT</strong> Use the <img src="../images/copy.png" role="presentation"> button on the right side of the screen to copy the top value, <strong>CONTACT POINT</strong></p>
+            """);
+    }
 }

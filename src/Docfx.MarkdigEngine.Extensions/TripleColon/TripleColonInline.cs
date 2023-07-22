@@ -6,13 +6,20 @@ using Markdig.Syntax.Inlines;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
-public class TripleColonInline : ContainerInline, ITripleColon
+public class TripleColonInline : Inline, ITripleColon
 {
-    public IDictionary<string, string> RenderProperties { get; set; }
     public ITripleColonExtensionInfo Extension { get; set; }
-    public TripleColonInline(InlineParser parser) : base() { }
+
+    public string Body { get; set; }
+
+    public TripleColonInline()
+        : base() { }
+
     public bool Closed { get; set; }
+
     public bool EndingTripleColons { get; set; }
+
     public IDictionary<string, string> Attributes { get; set; }
+
     public int Count { get; }
 }

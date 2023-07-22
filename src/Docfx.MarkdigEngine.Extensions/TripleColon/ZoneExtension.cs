@@ -10,22 +10,27 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public class ZoneExtension : ITripleColonExtensionInfo
 {
-    private static readonly Regex pivotRegex = new(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
-    private static readonly Regex pivotReplaceCommasRegex = new(@"\s*,\s*");
+    private static readonly Regex s_pivotRegex = new(@"^\s*(?:[a-z0-9-]+)(?:\s*,\s*[a-z0-9-]+)*\s*$");
+    private static readonly Regex s_pivotReplaceCommasRegex = new(@"\s*,\s*");
+
     public string Name => "zone";
+
     public bool SelfClosing => false;
+
+    public bool IsInline => false;
+
+    public bool IsBlock => true;
 
     public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
     {
         return false;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = null;
-        var target = string.Empty;
-        var pivot = string.Empty;
+        var target = "";
+        var pivot = "";
         foreach (var attribute in attributes)
         {
             var name = attribute.Key;
@@ -41,7 +46,7 @@ public class ZoneExtension : ITripleColonExtensionInfo
                     target = value;
                     break;
                 case "pivot":
-                    if (!pivotRegex.IsMatch(value))
+                    if (!s_pivotRegex.IsMatch(value))
                     {
                         logError($"Invalid pivot \"{value}\". Pivot must be a comma-delimited list of pivot names. Pivot names must be lower-case and contain only letters, numbers or dashes.");
                         return false;
@@ -54,12 +59,12 @@ public class ZoneExtension : ITripleColonExtensionInfo
             }
         }
 
-        if (target == string.Empty && pivot == string.Empty)
+        if (string.IsNullOrEmpty(target) && string.IsNullOrEmpty(pivot))
         {
             logError("Either target or pivot must be specified.");
             return false;
         }
-        if (target == "pdf" && pivot != string.Empty)
+        if (target == "pdf" && !string.IsNullOrEmpty(pivot))
         {
             logError("Pivot not permitted on pdf target.");
             return false;
@@ -67,23 +72,24 @@ public class ZoneExtension : ITripleColonExtensionInfo
 
         htmlAttributes = new HtmlAttributes();
         htmlAttributes.AddClass("zone");
-        if (target != string.Empty)
+        if (!string.IsNullOrEmpty(target))
         {
             htmlAttributes.AddClass("has-target");
             htmlAttributes.AddProperty("data-target", target);
         }
-        if (pivot != string.Empty)
+        if (!string.IsNullOrEmpty(pivot))
         {
             htmlAttributes.AddClass("has-pivot");
-            htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(pivotReplaceCommasRegex, " "));
+            htmlAttributes.AddProperty("data-pivot", pivot.Trim().ReplaceRegex(s_pivotReplaceCommasRegex, " "));
         }
         return true;
     }
+
     public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
     {
         while (container != null)
         {
-            if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == this.Name)
+            if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == Name)
             {
                 logError("Zones cannot be nested.");
                 return false;

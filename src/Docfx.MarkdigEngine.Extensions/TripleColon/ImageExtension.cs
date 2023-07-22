@@ -13,21 +13,24 @@ public class ImageExtension : ITripleColonExtensionInfo
     private readonly MarkdownContext _context;
 
     public string Name => "image";
+
     public bool SelfClosing => true;
+
+    public bool IsInline => true;
+
+    public bool IsBlock => true;
 
     public ImageExtension(MarkdownContext context)
     {
         _context = context;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = new Dictionary<string, string>();
-        var src = string.Empty;
-        var alt = string.Empty;
-        var type = string.Empty;
-        var loc_scope = string.Empty;
+        var src = "";
+        var alt = "";
+        var type = "";
         foreach (var attribute in attributes)
         {
             var name = attribute.Key;
@@ -41,7 +44,7 @@ public class ImageExtension : ITripleColonExtensionInfo
                     type = value;
                     break;
                 case "loc-scope":
-                    loc_scope = value;
+                    var loc_scope = value;
                     break;
                 case "source":
                     src = value;
@@ -73,29 +76,10 @@ public class ImageExtension : ITripleColonExtensionInfo
         }
 
         // add loc scope missing/invalid validation here
-
         if ((string.IsNullOrEmpty(alt) && type != "icon") || string.IsNullOrEmpty(src))
         {
             return false;
         }
-        htmlAttributes = new HtmlAttributes();
-
-        // alt is allowed to be empty for icon type image
-        if (string.IsNullOrEmpty(alt) && type == "icon")
-            htmlAttributes.AddProperty("src", _context.GetLink(src, markdownObject));
-        else
-            htmlAttributes.AddProperty("src", _context.GetImageLink(src, markdownObject, alt));
-
-        if (type == "icon")
-        {
-            htmlAttributes.AddProperty("role", "presentation");
-        }
-        else
-        {
-            htmlAttributes.AddProperty("alt", alt);
-        }
-        var id = GetHtmlId(markdownObject);
-        if (type == "complex") htmlAttributes.AddProperty("aria-describedby", id);
 
         return true;
     }
@@ -108,19 +92,33 @@ public class ImageExtension : ITripleColonExtensionInfo
         {
             currentType = "content";
         }
-        tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); //it's okay if this is null
-        tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); //it's okay if this is null
-        tripleColonObj.Attributes.TryGetValue("link", out var currentLink); //it's okay if this is null
-        if (!bool.TryParse(currentBorderStr, out var currentBorder))
+        tripleColonObj.Attributes.TryGetValue("lightbox", out var currentLightbox); // it's okay if this is null
+        tripleColonObj.Attributes.TryGetValue("border", out var currentBorderStr); // it's okay if this is null
+        tripleColonObj.Attributes.TryGetValue("link", out var currentLink); // it's okay if this is null
+        tripleColonObj.Attributes.TryGetValue("alt-text", out var alt); // it's okay if this is null
+        tripleColonObj.Attributes.TryGetValue("source", out var src); // it's okay if this is null
+
+        var htmlAttributes = new HtmlAttributes();
+
+        htmlAttributes.AddProperty("src", _context.GetImageLink(src, obj, alt));
+
+        if (currentType == "icon")
         {
-            if (currentType == "icon")
-            {
-                currentBorder = false;
+            htmlAttributes.AddProperty("role", "presentation");
             }
             else
             {
-                currentBorder = true;
+            htmlAttributes.AddProperty("alt", alt);
+        }
+        var htmlId = GetHtmlId(obj);
+        if (currentType == "complex")
+        {
+            htmlAttributes.AddProperty("aria-describedby", htmlId);
             }
+
+        if (!bool.TryParse(currentBorderStr, out var currentBorder))
+        {
+            currentBorder = currentType != "icon";
         }
 
         if (currentBorder)
@@ -133,11 +131,13 @@ public class ImageExtension : ITripleColonExtensionInfo
             {
                 renderer.WriteLine("<span class=\"mx-imgBorder\">");
             }
-
         }
         else
         {
-            if (tripleColonObj is Block) renderer.WriteLine("<p>");
+            if (tripleColonObj is Block)
+            {
+                renderer.WriteLine("<p>");
+            }
         }
         if (!string.IsNullOrEmpty(currentLink))
         {
@@ -156,7 +156,7 @@ public class ImageExtension : ITripleColonExtensionInfo
         }
         if (currentType != "complex")
         {
-            renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
+            renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
 
             if (tripleColonObj is ContainerBlock
                 && (tripleColonObj as ContainerBlock).LastChild != null)
@@ -164,7 +164,6 @@ public class ImageExtension : ITripleColonExtensionInfo
                 var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
                 renderer.WriteChildren(inline);
             }
-
         }
         else
         {
@@ -173,11 +172,10 @@ public class ImageExtension : ITripleColonExtensionInfo
                 logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
                 return false;
             }
-            var htmlId = GetHtmlId(obj);
-            renderer.Write("<img").WriteAttributes(obj).WriteLine(">");
-            renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
-            renderer.WriteChildren(tripleColonObj as ContainerBlock);
-            renderer.WriteLine("</div>");
+            renderer.Write("<img").WriteAttributes(htmlAttributes).WriteLine(">");
+            renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\"><p>");
+            renderer.Write(tripleColonObj.Body);
+            renderer.WriteLine("</p></div>");
         }
         if (!string.IsNullOrEmpty(currentLightbox) || !string.IsNullOrEmpty(currentLink))
         {
@@ -189,7 +187,11 @@ public class ImageExtension : ITripleColonExtensionInfo
         }
         else
         {
-            if (currentBorder) renderer.WriteLine("</span>");
+            if (currentBorder)
+            {
+                renderer.WriteLine("</span>");
+            }
+
             renderer.WriteChildren(tripleColonObj as ContainerInline);
         }
         return true;
