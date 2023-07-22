@@ -25,7 +25,6 @@ public class TripleColonInlineRenderer : HtmlObjectRenderer<TripleColonInline>
         }
 
         renderer.Write("<div").WriteAttributes(inline).WriteLine(">");
-        renderer.WriteChildren(inline);
         renderer.WriteLine("</div>");
     }
 }

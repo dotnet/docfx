@@ -4,21 +4,31 @@
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 namespace Docfx.MarkdigEngine.Extensions;
 
 public class VideoExtension : ITripleColonExtensionInfo
 {
     public string Name => "video";
+
     public bool SelfClosing => true;
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool IsInline => true;
+
+    public bool IsBlock => true;
+
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
         htmlAttributes = null;
-        renderProperties = new Dictionary<string, string>();
-        var src = string.Empty;
-        var title = string.Empty;
-        var maxWidth = string.Empty;
+        var src = "";
+        var title = "";
+        var maxWidth = "";
+        var thumbnail = "";
+        var uploadDate = "";
+        var duration = "";
+        var type = "";
+
         foreach (var attribute in attributes)
         {
             var name = attribute.Key;
@@ -34,16 +44,40 @@ public class VideoExtension : ITripleColonExtensionInfo
                 case "source":
                     src = value;
                     break;
+                case "thumbnail":
+                    thumbnail = value;
+                    break;
+                case "upload-date":
+                    uploadDate = value;
+                    break;
+                case "duration":
+                    duration = value;
+                    break;
+                case "type":
+                    type = value;
+                    break;
                 default:
                     logError($"Video reference '{src}' is invalid per the schema. Unexpected attribute: '{name}'.");
                     return false;
             }
         }
 
+        if (string.IsNullOrEmpty(type))
+        {
+            type = "content";
+        }
         if (string.IsNullOrEmpty(src))
         {
             logError("source is a required attribute. Please ensure you have specified a source attribute.");
             return false;
+        }
+        if (string.IsNullOrEmpty(thumbnail))
+        {
+            logError("thumbnail is a required attribute. Please ensure you have specified a thumbnail attribute.");
+        }
+        if (string.IsNullOrEmpty(uploadDate))
+        {
+            logError("upload-date is a required attribute. Please ensure you have specified a upload-date attribute.");
         }
         if (!src.Contains("channel9.msdn.com") &&
             !src.Contains("youtube.com/embed") &&
@@ -68,8 +102,7 @@ public class VideoExtension : ITripleColonExtensionInfo
 
         if (!string.IsNullOrEmpty(maxWidth))
         {
-            int number;
-            if (!int.TryParse(maxWidth, out number))
+            if (!int.TryParse(maxWidth, out _))
             {
                 logError($"Video reference '{src}' is invalid. 'max-width' must be a number.");
                 return false;
@@ -77,14 +110,81 @@ public class VideoExtension : ITripleColonExtensionInfo
             htmlAttributes.AddProperty("style", $"max-width:{maxWidth}px;");
         }
 
+        if (!string.IsNullOrEmpty(thumbnail))
+        {
+            htmlAttributes.AddProperty("thumbnail", thumbnail);
+        }
+
+        if (!string.IsNullOrEmpty(uploadDate))
+        {
+            htmlAttributes.AddProperty("upload-date", uploadDate);
+        }
+
+        if (!string.IsNullOrEmpty(duration))
+        {
+            htmlAttributes.AddProperty("duration", duration);
+        }
+
+        var id = GetHtmlId(markdownObject);
+        if (type == "complex")
+        {
+            htmlAttributes.AddProperty("aria-describedby", id);
+        }
+
         return true;
     }
 
     public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
     {
-        renderer.WriteLine("<div class=\"embeddedvideo\">");
-        renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine(">");
-        renderer.WriteLine("</div>");
+        var tripleColonObj = (ITripleColon)markdownObject;
+
+        if (!tripleColonObj.Attributes.TryGetValue("type", out var currentType))
+        {
+            currentType = "content";
+        }
+        else
+        {
+            if (tripleColonObj is Block)
+            {
+                renderer.WriteLine("<p>");
+            }
+        }
+
+        if (currentType != "complex")
+        {
+            renderer.WriteLine("<div class=\"embeddedvideo\">");
+            renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
+            renderer.WriteLine("</div>");
+            if (tripleColonObj is ContainerBlock
+                && (tripleColonObj as ContainerBlock).LastChild != null)
+            {
+                var inline = ((tripleColonObj as ContainerBlock).LastChild as ParagraphBlock).Inline;
+                renderer.WriteChildren(inline);
+            }
+        }
+        else
+        {
+            if (currentType == "complex" && tripleColonObj.Count == 0)
+            {
+                logWarning("If type is \"complex\", then descriptive content is required. Please make sure you have descriptive content.");
+                return false;
+            }
+            var htmlId = GetHtmlId(markdownObject);
+            renderer.WriteLine("<div class=\"embeddedvideo\">");
+            renderer.Write($"<iframe").WriteAttributes(markdownObject).WriteLine("></iframe>");
+            renderer.WriteLine($"<div id=\"{htmlId}\" class=\"visually-hidden\">");
+            renderer.WriteChildren(tripleColonObj as ContainerBlock);
+            renderer.WriteLine("</div>");
+        }
+
+        if (tripleColonObj is Block)
+        {
+            renderer.WriteLine("</p>");
+        }
+        else
+        {
+            renderer.WriteChildren(tripleColonObj as ContainerInline);
+        }
 
         return true;
     }
@@ -92,5 +192,24 @@ public class VideoExtension : ITripleColonExtensionInfo
     public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
     {
         return true;
+    }
+
+    public static string GetHtmlId(MarkdownObject obj)
+    {
+        return $"{obj.Line}-{obj.Column}";
+}
+
+    public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
+    {
+        if (attributes != null
+           && attributes.ContainsKey("type")
+           && attributes["type"] == "complex")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

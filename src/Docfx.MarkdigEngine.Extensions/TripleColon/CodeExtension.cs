@@ -10,22 +10,30 @@ namespace Docfx.MarkdigEngine.Extensions;
 public class CodeExtension : ITripleColonExtensionInfo
 {
     public string Name => "code";
+
     public bool SelfClosing => true;
-    public bool EndingTripleColons => false;
+
+    public static bool EndingTripleColons => false;
+
+    public bool IsInline => false;
+
+    public bool IsBlock => true;
 
     private readonly MarkdownContext _context;
+    private readonly HtmlCodeSnippetRenderer _codeSnippetRenderer;
 
     public CodeExtension(MarkdownContext context)
     {
         _context = context;
+        _codeSnippetRenderer = new(_context);
     }
 
     public bool Render(HtmlRenderer renderer, MarkdownObject markdownObject, Action<string> logWarning)
     {
         var block = (TripleColonBlock)markdownObject;
-        block.Attributes.TryGetValue("id", out var currentId); //it's okay if this is null
-        block.Attributes.TryGetValue("range", out var currentRange); //it's okay if this is null
-        block.Attributes.TryGetValue("source", out var currentSource); //source has already been checked above
+        block.Attributes.TryGetValue("id", out var currentId); // it's okay if this is null
+        block.Attributes.TryGetValue("range", out var currentRange); // it's okay if this is null
+        block.Attributes.TryGetValue("source", out var currentSource); // source has already been checked above
         var (code, codePath) = _context.ReadFile(currentSource, block);
         if (string.IsNullOrEmpty(code))
         {
@@ -33,18 +41,19 @@ public class CodeExtension : ITripleColonExtensionInfo
             return false;
         }
 
-        //var updatedCode = GetCodeSnippet(currentRange, currentId, code, logError).TrimEnd();
-        var htmlCodeSnippetRenderer = new HtmlCodeSnippetRenderer(_context);
-        var snippet = new CodeSnippet(null);
-        snippet.CodePath = currentSource;
-        snippet.TagName = currentId;
-
         HtmlCodeSnippetRenderer.TryGetLineRanges(currentRange, out var ranges);
-        snippet.CodeRanges = ranges;
-        var updatedCode = htmlCodeSnippetRenderer.GetContent(code, snippet);
+
+        var snippet = new CodeSnippet(null)
+        {
+            CodePath = currentSource,
+            TagName = currentId,
+            CodeRanges = ranges,
+        };
+
+        var updatedCode = _codeSnippetRenderer.GetContent(code, snippet);
         updatedCode = ExtensionsHelper.Escape(updatedCode).TrimEnd();
 
-        if (updatedCode == string.Empty)
+        if (string.IsNullOrEmpty(updatedCode))
         {
             logWarning($"It looks like your code snippet was not rendered. Try range instead.");
             return false;
@@ -57,17 +66,15 @@ public class CodeExtension : ITripleColonExtensionInfo
         return true;
     }
 
-    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, out IDictionary<string, string> renderProperties, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
+    public bool TryProcessAttributes(IDictionary<string, string> attributes, out HtmlAttributes htmlAttributes, Action<string> logError, Action<string> logWarning, MarkdownObject markdownObject)
     {
-
         htmlAttributes = null;
-        renderProperties = new Dictionary<string, string>();
-        var source = string.Empty;
-        var range = string.Empty;
-        var id = string.Empty;
-        var highlight = string.Empty;
-        var language = string.Empty;
-        var interactive = string.Empty;
+        var source = "";
+        var range = "";
+        var id = "";
+        var highlight = "";
+        var language = "";
+        var interactive = "";
 
         foreach (var attribute in attributes)
         {
@@ -117,12 +124,20 @@ public class CodeExtension : ITripleColonExtensionInfo
             htmlAttributes.AddProperty("data-interactive", language);
             htmlAttributes.AddProperty("data-interactive-mode", interactive);
         }
-        if (!string.IsNullOrEmpty(highlight)) htmlAttributes.AddProperty("highlight-lines", highlight);
+        if (!string.IsNullOrEmpty(highlight))
+        {
+            htmlAttributes.AddProperty("highlight-lines", highlight);
+        }
 
         return true;
     }
 
-    private string InferLanguageFromFile(string source, Action<string> logError)
+    public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
+    {
+        return true;
+    }
+
+    private static string InferLanguageFromFile(string source, Action<string> logError)
     {
         var fileExtension = Path.GetExtension(source);
         if (fileExtension == null)
@@ -135,10 +150,5 @@ public class CodeExtension : ITripleColonExtensionInfo
             logError("Language is not set, and we could not infer language from the file type.");
         }
         return language;
-    }
-
-    public bool TryValidateAncestry(ContainerBlock container, Action<string> logError)
-    {
-        return true;
     }
 }

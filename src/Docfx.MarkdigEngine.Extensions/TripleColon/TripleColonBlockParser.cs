@@ -11,7 +11,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public class TripleColonBlockParser : BlockParser
 {
-    private static readonly IDictionary<string, string> EmptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
+    private static readonly IDictionary<string, string> s_emptyAttributes = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>());
     private readonly MarkdownContext _context;
     private readonly IDictionary<string, ITripleColonExtensionInfo> _extensions;
 
@@ -53,14 +53,13 @@ public class TripleColonBlockParser : BlockParser
 
         if (!extension.TryValidateAncestry(processor.CurrentContainer, logError) ||
             !TryMatchAttributes(ref slice, out var attributes, extension.SelfClosing, logError) ||
-            !extension.TryProcessAttributes(attributes, out var htmlAttributes, out var renderProperties, logError, logWarning, block))
+            !extension.TryProcessAttributes(attributes, out var htmlAttributes, logError, logWarning, block))
         {
             return BlockState.None;
         }
 
         block.Extension = extension;
         block.Attributes = attributes;
-        block.RenderProperties = renderProperties;
 
         if (htmlAttributes != null)
         {
@@ -69,8 +68,7 @@ public class TripleColonBlockParser : BlockParser
 
         if (extension.GetType() == typeof(ImageExtension))
         {
-            if (htmlAttributes != null
-            && !ImageExtension.RequiresClosingTripleColon(attributes))
+            if (!ImageExtension.RequiresClosingTripleColon(attributes))
             {
                 return BlockState.None;
             }
@@ -79,7 +77,18 @@ public class TripleColonBlockParser : BlockParser
             block.EndingTripleColons = true;
             return BlockState.ContinueDiscard;
         }
-        else
+        else if (extension.GetType() == typeof(VideoExtension))
+        {
+            if (!VideoExtension.RequiresClosingTripleColon(attributes))
+            {
+                return BlockState.None;
+            }
+
+            processor.NewBlocks.Push(block);
+            block.EndingTripleColons = true;
+            return BlockState.ContinueDiscard;
+        }
+
         {
             processor.NewBlocks.Push(block);
         }
@@ -97,7 +106,7 @@ public class TripleColonBlockParser : BlockParser
         var slice = processor.Line;
         var endingTripleColons = ((TripleColonBlock)block).EndingTripleColons;
 
-        if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension)
+        if (((TripleColonBlock)block).Extension.GetType() != typeof(ImageExtension) || ((TripleColonBlock)block).Extension.GetType() != typeof(VideoExtension)
             || endingTripleColons)
         {
             if (processor.IsBlankLine)
@@ -109,6 +118,8 @@ public class TripleColonBlockParser : BlockParser
 
             if (!ExtensionsHelper.MatchStart(ref slice, ":::"))
             {
+                // create a block for the image long description
+                ((TripleColonBlock)block).Body = slice.ToString();
                 ExtensionsHelper.ResetLineIndent(processor);
                 return BlockState.Continue;
             }
@@ -182,7 +193,7 @@ public class TripleColonBlockParser : BlockParser
 
     public static bool TryMatchIdentifier(ref StringSlice slice, out string name)
     {
-        name = string.Empty;
+        name = "";
         var c = slice.CurrentChar;
         if (c.IsAlpha())
         {
@@ -191,8 +202,9 @@ public class TripleColonBlockParser : BlockParser
             {
                 b.Append(c);
                 c = slice.NextChar();
-            } while (c.IsAlphaNumeric() || c == '-');
-            name = b.ToString().ToLower();
+            }
+            while (c.IsAlphaNumeric() || c == '-');
+            name = b.ToString().ToLowerInvariant();
             return true;
         }
         return false;
@@ -200,7 +212,7 @@ public class TripleColonBlockParser : BlockParser
 
     public static bool TryMatchAttributeValue(ref StringSlice slice, out string value, string attributeName, Action<string> logError)
     {
-        value = string.Empty;
+        value = "";
         var c = slice.CurrentChar;
         if (c != '"')
         {
@@ -226,7 +238,7 @@ public class TripleColonBlockParser : BlockParser
 
     public static bool TryMatchAttributes(ref StringSlice slice, out IDictionary<string, string> attributes, bool selfClosing, Action<string> logError)
     {
-        attributes = EmptyAttributes;
+        attributes = s_emptyAttributes;
         while (true)
         {
             ExtensionsHelper.SkipSpaces(ref slice);
@@ -246,7 +258,7 @@ public class TripleColonBlockParser : BlockParser
                 return false;
             }
 
-            var value = string.Empty;
+            var value = "";
 
             ExtensionsHelper.SkipSpaces(ref slice);
             if (slice.CurrentChar == '=')
@@ -259,7 +271,7 @@ public class TripleColonBlockParser : BlockParser
                 }
             }
 
-            if (attributes == EmptyAttributes)
+            if (attributes == s_emptyAttributes)
             {
                 attributes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
