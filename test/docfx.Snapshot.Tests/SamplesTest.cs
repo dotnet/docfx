@@ -90,7 +90,11 @@ public class SamplesTest
         Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
 
         const int port = 8089;
-        using var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }));
+        var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }))
+                    .ContinueWith(x =>
+                    {
+                        Logger.Log("Failed to run `dotnet serve` command. " + x.Exception.ToString());
+                    }, TaskContinuationOptions.OnlyOnFaulted);
 
         // Wait until web server started.
         bool isStarted = SpinWait.SpinUntil(() => { Thread.Sleep(100); return IsActiveLocalTcpPort(port); }, TimeSpan.FromSeconds(10));
