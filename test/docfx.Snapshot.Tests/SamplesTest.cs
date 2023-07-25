@@ -93,7 +93,7 @@ public class SamplesTest
         var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }))
                     .ContinueWith(x =>
                     {
-                        Logger.Log("Failed to run `dotnet serve` command. " + x.Exception.ToString());
+                        Logger.LogError("Failed to run `dotnet serve` command. " + x.Exception.ToString());
                     }, TaskContinuationOptions.OnlyOnFaulted);
 
         // Wait until web server started.
