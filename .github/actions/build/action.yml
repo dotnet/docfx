@@ -5,7 +5,7 @@ runs:
   steps:
   - uses: actions/setup-node@v3
     with:
-      node-version: 16
+      node-version: 18
 
   - uses: actions/setup-dotnet@v3
     with:
