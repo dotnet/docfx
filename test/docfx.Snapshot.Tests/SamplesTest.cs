@@ -12,6 +12,8 @@ using ImageMagick;
 using Docfx.Common;
 using Docfx.Dotnet;
 using Microsoft.Playwright;
+using System.Net.NetworkInformation;
+using System.Net;
 
 namespace Docfx.Tests;
 
@@ -88,7 +90,14 @@ public class SamplesTest
         Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
 
         const int port = 8089;
-        var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }));
+        var _ = Task.Run(() => Program.Main(new[] { "serve", "--port", $"{port}", $"{samplePath}/_site" }))
+                    .ContinueWith(x =>
+                    {
+                        Logger.LogError("Failed to run `dotnet serve` command. " + x.Exception.ToString());
+                    }, TaskContinuationOptions.OnlyOnFaulted);
+
+        // Wait until web server started.
+        bool isStarted = SpinWait.SpinUntil(() => { Thread.Sleep(100); return IsActiveLocalTcpPort(port); }, TimeSpan.FromSeconds(10));
 
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
@@ -251,5 +260,12 @@ public class SamplesTest
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
         }
+    }
+
+    private static bool IsActiveLocalTcpPort(int port)
+    {
+        var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpListeners();
+        return tcpConnInfoArray.Any(x => x.Port == port);
     }
 }
