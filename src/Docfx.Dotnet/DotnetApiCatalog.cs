@@ -91,8 +91,24 @@ public static class DotnetApiCatalog
         {
             if (!MSBuildLocator.IsRegistered)
             {
-                var vs = MSBuildLocator.RegisterDefaults() ?? throw new ExtractMetadataException(
-                    $"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
+                // Gets non-preview .NET SDKs.
+                var vsInstances = MSBuildLocator.QueryVisualStudioInstances(VisualStudioInstanceQueryOptions.Default)
+                                                .Where(x => !x.MSBuildPath.Contains("-preview."));
+
+                var vs = vsInstances.FirstOrDefault();
+
+                if (vs != null)
+                {
+                    MSBuildLocator.RegisterInstance(vs);
+                }
+                else
+                {
+                    // If failed to resolve non-preview .NET SDK. Fallback to default resolver.
+                    vs = MSBuildLocator.RegisterDefaults();
+
+                    if (vs == null)
+                        throw new ExtractMetadataException($"Cannot find a supported .NET Core SDK. Install .NET Core SDK {Environment.Version.Major}.{Environment.Version.Minor}.x to build .NET API docs.");
+                }
 
                 Logger.LogInfo($"Using {vs.Name} {vs.Version}");
             }
