@@ -34,7 +34,7 @@
     "lit-html": "^2.7.5",
     "lunr": "2.3.9",
     "mathjax": "^3.2.2",
-    "mermaid": "^10.2.4"
+    "mermaid": "^10.3.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
