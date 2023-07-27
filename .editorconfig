@@ -148,21 +148,28 @@ dotnet_style_namespace_match_folder = true:suggestion                   # IDE013
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 # [Unnecessary code rules](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/unnecessary-code-rules)
 # -----------------------------------------------------------------------------------------------------------------------------------------------
-dotnet_diagnostic.IDE0001.severity = warning # IDE0001: Simplify name
-dotnet_diagnostic.IDE0002.severity = warning # IDE0002: Simplify member access
-dotnet_diagnostic.IDE0004.severity = warning # IDE0004: Remove unnecessary cast
-dotnet_diagnostic.IDE0005.severity = warning # IDE0005: Remove unnecessary import
-dotnet_diagnostic.IDE0035.severity = warning # IDE0035: Remove unreachable code
-dotnet_diagnostic.IDE0051.severity = warning # IDE0051: Remove unused private member
-dotnet_diagnostic.IDE0052.severity = warning # IDE0052: Remove unread private member
-dotnet_diagnostic.IDE0080.severity = warning # IDE0080: Remove unnecessary suppression operator
-dotnet_diagnostic.IDE0100.severity = warning # IDE0100: Remove unnecessary equality operator
-dotnet_diagnostic.IDE0110.severity = warning # IDE0110: Remove unnecessary discard
+dotnet_diagnostic.IDE0001.severity = suggestion # IDE0001: Simplify name
+dotnet_diagnostic.IDE0002.severity = suggestion # IDE0002: Simplify member access
+dotnet_diagnostic.IDE0004.severity = suggestion # IDE0004: Remove unnecessary cast
+dotnet_diagnostic.IDE0005.severity = suggestion # IDE0005: Remove unnecessary import
+dotnet_diagnostic.IDE0035.severity = suggestion # IDE0035: Remove unreachable code
+dotnet_diagnostic.IDE0051.severity = suggestion # IDE0051: Remove unused private member
+dotnet_diagnostic.IDE0052.severity = suggestion # IDE0052: Remove unread private member
+dotnet_diagnostic.IDE0080.severity = suggestion # IDE0080: Remove unnecessary suppression operator
+dotnet_diagnostic.IDE0100.severity = suggestion # IDE0100: Remove unnecessary equality operator
+dotnet_diagnostic.IDE0110.severity = suggestion # IDE0110: Remove unnecessary discard
+dotnet_diagnostic.IDE0240.severity = suggestion # IDE0240: Nullable directive is redundant
+dotnet_diagnostic.IDE0241.severity = suggestion # IDE0241: Nullable directive is unnecessary
 
-csharp_style_unused_value_expression_statement_preference = discard_variable:warning # IDE0058: Remove unnecessary expression value
-csharp_style_unused_value_assignment_preference = discard_variable:warning           # IDE0059: Remove unnecessary value assignment
-dotnet_code_quality_unused_parameters = all:warning                                  # IDE0060: Remove unused parameter
-dotnet_remove_unnecessary_suppression_exclusions = warning                           # IDE0079: Remove unnecessary suppression
+
+csharp_style_unused_value_expression_statement_preference = discard_variable:suggestion # IDE0058: Remove unnecessary expression value
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion           # IDE0059: Remove unnecessary value assignment
+dotnet_code_quality_unused_parameters = all:suggestion                                  # IDE0060: Remove unused parameter
+dotnet_remove_unnecessary_suppression_exclusions = suggestion                           # IDE0079: Remove unnecessary suppression
+dotnet_style_prefer_foreach_explicit_cast_in_source = suggestion                        # IDE0220: Add explicit cast
+csharp_style_prefer_utf8_string_literals = true:suggestion                              # IDE0230: Use UTF-8 string literal
+csharp_style_prefer_readonly_struct = suggestion                                        # IDE0250: Struct can be made 'readonly'
+csharp_style_prefer_readonly_struct_member = suggestion                                 # IDE0251: Member can be made 'readonly'
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 # [.NET formatting options](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/dotnet-formatting-options)
@@ -249,3 +256,13 @@ dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
 dotnet_naming_symbols.private_internal_fields.applicable_accessibilities = private, internal
 dotnet_naming_style.camel_case_underscore_style.required_prefix = _
 dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
+csharp_style_prefer_top_level_statements = true:suggestion
+csharp_style_prefer_method_group_conversion = true:suggestion
+
+# Additional experimental settings
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:suggestion
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true:suggestion
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:suggestion
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:suggestion
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:suggestion
+
