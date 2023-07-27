@@ -74,7 +74,7 @@ csharp_prefer_static_local_function = true:suggestion                           
 # Parentheses preferences (IDE0047 and IDE0048)
 
 # Expression-level preferences
-# dotnet_diagnostic.IDE0010.severity = suggestion                                  # IDE0010: Add missing cases to switch statement
+dotnet_diagnostic.IDE0010.severity = suggestion                                    # IDE0010: Add missing cases to switch statement
 dotnet_style_object_initializer = true:suggestion                                  # IDE0017: Use object initializers
 csharp_style_inlined_variable_declaration = true:suggestion                        # IDE0018: Inline variable declaration
 dotnet_style_collection_initializer = true:suggestion                              # IDE0028: Use collection initializers
@@ -84,29 +84,29 @@ csharp_prefer_simple_default_expression = true:suggestion                       
 dotnet_style_prefer_inferred_tuple_names = true:suggestion                         # IDE0037: Use inferred member name
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion         # IDE0037: Use inferred member name
 csharp_style_pattern_local_over_anonymous_function = false:none                    # IDE0039: Use local function instead of lambda
-# csharp_style_deconstructed_variable_declaration = true:suggestion                # IDE0042: Deconstruct variable declaration
+csharp_style_deconstructed_variable_declaration = true:suggestion                  # IDE0042: Deconstruct variable declaration
 dotnet_style_prefer_conditional_expression_over_assignment = true:silent           # IDE0045: Use conditional expression for assignment
 dotnet_style_prefer_conditional_expression_over_return = true:silent               # IDE0046: Use conditional expression for return
-# dotnet_diagnostic.IDE0050.severity = suggestion                                  # IDE0050: Convert anonymous type to tuple
-# dotnet_style_prefer_compound_assignment = true:suggestion                        # IDE0054: Use compound assignment / IDE0074:Use coalesce compound assignment
+dotnet_diagnostic.IDE0050.severity = suggestion                                    # IDE0050: Convert anonymous type to tuple
+dotnet_style_prefer_compound_assignment = true:suggestion                          # IDE0054: Use compound assignment / IDE0074:Use coalesce compound assignment
 csharp_style_prefer_index_operator = false:none                                    # IDE0056: Use index operator
 csharp_style_prefer_range_operator = false:none                                    # IDE0057: Use range operator
-# dotnet_diagnostic.IDE0070.severity = suggestion                                  # IDE0070: Use System.HashCode.Combine
-# dotnet_style_prefer_simplified_interpolation = true:suggestion                   # IDE0071: Simplify interpolation
-# dotnet_style_prefer_simplified_boolean_expressions = true:suggestion             # IDE0075: Simplify conditional expression
-# dotnet_diagnostic.IDE0082.severity = suggestion                                  # IDE0082: Convert typeof to nameof
-# csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion    # IDE0090: Simplify new expression
-# csharp_style_prefer_tuple_swap = true:suggestion                                 # IDE0180: Use tuple to swap values
+dotnet_diagnostic.IDE0070.severity = suggestion                                    # IDE0070: Use System.HashCode.Combine
+dotnet_style_prefer_simplified_interpolation = true:suggestion                     # IDE0071: Simplify interpolation
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion               # IDE0075: Simplify conditional expression
+dotnet_diagnostic.IDE0082.severity = suggestion                                    # IDE0082: Convert typeof to nameof
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion      # IDE0090: Simplify new expression
+csharp_style_prefer_tuple_swap = true:suggestion                                   # IDE0180: Use tuple to swap values
 
 # Namespace declaration preferences
-# csharp_style_namespace_declarations = file_scoped:suggestion                  # IDE0160: Use block-scoped namespace / IDE0161: Use file-scoped namespace
+csharp_style_namespace_declarations = file_scoped:suggestion                       # IDE0160: Use block-scoped namespace / IDE0161: Use file-scoped namespace
 
 # Null-checking preferences
 csharp_style_throw_expression = true:suggestion                                    # IDE0016: Use throw expression
 dotnet_style_coalesce_expression = true:suggestion                                 # IDE0029: Use coalesce expression (non-nullable types) / IDE0030: Use coalesce expression (nullable types)
 dotnet_style_null_propagation = true:suggestion                                    # IDE0031: Use null propagation
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion # IDE0041: Use 'is null' check
-# csharp_style_prefer_null_check_over_type_check = true:suggestion                     # IDE0150: Prefer null check over type check
+csharp_style_prefer_null_check_over_type_check = true:suggestion                   # IDE0150: Prefer null check over type check
 csharp_style_conditional_delegate_call = true:suggestion                           # IDE1005: Use conditional delegate call
 
 # 'var' preferences
@@ -127,37 +127,37 @@ csharp_style_expression_bodied_local_functions = true:silent # IDE0061: Use expr
 # Pattern matching preferences
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion # IDE0019: Use pattern matching to avoid as followed by a null check
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion # IDE0020: Use pattern matching to avoid is check followed by a cast (with variable) / IDE0038: Use pattern matching to avoid is check followed by a cast (without variable)
-csharp_style_prefer_switch_expression = true:suggestion
-# csharp_style_prefer_pattern_matching = true:suggestion                  # IDE0078: Use pattern matching
-# csharp_style_prefer_not_pattern = true:suggestion                       # IDE0083: Use pattern matching (not operator)
-# csharp_style_prefer_extended_property_pattern = true:suggestion         # IDE0170: Simplify property pattern
+csharp_style_prefer_switch_expression = true:suggestion                 # IDE0066
+csharp_style_prefer_pattern_matching = true:suggestion                  # IDE0078: Use pattern matching
+csharp_style_prefer_not_pattern = true:suggestion                       # IDE0083: Use pattern matching (not operator)
+csharp_style_prefer_extended_property_pattern = true:suggestion         # IDE0170: Simplify property pattern
 
 # Code block preferences
-csharp_prefer_braces = true:silent                # IDE0011: Add braces
-csharp_prefer_simple_using_statement = false:none # IDE0063: Use simple using statement
+csharp_prefer_braces = true:silent                                      # IDE0011: Add braces
+csharp_prefer_simple_using_statement = false:none                       # IDE0063: Use simple using statement
 
 # using directive preferences
-csharp_using_directive_placement = outside_namespace:suggestion # IDE0065: using directive placement
+csharp_using_directive_placement = outside_namespace:suggestion         # IDE0065: using directive placement
 
 # File header preferences
-# file_header_template = unset                                            # IDE0073: Require file header
+file_header_template = unset                                            # IDE0073: Require file header
 
 # Namespace naming preferences
-# dotnet_style_namespace_match_folder = true:suggestion                   # IDE0130: Namespace does not match folder structure
+dotnet_style_namespace_match_folder = true:suggestion                   # IDE0130: Namespace does not match folder structure
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 # [Unnecessary code rules](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/unnecessary-code-rules)
 # -----------------------------------------------------------------------------------------------------------------------------------------------
-# dotnet_diagnostic.IDE0001.severity = warning # IDE0001: Simplify name
-# dotnet_diagnostic.IDE0002.severity = warning # IDE0002: Simplify member access
-# dotnet_diagnostic.IDE0004.severity = warning # IDE0004: Remove unnecessary cast
-# dotnet_diagnostic.IDE0005.severity = warning # IDE0005: Remove unnecessary import
-# dotnet_diagnostic.IDE0035.severity = warning # IDE0035: Remove unreachable code
-# dotnet_diagnostic.IDE0051.severity = warning # IDE0051: Remove unused private member
-# dotnet_diagnostic.IDE0052.severity = warning # IDE0052: Remove unread private member
-# dotnet_diagnostic.IDE0080.severity = warning # IDE0080: Remove unnecessary suppression operator
-# dotnet_diagnostic.IDE0100.severity = warning # IDE0100: Remove unnecessary equality operator
-# dotnet_diagnostic.IDE0110.severity = warning # IDE0110: Remove unnecessary discard
+dotnet_diagnostic.IDE0001.severity = warning # IDE0001: Simplify name
+dotnet_diagnostic.IDE0002.severity = warning # IDE0002: Simplify member access
+dotnet_diagnostic.IDE0004.severity = warning # IDE0004: Remove unnecessary cast
+dotnet_diagnostic.IDE0005.severity = warning # IDE0005: Remove unnecessary import
+dotnet_diagnostic.IDE0035.severity = warning # IDE0035: Remove unreachable code
+dotnet_diagnostic.IDE0051.severity = warning # IDE0051: Remove unused private member
+dotnet_diagnostic.IDE0052.severity = warning # IDE0052: Remove unread private member
+dotnet_diagnostic.IDE0080.severity = warning # IDE0080: Remove unnecessary suppression operator
+dotnet_diagnostic.IDE0100.severity = warning # IDE0100: Remove unnecessary equality operator
+dotnet_diagnostic.IDE0110.severity = warning # IDE0110: Remove unnecessary discard
 
 csharp_style_unused_value_expression_statement_preference = discard_variable:warning # IDE0058: Remove unnecessary expression value
 csharp_style_unused_value_assignment_preference = discard_variable:warning           # IDE0059: Remove unnecessary value assignment
@@ -198,7 +198,7 @@ csharp_space_between_parentheses = false
 csharp_space_before_colon_in_inheritance_clause = true
 csharp_space_after_colon_in_inheritance_clause = true
 csharp_space_around_binary_operators = before_and_after
-# csharp_space_between_method_declaration_parameter_list_parentheses = true
+csharp_space_between_method_declaration_parameter_list_parentheses = true
 csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
 csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_call_parameter_list_parentheses = false
