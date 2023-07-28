@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Reflection;
+using Docfx.DataContracts.ManagedReference;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
-using Docfx.DataContracts.ManagedReference;
 using Xunit;
 
 namespace Docfx.Dotnet.Tests;

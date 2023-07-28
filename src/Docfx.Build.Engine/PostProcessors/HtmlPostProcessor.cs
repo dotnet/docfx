@@ -3,11 +3,9 @@
 
 using System.Collections.Immutable;
 using System.Text;
-
-using HtmlAgilityPack;
-
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 

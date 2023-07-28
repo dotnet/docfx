@@ -105,16 +105,16 @@ public class ImageExtension : ITripleColonExtensionInfo
         if (currentType == "icon")
         {
             htmlAttributes.AddProperty("role", "presentation");
-            }
-            else
-            {
+        }
+        else
+        {
             htmlAttributes.AddProperty("alt", alt);
         }
         var htmlId = GetHtmlId(obj);
         if (currentType == "complex")
         {
             htmlAttributes.AddProperty("aria-describedby", htmlId);
-            }
+        }
 
         if (!bool.TryParse(currentBorderStr, out var currentBorder))
         {

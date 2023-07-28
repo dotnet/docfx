@@ -28,7 +28,7 @@ public class TripleColonExtension : IMarkdownExtension
     }
 
     public TripleColonExtension(MarkdownContext context, params ITripleColonExtensionInfo[] extensions)
-        {
+    {
         _context = context;
         _extensionsBlock = extensions.Where(x => x.IsBlock).ToDictionary(x => x.Name);
         _extensionsInline = extensions.Where(x => x.IsInline).ToDictionary(x => x.Name);

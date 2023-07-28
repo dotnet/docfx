@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
 using Docfx.DataContracts.ManagedReference;
-
+using Microsoft.CodeAnalysis;
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 

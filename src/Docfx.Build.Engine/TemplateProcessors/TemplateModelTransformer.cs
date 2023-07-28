@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Web;
-
-using HtmlAgilityPack;
-
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;

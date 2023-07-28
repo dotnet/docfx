@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text;
-using HtmlAgilityPack;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
