@@ -25,6 +25,8 @@
   href: ../reference/docfx-cli-reference.md
 - name: Docfx.json configuration reference
   href: ../reference/docfx-json-reference.md
+- name: Docfx environment variables reference
+  href: ../reference/docfx-environment-variables-reference.md
 - name: Links and Cross References
   href: ../tutorial/links_and_cross_references.md
 - name: Overwrite Files
