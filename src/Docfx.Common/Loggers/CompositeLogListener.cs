@@ -21,10 +21,7 @@ public class CompositeLogListener : ILoggerListener
 
     public void AddListener(ILoggerListener listener)
     {
-        if (listener == null)
-        {
-            throw new ArgumentNullException(nameof(listener));
-        }
+        ArgumentNullException.ThrowIfNull(listener);
 
         lock (_sync)
         {
@@ -34,10 +31,7 @@ public class CompositeLogListener : ILoggerListener
 
     public void AddListeners(IEnumerable<ILoggerListener> listeners)
     {
-        if (listeners == null)
-        {
-            throw new ArgumentNullException(nameof(listeners));
-        }
+        ArgumentNullException.ThrowIfNull(listeners);
 
         lock (_sync)
         {
@@ -47,10 +41,7 @@ public class CompositeLogListener : ILoggerListener
 
     public ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
     {
-        if (predicate == null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         lock (_sync)
         {
@@ -60,10 +51,7 @@ public class CompositeLogListener : ILoggerListener
 
     public void RemoveListener(ILoggerListener listener)
     {
-        if (listener == null)
-        {
-            throw new ArgumentNullException(nameof(listener));
-        }
+        ArgumentNullException.ThrowIfNull(listener);
 
         lock (_sync)
         {
@@ -88,10 +76,7 @@ public class CompositeLogListener : ILoggerListener
 
     public void WriteLine(ILogItem item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         lock (_sync)
         {

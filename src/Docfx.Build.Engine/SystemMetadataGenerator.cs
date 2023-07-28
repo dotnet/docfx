@@ -15,7 +15,9 @@ internal sealed class SystemMetadataGenerator
 
     public SystemMetadataGenerator(IDocumentBuildContext context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        _context = context;
 
         // Order toc files by the output folder depth
         _toc = context.GetTocInfo()

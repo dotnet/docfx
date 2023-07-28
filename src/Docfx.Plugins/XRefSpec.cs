@@ -20,10 +20,8 @@ public sealed class XRefSpec : IDictionary<string, object>
 
     public XRefSpec(IDictionary<string, object> dictionary)
     {
-        if (dictionary == null)
-        {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
+        ArgumentNullException.ThrowIfNull(dictionary);
+
         _dict = new Dictionary<string, object>(dictionary);
     }
 

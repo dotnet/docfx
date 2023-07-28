@@ -19,7 +19,7 @@ public sealed class ArchiveResourceReader : ResourceFileReader
 
     public ArchiveResourceReader(Stream stream, string name)
     {
-        if (stream == null) throw new ArgumentNullException(nameof(stream));
+        ArgumentNullException.ThrowIfNull(stream);
 
         _zipped = new ZipArchive(stream);
         Name = name;

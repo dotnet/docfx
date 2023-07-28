@@ -13,68 +13,54 @@ public static class UriUtility
 
     public static bool HasFragment(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         return uriString.IndexOf(FragmentMarker) != -1;
     }
 
     public static bool HasQueryString(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         return uriString.IndexOf(QueryMarker) != -1;
     }
 
     public static string GetFragment(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         var index = uriString.IndexOf(FragmentMarker);
         return index == -1 ? string.Empty : uriString.Substring(index);
     }
 
     public static string GetNonFragment(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         var index = uriString.IndexOf(FragmentMarker);
         return index == -1 ? uriString : uriString.Remove(index);
     }
 
     public static string GetQueryString(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         var index = uriString.IndexOf(QueryMarker);
         return index == -1 ? string.Empty : GetNonFragment(uriString.Substring(index));
     }
 
     public static string GetPath(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         var index = uriString.IndexOfAny(QueryAndFragmentMarkers);
         return index == -1 ? uriString : uriString.Remove(index);
     }
 
     public static string GetQueryStringAndFragment(string uriString)
     {
-        if (uriString == null)
-        {
-            throw new ArgumentNullException(nameof(uriString));
-        }
+        ArgumentNullException.ThrowIfNull(uriString);
+
         var index = uriString.IndexOfAny(QueryAndFragmentMarkers);
         return index == -1 ? string.Empty : uriString.Substring(index);
     }
@@ -105,10 +91,8 @@ public static class UriUtility
 
     public static (string path, string query, string fragment) Split(string uri)
     {
-        if (uri == null)
-        {
-            throw new ArgumentNullException(nameof(uri));
-        }
+        ArgumentNullException.ThrowIfNull(uri);
+
         if (uri?.Length == 0)
         {
             return (string.Empty, string.Empty, string.Empty);

@@ -9,7 +9,9 @@ public abstract class MergerDecorator : IMerger
 
     protected MergerDecorator(IMerger inner)
     {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+        ArgumentNullException.ThrowIfNull(inner);
+
+        _inner = inner;
     }
 
     public virtual void Merge(ref object source, object overrides, Type type, IMergeContext context)

@@ -52,10 +52,7 @@ public class YamlSerializer
 
     public void Serialize(IEmitter emitter, object graph)
     {
-        if (emitter == null)
-        {
-            throw new ArgumentNullException("emitter");
-        }
+        ArgumentNullException.ThrowIfNull(emitter);
 
         EmitDocument(emitter, new BetterObjectDescriptor(graph, graph != null ? graph.GetType() : typeof(object), typeof(object)));
     }

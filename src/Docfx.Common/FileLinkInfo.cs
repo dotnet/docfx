@@ -28,25 +28,14 @@ public struct FileLinkInfo
 
     public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
     {
-        if (fromFileInSource == null)
-        {
-            throw new ArgumentNullException(nameof(fromFileInSource));
-        }
-        if (fromFileInDest == null)
-        {
-            throw new ArgumentNullException(nameof(fromFileInDest));
-        }
-        if (href == null)
-        {
-            throw new ArgumentNullException(nameof(href));
-        }
+        ArgumentNullException.ThrowIfNull(fromFileInSource);
+        ArgumentNullException.ThrowIfNull(fromFileInDest);
+        ArgumentNullException.ThrowIfNull(href);
+        ArgumentNullException.ThrowIfNull(context);
+
         if (UriUtility.HasFragment(href) || UriUtility.HasQueryString(href))
         {
             throw new ArgumentException("fragment and query string is not supported", nameof(href));
-        }
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
         }
 
         var path = RelativePath.TryParse(href)?.UrlDecode();

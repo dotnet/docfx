@@ -11,18 +11,9 @@ internal class PostProcessorsHandler : IPostProcessorsHandler
 {
     public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
     {
-        if (postProcessors == null)
-        {
-            throw new ArgumentNullException(nameof(postProcessors));
-        }
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (outputFolder == null)
-        {
-            throw new ArgumentNullException(nameof(outputFolder));
-        }
+        ArgumentNullException.ThrowIfNull(postProcessors);
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(outputFolder);
 
         using (new LoggerPhaseScope("HandlePostProcessors", LogLevel.Verbose))
         {

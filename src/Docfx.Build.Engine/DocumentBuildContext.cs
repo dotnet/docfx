@@ -277,10 +277,8 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public string GetFilePath(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         if (key.Length == 0)
         {
             throw new ArgumentException("Key cannot be empty.", nameof(key));
@@ -301,19 +299,15 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public string UpdateHref(string href)
     {
-        if (href == null)
-        {
-            throw new ArgumentNullException(nameof(href));
-        }
+        ArgumentNullException.ThrowIfNull(href);
+
         return UpdateHrefCore(href, null);
     }
 
     public string UpdateHref(string href, RelativePath fromFile)
     {
-        if (href == null)
-        {
-            throw new ArgumentNullException(nameof(href));
-        }
+        ArgumentNullException.ThrowIfNull(href);
+
         if (fromFile != null && !fromFile.IsFromWorkingFolder())
         {
             throw new ArgumentException("File must be from working folder (i.e. start with '~/').", nameof(fromFile));
@@ -357,10 +351,8 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
     // TODO: use this method instead of directly accessing UidMap
     public void RegisterInternalXrefSpec(XRefSpec xrefSpec)
     {
-        if (xrefSpec == null)
-        {
-            throw new ArgumentNullException(nameof(xrefSpec));
-        }
+        ArgumentNullException.ThrowIfNull(xrefSpec);
+
         if (string.IsNullOrEmpty(xrefSpec.Href))
         {
             throw new ArgumentException("Href for xref spec must contain value");
@@ -382,18 +374,14 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
     {
-        if (uid == null)
-        {
-            throw new ArgumentNullException(nameof(uid));
-        }
+        ArgumentNullException.ThrowIfNull(uid);
+
         if (uid.Length == 0)
         {
             throw new ArgumentException("Uid cannot be empty", nameof(uid));
         }
-        if (bookmark == null)
-        {
-            throw new ArgumentNullException(nameof(bookmark));
-        }
+
+        ArgumentNullException.ThrowIfNull(bookmark);
         if (bookmark.Length == 0)
         {
             return;
@@ -411,10 +399,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public XRefSpec GetXrefSpec(string uid)
     {
-        if (uid == null)
-        {
-            throw new ArgumentNullException(nameof(uid));
-        }
+        ArgumentNullException.ThrowIfNull(uid);
 
         if (string.IsNullOrWhiteSpace(uid))
         {
@@ -463,10 +448,8 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public IImmutableList<string> GetTocFileKeySet(string key)
     {
-        if (string.IsNullOrEmpty(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         if (TocMap.TryGetValue(key, out HashSet<string> sets))
         {
             return sets.ToImmutableArray();
@@ -477,9 +460,13 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     public void RegisterToc(string tocFileKey, string fileKey)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(fileKey);
+        ArgumentNullException.ThrowIfNullOrEmpty(tocFileKey);
+#else
         if (string.IsNullOrEmpty(fileKey)) throw new ArgumentNullException(nameof(fileKey));
         if (string.IsNullOrEmpty(tocFileKey)) throw new ArgumentNullException(nameof(tocFileKey));
-
+#endif
         TocMap.AddOrUpdate(
             fileKey,
             new HashSet<string>(FilePathComparer.OSPlatformSensitiveRelativePathComparer) { tocFileKey },

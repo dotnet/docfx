@@ -16,10 +16,7 @@ public class InlineCodeHeadingRule : IOverwriteBlockRule
 
     public bool Parse(Block block, out string value)
     {
-        if (block == null)
-        {
-            throw new ArgumentNullException(nameof(block));
-        }
+        ArgumentNullException.ThrowIfNull(block);
 
         var inline = ParseCore(block);
         value = inline?.Content;

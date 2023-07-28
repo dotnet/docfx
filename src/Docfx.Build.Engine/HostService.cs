@@ -83,10 +83,8 @@ internal sealed class HostService : IHostService, IDisposable
 
     public ImmutableList<FileModel> LookupByUid(string uid)
     {
-        if (uid == null)
-        {
-            throw new ArgumentNullException(nameof(uid));
-        }
+        ArgumentNullException.ThrowIfNull(uid);
+
         lock (_syncRoot)
         {
             if (_uidIndex.TryGetValue(uid, out List<FileModel> result))

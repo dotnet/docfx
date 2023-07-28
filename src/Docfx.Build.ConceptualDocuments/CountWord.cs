@@ -38,10 +38,7 @@ internal static class WordCounter
 
     public static long CountWord(string html)
     {
-        if (html == null)
-        {
-            throw new ArgumentNullException(nameof(html));
-        }
+        ArgumentNullException.ThrowIfNull(html);
 
         HtmlDocument document = new();
 

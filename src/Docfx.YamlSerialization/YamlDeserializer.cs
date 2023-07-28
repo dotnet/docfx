@@ -160,15 +160,8 @@ public sealed class YamlDeserializer
     /// <returns>Returns the deserialized object.</returns>
     public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
     {
-        if (parser == null)
-        {
-            throw new ArgumentNullException("reader");
-        }
-
-        if (type == null)
-        {
-            throw new ArgumentNullException("type");
-        }
+        ArgumentNullException.ThrowIfNull(parser);
+        ArgumentNullException.ThrowIfNull(type);
 
         var hasStreamStart = parser.TryConsume<StreamStart>(out _);
 
@@ -201,7 +194,9 @@ public sealed class YamlDeserializer
 
         public LooseAliasValueDeserializer(IValueDeserializer innerDeserializer)
         {
-            _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
+            ArgumentNullException.ThrowIfNull(innerDeserializer);
+
+            _innerDeserializer = innerDeserializer;
         }
 
         private sealed class AliasState : Dictionary<AnchorName, ValuePromise>, IPostDeserializationCallback

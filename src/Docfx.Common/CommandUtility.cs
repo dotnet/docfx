@@ -9,10 +9,7 @@ public static class CommandUtility
 {
     public static int RunCommand(CommandInfo commandInfo, StreamWriter stdoutWriter = null, StreamWriter stderrWriter = null, int timeoutInMilliseconds = Timeout.Infinite)
     {
-        if (commandInfo == null)
-        {
-            throw new ArgumentNullException(nameof(commandInfo));
-        }
+        ArgumentNullException.ThrowIfNull(commandInfo);
 
         if (timeoutInMilliseconds < 0 && timeoutInMilliseconds != Timeout.Infinite)
         {

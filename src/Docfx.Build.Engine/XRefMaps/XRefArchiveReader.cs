@@ -17,7 +17,9 @@ public class XRefArchiveReader : XRefRedirectionReader, IDisposable
     public XRefArchiveReader(XRefArchive archive)
         : base(XRefArchive.MajorFileName, new HashSet<string>(archive.Entries))
     {
-        _archive = archive ?? throw new ArgumentNullException(nameof(archive));
+        ArgumentNullException.ThrowIfNull(archive);
+
+        _archive = archive;
         _lru = LruList<Tuple<string, XRefMap>>.Create(0x10, comparer: new TupleComparer());
     }
 

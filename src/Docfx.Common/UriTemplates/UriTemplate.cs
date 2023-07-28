@@ -25,18 +25,10 @@ public class UriTemplate<T>
     /// </summary>
     public static UriTemplate<T> Parse(string template, Func<string, T> func, Func<string, IUriTemplatePipeline<T>> pipelineProvider)
     {
-        if (template == null)
-        {
-            throw new ArgumentNullException(nameof(template));
-        }
-        if (func == null)
-        {
-            throw new ArgumentNullException(nameof(func));
-        }
-        if (pipelineProvider == null)
-        {
-            throw new ArgumentNullException(nameof(pipelineProvider));
-        }
+        ArgumentNullException.ThrowIfNull(template);
+        ArgumentNullException.ThrowIfNull(func);
+        ArgumentNullException.ThrowIfNull(pipelineProvider);
+
         var t = _marcoRegex.Replace(
             template,
             m => Environment.GetEnvironmentVariable(m.Groups[1].Value));
@@ -66,10 +58,8 @@ public class UriTemplate<T>
     /// </summary>
     public T Evaluate(IDictionary<string, string> variables)
     {
-        if (variables == null)
-        {
-            throw new ArgumentNullException(nameof(variables));
-        }
+        ArgumentNullException.ThrowIfNull(variables);
+
         var uri = EvaluateUri(variables);
         var value = _func(uri);
         return RunPostPipeline(value);

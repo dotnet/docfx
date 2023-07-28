@@ -82,10 +82,7 @@ namespace Microsoft.SourceLink.Tools
         /// <exception cref="JsonException"><paramref name="json"/> is not valid JSON string.</exception>
         public static SourceLinkMap Parse(string json)
         {
-            if (json is null)
-            {
-                throw new ArgumentNullException(nameof(json));
-            }
+            ArgumentNullException.ThrowIfNull(json);
 
             var list = new List<Entry>();
 
@@ -192,10 +189,7 @@ namespace Microsoft.SourceLink.Tools
 #endif
             out string? uri)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
+            ArgumentNullException.ThrowIfNull(path);
 
             if (path.IndexOf('*') >= 0)
             {

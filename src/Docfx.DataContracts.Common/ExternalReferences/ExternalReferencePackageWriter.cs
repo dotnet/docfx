@@ -37,14 +37,9 @@ public class ExternalReferencePackageWriter : IDisposable
 
     public void AddOrUpdateEntry(string entryName, List<ReferenceViewModel> vm)
     {
-        if (entryName == null)
-        {
-            throw new ArgumentNullException(nameof(entryName));
-        }
-        if (vm == null)
-        {
-            throw new ArgumentNullException(nameof(vm));
-        }
+        ArgumentNullException.ThrowIfNull(entryName);
+        ArgumentNullException.ThrowIfNull(vm);
+
         if (vm.Count == 0)
         {
             throw new ArgumentException("Empty collection is not allowed.", nameof(vm));

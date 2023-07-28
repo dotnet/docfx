@@ -21,20 +21,9 @@ internal class MustacheTemplateRenderer : ITemplateRenderer
 
     public MustacheTemplateRenderer(IResourceFileReader reader, ResourceInfo info, string name = null)
     {
-        if (info == null)
-        {
-            throw new ArgumentNullException(nameof(info));
-        }
-
-        if (info.Content == null)
-        {
-            throw new ArgumentNullException(nameof(info.Content));
-        }
-
-        if (info.Path == null)
-        {
-            throw new ArgumentNullException(nameof(info.Path));
-        }
+        ArgumentNullException.ThrowIfNull(info);
+        ArgumentNullException.ThrowIfNull(info.Content);
+        ArgumentNullException.ThrowIfNull(info.Path);
 
         Path = info.Path;
         Name = name ?? System.IO.Path.GetFileNameWithoutExtension(Path);

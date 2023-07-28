@@ -51,7 +51,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     public GlobMatcher(string pattern, GlobMatcherOptions options = DefaultOptions)
     {
-        if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+        ArgumentNullException.ThrowIfNull(pattern);
+
         Options = options;
         Raw = pattern;
         _ignoreCase = Options.HasFlag(GlobMatcherOptions.IgnoreCase);
@@ -89,7 +90,8 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     public bool Match(string file, bool partial = false)
     {
-        if (file == null) throw new ArgumentNullException(nameof(file));
+        ArgumentNullException.ThrowIfNull(file);
+
         var fileParts = Split(file, '/', '\\').ToArray();
         bool isMatch = false;
         foreach (var glob in _items)

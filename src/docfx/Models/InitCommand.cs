@@ -372,8 +372,12 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
         public SingleChoiceQuestion(string content, Action<T, DefaultConfigModel, QuestionContext> setter, Func<string, T> converter, params string[] options)
             : base(content, setter)
         {
-            if (options == null || options.Length == 0) throw new ArgumentNullException(nameof(options));
-            _converter = converter ?? throw new ArgumentNullException(nameof(converter));
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(converter);
+
+            if (options.Length == 0) throw new ArgumentNullException(nameof(options));
+
+            _converter = converter;
             Options = options;
             DefaultAnswer = options[0];
             DefaultValue = converter(DefaultAnswer);
@@ -487,7 +491,8 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
         public Question(string content, Action<T, DefaultConfigModel, QuestionContext> setter)
         {
-            if (setter == null) throw new ArgumentNullException(nameof(setter));
+            ArgumentNullException.ThrowIfNull(setter);
+
             Content = content;
             _setter = setter;
         }

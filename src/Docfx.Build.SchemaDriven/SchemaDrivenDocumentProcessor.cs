@@ -41,12 +41,14 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
             throw new ArgumentException("Title for schema must not be empty");
         }
 
+        ArgumentNullException.ThrowIfNull(markdigMarkdownService);
+
         _schemaName = schema.Title;
         _schema = schema;
         SchemaValidator = schema.Validator;
         _allowOverwrite = schema.AllowOverwrite;
         _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
-        _markdigMarkdownService = markdigMarkdownService ?? throw new ArgumentNullException(nameof(MarkdigMarkdownService));
+        _markdigMarkdownService = markdigMarkdownService;
         _folderRedirectionManager = folderRedirectionManager;
         if (container != null)
         {

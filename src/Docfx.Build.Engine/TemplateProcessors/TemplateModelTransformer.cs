@@ -24,7 +24,9 @@ public class TemplateModelTransformer
 
     public TemplateModelTransformer(DocumentBuildContext context, TemplateCollection templateCollection, ApplyTemplateSettings settings, IDictionary<string, object> globals)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        _context = context;
         _templateCollection = templateCollection;
         _settings = settings;
         _globalVariables = globals;

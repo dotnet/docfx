@@ -14,10 +14,8 @@ public class XRefArchiveBuilder
 
     public async Task<bool> DownloadAsync(Uri uri, string outputFile)
     {
-        if (uri == null)
-        {
-            throw new ArgumentNullException(nameof(uri));
-        }
+        ArgumentNullException.ThrowIfNull(uri);
+
         if (!uri.IsAbsoluteUri)
         {
             throw new ArgumentException("Relative path is not allowed.", nameof(uri));

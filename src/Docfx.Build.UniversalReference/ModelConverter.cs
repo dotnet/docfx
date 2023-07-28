@@ -14,10 +14,8 @@ public static class ModelConverter
 {
     public static ApiBuildOutput ToApiBuildOutput(PageViewModel model)
     {
-        if (model == null)
-        {
-            throw new ArgumentNullException(nameof(model));
-        }
+        ArgumentNullException.ThrowIfNull(model);
+
         if (model.Items == null || model.Items.Count == 0)
         {
             throw new ArgumentException($"{nameof(model)} must contain at least one item");

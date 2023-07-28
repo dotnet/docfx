@@ -24,49 +24,32 @@ public class FileAbstractLayerBuilder
 
     public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder, ImmutableDictionary<string, string> properties)
     {
-        if (folder == null)
-        {
-            throw new ArgumentNullException(nameof(folder));
-        }
-        if (properties == null)
-        {
-            throw new ArgumentNullException(nameof(properties));
-        }
+        ArgumentNullException.ThrowIfNull(folder);
+        ArgumentNullException.ThrowIfNull(properties);
+
         return new FileAbstractLayerBuilder(new RealFileReader(folder, properties), _writer);
     }
 
     public FileAbstractLayerBuilder ReadFromManifest(Manifest manifest, string manifestFolder)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (manifestFolder == null)
-        {
-            throw new ArgumentNullException(nameof(manifestFolder));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(manifestFolder);
+
         return new FileAbstractLayerBuilder(new ManifestFileReader(manifest, manifestFolder), _writer);
     }
 
     public FileAbstractLayerBuilder WriteToManifest(Manifest manifest, string manifestFolder, string outputFolder = null)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (manifestFolder == null)
-        {
-            throw new ArgumentNullException(nameof(manifestFolder));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(manifestFolder);
+
         return new FileAbstractLayerBuilder(_reader, new ManifestFileWriter(manifest, manifestFolder, outputFolder));
     }
 
     public FileAbstractLayerBuilder ReadFromOutput(FileAbstractLayer fal)
     {
-        if (fal == null)
-        {
-            throw new ArgumentNullException(nameof(fal));
-        }
+        ArgumentNullException.ThrowIfNull(fal);
+
         if (!fal.CanWrite)
         {
             throw new ArgumentException("FileAbstractLayer cannot write.", nameof(fal));
@@ -76,10 +59,8 @@ public class FileAbstractLayerBuilder
 
     public FileAbstractLayerBuilder WriteToRealFileSystem(string folder)
     {
-        if (folder == null)
-        {
-            throw new ArgumentNullException(nameof(folder));
-        }
+        ArgumentNullException.ThrowIfNull(folder);
+
         return new FileAbstractLayerBuilder(_reader, new RealFileWriter(folder));
     }
 

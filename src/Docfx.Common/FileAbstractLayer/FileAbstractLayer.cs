@@ -13,7 +13,9 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
 
     public FileAbstractLayer(IFileReader reader, IFileWriter writer)
     {
-        Reader = reader ?? throw new ArgumentNullException(nameof(reader));
+        ArgumentNullException.ThrowIfNull(reader);
+
+        Reader = reader;
         Writer = writer;
     }
 
@@ -37,20 +39,16 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
 
     public bool Exists(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         return Reader.FindFile(file) != null;
     }
 
     public Stream OpenRead(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         var pp = FindPhysicalPath(file);
         return File.OpenRead(Environment.ExpandEnvironmentVariables(pp.PhysicalPath));
@@ -58,10 +56,8 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
 
     public Stream Create(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         if (!CanWrite)
         {
@@ -72,14 +68,9 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
 
     public void Copy(RelativePath sourceFileName, RelativePath destFileName)
     {
-        if (sourceFileName == null)
-        {
-            throw new ArgumentNullException(nameof(sourceFileName));
-        }
-        if (destFileName == null)
-        {
-            throw new ArgumentNullException(nameof(destFileName));
-        }
+        ArgumentNullException.ThrowIfNull(sourceFileName);
+        ArgumentNullException.ThrowIfNull(destFileName);
+
         EnsureNotDisposed();
         if (!CanWrite)
         {
@@ -90,30 +81,24 @@ public class FileAbstractLayer : IFileAbstractLayer, IDisposable
 
     public ImmutableDictionary<string, string> GetProperties(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         return FindPhysicalPath(file).Properties;
     }
 
     public string GetPhysicalPath(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         return FindPhysicalPath(file).PhysicalPath;
     }
 
     public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         EnsureNotDisposed();
         return Reader.GetExpectedPhysicalPath(file);
     }

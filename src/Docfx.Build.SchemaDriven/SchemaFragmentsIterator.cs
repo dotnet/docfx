@@ -23,18 +23,9 @@ public class SchemaFragmentsIterator
         Dictionary<string, MarkdownFragment> fragments,
         BaseSchema schema)
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-        if (fragments == null)
-        {
-            throw new ArgumentNullException(nameof(fragments));
-        }
-        if (schema == null)
-        {
-            throw new ArgumentNullException(nameof(schema));
-        }
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(fragments);
+        ArgumentNullException.ThrowIfNull(schema);
 
         TraverseCore(node, fragments, schema, string.Empty, string.Empty);
     }

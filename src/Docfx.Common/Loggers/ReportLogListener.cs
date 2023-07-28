@@ -27,10 +27,8 @@ public sealed class ReportLogListener : ILoggerListener
 
     public void WriteLine(ILogItem item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
+
         var level = item.LogLevel;
         var message = item.Message;
         var phase = item.Phase;
