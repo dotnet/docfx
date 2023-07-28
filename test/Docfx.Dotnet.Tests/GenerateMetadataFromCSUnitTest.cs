@@ -2566,7 +2566,7 @@ namespace Test1
     public class Test
     {
         public void Defined(ConsoleSpecialKey key = ConsoleSpecialKey.ControlC) { }
-        public void Undefined(ConsoleKey key = (ConsoleKey)0) { }
+        public void Undefined(ConsoleKey key = ConsoleKey.None) { }
     }
 }
 ";
@@ -2578,7 +2578,7 @@ namespace Test1
 
         var undefined = output.Items[0].Items[0].Items[1];
         Assert.NotNull(undefined);
-        Assert.Equal(@"public void Undefined(ConsoleKey key = (ConsoleKey)0)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void Undefined(ConsoleKey key = ConsoleKey.None)", undefined.Syntax.Content[SyntaxLanguage.CSharp]);
     }
 
     [Fact]
@@ -2625,7 +2625,7 @@ namespace Test1
         public void EnumNull(ConsoleSpecialKey? key = null) { }
         public void EnumDefault(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlC) { }
         public void EnumValue(ConsoleSpecialKey? key = ConsoleSpecialKey.ControlBreak) { }
-        public void EnumUndefinedDefault(ConsoleKey? key = (ConsoleKey)0) { }
+        public void EnumUndefinedDefault(ConsoleKey? key = ConsoleKey.None) { }
         public void EnumUndefinedValue(ConsoleKey? key = (ConsoleKey)999) { }
     }
 }
@@ -2646,7 +2646,7 @@ namespace Test1
 
         var enumUndefinedDefault = output.Items[0].Items[0].Items[3];
         Assert.NotNull(enumUndefinedDefault);
-        Assert.Equal(@"public void EnumUndefinedDefault(ConsoleKey? key = (ConsoleKey)0)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
+        Assert.Equal(@"public void EnumUndefinedDefault(ConsoleKey? key = ConsoleKey.None)", enumUndefinedDefault.Syntax.Content[SyntaxLanguage.CSharp]);
 
         var enumUndefinedValue = output.Items[0].Items[0].Items[4];
         Assert.NotNull(enumUndefinedValue);
