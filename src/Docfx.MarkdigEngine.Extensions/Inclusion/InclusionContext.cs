@@ -66,7 +66,7 @@ public static class InclusionContext
     }
 
     /// <summary>
-    /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline)"/>.
+    /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline?, Markdig.MarkdownParserContext?)"/>.
     /// </summary>
     public static IDisposable PushFile(object file)
     {
@@ -79,7 +79,7 @@ public static class InclusionContext
     }
 
     /// <summary>
-    /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline)"/>
+    /// Creates a scope for calling <see cref="Markdig.Markdown.ToHtml(string, Markdig.MarkdownPipeline?, Markdig.MarkdownParserContext?)"/>
     /// when processing a markdown inclusion inside <see cref="HtmlInclusionBlockRenderer"/> and <see cref="HtmlInclusionInlineRenderer"/>.
     /// </summary>
     public static IDisposable PushInclusion(object file)
