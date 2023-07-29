@@ -10,10 +10,8 @@ public static class HtmlDocumentUtility
 {
     public static SeparatedHtmlInfo SeparateHtml(string contentHtml)
     {
-        if (contentHtml == null)
-        {
-            throw new ArgumentNullException();
-        }
+        ArgumentNullException.ThrowIfNull(contentHtml);
+
         var content = new SeparatedHtmlInfo();
 
         var document = new HtmlDocument();

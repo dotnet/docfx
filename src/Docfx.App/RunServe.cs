@@ -3,13 +3,13 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Docfx.Common;
+using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Docfx.Common;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Docfx.Plugins;
 
 namespace Docfx;
 

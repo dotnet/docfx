@@ -85,10 +85,14 @@ public static class GitUtility
     [Obsolete("Docfx parses repoUrl in template preprocessor. This method is never used.")]
     public static GitRepoInfo Parse(string repoUrl)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(repoUrl);
+#else
         if (string.IsNullOrEmpty(repoUrl))
         {
             throw new ArgumentNullException(nameof(repoUrl));
         }
+#endif
 
         var githubMatch = GitHubRepoUrlRegex.Match(repoUrl);
         if (githubMatch.Success)

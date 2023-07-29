@@ -2,10 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using Markdig;
 using Docfx.Common;
 using Docfx.Plugins;
-
+using Markdig;
 using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.Engine;

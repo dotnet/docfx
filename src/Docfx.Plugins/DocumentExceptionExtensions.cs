@@ -4,14 +4,9 @@ public static class DocumentExceptionExtensions
 {
     public static TResult[] RunAll<TElement, TResult>(this IReadOnlyList<TElement> elements, Func<TElement, TResult> func)
     {
-        if (elements == null)
-        {
-            throw new ArgumentNullException(nameof(elements));
-        }
-        if (func == null)
-        {
-            throw new ArgumentNullException(nameof(func));
-        }
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(func);
+
         var results = new TResult[elements.Count];
         DocumentException firstException = null;
         for (int i = 0; i < elements.Count; i++)
@@ -39,14 +34,9 @@ public static class DocumentExceptionExtensions
 
     public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action)
     {
-        if (elements == null)
-        {
-            throw new ArgumentNullException(nameof(elements));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(action);
+
         DocumentException firstException = null;
         foreach (var element in elements)
         {
@@ -72,14 +62,9 @@ public static class DocumentExceptionExtensions
 
     public static void RunAll<TElement>(this IEnumerable<TElement> elements, Action<TElement> action, int parallelism)
     {
-        if (elements == null)
-        {
-            throw new ArgumentNullException(nameof(elements));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(action);
+
         if (parallelism <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(parallelism));

@@ -14,10 +14,8 @@ public static class YamlMime
 
     public static string ReadMime(TextReader reader)
     {
-        if (reader == null)
-        {
-            throw new ArgumentNullException(nameof(reader));
-        }
+        ArgumentNullException.ThrowIfNull(reader);
+
         var line = reader.ReadLine();
         if (line == null || !line.StartsWith("#", StringComparison.Ordinal))
         {
@@ -33,10 +31,7 @@ public static class YamlMime
 
     public static string ReadMime(string file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file);
         using var reader = new StreamReader(stream);

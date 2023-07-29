@@ -24,7 +24,9 @@ public class OverwriteApplier
 
     public OverwriteApplier(IHostService host, OverwriteModelType type)
     {
-        _host = host ?? throw new ArgumentNullException(nameof(host));
+        ArgumentNullException.ThrowIfNull(host);
+
+        _host = host;
         _overwriteModelType = type;
         _merger = new Merger
         {
@@ -61,10 +63,7 @@ public class OverwriteApplier
             return;
         }
 
-        if (schema == null)
-        {
-            throw new ArgumentNullException(nameof(schema));
-        }
+        ArgumentNullException.ThrowIfNull(schema);
 
         var context = new ProcessContext(_host, fileModel);
         _xrefSpecUpdater.Process(fileModel.Content, schema, context);
@@ -80,10 +79,7 @@ public class OverwriteApplier
             return null;
         }
 
-        if (schema == null)
-        {
-            throw new ArgumentNullException(nameof(schema));
-        }
+        ArgumentNullException.ThrowIfNull(schema);
 
         dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);
         overwriteObject.uid = overwrite.Uid;

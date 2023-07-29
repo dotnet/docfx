@@ -35,10 +35,8 @@ internal abstract class ConfigFilterRuleItem
 
     public bool IsMatch(SymbolFilterData symbol)
     {
-        if (symbol == null)
-        {
-            throw new ArgumentNullException("symbol");
-        }
+        ArgumentNullException.ThrowIfNull(symbol);
+
         var id = symbol.Id;
 
         return (_uidRegex == null || (id != null && _uidRegex.IsMatch(id))) &&

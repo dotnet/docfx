@@ -14,10 +14,7 @@ public class SchemaProcessor
 
     public object Process(object raw, BaseSchema schema, IProcessContext context)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
 
         return InterpretCore(raw, schema, string.Empty, context);
     }

@@ -15,10 +15,7 @@ public static class ManifestUtility
 {
     public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)
     {
-        if (manifestItems == null)
-        {
-            throw new ArgumentNullException(nameof(manifestItems));
-        }
+        ArgumentNullException.ThrowIfNull(manifestItems);
 
         var manifestItemGroups = (from item in manifestItems
                                   from output in item.OutputFiles.Values
@@ -44,10 +41,7 @@ public static class ManifestUtility
 
     public static Manifest MergeManifest(List<Manifest> manifests)
     {
-        if (manifests == null)
-        {
-            throw new ArgumentNullException(nameof(manifests));
-        }
+        ArgumentNullException.ThrowIfNull(manifests);
 
         var xrefMaps = (from manifest in manifests
                         where manifest.XRefMap != null
@@ -72,14 +66,9 @@ public static class ManifestUtility
 
     public static void ApplyLogCodes(ManifestItemCollection manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
     {
-        if (manifestItems == null)
-        {
-            throw new ArgumentException(nameof(manifestItems));
-        }
-        if (codes == null)
-        {
-            throw new ArgumentException(nameof(codes));
-        }
+        ArgumentNullException.ThrowIfNull(manifestItems);
+        ArgumentNullException.ThrowIfNull(codes);
+
         foreach (var item in manifestItems)
         {
             if (codes.TryGetValue(item.SourceRelativePath, out var value))

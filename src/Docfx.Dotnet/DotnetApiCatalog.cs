@@ -1,10 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.Build.Locator;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
+using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;
 
 namespace Docfx.Dotnet;

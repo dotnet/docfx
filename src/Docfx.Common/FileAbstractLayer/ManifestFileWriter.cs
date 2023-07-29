@@ -16,8 +16,11 @@ public class ManifestFileWriter : FileWriterBase
     public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
         : base(outputFolder ?? manifestFolder)
     {
-        Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
-        ManifestFolder = manifestFolder ?? throw new ArgumentNullException(nameof(manifestFolder));
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(manifestFolder);
+
+        Manifest = manifest;
+        ManifestFolder = manifestFolder;
         _noRandomFile = outputFolder == null;
     }
 

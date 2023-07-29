@@ -11,7 +11,9 @@ public abstract class XRefRedirectionReader : IXRefContainerReader
 
     protected XRefRedirectionReader(string majorName, HashSet<string> mapNames)
     {
-        _majorName = majorName ?? throw new ArgumentNullException(nameof(majorName));
+        ArgumentNullException.ThrowIfNull(majorName);
+
+        _majorName = majorName;
         if (!mapNames.Contains(majorName))
         {
             throw new ArgumentException("Major map not found.");

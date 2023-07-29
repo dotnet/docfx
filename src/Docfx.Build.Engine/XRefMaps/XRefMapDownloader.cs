@@ -37,10 +37,8 @@ public class XRefMapDownloader
     /// <threadsafety>This method is thread safe.</threadsafety>
     public async Task<IXRefContainer> DownloadAsync(Uri uri)
     {
-        if (uri == null)
-        {
-            throw new ArgumentNullException(nameof(uri));
-        }
+        ArgumentNullException.ThrowIfNull(uri);
+
         await _semaphore.WaitAsync();
         return await Task.Run(async () =>
         {
@@ -125,7 +123,12 @@ public class XRefMapDownloader
         var baseUrl = uri.GetLeftPart(UriPartial.Path);
         baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
-        using var httpClient = new HttpClient(new HttpClientHandler() { CheckCertificateRevocationList = true });
+        bool.TryParse(Environment.GetEnvironmentVariable("DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST"), out var noCheckCertificateRevocationList);
+        using var httpClient = new HttpClient(new HttpClientHandler()
+        {
+            CheckCertificateRevocationList = !noCheckCertificateRevocationList
+        });
+
         using var stream = await httpClient.GetStreamAsync(uri);
         using var sr = new StreamReader(stream);
         var map = YamlUtility.Deserialize<XRefMap>(sr);

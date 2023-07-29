@@ -1,10 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Json.Schema;
 using Docfx.Build.OverwriteDocuments;
 using Docfx.Common;
-
+using Json.Schema;
 using YamlDotNet.RepresentationModel;
 
 namespace Docfx.Build.SchemaDriven;
@@ -23,18 +22,9 @@ public class SchemaFragmentsIterator
         Dictionary<string, MarkdownFragment> fragments,
         BaseSchema schema)
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-        if (fragments == null)
-        {
-            throw new ArgumentNullException(nameof(fragments));
-        }
-        if (schema == null)
-        {
-            throw new ArgumentNullException(nameof(schema));
-        }
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(fragments);
+        ArgumentNullException.ThrowIfNull(schema);
 
         TraverseCore(node, fragments, schema, string.Empty, string.Empty);
     }

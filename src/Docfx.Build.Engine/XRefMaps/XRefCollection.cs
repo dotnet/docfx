@@ -13,10 +13,8 @@ internal sealed class XRefCollection
 
     public XRefCollection(IEnumerable<Uri> uris)
     {
-        if (uris == null)
-        {
-            throw new ArgumentNullException(nameof(uris));
-        }
+        ArgumentNullException.ThrowIfNull(uris);
+
         Uris = uris.ToImmutableList();
     }
 

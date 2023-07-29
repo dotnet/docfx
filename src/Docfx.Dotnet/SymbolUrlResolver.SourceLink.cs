@@ -2,11 +2,11 @@
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
+using Docfx.Common;
+using Docfx.Common.Git;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Debugging;
 using Microsoft.CodeAnalysis.PdbSourceDocument;
-using Docfx.Common;
-using Docfx.Common.Git;
 using Microsoft.SourceLink.Tools;
 
 #nullable enable

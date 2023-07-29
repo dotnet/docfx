@@ -31,18 +31,9 @@ public class CompositionContainer : ICompositionContainer
 
     public static object GetExport(CompositionHost container, Type type, string name)
     {
-        if (container == null)
-        {
-            throw new ArgumentNullException(nameof(container));
-        }
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(container);
+        ArgumentNullException.ThrowIfNull(type);
+        ArgumentNullException.ThrowIfNull(name);
 
         object exportedObject = null;
         try
@@ -58,10 +49,7 @@ public class CompositionContainer : ICompositionContainer
 
     public static CompositionHost GetContainer(IEnumerable<Assembly> assemblies)
     {
-        if (assemblies == null)
-        {
-            throw new ArgumentNullException(nameof(assemblies));
-        }
+        ArgumentNullException.ThrowIfNull(assemblies);
 
         var configuration = new ContainerConfiguration();
         foreach (var assembly in assemblies)

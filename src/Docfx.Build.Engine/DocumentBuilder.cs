@@ -52,10 +52,8 @@ public class DocumentBuilder : IDisposable
 
     public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory)
     {
-        if (parameters == null)
-        {
-            throw new ArgumentNullException(nameof(parameters));
-        }
+        ArgumentNullException.ThrowIfNull(parameters);
+
         if (parameters.Count == 0)
         {
             throw new ArgumentException("Parameters are empty.", nameof(parameters));

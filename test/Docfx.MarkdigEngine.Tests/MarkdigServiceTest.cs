@@ -2,9 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-
-using Markdig.Syntax;
 using Docfx.MarkdigEngine.Extensions;
+using Markdig.Syntax;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;

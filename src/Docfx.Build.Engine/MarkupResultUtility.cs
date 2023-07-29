@@ -3,9 +3,9 @@
 
 using System.Collections.Immutable;
 using System.Net;
-using HtmlAgilityPack;
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 
@@ -20,18 +20,10 @@ public static class MarkupUtility
 
     public static MarkupResult Parse(MarkupResult markupResult, string file, ImmutableDictionary<string, FileAndType> sourceFiles)
     {
-        if (markupResult == null)
-        {
-            throw new ArgumentNullException(nameof(markupResult));
-        }
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-        if (sourceFiles == null)
-        {
-            throw new ArgumentNullException(nameof(sourceFiles));
-        }
+        ArgumentNullException.ThrowIfNull(markupResult);
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullException.ThrowIfNull(sourceFiles);
+
         return ParseCore(markupResult, file, sourceFiles);
     }
 

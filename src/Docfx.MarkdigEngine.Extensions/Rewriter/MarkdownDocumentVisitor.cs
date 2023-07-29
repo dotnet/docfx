@@ -17,10 +17,7 @@ public class MarkdownDocumentVisitor
 
     public void Visit(MarkdownDocument document)
     {
-        if (document == null)
-        {
-            throw new ArgumentNullException(nameof(document));
-        }
+        ArgumentNullException.ThrowIfNull(document);
 
         if (_rewriter == null)
         {

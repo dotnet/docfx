@@ -188,10 +188,14 @@ public sealed class RelativePath : IEquatable<RelativePath>
 
     public RelativePath ChangeFileName(string fileName)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(fileName);
+#else
         if (string.IsNullOrEmpty(fileName))
         {
             throw new ArgumentNullException(nameof(fileName));
         }
+#endif
 
         if (fileName.Contains('\\') || fileName.Contains('/') || fileName == ".." || fileName == ".")
         {
@@ -318,10 +322,8 @@ public sealed class RelativePath : IEquatable<RelativePath>
     /// </summary>
     public bool InDirectory(RelativePath value)
     {
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
+        ArgumentNullException.ThrowIfNull(value);
+
         if (value._parts[value._parts.Length - 1] != "")
         {
             return false;

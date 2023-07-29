@@ -5,14 +5,14 @@ runs:
   steps:
   - uses: actions/setup-node@v3
     with:
-      node-version: 16
+      node-version: 18
 
   - uses: actions/setup-dotnet@v3
     with:
       dotnet-version: |
         6.x
         7.x
-        8.0.100-preview.2.23157.25
+        8.0.100-preview.6.23330.14
 
   - run: npm install
     shell: bash

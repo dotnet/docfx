@@ -9,22 +9,11 @@ public static class ManifestFileHelper
 {
     public static bool AddFile(this Manifest manifest, string sourceFilePath, string extension, string targetRelativePath)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (sourceFilePath == null)
-        {
-            throw new ArgumentNullException(nameof(sourceFilePath));
-        }
-        if (extension == null)
-        {
-            throw new ArgumentNullException(nameof(extension));
-        }
-        if (targetRelativePath == null)
-        {
-            throw new ArgumentNullException(nameof(targetRelativePath));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(sourceFilePath);
+        ArgumentNullException.ThrowIfNull(extension);
+        ArgumentNullException.ThrowIfNull(targetRelativePath);
+
         if (sourceFilePath.Length == 0)
         {
             throw new ArgumentException("Value cannot be empty.", nameof(sourceFilePath));
@@ -50,22 +39,11 @@ public static class ManifestFileHelper
 
     public static void AddFile(this Manifest manifest, ManifestItem item, string extension, string targetRelativePath)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if (extension == null)
-        {
-            throw new ArgumentNullException(nameof(extension));
-        }
-        if (targetRelativePath == null)
-        {
-            throw new ArgumentNullException(nameof(targetRelativePath));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(extension);
+        ArgumentNullException.ThrowIfNull(targetRelativePath);
+
         if (targetRelativePath.Length == 0)
         {
             throw new ArgumentException("Value cannot be empty.", nameof(extension));
@@ -87,18 +65,10 @@ public static class ManifestFileHelper
 
     public static bool RemoveFile(this Manifest manifest, string sourceFilePath, string extension)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (sourceFilePath == null)
-        {
-            throw new ArgumentNullException(nameof(sourceFilePath));
-        }
-        if (extension == null)
-        {
-            throw new ArgumentNullException(nameof(extension));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(sourceFilePath);
+        ArgumentNullException.ThrowIfNull(extension);
+
         if (sourceFilePath.Length == 0)
         {
             throw new ArgumentException("Value cannot be empty.", nameof(sourceFilePath));
@@ -119,18 +89,9 @@ public static class ManifestFileHelper
 
     public static bool RemoveFile(this Manifest manifest, ManifestItem item, string extension)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
-        if (extension == null)
-        {
-            throw new ArgumentNullException(nameof(extension));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(extension);
 
         lock (manifest)
         {
@@ -145,14 +106,8 @@ public static class ManifestFileHelper
 
     public static void Modify(this Manifest manifest, Action<Manifest> action)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(action);
 
         lock (manifest)
         {
@@ -162,14 +117,8 @@ public static class ManifestFileHelper
 
     public static T Modify<T>(this Manifest manifest, Func<Manifest, T> func)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (func == null)
-        {
-            throw new ArgumentNullException(nameof(func));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(func);
 
         lock (manifest)
         {
@@ -179,14 +128,9 @@ public static class ManifestFileHelper
 
     public static void Dereference(this Manifest manifest, string manifestFolder, int parallelism)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (manifestFolder == null)
-        {
-            throw new ArgumentNullException(nameof(manifestFolder));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(manifestFolder);
+
         FileWriterBase.EnsureFolder(manifestFolder);
         var fal = FileAbstractLayerBuilder.Default
             .ReadFromManifest(manifest, manifestFolder)

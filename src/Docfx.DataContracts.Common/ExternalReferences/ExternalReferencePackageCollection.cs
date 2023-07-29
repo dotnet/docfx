@@ -10,10 +10,8 @@ public class ExternalReferencePackageCollection : IDisposable
 
     public ExternalReferencePackageCollection(IEnumerable<string> packageFiles, int maxParallelism)
     {
-        if (packageFiles == null)
-        {
-            throw new ArgumentNullException(nameof(packageFiles));
-        }
+        ArgumentNullException.ThrowIfNull(packageFiles);
+
         Readers = (from file in packageFiles.AsParallel().WithDegreeOfParallelism(maxParallelism).AsOrdered()
                    let reader = ExternalReferencePackageReader.CreateNoThrow(file)
                    where reader != null

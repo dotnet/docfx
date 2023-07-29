@@ -35,10 +35,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public static XRefArchive Open(string file, XRefArchiveMode mode)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         FileStream fs = null;
         ZipArchive archive = null;
         try
@@ -93,10 +91,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public string CreateMajor(XRefMap map)
     {
-        if (map == null)
-        {
-            throw new ArgumentNullException(nameof(map));
-        }
+        ArgumentNullException.ThrowIfNull(map);
+
         if (_mode == XRefArchiveMode.Read)
         {
             throw new InvalidOperationException("Cannot create entry for readonly archive.");
@@ -110,10 +106,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public string CreateMinor(XRefMap map, IEnumerable<string> names)
     {
-        if (map == null)
-        {
-            throw new ArgumentNullException(nameof(map));
-        }
+        ArgumentNullException.ThrowIfNull(map);
+
         if (_mode == XRefArchiveMode.Read)
         {
             throw new InvalidOperationException("Cannot create entry for readonly archive.");
@@ -144,10 +138,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public XRefMap Get(string name)
     {
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(name);
+
         var entryName = GetEntry(name);
         if (entryName == null)
         {
@@ -160,14 +152,9 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public void Update(string name, XRefMap map)
     {
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
-        if (map == null)
-        {
-            throw new ArgumentNullException(nameof(map));
-        }
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(map);
+
         if (_mode == XRefArchiveMode.Read)
         {
             throw new InvalidOperationException("Cannot create entry for readonly archive.");
@@ -184,10 +171,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public void Delete(string name)
     {
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(name);
+
         if (_mode == XRefArchiveMode.Read)
         {
             throw new InvalidOperationException("Cannot create entry for readonly archive.");
@@ -202,10 +187,8 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
 
     public bool HasEntry(string name)
     {
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(name);
+
         return HasEntryCore(name);
     }
 

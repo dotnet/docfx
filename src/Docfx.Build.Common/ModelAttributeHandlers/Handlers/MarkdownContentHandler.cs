@@ -21,15 +21,8 @@ public class MarkdownContentHandler : IModelAttributeHandler
             return null;
         }
 
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (context.Host == null)
-        {
-            throw new ArgumentNullException(nameof(context.Host));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(context.Host);
 
         if (context.SkipMarkup)
         {

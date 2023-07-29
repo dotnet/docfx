@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Text.Json;
-using Json.Schema;
 using Docfx.Common;
+using Json.Schema;
 
 namespace Docfx.Build.SchemaDriven;
 

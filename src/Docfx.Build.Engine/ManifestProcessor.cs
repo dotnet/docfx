@@ -17,9 +17,13 @@ internal class ManifestProcessor
 
     public ManifestProcessor(List<ManifestItemWithContext> manifestWithContext, DocumentBuildContext context, TemplateProcessor templateProcessor)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _templateProcessor = templateProcessor ?? throw new ArgumentNullException(nameof(templateProcessor));
-        _manifestWithContext = manifestWithContext ?? throw new ArgumentNullException(nameof(manifestWithContext));
+        ArgumentNullException.ThrowIfNull(manifestWithContext);
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(templateProcessor);
+
+        _manifestWithContext = manifestWithContext;
+        _context = context;
+        _templateProcessor = templateProcessor;
 
         // E.g. we can set TOC model to be globally shared by every data model
         // Make sure it is single thread

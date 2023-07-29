@@ -25,10 +25,8 @@ public class CompositeDictionary
     {
         get
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
+            ArgumentNullException.ThrowIfNull(key);
+
             foreach (var entry in _entries)
             {
                 if (key.StartsWith(entry.Prefix, StringComparison.Ordinal))
@@ -45,10 +43,8 @@ public class CompositeDictionary
         }
         set
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
+            ArgumentNullException.ThrowIfNull(key);
+
             foreach (var entry in _entries)
             {
                 if (key.StartsWith(entry.Prefix, StringComparison.Ordinal))
@@ -106,19 +102,15 @@ public class CompositeDictionary
 
     public bool ContainsKey(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         return TryGetValue(key, out _);
     }
 
     void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
     {
-        if (array == null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
+        ArgumentNullException.ThrowIfNull(array);
+
         int count = 0;
         foreach (var item in this)
         {
@@ -149,10 +141,8 @@ public class CompositeDictionary
 
     public bool Remove(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         foreach (var entry in _entries)
         {
             if (key.StartsWith(entry.Prefix))
@@ -165,10 +155,8 @@ public class CompositeDictionary
 
     public bool TryGetValue(string key, out object value)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         foreach (var entry in _entries)
         {
             if (key.StartsWith(entry.Prefix))
@@ -212,14 +200,9 @@ public class CompositeDictionary
 
         public Builder Add<TValue>(string prefix, IDictionary<string, TValue> dict, Func<object, TValue> valueConverter = null)
         {
-            if (prefix == null)
-            {
-                throw new ArgumentNullException(nameof(prefix));
-            }
-            if (dict == null)
-            {
-                throw new ArgumentNullException(nameof(dict));
-            }
+            ArgumentNullException.ThrowIfNull(prefix);
+            ArgumentNullException.ThrowIfNull(dict);
+
             valueConverter ??= o => (TValue)o;
             if (_entries.Exists(e => e.Prefix == prefix))
             {

@@ -17,14 +17,8 @@ public class TemplateBundle
 
     public TemplateBundle(string documentType, IEnumerable<Template> templates)
     {
-        if (string.IsNullOrEmpty(documentType))
-        {
-            throw new ArgumentNullException(nameof(documentType));
-        }
-        if (templates == null)
-        {
-            throw new ArgumentNullException(nameof(templates));
-        }
+        ArgumentNullException.ThrowIfNull(documentType);
+        ArgumentNullException.ThrowIfNull(templates);
 
         DocumentType = documentType;
         Templates = templates.ToArray();

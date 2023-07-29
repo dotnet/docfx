@@ -3,11 +3,9 @@
 
 using System.Net;
 using System.Web;
-
-using HtmlAgilityPack;
-
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 

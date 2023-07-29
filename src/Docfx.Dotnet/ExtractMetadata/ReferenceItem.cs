@@ -94,10 +94,8 @@ internal class ReferenceItem
 
     internal void Merge(ReferenceItem other)
     {
-        if (other == null)
-        {
-            throw new ArgumentNullException(nameof(other));
-        }
+        ArgumentNullException.ThrowIfNull(other);
+
         IsDefinition = Merge(other.IsDefinition, IsDefinition);
         Definition = Merge(other.Definition, Definition);
         Parent = Merge(other.Parent, Parent);

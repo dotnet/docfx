@@ -66,10 +66,8 @@ public class LruList<T>
 
     public void Access(T item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
+
         AccessNoCheck(item);
     }
 

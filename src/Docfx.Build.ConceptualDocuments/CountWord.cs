@@ -3,12 +3,10 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-
-using HtmlAgilityPack;
-
 using Docfx.Build.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.ConceptualDocuments;
 
@@ -38,10 +36,7 @@ internal static class WordCounter
 
     public static long CountWord(string html)
     {
-        if (html == null)
-        {
-            throw new ArgumentNullException(nameof(html));
-        }
+        ArgumentNullException.ThrowIfNull(html);
 
         HtmlDocument document = new();
 

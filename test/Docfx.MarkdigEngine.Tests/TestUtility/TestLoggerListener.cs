@@ -12,7 +12,9 @@ internal class TestLoggerListener : ILoggerListener
 
     public TestLoggerListener(Func<ILogItem, bool> filter)
     {
-        _filter = filter ?? throw new ArgumentNullException(nameof(filter));
+        ArgumentNullException.ThrowIfNull(filter);
+
+        _filter = filter;
     }
 
     public void Dispose()
@@ -25,10 +27,7 @@ internal class TestLoggerListener : ILoggerListener
 
     public void WriteLine(ILogItem item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
 
         if (_filter(item))
         {

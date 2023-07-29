@@ -11,7 +11,9 @@ public class BasicXRefMapReader : IXRefContainerReader
 
     public BasicXRefMapReader(XRefMap map)
     {
-        Map = map ?? throw new ArgumentNullException(nameof(map));
+        ArgumentNullException.ThrowIfNull(map);
+
+        Map = map;
         if (map.HrefUpdated != true &&
             map.BaseUrl != null)
         {

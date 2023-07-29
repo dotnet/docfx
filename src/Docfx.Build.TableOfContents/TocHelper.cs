@@ -58,10 +58,14 @@ public static class TocHelper
 
     public static TocItemViewModel LoadSingleToc(string file)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(file);
+#else
         if (string.IsNullOrEmpty(file))
         {
             throw new ArgumentNullException(nameof(file));
         }
+#endif
 
         if (!EnvironmentContext.FileAbstractLayer.Exists(file))
         {
@@ -95,10 +99,14 @@ public static class TocHelper
 
     public static TocItemViewModel LoadYamlToc(string file)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(file);
+#else
         if (string.IsNullOrEmpty(file))
         {
             throw new ArgumentNullException(nameof(file));
         }
+#endif
 
         object obj;
         try

@@ -3,11 +3,9 @@
 
 using System.Collections.Immutable;
 using System.Text;
-
-using HtmlAgilityPack;
-
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 
@@ -41,14 +39,9 @@ internal sealed class HtmlPostProcessor : IPostProcessor
 
     public Manifest Process(Manifest manifest, string outputFolder)
     {
-        if (manifest == null)
-        {
-            throw new ArgumentNullException(nameof(manifest));
-        }
-        if (outputFolder == null)
-        {
-            throw new ArgumentNullException(nameof(outputFolder));
-        }
+        ArgumentNullException.ThrowIfNull(manifest);
+        ArgumentNullException.ThrowIfNull(outputFolder);
+
         foreach (var handler in Handlers)
         {
             manifest = handler.PreHandle(manifest);

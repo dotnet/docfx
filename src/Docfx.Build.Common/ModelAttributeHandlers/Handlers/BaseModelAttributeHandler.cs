@@ -13,15 +13,9 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
     private Type _type;
     protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
+        ArgumentNullException.ThrowIfNull(handler);
 
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
         _type = type;
         _typeInfo = GetTypeInfo(type);
         Handler = handler;
@@ -37,10 +31,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
             throw new InvalidOperationException($"Input type {type} is not the supported type {_type}");
         }
 
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentNullException.ThrowIfNull(context);
 
         if (obj == null)
         {

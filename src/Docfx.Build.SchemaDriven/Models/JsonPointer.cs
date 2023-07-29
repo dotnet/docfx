@@ -90,10 +90,7 @@ public class JsonPointer
 
     public void SetValue(ref object root, object value)
     {
-        if (root == null)
-        {
-            throw new ArgumentNullException(nameof(root));
-        }
+        ArgumentNullException.ThrowIfNull(root);
 
         if (_isRoot)
         {
@@ -121,10 +118,7 @@ public class JsonPointer
 
     public static object GetChild(object root, string part)
     {
-        if (part == null)
-        {
-            throw new ArgumentNullException(nameof(part));
-        }
+        ArgumentNullException.ThrowIfNull(part);
 
         if (root == null)
         {
@@ -159,15 +153,8 @@ public class JsonPointer
 
     public static void SetChild(object parent, string part, object value)
     {
-        if (part == null)
-        {
-            throw new ArgumentNullException(nameof(part));
-        }
-
-        if (parent == null)
-        {
-            throw new ArgumentNullException(nameof(parent));
-        }
+        ArgumentNullException.ThrowIfNull(part);
+        ArgumentNullException.ThrowIfNull(parent);
 
         var unescapedPart = UnescapeReference(part);
         if (int.TryParse(unescapedPart, out int index))
@@ -200,10 +187,7 @@ public class JsonPointer
 
     public static BaseSchema GetChildSchema(BaseSchema parent, string part)
     {
-        if (part == null)
-        {
-            throw new ArgumentNullException(nameof(part));
-        }
+        ArgumentNullException.ThrowIfNull(part);
 
         if (parent == null)
         {

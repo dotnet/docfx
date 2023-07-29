@@ -13,17 +13,17 @@ public class TestLoggerListener : ILoggerListener
 
     public TestLoggerListener(Func<ILogItem, bool> filter)
     {
-        _filter = filter ?? throw new ArgumentNullException(nameof(filter));
+        ArgumentNullException.ThrowIfNull(filter);
+
+        _filter = filter;
     }
 
     #region ILoggerListener
 
     public void WriteLine(ILogItem item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
+
         if (_filter(item))
         {
             Items.Add(item);
