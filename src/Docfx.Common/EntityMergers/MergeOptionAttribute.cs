@@ -17,11 +17,9 @@ public sealed class MergeOptionAttribute : Attribute
     /// <param name="handlerType">the type of custom merge handler, it should implement <see cref="IMergeHandler"/>.</param>
     public MergeOptionAttribute(Type handlerType)
     {
+        ArgumentNullException.ThrowIfNull(handlerType);
+
         Option = MergeOption.Merge;
-        if (handlerType == null)
-        {
-            throw new ArgumentNullException(nameof(handlerType));
-        }
         Handler = (IMergeHandler)Activator.CreateInstance(handlerType);
     }
 

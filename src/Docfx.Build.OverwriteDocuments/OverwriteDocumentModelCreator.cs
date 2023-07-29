@@ -13,7 +13,9 @@ public class OverwriteDocumentModelCreator
 
     public OverwriteDocumentModelCreator(string file)
     {
-        _file = file ?? throw new ArgumentNullException(nameof(file));
+        ArgumentNullException.ThrowIfNull(file);
+
+        _file = file;
     }
 
     public OverwriteDocumentModel Create(MarkdownFragmentModel model)

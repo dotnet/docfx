@@ -31,18 +31,10 @@ public static class ReflectionHelper
 
     public static object CreateInstance(Type type, Type[] typeArguments, Type[] argumentTypes, object[] arguments)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
-        if (argumentTypes == null)
-        {
-            throw new ArgumentNullException(nameof(argumentTypes));
-        }
-        if (arguments == null)
-        {
-            throw new ArgumentNullException(nameof(arguments));
-        }
+        ArgumentNullException.ThrowIfNull(type);
+        ArgumentNullException.ThrowIfNull(argumentTypes);
+        ArgumentNullException.ThrowIfNull(arguments);
+
         var func = _createInstanceCache.GetOrAdd(
             Tuple.Create(type, typeArguments ?? Type.EmptyTypes, argumentTypes),
             GetCreateInstanceFunc);
@@ -142,20 +134,14 @@ public static class ReflectionHelper
 
     public static List<PropertyInfo> GetSettableProperties(Type type)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         return _settablePropertiesCache.GetOrAdd(type, _getSettableProperties);
     }
 
     public static List<PropertyInfo> GetGettableProperties(Type type)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         return _gettablePropertiesCache.GetOrAdd(type, _getGettableProperties);
     }
@@ -254,14 +240,9 @@ public static class ReflectionHelper
 
     public static object GetPropertyValue(object instance, PropertyInfo prop)
     {
-        if (instance == null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
-        if (prop == null)
-        {
-            throw new ArgumentNullException(nameof(prop));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
+        ArgumentNullException.ThrowIfNull(prop);
+
         var func = _propertyGetterCache.GetOrAdd(prop, CreateGetPropertyFunc);
         return func(instance);
     }
@@ -291,14 +272,9 @@ public static class ReflectionHelper
 
     public static void SetPropertyValue(object instance, PropertyInfo prop, object value)
     {
-        if (instance == null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
-        if (prop == null)
-        {
-            throw new ArgumentNullException(nameof(prop));
-        }
+        ArgumentNullException.ThrowIfNull(instance);
+        ArgumentNullException.ThrowIfNull(prop);
+
         var action = _propertySetterCache.GetOrAdd(prop, CreateSetPropertyFunc);
         action(instance, value);
     }

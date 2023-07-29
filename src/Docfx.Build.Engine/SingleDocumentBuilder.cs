@@ -45,10 +45,8 @@ public class SingleDocumentBuilder : IDisposable
 
     public Manifest Build(DocumentBuildParameters parameters)
     {
-        if (parameters == null)
-        {
-            throw new ArgumentNullException(nameof(parameters));
-        }
+        ArgumentNullException.ThrowIfNull(parameters);
+
         if (parameters.OutputBaseDir == null)
         {
             throw new ArgumentException("Output folder cannot be null.", nameof(parameters) + "." + nameof(parameters.OutputBaseDir));

@@ -9,10 +9,7 @@ public class FolderRedirectionManager
 
     public FolderRedirectionManager(IEnumerable<FolderRedirectionRule> rules)
     {
-        if (rules == null)
-        {
-            throw new ArgumentException(nameof(rules));
-        }
+        ArgumentNullException.ThrowIfNull(rules);
 
         foreach (var rule in rules)
         {
@@ -22,14 +19,9 @@ public class FolderRedirectionManager
 
     private void AddFolderRedirectionRule(string from, string to)
     {
-        if (from == null)
-        {
-            throw new ArgumentNullException(nameof(from));
-        }
-        if (to == null)
-        {
-            throw new ArgumentNullException(nameof(to));
-        }
+        ArgumentNullException.ThrowIfNull(from);
+        ArgumentNullException.ThrowIfNull(to);
+
         var fromRel = (RelativePath)(from.TrimEnd('/', '\\') + "/");
         if (fromRel == null)
         {

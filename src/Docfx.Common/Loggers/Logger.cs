@@ -20,30 +20,21 @@ public static class Logger
 
     public static void RegisterListener(ILoggerListener listener)
     {
-        if (listener == null)
-        {
-            throw new ArgumentNullException(nameof(listener));
-        }
+        ArgumentNullException.ThrowIfNull(listener);
 
         _syncListener.AddListener(listener);
     }
 
     public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
     {
-        if (predicate == null)
-        {
-            throw new ArgumentNullException(nameof(predicate));
-        }
+        ArgumentNullException.ThrowIfNull(predicate);
 
         return _syncListener.FindListener(predicate);
     }
 
     public static void UnregisterListener(ILoggerListener listener)
     {
-        if (listener == null)
-        {
-            throw new ArgumentNullException(nameof(listener));
-        }
+        ArgumentNullException.ThrowIfNull(listener);
 
         _syncListener.RemoveListener(listener);
     }
@@ -152,10 +143,8 @@ public static class Logger
 
     public static void Log(object result)
     {
-        if (result == null)
-        {
-            throw new ArgumentNullException(nameof(result));
-        }
+        ArgumentNullException.ThrowIfNull(result);
+
         Log(LogLevel.Info, result.ToString());
     }
 

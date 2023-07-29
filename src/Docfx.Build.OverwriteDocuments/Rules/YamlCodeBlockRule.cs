@@ -14,10 +14,7 @@ public sealed class YamlCodeBlockRule : IOverwriteBlockRule
 
     public bool Parse(Block block, out string value)
     {
-        if (block == null)
-        {
-            throw new ArgumentNullException(nameof(block));
-        }
+        ArgumentNullException.ThrowIfNull(block);
 
         var fenced = block as FencedCodeBlock;
         if (!string.IsNullOrEmpty(fenced?.Info) && !_allowedLanguages.Contains(fenced.Info.ToLower()))

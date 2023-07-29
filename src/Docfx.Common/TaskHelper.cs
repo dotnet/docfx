@@ -15,10 +15,7 @@ public static class TaskHelper
     /// <returns>The task</returns>
     public static async Task ForEachInParallelAsync<T>(this IEnumerable<T> source, Func<T, Task> body, int maxParallelism)
     {
-        if (body == null)
-        {
-            throw new ArgumentNullException(nameof(body));
-        }
+        ArgumentNullException.ThrowIfNull(body);
 
         using var semaphore = new SemaphoreSlim(maxParallelism);
         // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll
@@ -62,10 +59,7 @@ public static class TaskHelper
     /// <returns>The task</returns>
     public static async Task<IReadOnlyList<TResult>> SelectInParallelAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> body, int maxParallelism)
     {
-        if (body == null)
-        {
-            throw new ArgumentNullException(nameof(body));
-        }
+        ArgumentNullException.ThrowIfNull(body);
 
         using var semaphore = new SemaphoreSlim(maxParallelism);
         // warning "access to disposed closure" around "semaphore" could be ignored as it is inside Task.WhenAll

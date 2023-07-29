@@ -40,9 +40,12 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
             throw new ArgumentOutOfRangeException("maxRecursion", maxRecursion, "maxRecursion must be greater than 1");
         }
 
+        ArgumentNullException.ThrowIfNull(typeDescriptor);
+        ArgumentNullException.ThrowIfNull(typeResolver);
+
         Serializer = serializer;
-        _typeDescriptor = typeDescriptor ?? throw new ArgumentNullException("typeDescriptor");
-        _typeResolver = typeResolver ?? throw new ArgumentNullException("typeResolver");
+        _typeDescriptor = typeDescriptor;
+        _typeResolver = typeResolver;
         _maxRecursion = maxRecursion;
         _namingConvention = namingConvention;
     }

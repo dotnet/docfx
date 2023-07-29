@@ -30,7 +30,9 @@ public class MarkdownFragmentsCreator
 
     public IEnumerable<MarkdownFragmentModel> Create(MarkdownDocument document)
     {
-        _document = document ?? throw new ArgumentNullException(nameof(document));
+        ArgumentNullException.ThrowIfNull(document);
+
+        _document = document;
         _position = 0;
 
         while (More())

@@ -9,10 +9,8 @@ public static class CollectionUtility
 {
     public static Dictionary<string, List<T>> Merge<T>(this IDictionary<string, List<T>> left, IEnumerable<KeyValuePair<string, IEnumerable<T>>> right)
     {
-        if (left == null)
-        {
-            throw new ArgumentNullException(nameof(left));
-        }
+        ArgumentNullException.ThrowIfNull(left);
+
         var result = new Dictionary<string, List<T>>(left);
         if (right == null)
         {

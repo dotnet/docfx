@@ -37,10 +37,8 @@ public class XRefMapDownloader
     /// <threadsafety>This method is thread safe.</threadsafety>
     public async Task<IXRefContainer> DownloadAsync(Uri uri)
     {
-        if (uri == null)
-        {
-            throw new ArgumentNullException(nameof(uri));
-        }
+        ArgumentNullException.ThrowIfNull(uri);
+
         await _semaphore.WaitAsync();
         return await Task.Run(async () =>
         {

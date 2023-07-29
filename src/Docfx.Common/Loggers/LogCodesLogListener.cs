@@ -21,10 +21,8 @@ public class LogCodesLogListener : ILoggerListener
 
     public void WriteLine(ILogItem item)
     {
-        if (item == null)
-        {
-            throw new ArgumentNullException(nameof(item));
-        }
+        ArgumentNullException.ThrowIfNull(item);
+
         if (string.IsNullOrEmpty(item.File) || string.IsNullOrEmpty(item.Code))
         {
             return;

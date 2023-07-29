@@ -9,12 +9,11 @@ public struct PathMapping
 {
     public PathMapping(RelativePath logicalPath, string physicalPath)
     {
-        if (logicalPath == null)
-        {
-            throw new ArgumentNullException(nameof(logicalPath));
-        }
+        ArgumentNullException.ThrowIfNull(logicalPath);
+        ArgumentNullException.ThrowIfNull(physicalPath);
+
         LogicalPath = logicalPath.GetPathFromWorkingFolder();
-        PhysicalPath = physicalPath ?? throw new ArgumentNullException(nameof(physicalPath));
+        PhysicalPath = physicalPath;
         AllowMoveOut = false;
         Properties = ImmutableDictionary<string, string>.Empty;
     }

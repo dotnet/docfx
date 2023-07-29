@@ -43,15 +43,8 @@ public class MarkdigMarkdownService : IMarkdownService
 
     public MarkupResult Markup(string content, string filePath, bool multipleYamlHeader)
     {
-        if (content == null)
-        {
-            throw new ArgumentNullException(nameof(content));
-        }
-
-        if (filePath == null)
-        {
-            throw new ArgumentException("file path can't be null or empty.");
-        }
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(filePath);
 
         var pipeline = CreateMarkdownPipeline(isInline: false, multipleYamlHeader);
 
@@ -72,10 +65,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
     public MarkdownDocument Parse(string content, string filePath, bool isInline)
     {
-        if (content == null)
-        {
-            throw new ArgumentNullException(nameof(content));
-        }
+        ArgumentNullException.ThrowIfNull(content);
 
         if (string.IsNullOrEmpty(filePath))
         {
@@ -100,10 +90,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
     public MarkupResult Render(MarkdownDocument document, bool isInline)
     {
-        if (document == null)
-        {
-            throw new ArgumentNullException(nameof(document));
-        }
+        ArgumentNullException.ThrowIfNull(document);
 
         if (!(document.GetData("filePath") is string filePath))
         {

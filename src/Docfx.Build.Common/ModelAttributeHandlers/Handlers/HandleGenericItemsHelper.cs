@@ -7,85 +7,48 @@ public class HandleGenericItemsHelper
 {
     public static bool EnumerateIEnumerable(object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
-
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+        ArgumentNullException.ThrowIfNull(handler);
 
         return HandleItems(typeof(IEnumerable<>), typeof(EnumerateIEnumerableItems<>), currentObj, handler);
     }
 
     public static bool EnumerateIDictionary(object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
-
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+        ArgumentNullException.ThrowIfNull(handler);
 
         return HandleItems(typeof(IDictionary<,>), typeof(EnumerateIDictionaryItems<,>), currentObj, handler);
     }
 
     public static bool EnumerateIReadonlyDictionary(object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
-
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+        ArgumentNullException.ThrowIfNull(handler);
 
         return HandleItems(typeof(IReadOnlyDictionary<,>), typeof(EnumerateIReadonlyDictionaryItems<,>), currentObj, handler);
     }
 
     public static bool HandleIList(object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
-
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+        ArgumentNullException.ThrowIfNull(handler);
 
         return HandleItems(typeof(IList<>), typeof(HandleIListItems<>), currentObj, handler);
     }
 
     public static bool HandleIDictionary(object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
-
-        if (handler == null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+        ArgumentNullException.ThrowIfNull(handler);
 
         return HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), currentObj, handler);
     }
 
     private static bool HandleItems(Type genericInterface, Type implHandlerType, object currentObj, Func<object, object> handler)
     {
-        if (currentObj == null)
-        {
-            throw new ArgumentNullException(nameof(currentObj));
-        }
+        ArgumentNullException.ThrowIfNull(currentObj);
+
         var type = currentObj.GetType();
         var genericType = ReflectionHelper.GetGenericType(type, genericInterface);
         if (genericType != null)

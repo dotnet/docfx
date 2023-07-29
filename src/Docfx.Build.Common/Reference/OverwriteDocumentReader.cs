@@ -16,10 +16,7 @@ public class OverwriteDocumentReader
 {
     public static FileModel Read(FileAndType file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         if (file.Type != DocumentType.Overwrite)
         {

@@ -21,15 +21,8 @@ public class UrlContentHandler : IModelAttributeHandler
             return null;
         }
 
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (context.Host == null)
-        {
-            throw new ArgumentNullException(nameof(context.Host));
-        }
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(context.Host);
 
         var type = obj.GetType();
         return _cache.GetOrAdd(type, t => new UrlContentHandlerImpl(t, this)).Handle(obj, context);

@@ -13,7 +13,9 @@ public class ManifestFileReader : IFileReader
 
     public ManifestFileReader(Manifest manifest, string manifestFolder)
     {
-        Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
+        ArgumentNullException.ThrowIfNull(manifest);
+
+        Manifest = manifest;
         ManifestFolder = manifestFolder;
     }
 

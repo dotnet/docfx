@@ -12,10 +12,8 @@ public class DocumentException : Exception
 
     public static void RunAll(params Action[] actions)
     {
-        if (actions == null)
-        {
-            throw new ArgumentNullException(nameof(actions));
-        }
+        ArgumentNullException.ThrowIfNull(actions);
+
         DocumentException firstException = null;
         foreach (var action in actions)
         {

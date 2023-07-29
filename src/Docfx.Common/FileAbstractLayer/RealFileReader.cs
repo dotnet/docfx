@@ -11,11 +11,10 @@ public class RealFileReader : IFileReader
 
     public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
     {
-        if (inputFolder == null)
-        {
-            throw new ArgumentNullException(nameof(inputFolder));
-        }
-        Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+        ArgumentNullException.ThrowIfNull(inputFolder);
+        ArgumentNullException.ThrowIfNull(properties);
+
+        Properties = properties;
 
         _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
         if (!Directory.Exists(_expandedInputFolder))

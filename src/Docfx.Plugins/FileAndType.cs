@@ -11,14 +11,9 @@ public sealed class FileAndType
     [JsonConstructor]
     public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null)
     {
-        if (baseDir == null)
-        {
-            throw new ArgumentNullException(nameof(baseDir));
-        }
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(baseDir);
+        ArgumentNullException.ThrowIfNull(file);
+
         if (!Path.IsPathRooted(baseDir))
         {
             throw new ArgumentException("Base directory must be rooted.", nameof(baseDir));

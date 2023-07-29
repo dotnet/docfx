@@ -44,13 +44,21 @@ public class TemplateProcessor : IDisposable
 
     public TemplateBundle GetTemplateBundle(string documentType)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(documentType);
+#else
         if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
+#endif
         return _templateCollection[documentType];
     }
 
     public bool TryGetFileExtension(string documentType, out string fileExtension)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(documentType);
+#else
         if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
+#endif
         fileExtension = string.Empty;
         if (_templateCollection.Count == 0) return false;
         var templateBundle = _templateCollection[documentType];

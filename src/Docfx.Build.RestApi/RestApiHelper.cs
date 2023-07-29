@@ -19,10 +19,8 @@ internal static class RestApiHelper
     /// <returns></returns>
     public static string FormatDefinitionSinglePath(string reference)
     {
-        if (reference == null)
-        {
-            throw new ArgumentNullException(nameof(reference));
-        }
+        ArgumentNullException.ThrowIfNull(reference);
+
         return reference.Replace("~", "~0").Replace("/", "~1");
     }
 
@@ -35,10 +33,7 @@ internal static class RestApiHelper
     /// <returns></returns>
     public static SwaggerFormattedReference FormatReferenceFullPath(string reference)
     {
-        if (reference == null)
-        {
-            throw new ArgumentNullException(nameof(reference));
-        }
+        ArgumentNullException.ThrowIfNull(reference);
 
         // Decode for URI Fragment Identifier Representation
         if (reference.StartsWith("#/", StringComparison.Ordinal))

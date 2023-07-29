@@ -12,18 +12,10 @@ public sealed class ExtensibleNamingConventionTypeInspector : ExtensibleTypeInsp
 
     public ExtensibleNamingConventionTypeInspector(IExtensibleTypeInspector innerTypeDescriptor, INamingConvention namingConvention)
     {
-        if (innerTypeDescriptor == null)
-        {
-            throw new ArgumentNullException(nameof(innerTypeDescriptor));
-        }
+        ArgumentNullException.ThrowIfNull(innerTypeDescriptor);
+        ArgumentNullException.ThrowIfNull(namingConvention);
 
         this.innerTypeDescriptor = innerTypeDescriptor;
-
-        if (namingConvention == null)
-        {
-            throw new ArgumentNullException(nameof(namingConvention));
-        }
-
         this.namingConvention = namingConvention;
     }
 

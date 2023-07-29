@@ -17,10 +17,8 @@ public class OSPlatformSensitiveDictionary<V> : Dictionary<string, V>
 
     public OSPlatformSensitiveDictionary(IEnumerable<KeyValuePair<string, V>> list) : this()
     {
-        if (list == null)
-        {
-            throw new ArgumentNullException(nameof(list));
-        }
+        ArgumentNullException.ThrowIfNull(list);
+
         foreach (var item in list)
         {
             this[item.Key] = item.Value;
