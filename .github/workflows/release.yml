@@ -106,10 +106,9 @@ jobs:
         name: bin
         path: drop/bin
 
-    - run: |
-        dotnet nuget push drop/nuget/*.nupkg --api-key $env:NUGET_KEY --skip-duplicate --source https://api.nuget.org/v3/index.json
-      env:
-        NUGET_KEY: $(NUGET_KEY)
+    - name: Publish NuGet packages
+      run: |
+        dotnet nuget push drop/nuget/*.nupkg --api-key "${{ secrets.NUGET_KEY }}" --skip-duplicate --source https://api.nuget.org/v3/index.json
 
     - name: Upload GitHub release
       run: |
