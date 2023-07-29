@@ -375,7 +375,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             ArgumentNullException.ThrowIfNull(options);
             ArgumentNullException.ThrowIfNull(converter);
 
-            if (options.Length == 0) throw new ArgumentNullException(nameof(options));
+            if (options.Length == 0) throw new ArgumentOutOfRangeException(nameof(options));
 
             _converter = converter;
             Options = options;
