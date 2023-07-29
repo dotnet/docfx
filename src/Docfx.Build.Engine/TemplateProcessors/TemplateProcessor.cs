@@ -45,7 +45,7 @@ public class TemplateProcessor : IDisposable
     public TemplateBundle GetTemplateBundle(string documentType)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(documentType);
+        ArgumentException.ThrowIfNullOrEmpty(documentType);
 #else
         if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
 #endif
@@ -55,7 +55,7 @@ public class TemplateProcessor : IDisposable
     public bool TryGetFileExtension(string documentType, out string fileExtension)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(documentType);
+        ArgumentException.ThrowIfNullOrEmpty(documentType);
 #else
         if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
 #endif

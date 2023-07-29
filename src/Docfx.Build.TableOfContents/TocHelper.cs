@@ -59,7 +59,7 @@ public static class TocHelper
     public static TocItemViewModel LoadSingleToc(string file)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(file);
+        ArgumentException.ThrowIfNullOrEmpty(file);
 #else
         if (string.IsNullOrEmpty(file))
         {
@@ -100,7 +100,7 @@ public static class TocHelper
     public static TocItemViewModel LoadYamlToc(string file)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(file);
+        ArgumentException.ThrowIfNullOrEmpty(file);
 #else
         if (string.IsNullOrEmpty(file))
         {

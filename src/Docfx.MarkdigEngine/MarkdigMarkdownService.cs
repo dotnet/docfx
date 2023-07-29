@@ -46,7 +46,7 @@ public class MarkdigMarkdownService : IMarkdownService
         ArgumentNullException.ThrowIfNull(content);
 
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(filePath);
+        ArgumentException.ThrowIfNullOrEmpty(filePath);
 #else
         if(string.IsNullOrEmpty(filePath))
             throw new ArgumentNullException(nameof(filePath));

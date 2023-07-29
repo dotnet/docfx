@@ -86,7 +86,7 @@ public static class GitUtility
     public static GitRepoInfo Parse(string repoUrl)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(repoUrl);
+        ArgumentException.ThrowIfNullOrEmpty(repoUrl);
 #else
         if (string.IsNullOrEmpty(repoUrl))
         {

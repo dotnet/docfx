@@ -189,7 +189,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
     public RelativePath ChangeFileName(string fileName)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(fileName);
+        ArgumentException.ThrowIfNullOrEmpty(fileName);
 #else
         if (string.IsNullOrEmpty(fileName))
         {
