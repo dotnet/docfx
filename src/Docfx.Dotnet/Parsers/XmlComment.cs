@@ -7,14 +7,14 @@ using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Docfx.Common;
+using Docfx.DataContracts.ManagedReference;
+using Docfx.Plugins;
 using Markdig;
 using Markdig.Helpers;
 using Markdig.Renderers.Roundtrip;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Docfx.Common;
-using Docfx.DataContracts.ManagedReference;
-using Docfx.Plugins;
 
 namespace Docfx.Dotnet;
 

@@ -2,11 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Net;
-
+using Docfx.Common;
 using Markdig.Extensions.Yaml;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
-using Docfx.Common;
 
 namespace Docfx.MarkdigEngine.Extensions;
 

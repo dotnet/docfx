@@ -1,10 +1,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.MarkdigEngine.Extensions;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Docfx.MarkdigEngine.Extensions;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;

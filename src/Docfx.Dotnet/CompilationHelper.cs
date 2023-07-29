@@ -1,11 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using ICSharpCode.Decompiler.Metadata;
-using Microsoft.CodeAnalysis;
 using Docfx.Common;
 using Docfx.Exceptions;
-
+using ICSharpCode.Decompiler.Metadata;
+using Microsoft.CodeAnalysis;
 using CS = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 

@@ -1,13 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Markdig;
-using Markdig.Syntax;
 using Docfx.Common;
 using Docfx.Tests.Common;
-
+using Markdig;
+using Markdig.Syntax;
 using Newtonsoft.Json.Linq;
-
 using Xunit;
 
 namespace Docfx.Build.OverwriteDocuments.Tests;

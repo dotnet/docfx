@@ -4,13 +4,12 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Exceptions;
 using Docfx.Plugins;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Docfx.Dotnet;
 

@@ -1,7 +1,6 @@
 ﻿
-using Jint;
 using Docfx.Common;
-
+using Jint;
 using Xunit;
 
 namespace Docfx.Build.Engine.Tests;

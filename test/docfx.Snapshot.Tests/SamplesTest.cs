@@ -3,17 +3,17 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using ImageMagick;
 using Docfx.Common;
 using Docfx.Dotnet;
+using ImageMagick;
 using Microsoft.Playwright;
-using System.Net.NetworkInformation;
-using System.Net;
 
 namespace Docfx.Tests;
 

@@ -197,7 +197,7 @@ public class VideoExtension : ITripleColonExtensionInfo
     public static string GetHtmlId(MarkdownObject obj)
     {
         return $"{obj.Line}-{obj.Column}";
-}
+    }
 
     public static bool RequiresClosingTripleColon(IDictionary<string, string> attributes)
     {

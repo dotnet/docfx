@@ -1,11 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Docfx.Common;
 using Jint;
 using Jint.Native;
 using Jint.Native.Function;
 using Jint.Native.Object;
-using Docfx.Common;
 
 namespace Docfx.Build.Engine;
 

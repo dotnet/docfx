@@ -3,12 +3,10 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-
-using HtmlAgilityPack;
-
 using Docfx.Build.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 
 namespace Docfx.Build.ConceptualDocuments;
 

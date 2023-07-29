@@ -3,14 +3,12 @@
 
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-
-using Microsoft.CodeAnalysis;
-
 using Docfx.Common;
 using Docfx.Common.Git;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
+using Microsoft.CodeAnalysis;
 
 namespace Docfx.Dotnet;
 

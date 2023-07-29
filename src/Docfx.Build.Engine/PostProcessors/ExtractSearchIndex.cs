@@ -6,9 +6,9 @@ using System.Composition;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 using Docfx.Common;
 using Docfx.Plugins;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine;
