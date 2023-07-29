@@ -44,7 +44,13 @@ public class MarkdigMarkdownService : IMarkdownService
     public MarkupResult Markup(string content, string filePath, bool multipleYamlHeader)
     {
         ArgumentNullException.ThrowIfNull(content);
-        ArgumentNullException.ThrowIfNull(filePath);
+
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNullOrEmpty(filePath);
+#else
+        if(string.IsNullOrEmpty(filePath))
+            throw new ArgumentNullException(nameof(filePath));
+#endif
 
         var pipeline = CreateMarkdownPipeline(isInline: false, multipleYamlHeader);
 
