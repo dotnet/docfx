@@ -72,10 +72,8 @@ public class CompositeDictionary
 
     public void Add(string key, object value)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullException.ThrowIfNull(key);
+
         foreach (var entry in _entries)
         {
             if (key.StartsWith(entry.Prefix))

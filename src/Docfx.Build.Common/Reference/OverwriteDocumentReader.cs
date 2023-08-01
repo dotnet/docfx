@@ -35,10 +35,7 @@ public class OverwriteDocumentReader
     /// <returns></returns>
     public static IEnumerable<T> Transform<T>(FileModel model, string uid, Func<T, T> itemBuilder) where T : class, IOverwriteDocumentViewModel
     {
-        if (model == null)
-        {
-            throw new ArgumentNullException(nameof(model));
-        }
+        ArgumentNullException.ThrowIfNull(model);
 
         var overwrites = ((List<OverwriteDocumentModel>)model.Content).Where(s => s.Uid == uid);
         return overwrites.Select(s =>

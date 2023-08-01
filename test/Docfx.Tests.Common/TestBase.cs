@@ -99,7 +99,11 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
 
     protected static string CreateDirectory(string dir, string baseFolder)
     {
-        ArgumentNullException.ThrowIfNull(dir);
+        if (string.IsNullOrEmpty(dir))
+        {
+            return string.Empty;
+        }
+
         ArgumentNullException.ThrowIfNull(baseFolder);
 
         var subDirectory = Path.Combine(baseFolder, dir);

@@ -75,7 +75,7 @@ public class TemplateManager
     private bool TryExportResourceFiles(IEnumerable<string> resourceNames, string outputDirectory, bool overwrite, string? regexFilter = null)
     {
 #if NET7_0_OR_GREATER
-        ArgumentNullException.ThrowIfNullOrEmpty(outputDirectory);
+        ArgumentException.ThrowIfNullOrEmpty(outputDirectory);
 #else
         if (string.IsNullOrEmpty(outputDirectory))
             throw new ArgumentNullException(nameof(outputDirectory));

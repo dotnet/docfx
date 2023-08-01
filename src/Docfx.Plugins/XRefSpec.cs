@@ -27,10 +27,8 @@ public sealed class XRefSpec : IDictionary<string, object>
 
     public XRefSpec(XRefSpec spec)
     {
-        if (spec == null)
-        {
-            throw new ArgumentNullException(nameof(spec));
-        }
+        ArgumentNullException.ThrowIfNull(spec);
+
         _dict = new Dictionary<string, object>(spec._dict);
     }
 
