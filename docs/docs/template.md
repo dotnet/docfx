@@ -1,6 +1,6 @@
 # Template
 
-Template defines the appearance of the website. 
+Template defines the appearance of the website.
 
 Docfx ships several built-in templates. We recommend using the modern template that matches the look and feel of this site. It supports dark mode, more features, rich customization options and.
 
@@ -26,30 +26,31 @@ The easiest way of customizing the the appearance of pages is using [metadata](.
 
 # [Modern Template](#tab/modern)
 
-Name         | Type    | Description
-----------------------|---------|---------------------------
-`_appTitle`             | string  | A string append to every page title.
-`_appName`              | string  | The name of the site displayed after logo.
-`_appFooter`            | string  | The footer HTML.
-`_appLogoPath`          | string  | Path to the app logo.
-`_appLogoUrl`           | string  | URL for the app logo.
-`_appFaviconPath`       | string  | Favicon URL path.
-`_enableSearch`         | bool    | Whether to show the search box.
-`_noindex`              | bool    | Whether to include in search results
-`_disableContribution`  | bool    | Whether to show the _"Edit this page"_ button.
-`_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
-`_gitUrlPattern`        | string  | URL pattern of git links.
-`_disableNewTab`        | bool    | Whether to render external link indicator icons and open external links in a new tab.
-`_disableNextArticle`   | bool    | Whether to show the previous and next article link.
-`_disableTocFilter`     | bool    | Whether to show the table of content filter box.
-`_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
-`_lang`                  | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
-`_layout`                | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
+Name                      | Type    | Description
+--------------------------|---------|---------------------------
+`_appTitle`               | string  | A string append to every page title.
+`_appName`                | string  | The name of the site displayed after logo.
+`_appFooter`              | string  | The footer HTML.
+`_appLogoPath`            | string  | Path to the app logo.
+`_appLogoUrl`             | string  | URL for the app logo.
+`_appFaviconPath`         | string  | Favicon URL path.
+`_enableSearch`           | bool    | Whether to show the search box.
+`_noindex`                | bool    | Whether to include in search results
+`_disableContribution`    | bool    | Whether to show the _"Edit this page"_ button.
+`_gitContribute`          | object  | Defines the `repo` and `branch` property of git links.
+`_gitUrlPattern`          | string  | URL pattern of git links.
+`_disableNewTab`          | bool    | Whether to render external link indicator icons and open external links in a new tab.
+`_disableNextArticle`     | bool    | Whether to show the previous and next article link.
+`_disableTocFilter`       | bool    | Whether to show the table of content filter box.
+`_googleAnalyticsTagId`   | string  | Enables Google Analytics web traffic analysis.
+`_lang`                   | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_layout`                 | string  | Determines the layout of the page. Supported values are `landing` and `chromeless`.
+`_urlNormalizationActive` | bool    | Whether any url normalization rules are active. If unset, the default value is `false`.
 
 # [Default Template](#tab/default)
 
-Name         | Type    | Description
-----------------------|---------|---------------------------
+Name                    | Type    | Description
+------------------------|---------|---------------------------
 `_appTitle`             | string  | A string append to every page title.
 `_appName`              | string  | The name of the site displayed after logo.
 `_appFooter`            | string  | The footer HTML.
@@ -58,7 +59,7 @@ Name         | Type    | Description
 `_appFaviconPath`       | string  | Favicon URL path.
 `_enableSearch`         | bool    | Whether to show the search box.
 `_enableNewTab`         | bool    | Whether to open external links in a new tab.
-`_noindex`              | bool  | Whether to include in search results
+`_noindex`              | bool    | Whether to include in search results
 `_disableContribution`  | bool    | Whether to show the _"Improve this Doc"_ and _"View Source"_ buttons.
 `_gitContribute`        | object  | Defines the `repo` and `branch` property of git links.
 `_gitUrlPattern`        | string  | URL pattern of git links.
@@ -67,7 +68,7 @@ Name         | Type    | Description
 `_disableToc`           | bool    | Whether to show the TOC.
 `_disableAffix`         | bool    | Whether to show the right rail.
 `_googleAnalyticsTagId` | string  | Enables Google Analytics web traffic analysis.
-`_lang`                 | string | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
+`_lang`                 | string  | Primary language of the page. If unset, the `<html>` tag will not have `lang` property.
 
 ---
 

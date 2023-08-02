@@ -24,6 +24,7 @@
       {{#_enableSearch}}<meta name="docfx:rel" content="{{_rel}}">{{/_enableSearch}}
       {{#_disableNewTab}}<meta name="docfx:disablenewtab" content="true">{{/_disableNewTab}}
       {{#_disableTocFilter}}<meta name="docfx:disabletocfilter" content="true">{{/_disableTocFilter}}
+      {{#_urlNormalizationActive}}<meta name="docfx:urlnormalizationactive" content="true">{{/_urlNormalizationActive}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
     {{/redirect_url}}
   </head>
@@ -117,7 +118,7 @@
         {{^_disableNextArticle}}
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
         {{/_disableNextArticle}}
-        
+
       </div>
 
       <div class="affix">

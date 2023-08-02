@@ -139,7 +139,13 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function normalizeUrlPath(url: { pathname: string }): string {
-    return url.pathname.replace(/\/index\.html$/gi, '/')
+    const urlNormalization = meta('docfx:urlnormalizationactive')
+
+    if (urlNormalization !== undefined && urlNormalization !== null && urlNormalization === 'true' && !url.pathname.endsWith('/index.html') && !url.pathname.endsWith('.html') && !url.pathname.endsWith('/')) {
+      return url.pathname + '.html'
+    } else {
+      return url.pathname.replace(/\/index\.html$/gi, '/')
+    }
   }
 }
 
