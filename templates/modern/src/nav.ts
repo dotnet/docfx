@@ -35,21 +35,20 @@ export async function renderNavbar(): Promise<NavItem[]> {
   }
 
   const menu = html`
-    <ul class='navbar-nav'>${
-      navItems.map(item => {
-        if ('items' in item) {
-          const active = item.items.some(i => i === activeItem) ? 'active' : null
-          return html`
+    <ul class='navbar-nav'>${navItems.map(item => {
+    if ('items' in item) {
+      const active = item.items.some(i => i === activeItem) ? 'active' : null
+      return html`
             <li class='nav-item dropdown'>
               <a class='nav-link dropdown-toggle ${active}' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>
                 ${breakWordLit(item.name)}
               </a>
               <ul class='dropdown-menu'>${item.items.map(menuItem)}</ul>
             </li>`
-        } else {
-          return menuItem(item)
-        }
-      })
+    } else {
+      return menuItem(item)
+    }
+  })
     }</ul>`
 
   function renderCore() {
@@ -119,10 +118,10 @@ function inThisArticleForManagedReference(): TemplateResult {
     return html`
       <h5 class="border-bottom">In this article</h5>
       <ul>${headings.map(h => {
-        return h.tagName === 'H2'
-          ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`
-          : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
-      })}</ul>`
+      return h.tagName === 'H2'
+        ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`
+        : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
+    })}</ul>`
   }
 }
 
@@ -131,6 +130,9 @@ function findActiveItem(items: (NavItem | NavItemContainer)[]): NavItem {
   let activeItem: NavItem
   let maxPrefix = 0
   for (const item of items.map(i => 'items' in i ? i.items : i).flat()) {
+    if (item.href.hostname !== window.location.hostname || item.href.port !== window.location.port) {
+      continue
+    }
     const prefix = commonUrlPrefix(url, item.href)
     if (prefix > maxPrefix) {
       maxPrefix = prefix

@@ -54,7 +54,7 @@ export async function renderToc(): Promise<TocNode[]> {
     if (node.href) {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
-      active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
+      active = isExternal(url) ? false : normalizeUrlPath(url) === normalizeUrlPath(window.location)
       if (active) {
         if (node.items) {
           node.expanded = true
@@ -77,6 +77,10 @@ export async function renderToc(): Promise<TocNode[]> {
       return true
     }
     return false
+  }
+
+  function isExternal(url: URL): boolean {
+    return url.hostname !== window.location.hostname || url.port !== window.location.port
   }
 
   function renderToc() {
