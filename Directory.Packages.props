@@ -6,10 +6,10 @@
 
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.51" />
-    <PackageVersion Include="ICSharpCode.Decompiler" Version="8.0.0.7345" />
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.0.7455" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2050" />
-    <PackageVersion Include="JsonSchema.Net" Version="4.1.8" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.0.0" />
     <PackageVersion Include="Markdig" Version="0.31.0" />
 
      <!-- "17.3.2" is the latest compatible version for .NET 6 -->
