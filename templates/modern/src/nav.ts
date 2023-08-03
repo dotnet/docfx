@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { render, html, TemplateResult } from 'lit-html'
-import { breakWordLit, meta } from './helper'
+import { breakWordLit, meta, isExternalHref } from './helper'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
 
@@ -130,7 +130,7 @@ function findActiveItem(items: (NavItem | NavItemContainer)[]): NavItem {
   let activeItem: NavItem
   let maxPrefix = 0
   for (const item of items.map(i => 'items' in i ? i.items : i).flat()) {
-    if (item.href.hostname !== window.location.hostname || item.href.port !== window.location.port) {
+    if (isExternalHref(item.href)) {
       continue
     }
     const prefix = commonUrlPrefix(url, item.href)
