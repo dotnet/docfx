@@ -3,7 +3,7 @@
 
 import { TemplateResult, html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
-import { breakWordLit, meta } from './helper'
+import { breakWordLit, meta, isExternalHref } from './helper'
 
 export type TocNode = {
   name: string
@@ -54,7 +54,7 @@ export async function renderToc(): Promise<TocNode[]> {
     if (node.href) {
       const url = new URL(node.href, tocUrl)
       node.href = url.href
-      active = normalizeUrlPath(url) === normalizeUrlPath(window.location)
+      active = isExternalHref(url) ? false : normalizeUrlPath(url) === normalizeUrlPath(window.location)
       if (active) {
         if (node.items) {
           node.expanded = true
