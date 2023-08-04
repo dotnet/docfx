@@ -45,3 +45,12 @@ export function breakWordLit(text: string): TemplateResult {
   })
   return html`${result}`
 }
+
+/**
+ * Check if the url is external.
+ * @param url The url to check.
+ * @returns True if the url is external.
+ */
+export function isExternalHref(url: URL): boolean {
+  return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol
+}

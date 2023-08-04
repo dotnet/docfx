@@ -124,7 +124,7 @@ body[data-layout="landing"] {
           overflow-x: hidden;
           overflow-y: auto;
           max-width: 360px;
-          max-height: calc(100vh - #{$header-height});
+          max-height: calc(100vh - $header-height - $main-padding-top);
 
           @include stick-to-header;
 
