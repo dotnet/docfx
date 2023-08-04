@@ -52,6 +52,15 @@
       "level": 2.0,
       "items": [],
       "leaf": true
+    },
+    {
+      "name": "Microsoft Docs",
+      "href": "https://docs.microsoft.com/en-us/",
+      "topicHref": "https://docs.microsoft.com/en-us/",
+      "tocHref": null,
+      "level": 2.0,
+      "items": [],
+      "leaf": true
     }
   ],
   "_appName": "Seed",
