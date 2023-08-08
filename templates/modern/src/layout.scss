@@ -163,7 +163,7 @@ body[data-layout="landing"] {
         >.affix {
           display: block;
           width: 230px;
-          max-height: calc(100vh - #{$header-height});
+          max-height: calc(100vh - $header-height - $main-padding-top);
           overflow-x: hidden;
           overflow-y: auto;
 
