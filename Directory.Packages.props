@@ -14,7 +14,7 @@
 
      <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="17.6.3"   Condition="'$(TargetFramework)' != 'net6.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="17.7.0"   Condition="'$(TargetFramework)' != 'net6.0'" />
 
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.5.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.6.0" />
