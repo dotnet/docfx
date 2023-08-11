@@ -27,3 +27,9 @@ Used to override git branch name.
 
 Used to disable CRL check.
 This setting is intended to be used on offline environment.
+
+## `DOCFX_CUSTOM_TEMPLATES_DIR`
+
+Used to add custom templates lookup directory.
+Specified templates with this settings has higher priority than exe's directory templates. (If same template resource is defined in two folders)
+

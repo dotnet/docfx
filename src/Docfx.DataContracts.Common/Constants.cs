@@ -108,4 +108,15 @@ public static class Constants
         public const string MarkdownTocFileName = "toc.md";
         public const string YamlTocFileName = "toc.yml";
     }
+
+    public static class EnvironmentVariables
+    {
+#pragma warning disable format
+        public const string DOCFX_CUSTOM_TEMPLATES_DIR                 = nameof(DOCFX_CUSTOM_TEMPLATES_DIR);
+        public const string DOCFX_KEEP_DEBUG_INFO                      = nameof(DOCFX_KEEP_DEBUG_INFO);
+        public const string DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST = nameof(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
+        public const string DOCFX_GIT_TIMEOUT                          = nameof(DOCFX_GIT_TIMEOUT);
+        public const string DOCFX_SOURCE_BRANCH_NAME                   = nameof(DOCFX_SOURCE_BRANCH_NAME);
+#pragma warning restore format
+    }
 }

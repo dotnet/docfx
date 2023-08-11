@@ -9,6 +9,7 @@ namespace Docfx.Build.Engine;
 
 public class TemplateManager
 {
+    private const string DOCFX_CUSTOM_TEMPLATES_DIR = DataContracts.Common.Constants.EnvironmentVariables.DOCFX_CUSTOM_TEMPLATES_DIR;
     private readonly List<string> _templates;
     private readonly List<string>? _themes;
     private readonly string _baseDirectory;
@@ -42,16 +43,36 @@ public class TemplateManager
         return GetTemplateDirectories(_templates);
     }
 
+
     private IEnumerable<string> GetTemplateDirectories(IEnumerable<string> names)
     {
+        var customTemplatesDir = Environment.GetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR);
+        if (customTemplatesDir != null && !Directory.Exists(customTemplatesDir))
+        {
+            Logger.LogWarning($"Custom templates directory is not found. {DOCFX_CUSTOM_TEMPLATES_DIR}: {customTemplatesDir}");
+            customTemplatesDir = null;
+        }
+
         foreach (var name in names)
         {
+            //  Search template from exe's templates directory.
             var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "templates", name));
             if (Directory.Exists(directory))
             {
                 yield return directory;
             }
 
+            // Search template from directory specified by environment variable.
+            if (customTemplatesDir != null)
+            {
+                var templateDir = Path.GetFullPath(Path.Combine(customTemplatesDir, name));
+                if (Directory.Exists(templateDir))
+                {
+                    yield return templateDir;
+                }
+            }
+
+            // Search templates from base directory.
             directory = Path.GetFullPath(Path.Combine(_baseDirectory, name));
             if (Directory.Exists(directory))
             {
