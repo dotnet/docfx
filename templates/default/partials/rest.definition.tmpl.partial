@@ -27,8 +27,7 @@
                 {{/value.cType}}
 
                 {{#value.cType}}
-                    <a href="#{{value.cTypeId}}" class="typelink">{{{value.cType}}}</a>
-                    {{#value.cTypeIsArray}}[]{{/value.cTypeIsArray}}
+                    <a href="#{{value.cTypeId}}" class="typelink">{{{value.cType}}}</a>{{#value.cTypeIsArray}}[]{{/value.cTypeIsArray}}
                 {{/value.cType}}
             </td>
             <td>{{{value.description}}}</td>

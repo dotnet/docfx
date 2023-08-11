@@ -50,8 +50,7 @@
           {{/schema.cType}}
 
           {{#schema.cType}}
-            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>
-            {{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
           {{/schema.cType}}
       </td>
       <td>{{default}}</td>
@@ -85,8 +84,7 @@
           {{/schema.cType}}
 
           {{#schema.cType}}
-            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>
-            {{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>{{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
           {{/schema.cType}}
       </td>
       <td>{{{description}}}</td>
