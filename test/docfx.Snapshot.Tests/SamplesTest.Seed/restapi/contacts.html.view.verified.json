@@ -382,7 +382,9 @@
             "example": {
               "department": "Sales",
               "jobTitle": "Sales Rep"
-            }
+            },
+            "cTypeId": "contact",
+            "cType": "contact"
           }
         }
       ],
@@ -808,6 +810,340 @@
   "title": "Contacts",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=graph_windows_net_myorganization_Contacts_1_6.md&value=---%0Auid%3A%20graph.windows.net%2Fmyorganization%2FContacts%2F1.6%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/contacts_swagger2.json/#L1",
+  "definitions": [
+    {
+      "properties": [
+        {
+          "key": "objectType",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "objectId",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "deletionTimestamp",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "city",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "country",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "department",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "dirSyncEnabled",
+          "value": {
+            "type": "boolean",
+            "description": null
+          }
+        },
+        {
+          "key": "displayName",
+          "value": {
+            "type": "string",
+            "required": true,
+            "description": null
+          }
+        },
+        {
+          "key": "facsimileTelephoneNumber",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "givenName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "jobTitle",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "lastDirSyncTime",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "mail",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "mailNickname",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "mobile",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "physicalDeliveryOfficeName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "postalCode",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "provisioningErrors",
+          "value": {
+            "type": "array",
+            "items": {
+              "properties": [
+                {
+                  "key": "errorDetail",
+                  "value": {
+                    "type": "string",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "resolved",
+                  "value": {
+                    "type": "boolean",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "serviceInstance",
+                  "value": {
+                    "type": "string",
+                    "readOnly": true,
+                    "description": null
+                  }
+                },
+                {
+                  "key": "timestamp",
+                  "value": {
+                    "type": "string",
+                    "format": "date-time",
+                    "readOnly": true,
+                    "description": null
+                  }
+                }
+              ],
+              "x-internal-ref-name": "ProvisioningError",
+              "x-internal-loop-ref-name": null
+            },
+            "readOnly": true,
+            "description": null,
+            "cTypeId": "ProvisioningError",
+            "cType": "<wbr>Provisioning<wbr>Error",
+            "cTypeIsArray": true
+          }
+        },
+        {
+          "key": "proxyAddresses",
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "properties": null,
+              "x-internal-ref-name": null,
+              "x-internal-loop-ref-name": null
+            },
+            "readOnly": true,
+            "example": {
+              "proxyAddresses": [
+                "SMTP:garthf@a830edad9050849NDA1.onmicrosoft.com"
+              ]
+            },
+            "description": null
+          }
+        },
+        {
+          "key": "sipProxyAddress",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "state",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "streetAddress",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "surname",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "telephoneNumber",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "thumbnailPhoto",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ],
+      "x-internal-ref-name": "contact",
+      "example": {
+        "department": "Sales",
+        "jobTitle": "Sales Rep"
+      },
+      "cTypeId": "contact",
+      "cType": "contact"
+    },
+    {
+      "type": "array",
+      "items": {
+        "properties": [
+          {
+            "key": "errorDetail",
+            "value": {
+              "type": "string",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "resolved",
+            "value": {
+              "type": "boolean",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "serviceInstance",
+            "value": {
+              "type": "string",
+              "readOnly": true,
+              "description": null
+            }
+          },
+          {
+            "key": "timestamp",
+            "value": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": null
+            }
+          }
+        ],
+        "x-internal-ref-name": "ProvisioningError",
+        "x-internal-loop-ref-name": null
+      },
+      "readOnly": true,
+      "description": null,
+      "cTypeId": "ProvisioningError",
+      "cType": "<wbr>Provisioning<wbr>Error",
+      "cTypeIsArray": true,
+      "properties": [
+        {
+          "key": "errorDetail",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "resolved",
+          "value": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "serviceInstance",
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": null
+          }
+        },
+        {
+          "key": "timestamp",
+          "value": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": null
+          }
+        }
+      ],
+      "x-internal-ref-name": "ProvisioningError"
+    }
+  ],
   "_disableToc": false,
   "_disableNextArticle": true
 }
