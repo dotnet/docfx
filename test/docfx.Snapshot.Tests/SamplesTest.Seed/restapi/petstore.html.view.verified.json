@@ -147,7 +147,9 @@
                 "xml": {
                   "name": "Pet"
                 },
-                "x-internal-ref-name": "Pet"
+                "x-internal-ref-name": "Pet",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet"
               }
             }
           ],
@@ -329,7 +331,9 @@
                 "xml": {
                   "name": "Pet"
                 },
-                "x-internal-ref-name": "Pet"
+                "x-internal-ref-name": "Pet",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet"
               }
             }
           ],
@@ -494,7 +498,10 @@
                   },
                   "x-internal-ref-name": "Pet"
                 },
-                "type": "array"
+                "type": "array",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet",
+                "cTypeIsArray": true
               }
             },
             {
@@ -639,7 +646,10 @@
                   },
                   "x-internal-ref-name": "Pet"
                 },
-                "type": "array"
+                "type": "array",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet",
+                "cTypeIsArray": true
               }
             },
             {
@@ -890,7 +900,9 @@
                 "xml": {
                   "name": "Pet"
                 },
-                "x-internal-ref-name": "Pet"
+                "x-internal-ref-name": "Pet",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet"
               }
             },
             {
@@ -1066,7 +1078,9 @@
                   }
                 ],
                 "type": "object",
-                "x-internal-ref-name": "ApiResponse"
+                "x-internal-ref-name": "ApiResponse",
+                "cTypeId": "ApiResponse",
+                "cType": "<wbr>Api<wbr>Response"
               }
             }
           ],
@@ -1251,7 +1265,9 @@
                 "xml": {
                   "name": "Pet"
                 },
-                "x-internal-ref-name": "Pet"
+                "x-internal-ref-name": "Pet",
+                "cTypeId": "Pet",
+                "cType": "<wbr>Pet"
               }
             }
           ],
@@ -1420,7 +1436,9 @@
                 "xml": {
                   "name": "Order"
                 },
-                "x-internal-ref-name": "Order"
+                "x-internal-ref-name": "Order",
+                "cTypeId": "Order",
+                "cType": "<wbr>Order"
               }
             }
           ],
@@ -1487,7 +1505,9 @@
                 "xml": {
                   "name": "Order"
                 },
-                "x-internal-ref-name": "Order"
+                "x-internal-ref-name": "Order",
+                "cTypeId": "Order",
+                "cType": "<wbr>Order"
               }
             },
             {
@@ -1655,7 +1675,9 @@
                 "xml": {
                   "name": "Order"
                 },
-                "x-internal-ref-name": "Order"
+                "x-internal-ref-name": "Order",
+                "cTypeId": "Order",
+                "cType": "<wbr>Order"
               }
             },
             {
@@ -1782,7 +1804,9 @@
                 "xml": {
                   "name": "User"
                 },
-                "x-internal-ref-name": "User"
+                "x-internal-ref-name": "User",
+                "cTypeId": "User",
+                "cType": "<wbr>User"
               }
             }
           ],
@@ -1867,7 +1891,10 @@
                   },
                   "x-internal-ref-name": "User"
                 },
-                "type": "array"
+                "type": "array",
+                "cTypeId": "User",
+                "cType": "<wbr>User",
+                "cTypeIsArray": true
               }
             }
           ],
@@ -1952,7 +1979,10 @@
                   },
                   "x-internal-ref-name": "User"
                 },
-                "type": "array"
+                "type": "array",
+                "cTypeId": "User",
+                "cType": "<wbr>User",
+                "cTypeIsArray": true
               }
             }
           ],
@@ -2235,7 +2265,9 @@
                 "xml": {
                   "name": "User"
                 },
-                "x-internal-ref-name": "User"
+                "x-internal-ref-name": "User",
+                "cTypeId": "User",
+                "cType": "<wbr>User"
               }
             },
             {
@@ -2360,7 +2392,9 @@
             "xml": {
               "name": "User"
             },
-            "x-internal-ref-name": "User"
+            "x-internal-ref-name": "User",
+            "cTypeId": "User",
+            "cType": "<wbr>User"
           }
         }
       ],
@@ -2456,6 +2490,405 @@
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=petstore_swagger_io_v2_Swagger_Petstore_1_0_0.md&value=---%0Auid%3A%20petstore.swagger.io%2Fv2%2FSwagger%20Petstore%2F1.0.0%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
   "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/restapi/petstore.swagger.json/#L1",
   "isTagLayout": true,
+  "definitions": [
+    {
+      "properties": [
+        {
+          "key": "category",
+          "value": {
+            "type": "object",
+            "xml": {
+              "name": "Category"
+            },
+            "x-internal-ref-name": "Category",
+            "description": null,
+            "items": {
+              "properties": [
+                {
+                  "key": "id",
+                  "value": {
+                    "format": "int64",
+                    "type": "integer",
+                    "description": null
+                  }
+                },
+                {
+                  "key": "name",
+                  "value": {
+                    "type": "string",
+                    "description": null
+                  }
+                }
+              ],
+              "x-internal-ref-name": "Category",
+              "x-internal-loop-ref-name": null
+            },
+            "cTypeId": "Category",
+            "cType": "<wbr>Category",
+            "cTypeIsArray": true
+          }
+        },
+        {
+          "key": "id",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "name",
+          "value": {
+            "example": "doggie",
+            "type": "string",
+            "required": true,
+            "description": null
+          }
+        },
+        {
+          "key": "photoUrls",
+          "value": {
+            "items": {
+              "type": "string",
+              "properties": null,
+              "x-internal-ref-name": null,
+              "x-internal-loop-ref-name": null
+            },
+            "type": "array",
+            "xml": {
+              "name": "photoUrl",
+              "wrapped": true
+            },
+            "required": true,
+            "description": null
+          }
+        },
+        {
+          "key": "status",
+          "value": {
+            "description": "<p sourcefile=\"restapi/petstore.swagger.json\" sourcestartlinenumber=\"1\">pet status in the store</p>\n",
+            "enum": [
+              "available",
+              "pending",
+              "sold"
+            ],
+            "type": "string"
+          }
+        },
+        {
+          "key": "tags",
+          "value": {
+            "items": {
+              "properties": [
+                {
+                  "key": "id",
+                  "value": {
+                    "format": "int64",
+                    "type": "integer",
+                    "description": null
+                  }
+                },
+                {
+                  "key": "name",
+                  "value": {
+                    "type": "string",
+                    "description": null
+                  }
+                }
+              ],
+              "type": "object",
+              "xml": {
+                "name": "Tag"
+              },
+              "x-internal-ref-name": "Tag",
+              "x-internal-loop-ref-name": null
+            },
+            "type": "array",
+            "xml": {
+              "name": "tag",
+              "wrapped": true
+            },
+            "description": null,
+            "cTypeId": "Tag",
+            "cType": "<wbr>Tag",
+            "cTypeIsArray": true
+          }
+        }
+      ],
+      "type": "object",
+      "xml": {
+        "name": "Pet"
+      },
+      "x-internal-ref-name": "Pet",
+      "cTypeId": "Pet",
+      "cType": "<wbr>Pet"
+    },
+    {
+      "type": "object",
+      "xml": {
+        "name": "Category"
+      },
+      "x-internal-ref-name": "Category",
+      "description": null,
+      "items": {
+        "properties": [
+          {
+            "key": "id",
+            "value": {
+              "format": "int64",
+              "type": "integer",
+              "description": null
+            }
+          },
+          {
+            "key": "name",
+            "value": {
+              "type": "string",
+              "description": null
+            }
+          }
+        ],
+        "x-internal-ref-name": "Category",
+        "x-internal-loop-ref-name": null
+      },
+      "cTypeId": "Category",
+      "cType": "<wbr>Category",
+      "cTypeIsArray": true,
+      "properties": [
+        {
+          "key": "id",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "name",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ]
+    },
+    {
+      "items": {
+        "properties": [
+          {
+            "key": "id",
+            "value": {
+              "format": "int64",
+              "type": "integer",
+              "description": null
+            }
+          },
+          {
+            "key": "name",
+            "value": {
+              "type": "string",
+              "description": null
+            }
+          }
+        ],
+        "type": "object",
+        "xml": {
+          "name": "Tag"
+        },
+        "x-internal-ref-name": "Tag",
+        "x-internal-loop-ref-name": null
+      },
+      "type": "array",
+      "xml": {
+        "name": "tag",
+        "wrapped": true
+      },
+      "description": null,
+      "cTypeId": "Tag",
+      "cType": "<wbr>Tag",
+      "cTypeIsArray": true,
+      "properties": [
+        {
+          "key": "id",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "name",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ],
+      "x-internal-ref-name": "Tag"
+    },
+    {
+      "properties": [
+        {
+          "key": "code",
+          "value": {
+            "format": "int32",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "message",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "type",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ],
+      "type": "object",
+      "x-internal-ref-name": "ApiResponse",
+      "cTypeId": "ApiResponse",
+      "cType": "<wbr>Api<wbr>Response"
+    },
+    {
+      "properties": [
+        {
+          "key": "complete",
+          "value": {
+            "default": false,
+            "type": "boolean",
+            "description": null
+          }
+        },
+        {
+          "key": "id",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "petId",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "quantity",
+          "value": {
+            "format": "int32",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "shipDate",
+          "value": {
+            "format": "date-time",
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "status",
+          "value": {
+            "description": "<p sourcefile=\"restapi/petstore.swagger.json\" sourcestartlinenumber=\"1\">Order Status</p>\n",
+            "enum": [
+              "placed",
+              "approved",
+              "delivered"
+            ],
+            "type": "string"
+          }
+        }
+      ],
+      "type": "object",
+      "xml": {
+        "name": "Order"
+      },
+      "x-internal-ref-name": "Order",
+      "cTypeId": "Order",
+      "cType": "<wbr>Order"
+    },
+    {
+      "properties": [
+        {
+          "key": "email",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "firstName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "id",
+          "value": {
+            "format": "int64",
+            "type": "integer",
+            "description": null
+          }
+        },
+        {
+          "key": "lastName",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "password",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "phone",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        },
+        {
+          "key": "userStatus",
+          "value": {
+            "description": "<p sourcefile=\"restapi/petstore.swagger.json\" sourcestartlinenumber=\"1\">User Status</p>\n",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        {
+          "key": "username",
+          "value": {
+            "type": "string",
+            "description": null
+          }
+        }
+      ],
+      "type": "object",
+      "xml": {
+        "name": "User"
+      },
+      "x-internal-ref-name": "User",
+      "cTypeId": "User",
+      "cType": "<wbr>User"
+    }
+  ],
   "_disableToc": false,
   "_disableNextArticle": true
 }

@@ -31,7 +31,12 @@
 {{#children}}
   {{>partials/rest.child}}
 {{/children}}
+{{#definitions.0}}
+<h2 id="definitions">Definitions</h2>
+{{/definitions.0}}
+{{#definitions}}
+  {{>partials/rest.definition}}
+{{/definitions}}
 {{#footer}}
 <div class="markdown level0 api-footer">{{{footer}}}</div>
 {{/footer}}
-
