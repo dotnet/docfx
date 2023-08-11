@@ -57,6 +57,15 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
     /// </summary>
     protected string GetSolutionFolder([CallerFilePath] string callerFilePath = "")
     {
+        if (callerFilePath.StartsWith("/_/"))
+        {
+            // PathMap is rewritten on CI environment (ContinuousIntegrationBuild=true).
+            // So try to get workspace folder from GitHub Action environment variable.
+            var workspace = Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
+            if (workspace != null)
+                return workspace;
+        }
+
         if (!File.Exists(callerFilePath))
         {
             // CallerFilePath is resolved at build timing.
