@@ -32,7 +32,7 @@
     <tr>
       <th>Name</th>
       <th>Type</th>
-      <th>Value</th>
+      <th>Default</th>
       <th>Notes</th>
     </tr>
   </thead>
@@ -41,7 +41,19 @@
 {{#parameters}}
     <tr>
       <td><span class="parametername">{{#required}}*{{/required}}{{name}}</span></td>
-      <td>{{type}}</td>
+      <td>
+          {{^schema.cType}}
+            {{schema.type}}
+            {{#schema.format}}
+              ({{schema.format}})
+            {{/schema.format}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>
+            {{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+      </td>
       <td>{{default}}</td>
       <td>{{{description}}}</td>
     </tr>
@@ -57,6 +69,7 @@
     <thead>
       <tr>
         <th>Status Code</th>
+        <th>Type</th>
         <th>Description</th>
         <th>Samples</th>
       </tr>
@@ -66,6 +79,16 @@
 {{#responses}}
     <tr>
       <td><span class="status">{{statusCode}}</span></td>
+      <td>
+          {{^schema.cType}}
+            {{schema.type}}
+          {{/schema.cType}}
+
+          {{#schema.cType}}
+            <a href="#{{schema.cTypeId}}" class="typelink">{{{schema.cType}}}</a>
+            {{#schema.cTypeIsArray}}[]{{/schema.cTypeIsArray}}
+          {{/schema.cType}}
+      </td>
       <td>{{{description}}}</td>
       <td class="sample-response">
         {{#examples}}
