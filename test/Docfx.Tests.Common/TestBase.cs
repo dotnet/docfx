@@ -55,7 +55,7 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
     /// <summary>
     /// Find docfx solution folder.
     /// </summary>
-    protected string GetSolutionFolder([CallerFilePath] string callerFilePath = "")
+    protected static string GetSolutionFolder([CallerFilePath] string callerFilePath = "")
     {
         if (callerFilePath.StartsWith("/_/"))
         {

@@ -4,16 +4,14 @@
 using Docfx.Common;
 using Docfx.Plugins;
 using Docfx.Tests.Common;
-using FluentAssertions;
+
 using Xunit;
 
 namespace Docfx.Build.Engine.Tests;
 
 [Collection("docfx STA")]
-public class TemplateManagerUnitTest : TestBase
+public partial class TemplateManagerUnitTest : TestBase
 {
-    private const string DOCFX_CUSTOM_TEMPLATES_DIR = DataContracts.Common.Constants.EnvironmentVariables.DOCFX_CUSTOM_TEMPLATES_DIR;
-
     private readonly string _inputFolder;
     private readonly string _outputFolder;
 
@@ -41,55 +39,6 @@ public class TemplateManagerUnitTest : TestBase
         var file2 = Path.Combine(outputFolder, "sub/file1");
         Assert.True(File.Exists(file2));
         Assert.Equal("Override: This is file inside a subfolder", File.ReadAllText(file2));
-    }
-
-    [Trait("Related", "TemplateProcessor")]
-    [Fact]
-    public void TestCustomTemplatesPath()
-    {
-        // Arrange
-        var templates = new List<string> { "default" };
-        var manager = new TemplateManager(templates, null, null);
-
-        // Test for DOCFX_CUSTOM_TEMPLATES_DIR is not set.
-        {
-            // Act
-            var results = manager.GetTemplateDirectories();
-
-            // Assert
-            results.Should().BeEmpty();
-        }
-        // If `DOCFX_CUSTOM_TEMPLATES_DIR` specified with valid path.
-        {
-            var templatesDir = Path.Combine(GetSolutionFolder(), @"src\Docfx.App\templates");
-            Environment.SetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR, templatesDir);
-            try
-            {
-                // Act
-                var results = manager.GetTemplateDirectories().ToArray();
-                results.Should().HaveCount(1);
-                results[0].Should().Be(Path.Combine(templatesDir, templates[0]));
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR, null);
-            }
-        }
-        // If `DOCFX_CUSTOM_TEMPLATES_DIR` specified but invalid path.
-        {
-            var templatesDir = Path.Combine(GetSolutionFolder(), @"src\DummyPath\templates");
-            Environment.SetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR, templatesDir);
-            try
-            {
-                // Act
-                var results = manager.GetTemplateDirectories().ToArray();
-                results.Should().HaveCount(0);
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR, null);
-            }
-        }
     }
 
     #region Mustache template processor test

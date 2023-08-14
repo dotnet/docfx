@@ -1,7 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Docfx.Common;
+
+using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVariables;
+using Switches = Docfx.DataContracts.Common.Constants.Switches;
 
 #nullable enable
 
@@ -9,7 +14,6 @@ namespace Docfx.Build.Engine;
 
 public class TemplateManager
 {
-    private const string DOCFX_CUSTOM_TEMPLATES_DIR = DataContracts.Common.Constants.EnvironmentVariables.DOCFX_CUSTOM_TEMPLATES_DIR;
     private readonly List<string> _templates;
     private readonly List<string>? _themes;
     private readonly string _baseDirectory;
@@ -43,36 +47,30 @@ public class TemplateManager
         return GetTemplateDirectories(_templates);
     }
 
-
     private IEnumerable<string> GetTemplateDirectories(IEnumerable<string> names)
     {
-        var customTemplatesDir = Environment.GetEnvironmentVariable(DOCFX_CUSTOM_TEMPLATES_DIR);
-        if (customTemplatesDir != null && !Directory.Exists(customTemplatesDir))
-        {
-            Logger.LogWarning($"Custom templates directory is not found. {DOCFX_CUSTOM_TEMPLATES_DIR}: {customTemplatesDir}");
-            customTemplatesDir = null;
-        }
+        var additionalTemplatesDirs = GetAdditionalTemplatesDirs();
 
         foreach (var name in names)
         {
-            //  Search template from exe's templates directory.
+            // Search template from exe's templates directory.
             var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "templates", name));
             if (Directory.Exists(directory))
             {
                 yield return directory;
             }
 
-            // Search template from directory specified by environment variable.
-            if (customTemplatesDir != null)
+            // Search template from additional directories.
+            foreach (var templatesDir in additionalTemplatesDirs)
             {
-                var templateDir = Path.GetFullPath(Path.Combine(customTemplatesDir, name));
-                if (Directory.Exists(templateDir))
+                directory = Path.GetFullPath(Path.Combine(templatesDir, name));
+                if (Directory.Exists(directory))
                 {
-                    yield return templateDir;
+                    yield return directory;
                 }
             }
 
-            // Search templates from base directory.
+            // Search template from base directory.
             directory = Path.GetFullPath(Path.Combine(_baseDirectory, name));
             if (Directory.Exists(directory))
             {
@@ -153,5 +151,53 @@ public class TemplateManager
             // If the file already exists, skip
             Logger.Log(LogLevel.Info, $"File {filePath}: {e.Message}, skipped");
         }
+    }
+
+    /// <summary>
+    /// Gets additional templates directories if available.
+    ///   1. .NET tool's templates directory.
+    ///   2. Custom templates directory specified by environment variable(`DOCFX_CUSTOM_TEMPLATES_DIR`).
+    /// </summary>
+    [return: NotNull]
+    private static string[] GetAdditionalTemplatesDirs()
+    {
+        var dotnetToolTemplatesDir = GetDotnetToolTemplatesDir();
+        var customTemplatesDir = GetCustomTemplatesDir();
+
+        if (dotnetToolTemplatesDir == null && customTemplatesDir == null)
+            return Array.Empty<string>();
+
+        if (customTemplatesDir == null)
+            return new[] { dotnetToolTemplatesDir! };
+
+        if (dotnetToolTemplatesDir == null)
+            return new[] { customTemplatesDir! };
+        
+        return new string[] { dotnetToolTemplatesDir, customTemplatesDir };
+    }
+
+    private static string? GetDotnetToolTemplatesDir()
+    {
+        if (!Switches.IsDotnetToolsMode)
+            return null;
+
+        string templatesDir = Path.Combine(AppContext.BaseDirectory, "../../../templates");
+        if (!Directory.Exists(templatesDir))
+        {
+            Logger.LogWarning($".NET Tools templates directory is not found. Path: {Path.GetFullPath(templatesDir)}");
+            return null;
+        }
+        return templatesDir;
+    }
+
+    private static string? GetCustomTemplatesDir()
+    {
+        string? templatesDir = EnvironmentVariables.CustomTemplatesDir;
+        if (templatesDir != null && !Directory.Exists(templatesDir))
+        {
+            Logger.LogWarning($"Custom templates directory is not found. Path: {templatesDir}");
+            return null;
+        }
+        return templatesDir;
     }
 }

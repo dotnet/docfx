@@ -7,6 +7,8 @@ using Docfx.Common;
 using Docfx.Plugins;
 using HtmlAgilityPack;
 
+using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVariables;
+
 namespace Docfx.Build.Engine;
 
 internal sealed class HtmlPostProcessor : IPostProcessor
@@ -22,7 +24,7 @@ internal sealed class HtmlPostProcessor : IPostProcessor
             Handlers.Add(new ValidateBookmark());
 
             bool keepDebugInfo = false;
-            var docfxKeepDebugInfo = Environment.GetEnvironmentVariable("DOCFX_KEEP_DEBUG_INFO");
+            var docfxKeepDebugInfo = EnvironmentVariables.KeepDebugInfo;
             if (!string.IsNullOrEmpty(docfxKeepDebugInfo) && bool.TryParse(docfxKeepDebugInfo, out keepDebugInfo))
             {
                 Logger.LogVerbose($"DOCFX_KEEP_DEBUG_INFO is set to {keepDebugInfo}");
