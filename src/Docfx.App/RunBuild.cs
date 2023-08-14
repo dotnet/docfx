@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Build.Engine;
+using Docfx.Common;
+using Docfx.Common.Git;
 using Docfx.Exceptions;
 using Docfx.Plugins;
 
@@ -22,6 +24,12 @@ internal static class RunBuild
 
         EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
+
+        if (!config.DisableGitFeatures)
+        {
+            CheckGitCommandExists();
+        }
+
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
         var baseDirectory = EnvironmentContext.BaseDirectory;
         var outputFolder = Path.GetFullPath(Path.Combine(
@@ -58,5 +66,27 @@ internal static class RunBuild
 
         EnvironmentContext.Clean();
         return outputFolder;
+    }
+
+    /// <summary>
+    /// Access lazy variable on main thread before starting parallel processing.
+    /// If initialization isn't called on this phase.
+    /// Lock wait occurs when worker thread operation started.
+    /// </summary>
+    private static void CheckGitCommandExists()
+    {
+        // It takes about 50-100 ms to check git command exists or not.
+        // So execute initialization on thread pool's thread.
+        ThreadPool.QueueUserWorkItem((state) =>
+        {
+            try
+            {
+                _ = GitUtility.ExistGitCommand.Value;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to call GitUtility.ExistGitCommand.Value. Exception: " + ex.ToString());
+            }
+        });
     }
 }
