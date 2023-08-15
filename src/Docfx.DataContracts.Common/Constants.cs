@@ -116,7 +116,6 @@ public static class Constants
     public static class EnvironmentVariables
     {
 #pragma warning disable format
-        public const string DOCFX_CUSTOM_TEMPLATES_DIR                 = nameof(DOCFX_CUSTOM_TEMPLATES_DIR);
         public const string DOCFX_KEEP_DEBUG_INFO                      = nameof(DOCFX_KEEP_DEBUG_INFO);
         public const string DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST = nameof(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
         public const string DOCFX_GIT_TIMEOUT                          = nameof(DOCFX_GIT_TIMEOUT);
@@ -124,7 +123,6 @@ public static class Constants
 #pragma warning restore format
 
 #pragma warning disable format
-        public static string? CustomTemplatesDir                    => GetValue(DOCFX_CUSTOM_TEMPLATES_DIR);
         public static string? KeepDebugInfo                         => GetValue(DOCFX_KEEP_DEBUG_INFO);
         public static bool NoCheckCertificateRevocationList         => GetBooleanValue(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
         public static string? GitTimeout                            => GetValue(DOCFX_GIT_TIMEOUT);
