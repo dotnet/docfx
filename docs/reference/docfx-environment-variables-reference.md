@@ -27,5 +27,3 @@ Used to override git branch name.
 
 Used to disable CRL check.
 This setting is intended to be used on offline environment.
-
-
