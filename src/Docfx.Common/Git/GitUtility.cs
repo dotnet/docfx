@@ -47,8 +47,26 @@ public static class GitUtility
 
     private static readonly ConcurrentDictionary<string, GitRepoInfo> Cache = new();
 
-    private static bool? GitCommandExists = null;
-    private static object SyncRoot = new();
+    /// <summary>
+    /// Gets git is installed globally or not.
+    /// </summary>
+    public static Lazy<bool> ExistGitCommand = new(() =>
+    {
+        try
+        {
+            bool gitCommandExists = CommandUtility.ExistCommand(CommandName);
+            if (!gitCommandExists)
+            {
+                Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
+            }
+            return gitCommandExists;
+        }
+        catch(Exception ex)
+        {
+            Logger.LogWarning("Failed to get Git command that installed globally. Exception: " + ex.ToString());
+            return false;
+        }
+    }, LazyThreadSafetyMode.ExecutionAndPublication);
 
     public static GitDetail TryGetFileDetail(string filePath)
     {
@@ -160,7 +178,7 @@ public static class GitUtility
 
     private static GitDetail GetFileDetail(string filePath)
     {
-        if (string.IsNullOrEmpty(filePath) || !ExistGitCommand())
+        if (string.IsNullOrEmpty(filePath) || !ExistGitCommand.Value)
         {
             return null;
         }
@@ -365,26 +383,5 @@ public static class GitUtility
             }
         }
     }
-
-    private static bool ExistGitCommand()
-    {
-        if (GitCommandExists == null)
-        {
-            lock (SyncRoot)
-            {
-                if (GitCommandExists == null)
-                {
-                    GitCommandExists = CommandUtility.ExistCommand(CommandName);
-                    if (GitCommandExists != true)
-                    {
-                        Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
-                    }
-                }
-            }
-        }
-
-        return GitCommandExists.Value;
-    }
-
     #endregion
 }
