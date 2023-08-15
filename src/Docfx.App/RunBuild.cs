@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Build.Engine;
+using Docfx.Common;
+using Docfx.Common.Git;
 using Docfx.Exceptions;
 using Docfx.Plugins;
 
@@ -22,6 +24,13 @@ internal static class RunBuild
 
         EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
+
+        if (!config.DisableGitFeatures)
+        {
+            // Initialize Lazy<bool> property by ThreadPool thread.(It takes about 50-100 ms)
+            Task.Run(() => GitUtility.ExistGitCommand.Value);
+        }
+
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
         var baseDirectory = EnvironmentContext.BaseDirectory;
         var outputFolder = Path.GetFullPath(Path.Combine(
