@@ -233,7 +233,7 @@ public class DocumentBuilder : IDisposable
                 }
 
                 var siteHostName = TryGetPublishTargetSiteHostNameFromEnvironment();
-                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
+                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter, resource);
                 foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
                 {
                     var fileName = Path.GetFileName(pair.Path);
@@ -262,10 +262,8 @@ public class DocumentBuilder : IDisposable
         }
     }
 
-    private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
+    private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters, CompositeResourceReader resourceProvider)
     {
-        var resourceProvider = parameters.TemplateManager?.CreateTemplateResource();
-
         return new MarkdigMarkdownService(
             new MarkdownServiceParameters
             {
