@@ -1,7 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Runtime.CompilerServices;
+
 namespace Docfx.DataContracts.Common;
+
+#nullable enable
 
 public static class Constants
 {
@@ -107,5 +111,43 @@ public static class Constants
     {
         public const string MarkdownTocFileName = "toc.md";
         public const string YamlTocFileName = "toc.yml";
+    }
+
+    public static class EnvironmentVariables
+    {
+#pragma warning disable format
+        public const string DOCFX_KEEP_DEBUG_INFO                      = nameof(DOCFX_KEEP_DEBUG_INFO);
+        public const string DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST = nameof(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
+        public const string DOCFX_GIT_TIMEOUT                          = nameof(DOCFX_GIT_TIMEOUT);
+        public const string DOCFX_SOURCE_BRANCH_NAME                   = nameof(DOCFX_SOURCE_BRANCH_NAME);
+#pragma warning restore format
+
+#pragma warning disable format
+        public static string? KeepDebugInfo                         => GetValue(DOCFX_KEEP_DEBUG_INFO);
+        public static bool NoCheckCertificateRevocationList         => GetBooleanValue(DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST);
+        public static string? GitTimeout                            => GetValue(DOCFX_GIT_TIMEOUT);
+        public static string? SourceBranchName                      => GetValue(DOCFX_SOURCE_BRANCH_NAME);
+#pragma warning restore format
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string? GetValue(string name)
+        {
+            var value = Environment.GetEnvironmentVariable(name);
+            return string.IsNullOrEmpty(value) ? null : value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool GetBooleanValue(string name)
+        {
+            var value = Environment.GetEnvironmentVariable(name);
+            return bool.TryParse(value, out bool result) && result;
+        }
+    }
+
+    public static class Switches
+    {
+        public const string DotnetToolMode = "Docfx.DotnetToolMode";
+
+        public static bool IsDotnetToolsMode => AppContext.TryGetSwitch(DotnetToolMode, out bool isEnabled) && isEnabled;
     }
 }

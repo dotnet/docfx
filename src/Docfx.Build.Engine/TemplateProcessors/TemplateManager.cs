@@ -3,6 +3,8 @@
 
 using Docfx.Common;
 
+using Switches = Docfx.DataContracts.Common.Constants.Switches;
+
 #nullable enable
 
 namespace Docfx.Build.Engine;
@@ -44,14 +46,28 @@ public class TemplateManager
 
     private IEnumerable<string> GetTemplateDirectories(IEnumerable<string> names)
     {
+        var dotnetToolTemplatesDir = GetDotnetToolTemplatesDir();
+
         foreach (var name in names)
         {
+            // Search template from exe's templates directory.
             var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "templates", name));
             if (Directory.Exists(directory))
             {
                 yield return directory;
             }
 
+            if (dotnetToolTemplatesDir != null)
+            {
+                // Search template from DotNetTool's templates directories.
+                directory = Path.GetFullPath(Path.Combine(dotnetToolTemplatesDir, name));
+                if (Directory.Exists(directory))
+                {
+                    yield return directory;
+                }
+            }
+
+            // Search template from base directory.
             directory = Path.GetFullPath(Path.Combine(_baseDirectory, name));
             if (Directory.Exists(directory))
             {
@@ -132,5 +148,19 @@ public class TemplateManager
             // If the file already exists, skip
             Logger.Log(LogLevel.Info, $"File {filePath}: {e.Message}, skipped");
         }
+    }
+
+    private static string? GetDotnetToolTemplatesDir()
+    {
+        if (!Switches.IsDotnetToolsMode)
+            return null;
+
+        string templatesDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../templates"));
+        if (!Directory.Exists(templatesDir))
+        {
+            Logger.LogWarning($".NET Tools templates directory is not found. Path: {templatesDir}");
+            return null;
+        }
+        return templatesDir;
     }
 }

@@ -3,6 +3,8 @@
 
 using Docfx.Common;
 
+using EnvironmentVariables = Docfx.DataContracts.Common.Constants.EnvironmentVariables;
+
 namespace Docfx.Build.Engine;
 
 public class XRefMapDownloader
@@ -123,10 +125,9 @@ public class XRefMapDownloader
         var baseUrl = uri.GetLeftPart(UriPartial.Path);
         baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
 
-        bool.TryParse(Environment.GetEnvironmentVariable("DOCFX_NO_CHECK_CERTIFICATE_REVOCATION_LIST"), out var noCheckCertificateRevocationList);
         using var httpClient = new HttpClient(new HttpClientHandler()
         {
-            CheckCertificateRevocationList = !noCheckCertificateRevocationList
+            CheckCertificateRevocationList = !EnvironmentVariables.NoCheckCertificateRevocationList,
         });
 
         using var stream = await httpClient.GetStreamAsync(uri);

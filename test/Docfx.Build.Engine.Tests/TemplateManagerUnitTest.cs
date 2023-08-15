@@ -10,7 +10,7 @@ using Xunit;
 namespace Docfx.Build.Engine.Tests;
 
 [Collection("docfx STA")]
-public class TemplateManagerUnitTest : TestBase
+public partial class TemplateManagerUnitTest : TestBase
 {
     private readonly string _inputFolder;
     private readonly string _outputFolder;
