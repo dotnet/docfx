@@ -52,12 +52,20 @@ public static class GitUtility
     /// </summary>
     public static Lazy<bool> ExistGitCommand = new(() =>
     {
-        bool gitCommandExists = CommandUtility.ExistCommand(CommandName);
-        if (!gitCommandExists)
+        try
         {
-            Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
+            bool gitCommandExists = CommandUtility.ExistCommand(CommandName);
+            if (!gitCommandExists)
+            {
+                Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
+            }
+            return gitCommandExists;
         }
-        return gitCommandExists;
+        catch(Exception ex)
+        {
+            Logger.LogWarning("Failed to get Git command that installed globally. Exception: " + ex.ToString());
+            return false;
+        }
     }, LazyThreadSafetyMode.ExecutionAndPublication);
 
     public static GitDetail TryGetFileDetail(string filePath)

@@ -27,7 +27,8 @@ internal static class RunBuild
 
         if (!config.DisableGitFeatures)
         {
-            CheckGitCommandExists();
+            // Initialize Lazy<bool> property by ThreadPool thread.(It takes about 50-100 ms)
+            Task.Run(() => GitUtility.ExistGitCommand.Value);
         }
 
         // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
@@ -66,27 +67,5 @@ internal static class RunBuild
 
         EnvironmentContext.Clean();
         return outputFolder;
-    }
-
-    /// <summary>
-    /// Access lazy variable on main thread before starting parallel processing.
-    /// If initialization isn't called on this phase.
-    /// Lock wait occurs when worker thread operation started.
-    /// </summary>
-    private static void CheckGitCommandExists()
-    {
-        // It takes about 50-100 ms to check git command exists or not.
-        // So execute initialization on thread pool's thread.
-        ThreadPool.QueueUserWorkItem((state) =>
-        {
-            try
-            {
-                _ = GitUtility.ExistGitCommand.Value;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Failed to call GitUtility.ExistGitCommand.Value. Exception: " + ex.ToString());
-            }
-        });
     }
 }
