@@ -12,6 +12,7 @@ public sealed class LocalFileResourceReader : ResourceFileReader
     private static StringComparer ResourceComparer = StringComparer.Ordinal;
     private string _directory = null;
     private readonly int _maxDepth;
+    private readonly HashSet<string> NamesHashSet;
 
     public override string Name { get; }
     public override IEnumerable<string> Names { get; }
@@ -24,7 +25,8 @@ public sealed class LocalFileResourceReader : ResourceFileReader
         Name = _directory;
         _maxDepth = maxSearchLevel;
         var includedFiles = GetFiles(_directory, "*", maxSearchLevel);
-        Names = includedFiles.Select(s => PathUtility.MakeRelativePath(_directory, s)).Where(s => s != null);
+        Names = includedFiles.Select(s => PathUtility.MakeRelativePath(_directory, s)).Where(s => s != null).ToArray();
+        NamesHashSet = Names.ToHashSet(ResourceComparer);
 
         IsEmpty = !Names.Any();
     }
@@ -34,7 +36,10 @@ public sealed class LocalFileResourceReader : ResourceFileReader
         if (IsEmpty) return null;
 
         // in case relative path is combined by backslash \
-        if (!Names.Contains(StringExtension.ToNormalizedPath(name.Trim()), ResourceComparer)) return null;
+        var normalizedName = StringExtension.ToNormalizedPath(name.Trim());
+        if (!NamesHashSet.Contains(normalizedName))
+            return null;
+
         var filePath = Path.Combine(_directory, name);
         return new FileStream(filePath, FileMode.Open, FileAccess.Read);
     }

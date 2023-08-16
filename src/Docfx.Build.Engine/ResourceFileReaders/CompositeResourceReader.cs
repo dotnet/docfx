@@ -18,7 +18,7 @@ public sealed class CompositeResourceReader : ResourceFileReader, IEnumerable<Re
     {
         _readers = declaredReaders.ToArray();
         IsEmpty = _readers.Length == 0;
-        Names = _readers.SelectMany(s => s.Names).Distinct();
+        Names = _readers.SelectMany(s => s.Names).Distinct().ToArray();
     }
 
     public override Stream GetResourceStream(string name)
