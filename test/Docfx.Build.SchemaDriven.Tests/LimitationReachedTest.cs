@@ -42,39 +42,6 @@ public class LimitationReachedTest : TestBase
         _templateManager = new TemplateManager(new List<string> { "template" }, null, _templateFolder);
     }
 
-    [Fact(Skip = "Manually run this testcase, as it will influence the result of other test cases")]
-    public void TestSchemaReachedLimits()
-    {
-        // Json.NET schema has limitation of 1000 calls per hour
-        using var listener = new TestListenerScope("TestInvalidMetadataReference");
-        var schemaFile = CreateFile("template/schemas/limit.test.schema.json", @"
-{
-  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
-  ""version"": ""1.0.0"",
-  ""title"": ""LimitTest"",
-  ""description"": ""A simple test schema for sdp"",
-  ""type"": ""object"",
-  ""properties"": {
-      ""metadata"": {
-            ""type"": ""string""
-      }
-  }
-}
-", _templateFolder);
-
-        var inputFiles = Enumerable.Range(0, 2000)
-            .Select(s => CreateFile($"normal{s}.yml", @"### YamlMime:LimitTest
-metadata: Web Apps Documentation
-", _inputFolder)).ToArray();
-
-        FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, inputFiles, _inputFolder);
-        BuildDocument(files);
-        Assert.Equal(2, listener.Items.Count);
-        Assert.Single(listener.Items.Where(s => s.Message == "There is no template processing document type(s): LimitTest"));
-        Assert.True(LimitationReached(listener));
-    }
-
     private void BuildDocument(FileCollection files)
     {
         var parameters = new DocumentBuildParameters

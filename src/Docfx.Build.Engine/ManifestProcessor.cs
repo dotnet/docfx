@@ -77,7 +77,7 @@ internal class ManifestProcessor
 
     private void NormalizeToObject()
     {
-        Logger.LogVerbose("Normalizing all the object to week type");
+        Logger.LogVerbose("Normalizing all the object to weak type");
 
         _manifestWithContext.RunAll(m =>
         {
