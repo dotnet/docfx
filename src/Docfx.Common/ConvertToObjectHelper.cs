@@ -36,10 +36,10 @@ public static class ConvertToObjectHelper
             case JTokenType.Object:
                 return ConvertJObjectToDictionary((JObject)jToken);
             default:
-                if (jToken is not JValue jValue)
-                    goto default;
-                return jValue.Value;
-                throw new ArgumentException($"Not expected type passed. JTokenType: {jToken.Type}, JToken: {jToken}");
+                if (jToken is JValue jValue)
+                    return jValue.Value;
+                else
+                    throw new ArgumentException($"Not expected object type passed. JTokenType: {jToken.Type}, JToken: {jToken}");
         }
     }
 
