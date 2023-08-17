@@ -269,7 +269,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
         }
     }
 
-    [Fact(Skip = "Markdig does not support multi-uid overwrite")]
+    [Fact]
     public void ProcessMrefWithMultiUidOverwriteShouldSucceed()
     {
         var files = new FileCollection(_defaultFiles);
@@ -281,7 +281,7 @@ public class ManagedReferenceDocumentProcessorTest : TestBase
             var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
             Assert.Equal("\n<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"6\">Overwrite content1</p>\n", model.Conceptual);
             Assert.Equal("\n<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"13\">Overwrite &quot;content2&quot;</p>\n", model.Summary);
-            Assert.Equal("\n<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"20\">Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
+            Assert.Equal("\n<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"20\">Overwrite 'content3'</p>\n", model.Metadata["not_defined_property"]);
         }
     }
 

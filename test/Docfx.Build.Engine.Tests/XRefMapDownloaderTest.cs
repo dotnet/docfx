@@ -23,9 +23,6 @@ public class XRefMapDownloadTest
     [Fact]
     public async Task ReadLocalXRefMapWithFallback()
     {
-        // GitHub doesn't support TLS 1.1 since Feb 23, 2018. See: https://github.com/blog/2507-weak-cryptographic-standards-removed
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
         var basePath = Path.GetRandomFileName();
         var fallbackFolders = new List<string>() { Path.Combine(Directory.GetCurrentDirectory(), "TestData") };
         var xrefmaps = new List<string>() { "xrefmap.yml" };

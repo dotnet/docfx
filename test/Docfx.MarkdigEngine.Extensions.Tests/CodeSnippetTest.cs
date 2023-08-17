@@ -264,8 +264,8 @@ public class MyClass
     }
 
     [Fact]
-    [Trait("Related", "DfmMarkdown")]
-    public void TestDfmFencesBlockLevel()
+    [Trait("Related", "Markdown")]
+    public void TestFencesBlockLevel()
     {
         var root = @"
 [!code-FakeREST[REST](api.json)]
@@ -292,7 +292,7 @@ public class MyClass
     }
 
     [Theory]
-    [Trait("Related", "DfmMarkdown")]
+    [Trait("Related", "Markdown")]
     #region Inline Data
     [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
@@ -540,7 +540,7 @@ public static void Foo()
 }
 </code></pre>")]
     #endregion
-    public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
+    public void TestFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
     {
         // arrange
         var content = @"namespace ConsoleApplication1
@@ -581,8 +581,8 @@ public static void Foo()
     }
 
     [Fact]
-    [Trait("Related", "DfmMarkdown")]
-    public void TestDfmFencesBlockLevelWithWhitespaceLeading()
+    [Trait("Related", "Markdown")]
+    public void TestFencesBlockLevelWithWhitespaceLeading()
     {
         var root = @"
  [!code-FakeREST[REST](api.json)]
@@ -655,8 +655,8 @@ public static void Foo()
     }
 
     [Fact]
-    [Trait("Related", "DfmMarkdown")]
-    public void TestDfmFencesBlockLevelWithWorkingFolder()
+    [Trait("Related", "Markdown")]
+    public void TestFencesBlockLevelWithWorkingFolder()
     {
         var root = @"[!code-REST[REST](~/api.json)]";
         var apiJsonContent = @"
@@ -687,6 +687,7 @@ public static void Foo()
     }
 
     [Fact]
+    [Trait("Related", "Markdown")]
     public void CodeSnippetShouldVerifyTagname()
     {
         //arrange

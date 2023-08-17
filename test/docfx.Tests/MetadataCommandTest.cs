@@ -45,24 +45,6 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithVsinstalldirEnvSet()
-    {
-        var envName = "VSINSTALLDIR";
-        var originalValue = Environment.GetEnvironmentVariable(envName);
-        Environment.SetEnvironmentVariable(envName, "c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise");
-
-        try
-        {
-            TestMetadataCommandFromCSProject();
-        }
-        finally
-        {
-            Environment.SetEnvironmentVariable(envName, originalValue);
-        }
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
     public void TestMetadataCommandFromDll()
     {
         var dllFile = Path.Combine(_projectFolder, "test.dll");
@@ -261,7 +243,7 @@ public class MetadataCommandTest : TestBase
         Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
     }
 
-    [Fact(Skip = "Don't know why this fails.")]
+    [Fact]
     [Trait("Related", "docfx")]
     public void TestMetadataCommandFromCSProjectWithDuplicateProjectReference()
     {
