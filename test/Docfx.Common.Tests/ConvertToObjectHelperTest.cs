@@ -1,7 +1,9 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using FluentAssertions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Docfx.Common.Tests;
@@ -67,6 +69,21 @@ public class ConvertToObjectHelperTest
         Dictionary<string, object> obj = ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
         Assert.True(ReferenceEquals(obj["key1"], obj));
         Assert.Equal("value", ((Dictionary<string, object>)obj["key1"])["key"]);
+    }
+
+    [Fact]
+    public void ConvertJObjectToObject_UnexpectedType()
+    {
+        // Arrange
+        var jToken = new JProperty("name", "dummy");
+
+        // Act
+        var action = () => { ConvertToObjectHelper.ConvertJObjectToObject(jToken); };
+
+        // Assert
+        action.Should()
+              .Throw<ArgumentException>()
+              .WithMessage("Not expected object type passed. JTokenType: Property, Text: \"name\": \"dummy\"");
     }
 
     private sealed class ComplexType

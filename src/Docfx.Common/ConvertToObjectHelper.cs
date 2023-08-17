@@ -39,7 +39,7 @@ public static class ConvertToObjectHelper
                 if (jToken is JValue jValue)
                     return jValue.Value;
                 else
-                    throw new ArgumentException($"Not expected object type passed. JTokenType: {jToken.Type}, JToken: {jToken}");
+                    throw new ArgumentException($"Not expected object type passed. JTokenType: {jToken.Type}, Text: {jToken}");
         }
     }
 
