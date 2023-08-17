@@ -17,6 +17,7 @@
         }
       ],
       "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
       "dest": "obj/api"
     }
   ],

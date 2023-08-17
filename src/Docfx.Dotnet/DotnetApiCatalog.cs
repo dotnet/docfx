@@ -125,6 +125,7 @@ public static class DotnetApiCatalog
             NoRestore = configModel?.NoRestore ?? false,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,
             MemberLayout = configModel?.MemberLayout ?? default,
+            EnumSortOrder = configModel?.EnumSortOrder ?? default,
             AllowCompilationErrors = configModel?.AllowCompilationErrors ?? false,
             Files = expandedFiles.Items.SelectMany(s => s.Files).ToList(),
             References = expandedReferences?.Items.SelectMany(s => s.Files).ToList(),

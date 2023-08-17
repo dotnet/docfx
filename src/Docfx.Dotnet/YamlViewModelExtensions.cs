@@ -150,17 +150,17 @@ internal static class YamlViewModelExtensions
         return result;
     }
 
-    public static PageViewModel ToPageViewModel(this MetadataItem model)
+    public static PageViewModel ToPageViewModel(this MetadataItem model, ExtractMetadataConfig config)
     {
         if (model == null)
         {
             return null;
         }
         var result = new PageViewModel();
-        result.Items.Add(model.ToItemViewModel());
+        result.Items.Add(model.ToItemViewModel(config));
         if (model.Type.AllowMultipleItems())
         {
-            AddChildren(model, result);
+            AddChildren(model, result, config);
         }
         foreach (var item in model.References)
         {
@@ -229,12 +229,16 @@ internal static class YamlViewModelExtensions
         return result;
     }
 
-    public static ItemViewModel ToItemViewModel(this MetadataItem model)
+    public static ItemViewModel ToItemViewModel(this MetadataItem model, ExtractMetadataConfig config)
     {
         if (model == null)
         {
             return null;
         }
+
+        var children = model.Type is MemberType.Enum && config.EnumSortOrder is EnumSortOrder.DeclaringOrder
+            ? model.Items?.Select(x => x.Name).ToList()
+            : model.Items?.Select(x => x.Name).OrderBy(s => s, StringComparer.Ordinal).ToList();
 
         var result = new ItemViewModel
         {
@@ -243,7 +247,7 @@ internal static class YamlViewModelExtensions
             IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
             IsExtensionMethod = model.IsExtensionMethod,
             Parent = model.Parent?.Name,
-            Children = model.Items?.Select(x => x.Name).OrderBy(s => s, StringComparer.Ordinal).ToList(),
+            Children = children,
             Type = model.Type,
             Source = model.Source,
             Documentation = model.Documentation,
@@ -372,14 +376,14 @@ internal static class YamlViewModelExtensions
         return defaultValue;
     }
 
-    private static void AddChildren(MetadataItem model, PageViewModel result)
+    private static void AddChildren(MetadataItem model, PageViewModel result, ExtractMetadataConfig config)
     {
         if (model.Items != null && model.Items.Count > 0)
         {
             foreach (var item in model.Items)
             {
-                result.Items.Add(item.ToItemViewModel());
-                AddChildren(item, result);
+                result.Items.Add(item.ToItemViewModel(config));
+                AddChildren(item, result, config);
             }
         }
     }

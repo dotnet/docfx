@@ -232,7 +232,7 @@ internal class ExtractMetadataWorker : IDisposable
             var fileName = memberModel.Name.Replace('`', '-');
             var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
             string itemFilePath = Path.Combine(_config.OutputFolder, outputFileName);
-            var memberViewModel = memberModel.ToPageViewModel();
+            var memberViewModel = memberModel.ToPageViewModel(_config);
             memberViewModel.ShouldSkipMarkup = _config.ShouldSkipMarkup;
             memberViewModel.MemberLayout = _config.MemberLayout;
             YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);

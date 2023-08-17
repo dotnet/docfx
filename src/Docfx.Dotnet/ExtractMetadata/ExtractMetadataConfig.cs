@@ -29,6 +29,8 @@ internal class ExtractMetadataConfig
 
     public MemberLayout MemberLayout { get; init; }
 
+    public EnumSortOrder EnumSortOrder { get; init; }
+
     public Dictionary<string, string> MSBuildProperties { get; init; }
 
     public bool AllowCompilationErrors { get; init; }

@@ -32,6 +32,22 @@ internal enum NamespaceLayout
 }
 
 /// <summary>
+/// Specifies the sort order for enums.
+/// </summary>
+internal enum EnumSortOrder
+{
+    /// <summary>
+    /// Sorts enums in alphabetic order.
+    /// </summary>
+    Alphabetic,
+
+    /// <summary>
+    /// Sorts enums in the order they are declared.
+    /// </summary>
+    DeclaringOrder
+}
+
+/// <summary>
 /// MetadataJsonItemConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#11-properties-for-metadata"/>
@@ -66,7 +82,6 @@ internal class MetadataJsonItemConfig
     /// </summary>
     [JsonProperty("filter")]
     public string FilterConfigFile { get; set; }
-
 
     /// <summary>
     /// Include private or internal APIs.
@@ -114,22 +129,27 @@ internal class MetadataJsonItemConfig
     public bool NoRestore { get; set; }
 
     /// <summary>
-    /// Defines how namespaces in TOC are organized.
-    /// When set to flattened, renders namespaces as a single flat list.
-    /// When set to nested, renders namespaces in a nested tree form.
-    /// The default is flattened.
+    /// Defines how namespaces in TOC are organized:
+    /// - `flattened` (default): Renders namespaces as a single flat list.
+    /// - `nested`: Renders namespaces in a nested tree form.
     /// </summary>
     [JsonProperty("namespaceLayout")]
     public NamespaceLayout NamespaceLayout { get; set; }
 
     /// <summary>
-    /// Defines how member pages are organized.
-    /// When set to samePage, places members in the same page as their containing type.
-    /// When set to separatePages, places members in separate pages.
-    /// The default is samePage.
+    /// Defines how member pages are organized:
+    /// - `samePage` (default): Places members in the same page as their containing type.
+    /// - `separatePages`: Places members in separate pages.
     /// </summary>
     [JsonProperty("memberLayout")]
     public MemberLayout MemberLayout { get; set; }
+
+    /// <summary>
+    /// Defines how member pages are organized:
+    /// - `samePage` (default): Places members in the same page as their containing type.
+    /// - `separatePages`: Places members in separate pages.
+    /// </summary>
+    public EnumSortOrder EnumSortOrder { get; init; }
 
     /// <summary>
     /// When enabled, continues documentation generation in case of compilation errors.

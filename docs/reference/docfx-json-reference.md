@@ -339,15 +339,28 @@ Do not run `dotnet restore` before building the projects.
 
 ### `namespaceLayout`
 
-Defines how namespaces in TOC are organized. When set to *flattened*, renders namespaces as a single flat list. When set to *nested*, renders namespaces in a nested tree form. The default is *flattened*.
+Defines how namespaces in TOC are organized:
+
+- `flattened` (default): Renders namespaces as a single flat list.
+- `nested`: Renders namespaces in a nested tree form.
 
 ### `memberLayout`
 
-Defines how member pages are organized. When set to *samePage*, places members in the same page as their containing type. When set to *separatePages*, places members in separate pages. The default is *samePage*.
+Defines how member pages are organized:
+
+- `samePage` (default): Places members in the same page as their containing type.
+- `separatePages`: Places members in separate pages.
 
 ### `allowCompilationErrors`
 
 When enabled, continues documentation generation in case of compilation errors.
+
+### `EnumSortOrder`
+
+Defines how enum members are sorted:
+
+- `alphabetic` (default): Sort enum members in alphabetic order.
+- `declaringOrder`: Sort enum members in the order as they are declared in the source code.
 
 ## `pdf`
 
