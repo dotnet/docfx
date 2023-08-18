@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -266,6 +267,7 @@ public static class GitUtility
         return repoInfo;
     }
 
+    [ExcludeFromCodeCoverage]
     private static Tuple<string, string> GetBranchNames(string repoRootPath)
     {
         // Use the branch name specified by the environment variable.
