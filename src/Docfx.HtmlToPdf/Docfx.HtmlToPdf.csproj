@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <Compile Remove="Manifest.cs" />
     <Compile Remove="ManifestItem.cs" />
@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
-    <ProjectReference Include="..\Docfx.Build.ConceptualDocuments\Docfx.Build.ConceptualDocuments.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
   </ItemGroup>
 </Project>
