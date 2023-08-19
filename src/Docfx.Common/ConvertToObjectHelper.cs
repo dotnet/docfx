@@ -1,35 +1,64 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Docfx.Common;
 
 public static class ConvertToObjectHelper
 {
-    public static object ConvertExpandoObjectToObject(object raw)
+#nullable enable
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    public static object? ConvertJObjectToObject(object raw)
     {
-        return ConvertExpandoObjectToObjectCore(raw, new Dictionary<object, object>());
+        switch (raw)
+        {
+            case null:
+                return null;
+            case JToken jToken:
+                return ConvertJTokenToObject(jToken);
+            default:
+                return raw; //  if other type object passed. Return object itself.
+        }
     }
 
-    public static object ConvertJObjectToObject(object raw)
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static object? ConvertJTokenToObject([NotNull] JToken jToken)
     {
-        if (raw is JValue jValue)
+        switch (jToken.Type)
         {
-            return jValue.Value;
+            case JTokenType.Array:
+                return ConvertJArrayToObjectArray((JArray)jToken);
+            case JTokenType.Object:
+                return ConvertJObjectToDictionary((JObject)jToken);
+            default:
+                if (jToken is JValue jValue)
+                    return jValue.Value;
+                else
+                    throw new ArgumentException($"Not expected object type passed. JTokenType: {jToken.Type}, Text: {jToken}");
         }
-        if (raw is JArray jArray)
-        {
-            return jArray.Select(ConvertJObjectToObject).ToArray();
-        }
-        if (raw is JObject jObject)
-        {
-            return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
-        }
-        return raw;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static object?[] ConvertJArrayToObjectArray([NotNull] JArray jArray)
+    {
+        return jArray.Select(ConvertJTokenToObject).ToArray();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    private static IDictionary<string, object?> ConvertJObjectToDictionary(JObject jObject)
+    {
+        var dictionary = (IDictionary<string, JToken>)jObject;
+        return dictionary.ToDictionary(p => p.Key,
+                                       p => p.Value == null
+                                         ? null
+                                         : ConvertJTokenToObject(p.Value));
+    }
+#nullable restore
 
     public static object ConvertStrongTypeToObject(object raw)
     {
@@ -44,6 +73,11 @@ public static class ConvertToObjectHelper
         }
 
         return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);
+    }
+
+    public static object ConvertExpandoObjectToObject(object raw)
+    {
+        return ConvertExpandoObjectToObjectCore(raw, new Dictionary<object, object>());
     }
 
     public static object ConvertToDynamic(object obj)

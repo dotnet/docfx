@@ -136,22 +136,6 @@ public class JsonConverterTest
             "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
             JsonUtility.Serialize(JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest))));
     }
-
-    private static object ConvertJObjectToObject(object raw)
-    {
-        if (raw is JValue jValue) { return jValue.Value; }
-
-        if (raw is JArray jArray)
-        {
-            return jArray.Select(ConvertJObjectToObject).ToArray();
-        }
-
-        if (raw is JObject jObject)
-        {
-            return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
-        }
-        return raw;
-    }
 }
 
 internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
