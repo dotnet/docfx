@@ -112,8 +112,8 @@ jobs:
 
     - name: Upload GitHub release
       run: |
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-win-x64-${GITHUB_REF_NAME}.zip
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip
-        gh release upload ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-win-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-linux-x64-${GITHUB_REF_NAME}.zip
+        gh release upload --repo dotnet/docfx ${GITHUB_REF_NAME} drop/bin/docfx-osx-x64-${GITHUB_REF_NAME}.zip
       env:
         GH_TOKEN: ${{ github.token }}
