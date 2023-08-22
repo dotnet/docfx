@@ -155,7 +155,7 @@ public abstract class TocDocumentProcessorBase : DisposableDocumentProcessor
         var path = UriUtility.GetPath(pathToFile);
         var segments = UriUtility.GetQueryStringAndFragment(pathToFile);
 
-        var fli = FileLinkInfo.Create(model.LocalPathFromRoot, model.File, path, context);
+        var fli = new FileLinkInfo(model.LocalPathFromRoot, model.File, path, context);
         var href = context.HrefGenerator?.GenerateHref(fli);
 
         // Check href is modified by HrefGenerator or not.

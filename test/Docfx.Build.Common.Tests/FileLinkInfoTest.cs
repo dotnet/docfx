@@ -28,7 +28,7 @@ public class FileLinkInfoTest
             ToFileInSource = "includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png"
         };
 
-        var result = FileLinkInfo.Create(fromFileInSource, fromFileInDest, href, context);
+        var result = new FileLinkInfo(fromFileInSource, fromFileInDest, href, context);
 
         Assert.Equal(result, expected);
     }
