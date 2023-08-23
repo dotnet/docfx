@@ -23,10 +23,18 @@ export async function renderToc(): Promise<TocNode[]> {
 
   const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
 
-  let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
-
   const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
   const { items } = await (await fetch(tocUrl)).json()
+
+  let tocFilterUrl = disableTocFilter ? '' : (localStorage?.getItem('tocFilterUrl') || '')
+  let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
+
+  if (tocFilterUrl !== tocUrl.toString()) {
+    tocFilter = ''
+    localStorage?.setItem('tocFilterUrl', '')
+  } else {
+    localStorage?.setItem('tocFilterUrl', tocUrl.toString())
+  }
 
   const activeNodes = []
   const selectedNodes = []
