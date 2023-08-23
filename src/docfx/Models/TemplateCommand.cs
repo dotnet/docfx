@@ -14,7 +14,7 @@ internal class TemplateCommand
     {
         public override int Execute(CommandContext context)
         {
-            Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates"))
+            Directory.GetDirectories(GetTemplateBaseDirectory())
                 .Select(Path.GetFileName)
                 .ToArray()
                 .WriteLinesToConsole(ConsoleColor.White);
@@ -49,7 +49,7 @@ internal class TemplateCommand
                 Directory.CreateDirectory(outputFolder);
 
                 var templates = options.All || options.Templates is null || options.Templates.Length == 0 ?
-                    Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "templates"))
+                    Directory.GetDirectories(GetTemplateBaseDirectory())
                         .Select(Path.GetFileName)
                         .ToArray()
                     : options.Templates;
@@ -68,5 +68,13 @@ internal class TemplateCommand
                 }
             });
         }
+    }
+
+    private static string GetTemplateBaseDirectory()
+    {
+        if (DataContracts.Common.Constants.Switches.IsDotnetToolsMode)
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../templates"));
+
+        return Path.Combine(AppContext.BaseDirectory, "templates");
     }
 }

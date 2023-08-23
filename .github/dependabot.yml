@@ -5,6 +5,12 @@ updates:
   directory: "/"
   schedule:
     interval: daily
+  groups:
+    roslyn:
+      patterns:
+      - "Microsoft.CodeAnalysis"
+      - "Microsoft.CodeAnalysis.*"
+
 - package-ecosystem: npm
   target-branch: main
   directory: "/templates"
@@ -19,3 +25,7 @@ updates:
   schedule: 
     interval: daily
   target-branch: main
+  groups:
+    typescript-eslint:
+      patterns:
+      - "@typescript-eslint/*"

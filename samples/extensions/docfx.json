@@ -38,7 +38,6 @@
     ],
     "postProcessors": [],
     "keepFileLink": false,
-    "cleanupCacheHistory": false,
     "disableGitFeatures": false,
     "exportViewModel": true
   }

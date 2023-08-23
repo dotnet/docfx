@@ -267,7 +267,7 @@ public static class GitUtility
         return repoInfo;
     }
 
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "To avoid Codecov report indirect coverage changes")]
     private static Tuple<string, string> GetBranchNames(string repoRootPath)
     {
         // Use the branch name specified by the environment variable.
@@ -305,6 +305,7 @@ public static class GitUtility
 
     // Many build systems use a "detached head", which means that the normal git commands
     // to get branch names do not work. Thankfully, they set an environment variable.
+    [ExcludeFromCodeCoverage(Justification = "To avoid Codecov report indirect coverage changes")]
     private static Tuple<string, string> GetBranchNamesFromDetachedHead(string repoRootPath)
     {
         foreach (var name in BuildSystemBranchName)
