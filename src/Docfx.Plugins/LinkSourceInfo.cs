@@ -3,10 +3,10 @@
 
 namespace Docfx.Plugins;
 
-public struct LinkSourceInfo
+public readonly struct LinkSourceInfo
 {
-    public string Target { get; set; }
-    public string Anchor { get; set; }
-    public string SourceFile { get; set; }
-    public int LineNumber { get; set; }
+    public string Target { get; init; }
+    public string Anchor { get; init; }
+    public string SourceFile { get; init; }
+    public int LineNumber { get; init; }
 }

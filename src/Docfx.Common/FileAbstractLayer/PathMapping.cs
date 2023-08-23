@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Docfx.Common;
 
-public struct PathMapping
+public readonly struct PathMapping
 {
     public PathMapping(RelativePath logicalPath, string physicalPath)
     {
@@ -24,7 +24,7 @@ public struct PathMapping
 
     public bool IsFolder => LogicalPath.FileName == string.Empty;
 
-    public bool AllowMoveOut { get; set; }
+    public bool AllowMoveOut { get; }
 
-    public ImmutableDictionary<string, string> Properties { get; set; }
+    public ImmutableDictionary<string, string> Properties { get; init; }
 }

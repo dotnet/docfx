@@ -403,7 +403,7 @@ public class TemplateModelTransformer
             }
             return;
         }
-        var fli = FileLinkInfo.Create(sourceFilePath, destFilePath, path, context);
+        var fli = new FileLinkInfo(sourceFilePath, destFilePath, path, context);
 
         // fragment and query in original href takes precedence over the one from hrefGenerator
         var href = _settings.HrefGenerator?.GenerateHref(fli);

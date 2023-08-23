@@ -5,28 +5,31 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public struct FileLinkInfo
-    : IFileLinkInfo
+public class FileLinkInfo : IFileLinkInfo
 {
-    public string Href { get; set; }
+    public string Href { get; init; }
 
-    public string FromFileInDest { get; set; }
+    public string FromFileInDest { get; init; }
 
-    public string FromFileInSource { get; set; }
+    public string FromFileInSource { get; init; }
 
-    public string ToFileInDest { get; set; }
+    public string ToFileInDest { get; init; }
 
-    public string ToFileInSource { get; set; }
+    public string ToFileInSource { get; init; }
 
-    public string FileLinkInSource { get; set; }
+    public string FileLinkInSource { get; init; }
 
-    public string FileLinkInDest { get; set; }
+    public string FileLinkInDest { get; init; }
 
     public bool IsResolved => ToFileInDest != null;
 
-    public GroupInfo GroupInfo { get; set; }
+    public GroupInfo GroupInfo { get; init; }
 
-    public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
+    public FileLinkInfo()
+    {
+    }
+
+    public FileLinkInfo(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
     {
         ArgumentNullException.ThrowIfNull(fromFileInSource);
         ArgumentNullException.ThrowIfNull(fromFileInDest);
@@ -44,37 +47,33 @@ public struct FileLinkInfo
             throw new ArgumentException("only relative path is supported", nameof(href));
         }
 
-        var fli = new FileLinkInfo
-        {
-            FromFileInSource = fromFileInSource,
-            FromFileInDest = fromFileInDest,
-            GroupInfo = context.GroupInfo,
-        };
+        FromFileInSource = fromFileInSource;
+        FromFileInDest = fromFileInDest;
+        GroupInfo = context.GroupInfo;
+
         if (path.IsFromWorkingFolder())
         {
             var targetInSource = path;
-            fli.ToFileInSource = targetInSource.RemoveWorkingFolder();
-            fli.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
-            fli.FileLinkInSource = targetInSource - (RelativePath)fromFileInSource;
-            if (fli.ToFileInDest != null)
+            ToFileInSource = targetInSource.RemoveWorkingFolder();
+            ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
+            FileLinkInSource = targetInSource - (RelativePath)fromFileInSource;
+            if (ToFileInDest != null)
             {
-                var resolved = (RelativePath)fli.ToFileInDest - (RelativePath)fromFileInDest;
-                fli.FileLinkInDest = resolved;
-                fli.Href = resolved.UrlEncode();
+                var resolved = (RelativePath)ToFileInDest - (RelativePath)fromFileInDest;
+                FileLinkInDest = resolved;
+                Href = resolved.UrlEncode();
             }
             else
             {
-                fli.Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)fromFileInSource).RemoveWorkingFolder()).UrlEncode();
+                Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)fromFileInSource).RemoveWorkingFolder()).UrlEncode();
             }
         }
         else
         {
-            fli.FileLinkInSource = path;
-            fli.ToFileInSource = ((RelativePath)fromFileInSource + path).RemoveWorkingFolder();
-            fli.FileLinkInDest = fli.FileLinkInSource;
-            fli.Href = href;
+            FileLinkInSource = path;
+            ToFileInSource = ((RelativePath)fromFileInSource + path).RemoveWorkingFolder();
+            FileLinkInDest = FileLinkInSource;
+            Href = href;
         }
-
-        return fli;
     }
 }

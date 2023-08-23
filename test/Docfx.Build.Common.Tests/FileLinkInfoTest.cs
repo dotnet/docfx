@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
+using FluentAssertions;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
@@ -28,8 +29,9 @@ public class FileLinkInfoTest
             ToFileInSource = "includes/media/vpn-gateway-verify-connection-portal-rm-include/connectionsucceeded.png"
         };
 
-        var result = FileLinkInfo.Create(fromFileInSource, fromFileInDest, href, context);
+        var result = new FileLinkInfo(fromFileInSource, fromFileInDest, href, context);
 
-        Assert.Equal(result, expected);
+        result.Should().NotBe(expected); // FileLinkInfo is not override object.Equals method.
+        result.Should().BeEquivalentTo(expected);
     }
 }
