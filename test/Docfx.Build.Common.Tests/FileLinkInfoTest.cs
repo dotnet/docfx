@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
+using FluentAssertions;
 using Xunit;
 
 namespace Docfx.MarkdigEngine.Tests;
@@ -30,6 +31,7 @@ public class FileLinkInfoTest
 
         var result = new FileLinkInfo(fromFileInSource, fromFileInDest, href, context);
 
-        Assert.Equal(result, expected);
+        result.Should().NotBe(expected); // FileLinkInfo is not override object.Equals method.
+        result.Should().BeEquivalentTo(expected);
     }
 }

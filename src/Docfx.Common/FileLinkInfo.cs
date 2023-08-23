@@ -5,8 +5,7 @@ using Docfx.Plugins;
 
 namespace Docfx.Common;
 
-public readonly struct FileLinkInfo
-    : IFileLinkInfo
+public class FileLinkInfo : IFileLinkInfo
 {
     public string Href { get; init; }
 
@@ -26,6 +25,10 @@ public readonly struct FileLinkInfo
 
     public GroupInfo GroupInfo { get; init; }
 
+    public FileLinkInfo()
+    {
+    }
+
     public FileLinkInfo(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
     {
         ArgumentNullException.ThrowIfNull(fromFileInSource);
@@ -43,7 +46,6 @@ public readonly struct FileLinkInfo
         {
             throw new ArgumentException("only relative path is supported", nameof(href));
         }
-
 
         FromFileInSource = fromFileInSource;
         FromFileInDest = fromFileInDest;
