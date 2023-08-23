@@ -25,3 +25,7 @@ updates:
   schedule: 
     interval: daily
   target-branch: main
+  groups:
+    typescript-eslint:
+      patterns:
+      - "@typescript-eslint/*"
