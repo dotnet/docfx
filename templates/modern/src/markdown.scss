@@ -12,6 +12,22 @@ a.external[href]::after {
   display: inline-block;
 }
 
+/* Blockquote */
+blockquote {
+  border-style: solid;
+  border-width: 0 0 0 3px;
+  border-color: $secondary-border-subtle;
+  margin: 1.2em 0 2em;
+  padding: 0 .8em;
+  display: block
+}
+
+@include color-mode(dark) {
+  blockquote {
+    border-color: $secondary-border-subtle-dark;
+  }
+}
+
 /* Alerts */
 .alert h5 {
   text-transform: uppercase;
