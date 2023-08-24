@@ -1,7 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Diagnostics.CodeAnalysis;
 using Docfx.Plugins;
 
 #nullable enable
@@ -15,8 +14,10 @@ public static class YamlMime
     public const string TableOfContent = YamlMimePrefix + nameof(TableOfContent);
     public const string XRefMap = YamlMimePrefix + nameof(XRefMap);
 
-    public static string? ReadMime([NotNull] TextReader reader)
+    public static string? ReadMime(TextReader reader)
     {
+        ArgumentNullException.ThrowIfNull(reader);
+
         var line = reader.ReadLine();
         if (line == null || !line.StartsWith("#", StringComparison.Ordinal))
         {
@@ -30,8 +31,10 @@ public static class YamlMime
         return content;
     }
 
-    public static string? ReadMime([NotNull] string file)
+    public static string? ReadMime(string file)
     {
+        ArgumentNullException.ThrowIfNull(file);
+
         var path = EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file);
         using var stream = new FileStream(path, CustomFileReadOptions);
         using var reader = new StreamReader(stream, bufferSize: 128); // Min:128, Default:1024
