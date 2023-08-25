@@ -3,6 +3,8 @@
 
 using Docfx.Plugins;
 
+#nullable enable
+
 namespace Docfx.Common;
 
 public static class YamlMime
@@ -12,7 +14,7 @@ public static class YamlMime
     public const string TableOfContent = YamlMimePrefix + nameof(TableOfContent);
     public const string XRefMap = YamlMimePrefix + nameof(XRefMap);
 
-    public static string ReadMime(TextReader reader)
+    public static string? ReadMime(TextReader reader)
     {
         ArgumentNullException.ThrowIfNull(reader);
 
@@ -29,12 +31,24 @@ public static class YamlMime
         return content;
     }
 
-    public static string ReadMime(string file)
+    public static string? ReadMime(string file)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        using var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file);
-        using var reader = new StreamReader(stream);
+        var path = EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file);
+        using var stream = new FileStream(path, CustomFileReadOptions);
+        using var reader = new StreamReader(stream, bufferSize: 128); // Min:128, Default:1024
         return ReadMime(reader);
     }
+
+    private static readonly FileStreamOptions CustomFileReadOptions = new()
+    {
+        Mode = FileMode.Open,
+        Access = FileAccess.Read,
+        Share = FileShare.Read,
+        BufferSize = 0, // Optimize for small file size (Default:4096)
+        Options = OperatingSystem.IsWindows()
+                    ? FileOptions.SequentialScan
+                    : FileOptions.None, // `File.ReadAllBytes(string path)` use this settings.
+    };
 }
