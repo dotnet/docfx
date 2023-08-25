@@ -11,13 +11,13 @@ public static class ModuleInitializer
     [ModuleInitializer]
     public static void Initialize()
     {
+        // Workaround code to avoid `NuGet.Frameworks` package related errror.
         RegisterNonPreviewSdkInstance();
     }
 
     /// <summary>
     /// Try to register non-preview version .NET SDK to avoid `NuGet.Frameworks` package related problems.
     /// </summary>
-    /// <remarks>
     private static void RegisterNonPreviewSdkInstance()
     {
         if (MSBuildLocator.IsRegistered)
@@ -29,7 +29,8 @@ public static class ModuleInitializer
 
         // Gets non-preview .NET SDKs.
         var vsInstances = MSBuildLocator.QueryVisualStudioInstances(VisualStudioInstanceQueryOptions.Default)
-                                        .Where(x => !x.MSBuildPath.Contains("-preview."));
+                                        .Where(x => !x.MSBuildPath.Contains("-preview."))
+                                        .Where(x => !x.MSBuildPath.Contains("-rc."));
 
         var vs = vsInstances.FirstOrDefault();
         if (vs == null)
