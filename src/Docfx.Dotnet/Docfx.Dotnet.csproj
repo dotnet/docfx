@@ -4,9 +4,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
-    <InternalsVisibleTo Include="Docfx.App" />
     <InternalsVisibleTo Include="Docfx.Dotnet.Tests" />
   </ItemGroup>
 
@@ -34,7 +32,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <InternalsAssemblyName Include="Microsoft.CodeAnalysis.Workspaces" />
   </ItemGroup>

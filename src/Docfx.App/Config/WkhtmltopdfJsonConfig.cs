@@ -9,7 +9,7 @@ namespace Docfx;
 /// Holds configuration options specific to the wkhtmltopdf tooling used by the pdf command.
 /// </summary>
 [Serializable]
-internal class WkhtmltopdfJsonConfig
+public class WkhtmltopdfJsonConfig
 {
     /// <summary>
     /// Gets or sets the path and file name of a wkhtmltopdf.exe compatible executable.

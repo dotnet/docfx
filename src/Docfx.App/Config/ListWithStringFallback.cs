@@ -10,7 +10,7 @@ namespace Docfx;
 /// </summary>
 [JsonConverter(typeof(ListWithStringFallbackConverter))]
 [Serializable]
-internal class ListWithStringFallback : List<string>
+public class ListWithStringFallback : List<string>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ListWithStringFallback"/> class.

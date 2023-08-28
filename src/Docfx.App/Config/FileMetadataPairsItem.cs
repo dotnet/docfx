@@ -11,7 +11,7 @@ namespace Docfx;
 /// </summary>
 /// <see cref="FileMetadataPairs"/>
 [Serializable]
-internal class FileMetadataPairsItem
+public class FileMetadataPairsItem
 {
     /// <summary>
     /// The glob pattern to match the files.

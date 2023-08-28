@@ -9,7 +9,7 @@ namespace Docfx;
 /// Group configuration.
 /// </summary>
 [Serializable]
-internal class GroupConfig
+public class GroupConfig
 {
     /// <summary>
     /// Defines the output folder of the generated build files.

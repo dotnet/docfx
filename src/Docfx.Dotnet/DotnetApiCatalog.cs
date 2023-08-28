@@ -50,7 +50,7 @@ public static class DotnetApiCatalog
         }
     }
 
-    internal static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
+    public static async Task Exec(MetadataJsonConfig config, DotnetApiOptions options, string configDirectory, string outputDirectory = null)
     {
         EnsureMSBuildLocator();
 

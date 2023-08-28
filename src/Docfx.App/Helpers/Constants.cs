@@ -5,6 +5,5 @@ namespace Docfx;
 
 internal static class Constants
 {
-    public const string ConfigFileName = "docfx.json";
     public const string DefaultTemplateName = "default";
 }

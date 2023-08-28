@@ -13,8 +13,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Docfx;
 
-internal static class RunServe
+/// <summary>
+/// Helper class to serve document.
+/// </summary>
+public static class RunServe
 {
+    /// <summary>
+    /// Start document host server with specified settings.
+    /// </summary>
     public static void Exec(string folder, string host, int? port, bool openBrowser, string openFile)
     {
         if (string.IsNullOrEmpty(folder))

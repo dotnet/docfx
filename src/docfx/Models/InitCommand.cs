@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Docfx.Common;
+using Docfx.DataContracts.Common;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 

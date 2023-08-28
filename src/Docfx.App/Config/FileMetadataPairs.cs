@@ -12,7 +12,7 @@ namespace Docfx;
 /// <see cref="MergeJsonItemConfig.FileMetadata"/>
 [Serializable]
 [JsonConverter(typeof(FileMetadataPairsConverter))]
-internal class FileMetadataPairs
+public class FileMetadataPairs
 {
     // Order matters, the latter one overrides the former one
     private List<FileMetadataPairsItem> _items;

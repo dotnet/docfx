@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using Docfx.DataContracts.Common;
 using Docfx.Dotnet;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
@@ -23,7 +24,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
     {
         MetadataConfig config;
 
-        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), "docfx.json", StringComparison.OrdinalIgnoreCase))
+        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase))
         {
             config = new()
             {

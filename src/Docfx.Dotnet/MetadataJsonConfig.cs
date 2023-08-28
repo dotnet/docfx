@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Docfx;
 
+/// <summary>
+/// Specifies the layout of members.
+/// </summary>
 public enum MemberLayout
 {
     /// <summary>
@@ -18,7 +21,10 @@ public enum MemberLayout
     SeparatePages,
 }
 
-internal enum NamespaceLayout
+/// <summary>
+/// Specifies the layout of namepsaces.
+/// </summary>
+public enum NamespaceLayout
 {
     /// <summary>
     /// Renders the namespaces as a single flat list
@@ -34,7 +40,7 @@ internal enum NamespaceLayout
 /// <summary>
 /// Specifies the sort order for enums.
 /// </summary>
-internal enum EnumSortOrder
+public enum EnumSortOrder
 {
     /// <summary>
     /// Sorts enums in alphabetic order.
@@ -51,7 +57,7 @@ internal enum EnumSortOrder
 /// MetadataJsonItemConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#11-properties-for-metadata"/>
-internal class MetadataJsonItemConfig
+public class MetadataJsonItemConfig
 {
     /// <summary>
     /// Defines the source projects to have metadata generated.
@@ -161,7 +167,7 @@ internal class MetadataJsonItemConfig
 /// <summary>
 /// MetadataJsonItemConfig
 /// </summary>
-internal class MetadataJsonConfig : List<MetadataJsonItemConfig>
+public class MetadataJsonConfig : List<MetadataJsonItemConfig>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MetadataJsonConfig"/> class.
