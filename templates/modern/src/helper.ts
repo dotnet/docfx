@@ -11,6 +11,21 @@ export function meta(name: string): string {
 }
 
 /**
+ * Gets the localized text.
+ * @param id key in token.json
+ * @param args arguments to replace in the localized text
+ */
+export function loc(id: string, args?: any): string {
+  let result = meta(`loc:${id}`) || id
+  if (args) {
+    for (const key in args) {
+      result = result.replace(`{${key}}`, args[key])
+    }
+  }
+  return result
+}
+
+/**
  * Add <wbr> into long word.
  */
 export function breakWord(text: string): string[] {

@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { render, html, TemplateResult } from 'lit-html'
-import { breakWordLit, meta, isExternalHref } from './helper'
+import { breakWordLit, meta, isExternalHref, loc } from './helper'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
 
@@ -105,7 +105,7 @@ function inThisArticleForConceptual() {
   const headings = document.querySelectorAll<HTMLHeadingElement>('article h2')
   if (headings.length > 0) {
     return html`
-      <h5 class="border-bottom">In this article</h5>
+      <h5 class="border-bottom">${loc('inThisArticle')}</h5>
       <ul>${Array.from(headings).map(h => html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`)}</ul>`
   }
 }
@@ -116,7 +116,7 @@ function inThisArticleForManagedReference(): TemplateResult {
 
   if (headings.length > 0) {
     return html`
-      <h5 class="border-bottom">In this article</h5>
+      <h5 class="border-bottom">${loc('inThisArticle')}</h5>
       <ul>${headings.map(h => {
       return h.tagName === 'H2'
         ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`

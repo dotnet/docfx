@@ -25,6 +25,16 @@
       {{#_disableNewTab}}<meta name="docfx:disablenewtab" content="true">{{/_disableNewTab}}
       {{#_disableTocFilter}}<meta name="docfx:disabletocfilter" content="true">{{/_disableTocFilter}}
       {{#docurl}}<meta name="docfx:docurl" content="{{docurl}}">{{/docurl}}
+      <meta name="loc:inThisArticle" content="{{__global.inThisArticle}}">
+      <meta name="loc:searchResultsCount" content="{{__global.searchResultsCount}}">
+      <meta name="loc:searchNoResults" content="{{__global.searchNoResults}}">
+      <meta name="loc:tocFilter" content="{{__global.tocFilter}}">
+      <meta name="loc:nextArticle" content="{{__global.nextArticle}}">
+      <meta name="loc:prevArticle" content="{{__global.prevArticle}}">
+      <meta name="loc:themeLight" content="{{__global.themeLight}}">
+      <meta name="loc:themeDark" content="{{__global.themeDark}}">
+      <meta name="loc:themeAuto" content="{{__global.themeAuto}}">
+      <meta name="loc:copy" content="{{__global.copy}}">
     {{/redirect_url}}
   </head>
 
@@ -106,10 +116,10 @@
         {{^_disableContribution}}
         <div class="contribution d-print-none">
           {{#sourceurl}}
-          <a href="{{sourceurl}}" class="edit-link">Edit this page</a>
+          <a href="{{sourceurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
           {{/sourceurl}}
           {{^sourceurl}}{{#docurl}}
-          <a href="{{docurl}}" class="edit-link">Edit this page</a>
+          <a href="{{docurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
           {{/docurl}}{{/sourceurl}}
         </div>
         {{/_disableContribution}}
