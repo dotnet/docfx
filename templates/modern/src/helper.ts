@@ -15,7 +15,7 @@ export function meta(name: string): string {
  * @param id key in token.json
  * @param args arguments to replace in the localized text
  */
-export function loc(id: string, args?: any): string {
+export function loc(id: string, args?: { [key: string]: string }): string {
   let result = meta(`loc:${id}`) || id
   if (args) {
     for (const key in args) {

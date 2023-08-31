@@ -91,7 +91,7 @@ export function enableSearch() {
       const curHits = hits.slice(start, start + numPerPage)
 
       const items = html`
-        <div class="search-list">${loc("searchResultsCount", { count: hits.length, query })}</div>
+        <div class="search-list">${loc('searchResultsCount', { count: hits.length, query })}</div>
         <div class="sr-items">${curHits.map(hit => {
           const currentUrl = window.location.href
           const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)
