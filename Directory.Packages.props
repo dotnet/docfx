@@ -8,15 +8,15 @@
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.52" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.0.7455" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
-    <PackageVersion Include="Jint" Version="3.0.0-beta-2050" />
+    <PackageVersion Include="Jint" Version="3.0.0-beta-2051" />
     <PackageVersion Include="JsonSchema.Net" Version="5.2.0" />
-    <PackageVersion Include="Markdig" Version="0.32.0" />
+    <PackageVersion Include="Markdig" Version="0.33.0" />
 
      <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="17.7.0"   Condition="'$(TargetFramework)' != 'net6.0'" />
+    <PackageVersion Include="Microsoft.Build" Version="17.7.2"   Condition="'$(TargetFramework)' != 'net6.0'" />
 
-    <PackageVersion Include="Microsoft.Build.Locator" Version="1.5.5" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.6.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.7.0" />
@@ -33,7 +33,7 @@
     <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="13.2.0" />
+    <PackageVersion Include="YamlDotNet" Version="13.3.1" />
 
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
@@ -43,7 +43,7 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.7.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
-    <PackageVersion Include="Verify.Xunit" Version="20.8.1" />
+    <PackageVersion Include="Verify.Xunit" Version="21.0.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />
     <PackageVersion Include="xunit" Version="2.5.0" />
   </ItemGroup>
