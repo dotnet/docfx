@@ -89,7 +89,7 @@ public sealed class YamlDeserializer
         {
             new TypeConverterNodeDeserializer(_converters),
             new NullNodeDeserializer(),
-            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter),
+            new ScalarNodeDeserializer(attemptUnknownTypeDeserialization: false, _reflectionTypeConverter, YamlFormatter.Default),
             new EmitArrayNodeDeserializer(),
             new EmitGenericDictionaryNodeDeserializer(objectFactory),
             new DictionaryNodeDeserializer(objectFactory, duplicateKeyChecking: true),
