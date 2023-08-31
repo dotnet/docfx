@@ -77,7 +77,6 @@ public class TemplateModelTransformer
         var templateBundle = _templateCollection[item.DocumentType];
         if (templateBundle == null)
         {
-            Logger.LogInfo($"No template bundle found for {item.DocumentType}, model will be ignored.");
             return manifestItem;
         }
 
