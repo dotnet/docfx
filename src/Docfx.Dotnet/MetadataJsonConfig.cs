@@ -24,7 +24,7 @@ public enum MemberLayout
 /// <summary>
 /// Specifies the layout of namepsaces.
 /// </summary>
-public enum NamespaceLayout
+internal enum NamespaceLayout
 {
     /// <summary>
     /// Renders the namespaces as a single flat list
@@ -40,7 +40,7 @@ public enum NamespaceLayout
 /// <summary>
 /// Specifies the sort order for enums.
 /// </summary>
-public enum EnumSortOrder
+internal enum EnumSortOrder
 {
     /// <summary>
     /// Sorts enums in alphabetic order.
@@ -57,7 +57,7 @@ public enum EnumSortOrder
 /// MetadataJsonItemConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#11-properties-for-metadata"/>
-public class MetadataJsonItemConfig
+internal class MetadataJsonItemConfig
 {
     /// <summary>
     /// Defines the source projects to have metadata generated.
@@ -167,7 +167,7 @@ public class MetadataJsonItemConfig
 /// <summary>
 /// MetadataJsonItemConfig
 /// </summary>
-public class MetadataJsonConfig : List<MetadataJsonItemConfig>
+internal class MetadataJsonConfig : List<MetadataJsonItemConfig>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MetadataJsonConfig"/> class.

@@ -13,7 +13,7 @@ namespace Docfx;
 /// <summary>
 /// Helper class to generate pdf document.
 /// </summary>
-public static class RunPdf
+internal static class RunPdf
 {
     /// <summary>
     /// Generate pdf document with specified settings.

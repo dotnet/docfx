@@ -11,7 +11,7 @@ namespace Docfx;
 /// MergeJsonItemConfig.
 /// </summary>
 [Serializable]
-public class MergeJsonItemConfig
+internal class MergeJsonItemConfig
 {
     /// <summary>
     /// Defines the files to merge.

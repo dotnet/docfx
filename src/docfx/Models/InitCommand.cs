@@ -3,7 +3,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Docfx.Common;
-using Docfx.DataContracts.Common;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
@@ -11,7 +10,7 @@ namespace Docfx;
 
 internal class InitCommand : Command<InitCommandOptions>
 {
-    private const string ConfigName = Constants.ConfigFileName;
+    private const string ConfigName = DataContracts.Common.Constants.ConfigFileName;
     private const string DefaultOutputFolder = "docfx_project";
     private const string DefaultMetadataOutputFolder = "api";
 

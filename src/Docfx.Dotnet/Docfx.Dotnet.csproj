@@ -4,7 +4,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
+    <InternalsVisibleTo Include="Docfx.App" />
     <InternalsVisibleTo Include="Docfx.Dotnet.Tests" />
   </ItemGroup>
 

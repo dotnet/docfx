@@ -8,7 +8,7 @@ namespace Docfx;
 /// <summary>
 /// Helper class to generate metadata.
 /// </summary>
-public static class RunMetadata
+internal static class RunMetadata
 {
     /// <summary>
     /// Generate metadata with specified settings.

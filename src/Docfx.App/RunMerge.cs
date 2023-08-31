@@ -11,7 +11,7 @@ namespace Docfx;
 /// <summary>
 /// Helper class to merge document.
 /// </summary>
-public static class RunMerge
+internal static class RunMerge
 {
     /// <summary>
     /// Merge document with specified settings.

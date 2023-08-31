@@ -9,7 +9,7 @@ namespace Docfx;
 /// Content pairing information used for <see cref="BuildJsonConfig.Pairing"/> options.
 /// </summary>
 [Serializable]
-public class ContentPairingInfo
+internal class ContentPairingInfo
 {
     /// <summary>
     /// Content folder.

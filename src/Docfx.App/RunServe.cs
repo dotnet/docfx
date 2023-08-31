@@ -16,7 +16,7 @@ namespace Docfx;
 /// <summary>
 /// Helper class to serve document.
 /// </summary>
-public static class RunServe
+internal static class RunServe
 {
     /// <summary>
     /// Start document host server with specified settings.

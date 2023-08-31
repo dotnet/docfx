@@ -9,7 +9,7 @@ namespace Docfx;
 /// MergeJsonConfig.
 /// </summary>
 [JsonConverter(typeof(MergeJsonConfigConverter))]
-public class MergeJsonConfig : List<MergeJsonItemConfig>
+internal class MergeJsonConfig : List<MergeJsonItemConfig>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="MergeJsonConfig"/> class.

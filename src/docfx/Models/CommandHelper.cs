@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Common;
-using Docfx.DataContracts.Common;
 
 namespace Docfx;
 
@@ -11,7 +10,7 @@ internal class CommandHelper
     public static (T, string baseDirectory) GetConfig<T>(string configFile)
     {
         if (string.IsNullOrEmpty(configFile))
-            configFile = Constants.ConfigFileName;
+            configFile = DataContracts.Common.Constants.ConfigFileName;
 
         configFile = Path.GetFullPath(configFile);
 

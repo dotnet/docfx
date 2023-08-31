@@ -24,7 +24,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
     {
         MetadataConfig config;
 
-        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase))
+        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), DataContracts.Common.Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase))
         {
             config = new()
             {

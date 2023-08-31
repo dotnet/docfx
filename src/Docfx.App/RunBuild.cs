@@ -13,7 +13,7 @@ namespace Docfx;
 /// <summary>
 /// Helper class to build document.
 /// </summary>
-public static class RunBuild
+internal static class RunBuild
 {
     /// <summary>
     /// Build document with specified settings.
