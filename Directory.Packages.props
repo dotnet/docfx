@@ -9,7 +9,7 @@
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.0.7455" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2051" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.2.0" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.2.1" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
 
      <!-- "17.3.2" is the latest compatible version for .NET 6 -->
