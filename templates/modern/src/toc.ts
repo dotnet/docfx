@@ -3,7 +3,7 @@
 
 import { TemplateResult, html, render } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
-import { breakWordLit, meta, isExternalHref } from './helper'
+import { breakWordLit, meta, isExternalHref, loc } from './helper'
 
 export type TocNode = {
   name: string
@@ -132,7 +132,7 @@ export async function renderToc(): Promise<TocNode[]> {
       : html`
       <form class='filter'>
         <i class='bi bi-filter'></i>
-        <input class='form-control' @input=${filterToc} value='${tocFilter}' type='search' placeholder='Filter by title' autocomplete='off' aria-label='Filter by title'>
+        <input class='form-control' @input=${filterToc} value='${tocFilter}' type='search' placeholder='${loc('tocFilter')}' autocomplete='off' aria-label='${loc('tocFilter')}'>
       </form>`
 
     function filterToc(e: Event) {
@@ -143,7 +143,7 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderNoFilterResult(): TemplateResult {
-    return tocFilter === '' ? null : html`<div class='no-result'>No results for "${tocFilter}"</div>`
+    return tocFilter === '' ? null : html`<div class='no-result'>${loc('searchNoResults', { query: tocFilter })}</div>`
   }
 
   function normalizeUrlPath(url: { pathname: string }): string {
@@ -165,8 +165,8 @@ function renderNextArticle(items: TocNode[], node: TocNode) {
     return
   }
 
-  const prevButton = prev ? html`<div class="prev"><span><i class='bi bi-chevron-left'></i> Previous</span> <a href="${prev.href}" rel="prev">${breakWordLit(prev.name)}</a></div>` : null
-  const nextButton = next ? html`<div class="next"><span>Next <i class='bi bi-chevron-right'></i></span> <a href="${next.href}" rel="next">${breakWordLit(next.name)}</a></div>` : null
+  const prevButton = prev ? html`<div class="prev"><span><i class='bi bi-chevron-left'></i> ${loc('prevArticle')}</span> <a href="${prev.href}" rel="prev">${breakWordLit(prev.name)}</a></div>` : null
+  const nextButton = next ? html`<div class="next"><span>${loc('nextArticle')} <i class='bi bi-chevron-right'></i></span> <a href="${next.href}" rel="next">${breakWordLit(next.name)}</a></div>` : null
 
   render(html`${prevButton} ${nextButton}`, nextArticle)
 

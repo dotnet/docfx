@@ -14,6 +14,16 @@
       
       
       <meta name="docfx:docurl" content="https://github.com/dotnet/docfx/blob/main/samples/seed/articles/csharp_coding_standards.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:copy" content="Copy">
   <script type="module">
     import options from './../public/main.js'
     import { init } from './../public/docfx.min.js'
@@ -83,7 +93,7 @@
             <nav class="toc" id="toc">
       <form class="filter">
         <i class="bi bi-filter"></i>
-        <input class="form-control" type="search" placeholder="Filter by title" autocomplete="off" aria-label="Filter by title" value="">
+        <input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title">
       </form> <ul>
         <li class="  ">
           
@@ -164,7 +174,7 @@
 <p>The file name is derived from the class name.</p>
 <pre><code class="hljs language-bicep">	<span class="hljs-variable">Class</span>   : <span class="hljs-variable">Observer</span>
 	<span class="hljs-variable">Filename</span>: <span class="hljs-variable">Observer</span>.<span class="hljs-variable">cs</span>
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <h3 id="class-definition-order-mandatory">Class Definition Order (Mandatory)<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#class-definition-order-mandatory" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 <p>The class definition contains class members in the following order, from <em>less</em> restricted scope (public) to <em>more</em> restrictive (private):</p>
 <ul>
@@ -185,7 +195,7 @@
 <pre><code class="hljs language-bicep">  <span class="hljs-variable">PropertyDescriptor</span>
   <span class="hljs-variable">HtmlTag</span>
   <span class="hljs-variable">IOStream</span>
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 </li>
 </ul>
 <p><strong>NOTE</strong>: A special case is made for two-letter acronyms in which both letters are capitalized, e.g. <em>IOStream</em></p>
@@ -194,16 +204,16 @@
 <pre><code class="hljs language-bicep">  <span class="hljs-variable">propertyDescriptor</span>
   <span class="hljs-variable">htmlTag</span>
   <span class="hljs-variable">ioStream</span>
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 </li>
 <li><p><strong>DO</strong> start with underscore for private fields</p>
 <pre><code class="hljs language-bicep">  <span class="hljs-variable">private</span> <span class="hljs-variable">readonly</span> <span class="hljs-variable">Guid</span> <span class="hljs-variable">_userId</span> = <span class="hljs-variable">Guid</span>.<span class="hljs-function">NewGuid()</span>;
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 </li>
 <li><p><strong>DO</strong> start static readonly fields, constants with capitalized case</p>
 <pre><code class="hljs language-bicep">  <span class="hljs-variable">private</span> <span class="hljs-variable">static</span> <span class="hljs-variable">readonly</span> <span class="hljs-variable">IEntityAccessor</span> <span class="hljs-variable">EntityAccessor</span> = <span class="hljs-literal"><span class="hljs-literal">null</span></span>;
   <span class="hljs-variable">private</span> <span class="hljs-variable">const</span> <span class="hljs-variable">string</span> <span class="hljs-variable">MetadataName</span> = "<span class="hljs-variable">MetadataName</span>";
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 </li>
 <li><p><strong>DO NOT</strong> capitalize each word in so-called <a href="http://msdn.microsoft.com/en-us/library/ms229043.aspx" target="_blank" rel="noopener noreferrer nofollow" class="external">closed-form compound words</a>.</p>
 </li>
@@ -225,7 +235,7 @@
   {
   	<span class="hljs-property">using</span> <span class="hljs-property">System</span>;
   }
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 </li>
 <li><p><strong>DO</strong> add a space when:</p>
 <ol>
@@ -257,22 +267,22 @@
 <p>Unit test method names must be descriptive about <em>what is being tested, under what conditions, and what the expectations are</em>. Pascal casing and underscores can be used to improve readability. The following test names are correct:</p>
 <pre><code class="lang-cs hljs language-csharp">PublicApiArgumentsShouldHaveNotNullAnnotation
 Public_api_arguments_should_have_not_null_annotation
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <p>The following test names are incorrect:</p>
 <pre><code class="lang-cs hljs language-csharp">Test1
 Constructor
 FormatString
 GetData
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <h4 id="unit-test-structure">Unit test structure<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#unit-test-structure" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>The contents of every unit test should be split into three distinct stages, optionally separated by these comments:</p>
 <pre><code class="lang-cs hljs language-csharp"><span class="hljs-comment">// Arrange</span>
 <span class="hljs-comment">// Act</span>
 <span class="hljs-comment">// Assert</span>
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <p>The crucial thing here is the <code>Act</code> stage is exactly one statement. That one statement is nothing more than a call to the one method that you are trying to test. keeping that one statement as simple as possible is also very important. For example, this is not ideal:</p>
 <pre><code class="lang-cs hljs language-csharp"><span class="hljs-built_in">int</span> result = myObj.CallSomeMethod(GetComplexParam1(), GetComplexParam2(), GetComplexParam3());
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <p>This style is not recomended because way too many things can go wrong in this one statement. All the <code>GetComplexParamN()</code> calls can throw for a variety of reasons unrelated to the test itself. It is thus unclear to someone running into a problem why the failure occured.</p>
 <p>The ideal pattern is to move the complex parameter building into the `Arrange section:</p>
 <pre><code class="lang-cs hljs language-csharp"><span class="hljs-comment">// Arrange</span>
@@ -285,7 +295,7 @@ P3 p3 = GetComplexParam3();
 
 <span class="hljs-comment">// Assert</span>
 Assert.AreEqual(<span class="hljs-number">1234</span>, result);
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <p>Now the only reason the line with <code>CallSomeMethod()</code> can fail is if the method itself blew up.</p>
 <h4 id="testing-exception-messages">Testing exception messages<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#testing-exception-messages" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>In general testing the specific exception message in a unit test is important. This ensures that the exact desired exception is what is being tested rather than a different exception of the same type. In order to verify the exact exception it is important to verify the message.</p>
@@ -294,7 +304,7 @@ Assert.AreEqual(<span class="hljs-number">1234</span>, result);
 Assert.Equal(
     <span class="hljs-string">"1234"</span>,
     ex.Message);
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <h4 id="use-xunitnets-plethora-of-built-in-assertions">Use x<wbr>Unit.<wbr>net's plethora of built-in assertions<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#use-xunitnets-plethora-of-built-in-assertions" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>xUnit.net includes many kinds of assertions – please use the most appropriate one for your test. This will make the tests a lot more readable and also allow the test runner report the best possible errors (whether it's local or the CI machine). For example, these are bad:</p>
 <pre><code class="lang-cs hljs language-csharp">Assert.Equal(<span class="hljs-literal">true</span>, someBool);
@@ -310,7 +320,7 @@ Assert.True(list1.Length == list2.Length);
             list2[i],
             StringComparison.OrdinalIgnoreCase));
 }
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <p>These are good:</p>
 <pre><code class="lang-cs hljs language-csharp">Assert.True(someBool);
 
@@ -318,7 +328,7 @@ Assert.Equal(<span class="hljs-string">"abc123"</span>, someString);
 
 <span class="hljs-comment">// built-in collection assertions!</span>
 Assert.Equal(list1, list2, StringComparer.OrdinalIgnoreCase);
-</code><a class="btn border-0 code-action" title="copy" href="#"><i class="bi bi-clipboard"></i></a></pre>
+</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
 <h4 id="parallel-tests">Parallel tests<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parallel-tests" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
 <p>By default all unit test assemblies should run in parallel mode, which is the default. Unit tests shouldn't depend on any shared state, and so should generally be runnable in parallel. If the tests fail in parallel, the first thing to do is to figure out why; do not just disable parallel tests!</p>
 <p>For functional tests it is reasonable to disable parallel tests.</p>

@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { meta } from './helper'
+import { loc, meta } from './helper'
 import { html, render, TemplateResult } from 'lit-html'
 import { classMap } from 'lit-html/directives/class-map.js'
 
@@ -84,14 +84,14 @@ export function enableSearch() {
 
     function renderPage(page: number): TemplateResult {
       if (hits.length === 0) {
-        return html`<div class="search-list">No results for "${query}"</div>`
+        return html`<div class="search-list">${loc('searchNoResults', { query })}</div>`
       }
 
       const start = page * numPerPage
       const curHits = hits.slice(start, start + numPerPage)
 
       const items = html`
-        <div class="search-list">${hits.length} results for "${query}"</div>
+        <div class="search-list">${loc('searchResultsCount', { count: hits.length, query })}</div>
         <div class="sr-items">${curHits.map(hit => {
           const currentUrl = window.location.href
           const itemRawHref = relativeUrlToAbsoluteUrl(currentUrl, relHref + hit.href)

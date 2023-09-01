@@ -3,6 +3,7 @@
 
 import { html } from 'lit-html'
 import { Theme } from './options'
+import { loc } from './helper'
 
 function setTheme(theme: Theme) {
   localStorage.setItem('theme', theme)
@@ -35,9 +36,9 @@ export function themePicker(refresh: () => void) {
         <i class='bi bi-${icon}'></i>
       </a>
       <ul class='dropdown-menu'>
-        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'light')}><i class='bi bi-sun'></i> Light</a></li>
-        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'dark')}><i class='bi bi-moon'></i> Dark</a></li>
-        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'auto')}><i class='bi bi-circle-half'></i> Auto</a></li>
+        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'light')}><i class='bi bi-sun'></i> ${loc('themeLight')}</a></li>
+        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'dark')}><i class='bi bi-moon'></i> ${loc('themeDark')}</a></li>
+        <li><a class='dropdown-item' href='#' @click=${e => changeTheme(e, 'auto')}><i class='bi bi-circle-half'></i> ${loc('themeAuto')}</a></li>
       </ul>
     </div>`
 

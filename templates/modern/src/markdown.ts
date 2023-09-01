@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { breakWord, meta } from './helper'
+import { breakWord, meta, loc } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 import { getTheme } from './theme'
@@ -186,7 +186,7 @@ function renderCodeCopy() {
     function renderCore() {
       const dom = copied
         ? html`<a class='btn border-0 link-success code-action'><i class='bi bi-check-lg'></i></a>`
-        : html`<a class='btn border-0 code-action' title='copy' href='#' @click=${copy}><i class='bi bi-clipboard'></i></a>`
+        : html`<a class='btn border-0 code-action' title='${loc('copy')}' href='#' @click=${copy}><i class='bi bi-clipboard'></i></a>`
       render(dom, code.parentElement)
 
       async function copy(e) {
