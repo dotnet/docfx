@@ -142,7 +142,18 @@ internal class XmlComment
             var (lang, value) = ResolveCodeSource(node, context);
             value = TrimEachLine(value ?? node.Value, new(' ', indent));
             var code = new XElement("code", value);
-            code.SetAttributeValue("class", $"lang-{lang ?? "csharp"}");
+
+            if (node.Attribute("language") is { } languageAttribute)
+            {
+                lang = languageAttribute.Value;
+            }
+
+            if (string.IsNullOrEmpty(lang))
+            {
+                lang = "csharp";
+            }
+
+            code.SetAttributeValue("class", $"lang-{lang}");
             node.ReplaceWith(new XElement("pre", code));
         }
     }
