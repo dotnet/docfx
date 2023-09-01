@@ -82,16 +82,20 @@ exports.transform = function (model) {
         }
     }
     model.definitions = [];
-    model.tags.forEach(function(tag) {
-        tag.children.forEach(function(child) {
-            child.parameters.forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
-            child.responses.forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+    if (model.tags) {
+        model.tags.forEach(function(tag) {
+            (tag.children || []).forEach(function(child) {
+                (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
+                (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+            });
         });
-    });
-    model.children.forEach(function(child) {
-        child.parameters.forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
-        child.responses.forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
-    });
+    }
+    if (model.children) {
+        model.children.forEach(function(child) {
+            (child.parameters || []).forEach(function(parameter) { addComplexTypeMetadata(parameter.schema, model.definitions); });
+            (child.responses || []).forEach(function(response) { addComplexTypeMetadata(response.schema, model.definitions); });
+        });
+    }
 
     return model;
 
