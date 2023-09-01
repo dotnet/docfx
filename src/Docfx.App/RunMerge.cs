@@ -8,8 +8,14 @@ using Docfx.Plugins;
 
 namespace Docfx;
 
+/// <summary>
+/// Helper class to merge document.
+/// </summary>
 internal static class RunMerge
 {
+    /// <summary>
+    /// Merge document with specified settings.
+    /// </summary>
     public static void Exec(MergeJsonConfig config, string configDirectory)
     {
         foreach (var round in config)

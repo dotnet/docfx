@@ -10,8 +10,14 @@ namespace Docfx;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
+/// <summary>
+/// Helper class to generate pdf document.
+/// </summary>
 internal static class RunPdf
 {
+    /// <summary>
+    /// Generate pdf document with specified settings.
+    /// </summary>
     public static void Exec(PdfJsonConfig config, BuildOptions buildOptions, string configDirectory, string outputDirectory = null)
     {
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));

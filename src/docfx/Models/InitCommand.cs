@@ -10,7 +10,7 @@ namespace Docfx;
 
 internal class InitCommand : Command<InitCommandOptions>
 {
-    private const string ConfigName = Constants.ConfigFileName;
+    private const string ConfigName = DataContracts.Common.Constants.ConfigFileName;
     private const string DefaultOutputFolder = "docfx_project";
     private const string DefaultMetadataOutputFolder = "api";
 

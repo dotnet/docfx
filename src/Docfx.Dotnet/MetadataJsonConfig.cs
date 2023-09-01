@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace Docfx;
 
+/// <summary>
+/// Specifies the layout of members.
+/// </summary>
 public enum MemberLayout
 {
     /// <summary>
@@ -18,6 +21,9 @@ public enum MemberLayout
     SeparatePages,
 }
 
+/// <summary>
+/// Specifies the layout of namepsaces.
+/// </summary>
 internal enum NamespaceLayout
 {
     /// <summary>

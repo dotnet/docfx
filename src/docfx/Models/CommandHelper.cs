@@ -10,7 +10,7 @@ internal class CommandHelper
     public static (T, string baseDirectory) GetConfig<T>(string configFile)
     {
         if (string.IsNullOrEmpty(configFile))
-            configFile = "docfx.json";
+            configFile = DataContracts.Common.Constants.ConfigFileName;
 
         configFile = Path.GetFullPath(configFile);
 

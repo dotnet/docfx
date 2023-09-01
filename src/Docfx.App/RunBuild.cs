@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Build.Engine;
-using Docfx.Common;
 using Docfx.Common.Git;
 using Docfx.Exceptions;
 using Docfx.Plugins;
@@ -11,8 +10,14 @@ namespace Docfx;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
+/// <summary>
+/// Helper class to build document.
+/// </summary>
 internal static class RunBuild
 {
+    /// <summary>
+    /// Build document with specified settings.
+    /// </summary>
     public static string Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
     {
         if (config.Templates == null || config.Templates.Count == 0)
