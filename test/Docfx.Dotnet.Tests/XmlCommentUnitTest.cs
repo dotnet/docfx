@@ -325,7 +325,7 @@ public class XmlCommentUnitTest
             <a href="https://example.org">example</a>
             <p>This is <code class="paramref">ref</code> a sample of exception node</p>
             <ul><li>
-                        <pre><code class="lang-csharp">public class XmlElement
+                        <pre><code class="lang-c#">public class XmlElement
                             : XmlLinkedNode</code></pre>
                         <ol><li>
                                     word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
