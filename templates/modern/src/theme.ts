@@ -32,7 +32,7 @@ export function themePicker(refresh: () => void) {
 
   return html`
     <div class='dropdown'>
-      <a title='Change theme' class='btn border-0 dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>
+      <a title='${loc('changeTheme')}' class='btn border-0 dropdown-toggle' data-bs-toggle='dropdown' aria-expanded='false'>
         <i class='bi bi-${icon}'></i>
       </a>
       <ul class='dropdown-menu'>
