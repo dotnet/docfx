@@ -11,6 +11,17 @@ namespace Docfx.Build.SchemaDriven;
 
 public class DocumentSchema : BaseSchema
 {
+    // JsonSerializerOptions should be reused.
+    // https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/configure-options#reuse-jsonserializeroptions-instances
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        AllowTrailingCommas = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = {
+                        new JsonStringEnumConverter()
+                     },
+    };
+
     public string Metadata { get; set; }
 
     public JsonPointer MetadataReference { get; private set; }
@@ -30,14 +41,7 @@ public class DocumentSchema : BaseSchema
         {
             schema = JsonSerializer.Deserialize<DocumentSchema>(
                 content,
-                new JsonSerializerOptions()
-                {
-                    AllowTrailingCommas = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Converters = {
-                        new JsonStringEnumConverter()
-                    }
-                });
+                SerializerOptions);
         }
         catch (Exception e)
         {
