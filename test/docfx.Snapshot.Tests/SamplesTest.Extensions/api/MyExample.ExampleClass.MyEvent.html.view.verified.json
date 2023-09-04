@@ -285,6 +285,7 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeAuto": "Auto",
+    "changeTheme": "Change theme",
     "copy": "Copy",
     "_shared": {}
   },
