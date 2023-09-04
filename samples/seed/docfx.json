@@ -45,7 +45,7 @@
     },
     "output": "_site",
     "exportViewModel": true,
-    "template": ["default", "modern", "template", "default(zh-cn)"],
+    "template": ["default", "modern", "template"],
     "markdownEngineProperties": {
       "alerts": {
         "TODO": "alert alert-secondary"
