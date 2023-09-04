@@ -19,7 +19,6 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor
 {
     #region Fields
 
-    private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
     private readonly string[] SystemKeys = {
         "conceptual",
         "type",
@@ -37,7 +36,6 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor
 
     public ConceptualDocumentProcessor()
     {
-        _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
     }
 
     #endregion
@@ -125,54 +123,6 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor
         }
 
         return result;
-    }
-
-    #endregion
-
-    #region Protected Methods
-
-    protected virtual void SerializeModel(object model, Stream stream)
-    {
-        using var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true);
-        using var lease = _serializerPool.Rent();
-        lease.Resource.Serialize(sw, model);
-    }
-
-    protected virtual object DeserializeModel(Stream stream)
-    {
-        using var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true);
-        using var jr = new JsonTextReader(sr);
-        using var lease = _serializerPool.Rent();
-        return lease.Resource.Deserialize(jr);
-    }
-
-    protected virtual void SerializeProperties(IDictionary<string, object> properties, Stream stream)
-    {
-        using var sw = new StreamWriter(stream, Encoding.UTF8, 0x100, true);
-        using var lease = _serializerPool.Rent();
-        lease.Resource.Serialize(sw, properties);
-    }
-
-    protected virtual IDictionary<string, object> DeserializeProperties(Stream stream)
-    {
-        using var sr = new StreamReader(stream, Encoding.UTF8, false, 0x100, true);
-        using var jr = new JsonTextReader(sr);
-        using var lease = _serializerPool.Rent();
-        return lease.Resource.Deserialize<Dictionary<string, object>>(jr);
-    }
-
-    protected virtual JsonSerializer GetSerializer()
-    {
-        return new JsonSerializer
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-            Converters =
-            {
-                new Newtonsoft.Json.Converters.StringEnumConverter(),
-            },
-            TypeNameHandling = TypeNameHandling.All, // lgtm [cs/unsafe-type-name-handling]
-        };
     }
 
     #endregion
