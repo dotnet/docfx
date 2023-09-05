@@ -13,8 +13,6 @@ namespace Docfx.Build.Engine;
 
 internal sealed class HtmlPostProcessor : IPostProcessor
 {
-    private static readonly UTF8Encoding Utf8EncodingWithoutBom = new(false);
-
     public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
 
     private bool _handlerInitialized;
@@ -81,7 +79,7 @@ internal sealed class HtmlPostProcessor : IPostProcessor
             }
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(tuple.OutputFile))
             {
-                document.Save(stream, Utf8EncodingWithoutBom);
+                document.Save(stream, Encoding.UTF8);
             }
         }
         foreach (var handler in Handlers)
