@@ -16,16 +16,17 @@ updates:
   directory: "/templates"
   schedule:
     interval: daily
+  groups:
+    typescript-eslint:
+      patterns:
+      - "@typescript-eslint/*"
   ignore:
      # Ignore default template dependency update due to missing tests
   - dependency-name: '@default/*'
   - dependency-name: 'jquery'
+
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule: 
     interval: daily
   target-branch: main
-  groups:
-    typescript-eslint:
-      patterns:
-      - "@typescript-eslint/*"
