@@ -87,15 +87,33 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     private void WriteVideo(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
     {
         var modifiedLink = string.Empty;
+        var modifiedTitle = string.Empty;
 
         if (!string.IsNullOrWhiteSpace(obj?.VideoLink))
         {
             modifiedLink = FixUpLink(obj.VideoLink);
         }
+        if (!string.IsNullOrWhiteSpace(obj?.VideoTitle))
+        {
+            modifiedTitle = FixUpTitle(obj.VideoTitle);
+        }
 
         renderer.Write("<div class=\"embeddedvideo\"").WriteAttributes(obj).Write(">");
-        renderer.Write($"<iframe src=\"{modifiedLink}\" frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
+        renderer.Write($"<iframe src=\"{modifiedLink}\" title=\"{modifiedTitle}\"frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
         renderer.WriteLine("</div>");
+    }
+
+    public static string FixUpTitle(string title)
+    {
+        if (title.StartsWith("'") || title.StartsWith('"'))
+        {
+            title = title.Substring(1);
+        }
+        if (title.EndsWith("'") || title.EndsWith('"'))
+        {
+            title = title.Substring(0, title.Length - 1);
+        }
+        return title;
     }
 
     public static string FixUpLink(string link)

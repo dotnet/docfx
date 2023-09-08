@@ -21,6 +21,8 @@ public class QuoteSectionNoteBlock : ContainerBlock
     public string NoteTypeString { get; set; }
 
     public string VideoLink { get; set; }
+
+    public string VideoTitle { get; set; }
 }
 
 public enum QuoteSectionNoteType
