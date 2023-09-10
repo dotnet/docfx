@@ -11,6 +11,7 @@ type SearchHit = {
   keywords: string
 }
 
+const textEncoder = new TextEncoder()
 let query
 
 /**
@@ -24,6 +25,11 @@ export function enableSearch() {
 
   const relHref = meta('docfx:rel') || ''
   const worker = new Worker(relHref + 'public/search-worker.min.js', { type: 'module' })
+
+  worker.onerror = event => {
+    console.error("Error occurred at search-worker. message: " + event.message);
+  }
+
   worker.onmessage = function(oEvent) {
     switch (oEvent.data.e) {
       case 'index-ready':
@@ -41,7 +47,8 @@ export function enableSearch() {
 
   function onSearchQueryInput() {
     query = searchQuery.value
-    if (query.length < 3) {
+
+    if (!query || (query.length < 3 && textEncoder.encode(query).length < 3)) {
       document.body.removeAttribute('data-search')
     } else {
       worker.postMessage({ q: query })
