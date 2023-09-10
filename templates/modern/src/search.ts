@@ -27,7 +27,7 @@ export function enableSearch() {
   const worker = new Worker(relHref + 'public/search-worker.min.js', { type: 'module' })
 
   worker.onerror = event => {
-    console.error("Error occurred at search-worker. message: " + event.message);
+    console.error('Error occurred at search-worker. message: ' + event.message)
   }
 
   worker.onmessage = function(oEvent) {
