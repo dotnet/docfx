@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="HtmlAgilityPack" Version="1.11.52" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.11.53" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.0.7455" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2051" />
-    <PackageVersion Include="JsonSchema.Net" Version="5.2.1" />
+    <PackageVersion Include="JsonSchema.Net" Version="5.2.5" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
 
      <!-- "17.3.2" is the latest compatible version for .NET 6 -->
@@ -43,7 +43,7 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.7.0" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
-    <PackageVersion Include="Verify.Xunit" Version="21.0.0" />
+    <PackageVersion Include="Verify.Xunit" Version="21.1.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />
     <PackageVersion Include="xunit" Version="2.5.0" />
   </ItemGroup>
