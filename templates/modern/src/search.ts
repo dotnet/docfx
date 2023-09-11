@@ -48,7 +48,7 @@ export function enableSearch() {
   function onSearchQueryInput() {
     query = searchQuery.value
 
-    if (!query || (query.length < 3 && textEncoder.encode(query).length < 3)) {
+    if (query.length < 3 && textEncoder.encode(query).length < 3) {
       document.body.removeAttribute('data-search')
     } else {
       worker.postMessage({ q: query })
