@@ -28,7 +28,7 @@ public class QuoteSectionNoteTest
 <h5>WARNING</h5>
 </div>
 ";
-        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section" });
+        TestUtility.VerifyMarkup(source, expected, new[] { "invalid-note-section", "inaccessible-video-section" });
     }
 
     [Fact]
@@ -167,12 +167,12 @@ this is also warning</p>
     {
         // 1. Prepare data
         var source = @"The following is two videos.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]";
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title=Some Title]
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title=Some Title]";
 
         var expected = @"<p>The following is two videos.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Title"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Title"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
         TestUtility.VerifyMarkup(source, expected);
@@ -184,11 +184,11 @@ this is also warning</p>
     {
         // 1. Prepare data
         var source = @"The following is video.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title='Some Title' ]
 ";
 
         var expected = @"<p>The following is video.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Title"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
         TestUtility.VerifyMarkup(source, expected);
@@ -200,18 +200,18 @@ this is also warning</p>
     {
         // 1. Prepare data
         var source = @"The following is video mixed with note.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title=Some Title]
 > [!NOTE]
 > this is note text
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]";
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title=""Some Title"" ]";
 
         var expected = @"<p>The following is video mixed with note.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Title"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 <div class=""NOTE"">
 <h5>NOTE</h5>
 <p>this is note text</p>
 </div>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Title"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
         TestUtility.VerifyMarkup(source, expected);
@@ -418,7 +418,7 @@ We should support that.</p>
         var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://microsoft.com:8080/?query=value+A#bookmark"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-        TestUtility.VerifyMarkup(source, expected);
+        TestUtility.VerifyMarkup(source, expected, new[] { "inaccessible-video-section" });
     }
 
     [Fact]
@@ -431,7 +431,7 @@ We should support that.</p>
         var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-        TestUtility.VerifyMarkup(source, expected);
+        TestUtility.VerifyMarkup(source, expected, new[] { "inaccessible-video-section" });
     }
 
     [Fact]
@@ -444,7 +444,7 @@ We should support that.</p>
         var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?query=value+A&nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-        TestUtility.VerifyMarkup(source, expected);
+        TestUtility.VerifyMarkup(source, expected, new[] { "inaccessible-video-section" });
     }
 
     [Fact]
@@ -457,6 +457,6 @@ We should support that.</p>
         var expected = @"<h1 id=""article-2"">Article 2</h1>
 <div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/foo"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
-        TestUtility.VerifyMarkup(source, expected);
+        TestUtility.VerifyMarkup(source, expected, new[] { "inaccessible-video-section" });
     }
 }

@@ -99,7 +99,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
         }
 
         renderer.Write("<div class=\"embeddedvideo\"").WriteAttributes(obj).Write(">");
-        renderer.Write($"<iframe src=\"{modifiedLink}\" title=\"{modifiedTitle}\"frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
+        renderer.Write($"<iframe src=\"{modifiedLink}\"{modifiedTitle} frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
         renderer.WriteLine("</div>");
     }
 
@@ -113,7 +113,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
         {
             title = title.Substring(0, title.Length - 1);
         }
-        return title;
+        return $" title=\"{title}\"";
     }
 
     public static string FixUpLink(string link)

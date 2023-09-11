@@ -177,19 +177,28 @@ public class QuoteSectionNoteParser : BlockParser
         if (infoString.StartsWith("[!Video", StringComparison.OrdinalIgnoreCase))
         {
             string data = infoString.Substring(7, infoString.Length - 8).Trim();
-            if ((data.StartsWith("http://") || data.StartsWith("https://")) && data.IndexOf(' ') != -1)
+            if (data.StartsWith("http://") || data.StartsWith("https://"))
             {
-                string link = data.Substring(0, data.IndexOf(' '));
-                string title = data.Trim().Substring(data.IndexOf(' ') + 1);
-                if (title.StartsWith("title=") && title.Length > 6)
+                string link = data;
+                string title = "";
+                if (data.IndexOf(' ') != -1)
                 {
-                    block.QuoteType = QuoteSectionNoteType.DFMVideo;
-                    block.VideoLink = link;
-                    block.VideoTitle = title.Substring(6);
-                    return true;
+                    link = data.Substring(0, data.IndexOf(' '));
+                    title = data.Trim().Substring(data.IndexOf(' ') + 1);
+                    if (title.StartsWith("title=") && title.Length > 6)
+                    {
+                        title = title.Substring(6);
+                    }
                 }
-            }
-            _context.LogWarning("invalid-note-section", "Video should have a valid url and title", block);
+
+                if (title == "") _context.LogWarning("inaccessible-video-section", "Video should have a valid url and title", block);
+
+                block.QuoteType = QuoteSectionNoteType.DFMVideo;
+                block.VideoLink = link;
+                block.VideoTitle = title;
+                return true;
+                
+            }  
         }
 
         processor.GoToColumn(originalColumn);

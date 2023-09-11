@@ -401,7 +401,7 @@ http://your.company.abc, abc
 
 ### Video Sample
 
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
+> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4 title=Some Video]
 
 ## CommonMark sample
 
@@ -564,7 +564,7 @@ csr
 </ul>
 </div>
 <h3 id=""video-sample"">Video Sample</h3>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" title=""Some Video"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 <h2 id=""commonmark-sample"">CommonMark sample</h2>
 <ul>
 <li><h1 id=""foo"">Foo</h1>
