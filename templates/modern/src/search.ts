@@ -11,7 +11,6 @@ type SearchHit = {
   keywords: string
 }
 
-const textEncoder = new TextEncoder()
 let query
 
 /**
@@ -41,6 +40,9 @@ export function enableSearch() {
         document.body.setAttribute('data-search', 'true')
         renderSearchResults(oEvent.data.d, 0)
         window.docfx.searchResultReady = true
+        if (searchQuery.value.length == 0) {
+          document.body.removeAttribute('data-search')
+        }
         break
     }
   }
@@ -48,7 +50,7 @@ export function enableSearch() {
   function onSearchQueryInput() {
     query = searchQuery.value
 
-    if (query.length < 3 && textEncoder.encode(query).length < 3) {
+    if (query.length == 0) {
       document.body.removeAttribute('data-search')
     } else {
       worker.postMessage({ q: query })
