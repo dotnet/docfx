@@ -40,7 +40,7 @@ export function enableSearch() {
         document.body.setAttribute('data-search', 'true')
         renderSearchResults(oEvent.data.d, 0)
         window.docfx.searchResultReady = true
-        if (searchQuery.value.length == 0) {
+        if (searchQuery.value === '') {
           document.body.removeAttribute('data-search')
         }
         break
@@ -50,7 +50,7 @@ export function enableSearch() {
   function onSearchQueryInput() {
     query = searchQuery.value
 
-    if (query.length == 0) {
+    if (query === '') {
       document.body.removeAttribute('data-search')
     } else {
       worker.postMessage({ q: query })
