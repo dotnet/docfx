@@ -252,7 +252,7 @@ $(function () {
 
         $('#search-query').keyup(function () {
           query = $(this).val();
-          if (query.length < 3) {
+          if (query === '') {
             flipContents("show");
           } else {
             flipContents("hide");
