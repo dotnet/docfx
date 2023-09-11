@@ -184,14 +184,14 @@ public class QuoteSectionNoteParser : BlockParser
                 if (data.IndexOf(' ') != -1)
                 {
                     link = data.Substring(0, data.IndexOf(' '));
-                    title = data.Trim().Substring(data.IndexOf(' ') + 1);
+                    title = data.Substring(data.IndexOf(' ') + 1);
                     if (title.StartsWith("title=") && title.Length > 6)
                     {
                         title = title.Substring(6);
                     }
                 }
 
-                if (title == "") _context.LogWarning("inaccessible-video-section", "Video should have a valid url and title", block);
+                if (title == "") _context.LogWarning("inaccessible-video-section", "Video title is missing. Please provide a video title.", block);
 
                 block.QuoteType = QuoteSectionNoteType.DFMVideo;
                 block.VideoLink = link;
