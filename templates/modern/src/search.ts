@@ -24,6 +24,11 @@ export function enableSearch() {
 
   const relHref = meta('docfx:rel') || ''
   const worker = new Worker(relHref + 'public/search-worker.min.js', { type: 'module' })
+
+  worker.onerror = event => {
+    console.error('Error occurred at search-worker. message: ' + event.message)
+  }
+
   worker.onmessage = function(oEvent) {
     switch (oEvent.data.e) {
       case 'index-ready':
@@ -35,13 +40,17 @@ export function enableSearch() {
         document.body.setAttribute('data-search', 'true')
         renderSearchResults(oEvent.data.d, 0)
         window.docfx.searchResultReady = true
+        if (searchQuery.value === '') {
+          document.body.removeAttribute('data-search')
+        }
         break
     }
   }
 
   function onSearchQueryInput() {
     query = searchQuery.value
-    if (query.length < 3) {
+
+    if (query === '') {
       document.body.removeAttribute('data-search')
     } else {
       worker.postMessage({ q: query })
