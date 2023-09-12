@@ -14,15 +14,12 @@ internal class RendererWithResourcePool : ITemplateRenderer
 
         using var lease = _rendererPool.Rent();
         var inner = lease.Resource;
-        Raw = inner.Raw;
         Dependencies = inner.Dependencies;
         Path = inner.Path;
         Name = inner.Name;
     }
 
     public IEnumerable<string> Dependencies { get; }
-
-    public string Raw { get; }
 
     public string Path { get; }
 

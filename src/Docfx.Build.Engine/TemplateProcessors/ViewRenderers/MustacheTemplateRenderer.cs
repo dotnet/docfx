@@ -46,8 +46,6 @@ internal class MustacheTemplateRenderer : ITemplateRenderer
 
     public IEnumerable<string> Dependencies { get; }
 
-    public string Raw { get; }
-
     public string Path { get; }
 
     public string Name { get; }

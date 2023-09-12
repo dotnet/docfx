@@ -9,8 +9,6 @@ public interface ITemplateRenderer
 
     IEnumerable<string> Dependencies { get; }
 
-    string Raw { get; }
-
     string Path { get; }
 
     string Name { get; }
