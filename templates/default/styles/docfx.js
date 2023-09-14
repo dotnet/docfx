@@ -166,7 +166,7 @@ $(function () {
 
       var worker = new Worker(relHref + 'styles/search-worker.min.js');
       worker.onerror = function (oEvent) {
-        console.error('Error occurred at search-worker. message: ' + oEvent.message)
+        console.error('Error occurred at search-worker. message: ' + oEvent.message);
       }
 
       worker.onmessage = function (oEvent) {
