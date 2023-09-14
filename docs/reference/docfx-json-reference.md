@@ -467,6 +467,10 @@ These are the standard metadata predefined by docfx. They are supported by built
 
 A string suffix appended to the title of every page.
 
+### `_appName`
+
+The name of the site displayed after the logo.
+
 ### `_appFooter`
 
 The footer text. Shows Docfx's Copyright text if not specified.
