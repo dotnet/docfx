@@ -128,13 +128,10 @@ $(function () {
       return;
     }
     try {
-      var worker = new Worker(relHref + 'styles/search-worker.min.js');
-      if (!worker && !window.worker) {
-        localSearch();
-      } else {
-        webWorkerSearch();
+      if(!window.Worker){
+        return;
       }
-
+      webWorkerSearch();
       renderSearchBox();
       highlightKeywords();
       addSearchEvent();
@@ -164,49 +161,13 @@ $(function () {
       }
     }
 
-    // Search factory
-    function localSearch() {
-      console.log("using local search");
-      var lunrIndex = lunr(function () {
-        this.ref('href');
-        this.field('title', { boost: 50 });
-        this.field('keywords', { boost: 20 });
-      });
-      lunr.tokenizer.seperator = /[\s\-\.]+/;
-      var searchData = {};
-      var searchDataRequest = new XMLHttpRequest();
-
-      var indexPath = relHref + "index.json";
-      if (indexPath) {
-        searchDataRequest.open('GET', indexPath);
-        searchDataRequest.onload = function () {
-          if (this.status != 200) {
-            return;
-          }
-          searchData = JSON.parse(this.responseText);
-          for (var prop in searchData) {
-            if (searchData.hasOwnProperty(prop)) {
-              lunrIndex.add(searchData[prop]);
-            }
-          }
-        }
-        searchDataRequest.send();
-      }
-
-      $("body").bind("queryReady", function () {
-        var hits = lunrIndex.search(query);
-        var results = [];
-        hits.forEach(function (hit) {
-          var item = searchData[hit.ref];
-          results.push({ 'href': item.href, 'title': item.title, 'keywords': item.keywords });
-        });
-        handleSearchResults(results);
-      });
-    }
-
     function webWorkerSearch() {
-      console.log("using Web Worker");
       var indexReady = $.Deferred();
+
+      var worker = new Worker(relHref + 'styles/search-worker.min.js');
+      worker.onerror = function (oEvent) {
+        console.error('Error occurred at search-worker. message: ' + oEvent.message)
+      }
 
       worker.onmessage = function (oEvent) {
         switch (oEvent.data.e) {
