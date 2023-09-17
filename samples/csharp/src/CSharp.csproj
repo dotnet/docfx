@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-      <TargetFrameworks>net7.0</TargetFrameworks>
-      <LangVersion>latest</LangVersion>
+      <TargetFrameworks>net8.0</TargetFrameworks>
+      <LangVersion>preview</LangVersion>
       <Nullable>enable</Nullable>
       <ImplicitUsings>enable</ImplicitUsings>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

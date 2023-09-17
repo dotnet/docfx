@@ -31,9 +31,9 @@ jobs:
       if: matrix.os == 'windows-latest'
 
     - run: dotnet test -c Release -f net8.0 --no-build --collect:"XPlat Code Coverage"
-      if: matrix.os == 'ubuntu-latest'
 
     - run: dotnet test -c Release -f net7.0 --no-build --collect:"XPlat Code Coverage"
+      if: matrix.os == 'ubuntu-latest'
 
     - run: dotnet test -c Release -f net6.0 --no-build --collect:"XPlat Code Coverage"
       if: matrix.os == 'ubuntu-latest'
@@ -41,10 +41,10 @@ jobs:
     - uses: codecov/codecov-action@v3
       if: matrix.os == 'ubuntu-latest'
 
-    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- docs/docfx.json
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
 
-    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- metadata samples/seed/docfx.json
-    - run: dotnet run -c Release --no-build -f net7.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
@@ -64,7 +64,7 @@ jobs:
     - uses: ./.github/actions/build
 
     - run: dotnet build -c Release samples/extensions/build
-    - run: dotnet test -c Release -f net7.0 --no-build --filter Stage=Snapshot
+    - run: dotnet test -c Release -f net8.0 --no-build --filter Stage=Snapshot
       working-directory: test/docfx.Snapshot.Tests
       env:
         SNAPSHOT_TEST: true
