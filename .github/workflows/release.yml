@@ -32,9 +32,9 @@ jobs:
 
     - name: dotnet publish
       run: |
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
-        dotnet publish src/docfx -f net7.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r win-x64 -o drop/publish/win-x64
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r linux-x64 -o drop/publish/linux-x64
+        dotnet publish src/docfx -f net8.0 -c Release /p:Version=${GITHUB_REF_NAME#v} --self-contained -r osx-x64 -o drop/publish/osx-x64
         mkdir -p drop/bin
 
     - run: zip -r ../../bin/docfx-win-x64-${GITHUB_REF_NAME}.zip .

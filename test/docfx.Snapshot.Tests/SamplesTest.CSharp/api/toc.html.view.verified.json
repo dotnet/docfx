@@ -143,6 +143,86 @@
       "level": 2.0
     },
     {
+      "name": "CSharp12",
+      "href": "CSharp12.html",
+      "topicHref": "CSharp12.html",
+      "topicUid": "CSharp12",
+      "items": [
+        {
+          "name": "CollectionExpressions",
+          "href": "CSharp12.CollectionExpressions.html",
+          "topicHref": "CSharp12.CollectionExpressions.html",
+          "topicUid": "CSharp12.CollectionExpressions",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "DefaultLambdaParameters",
+          "href": "CSharp12.DefaultLambdaParameters.html",
+          "topicHref": "CSharp12.DefaultLambdaParameters.html",
+          "topicUid": "CSharp12.DefaultLambdaParameters",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "InlineArrays",
+          "href": "CSharp12.InlineArrays.html",
+          "topicHref": "CSharp12.InlineArrays.html",
+          "topicUid": "CSharp12.InlineArrays",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors",
+          "href": "CSharp12.PrimaryConstructors.html",
+          "topicHref": "CSharp12.PrimaryConstructors.html",
+          "topicUid": "CSharp12.PrimaryConstructors",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors.BankAccount",
+          "href": "CSharp12.PrimaryConstructors.BankAccount.html",
+          "topicHref": "CSharp12.PrimaryConstructors.BankAccount.html",
+          "topicUid": "CSharp12.PrimaryConstructors.BankAccount",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors.CheckAccount",
+          "href": "CSharp12.PrimaryConstructors.CheckAccount.html",
+          "topicHref": "CSharp12.PrimaryConstructors.CheckAccount.html",
+          "topicUid": "CSharp12.PrimaryConstructors.CheckAccount",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "PrimaryConstructors.Distance",
+          "href": "CSharp12.PrimaryConstructors.Distance.html",
+          "topicHref": "CSharp12.PrimaryConstructors.Distance.html",
+          "topicUid": "CSharp12.PrimaryConstructors.Distance",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        }
+      ],
+      "tocHref": null,
+      "level": 2.0
+    },
+    {
       "name": "CSharp8",
       "href": "CSharp8.html",
       "topicHref": "CSharp8.html",
