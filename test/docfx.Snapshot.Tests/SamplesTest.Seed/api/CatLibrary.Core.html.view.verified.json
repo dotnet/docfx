@@ -144,6 +144,68 @@
           "id": "CatLibrary_Core_ExplicitLayoutClass",
           "hideTitleType": false,
           "hideSubtitle": false
+        },
+        {
+          "uid": "CatLibrary.Core.Issue231",
+          "isExtensionMethod": false,
+          "parent": "CatLibrary.Core",
+          "href": "CatLibrary.Core.Issue231.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue231"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "Issue231"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "CatLibrary.Core.Issue231"
+            },
+            {
+              "lang": "vb",
+              "value": "CatLibrary.Core.Issue231"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<xref uid=\"CatLibrary.Core.Issue231\" text=\"Issue231\"/>"
+            },
+            {
+              "lang": "vb",
+              "value": "<xref uid=\"CatLibrary.Core.Issue231\" text=\"Issue231\"/>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "class",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "CatLibrary_Core_Issue231",
+          "hideTitleType": false,
+          "hideSubtitle": false
         }
       ]
     },
@@ -155,6 +217,7 @@
         {
           "uid": "CatLibrary.Core.ContainersRefType",
           "isExtensionMethod": false,
+          "parent": "CatLibrary.Core",
           "href": "CatLibrary.Core.ContainersRefType.html",
           "name": [
             {
@@ -457,7 +520,7 @@
   ],
   "type": "namespace",
   "assemblies": [
-    "CatLibrary.Core"
+    "CatLibrary"
   ],
   "level": 0.0,
   "_appName": "Seed",

@@ -353,6 +353,16 @@
               "level": 4.0,
               "items": [],
               "leaf": true
+            },
+            {
+              "name": "Issue231",
+              "href": "CatLibrary.Core.Issue231.html",
+              "topicHref": "CatLibrary.Core.Issue231.html",
+              "topicUid": "CatLibrary.Core.Issue231",
+              "tocHref": null,
+              "level": 4.0,
+              "items": [],
+              "leaf": true
             }
           ],
           "tocHref": null,

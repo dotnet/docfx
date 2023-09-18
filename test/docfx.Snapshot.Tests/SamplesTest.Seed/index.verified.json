@@ -177,17 +177,22 @@
   "api/CatLibrary.Core.ContainersRefType.html": {
     "href": "api/CatLibrary.Core.ContainersRefType.html",
     "title": "Struct ContainersRefType | docfx seed website",
-    "keywords": "Struct ContainersRefType Namespace CatLibrary.Core Assembly CatLibrary.Core.dll Struct ContainersRefType public struct ContainersRefType Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Fields ColorCount ColorCount public long ColorCount Field Value long Properties GetColorCount GetColorCount public long GetColorCount { get; } Property Value long Methods ContainersRefTypeNonRefMethod(params object[]) ContainersRefTypeNonRefMethod array public static int ContainersRefTypeNonRefMethod(params object[] parmsArray) Parameters parmsArray object[] Returns int Events ContainersRefTypeEventHandler public event EventHandler ContainersRefTypeEventHandler Event Type EventHandler"
+    "keywords": "Struct ContainersRefType Namespace CatLibrary.Core Assembly CatLibrary.Core.dll Struct ContainersRefType public struct ContainersRefType Inherited Members ValueType.Equals(object) ValueType.GetHashCode() ValueType.ToString() object.Equals(object, object) object.GetType() object.ReferenceEquals(object, object) Extension Methods Issue231.Bar(ContainersRefType) Issue231.Foo(ContainersRefType) Fields ColorCount ColorCount public long ColorCount Field Value long Properties GetColorCount GetColorCount public long GetColorCount { get; } Property Value long Methods ContainersRefTypeNonRefMethod(params object[]) ContainersRefTypeNonRefMethod array public static int ContainersRefTypeNonRefMethod(params object[] parmsArray) Parameters parmsArray object[] Returns int Events ContainersRefTypeEventHandler public event EventHandler ContainersRefTypeEventHandler Event Type EventHandler"
   },
   "api/CatLibrary.Core.ExplicitLayoutClass.html": {
     "href": "api/CatLibrary.Core.ExplicitLayoutClass.html",
     "title": "Class ExplicitLayoutClass | docfx seed website",
     "keywords": "Class ExplicitLayoutClass Namespace CatLibrary.Core Assembly CatLibrary.Core.dll public class ExplicitLayoutClass Inheritance object ExplicitLayoutClass Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString()"
   },
+  "api/CatLibrary.Core.Issue231.html": {
+    "href": "api/CatLibrary.Core.Issue231.html",
+    "title": "Class Issue231 | docfx seed website",
+    "keywords": "Class Issue231 Namespace CatLibrary.Core Assembly CatLibrary.dll public static class Issue231 Inheritance object Issue231 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods Bar(ContainersRefType) public static void Bar(this ContainersRefType c) Parameters c ContainersRefType Foo(ContainersRefType) public static void Foo(this ContainersRefType c) Parameters c ContainersRefType"
+  },
   "api/CatLibrary.Core.html": {
     "href": "api/CatLibrary.Core.html",
     "title": "Namespace CatLibrary.Core | docfx seed website",
-    "keywords": "Namespace CatLibrary.Core Classes ContainersRefType.ContainersRefTypeChild ExplicitLayoutClass Structs ContainersRefType Struct ContainersRefType Interfaces ContainersRefType.ContainersRefTypeChildInterface Enums ContainersRefType.ColorType Enumeration ColorType Delegates ContainersRefType.ContainersRefTypeDelegate Delegate ContainersRefTypeDelegate"
+    "keywords": "Namespace CatLibrary.Core Classes ContainersRefType.ContainersRefTypeChild ExplicitLayoutClass Issue231 Structs ContainersRefType Struct ContainersRefType Interfaces ContainersRefType.ContainersRefTypeChildInterface Enums ContainersRefType.ColorType Enumeration ColorType Delegates ContainersRefType.ContainersRefTypeDelegate Delegate ContainersRefTypeDelegate"
   },
   "api/CatLibrary.FakeDelegate-1.html": {
     "href": "api/CatLibrary.FakeDelegate-1.html",
