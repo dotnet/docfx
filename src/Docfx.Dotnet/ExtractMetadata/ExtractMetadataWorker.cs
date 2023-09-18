@@ -11,6 +11,8 @@ using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
+#nullable enable
+
 namespace Docfx.Dotnet;
 
 internal class ExtractMetadataWorker : IDisposable
@@ -29,7 +31,7 @@ internal class ExtractMetadataWorker : IDisposable
         _options = options;
         _files = config.Files?.Select(s => new FileInformation(s))
             .GroupBy(f => f.Type)
-            .ToDictionary(s => s.Key, s => s.Distinct().ToList());
+            .ToDictionary(s => s.Key, s => s.Distinct().ToList()) ?? new();
 
         var msbuildProperties = config.MSBuildProperties ?? new Dictionary<string, string>();
         if (!msbuildProperties.ContainsKey("Configuration"))
@@ -55,7 +57,7 @@ internal class ExtractMetadataWorker : IDisposable
 
     public async Task ExtractMetadataAsync()
     {
-        if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
+        if (_files.TryGetValue(FileType.NotSupported, out var unsupportedFiles))
         {
             foreach (var file in unsupportedFiles)
             {
@@ -152,33 +154,25 @@ internal class ExtractMetadataWorker : IDisposable
         }
 
         Logger.LogInfo($"Creating output...");
-        Dictionary<string, MetadataItem> allMembers;
-        Dictionary<string, ReferenceItem> allReferences;
-        using (new PerformanceScope("MergeMetadata"))
-        {
-            allMembers = MergeYamlProjectMetadata(projectMetadataList);
-        }
+        var allMembers = new Dictionary<string, MetadataItem>();
+        var allReferences = new Dictionary<string, ReferenceItem>();
+        MergeMembers(allMembers, projectMetadataList);
+        MergeReferences(allReferences, projectMetadataList);
 
-        using (new PerformanceScope("MergeReference"))
-        {
-            allReferences = MergeYamlProjectReferences(projectMetadataList);
-        }
-
-        if (allMembers == null || allMembers.Count == 0)
+        if (allMembers.Count == 0)
         {
             var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
             Logger.Log(LogLevel.Warning, $"No .NET API detected for {value}.");
+            return;
         }
-        else
+
+        using (new PerformanceScope("ResolveAndExport"))
         {
-            using (new PerformanceScope("ResolveAndExport"))
-            {
-                ResolveAndExportYamlMetadata(allMembers, allReferences);
-            }
+            ResolveAndExportYamlMetadata(allMembers, allReferences);
         }
     }
 
-    private async Task<Compilation> LoadCompilationFromProject(string path)
+    private async Task<Compilation?> LoadCompilationFromProject(string path)
     {
         var project = _workspace.CurrentSolution.Projects.FirstOrDefault(
             p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, path));
@@ -272,9 +266,9 @@ internal class ExtractMetadataWorker : IDisposable
         }
         else
         {
-            TreeIterator.Preorder(memberModel, null, s => s.Items, (member, parent) =>
+            TreeIterator.Preorder(memberModel, null, s => s!.Items, (member, parent) =>
             {
-                if (indexer.TryGetValue(member.Name, out string path))
+                if (indexer.TryGetValue(member!.Name, out var path))
                 {
                     Logger.LogWarning($"{member.Name} already exists in {path}, the duplicate one {outputPath} will be ignored.");
                 }
@@ -287,94 +281,55 @@ internal class ExtractMetadataWorker : IDisposable
         }
     }
 
-    private static Dictionary<string, MetadataItem> MergeYamlProjectMetadata(List<MetadataItem> projectMetadataList)
+    private static void MergeMembers(Dictionary<string, MetadataItem> result, List<MetadataItem> items)
     {
-        if (projectMetadataList == null || projectMetadataList.Count == 0)
+        foreach (var item in items)
         {
-            return null;
+            MergeNode(item);
         }
 
-        Dictionary<string, MetadataItem> namespaceMapping = new();
-        Dictionary<string, MetadataItem> allMembers = new();
-
-        foreach (var project in projectMetadataList)
+        bool MergeNode(MetadataItem node)
         {
-            if (project.Items != null)
+            if (node.Type is MemberType.Assembly)
             {
-                foreach (var ns in project.Items)
+                foreach (var item in node.Items ?? new())
                 {
-                    if (ns.Type == MemberType.Namespace)
-                    {
-                        if (namespaceMapping.TryGetValue(ns.Name, out MetadataItem nsOther))
-                        {
-                            if (ns.Items != null)
-                            {
-                                nsOther.Items ??= new List<MetadataItem>();
-
-                                foreach (var i in ns.Items)
-                                {
-                                    if (!nsOther.Items.Any(s => s.Name == i.Name))
-                                    {
-                                        nsOther.Items.Add(i);
-                                    }
-                                    else
-                                    {
-                                        Logger.Log(LogLevel.Info, $"{i.Name} already exists in {nsOther.Name}, ignore current one");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            namespaceMapping.Add(ns.Name, ns);
-                        }
-                    }
-
-                    if (!allMembers.ContainsKey(ns.Name))
-                    {
-                        allMembers.Add(ns.Name, ns);
-                    }
-
-                    ns.Items?.ForEach(s =>
-                    {
-                        if (allMembers.TryGetValue(s.Name, out MetadataItem existingMetadata))
-                        {
-                            Logger.Log(LogLevel.Warning, $"Duplicate member {s.Name} is found from {existingMetadata.Source?.Path} and {s.Source?.Path}, use the one in {existingMetadata.Source?.Path} and ignore the one from {s.Source?.Path}");
-                        }
-                        else
-                        {
-                            allMembers.Add(s.Name, s);
-                        }
-
-                        s.Items?.ForEach(s1 =>
-                        {
-                            if (allMembers.TryGetValue(s1.Name, out MetadataItem existingMetadata1))
-                            {
-                                Logger.Log(LogLevel.Warning, $"Duplicate member {s1.Name} is found from {existingMetadata1.Source?.Path} and {s1.Source?.Path}, use the one in {existingMetadata1.Source?.Path} and ignore the one from {s1.Source?.Path}");
-                            }
-                            else
-                            {
-                                allMembers.Add(s1.Name, s1);
-                            }
-                        });
-                    });
+                    MergeNode(item);
                 }
+                return false;
             }
-        }
 
-        return allMembers;
+            if (!result.TryGetValue(node.Name, out var existingNode))
+            {
+                result.Add(node.Name, node);
+                foreach (var item in node.Items ?? new())
+                {
+                    MergeNode(item);
+                }
+                return true;
+            }
+
+            if (node.Type is MemberType.Namespace or MemberType.Class)
+            {
+                foreach (var item in node.Items ?? new())
+                {
+                    if (MergeNode(item))
+                    {
+                        existingNode.Items ??= new();
+                        existingNode.Items.Add(item);
+                    }
+                }
+                return false;
+            }
+
+            Logger.Log(LogLevel.Warning, $"Ignore duplicated member {node.Type}:{node.Name} from {node.Source?.Path} as it already exist in {existingNode.Source?.Path}.");
+            return false;
+        }
     }
 
-    private static Dictionary<string, ReferenceItem> MergeYamlProjectReferences(List<MetadataItem> projectMetadataList)
+    private static void MergeReferences(Dictionary<string, ReferenceItem> result, List<MetadataItem> items)
     {
-        if (projectMetadataList == null || projectMetadataList.Count == 0)
-        {
-            return null;
-        }
-
-        var result = new Dictionary<string, ReferenceItem>();
-
-        foreach (var project in projectMetadataList)
+        foreach (var project in items)
         {
             if (project.References != null)
             {
@@ -391,7 +346,5 @@ internal class ExtractMetadataWorker : IDisposable
                 }
             }
         }
-
-        return result;
     }
 }

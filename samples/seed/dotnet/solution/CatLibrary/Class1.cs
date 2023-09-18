@@ -413,3 +413,11 @@ namespace MRef.Demo.Enumeration
         Yellow
     }
 }
+
+namespace CatLibrary.Core
+{
+    public static class Issue231
+    {
+        public static void Bar(this ContainersRefType c) {}
+    }
+}

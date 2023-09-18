@@ -1121,6 +1121,38 @@ references:
   commentId: T:CatLibrary.Core.ExplicitLayoutClass
   fullName: CatLibrary.Core.ExplicitLayoutClass
   nameWithType: ExplicitLayoutClass
+- uid: CatLibrary.Core.Issue231
+  name: Issue231
+  href: api/CatLibrary.Core.Issue231.html
+  commentId: T:CatLibrary.Core.Issue231
+  fullName: CatLibrary.Core.Issue231
+  nameWithType: Issue231
+- uid: CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  name: Bar(ContainersRefType)
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_
+  commentId: M:CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  fullName: CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)
+  nameWithType: Issue231.Bar(ContainersRefType)
+- uid: CatLibrary.Core.Issue231.Bar*
+  name: Bar
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_
+  commentId: Overload:CatLibrary.Core.Issue231.Bar
+  isSpec: "True"
+  fullName: CatLibrary.Core.Issue231.Bar
+  nameWithType: Issue231.Bar
+- uid: CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  name: Foo(ContainersRefType)
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_
+  commentId: M:CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  fullName: CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)
+  nameWithType: Issue231.Foo(ContainersRefType)
+- uid: CatLibrary.Core.Issue231.Foo*
+  name: Foo
+  href: api/CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_
+  commentId: Overload:CatLibrary.Core.Issue231.Foo
+  isSpec: "True"
+  fullName: CatLibrary.Core.Issue231.Foo
+  nameWithType: Issue231.Foo
 - uid: CatLibrary.FakeDelegate`1
   name: FakeDelegate<T>
   href: api/CatLibrary.FakeDelegate-1.html
