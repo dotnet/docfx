@@ -6,9 +6,9 @@
 
   <ItemGroup>
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.53" />
-    <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.0.7455" />
+    <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.1.7464" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
-    <PackageVersion Include="Jint" Version="3.0.0-beta-2051" />
+    <PackageVersion Include="Jint" Version="3.0.0-beta-2052" />
     <PackageVersion Include="JsonSchema.Net" Version="5.2.5" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
 
@@ -41,10 +41,11 @@
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.2.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.7.0" />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.7.0" Condition="'$(TargetFramework)' != 'net8.0'"  />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.112" Condition="'$(TargetFramework)' == 'net8.0'"  />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
     <PackageVersion Include="Verify.Xunit" Version="21.1.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />
-    <PackageVersion Include="xunit" Version="2.5.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
+    <PackageVersion Include="xunit" Version="2.5.1" />
   </ItemGroup>
 </Project>

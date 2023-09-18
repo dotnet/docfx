@@ -1163,6 +1163,106 @@
       "level": 0.0
     }
   ],
+  "extensionMethods": [
+    {
+      "uid": "CatLibrary.Core.ContainersRefType.CatLibrary.Core.Issue231.Bar",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Core.Issue231",
+      "definition": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Bar(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Bar(ContainersRefType)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Issue231.Bar(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue231.Bar(ContainersRefType)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        }
+      ],
+      "level": 0.0
+    },
+    {
+      "uid": "CatLibrary.Core.ContainersRefType.CatLibrary.Core.Issue231.Foo",
+      "isEii": false,
+      "isExtensionMethod": false,
+      "parent": "CatLibrary.Core.Issue231",
+      "definition": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)",
+      "name": [
+        {
+          "lang": "csharp",
+          "value": "Foo(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Foo(ContainersRefType)"
+        }
+      ],
+      "nameWithType": [
+        {
+          "lang": "csharp",
+          "value": "Issue231.Foo(ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "Issue231.Foo(ContainersRefType)"
+        }
+      ],
+      "fullName": [
+        {
+          "lang": "csharp",
+          "value": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)"
+        },
+        {
+          "lang": "vb",
+          "value": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)"
+        }
+      ],
+      "specName": [
+        {
+          "lang": "csharp",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        },
+        {
+          "lang": "vb",
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+        }
+      ],
+      "level": 0.0
+    }
+  ],
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
