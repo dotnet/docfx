@@ -363,6 +363,19 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue896
   nameWithType: Class1.Issue896
+- uid: BuildFromProject.Class1.Issue9216
+  name: Issue9216()
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue9216
+  commentId: M:BuildFromProject.Class1.Issue9216
+  fullName: BuildFromProject.Class1.Issue9216()
+  nameWithType: Class1.Issue9216()
+- uid: BuildFromProject.Class1.Issue9216*
+  name: Issue9216
+  href: api/BuildFromProject.Class1.html#BuildFromProject_Class1_Issue9216_
+  commentId: Overload:BuildFromProject.Class1.Issue9216
+  isSpec: "True"
+  fullName: BuildFromProject.Class1.Issue9216
+  nameWithType: Class1.Issue9216
 - uid: BuildFromProject.Class1.Test`1
   name: Class1.Test<T>
   href: api/BuildFromProject.Class1.Test-1.html
