@@ -11,6 +11,7 @@ using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Markdig;
+using Markdig.Extensions.Mathematics;
 using Markdig.Helpers;
 using Markdig.Renderers.Roundtrip;
 using Markdig.Syntax;
@@ -557,10 +558,12 @@ internal class XmlComment
             return xml;
 
         xml = HandleBlockQuote(xml);
-        var markdown = Markdown.Parse(xml, trackTrivia: true);
-        DecodeMarkdownCode(markdown);
+        var pipeline = new MarkdownPipelineBuilder().UseMathematics().EnableTrackTrivia().Build();
+        var markdown = Markdown.Parse(xml, pipeline);
+        MarkdownXmlDecode(markdown);
         var sw = new StringWriter();
         var rr = new RoundtripRenderer(sw);
+        rr.ObjectRenderers.Add(new MathInlineRenderer());
         rr.Write(markdown);
         return sw.ToString();
 
@@ -571,13 +574,17 @@ internal class XmlComment
             return Regex.Replace(xml, @"^(\s*)&gt;", "$1>", RegexOptions.Multiline);
         }
 
-        static void DecodeMarkdownCode(MarkdownObject node)
+        static void MarkdownXmlDecode(MarkdownObject node)
         {
             // CommonMark: Entity and numeric character references are treated as literal text in code spans and code blocks
             switch (node)
             {
                 case CodeInline codeInline:
                     codeInline.ContentWithTrivia = new(XmlDecode(codeInline.ContentWithTrivia.ToString()), codeInline.ContentWithTrivia.NewLine);
+                    break;
+
+                case MathInline mathInline:
+                    mathInline.Content = new(XmlDecode(mathInline.Content.ToString()));
                     break;
 
                 case CodeBlock codeBlock:
@@ -593,17 +600,17 @@ internal class XmlComment
 
                 case ContainerBlock containerBlock:
                     foreach (var child in containerBlock)
-                        DecodeMarkdownCode(child);
+                        MarkdownXmlDecode(child);
                     break;
 
                 case ContainerInline containerInline:
                     foreach (var child in containerInline)
-                        DecodeMarkdownCode(child);
+                        MarkdownXmlDecode(child);
                     break;
 
                 case LeafBlock leafBlock when leafBlock.Inline is not null:
                     foreach (var child in leafBlock.Inline)
-                        DecodeMarkdownCode(child);
+                        MarkdownXmlDecode(child);
                     break;
             }
         }
@@ -616,6 +623,20 @@ internal class XmlComment
                 .Replace("&amp;", "&")
                 .Replace("&quot;", "\"")
                 .Replace("&apos;", "'");
+        }
+    }
+
+    class MathInlineRenderer : RoundtripObjectRenderer<MathInline>
+    {
+        protected override void Write(RoundtripRenderer renderer, MathInline obj)
+        {
+            for (var i = 0; i < obj.DelimiterCount; i++)
+                renderer.Write(obj.Delimiter);
+
+            renderer.Write(obj.Content);
+
+            for (var i = 0; i < obj.DelimiterCount; i++)
+                renderer.Write(obj.Delimiter);
         }
     }
 }
