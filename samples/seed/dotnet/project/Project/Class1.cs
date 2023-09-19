@@ -149,4 +149,15 @@ public class Class1 : IClass1
     /// <see cref="IConfiguration"/> related helper and extension routines.
     /// </summary>
     public void Issue1887() { }
+
+    /// <summary>
+    /// Calculates the determinant of a 3-dimensional matrix:
+    ///
+    /// $$A = \begin{vmatrix} a_{11} &amp; a_{12} &amp; a_{13} \\ a_{21} &amp; a_{22} &amp; a_{23} \\ a_{31} &amp; a_{32} &amp; a_{33} \end{vmatrix}$$
+    /// 
+    /// Returns the smallest value:
+    /// 
+    /// $$\left\{\begin{matrix}a, a&lt;b \\ b, b&gt;a\\ \end{matrix} \right.$$
+    /// </summary>
+    public static double Issue9216() => 0.0;
 }
