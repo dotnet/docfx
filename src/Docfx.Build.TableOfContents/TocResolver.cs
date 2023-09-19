@@ -292,7 +292,7 @@ internal sealed class TocResolver
         }
     }
 
-    private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
+    private static TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
     {
         if (toc == null || relativePath.SubdirectoryCount == 0)
         {
@@ -311,7 +311,7 @@ internal sealed class TocResolver
         return toc;
     }
 
-    private string GetRelativePath(string href, RelativePath rel)
+    private static string GetRelativePath(string href, RelativePath rel)
     {
         var type = Utility.GetHrefType(href);
         if (type == HrefType.RelativeFile)
@@ -321,7 +321,7 @@ internal sealed class TocResolver
         return href;
     }
 
-    private string NormalizeHref(string href, RelativePath relativeToFile)
+    private static string NormalizeHref(string href, RelativePath relativeToFile)
     {
         if (!Utility.IsSupportedRelativeHref(href))
         {
@@ -384,7 +384,7 @@ internal sealed class TocResolver
         return false;
     }
 
-    private void ValidateHref(TocItemViewModel item)
+    private static void ValidateHref(TocItemViewModel item)
     {
         if (item.Href == null)
         {

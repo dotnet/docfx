@@ -127,7 +127,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         return items;
     }
 
-    private IEnumerable<string> Split(string path, params char[] splitter)
+    private static IEnumerable<string> Split(string path, params char[] splitter)
     {
         var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0) yield break;
@@ -145,7 +145,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         return string.Join(@"\/", items);
     }
 
-    private bool IsFolderPath(string path)
+    private static bool IsFolderPath(string path)
     {
         return path.EndsWith("/", StringComparison.Ordinal);
     }
@@ -323,7 +323,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     /// </summary>
     /// <param name="globParts"></param>
     /// <returns></returns>
-    private IEnumerable<string> ExpandGlobStarShortcut(IEnumerable<string> globParts)
+    private static IEnumerable<string> ExpandGlobStarShortcut(IEnumerable<string> globParts)
     {
         foreach (var part in globParts)
         {

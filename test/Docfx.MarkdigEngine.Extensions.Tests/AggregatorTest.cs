@@ -126,7 +126,7 @@ P4</p>
         }
     }
 
-    private void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
+    private static void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
     {
         var visitor = new MarkdownDocumentAggregatorVisitor(blockAggregator);
         var pipelineBuilder = new MarkdownPipelineBuilder();

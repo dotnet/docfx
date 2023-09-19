@@ -55,7 +55,7 @@ public sealed class ReportLogListener : ILoggerListener
         _writer.Dispose();
     }
 
-    private MessageSeverity GetSeverity(LogLevel level)
+    private static MessageSeverity GetSeverity(LogLevel level)
     {
         switch (level)
         {

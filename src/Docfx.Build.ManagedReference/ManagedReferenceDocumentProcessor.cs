@@ -183,7 +183,7 @@ public class ManagedReferenceDocumentProcessor : ReferenceDocumentProcessorBase
         model.Content = apiModel;
     }
 
-    private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
+    private static IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
     {
         if (vm.References == null)
         {

@@ -185,9 +185,9 @@ public class MarkdigMarkdownService : IMarkdownService
         return path;
     }
 
-    private string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
+    private static string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
 
-    private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
+    private static void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
     {
         var expectedPhysicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
         foreach (var physicalPath in expectedPhysicalPath)

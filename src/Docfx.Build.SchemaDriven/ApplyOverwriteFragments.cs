@@ -74,7 +74,7 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
         }
     }
 
-    private void BuildCore(FileModel model, IHostService host)
+    private static void BuildCore(FileModel model, IHostService host)
     {
         var markdownService = (MarkdigMarkdownService)model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService;
         var overwriteDocumentModelCreator = new OverwriteDocumentModelCreator(model.MarkdownFragmentsModel.OriginalFileAndType.File);
@@ -135,7 +135,7 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
         model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
     }
 
-    private void ValidateWithSchema(List<MarkdownFragmentModel> fragments, FileModel model)
+    private static void ValidateWithSchema(List<MarkdownFragmentModel> fragments, FileModel model)
     {
         var iterator = new SchemaFragmentsIterator(new ValidateFragmentsHandler());
         var yamlStream = new YamlStream();

@@ -37,7 +37,7 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         return folder;
     }
 
-    private string GetFolder()
+    private static string GetFolder()
     {
         var folder = Path.GetRandomFileName();
         if (Directory.Exists(folder))

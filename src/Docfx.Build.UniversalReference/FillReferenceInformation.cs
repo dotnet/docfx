@@ -35,7 +35,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep
 
     #region Private methods
 
-    private void FillCore(PageViewModel model, IHostService host, string file)
+    private static void FillCore(PageViewModel model, IHostService host, string file)
     {
         if (model.References == null || model.References.Count == 0)
         {
@@ -58,7 +58,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep
         }
     }
 
-    private void FillContent(ReferenceViewModel r, dynamic item)
+    private static void FillContent(ReferenceViewModel r, dynamic item)
     {
         if (item.Metadata != null)
         {

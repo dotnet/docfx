@@ -170,7 +170,7 @@ public class TemplateModelTransformer
         return manifestItem;
     }
 
-    private void LogInvalidXRefs(List<XRefDetails> unresolvedXRefs)
+    private static void LogInvalidXRefs(List<XRefDetails> unresolvedXRefs)
     {
         if (unresolvedXRefs == null || unresolvedXRefs.Count == 0)
         {

@@ -51,7 +51,7 @@ public class DictionaryMerger : MergerDecorator
             Merge((IDictionary<TKey, TValue>)source, (IDictionary<TKey, TValue>)overrides, context);
         }
 
-        public void Merge(IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> overrides, IMergeContext context)
+        public static void Merge(IDictionary<TKey, TValue> source, IDictionary<TKey, TValue> overrides, IMergeContext context)
         {
             foreach (var oi in overrides)
             {

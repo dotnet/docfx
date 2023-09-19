@@ -132,7 +132,7 @@ public class SingleDocumentBuilder : IDisposable
         }
     }
 
-    private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
+    private static void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
     {
         phaseProcessor.Process(hostServices, context.MaxParallelism);
     }
@@ -191,7 +191,7 @@ public class SingleDocumentBuilder : IDisposable
         }
     }
 
-    private void Prepare(
+    private static void Prepare(
         DocumentBuildContext context,
         TemplateProcessor templateProcessor,
         out IHostServiceCreator hostServiceCreator,

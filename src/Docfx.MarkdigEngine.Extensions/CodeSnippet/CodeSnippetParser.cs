@@ -83,7 +83,7 @@ public class CodeSnippetParser : BlockParser
         return BlockState.None;
     }
 
-    private bool MatchStart(ref StringSlice slice)
+    private static bool MatchStart(ref StringSlice slice)
     {
         var pc = slice.PeekCharExtra(-1);
         if (pc == '\\') return false;
@@ -100,7 +100,7 @@ public class CodeSnippetParser : BlockParser
         return index == StartString.Length;
     }
 
-    private bool MatchLanguage(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchLanguage(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '-') return false;
 
@@ -118,7 +118,7 @@ public class CodeSnippetParser : BlockParser
         return true;
     }
 
-    private bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchPath(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         ExtensionsHelper.SkipWhitespace(ref slice);
         if (slice.CurrentChar != '(') return false;
@@ -155,7 +155,7 @@ public class CodeSnippetParser : BlockParser
         return true;
     }
 
-    private bool MatchName(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchName(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '[') return false;
 
@@ -188,7 +188,7 @@ public class CodeSnippetParser : BlockParser
         return false;
     }
 
-    private bool MatchQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         var questionMarkMatched = MatchQuestionMarkQuery(processor, ref slice, ref codeSnippet);
 
@@ -197,7 +197,7 @@ public class CodeSnippetParser : BlockParser
         return questionMarkMatched || bookMarkMatched;
     }
 
-    private bool MatchQuestionMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchQuestionMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '?') return false;
 
@@ -216,7 +216,7 @@ public class CodeSnippetParser : BlockParser
         return TryParseQuery(queryString, ref codeSnippet);
     }
 
-    private bool MatchBookMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchBookMarkQuery(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '#') return false;
 
@@ -244,7 +244,7 @@ public class CodeSnippetParser : BlockParser
         return true;
     }
 
-    private bool MatchTitle(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
+    private static bool MatchTitle(BlockProcessor processor, ref StringSlice slice, ref CodeSnippet codeSnippet)
     {
         if (slice.CurrentChar != '"') return false;
 
@@ -277,7 +277,7 @@ public class CodeSnippetParser : BlockParser
         return false;
     }
 
-    private bool TryParseQuery(string queryString, ref CodeSnippet codeSnippet)
+    private static bool TryParseQuery(string queryString, ref CodeSnippet codeSnippet)
     {
         if (string.IsNullOrEmpty(queryString)) return false;
 

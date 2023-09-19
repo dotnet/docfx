@@ -261,7 +261,7 @@ public class DocumentBuilder : IDisposable
         }
     }
 
-    private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters, CompositeResourceReader resourceProvider)
+    private static MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters, CompositeResourceReader resourceProvider)
     {
         return new MarkdigMarkdownService(
             new MarkdownServiceParameters

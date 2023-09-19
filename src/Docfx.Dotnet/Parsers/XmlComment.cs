@@ -159,7 +159,7 @@ internal class XmlComment
         }
     }
 
-    private (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
+    private static (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
     {
         var source = node.Attribute("source")?.Value;
         if (string.IsNullOrEmpty(source))
@@ -276,7 +276,7 @@ internal class XmlComment
         return (RegionRegex, EndRegionRegex);
     }
 
-    private void ResolveLangword(XNode node)
+    private static void ResolveLangword(XNode node)
     {
         foreach (var item in node.XPathSelectElements("//see[@langword]").ToList())
         {
@@ -426,7 +426,7 @@ internal class XmlComment
         }
     }
 
-    private IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
+    private static IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
     {
         var iterator = navigator.Clone().Select(selector);
         if (iterator == null)

@@ -26,7 +26,7 @@ public abstract class BuildTocDocumentStepBase : BaseDocumentBuildStep
 
     #region Private methods
 
-    private void BuildCore(TocItemViewModel item, FileModel model, IHostService hostService, string includedFrom = null)
+    private static void BuildCore(TocItemViewModel item, FileModel model, IHostService hostService, string includedFrom = null)
     {
         if (item == null)
         {

@@ -96,7 +96,7 @@ public class TreeNavigator
         return false;
     }
 
-    private NavigatorTreeItem Init(TreeItem current, NavigatorTreeItem parent)
+    private static NavigatorTreeItem Init(TreeItem current, NavigatorTreeItem parent)
     {
         var tree = new NavigatorTreeItem
         {

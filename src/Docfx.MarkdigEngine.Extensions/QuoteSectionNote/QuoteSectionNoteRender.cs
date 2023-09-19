@@ -61,7 +61,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
         renderer.WriteLine("</div>");
     }
 
-    private void WriteSection(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+    private static void WriteSection(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
     {
         string attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
                     string.Empty :
@@ -74,7 +74,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
         renderer.WriteLine("</div>");
     }
 
-    private void WriteQuote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+    private static void WriteQuote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
     {
         renderer.Write("<blockquote").WriteAttributes(obj).WriteLine(">");
         var savedImplicitParagraph = renderer.ImplicitParagraph;
@@ -84,7 +84,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
         renderer.WriteLine("</blockquote>");
     }
 
-    private void WriteVideo(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+    private static void WriteVideo(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
     {
         var modifiedLink = string.Empty;
 

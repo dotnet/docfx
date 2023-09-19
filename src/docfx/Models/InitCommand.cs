@@ -155,7 +155,7 @@ internal class InitCommand : Command<InitCommandOptions>
         return 0;
     }
 
-    private void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
+    private static void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
     {
         var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
         if (File.Exists(path))
@@ -170,7 +170,7 @@ internal class InitCommand : Command<InitCommandOptions>
         $"Successfully generated default docfx config file to {path}".WriteLineToConsole(ConsoleColor.Green);
     }
 
-    private void GenerateSeedProject(string outputFolder, DefaultConfigModel config, bool quiet, bool overwrite)
+    private static void GenerateSeedProject(string outputFolder, DefaultConfigModel config, bool quiet, bool overwrite)
     {
         if (Directory.Exists(outputFolder))
         {

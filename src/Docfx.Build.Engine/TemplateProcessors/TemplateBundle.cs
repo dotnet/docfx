@@ -35,7 +35,7 @@ public class TemplateBundle
         return MergeOptions(GetOptionsForEachTemplate(item, context));
     }
 
-    private TransformModelOptions MergeOptions(IEnumerable<TransformModelOptions> optionsList)
+    private static TransformModelOptions MergeOptions(IEnumerable<TransformModelOptions> optionsList)
     {
         var result = new TransformModelOptions();
         var bookmarks = new Dictionary<string, string>();

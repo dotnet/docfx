@@ -418,7 +418,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
     }
 
-    private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
+    private static MemberType GetMemberTypeFromSymbol(ISymbol symbol)
     {
         switch (symbol.Kind)
         {
@@ -519,7 +519,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         return result;
     }
 
-    private bool IsInheritable(ISymbol memberSymbol)
+    private static bool IsInheritable(ISymbol memberSymbol)
     {
         var kind = (memberSymbol as IMethodSymbol)?.MethodKind;
         if (kind != null)

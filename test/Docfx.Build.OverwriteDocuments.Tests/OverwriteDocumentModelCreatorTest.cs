@@ -228,12 +228,12 @@ definitions:
         Assert.Equal(0, ex.Position);
     }
 
-    private string ExtractDictionaryKeys(Dictionary<object, object> dict)
+    private static string ExtractDictionaryKeys(Dictionary<object, object> dict)
     {
         return string.Join(",", dict.Keys.ToArray());
     }
 
-    private string ExtractDictionaryKeys(Dictionary<string, object> dict)
+    private static string ExtractDictionaryKeys(Dictionary<string, object> dict)
     {
         return string.Join(",", dict.Keys.ToArray());
     }

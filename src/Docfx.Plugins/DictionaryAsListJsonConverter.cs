@@ -40,7 +40,7 @@ public class DictionaryAsListJsonConverter<T> : JsonConverter
         writer.WriteEndObject();
     }
 
-    private KeyValuePair<string, T> ParseItem(JToken item, JsonSerializer serializer)
+    private static KeyValuePair<string, T> ParseItem(JToken item, JsonSerializer serializer)
     {
         if (item.Type == JTokenType.Property)
         {

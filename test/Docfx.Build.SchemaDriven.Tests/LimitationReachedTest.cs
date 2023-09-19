@@ -67,7 +67,7 @@ public class LimitationReachedTest : TestBase
         yield return typeof(SchemaDrivenProcessorTest).Assembly;
     }
 
-    private bool LimitationReached(TestListenerScope listener)
+    private static bool LimitationReached(TestListenerScope listener)
     {
         return listener.Items.SingleOrDefault(s => s.Message.StartsWith("Limitation reached when validating")) != null;
     }

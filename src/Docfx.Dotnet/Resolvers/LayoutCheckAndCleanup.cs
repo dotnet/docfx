@@ -35,7 +35,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
         }
     }
 
-    private string CheckNamespaces(MetadataItem member)
+    private static string CheckNamespaces(MetadataItem member)
     {
         StringBuilder message = new();
 
@@ -72,7 +72,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private string CheckNamespaceMembers(MetadataItem member)
+    private static string CheckNamespaceMembers(MetadataItem member)
     {
         StringBuilder message = new();
 
@@ -99,7 +99,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private string CheckNamespaceMembersMembers(MetadataItem member)
+    private static string CheckNamespaceMembersMembers(MetadataItem member)
     {
         StringBuilder message = new();
         if (member.IsInvalid)

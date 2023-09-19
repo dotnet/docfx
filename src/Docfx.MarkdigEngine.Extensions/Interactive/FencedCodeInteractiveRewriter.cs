@@ -29,7 +29,7 @@ public class FencedCodeInteractiveRewriter : InteractiveBaseRewriter
         return markdownObject;
     }
 
-    private void UpdateFencedCodeLanguage(HtmlAttributes attributes, string originalLanguage, string updatedLanguage)
+    private static void UpdateFencedCodeLanguage(HtmlAttributes attributes, string originalLanguage, string updatedLanguage)
     {
         originalLanguage = Constants.FencedCodePrefix + originalLanguage;
         updatedLanguage = Constants.FencedCodePrefix + updatedLanguage;

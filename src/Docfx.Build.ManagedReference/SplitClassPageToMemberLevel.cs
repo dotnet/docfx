@@ -88,7 +88,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return modelsDict.Values;
     }
 
-    private void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+    private static void RenewDupeFileModels(FileModel dupeModel, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
     {
         var page = dupeModel.Content as PageViewModel;
         var memberType = page.Items[0]?.Type;
@@ -104,7 +104,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         modelsDict[newFilePath] = newModel;
     }
 
-    private string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
+    private static string GetUniqueFilePath(string dupePath, string newFileName, Dictionary<string, int> newFilePaths, Dictionary<string, FileModel> modelsDict)
     {
         var dir = Path.GetDirectoryName(dupePath);
         var extension = Path.GetExtension(dupePath);
@@ -198,7 +198,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return new SplittedResult(primaryItem.Uid, children.OrderBy(GetDisplayName, StringComparer.Ordinal), splittedModels);
     }
 
-    private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
+    private static IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
     {
         var primaryItem = page.Items[0];
         if (primaryItem.Type == MemberType.Enum)
@@ -229,13 +229,13 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         }
     }
 
-    private void AddToTree(ItemViewModel item, List<TreeItem> tree)
+    private static void AddToTree(ItemViewModel item, List<TreeItem> tree)
     {
         var treeItem = ConvertToTreeItem(item);
         tree.Add(treeItem);
     }
 
-    private ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
+    private static ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
     {
         var primaryItem = page.Items[0];
 
@@ -287,7 +287,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return newPrimaryItem;
     }
 
-    private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
+    private static List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
     {
         var items = children.SelectMany(selector).Distinct().OrderBy(s => s, StringComparer.Ordinal).ToList();
         if (items.Count == 0)
@@ -298,7 +298,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return items;
     }
 
-    private List<string> GetVersionFromMetadata(object value)
+    private static List<string> GetVersionFromMetadata(object value)
     {
         if (value is string text)
         {
@@ -308,7 +308,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return GetListFromObject(value);
     }
 
-    private string GetOverloadItemName(string overload, string parent, bool isCtor)
+    private static string GetOverloadItemName(string overload, string parent, bool isCtor)
     {
         if (string.IsNullOrEmpty(overload) || string.IsNullOrEmpty(parent))
         {
@@ -374,7 +374,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return reference;
     }
 
-    private void MergeWithReference(ItemViewModel item, ReferenceViewModel reference)
+    private static void MergeWithReference(ItemViewModel item, ReferenceViewModel reference)
     {
         item.Name = reference.Name;
         item.NameWithType = reference.NameWithType;
@@ -458,7 +458,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         }
     }
 
-    private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
+    private static TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
     {
         var result = new TreeItem
         {
@@ -514,7 +514,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return result;
     }
 
-    private PageViewModel ExtractPageViewModel(PageViewModel page, List<ItemViewModel> items)
+    private static PageViewModel ExtractPageViewModel(PageViewModel page, List<ItemViewModel> items)
     {
         var newPage = new PageViewModel
         {
@@ -526,7 +526,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return newPage;
     }
 
-    private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension, Dictionary<string, int> existingFileNames)
+    private static FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension, Dictionary<string, int> existingFileNames)
     {
         var initialFile = model.FileAndType.File;
         var extension = Path.GetExtension(initialFile);
@@ -548,7 +548,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         };
     }
 
-    private string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
+    private static string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
     {
         if (existingFileNames.TryGetValue(fileName, out int suffix))
         {
@@ -562,7 +562,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         }
     }
 
-    private string GetNewFileName(string parentUid, ItemViewModel model)
+    private static string GetNewFileName(string parentUid, ItemViewModel model)
     {
         // For constructor, if the class is generic class e.g. ExpandedWrapper`11, class name can be pretty long
         // Use -ctor as file name
@@ -574,7 +574,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             );
     }
 
-    private string GetValidFileName(params string[] fileNames)
+    private static string GetValidFileName(params string[] fileNames)
     {
         foreach (var fileName in fileNames)
         {
@@ -589,14 +589,14 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         throw new DocumentException(message);
     }
 
-    private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
+    private static ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
     {
         return (from item in page.Items
                 where !string.IsNullOrEmpty(item.Uid)
                 select new UidDefinition(item.Uid, file)).ToImmutableArray();
     }
 
-    private List<string> GetListFromObject(object value)
+    private static List<string> GetListFromObject(object value)
     {
         if (value is IEnumerable<object> collection)
         {
@@ -618,7 +618,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         return null;
     }
 
-    private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
+    private static T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
     {
         if (metadata != null && metadata.TryGetValue(key, out object result))
         {
@@ -654,7 +654,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
         }
     }
 
-    private void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
+    private static void AddModelToDict(FileModel model, Dictionary<string, FileModel> models, List<FileModel> dupeModels)
     {
         if (!models.ContainsKey(model.File))
         {

@@ -119,7 +119,7 @@ public class TemplateProcessor : IDisposable
         }
     }
 
-    private void CopyTemplateResource(Stream stream, string outputDirectory, string filePath)
+    private static void CopyTemplateResource(Stream stream, string outputDirectory, string filePath)
     {
         if (stream != null)
         {

@@ -482,7 +482,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         return _tableOfContents.Values.ToImmutableList();
     }
 
-    private ImmutableDictionary<string, FileAndType> GetAllSourceFiles(IEnumerable<FileAndType> allSourceFiles)
+    private static ImmutableDictionary<string, FileAndType> GetAllSourceFiles(IEnumerable<FileAndType> allSourceFiles)
     {
         var dict = new Dictionary<string, FileAndType>(FilePathComparer.OSPlatformSensitiveStringComparer);
         foreach (var item in allSourceFiles)

@@ -29,7 +29,7 @@ public class CodeSnippetInteractiveRewriter : InteractiveBaseRewriter
         return markdownObject;
     }
 
-    private string GetGitUrl(CodeSnippet obj)
+    private static string GetGitUrl(CodeSnippet obj)
     {
         // TODO: Disable to get git URL of code snippet
         return null;

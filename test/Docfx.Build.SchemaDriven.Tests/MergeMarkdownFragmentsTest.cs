@@ -391,7 +391,7 @@ With [!include[invalid](invalid.md)]",
         Assert.True(messages.SequenceEqual(lastMessages));
     }
 
-    private List<string> ClearLog(List<ILogItem> items)
+    private static List<string> ClearLog(List<ILogItem> items)
     {
         var result = items.Select(i => i.Message).ToList();
         items.Clear();

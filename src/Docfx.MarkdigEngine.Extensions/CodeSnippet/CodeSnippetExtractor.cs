@@ -63,7 +63,7 @@ public class CodeSnippetExtractor
         return result;
     }
 
-    private bool MatchTag(string line, string template, out string tagName, bool containTagName = true)
+    private static bool MatchTag(string line, string template, out string tagName, bool containTagName = true)
     {
         tagName = string.Empty;
         if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;

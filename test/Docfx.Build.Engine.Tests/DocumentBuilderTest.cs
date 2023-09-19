@@ -769,7 +769,7 @@ exports.getOptions = function (){
         builder.Build(parameters);
     }
 
-    private IEnumerable<Assembly> LoadAssemblies()
+    private static IEnumerable<Assembly> LoadAssemblies()
     {
         yield return typeof(ConceptualDocumentProcessor).Assembly;
         yield return typeof(ManagedReferenceDocumentProcessor).Assembly;

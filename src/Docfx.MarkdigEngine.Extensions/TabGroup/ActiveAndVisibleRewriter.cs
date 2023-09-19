@@ -49,7 +49,7 @@ public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
         return markdownObject;
     }
 
-    private int ApplyTabVisible(List<string[]> tabSelectionInfo, List<TabItemBlock> items)
+    private static int ApplyTabVisible(List<string[]> tabSelectionInfo, List<TabItemBlock> items)
     {
         var firstVisibleTab = -1;
 
@@ -70,7 +70,7 @@ public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
         return firstVisibleTab;
     }
 
-    private IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<TabItemBlock> items) =>
+    private static IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<TabItemBlock> items) =>
         from tab in items
         where tab.Visible
         from id in tab.Id.Split('+')
@@ -125,7 +125,7 @@ public class ActiveAndVisibleRewriter : IMarkdownObjectRewriter
         return active;
     }
 
-    private int FindActiveIndex(List<TabItemBlock> items, string[] info)
+    private static int FindActiveIndex(List<TabItemBlock> items, string[] info)
     {
         for (var i = 0; i < items.Count; i++)
         {

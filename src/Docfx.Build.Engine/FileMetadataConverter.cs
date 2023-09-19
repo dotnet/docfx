@@ -93,7 +93,7 @@ public class FileMetadataConverter : JsonConverter
         writer.WriteEndObject();
     }
 
-    private ImmutableArray<FileMetadataItem> GetFileMetadataItemArray(JToken value)
+    private static ImmutableArray<FileMetadataItem> GetFileMetadataItemArray(JToken value)
     {
         if (!(value is JArray arr))
         {

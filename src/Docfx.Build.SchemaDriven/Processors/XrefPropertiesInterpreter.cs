@@ -87,7 +87,7 @@ public class XrefPropertiesInterpreter : IInterpreter
         return value;
     }
 
-    private bool IsInternalXrefSpec(BaseSchema schema)
+    private static bool IsInternalXrefSpec(BaseSchema schema)
     {
         if (schema.Properties == null)
         {

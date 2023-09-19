@@ -132,7 +132,7 @@ public class UniversalReferenceDocumentProcessor : ReferenceDocumentProcessorBas
         model.Content = ModelConverter.ToApiBuildOutput((PageViewModel)model.Content);
     }
 
-    private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
+    private static IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
     {
         if (vm.References == null)
         {

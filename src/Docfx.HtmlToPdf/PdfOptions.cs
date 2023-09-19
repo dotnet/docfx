@@ -65,7 +65,7 @@ public class PdfOptions
     /// </summary>
     /// <param name="path">the path</param>
     /// <returns>the normalized path</returns>
-    private string Normalize(string path)
+    private static string Normalize(string path)
     {
         if (string.IsNullOrEmpty(path))
         {
