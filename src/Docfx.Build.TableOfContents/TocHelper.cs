@@ -49,13 +49,6 @@ public static class TocHelper
         return (nonReferencedTocModels, referencedToc);
     }
 
-    [Obsolete("Use ResolveToc")]
-    public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
-    {
-        var (result, _) = ResolveToc(models, host);
-        return result;
-    }
-
     public static TocItemViewModel LoadSingleToc(string file)
     {
 #if NET7_0_OR_GREATER

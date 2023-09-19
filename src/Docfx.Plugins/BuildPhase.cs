@@ -7,8 +7,4 @@ public enum BuildPhase
 {
     Compile,
     Link,
-    [Obsolete]
-    PreBuildBuild = Compile,
-    [Obsolete]
-    PostBuild = Link,
 }

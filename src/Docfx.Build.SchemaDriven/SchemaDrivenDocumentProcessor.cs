@@ -20,7 +20,6 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
     private readonly DocumentSchema _schema;
     private readonly bool _allowOverwrite;
     private readonly MarkdigMarkdownService _markdigMarkdownService;
-    private readonly FolderRedirectionManager _folderRedirectionManager;
     private readonly string _siteHostName;
     #endregion
 
@@ -31,7 +30,6 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
         DocumentSchema schema,
         ICompositionContainer container,
         MarkdigMarkdownService markdigMarkdownService,
-        FolderRedirectionManager folderRedirectionManager,
         string siteHostName = null)
     {
         if (string.IsNullOrWhiteSpace(schema.Title))
@@ -46,7 +44,6 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
         SchemaValidator = schema.Validator;
         _allowOverwrite = schema.AllowOverwrite;
         _markdigMarkdownService = markdigMarkdownService;
-        _folderRedirectionManager = folderRedirectionManager;
         if (container != null)
         {
             var commonSteps = container.GetExports<IDocumentBuildStep>(nameof(SchemaDrivenDocumentProcessor));
@@ -109,10 +106,6 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                     // load overwrite fragments
                     string markdownFragmentsContent = null;
                     var markdownFragmentsFile = file.File + ".md";
-                    if (_folderRedirectionManager != null)
-                    {
-                        markdownFragmentsFile = _folderRedirectionManager.GetRedirectedPath((RelativePath)markdownFragmentsFile).ToString();
-                    }
                     if (EnvironmentContext.FileAbstractLayer.Exists(markdownFragmentsFile))
                     {
                         markdownFragmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(markdownFragmentsFile);

@@ -7,8 +7,6 @@ namespace Docfx.Plugins;
 
 public interface IHostService
 {
-    IBuildParameters BuildParameters { get; }
-
     ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
     /// <summary>

@@ -396,74 +396,6 @@ metadata: Web Apps Documentation
     }
 
     [Fact]
-    public void TestUidWithPatternedTag()
-    {
-        using var listener = new TestListenerScope("TestUidWithPatternedTag");
-        var schemaFile = CreateFile("template/schemas/patterned.uid.test.schema.json", @"
-{
-  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
-  ""version"": ""1.0.0"",
-  ""title"": ""PatternedUid"",
-  ""description"": ""A simple test schema for sdp's patterned uid"",
-  ""type"": ""object"",
-  ""properties"": {
-      ""uid"": {
-            ""type"": ""string"",
-            ""tags"": [ ""patterned:uid"" ] 
-      }
-  }
-}
-", _templateFolder);
-
-        var inputFile = CreateFile("PatternedUid.yml", @"### YamlMime:PatternedUid
-uid: azure.hello1
-", _inputFolder);
-
-        FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        BuildDocument(files, new DocumentBuildParameters
-        {
-            Files = files,
-            OutputBaseDir = _outputFolder,
-            ApplyTemplateSettings = _applyTemplateSettings,
-            TemplateManager = _templateManager,
-            TagParameters = new Dictionary<string, JArray>
-            {
-                ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
-            },
-        });
-
-        Assert.Equal(3, listener.Items.Count);
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): PatternedUid")));
-        listener.Items.Clear();
-
-        inputFile = CreateFile("PatternedUid2.yml", @"### YamlMime:PatternedUid
-uid: invalid.hello1
-", _inputFolder);
-
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-
-        inputFile = CreateFile("PatternedUid3.yml", @"### YamlMime:PatternedUid
-uid: invalid.azure.hello2
-", _inputFolder);
-
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        var exception = Assert.Throws<DocumentException>(() => BuildDocument(files, new DocumentBuildParameters
-        {
-            Files = files,
-            OutputBaseDir = _outputFolder,
-            ApplyTemplateSettings = _applyTemplateSettings,
-            TemplateManager = _templateManager,
-            TagParameters = new Dictionary<string, JArray>
-            {
-                ["patterned:uid"] = JArray.FromObject(new List<string> { "^azure\\..*" })
-            },
-        }));
-
-        Assert.Equal(2, listener.Items.Count(s => s.Code == ErrorCodes.Build.InvalidPropertyFormat));
-    }
-
-    [Fact]
     public void TestInvalidObjectAgainstSchema()
     {
         using var listener = new TestListenerScope("TestInvalidMetadataReference");
@@ -654,26 +586,6 @@ searchScope:
         public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
             return models;
-        }
-    }
-
-    [Export(typeof(ITagInterpreter))]
-    public class MetadataTagInterpreter : ITagInterpreter
-    {
-        public string TagName => "metadata";
-
-        public int Order => 1;
-
-        public object Interpret(string tagName, BaseSchema schema, object value, IProcessContext context, string path)
-        {
-            ((dynamic)value).hello = "world";
-            ((dynamic)value).path = path;
-            return value;
-        }
-
-        public bool Matches(string tagName)
-        {
-            return TagName == tagName;
         }
     }
 }

@@ -33,8 +33,7 @@ internal class HostServiceCreator : IHostServiceCreator
             models,
             parameters.VersionName,
             parameters.VersionDir,
-            parameters.GroupInfo,
-            new BuildParameters(parameters.TagParameters))
+            parameters.GroupInfo)
         {
             MarkdownService = markdownService,
             Processor = processor,
@@ -133,15 +132,5 @@ internal class HostServiceCreator : IHostServiceCreator
             }
         }
         return result.ToImmutableDictionary();
-    }
-
-    private sealed class BuildParameters : IBuildParameters
-    {
-        public IReadOnlyDictionary<string, JArray> TagParameters { get; }
-
-        public BuildParameters(IReadOnlyDictionary<string, JArray> tagParameters)
-        {
-            TagParameters = tagParameters;
-        }
     }
 }

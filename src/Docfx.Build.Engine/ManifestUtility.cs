@@ -44,8 +44,8 @@ public static class ManifestUtility
         ArgumentNullException.ThrowIfNull(manifests);
 
         var xrefMaps = (from manifest in manifests
-                        where manifest.XRefMap != null
-                        select manifest.XRefMap).ToList();
+                                where manifest.XRefMap != null
+                                select manifest.XRefMap).ToList();
         var manifestGroupInfos = (from manifest in manifests
                                   from g in manifest.Groups ?? Enumerable.Empty<ManifestGroupInfo>()
                                   select g).ToList();
@@ -54,13 +54,9 @@ public static class ManifestUtility
              from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
              select file).Distinct())
         {
-            Homepages = (from manifest in manifests
-                         from homepage in manifest.Homepages ?? Enumerable.Empty<HomepageInfo>()
-                         select homepage).Distinct().ToList(),
             XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
             SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
             Groups = manifestGroupInfos.Count > 0 ? manifestGroupInfos : null,
-            VersionInfo = manifests.Where(m => m.VersionInfo != null).SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
         };
     }
 

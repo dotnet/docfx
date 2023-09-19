@@ -2,22 +2,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using Docfx.Common;
 using Docfx.Plugins;
 using Markdig;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.Engine;
 
-public sealed class DocumentBuildParameters : IBuildParameters
+public class DocumentBuildParameters
 {
     public FileCollection Files { get; set; }
 
     public string OutputBaseDir { get; set; }
-
-    public IReadOnlyDictionary<string, JArray> TagParameters { get; set; }
-
-    public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
 
     public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
 
@@ -43,8 +37,6 @@ public sealed class DocumentBuildParameters : IBuildParameters
 
     public GroupInfo GroupInfo { get; set; }
 
-    public List<string> XRefTags { get; set; }
-
     public string RootTocPath { get; set; }
 
     public string TemplateDir { get; set; }
@@ -56,9 +48,6 @@ public sealed class DocumentBuildParameters : IBuildParameters
     public SitemapOptions SitemapOptions { get; set; }
 
     public bool DisableGitFeatures { get; set; }
-
-    public ImmutableArray<FolderRedirectionRule> OverwriteFragmentsRedirectionRules { get; set; }
-        = ImmutableArray<FolderRedirectionRule>.Empty;
 
     public DocumentBuildParameters Clone() =>
         (DocumentBuildParameters)MemberwiseClone();

@@ -16,12 +16,6 @@ namespace Docfx;
 [Serializable]
 internal class BuildJsonConfig
 {
-    [JsonIgnore]
-    private Dictionary<string, GroupConfig> _versions;
-
-    [JsonIgnore]
-    private Dictionary<string, GroupConfig> _groups;
-
     /// <summary>
     /// Contains all the files to generate documentation, including metadata yml files and conceptual md files.
     /// </summary>
@@ -39,19 +33,6 @@ internal class BuildJsonConfig
     /// </summary>
     [JsonProperty("overwrite")]
     public FileMapping Overwrite { get; set; }
-
-    /// <summary>
-    /// Specifies pairing that is used for folder redirection rules.
-    /// </summary>
-    [Obsolete("May be removed in a future release.")]
-    [JsonProperty("pairing")]
-    public List<ContentPairingInfo> Pairing { get; set; }
-
-    /// <summary>
-    /// Specifies the tags of xrefmap.
-    /// </summary>
-    [JsonProperty("xrefTags")]
-    public ListWithStringFallback XrefTags { get; set; }
 
     /// <summary>
     /// Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.
@@ -94,13 +75,6 @@ internal class BuildJsonConfig
     /// </summary>
     [JsonProperty("fileMetadata")]
     public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
-
-    /// <summary>
-    /// Specify tag parameters that are used by SchemaDrivenDocumentProcessor 
-    /// </summary>
-    [Obsolete("May be removed in a future release.")]
-    [JsonProperty("tagParameters")]
-    public Dictionary<string, JArray> TagParameters { get; set; }
 
     /// <summary>
     /// Specify a list of JSON file path containing fileMetadata settings.
@@ -205,23 +179,6 @@ internal class BuildJsonConfig
     public string CustomLinkResolver { get; set; }
 
     /// <summary>
-    /// Define versions.
-    /// </summary>
-    [Obsolete("Use groups instead.")]
-    [JsonProperty("versions")]
-    public Dictionary<string, GroupConfig> Versions
-    {
-        get
-        {
-            return _versions;
-        }
-        set
-        {
-            _versions = value;
-        }
-    }
-
-    /// <summary>
     /// Define groups.
     /// </summary>
     /// <example>
@@ -229,26 +186,13 @@ internal class BuildJsonConfig
     /// groups:{
     ///   "v1": {
     ///     "dest": "v1",
-    ///     "xrefTags: [],
     ///     "extraMetadata01": {}
     ///   }
     /// }
     /// </code>
     /// </example>
     [JsonProperty("groups")]
-    public Dictionary<string, GroupConfig> Groups
-    {
-        get
-        {
-            return _groups ?? _versions;
-        }
-        set
-        {
-            _groups = value;
-            _versions = value;
-        }
-
-    }
+    public Dictionary<string, GroupConfig> Groups { get; set; }
 
     /// <summary>
     /// If set to true, docfx does not dereference (aka. copy) file to the output folder.

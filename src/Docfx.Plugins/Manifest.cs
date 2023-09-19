@@ -28,10 +28,6 @@ public class Manifest
     [JsonProperty("sitemap")]
     public SitemapOptions SitemapOptions { get; set; }
 
-    [Obsolete]
-    [JsonProperty("homepages")]
-    public List<HomepageInfo> Homepages { get; set; }
-
     [JsonProperty("source_base_path")]
     public string SourceBasePath { get; set; }
 
@@ -41,10 +37,6 @@ public class Manifest
 
     [JsonProperty("files")]
     public ManifestItemCollection Files { get; }
-
-    [Obsolete("use groups")]
-    [JsonProperty("version_info")]
-    public Dictionary<string, VersionInfo> VersionInfo { get; set; }
 
     [JsonProperty("groups")]
     public List<ManifestGroupInfo> Groups { get; set; }

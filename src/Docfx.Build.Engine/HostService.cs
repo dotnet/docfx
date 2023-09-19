@@ -20,8 +20,6 @@ internal sealed class HostService : IHostService, IDisposable
 
     #region Properties
 
-    public IBuildParameters BuildParameters { get; }
-
     public TemplateProcessor Template { get; set; }
 
     public ImmutableList<FileModel> Models { get; private set; }
@@ -48,12 +46,11 @@ internal sealed class HostService : IHostService, IDisposable
 
     #region Constructors
 
-    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName = null, string versionDir = null, GroupInfo groupInfo = null, IBuildParameters buildParameters = null)
+    public HostService(string baseDir, IEnumerable<FileModel> models, string versionName = null, string versionDir = null, GroupInfo groupInfo = null)
     {
         VersionName = versionName;
         VersionOutputFolder = versionDir;
         GroupInfo = groupInfo;
-        BuildParameters = buildParameters;
 
         LoadCore(models);
     }

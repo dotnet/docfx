@@ -18,12 +18,6 @@ internal class GroupConfig
     public string Destination { get; set; }
 
     /// <summary>
-    /// Specifies the tags of xrefmap.
-    /// </summary>
-    [JsonProperty("xrefTags")]
-    public ListWithStringFallback XrefTags { get; set; }
-
-    /// <summary>
     /// Extension metadata.
     /// </summary>
     [JsonExtensionData]

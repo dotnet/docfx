@@ -32,13 +32,4 @@ public class UidDefinition
         Column = column;
         Path = path;
     }
-
-    [Obsolete]
-    public UidDefinition(string name, string file, int? line, int? column)
-    {
-        Name = name;
-        File = file;
-        Line = line;
-        Column = column;
-    }
 }
