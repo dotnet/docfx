@@ -20,10 +20,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
 
     public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
-        : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
-
-    public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder)
-        : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, null, null) { }
+        : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, null) { }
 
     public DocumentBuildContext(DocumentBuildParameters parameters)
     {
@@ -33,7 +30,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
         AllSourceFiles = GetAllSourceFiles(parameters.Files.EnumerateFiles());
         GroupInfo = parameters.GroupInfo;
-        XRefTags = parameters.XRefTags;
         MaxParallelism = parameters.MaxParallelism;
 
         if (parameters.XRefMaps.Length > 0)
@@ -71,8 +67,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         ApplyTemplateSettings applyTemplateSetting,
         string rootTocPath,
         string versionFolder,
-        GroupInfo groupInfo,
-        List<string> xrefTags)
+        GroupInfo groupInfo)
     {
         BuildOutputFolder = buildOutputFolder;
         VersionName = versionName;
@@ -81,7 +76,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
         AllSourceFiles = GetAllSourceFiles(allSourceFiles);
         ExternalReferencePackages = externalReferencePackages;
         GroupInfo = groupInfo;
-        XRefTags = xrefTags;
         MaxParallelism = maxParallelism;
         if (xrefMaps.Length > 0)
         {
@@ -112,8 +106,6 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
     public string VersionFolder { get; }
 
     public GroupInfo GroupInfo { get; }
-
-    public List<string> XRefTags { get; }
 
     public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 

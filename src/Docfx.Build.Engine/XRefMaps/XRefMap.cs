@@ -23,10 +23,6 @@ public class XRefMap : IXRefContainer
     [JsonProperty("baseUrl")]
     public string BaseUrl { get; set; }
 
-    [YamlMember(Alias = "tags")]
-    [JsonProperty("tags")]
-    public List<string> Tags { get; set; }
-
     [YamlMember(Alias = "redirections")]
     [JsonProperty("redirections")]
     public List<XRefMapRedirection> Redirections { get; set; }

@@ -107,18 +107,8 @@ public class SingleDocumentBuilder : IDisposable
 
                 var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
                 {
-                    Homepages = GetHomepages(context),
                     XRefMap = ExportXRefMap(parameters, context),
                     SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
-                    VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
-                        new Dictionary<string, VersionInfo>() :
-                        new Dictionary<string, VersionInfo>
-                        {
-                            {
-                                context.VersionName,
-                                new VersionInfo {VersionFolder = context.VersionFolder}
-                            }
-                        }
                 };
                 manifest.Groups = new List<ManifestGroupInfo>
                 {
@@ -218,27 +208,13 @@ public class SingleDocumentBuilder : IDisposable
         };
     }
 
-    private static List<HomepageInfo> GetHomepages(DocumentBuildContext context)
-    {
-        return (from s in context.GetTocInfo()
-                where !string.IsNullOrEmpty(s.Homepage)
-                select new HomepageInfo
-                {
-                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
-                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
-                }).ToList();
-    }
-
     /// <summary>
     /// Export xref map file.
     /// </summary>
     private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
     {
         Logger.LogVerbose("Exporting xref map...");
-        var xrefMap = new XRefMap
-        {
-            Tags = context.GroupInfo?.XRefTags ?? context.XRefTags,
-        };
+        var xrefMap = new XRefMap();
         xrefMap.References =
             (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
              select new XRefSpec(xref)

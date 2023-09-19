@@ -12,8 +12,6 @@ public class SaveResult
     public string ResourceFile { get; set; }
     public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
     public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
-    [Obsolete("use DocumentBuildContext.TocMap")]
-    public ImmutableDictionary<string, HashSet<string>> TocMap { get; set; } = ImmutableDictionary<string, HashSet<string>>.Empty;
     public ImmutableArray<XRefSpec> XRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
     public ImmutableArray<XRefSpec> ExternalXRefSpecs { get; set; } = ImmutableArray<XRefSpec>.Empty;
     public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;

@@ -134,7 +134,6 @@ internal static class DocumentBuilderWrapper
                 OutputBaseDir = outputDirectory,
                 SitemapOptions = config.SitemapOptions,
                 DisableGitFeatures = config.DisableGitFeatures,
-                TagParameters = config.TagParameters,
                 ConfigureMarkdig = options.ConfigureMarkdig,
             };
 
@@ -208,13 +207,6 @@ internal static class DocumentBuilderWrapper
                 parameters.KeepFileLink = true;
             }
 
-            if (config.Pairing != null)
-            {
-                parameters.OverwriteFragmentsRedirectionRules = config.Pairing.Select(i => new FolderRedirectionRule(i.ContentFolder, i.OverwriteFragmentsFolder)).ToImmutableArray();
-            }
-
-            parameters.XRefTags = config.XrefTags;
-
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
@@ -227,7 +219,6 @@ internal static class DocumentBuilderWrapper
                     if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                     {
                         p.GroupInfo.Destination = gi.Destination;
-                        p.GroupInfo.XRefTags = gi.XrefTags ?? new List<string>();
                         p.GroupInfo.Metadata = gi.Metadata;
                         if (!string.IsNullOrEmpty(gi.Destination))
                         {

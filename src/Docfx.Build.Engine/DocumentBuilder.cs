@@ -245,7 +245,6 @@ public class DocumentBuilder : IDisposable
                             schema,
                             new CompositionContainer(CompositionContainer.DefaultContainer),
                             markdigMarkdownService,
-                            new FolderRedirectionManager(parameter.OverwriteFragmentsRedirectionRules),
                             siteHostName);
                         Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                         result.Add(sdp);
