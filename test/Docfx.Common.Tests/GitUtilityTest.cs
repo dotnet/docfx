@@ -42,7 +42,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(10_000, GitUtility.GetGitTimeout());
     }
 
-    [Obsolete]
+    [Obsolete("It will be removed in a future version.")]
     [Fact]
     public void TestParseGitRepoInfo()
     {
@@ -69,7 +69,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(RepoType.Vso, repoInfo.RepoType);
     }
 
-    [Obsolete]
+    [Obsolete("It will be removed in a future version.")]
     [Fact]
     public void TestCombineGitUrl()
     {
