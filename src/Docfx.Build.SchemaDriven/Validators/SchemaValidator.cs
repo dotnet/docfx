@@ -13,7 +13,8 @@ public class SchemaValidator
 
     static SchemaValidator()
     {
-        SchemaRegistry.Global.Register(new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json"), MetaSchemas.Draft7);
+        SchemaRegistry.Global.Register(new("http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
+        SchemaRegistry.Global.Register(new("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#"), MetaSchemas.Draft7);
     }
 
     public SchemaValidator(string json)

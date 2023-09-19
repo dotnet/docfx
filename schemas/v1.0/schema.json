@@ -1,6 +1,6 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://dotnet.github.io/docfx/schemas/v1.0/schema.json",
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "id": "https://github.com/dotnet/docfx/schemas/v1.0/schema.json",
     "title": "DocFX document schema meta-schema",
     "definitions": {
         "schemaArray": {
@@ -113,6 +113,14 @@
             "format": "uri",
             "description": "The version of the schema specification, for example, `https://github.com/dotnet/docfx/v1.0/schema#"
         },
+        "version": {
+            "type": "string",
+            "description": "The version of current schema object"
+        },
+        "id": {
+            "type": "string",
+            "description": "It is best practice to include an `id` property as an unique identifier for each schema."
+        },
         "title": {
             "type": "string",
             "description": "The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name of this schema is used."
@@ -140,7 +148,8 @@
         }
     },
     "required": [
-        "$schema"
+        "$schema",
+        "version"
     ],
     "default": {}
 }
