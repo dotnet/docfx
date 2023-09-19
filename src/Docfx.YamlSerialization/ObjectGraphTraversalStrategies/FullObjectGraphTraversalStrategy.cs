@@ -37,7 +37,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     {
         if (maxRecursion <= 0)
         {
-            throw new ArgumentOutOfRangeException("maxRecursion", maxRecursion, "maxRecursion must be greater than 1");
+            throw new ArgumentOutOfRangeException(nameof(maxRecursion), maxRecursion, "maxRecursion must be greater than 1");
         }
 
         ArgumentNullException.ThrowIfNull(typeDescriptor);
