@@ -499,7 +499,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
                 var text = safe ? EncodedInvalidPartChars[chIndex] : EncodedUnsafeInvalidPartChars[chIndex];
                 var originIndex = origin.LastIndexOf(text, originLastIndex, StringComparison.OrdinalIgnoreCase);
                 originLastIndex = originIndex - 1;
-                sb.Insert(index, origin.Substring(originIndex, text.Length));
+                sb.Insert(index, origin.AsSpan(originIndex, text.Length));
             }
             parts[i] = modified ? sb.ToString() : value;
             if (sb != null)
