@@ -110,10 +110,9 @@ public class OverwriteDocumentModelCreator
             {
                 if (childObject is List<object> listObject)
                 {
-                    object value;
                     var goodItems = (from item in listObject
                                      where item is Dictionary<object, object>
-                                        && ((Dictionary<object, object>)item).TryGetValue(segment.Key, out value)
+                                        && ((Dictionary<object, object>)item).TryGetValue(segment.Key, out object value)
                                         && ((string)value).Equals(segment.Value)
                                      select (Dictionary<object, object>)item).ToList();
                     if (goodItems.Count > 0)
