@@ -15,10 +15,7 @@ public static class HashUtility
     }
 
     public static byte[] GetSha256Hash(string content)
-    {
-        using var sha256 = SHA256.Create();
-        return sha256.ComputeHash(Encoding.UTF8.GetBytes(content));
-    }
+        => SHA256.HashData(Encoding.UTF8.GetBytes(content));
 
     public static string GetSha256HashString(string content)
         => Convert.ToBase64String(GetSha256Hash(content));
