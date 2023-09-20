@@ -32,7 +32,7 @@ public class JsonPointer
     public JsonPointer(string[] parts)
     {
         _isRoot = parts == null || parts.Length == 0;
-        _parts = parts == null ? Array.Empty<string>() : parts;
+        _parts = parts ?? Array.Empty<string>();
         _raw = Splitter + string.Join(Splitter, parts);
     }
 
