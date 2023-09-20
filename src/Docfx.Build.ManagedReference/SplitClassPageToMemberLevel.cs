@@ -611,7 +611,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             }
             catch (Exception)
             {
-                Logger.LogWarning($"Unknown version metadata: {jArray.ToString()}");
+                Logger.LogWarning($"Unknown version metadata: {jArray}");
             }
         }
 

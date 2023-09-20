@@ -48,7 +48,7 @@ public class OverwriteDocumentModelCreator
         catch (Exception ex)
         {
             throw new MarkdownFragmentsException(
-                $"Encountered an invalid YAML code block: {ex.ToString()}",
+                $"Encountered an invalid YAML code block: {ex}",
                 yamlCodeBlockSource.Line,
                 ex);
         }

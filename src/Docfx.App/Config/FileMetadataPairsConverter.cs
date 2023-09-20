@@ -28,7 +28,7 @@ internal class FileMetadataPairsConverter : JsonConverter
         {
             jItems = JContainer.Load(reader);
         }
-        else throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
+        else throw new JsonReaderException($"{reader.TokenType} is not a valid {objectType.Name}.");
         return new FileMetadataPairs(jItems.Select(ParseItem).ToList());
     }
 

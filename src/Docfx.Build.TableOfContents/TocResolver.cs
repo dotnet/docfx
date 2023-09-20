@@ -87,7 +87,7 @@ internal sealed class TocResolver
         if (!isRoot && string.IsNullOrEmpty(item.Name) && string.IsNullOrEmpty(item.TopicUid))
         {
             Logger.LogWarning(
-                $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
+                $"TOC item ({item}) with empty name found. Missing a name?",
                 code: WarningCodes.Build.EmptyTocItemName);
         }
 

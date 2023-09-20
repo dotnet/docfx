@@ -723,7 +723,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             {
                 _chars.Insert(0, "\\");
             }
-            return $"[{_chars.ToString()}]";
+            return $"[{_chars}]";
         }
     }
 

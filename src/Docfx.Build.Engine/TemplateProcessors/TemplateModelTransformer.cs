@@ -184,7 +184,7 @@ public class TemplateModelTransformer
         foreach (var group in unresolvedXRefs.GroupBy(i => i.SourceFile))
         {
             // For each source file, print the first 10 invalid cross reference
-            var details = group.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber.ToString()}").Distinct().ToList();
+            var details = group.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber}").Distinct().ToList();
             var prefix = details.Count > MaxInvalidXrefMessagePerFile ? $"top {MaxInvalidXrefMessagePerFile} " : string.Empty;
             var message = $"Details for {prefix}invalid cross reference(s): {details.ToDelimitedString(", ")}";
 

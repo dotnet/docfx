@@ -23,7 +23,7 @@ public class DictionaryAsListJsonConverter<T> : JsonConverter
         }
         else
         {
-            throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
+            throw new JsonReaderException($"{reader.TokenType} is not a valid {objectType.Name}.");
         }
 
         return jItems.Select(s => ParseItem(s, serializer)).ToList();

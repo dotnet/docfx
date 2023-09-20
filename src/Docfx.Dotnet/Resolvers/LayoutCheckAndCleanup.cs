@@ -50,7 +50,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
             Debug.Assert(i.Type.IsPageLevel());
             if (!i.Type.IsPageLevel())
             {
-                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
+                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type} is not allowed inside {member.Type}. Will be ignored.");
                 message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
                 i.IsInvalid = true;
             }

@@ -209,7 +209,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
     {
         if (_parts.Length == 0)
         {
-            throw new InvalidOperationException($"Unable to get directory path for {this.ToString()}");
+            throw new InvalidOperationException($"Unable to get directory path for {this}");
         }
 
         return ChangeFileNameWithNoCheck(string.Empty);

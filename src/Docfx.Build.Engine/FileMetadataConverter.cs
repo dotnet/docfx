@@ -42,7 +42,7 @@ public class FileMetadataConverter : JsonConverter
         }
         else
         {
-            throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
+            throw new JsonReaderException($"{reader.TokenType} is not a valid {objectType.Name}.");
         }
         var baseDir = (string)((JObject)token).GetValue(BaseDir);
         if (!(token[Dict] is JObject dict))

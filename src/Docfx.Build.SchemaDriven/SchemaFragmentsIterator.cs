@@ -90,7 +90,7 @@ public class SchemaFragmentsIterator
                     {
                         if (mapNode.Children.ContainsKey(mergeKey))
                         {
-                            var opath = $"{parentOPath}[{mergeKey}=\"{mapNode.Children[mergeKey].ToString()}\"]";
+                            var opath = $"{parentOPath}[{mergeKey}=\"{mapNode.Children[mergeKey]}\"]";
                             TraverseCore(item, fragments, schema.Items, opath, uid);
                         }
                         else
