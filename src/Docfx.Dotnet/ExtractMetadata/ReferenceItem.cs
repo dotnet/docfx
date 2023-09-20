@@ -47,7 +47,7 @@ internal class ReferenceItem
         result.QualifiedNameParts = CloneParts(result.QualifiedNameParts);
         return result;
 
-        SortedList<SyntaxLanguage, List<LinkItem>> CloneParts(SortedList<SyntaxLanguage, List<LinkItem>> parts)
+        static SortedList<SyntaxLanguage, List<LinkItem>> CloneParts(SortedList<SyntaxLanguage, List<LinkItem>> parts)
         {
             if (parts is null)
                 return null;
@@ -108,7 +108,7 @@ internal class ReferenceItem
         NameWithTypeParts = MergeParts(NameWithTypeParts, other.NameWithTypeParts);
         QualifiedNameParts = MergeParts(QualifiedNameParts, other.QualifiedNameParts);
 
-        SortedList<SyntaxLanguage, List<LinkItem>> MergeParts(SortedList<SyntaxLanguage, List<LinkItem>> self, SortedList<SyntaxLanguage, List<LinkItem>> other)
+        static SortedList<SyntaxLanguage, List<LinkItem>> MergeParts(SortedList<SyntaxLanguage, List<LinkItem>> self, SortedList<SyntaxLanguage, List<LinkItem>> other)
         {
             if (other != null && self != null)
             {

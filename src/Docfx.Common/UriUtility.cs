@@ -102,7 +102,7 @@ public static class UriUtility
         var (query, path) = SplitPart(remaining, QueryMarker);
         return (path, query, fragment);
 
-        (string result, string remaining) SplitPart(string partial, char marker)
+        static (string result, string remaining) SplitPart(string partial, char marker)
         {
             var index = partial.IndexOf(marker);
             var result = index == -1 ? string.Empty : partial.Substring(index);

@@ -290,7 +290,7 @@ public class HtmlToPdfConverter
 
         builder.Bookmarks = new(GetOutlines());
 
-        PdfAction CopyLink(PdfAction action)
+        static PdfAction CopyLink(PdfAction action)
         {
             return action switch
             {

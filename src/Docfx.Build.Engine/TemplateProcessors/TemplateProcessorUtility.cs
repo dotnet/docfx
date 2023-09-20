@@ -16,7 +16,7 @@ public static class TemplateProcessorUtility
 
         return LoadTokensCore(resource);
 
-        Dictionary<string, string> LoadTokensCore(ResourceFileReader resource)
+        static Dictionary<string, string> LoadTokensCore(ResourceFileReader resource)
         {
             var tokenJson = resource.GetResource("token.json");
             if (string.IsNullOrEmpty(tokenJson))
