@@ -9,7 +9,7 @@ namespace Docfx.Common.Tests;
 [Collection("docfx STA")]
 public class GitUtilityTest : IDisposable
 {
-    private string _originalBranchName;
+    private readonly string _originalBranchName;
     private const string envName = "DOCFX_SOURCE_BRANCH_NAME";
     public GitUtilityTest()
     {

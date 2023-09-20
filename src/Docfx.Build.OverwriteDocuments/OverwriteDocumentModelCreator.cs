@@ -9,7 +9,7 @@ namespace Docfx.Build.OverwriteDocuments;
 
 public class OverwriteDocumentModelCreator
 {
-    string _file;
+    private readonly string _file;
 
     public OverwriteDocumentModelCreator(string file)
     {

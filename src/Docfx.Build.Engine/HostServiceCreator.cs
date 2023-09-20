@@ -11,7 +11,7 @@ namespace Docfx.Build.Engine;
 
 internal class HostServiceCreator : IHostServiceCreator
 {
-    private DocumentBuildContext _context;
+    private readonly DocumentBuildContext _context;
 
     public HostServiceCreator(DocumentBuildContext context)
     {

@@ -16,12 +16,12 @@ namespace Docfx.Build.SchemaDriven.Tests;
 [Collection("docfx STA")]
 public class SchemaMergerTest : TestBase
 {
-    private string _outputFolder;
-    private string _inputFolder;
-    private string _templateFolder;
-    private FileCollection _defaultFiles;
-    private ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
+    private readonly string _templateFolder;
+    private readonly FileCollection _defaultFiles;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
+    private readonly TemplateManager _templateManager;
 
     private const string RawModelFileExtension = ".raw.json";
 

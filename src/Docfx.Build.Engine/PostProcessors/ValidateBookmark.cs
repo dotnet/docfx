@@ -23,7 +23,7 @@ public sealed class ValidateBookmark : HtmlDocumentHandler
     /// </summary>
     private readonly OSPlatformSensitiveDictionary<string> _fileMapping =
         new();
-    private OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
+    private readonly OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
         new();
 
     #region IHtmlDocumentHandler members

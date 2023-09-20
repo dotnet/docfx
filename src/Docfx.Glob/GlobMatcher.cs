@@ -40,9 +40,9 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private static readonly Regex GlobStarRegex = new(@"^\*{2,}/?$", RegexOptions.Compiled);
 
-    private GlobRegexItem[][] _items;
-    private bool _negate = false;
-    private bool _ignoreCase = false;
+    private readonly GlobRegexItem[][] _items;
+    private readonly bool _negate = false;
+    private readonly bool _ignoreCase = false;
     #endregion
 
     public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;

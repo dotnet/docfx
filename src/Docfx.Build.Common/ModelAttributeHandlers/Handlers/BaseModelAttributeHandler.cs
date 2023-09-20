@@ -10,7 +10,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
     private const int MaximumNestedLevel = 32;
     private readonly TypeInfo _typeInfo;
     protected readonly IModelAttributeHandler Handler;
-    private Type _type;
+    private readonly Type _type;
     protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
     {
         ArgumentNullException.ThrowIfNull(type);

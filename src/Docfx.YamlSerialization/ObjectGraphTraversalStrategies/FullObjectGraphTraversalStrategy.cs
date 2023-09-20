@@ -27,7 +27,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     private readonly int _maxRecursion;
     private readonly ITypeInspector _typeDescriptor;
     private readonly ITypeResolver _typeResolver;
-    private INamingConvention _namingConvention;
+    private readonly INamingConvention _namingConvention;
     private readonly Dictionary<Tuple<Type, Type>, Action<IObjectDescriptor, IObjectGraphVisitor, int, IObjectGraphVisitorContext>> _behaviorCache =
         new();
     private readonly Dictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>> _traverseGenericDictionaryCache =

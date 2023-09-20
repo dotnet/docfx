@@ -5,7 +5,7 @@ namespace Docfx.Build.Engine;
 
 public class TemplateCollection : Dictionary<string, TemplateBundle>
 {
-    private TemplateBundle _defaultTemplate = null;
+    private readonly TemplateBundle _defaultTemplate = null;
 
     public IResourceFileReader Reader { get; }
 

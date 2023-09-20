@@ -364,7 +364,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
     private class SingleChoiceQuestion<T> : Question<T>
     {
-        private Func<string, T> _converter;
+        private readonly Func<string, T> _converter;
         /// <summary>
         /// Options, the first one as the default one
         /// </summary>

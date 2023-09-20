@@ -5,7 +5,7 @@ namespace Docfx.Plugins;
 
 public class TreeNavigator
 {
-    private NavigatorTreeItem _tree;
+    private readonly NavigatorTreeItem _tree;
     private NavigatorTreeItem _current;
 
     public TreeNavigator(TreeItem tree)

@@ -18,10 +18,10 @@ namespace Docfx.Build.TableOfContents.Tests;
 [Collection("docfx STA")]
 public class TocDocumentProcessorTest : TestBase
 {
-    private string _outputFolder;
-    private string _inputFolder;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
     private readonly FileCreator _fileCreator;
-    private ApplyTemplateSettings _applyTemplateSettings;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
 
     private const string RawModelFileExtension = ".raw.json";
 

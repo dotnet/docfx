@@ -14,10 +14,10 @@ namespace Docfx.Build.UniversalReference.Tests;
 
 public class UniversalReferenceDocumentProcessorTest : TestBase
 {
-    private string _outputFolder;
-    private string _inputFolder;
-    private ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
+    private readonly TemplateManager _templateManager;
 
     private const string RawModelFileExtension = ".raw.json";
     private const string TestDataDirectory = "TestData";

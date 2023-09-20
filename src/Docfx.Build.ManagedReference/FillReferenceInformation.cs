@@ -14,7 +14,7 @@ namespace Docfx.Build.ManagedReference;
 [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
 public class FillReferenceInformation : BaseDocumentBuildStep
 {
-    private Dictionary<string, SourceInfo> _items = new();
+    private readonly Dictionary<string, SourceInfo> _items = new();
 
     public override string Name => nameof(FillReferenceInformation);
 

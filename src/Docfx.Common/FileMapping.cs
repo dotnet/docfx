@@ -30,7 +30,7 @@ namespace Docfx;
 [Serializable]
 public class FileMapping
 {
-    private List<FileMappingItem> _items = new();
+    private readonly List<FileMappingItem> _items = new();
 
     /// <summary>
     /// Flags to distinguish items are expanded or not.

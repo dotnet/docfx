@@ -10,8 +10,8 @@ namespace Docfx.Common.Tests;
 [Collection("docfx STA")]
 public class ReportLoggerListenerTest : TestBase
 {
-    private string _workingDirectory;
-    private string _repoRoot;
+    private readonly string _workingDirectory;
+    private readonly string _repoRoot;
 
     public ReportLoggerListenerTest()
     {

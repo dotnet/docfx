@@ -11,7 +11,7 @@ namespace Docfx.Build.Engine.Tests;
 [Collection("docfx STA")]
 public class ExtractSearchIndexFromHtmlTest
 {
-    private static ExtractSearchIndex _extractor = new();
+    private static readonly ExtractSearchIndex _extractor = new();
 
     [Fact]
     public void TestBasicFeature()

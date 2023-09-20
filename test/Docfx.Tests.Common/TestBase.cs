@@ -8,7 +8,7 @@ namespace Docfx.Tests.Common;
 public class TestBase : IClassFixture<TestBase>, IDisposable
 {
     private readonly List<string> _folderCollection = new();
-    private object _locker = new();
+    private readonly object _locker = new();
 
     protected string GetRandomFolder()
     {
