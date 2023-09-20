@@ -61,7 +61,7 @@ public class MarkdownFragmentsValidationTest : TestBase
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments).ToList();
         Assert.True(File.Exists(_rawModelFilePath));
-        Assert.Equal(5, warningLogs.Count());
+        Assert.Equal(5, warningLogs.Count);
         Assert.Equal(
             @"Markdown property `depot_name` is not allowed inside a YAML code block
 You cannot overwrite a readonly property: `site_name`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property

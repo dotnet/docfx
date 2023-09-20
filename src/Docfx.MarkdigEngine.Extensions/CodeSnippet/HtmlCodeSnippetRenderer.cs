@@ -421,9 +421,9 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
 
     private static bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
     {
-        if (allCodeRanges.Count() == 0) return true;
+        if (allCodeRanges.Count == 0) return true;
 
-        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count(); rangeNumber++)
+        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count; rangeNumber++)
         {
             var range = allCodeRanges[rangeNumber];
             if (lineNumber >= range.Start && lineNumber <= range.End)

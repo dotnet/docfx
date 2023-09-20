@@ -70,8 +70,8 @@ public static class CollectionUtility
             return results.ToImmutableArray();
         }
 
-        int leftItemCount = leftItems.Count();
-        int rightItemCount = rightItems.Count();
+        int leftItemCount = leftItems.Length;
+        int rightItemCount = rightItems.Length;
         int[,] dp = new int[leftItemCount + 1, rightItemCount + 1];
 
         for (int i = 0; i <= leftItemCount; i++)

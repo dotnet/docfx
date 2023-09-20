@@ -40,7 +40,7 @@ public class JsonConverterTest
 
         BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
 
-        Assert.Equal(7, buildOptions.GlobalMetadata.Count());
+        Assert.Equal(7, buildOptions.GlobalMetadata.Count);
 
         JsonSerializerSettings settings = new()
         {
