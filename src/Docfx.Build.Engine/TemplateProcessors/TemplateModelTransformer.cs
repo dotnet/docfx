@@ -250,7 +250,7 @@ public class TemplateModelTransformer
             return dictionary;
         }
 
-        if (!(ConvertToObjectHelper.ConvertStrongTypeToObject(model) is IDictionary<string, object> objectModel))
+        if (ConvertToObjectHelper.ConvertStrongTypeToObject(model) is not IDictionary<string, object> objectModel)
         {
             throw new ArgumentException("Only object model is supported for template transformation.");
         }

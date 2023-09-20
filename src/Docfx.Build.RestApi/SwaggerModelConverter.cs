@@ -53,7 +53,7 @@ public static class SwaggerModelConverter
                     // fetch operations from metadata
                     if (OperationNames.Contains(op.Key, StringComparer.OrdinalIgnoreCase))
                     {
-                        if (!(op.Value is JObject opJObject))
+                        if (op.Value is not JObject opJObject)
                         {
                             throw new InvalidOperationException($"Value of {op.Key} should be JObject");
                         }

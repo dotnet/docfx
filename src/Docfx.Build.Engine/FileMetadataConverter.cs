@@ -45,7 +45,7 @@ public class FileMetadataConverter : JsonConverter
             throw new JsonReaderException($"{reader.TokenType} is not a valid {objectType.Name}.");
         }
         var baseDir = (string)((JObject)token).GetValue(BaseDir);
-        if (!(token[Dict] is JObject dict))
+        if (token[Dict] is not JObject dict)
         {
             throw new JsonReaderException($"Expect {token[Dict]} to be JObject.");
         }
@@ -95,13 +95,13 @@ public class FileMetadataConverter : JsonConverter
 
     private static ImmutableArray<FileMetadataItem> GetFileMetadataItemArray(JToken value)
     {
-        if (!(value is JArray arr))
+        if (value is not JArray arr)
         {
             throw new JsonReaderException($"Expect {value} to be JArray.");
         }
         return arr.Select(e =>
         {
-            if (!(e is JObject obj))
+            if (e is not JObject obj)
             {
                 throw new JsonReaderException($"Expect {e} to be JObject.");
             }

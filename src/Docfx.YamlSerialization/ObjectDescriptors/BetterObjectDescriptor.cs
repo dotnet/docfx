@@ -23,7 +23,7 @@ public class BetterObjectDescriptor : IObjectDescriptor
 
         static bool NeedQuote(object val)
         {
-            if (!(val is string s))
+            if (val is not string s)
                 return false;
 
             return Regexes.BooleanLike.IsMatch(s)

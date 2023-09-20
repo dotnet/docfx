@@ -18,7 +18,7 @@ public class MarkdownWithContentAnchorInterpreter : IInterpreter
 
     public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
     {
-        if (value == null || !CanInterpret(schema) || !(value is string val))
+        if (value == null || !CanInterpret(schema) || value is not string val)
         {
             return value;
         }

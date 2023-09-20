@@ -98,7 +98,7 @@ public class MarkdigMarkdownService : IMarkdownService
     {
         ArgumentNullException.ThrowIfNull(document);
 
-        if (!(document.GetData("filePath") is string filePath))
+        if (document.GetData("filePath") is not string filePath)
         {
             throw new ArgumentNullException(nameof(document), "file path can't be found in AST.");
         }

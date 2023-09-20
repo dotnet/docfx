@@ -181,7 +181,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Items = new List<MetadataItem>();
-        foreach (var member in symbol.GetMembers().Where(s => !(s is INamedTypeSymbol)))
+        foreach (var member in symbol.GetMembers().Where(s => s is not INamedTypeSymbol))
         {
             var memberItem = member.Accept(this);
             if (memberItem != null)
@@ -657,7 +657,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private void AddInheritedMembers(INamedTypeSymbol symbol, INamedTypeSymbol type, Dictionary<string, string> dict, IReadOnlyList<string> typeParameterNames)
     {
         foreach (var m in from m in type.GetMembers()
-                          where !(m is INamedTypeSymbol)
+                          where m is not INamedTypeSymbol
                           where _filter.IncludeApi(m)
                           where m.DeclaredAccessibility is Accessibility.Public || !(symbol.IsSealed || symbol.TypeKind is TypeKind.Struct)
                           where IsInheritable(m)
@@ -743,7 +743,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         var result =
             (from attr in attributes
-             where !(attr.AttributeClass is IErrorTypeSymbol)
+             where attr.AttributeClass is not IErrorTypeSymbol
              where attr.AttributeConstructor != null
              where _filter.IncludeAttribute(attr.AttributeConstructor)
              select new AttributeInfo

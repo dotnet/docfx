@@ -82,7 +82,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             var current = reader.Current;
 
             var value = nestedObjectDeserializer(reader, typeof(TItem));
-            if (!(value is IValuePromise promise))
+            if (value is not IValuePromise promise)
             {
                 result.Add(TypeConverter.ChangeType<TItem>(value));
             }

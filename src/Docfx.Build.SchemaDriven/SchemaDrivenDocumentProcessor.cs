@@ -115,7 +115,7 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                     }
 
                     var content = ConvertToObjectHelper.ConvertToDynamic(obj);
-                    if (!(_schema.MetadataReference.GetValue(content) is IDictionary<string, object> pageMetadata))
+                    if (_schema.MetadataReference.GetValue(content) is not IDictionary<string, object> pageMetadata)
                     {
                         pageMetadata = new ExpandoObject();
                         _schema.MetadataReference.SetValue(ref content, pageMetadata);

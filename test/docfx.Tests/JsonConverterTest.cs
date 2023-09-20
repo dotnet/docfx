@@ -154,7 +154,7 @@ internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
         {
             bool newShouldSerialize(object obj)
             {
-                return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
+                return property.ValueProvider.GetValue(obj) is not ICollection collection || collection.Count != 0;
             }
             Predicate<object> oldShouldSerialize = property.ShouldSerialize;
             property.ShouldSerialize = oldShouldSerialize != null

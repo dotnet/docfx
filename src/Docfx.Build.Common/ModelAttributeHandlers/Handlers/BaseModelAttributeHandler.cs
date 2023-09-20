@@ -135,7 +135,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
     protected virtual object ProcessNonPrimitiveType(object currentObj, HandleModelAttributesContext context)
     {
         // skip string type
-        if (currentObj != null && !(currentObj is string))
+        if (currentObj != null && currentObj is not string)
         {
             foreach (var prop in _typeInfo.PropInfos)
             {

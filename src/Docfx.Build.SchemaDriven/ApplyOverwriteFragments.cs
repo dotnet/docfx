@@ -33,19 +33,19 @@ public class ApplyOverwriteFragments : BaseDocumentBuildStep
             return;
         }
 
-        if (!(model.MarkdownFragmentsModel.Content is string))
+        if (model.MarkdownFragmentsModel.Content is not string)
         {
             var message = "Unable to parse markdown fragments. Expect string content.";
             Logger.LogError(message);
             throw new DocfxException(message);
         }
-        if (model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService == null || !(model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService is MarkdigMarkdownService))
+        if (model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService == null || model.MarkdownFragmentsModel.Properties.MarkdigMarkdownService is not MarkdigMarkdownService)
         {
             var message = "Unable to find markdig markdown service in file model.";
             Logger.LogError(message);
             throw new DocfxException(message);
         }
-        if (!(model.Properties.Schema is DocumentSchema))
+        if (model.Properties.Schema is not DocumentSchema)
         {
             var message = "Unable to find schema in file model.";
             Logger.LogError(message);

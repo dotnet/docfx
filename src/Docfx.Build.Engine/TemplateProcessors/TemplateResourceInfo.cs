@@ -13,7 +13,7 @@ public sealed class TemplateResourceInfo
 
     public override bool Equals(object obj)
     {
-        if (!(obj is TemplateResourceInfo target))
+        if (obj is not TemplateResourceInfo target)
         {
             return false;
         }

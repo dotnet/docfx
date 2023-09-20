@@ -45,7 +45,7 @@ public class XrefPropertiesInterpreter : IInterpreter
             return value;
         }
 
-        if (!(JsonPointer.GetChild(value, "uid") is string uid))
+        if (JsonPointer.GetChild(value, "uid") is not string uid)
         {
             // schema validation threw error when uid is required, so here when uid is null, it must be optional, which is allowed
             return value;

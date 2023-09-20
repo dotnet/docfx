@@ -141,7 +141,7 @@ public static class ConvertToObjectHelper
 
             foreach (var pair in dict)
             {
-                if (!(pair.Key is string key))
+                if (pair.Key is not string key)
                 {
                     throw new NotSupportedException("Only string key is supported.");
                 }
