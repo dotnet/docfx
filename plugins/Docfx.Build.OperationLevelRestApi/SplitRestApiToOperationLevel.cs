@@ -88,7 +88,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         // Support both restructure by TopicHref and TopicUid
         var treeItemRestructions = new List<TreeItemRestructure>
         {
-            new TreeItemRestructure
+            new()
             {
                 ActionType = TreeItemActionType.AppendChild,
                 Key = model.Key,
@@ -96,7 +96,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 RestructuredItems = treeItems.OrderBy(s => s.Metadata[Constants.PropertyName.Name]).ToImmutableList(),
                 SourceFiles = new FileAndType[] { model.OriginalFileAndType }.ToImmutableList(),
             },
-            new TreeItemRestructure
+            new()
             {
                 ActionType = TreeItemActionType.AppendChild,
                 Key = content.Uid,

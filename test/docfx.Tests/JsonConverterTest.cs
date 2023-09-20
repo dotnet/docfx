@@ -58,12 +58,12 @@ public class JsonConverterTest
         FileMetadataPairs item = new(
             new List<FileMetadataPairsItem>
             {
-                new FileMetadataPairsItem("*.md", 1L),
-                new FileMetadataPairsItem("*.m", true),
-                new FileMetadataPairsItem("abc", "string"),
-                new FileMetadataPairsItem("/[]\\*.cs", new Dictionary<string, object>{ ["key"] = "2" }),
-                new FileMetadataPairsItem("*/*.cs", new object[] { "1", "2" }),
-                new FileMetadataPairsItem("**", new Dictionary<string, object>{ ["key"] = new object[] {"1", "2" } }),
+                new("*.md", 1L),
+                new("*.m", true),
+                new("abc", "string"),
+                new("/[]\\*.cs", new Dictionary<string, object>{ ["key"] = "2" }),
+                new("*/*.cs", new object[] { "1", "2" }),
+                new("**", new Dictionary<string, object>{ ["key"] = new object[] {"1", "2" } }),
             });
         var result = JsonUtility.Serialize(item);
         Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);

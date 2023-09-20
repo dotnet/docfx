@@ -111,7 +111,7 @@ public class SingleDocumentBuilder : IDisposable
                 };
                 manifest.Groups = new List<ManifestGroupInfo>
                 {
-                    new ManifestGroupInfo(parameters.GroupInfo)
+                    new(parameters.GroupInfo)
                     {
                         XRefmap = (string)manifest.XRefMap
                     }

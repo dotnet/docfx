@@ -322,7 +322,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         else
         {
-            return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
+            return GetCodeLines(allLines, obj, new List<CodeRange> { new() { Start = 0, End = allLines.Length } });
         }
 
         return string.Empty;
