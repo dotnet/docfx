@@ -35,5 +35,5 @@ public class OutputFileCollection : ObservableDictionary<string, OutputFileInfo>
 
     #endregion
 
-    public bool ContainsValue(OutputFileInfo value) => Values.Contains(value);
+    public bool ContainsValue(OutputFileInfo value) => ContainsValue(value);
 }
