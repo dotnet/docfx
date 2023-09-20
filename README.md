@@ -2,7 +2,6 @@
 
 [![NuGet](https://img.shields.io/nuget/v/docfx)](https://www.nuget.org/packages/docfx)
 [![Help Wanted](https://img.shields.io/github/issues/dotnet/docfx/help-wanted?label=help-wanted)](https://github.com/dotnet/docfx/labels/help-wanted)
-[![Gitter](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 * [Getting Started](#getting-started)
 * [Contributing](#contributing)
