@@ -192,7 +192,7 @@ public static class ExtensionsHelper
 
     private static bool CharEqual(char ch1, char ch2, bool isCaseSensitive)
     {
-        return isCaseSensitive ? ch1 == ch2 : Char.ToLower(ch1) == Char.ToLower(ch2);
+        return isCaseSensitive ? ch1 == ch2 : char.ToLower(ch1) == char.ToLower(ch2);
     }
 
     private static bool MatchTitle(ref StringSlice slice, ref string title)

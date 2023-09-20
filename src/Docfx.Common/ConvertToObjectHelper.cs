@@ -146,7 +146,7 @@ public static class ConvertToObjectHelper
                     throw new NotSupportedException("Only string key is supported.");
                 }
 
-                ((IDictionary<string, Object>)result).Add(key, ConvertToDynamicCore(pair.Value, cache));
+                ((IDictionary<string, object>)result).Add(key, ConvertToDynamicCore(pair.Value, cache));
             }
         }
         else if (obj is IDictionary<string, object> sDict)
@@ -155,7 +155,7 @@ public static class ConvertToObjectHelper
 
             foreach (var pair in sDict)
             {
-                ((IDictionary<string, Object>)result).Add(pair.Key, ConvertToDynamicCore(pair.Value, cache));
+                ((IDictionary<string, object>)result).Add(pair.Key, ConvertToDynamicCore(pair.Value, cache));
             }
         }
         else if (obj is IList<object> array)

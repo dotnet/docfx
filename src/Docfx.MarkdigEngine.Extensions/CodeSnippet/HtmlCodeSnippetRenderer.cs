@@ -445,7 +445,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 var c = line[column];
                 if (c != ' ')
                 {
-                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != Char.ToUpper(c))
+                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != char.ToUpper(c))
                     {
                         match = false;
                         break;
@@ -523,7 +523,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         lineNumber = int.MaxValue;
         if (string.IsNullOrEmpty(lineNumberString)) return true;
 
-        if (withL && (lineNumberString.Length < 2 || Char.ToUpper(lineNumberString[0]) != 'L')) return false;
+        if (withL && (lineNumberString.Length < 2 || char.ToUpper(lineNumberString[0]) != 'L')) return false;
 
         return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
 

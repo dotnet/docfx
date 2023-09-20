@@ -93,7 +93,7 @@ public class CodeSnippetParser : BlockParser
         var c = slice.CurrentChar;
         var index = 0;
 
-        while (c != '\0' && index < StartString.Length && Char.ToLower(c) == StartString[index])
+        while (c != '\0' && index < StartString.Length && char.ToLower(c) == StartString[index])
         {
             c = slice.NextChar();
             index++;

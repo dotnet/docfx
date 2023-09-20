@@ -260,7 +260,7 @@ internal class XmlComment
         return result;
     }
 
-    private static (Regex, Regex) GetRegionRegex(String source)
+    private static (Regex, Regex) GetRegionRegex(string source)
     {
         var ext = Path.GetExtension(source);
         switch (ext.ToUpper())
