@@ -226,7 +226,7 @@ public sealed class YamlDeserializer
 
             public ValuePromise(AnchorAlias alias)
             {
-                this.Alias = alias;
+                Alias = alias;
             }
 
             public ValuePromise(object value)

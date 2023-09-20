@@ -116,11 +116,11 @@ public sealed class RelativePath : IEquatable<RelativePath>
         }
         if (ParentDirectoryCount >= path.SubdirectoryCount)
         {
-            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
+            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + ParentDirectoryCount, _parts);
         }
         else
         {
-            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount, path.GetSubdirectories(this.ParentDirectoryCount).Concat(this._parts));
+            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount, path.GetSubdirectories(ParentDirectoryCount).Concat(_parts));
         }
     }
 

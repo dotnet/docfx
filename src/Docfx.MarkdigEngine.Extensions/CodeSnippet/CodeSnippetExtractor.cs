@@ -17,9 +17,9 @@ public class CodeSnippetExtractor
 
     public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
     {
-        this.StartLineTemplate = startLineTemplate;
-        this.EndLineTemplate = endLineTemplate;
-        this.IsEndLineContainsTagName = isEndLineContainsTagName;
+        StartLineTemplate = startLineTemplate;
+        EndLineTemplate = endLineTemplate;
+        IsEndLineContainsTagName = isEndLineContainsTagName;
     }
 
     public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)

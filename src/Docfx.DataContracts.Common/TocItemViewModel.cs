@@ -128,7 +128,7 @@ public class TocItemViewModel
 
     public TocItemViewModel Clone()
     {
-        var cloned = (TocItemViewModel)this.MemberwiseClone();
+        var cloned = (TocItemViewModel)MemberwiseClone();
         if (cloned.Items != null)
         {
             cloned.Items = Items.Clone();
