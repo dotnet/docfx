@@ -89,7 +89,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             else if (result is IList<TItem> list)
             {
                 var index = list.Count;
-                result.Add(default(TItem));
+                result.Add(default);
                 promise.ValueAvailable += v => list[index] = TypeConverter.ChangeType<TItem>(v);
             }
             else

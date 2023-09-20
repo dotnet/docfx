@@ -70,7 +70,7 @@ public static class CollectionExtensions
         }
         if (indexes.Count == 0)
         {
-            result = default(TResult);
+            result = default;
             return false;
         }
         result = merger((from i in indexes select enumerators[i].Current).ToList());
@@ -100,7 +100,7 @@ public static class CollectionExtensions
 
         public bool Eof { get; private set; }
 
-        public T Current => Eof ? default(T) : Enumerator.Current;
+        public T Current => Eof ? default : Enumerator.Current;
 
         object IEnumerator.Current => Current;
 
