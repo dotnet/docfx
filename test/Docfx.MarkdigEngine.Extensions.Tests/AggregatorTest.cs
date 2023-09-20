@@ -130,7 +130,7 @@ P4</p>
     {
         var visitor = new MarkdownDocumentAggregatorVisitor(blockAggregator);
         var pipelineBuilder = new MarkdownPipelineBuilder();
-        pipelineBuilder.DocumentProcessed += document => visitor.Visit(document);
+        pipelineBuilder.DocumentProcessed += visitor.Visit;
 
         var pipeline = pipelineBuilder.Build();
         var html = Markdown.ToHtml(content, pipeline);

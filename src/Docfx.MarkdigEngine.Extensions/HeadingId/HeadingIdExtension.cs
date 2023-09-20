@@ -13,10 +13,7 @@ public class HeadingIdExtension : IMarkdownExtension
         var tokenRewriter = new HeadingIdRewriter();
         var visitor = new MarkdownDocumentVisitor(tokenRewriter);
 
-        pipeline.DocumentProcessed += document =>
-        {
-            visitor.Visit(document);
-        };
+        pipeline.DocumentProcessed += visitor.Visit;
     }
 
     public void Setup(MarkdownPipeline pipeline, IMarkdownRenderer renderer)

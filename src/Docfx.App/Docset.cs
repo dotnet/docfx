@@ -59,7 +59,7 @@ public static class Docset
             configPath,
             options,
             "pdf",
-            (config, exeOptions, configDirectory, outputDirectory) => RunPdf.Exec(config, exeOptions, configDirectory, outputDirectory));
+            RunPdf.Exec);
     }
 
     private static Task Exec<TConfig>(
