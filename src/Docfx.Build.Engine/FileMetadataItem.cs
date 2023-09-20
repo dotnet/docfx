@@ -25,7 +25,7 @@ public sealed class FileMetadataItem : IEquatable<FileMetadataItem>
 
     public bool Equals(FileMetadataItem other)
     {
-        if (ReferenceEquals(null, other))
+        if (other is null)
         {
             return false;
         }

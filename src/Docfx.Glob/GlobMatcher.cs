@@ -768,7 +768,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     public bool Equals(GlobMatcher other)
     {
-        if (ReferenceEquals(null, other))
+        if (other is null)
         {
             return false;
         }
