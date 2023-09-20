@@ -8,7 +8,6 @@ using Docfx.Plugins;
 namespace Docfx.Build.Engine;
 
 #pragma warning disable CS0612 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
 
 public class SingleDocumentBuilder : IDisposable
 {

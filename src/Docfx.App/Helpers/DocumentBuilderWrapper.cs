@@ -11,8 +11,6 @@ using Docfx.Plugins;
 
 namespace Docfx;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 internal static class DocumentBuilderWrapper
 {
     private static readonly Assembly[] s_pluginAssemblies = LoadPluginAssemblies(AppContext.BaseDirectory).ToArray();
