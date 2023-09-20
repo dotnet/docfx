@@ -240,6 +240,6 @@ public class DocsetBuildTest : TestBase
         // Test redirect page.is excluded from sitemap.
         var sitemapXml = outputs["sitemap.xml"]();
         var urls = XDocument.Parse(sitemapXml).Root.Elements();
-        Assert.True(urls.Count() == 0);
+        Assert.True(!urls.Any());
     }
 }
