@@ -13,7 +13,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 {
     #region Private fields
     private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
-    private static readonly string[] EmptyString = new string[0];
+    private static readonly string[] EmptyString = Array.Empty<string>();
     private const char NegateChar = '!';
     private const string GlobStar = "**";
     private const string ReplacerGroupName = "replacer";

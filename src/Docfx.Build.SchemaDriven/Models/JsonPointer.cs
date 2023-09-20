@@ -24,7 +24,7 @@ public class JsonPointer
             throw new InvalidJsonPointerException($"Invalid json pointer \"{raw}\"");
         }
 
-        _parts = _isRoot ? new string[0] : raw.Substring(1).Split(Splitter[0]);
+        _parts = _isRoot ? Array.Empty<string>() : raw.Substring(1).Split(Splitter[0]);
 
         _raw = raw;
     }
@@ -32,7 +32,7 @@ public class JsonPointer
     public JsonPointer(string[] parts)
     {
         _isRoot = parts == null || parts.Length == 0;
-        _parts = parts == null ? new string[0] : parts;
+        _parts = parts == null ? Array.Empty<string>() : parts;
         _raw = Splitter + string.Join(Splitter, parts);
     }
 

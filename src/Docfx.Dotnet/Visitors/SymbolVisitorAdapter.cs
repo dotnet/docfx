@@ -16,7 +16,7 @@ namespace Docfx.Dotnet;
 internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 {
     private static readonly Regex MemberSigRegex = new(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
-    private static readonly IReadOnlyList<string> EmptyListOfString = new string[0];
+    private static readonly IReadOnlyList<string> EmptyListOfString = Array.Empty<string>();
     private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
