@@ -134,10 +134,9 @@ internal static class DocumentBuilderWrapper
                 SitemapOptions = config.SitemapOptions,
                 DisableGitFeatures = config.DisableGitFeatures,
                 ConfigureMarkdig = options.ConfigureMarkdig,
+                Metadata = GetGlobalMetadata(config),
+                FileMetadata = GetFileMetadata(baseDirectory, config),
             };
-
-            parameters.Metadata = GetGlobalMetadata(config);
-            parameters.FileMetadata = GetFileMetadata(baseDirectory, config);
 
             if (config.PostProcessors != null)
             {

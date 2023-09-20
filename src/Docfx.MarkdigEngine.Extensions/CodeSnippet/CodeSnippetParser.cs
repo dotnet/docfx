@@ -37,8 +37,10 @@ public class CodeSnippetParser : BlockParser
             isNotebookCode = true;
         }
 
-        var codeSnippet = new CodeSnippet(this);
-        codeSnippet.IsNotebookCode = isNotebookCode;
+        var codeSnippet = new CodeSnippet(this)
+        {
+            IsNotebookCode = isNotebookCode,
+        };
         MatchLanguage(processor, ref slice, ref codeSnippet);
 
         if (!MatchName(processor, ref slice, ref codeSnippet))

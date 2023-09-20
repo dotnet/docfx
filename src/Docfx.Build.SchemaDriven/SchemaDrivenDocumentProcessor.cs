@@ -130,15 +130,15 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                     var fm = new FileModel(file, content)
                     {
                         LocalPathFromRoot = localPathFromRoot,
-                    };
-                    fm.MarkdownFragmentsModel = new FileModel(
+                        MarkdownFragmentsModel = new FileModel(
                         new FileAndType(
                             file.BaseDir,
                             markdownFragmentsFile,
                             DocumentType.MarkdownFragments,
                             file.SourceDir,
                             file.DestinationDir),
-                        markdownFragmentsContent);
+                        markdownFragmentsContent),
+                    };
                     fm.Properties.Schema = _schema;
                     fm.Properties.Metadata = pageMetadata;
                     fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;

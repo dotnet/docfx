@@ -207,8 +207,10 @@ public class ExtractSearchIndexFromHtmlTest
         File.WriteAllText(Path.Combine(tempTestFolder, "index.html"), rawHtml, new UTF8Encoding(false));
 
         // prepares fake manifest object
-        var outputFileInfo = new OutputFileInfo();
-        outputFileInfo.RelativePath = "index.html";
+        var outputFileInfo = new OutputFileInfo
+        {
+            RelativePath = "index.html",
+        };
 
         var manifestItem = new ManifestItem();
         manifestItem.OutputFiles.Add(".html", outputFileInfo);

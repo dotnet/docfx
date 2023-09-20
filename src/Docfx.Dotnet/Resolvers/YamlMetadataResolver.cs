@@ -30,9 +30,11 @@ internal static class YamlMetadataResolver
         Dictionary<string, ReferenceItem> allReferences,
         NamespaceLayout namespaceLayout)
     {
-        MetadataModel viewModel = new();
-        viewModel.TocYamlViewModel = GenerateToc(allMembers, allReferences, namespaceLayout);
-        viewModel.Members = new List<MetadataItem>();
+        MetadataModel viewModel = new()
+        {
+            TocYamlViewModel = GenerateToc(allMembers, allReferences, namespaceLayout),
+            Members = new List<MetadataItem>(),
+        };
         ResolverContext context = new()
         {
             References = allReferences,

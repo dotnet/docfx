@@ -43,12 +43,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             Name = VisitorHelper.GetId(symbol),
             CommentId = VisitorHelper.GetCommentId(symbol),
+            DisplayNames = new SortedList<SyntaxLanguage, string>(),
+            DisplayNamesWithType = new SortedList<SyntaxLanguage, string>(),
+            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>(),
+            Source = VisitorHelper.GetSourceDetail(symbol, _compilation),
         };
-
-        item.DisplayNames = new SortedList<SyntaxLanguage, string>();
-        item.DisplayNamesWithType = new SortedList<SyntaxLanguage, string>();
-        item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
-        item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
         if (symbol is not INamespaceSymbol)
@@ -93,17 +92,16 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
+            DisplayNames = new SortedList<SyntaxLanguage, string>
+            {
+                { SyntaxLanguage.Default, symbol.MetadataName },
+            },
+                DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
+            {
+                { SyntaxLanguage.Default, symbol.MetadataName },
+            },
+            Type = MemberType.Assembly,
         };
-
-        item.DisplayNames = new SortedList<SyntaxLanguage, string>
-        {
-            { SyntaxLanguage.Default, symbol.MetadataName },
-        };
-        item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
-        {
-            { SyntaxLanguage.Default, symbol.MetadataName },
-        };
-        item.Type = MemberType.Assembly;
 
         IEnumerable<INamespaceSymbol> namespaces;
         if (!string.IsNullOrEmpty(VisitorHelper.GlobalNamespaceId))

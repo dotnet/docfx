@@ -43,9 +43,11 @@ public class MarkdownFragmentsCreator
 
     private MarkdownFragmentModel MarkdownFragment()
     {
-        var result = new MarkdownFragmentModel();
-        result.UidSource = Eat(_l1InlineCodeHeadingRule, out var uid);
-        result.Uid = uid;
+        var result = new MarkdownFragmentModel
+        {
+            UidSource = Eat(_l1InlineCodeHeadingRule, out var uid),
+            Uid = uid,
+        };
 
         if (_yamlCodeBlockRule.Parse(Peek(), out var yamlCodeBlock))
         {

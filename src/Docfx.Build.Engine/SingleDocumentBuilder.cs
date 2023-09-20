@@ -214,13 +214,14 @@ public class SingleDocumentBuilder : IDisposable
     private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
     {
         Logger.LogVerbose("Exporting xref map...");
-        var xrefMap = new XRefMap();
-        xrefMap.References =
-            (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+        var xrefMap = new XRefMap
+        {
+            References = (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
              select new XRefSpec(xref)
              {
                  Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
-             }).ToList();
+             }).ToList(),
+        };
         xrefMap.Sort();
         string xrefMapFileNameWithVersion = GetXrefMapFileNameWithGroup(parameters);
         YamlUtility.Serialize(
