@@ -76,8 +76,6 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
     {
-        var list = result as IList<TItem>;
-
         reader.Consume<SequenceStart>();
         while (!reader.Accept<SequenceEnd>(out _))
         {
@@ -88,7 +86,7 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
             {
                 result.Add(TypeConverter.ChangeType<TItem>(value));
             }
-            else if (list != null)
+            else if (result is IList<TItem> list)
             {
                 var index = list.Count;
                 result.Add(default(TItem));

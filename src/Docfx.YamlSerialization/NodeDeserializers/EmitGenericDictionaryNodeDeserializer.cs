@@ -83,12 +83,11 @@ public class EmitGenericDictionaryNodeDeserializer : INodeDeserializer
         while (!reader.Accept<MappingEnd>(out _))
         {
             var key = nestedObjectDeserializer(reader, typeof(TKey));
-            var keyPromise = key as IValuePromise;
 
             var value = nestedObjectDeserializer(reader, typeof(TValue));
             var valuePromise = value as IValuePromise;
 
-            if (keyPromise == null)
+            if (key is not IValuePromise keyPromise)
             {
                 if (valuePromise == null)
                 {
