@@ -10,16 +10,16 @@ namespace Docfx.Common.Tests;
 public class GitUtilityTest : IDisposable
 {
     private readonly string _originalBranchName;
-    private const string envName = "DOCFX_SOURCE_BRANCH_NAME";
+    private const string EnvName = "DOCFX_SOURCE_BRANCH_NAME";
     public GitUtilityTest()
     {
-        _originalBranchName = Environment.GetEnvironmentVariable(envName);
-        Environment.SetEnvironmentVariable(envName, "special-branch");
+        _originalBranchName = Environment.GetEnvironmentVariable(EnvName);
+        Environment.SetEnvironmentVariable(EnvName, "special-branch");
     }
 
     public void Dispose()
     {
-        Environment.SetEnvironmentVariable(envName, _originalBranchName);
+        Environment.SetEnvironmentVariable(EnvName, _originalBranchName);
     }
 
     [Fact]

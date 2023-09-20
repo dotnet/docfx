@@ -21,8 +21,8 @@ namespace Docfx.Dotnet;
 
 internal class XmlComment
 {
-    private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-    private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+    private const string IdSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
+    private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
