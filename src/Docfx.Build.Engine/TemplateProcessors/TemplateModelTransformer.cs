@@ -40,7 +40,7 @@ public class TemplateModelTransformer
     {
         if (item == null || item.Content == null)
         {
-            throw new ArgumentNullException("Content for item.Model should not be null!");
+            throw new ArgumentNullException(nameof(item), "Content for item.Model should not be null!");
         }
 
         var model = ConvertObjectToDictionary(item.Content);

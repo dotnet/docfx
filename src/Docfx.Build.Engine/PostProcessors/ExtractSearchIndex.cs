@@ -41,7 +41,7 @@ public class ExtractSearchIndex : IPostProcessor
     {
         if (outputFolder == null)
         {
-            throw new ArgumentNullException("Base directory can not be null");
+            throw new ArgumentNullException(nameof(outputFolder), "Base directory can not be null");
         }
         var indexData = new SortedDictionary<string, SearchIndexItem>();
         var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);

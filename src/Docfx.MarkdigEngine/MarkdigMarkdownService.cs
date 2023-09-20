@@ -100,7 +100,7 @@ public class MarkdigMarkdownService : IMarkdownService
 
         if (!(document.GetData("filePath") is string filePath))
         {
-            throw new ArgumentNullException("file path can't be found in AST.");
+            throw new ArgumentNullException(nameof(document), "file path can't be found in AST.");
         }
 
         var pipeline = CreateMarkdownPipeline(isInline);
