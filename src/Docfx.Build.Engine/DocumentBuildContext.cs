@@ -155,7 +155,7 @@ public sealed class DocumentBuildContext : IDocumentBuildContext
 
     internal void LoadExternalXRefSpec(TextReader reader)
     {
-        if (ExternalXRefSpec.Count > 0)
+        if (!ExternalXRefSpec.IsEmpty)
         {
             throw new InvalidOperationException("Cannot load after reporting external xref spec.");
         }
