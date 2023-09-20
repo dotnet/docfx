@@ -32,7 +32,7 @@ public class TemplateCollection : Dictionary<string, TemplateBundle>
     {
         Reader = provider;
         MaxParallelism = maxParallelism;
-        base.TryGetValue("default", out _defaultTemplate);
+        TryGetValue("default", out _defaultTemplate);
     }
 
     private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceFileReader reader, DocumentBuildContext context, int maxParallelism)

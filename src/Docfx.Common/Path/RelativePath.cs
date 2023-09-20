@@ -554,10 +554,10 @@ public sealed class RelativePath : IEquatable<RelativePath>
     }
 
     public static bool operator ==(RelativePath left, RelativePath right) =>
-        object.Equals(left, right);
+        Equals(left, right);
 
     public static bool operator !=(RelativePath left, RelativePath right) =>
-        !object.Equals(left, right);
+        !Equals(left, right);
 
     public static implicit operator string(RelativePath path)
     {

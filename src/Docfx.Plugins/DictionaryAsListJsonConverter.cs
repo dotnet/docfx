@@ -19,7 +19,7 @@ public class DictionaryAsListJsonConverter<T> : JsonConverter
         IEnumerable<JToken> jItems;
         if (reader.TokenType == JsonToken.StartObject)
         {
-            jItems = JContainer.Load(reader);
+            jItems = JToken.Load(reader);
         }
         else
         {

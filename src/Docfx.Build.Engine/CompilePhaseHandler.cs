@@ -109,7 +109,7 @@ internal class CompilePhaseHandler : IPhaseHandler
                 using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
                 {
                     var models = buildStep.Prebuild(hostService.Models, hostService);
-                    if (!object.ReferenceEquals(models, hostService.Models))
+                    if (!ReferenceEquals(models, hostService.Models))
                     {
                         Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Reloading models...");
                         hostService.Reload(models);
