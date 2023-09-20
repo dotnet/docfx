@@ -75,9 +75,9 @@ public class TreeNavigatorTest
 
     private static string GetName(TreeItem item)
     {
-        if (item?.Metadata?.TryGetValue("name", out object name) == true && name is string)
+        if (item?.Metadata?.TryGetValue("name", out object name) == true && name is string value)
         {
-            return (string)name;
+            return value;
         }
 
         return null;
