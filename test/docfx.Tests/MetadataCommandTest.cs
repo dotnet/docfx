@@ -4,7 +4,6 @@
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
-using Docfx.Dotnet;
 using Docfx.Tests.Common;
 using Xunit;
 

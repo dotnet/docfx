@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 
 using Docfx.Build.Engine;
 using Docfx.Build.TableOfContents;
-using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Xunit;
 

@@ -6,7 +6,6 @@ using System.Collections.Immutable;
 
 using Docfx.Common;
 using Docfx.Plugins;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.Engine;
 

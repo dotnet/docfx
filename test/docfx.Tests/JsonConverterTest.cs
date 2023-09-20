@@ -6,7 +6,6 @@ using System.Reflection;
 using Docfx.Common;
 using Docfx.Plugins;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Xunit;
 

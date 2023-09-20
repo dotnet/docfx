@@ -6,7 +6,6 @@ using System.Composition;
 using System.Text.RegularExpressions;
 
 using Docfx.Build.Engine;
-using Docfx.Build.SchemaDriven.Processors;
 using Docfx.Build.TableOfContents;
 using Docfx.Common;
 using Docfx.Exceptions;

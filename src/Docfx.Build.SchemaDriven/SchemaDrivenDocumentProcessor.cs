@@ -3,13 +3,11 @@
 
 using System.Collections.Immutable;
 using System.Dynamic;
-using System.Text;
 using Docfx.Build.Common;
 using Docfx.Build.SchemaDriven.Processors;
 using Docfx.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.SchemaDriven;
 

@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
-using Docfx.Exceptions;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;

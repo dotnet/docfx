@@ -4,8 +4,6 @@
 
 #nullable disable
 
-using System;
-
 namespace Microsoft.CodeAnalysis.Debugging
 {
     internal static class PortableCustomDebugInfoKinds

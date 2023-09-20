@@ -3,7 +3,6 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-using System.Text;
 
 using Docfx.Build.Common;
 using Docfx.Build.ManagedReference.BuildOutputs;
@@ -11,8 +10,6 @@ using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
-
-using Newtonsoft.Json;
 
 namespace Docfx.Build.ManagedReference;
 
