@@ -646,7 +646,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                         foreach (StringBuilder sb in result)
                         {
                             StringBuilder newSb = new(sb.ToString());
-                            newSb.Append(builder.ToString());
+                            newSb.Append(builder);
                             tmp.Add(newSb);
                         }
                     }
