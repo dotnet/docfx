@@ -76,7 +76,7 @@ public class YamlSerializer
     {
         IObjectGraphVisitor<IEmitter> emittingVisitor = new EmittingObjectGraphVisitor(eventEmitter);
 
-        ObjectSerializer nestedObjectSerializer = (v, t) => SerializeValue(emitter, v, t);
+        void nestedObjectSerializer(object v, Type t = null) => SerializeValue(emitter, v, t);
 
         emittingVisitor = new CustomSerializationObjectGraphVisitor(emittingVisitor, Converters, nestedObjectSerializer);
 

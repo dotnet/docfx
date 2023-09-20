@@ -93,7 +93,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
         {
             return null;
         }
-        Func<object, object> handler = s => Handler.Handle(s, context);
+        object handler(object s) => Handler.Handle(s, context);
         if (!HandleGenericItemsHelper.EnumerateIDictionary(currentObj, handler))
         {
             HandleGenericItemsHelper.EnumerateIReadonlyDictionary(currentObj, handler);
@@ -112,7 +112,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
         {
             return null;
         }
-        Func<object, object> handler = s => Handler.Handle(s, context);
+
         HandleGenericItemsHelper.EnumerateIEnumerable(currentObj, s => Handler.Handle(s, context));
         return currentObj;
     }
