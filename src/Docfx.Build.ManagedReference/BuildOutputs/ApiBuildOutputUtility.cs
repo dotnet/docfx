@@ -102,12 +102,12 @@ public static class ApiBuildOutputUtility
         var sb = new StringBuilder();
         sb.Append("<xref uid=\"")
             .Append(HttpUtility.HtmlEncode(uid))
-            .Append("\"");
+            .Append('"');
         if (!string.IsNullOrEmpty(text))
         {
             sb.Append(" text=\"")
                 .Append(HttpUtility.HtmlEncode(text))
-                .Append("\"");
+                .Append('"');
         }
         else
         {
