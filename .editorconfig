@@ -111,9 +111,9 @@ csharp_style_prefer_null_check_over_type_check = true:suggestion                
 csharp_style_conditional_delegate_call = true:suggestion                           # IDE1005: Use conditional delegate call
 
 # 'var' preferences
-csharp_style_var_for_built_in_types = false:suggestion       # IDE0007: Use var instead of explicit type / IDE0008: Use explicit type instead of var
+csharp_style_var_for_built_in_types = false:silent           # IDE0007: Use var instead of explicit type / IDE0008: Use explicit type instead of var
 csharp_style_var_when_type_is_apparent = false:none          # IDE0007: Use var instead of explicit type / IDE0008: Use explicit type instead of var
-csharp_style_var_elsewhere = false:suggestion                # IDE0007: Use var instead of explicit type / IDE0008: Use explicit type instead of var
+csharp_style_var_elsewhere = true:silent                     # IDE0007: Use var instead of explicit type / IDE0008: Use explicit type instead of var
 
 # Expression-bodied-members
 csharp_style_expression_bodied_constructors = true:silent    # IDE0021: Use expression body for constructors
