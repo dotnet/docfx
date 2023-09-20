@@ -64,8 +64,8 @@ public sealed class YamlDeserializer
         bool ignoreUnmatched = false,
         bool ignoreNotFoundAnchor = true)
     {
-        objectFactory = objectFactory ?? new DefaultEmitObjectFactory();
-        namingConvention = namingConvention ?? NullNamingConvention.Instance;
+        objectFactory ??= new DefaultEmitObjectFactory();
+        namingConvention ??= NullNamingConvention.Instance;
 
         _typeDescriptor.TypeDescriptor =
             new ExtensibleYamlAttributesTypeInspector(
@@ -166,7 +166,7 @@ public sealed class YamlDeserializer
         var hasStreamStart = parser.TryConsume<StreamStart>(out _);
 
         var hasDocumentStart = parser.TryConsume<DocumentStart>(out _);
-        deserializer = deserializer ?? _valueDeserializer;
+        deserializer ??= _valueDeserializer;
         object result = null;
         if (!parser.Accept<DocumentEnd>(out _) && !parser.Accept<StreamEnd>(out _))
         {

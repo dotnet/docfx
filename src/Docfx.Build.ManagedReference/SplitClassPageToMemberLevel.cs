@@ -96,7 +96,7 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
 
         if (memberType != null)
         {
-            newFileName = newFileName + $"({memberType})";
+            newFileName += $"({memberType})";
         }
 
         var newFilePath = GetUniqueFilePath(dupeModel.File, newFileName, newFilePaths, modelsDict);
@@ -115,13 +115,13 @@ public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
             if (newFilePaths.TryGetValue(newFilePath, out int suffix))
             {
                 // new file path already exist and have suffix
-                newFileName = newFileName + $"_{suffix}";
+                newFileName += $"_{suffix}";
                 suffix++;
             }
             else
             {
                 // new file path already exist but doesn't have suffix (special case) 
-                newFileName = newFileName + "_1";
+                newFileName += "_1";
                 newFilePaths[newFilePath] = 2;
             }
 

@@ -42,7 +42,7 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         var folder = Path.GetRandomFileName();
         if (Directory.Exists(folder))
         {
-            folder = folder + DateTime.Now.ToString("HHmmssffff");
+            folder += DateTime.Now.ToString("HHmmssffff");
             if (Directory.Exists(folder))
             {
                 throw new InvalidOperationException($"Random folder name collides {folder}");

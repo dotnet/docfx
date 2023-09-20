@@ -183,8 +183,7 @@ public class EmitTypeInspector : ExtensibleTypeInspectorSkeleton
             {
                 valueType = GetGenericValueTypeCore(propertyType);
             }
-            valueType = valueType ??
-                (from t in propertyType.GetInterfaces()
+            valueType ??= (from t in propertyType.GetInterfaces()
                  where t.IsVisible
                  select GetGenericValueTypeCore(t)).FirstOrDefault(x => x != null);
             return valueType;

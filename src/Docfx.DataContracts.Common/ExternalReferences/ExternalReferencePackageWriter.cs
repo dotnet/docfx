@@ -49,7 +49,7 @@ public class ExternalReferencePackageWriter : IDisposable
         {
             entry = _zip.GetEntry(entryName);
         }
-        entry = entry ?? _zip.CreateEntry(entryName);
+        entry ??= _zip.CreateEntry(entryName);
         using var stream = entry.Open();
         using var sw = new StreamWriter(stream);
         YamlUtility.Serialize(sw, vm);

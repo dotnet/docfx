@@ -17,7 +17,7 @@ public class JsonPointer
 
     public JsonPointer(string raw)
     {
-        raw = raw ?? string.Empty;
+        raw ??= string.Empty;
         _isRoot = raw.Length == 0;
         if (!_isRoot && raw[0] != Splitter[0])
         {

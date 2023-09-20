@@ -122,7 +122,7 @@ public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
                 }
                 else
                 {
-                    query = query + "&nocookie=true";
+                    query += "&nocookie=true";
                 }
             }
             else if (host.Equals("youtube.com", StringComparison.OrdinalIgnoreCase) || host.Equals("www.youtube.com", StringComparison.OrdinalIgnoreCase))

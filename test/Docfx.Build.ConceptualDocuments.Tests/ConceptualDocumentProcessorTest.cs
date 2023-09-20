@@ -437,7 +437,7 @@ Some content";
 
         public string CreateFile(string content, string fileName = null, string folder = null)
         {
-            fileName = fileName ?? Path.GetRandomFileName() + ".md";
+            fileName ??= Path.GetRandomFileName() + ".md";
 
             fileName = Path.Combine(folder ?? string.Empty, fileName);
 
