@@ -7,7 +7,7 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class MonikerRangeTest
 {
-    static public string LoggerPhase = "MonikerRange";
+    public static string LoggerPhase = "MonikerRange";
 
     [Fact]
     public void MonikerRangeTestGeneral()

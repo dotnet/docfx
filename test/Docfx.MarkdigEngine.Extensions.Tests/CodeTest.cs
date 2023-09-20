@@ -7,8 +7,8 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class CodeTest
 {
-    static public string LoggerPhase = "Code";
-    static public string contentCSharp = @"using System;
+    public static string LoggerPhase = "Code";
+    public static string contentCSharp = @"using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -217,7 +217,7 @@ namespace TableSnippets
         }
     }
 }";
-    static public string contentCSharp2 = @"using System;
+    public static string contentCSharp2 = @"using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -377,7 +377,7 @@ namespace ChangeFeedSample
         }
     }
 }";
-    static public string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
+    public static string contentCSharpRegion = @"using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -447,7 +447,7 @@ namespace TagHelpersBuiltIn
         }
     }
 }";
-    static public string contentASPNet = @"@{
+    public static string contentASPNet = @"@{
     ViewData[""Title""] = ""Anchor Tag Helper"";
 }
 
@@ -651,7 +651,7 @@ namespace TagHelpersBuiltIn
         </tr>
     </tfoot>
 </table>";
-    static public string contentVB = @"'<Snippet1>
+    public static string contentVB = @"'<Snippet1>
 Class ADSetupInformation
 
     Shared Sub Main()
@@ -710,7 +710,7 @@ Class AppDomain2
 End Class
 '</snippet3>
 ";
-    static public string contentCPP = @"//<Snippet1>
+    public static string contentCPP = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -772,7 +772,7 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
-    static public string contentCPP2 = @"//<Snippet1>
+    public static string contentCPP2 = @"//<Snippet1>
 using namespace System;
 
 using namespace System::Collections::Generic;
@@ -948,7 +948,7 @@ Remove(""doc"")
 Key ""doc"" is not found.
  */
 //</ Snippet1  >";
-    static public string contentCrazy = @"//<Snippet1>
+    public static string contentCrazy = @"//<Snippet1>
 using namespace System;
 
 int main()
@@ -1010,7 +1010,7 @@ int main()
     AppDomain4::Main();
 }
 // </snippet2>";
-    static public string contentSQL = @"-- <everything>
+    public static string contentSQL = @"-- <everything>
 --<students>
 SELECT * FROM Students
 WHERE Grade = 12
@@ -1023,7 +1023,7 @@ WHERE Grade = 12
 AND Class = 'Math'
 --</teachers>
 --</everything>";
-    static public string contentPython = @"#<everything>
+    public static string contentPython = @"#<everything>
 #<first>
 from flask import Flask
 app = Flask(__name__)
@@ -1036,21 +1036,21 @@ def hello():
 #</second>
 #</everything>
 ";
-    static public string contentBatch = @"REM <snippet>
+    public static string contentBatch = @"REM <snippet>
 :Label1
 	:Label2
 :: Comment line 3
 REM </snippet>
 	:: Comment line 4
 IF EXIST C:\AUTOEXEC.BAT REM AUTOEXEC.BAT exists";
-    static public string contentErlang = @"-module(hello_world).
+    public static string contentErlang = @"-module(hello_world).
 -compile(export_all).
 
 % <snippet>
 hello() ->
     io:format(""hello world~n"").
 % </snippet>";
-    static public string contentLisp = @";<everything>
+    public static string contentLisp = @";<everything>
 USER(64): (member 'b '(perhaps today is a good day to die)) ; test fails
 NIL
 ;<inner>
@@ -1058,7 +1058,7 @@ USER(65): (member 'a '(perhaps today is a good day to die)) ; returns non-NIL
 '(a good day to die)
 ; </inner>
 ;</everything>";
-    static public string contentRuby = @"source 'https://rubygems.org'
+    public static string contentRuby = @"source 'https://rubygems.org'
 git_source(:github) { |repo| ""https://github.com/#{repo}.git"" }
 
 ruby '2.6.5'
@@ -1120,7 +1120,7 @@ gem 'httparty', '~> 0.17.1'
 gem 'activerecord-session_store', '~> 1.1'
 # </GemFileSnippet>
 ";
-    static public string contentCSS = @"body {
+    public static string contentCSS = @"body {
   padding-top: 70px;
 }
 

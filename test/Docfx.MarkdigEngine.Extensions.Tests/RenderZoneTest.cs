@@ -7,7 +7,7 @@ namespace Docfx.MarkdigEngine.Tests;
 
 public class RenderZoneTest
 {
-    static public string LoggerPhase = "RenderZone";
+    public static string LoggerPhase = "RenderZone";
 
     [Fact]
     public void KitchenSink()

@@ -523,11 +523,11 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             {
                 _parent = parentNode ?? this;
             }
-            abstract public GlobNode AddChar(char c);
-            abstract public GlobNode StartLevel();
-            abstract public GlobNode AddGroup();
-            abstract public GlobNode FinishLevel();
-            abstract public List<StringBuilder> Flatten();
+            public abstract GlobNode AddChar(char c);
+            public abstract GlobNode StartLevel();
+            public abstract GlobNode AddGroup();
+            public abstract GlobNode FinishLevel();
+            public abstract List<StringBuilder> Flatten();
         }
         public class TextNode : GlobNode
         {
