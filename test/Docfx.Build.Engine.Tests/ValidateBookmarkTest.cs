@@ -25,6 +25,7 @@ public class ValidateBookmarkTest : TestBase
 
     public override void Dispose()
     {
+        _listener.Dispose();
         EnvironmentContext.Clean();
         base.Dispose();
     }

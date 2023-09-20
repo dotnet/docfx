@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
 
-public class Manifest
+public class Manifest : IDisposable
 {
     private readonly ReaderWriterLockSlim _lock = new();
     private readonly Dictionary<string, List<OutputFileInfo>> _index = new();
@@ -60,6 +60,20 @@ public class Manifest
             return list[0];
         }
         return null;
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        // Clear index before unregister event handler to reduce operations.
+        _index.Clear();
+
+        // Unregister event handlers.
+        Files.Clear();
+        Files.CollectionChanged -= FileCollectionChanged;
+
+        // Dispose lock object.
+        _lock.Dispose();
     }
 
     #endregion

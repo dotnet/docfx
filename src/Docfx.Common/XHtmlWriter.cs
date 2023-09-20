@@ -142,4 +142,10 @@ public class XHtmlWriter : XmlWriter
         _writer.WriteStartElement(prefix, localName, ns);
         _currentElement = localName;
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        _writer.Dispose();
+    }
 }

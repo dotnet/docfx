@@ -74,6 +74,12 @@ There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsV
         Assert.Equal("17", warningLogs[3].Line);
     }
 
+    public override void Dispose()
+    {
+        _listener.Dispose();
+        base.Dispose();
+    }
+
     private void BuildDocument(FileCollection files)
     {
         var parameters = new DocumentBuildParameters

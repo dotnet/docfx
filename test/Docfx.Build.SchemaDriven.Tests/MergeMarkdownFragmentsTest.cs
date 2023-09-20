@@ -391,6 +391,12 @@ With [!include[invalid](invalid.md)]",
         Assert.True(messages.SequenceEqual(lastMessages));
     }
 
+    public override void Dispose()
+    {
+        _listener.Dispose();
+        base.Dispose();
+    }
+
     private List<string> ClearLog(List<ILogItem> items)
     {
         var result = items.Select(i => i.Message).ToList();

@@ -66,9 +66,9 @@ public class DocumentBuilder : IDisposable
         // Load schema driven processor from template
         var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
 
+        var manifests = new List<Manifest>();
         try
         {
-            var manifests = new List<Manifest>();
             if (parameters.All(p => p.Files.Count == 0))
             {
                 Logger.LogSuggestion(
@@ -142,7 +142,7 @@ public class DocumentBuilder : IDisposable
 
             using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
             {
-                var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                using var generatedManifest = ManifestUtility.MergeManifest(manifests);
                 generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
                 ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                 ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
@@ -187,15 +187,19 @@ public class DocumentBuilder : IDisposable
                         .Create();
                     SaveManifest(generatedManifest);
                 }
-
-                using (new PerformanceScope("Cleanup"))
-                {
-                    EnvironmentContext.FileAbstractLayerImpl = null;
-                }
             }
         }
         finally
         {
+            using (new PerformanceScope("Cleanup"))
+            {
+                EnvironmentContext.FileAbstractLayerImpl = null;
+                foreach (Manifest manifest in manifests)
+                {
+                    manifest.Dispose();
+                }
+            }
+
             Logger.UnregisterListener(logCodesLogListener);
         }
 
@@ -323,5 +327,6 @@ public class DocumentBuilder : IDisposable
     public void Dispose()
     {
         _postProcessorsManager.Dispose();
+        _container.Dispose();
     }
 }

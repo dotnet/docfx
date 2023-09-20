@@ -94,7 +94,7 @@ internal static class RunServe
 
         try
         {
-            Manifest manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
+            using Manifest manifest = JsonUtility.Deserialize<Manifest>(manifestPath);
 
             // Try to find output html file (html->html)
             OutputFileInfo outputFileInfo = manifest.FindOutputFileInfo(relativePath);

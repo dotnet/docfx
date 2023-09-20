@@ -117,7 +117,7 @@ public class JsonConverterTest
     [Trait("Related", "docfx")]
     public void TestManifestItemCollectionConverterCouldSerializeAndDeserialize()
     {
-        var manifest = new Manifest();
+        using var manifest = new Manifest();
         ManifestItem manifestItemA = new()
         {
             SourceRelativePath = "a"
@@ -132,9 +132,11 @@ public class JsonConverterTest
         Assert.Equal(
             "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
             JsonUtility.Serialize(manifest));
+
+        using var deserializedManifest = JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest));
         Assert.Equal(
             "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{}},{\"source_relative_path\":\"b\",\"output\":{}}]}",
-            JsonUtility.Serialize(JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest))));
+            JsonUtility.Serialize(deserializedManifest));
     }
 }
 
