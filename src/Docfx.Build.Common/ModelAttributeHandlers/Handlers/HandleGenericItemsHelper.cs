@@ -132,7 +132,7 @@ public class HandleGenericItemsHelper
 
         public void Handle(Func<object, object> handler)
         {
-            Handle(s => (T)handler((T)s));
+            Handle(s => (T)handler(s));
         }
 
         private void Handle(Func<T, T> handler)

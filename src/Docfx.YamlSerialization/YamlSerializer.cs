@@ -36,8 +36,8 @@ public class YamlSerializer
         }
 
         _typeResolver = IsOptionSet(SerializationOptions.DefaultToStaticType)
-            ? (ITypeResolver)new StaticTypeResolver()
-            : (ITypeResolver)new DynamicTypeResolver();
+            ? new StaticTypeResolver()
+            : new DynamicTypeResolver();
     }
 
     private bool IsOptionSet(SerializationOptions option)

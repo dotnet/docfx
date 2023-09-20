@@ -559,12 +559,12 @@ searchScope:
         {
             if (Path.GetFileNameWithoutExtension(model.File) == "page1")
             {
-                ((dynamic)model.Properties.Metadata).meta = "overwritten";
-                ((dynamic)model.Properties.Metadata).another = 1;
+                model.Properties.Metadata.meta = "overwritten";
+                model.Properties.Metadata.another = 1;
             }
             else
             {
-                ((dynamic)model.Properties.Metadata).another = 2;
+                model.Properties.Metadata.another = 2;
             }
         }
 
@@ -574,11 +574,11 @@ searchScope:
             {
                 if (Path.GetFileNameWithoutExtension(model.File) == "page1")
                 {
-                    ((dynamic)model.Properties.Metadata).postMeta = "postbuild1";
+                    model.Properties.Metadata.postMeta = "postbuild1";
                 }
                 else
                 {
-                    ((dynamic)model.Properties.Metadata).postMeta = "postbuild2";
+                    model.Properties.Metadata.postMeta = "postbuild2";
                 }
             }
         }
