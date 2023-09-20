@@ -24,7 +24,7 @@ public class NolocParser : InlineParser
 
         var text = ExtensionsHelper.TryGetStringBeforeChars(new char[] { '\"', '\n' }, ref slice);
 
-        if (text == null || text.IndexOf('\n') != -1)
+        if (text == null || text.Contains('\n'))
         {
             return false;
         }

@@ -160,7 +160,7 @@ namespace Microsoft.SourceLink.Tools
                 uriPrefix = value[..uriStar];
                 uriSuffix = value[(uriStar + 1)..];
 
-                if (uriSuffix.IndexOf('*') >= 0)
+                if (uriSuffix.Contains('*'))
                 {
                     return false;
                 }
@@ -191,7 +191,7 @@ namespace Microsoft.SourceLink.Tools
         {
             ArgumentNullException.ThrowIfNull(path);
 
-            if (path.IndexOf('*') >= 0)
+            if (path.Contains('*'))
             {
                 uri = null;
                 return false;

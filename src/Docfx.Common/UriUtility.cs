@@ -15,14 +15,14 @@ public static class UriUtility
     {
         ArgumentNullException.ThrowIfNull(uriString);
 
-        return uriString.IndexOf(FragmentMarker) != -1;
+        return uriString.Contains(FragmentMarker);
     }
 
     public static bool HasQueryString(string uriString)
     {
         ArgumentNullException.ThrowIfNull(uriString);
 
-        return uriString.IndexOf(QueryMarker) != -1;
+        return uriString.Contains(QueryMarker);
     }
 
     public static string GetFragment(string uriString)
