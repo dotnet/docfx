@@ -83,7 +83,7 @@ public class YamlSerializer
         if (!IsOptionSet(SerializationOptions.DisableAliases))
         {
             var anchorAssigner = new AnchorAssigner(Converters);
-            traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, default);
+            traversalStrategy.Traverse(graph, anchorAssigner, default);
 
             emittingVisitor = new AnchorAssigningObjectGraphVisitor(emittingVisitor, eventEmitter, anchorAssigner);
         }
