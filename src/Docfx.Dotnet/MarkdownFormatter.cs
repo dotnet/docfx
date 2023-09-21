@@ -392,8 +392,8 @@ static class MarkdownFormatter
 
                 void Info()
                 {
-                    sb.AppendLine($"_Namespace:_ {FullLink(symbol.ContainingNamespace)}").AppendLine();
-                    sb.AppendLine($"_Assembly:_ {symbol.ContainingAssembly.Name}.dll").AppendLine();
+                    sb.AppendLine($"__Namespace:__ {FullLink(symbol.ContainingNamespace)}  ");
+                    sb.AppendLine($"__Assembly:__ {symbol.ContainingAssembly.Name}.dll").AppendLine();
                 }
 
                 void Summary(XmlComment? comment)
