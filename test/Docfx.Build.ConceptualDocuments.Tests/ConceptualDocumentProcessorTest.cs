@@ -22,8 +22,8 @@ public class ConceptualDocumentProcessorTest : TestBase
     private readonly string _templateFolder;
     private readonly FileCollection _defaultFiles;
     private readonly FileCreator _fileCreator;
-    private ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
+    private readonly TemplateManager _templateManager;
     private const string RawModelFileExtension = ".raw.json";
 
     public ConceptualDocumentProcessorTest()
@@ -437,7 +437,7 @@ Some content";
 
         public string CreateFile(string content, string fileName = null, string folder = null)
         {
-            fileName = fileName ?? Path.GetRandomFileName() + ".md";
+            fileName ??= Path.GetRandomFileName() + ".md";
 
             fileName = Path.Combine(folder ?? string.Empty, fileName);
 

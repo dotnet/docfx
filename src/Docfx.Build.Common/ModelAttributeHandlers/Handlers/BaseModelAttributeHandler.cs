@@ -10,7 +10,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
     private const int MaximumNestedLevel = 32;
     private readonly TypeInfo _typeInfo;
     protected readonly IModelAttributeHandler Handler;
-    private Type _type;
+    private readonly Type _type;
     protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
     {
         ArgumentNullException.ThrowIfNull(type);
@@ -93,7 +93,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
         {
             return null;
         }
-        Func<object, object> handler = s => Handler.Handle(s, context);
+        object handler(object s) => Handler.Handle(s, context);
         if (!HandleGenericItemsHelper.EnumerateIDictionary(currentObj, handler))
         {
             HandleGenericItemsHelper.EnumerateIReadonlyDictionary(currentObj, handler);
@@ -112,7 +112,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
         {
             return null;
         }
-        Func<object, object> handler = s => Handler.Handle(s, context);
+
         HandleGenericItemsHelper.EnumerateIEnumerable(currentObj, s => Handler.Handle(s, context));
         return currentObj;
     }
@@ -135,7 +135,7 @@ public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler wher
     protected virtual object ProcessNonPrimitiveType(object currentObj, HandleModelAttributesContext context)
     {
         // skip string type
-        if (currentObj != null && !(currentObj is string))
+        if (currentObj != null && currentObj is not string)
         {
             foreach (var prop in _typeInfo.PropInfos)
             {

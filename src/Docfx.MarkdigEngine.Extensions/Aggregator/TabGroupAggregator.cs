@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 
 using Markdig.Syntax;

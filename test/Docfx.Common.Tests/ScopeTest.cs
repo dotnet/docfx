@@ -151,7 +151,7 @@ public class ScopeTest
         }
     }
 
-    internal ILogItem TakeFirstLogItemAndRemove(List<ILogItem> items)
+    internal static ILogItem TakeFirstLogItemAndRemove(List<ILogItem> items)
     {
         if (items.Count == 0)
         {

@@ -322,7 +322,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
         else
         {
-            return GetCodeLines(allLines, obj, new List<CodeRange> { new CodeRange { Start = 0, End = allLines.Length } });
+            return GetCodeLines(allLines, obj, new List<CodeRange> { new() { Start = 0, End = allLines.Length } });
         }
 
         return string.Empty;
@@ -338,7 +338,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         }
     }
 
-    private string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
+    private static string GetCodeLines(string[] allLines, CodeSnippet obj, List<CodeRange> codeRanges, HashSet<int> ignoreLines = null)
     {
         List<string> codeLines = new();
         StringBuilder showCode = new();
@@ -356,8 +356,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 }
                 else
                 {
-                    int indentSpaces = 0;
-                    string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out indentSpaces);
+                    string rawCodeLine = CountAndReplaceIndentSpaces(allLines[lineNumber], out int indentSpaces);
                     commonIndent = Math.Min(commonIndent, indentSpaces);
                     codeLines.Add(rawCodeLine);
                 }
@@ -374,7 +373,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return showCode.ToString();
     }
 
-    private string DedentString(string source, int dedent)
+    private static string DedentString(string source, int dedent)
     {
         int validDedent = Math.Min(dedent, source.Length);
         for (int i = 0; i < validDedent; i++)
@@ -384,12 +383,12 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return source.Substring(validDedent);
     }
 
-    private bool IsBlankLine(string line)
+    private static bool IsBlankLine(string line)
     {
         return line == "";
     }
 
-    private string CountAndReplaceIndentSpaces(string line, out int count)
+    private static string CountAndReplaceIndentSpaces(string line, out int count)
     {
         StringBuilder sb = new();
         count = 0;
@@ -419,11 +418,11 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return sb.ToString();
     }
 
-    private bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
+    private static bool IsLineInRange(int lineNumber, List<CodeRange> allCodeRanges)
     {
-        if (allCodeRanges.Count() == 0) return true;
+        if (allCodeRanges.Count == 0) return true;
 
-        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count(); rangeNumber++)
+        for (int rangeNumber = 0; rangeNumber < allCodeRanges.Count; rangeNumber++)
         {
             var range = allCodeRanges[rangeNumber];
             if (lineNumber >= range.Start && lineNumber <= range.End)
@@ -433,7 +432,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         return false;
     }
 
-    private int GetTagLineNumber(string[] lines, string tagLine)
+    private static int GetTagLineNumber(string[] lines, string tagLine)
     {
         for (int index = 0; index < lines.Length; index++)
         {
@@ -446,7 +445,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
                 var c = line[column];
                 if (c != ' ')
                 {
-                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != Char.ToUpper(c))
+                    if (targetColumn >= tagLine.Length || tagLine[targetColumn] != char.ToUpper(c))
                     {
                         match = false;
                         break;
@@ -524,7 +523,7 @@ public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
         lineNumber = int.MaxValue;
         if (string.IsNullOrEmpty(lineNumberString)) return true;
 
-        if (withL && (lineNumberString.Length < 2 || Char.ToUpper(lineNumberString[0]) != 'L')) return false;
+        if (withL && (lineNumberString.Length < 2 || char.ToUpper(lineNumberString[0]) != 'L')) return false;
 
         return int.TryParse(withL ? lineNumberString.Substring(1) : lineNumberString, out lineNumber);
 

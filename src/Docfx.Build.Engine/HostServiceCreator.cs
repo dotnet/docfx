@@ -6,13 +6,12 @@ using System.Collections.Immutable;
 
 using Docfx.Common;
 using Docfx.Plugins;
-using Newtonsoft.Json.Linq;
 
 namespace Docfx.Build.Engine;
 
 internal class HostServiceCreator : IHostServiceCreator
 {
-    private DocumentBuildContext _context;
+    private readonly DocumentBuildContext _context;
 
     public HostServiceCreator(DocumentBuildContext context)
     {
@@ -63,7 +62,7 @@ internal class HostServiceCreator : IHostServiceCreator
             }
             catch (Exception e)
             {
-                if (!(e is DocumentException))
+                if (e is not DocumentException)
                 {
                     Logger.LogError(
                         $"Unable to load file '{file.File}' via processor '{processor.Name}': {e.Message}",

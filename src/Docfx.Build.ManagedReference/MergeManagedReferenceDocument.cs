@@ -148,7 +148,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
         }
     }
 
-    private void MergeReferences(MergeItem item, MergeItem otherItem)
+    private static void MergeReferences(MergeItem item, MergeItem otherItem)
     {
         if (item.References != null)
         {
@@ -163,7 +163,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
         }
     }
 
-    private void MergeReferencesCore(
+    private static void MergeReferencesCore(
         Dictionary<string, ReferenceViewModel> mergeTo,
         Dictionary<string, ReferenceViewModel> mergeFrom)
     {
@@ -176,7 +176,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
         }
     }
 
-    private PageViewModel ConvertToVM(MergeItem mergeItem)
+    private static PageViewModel ConvertToVM(MergeItem mergeItem)
     {
         var vm = new PageViewModel
         {
@@ -188,7 +188,7 @@ public class MergeManagedReferenceDocument : BaseDocumentBuildStep
         return vm;
     }
 
-    private void ConvertToVMCore(PageViewModel vm, MergeItem mergeItem)
+    private static void ConvertToVMCore(PageViewModel vm, MergeItem mergeItem)
     {
         if (mergeItem.AssemblyNameList.Count > 0)
         {

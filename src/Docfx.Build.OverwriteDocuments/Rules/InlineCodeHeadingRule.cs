@@ -25,7 +25,7 @@ public class InlineCodeHeadingRule : IOverwriteBlockRule
 
     private CodeInline ParseCore(Block block)
     {
-        if (!(block is HeadingBlock heading)
+        if (block is not HeadingBlock heading
             || NeedCheckLevel && heading.Level != Level
             || heading.Inline.FirstChild != heading.Inline.LastChild)
         {

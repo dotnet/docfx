@@ -56,7 +56,7 @@ public class DefaultFileAbstractLayer : IFileAbstractLayer
             Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
             file);
 
-    public string GetOutputPhysicalPath(string file) =>
+    public static string GetOutputPhysicalPath(string file) =>
         Path.Combine(
             Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
             file);

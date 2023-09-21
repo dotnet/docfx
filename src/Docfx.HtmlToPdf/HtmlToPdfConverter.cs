@@ -113,9 +113,9 @@ public class HtmlToPdfConverter
     {
         // In advanced scenarios where the user is passing additional arguments directly to the command line,
         // disable the quiet mode so problems can be diagnosed.
-        if (!string.IsNullOrEmpty(this._htmlToPdfOptions.AdditionalArguments))
+        if (!string.IsNullOrEmpty(_htmlToPdfOptions.AdditionalArguments))
         {
-            this._htmlToPdfOptions.IsQuiet = false;
+            _htmlToPdfOptions.IsQuiet = false;
         }
 
         using var process = new Process
@@ -290,7 +290,7 @@ public class HtmlToPdfConverter
 
         builder.Bookmarks = new(GetOutlines());
 
-        PdfAction CopyLink(PdfAction action)
+        static PdfAction CopyLink(PdfAction action)
         {
             return action switch
             {

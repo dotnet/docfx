@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -161,7 +160,7 @@ public class SamplesTest
             await page.CloseAsync();
         });
 
-        Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
+        static Task<CompareResult> CompareImage(Stream received, Stream verified, string directory, string fileName)
         {
             using var receivedImage = new MagickImage(received);
             using var verifiedImage = new MagickImage(verified);

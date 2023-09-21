@@ -7,7 +7,7 @@ namespace Docfx.MarkdigEngine.Extensions;
 
 public class BlockAggregateContext
 {
-    private ContainerBlock _blocks;
+    private readonly ContainerBlock _blocks;
     private int _currentBlockIndex = -1;
 
     public BlockAggregateContext(ContainerBlock blocks)

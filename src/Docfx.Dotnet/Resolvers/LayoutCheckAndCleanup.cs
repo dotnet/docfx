@@ -35,7 +35,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
         }
     }
 
-    private string CheckNamespaces(MetadataItem member)
+    private static string CheckNamespaces(MetadataItem member)
     {
         StringBuilder message = new();
 
@@ -50,7 +50,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
             Debug.Assert(i.Type.IsPageLevel());
             if (!i.Type.IsPageLevel())
             {
-                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type.ToString()} is not allowed inside {member.Type.ToString()}. Will be ignored.");
+                Logger.Log(LogLevel.Error, $"Invalid item inside yaml metadata: {i.Type} is not allowed inside {member.Type}. Will be ignored.");
                 message.AppendFormat("{0} is not allowed inside {1}.", i.Type.ToString(), member.Type.ToString());
                 i.IsInvalid = true;
             }
@@ -72,7 +72,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private string CheckNamespaceMembers(MetadataItem member)
+    private static string CheckNamespaceMembers(MetadataItem member)
     {
         StringBuilder message = new();
 
@@ -99,7 +99,7 @@ internal class LayoutCheckAndCleanup : IResolverPipeline
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    private string CheckNamespaceMembersMembers(MetadataItem member)
+    private static string CheckNamespaceMembersMembers(MetadataItem member)
     {
         StringBuilder message = new();
         if (member.IsInvalid)

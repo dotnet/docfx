@@ -27,7 +27,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     private readonly int _maxRecursion;
     private readonly ITypeInspector _typeDescriptor;
     private readonly ITypeResolver _typeResolver;
-    private INamingConvention _namingConvention;
+    private readonly INamingConvention _namingConvention;
     private readonly Dictionary<Tuple<Type, Type>, Action<IObjectDescriptor, IObjectGraphVisitor, int, IObjectGraphVisitorContext>> _behaviorCache =
         new();
     private readonly Dictionary<Tuple<Type, Type, Type>, Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext>> _traverseGenericDictionaryCache =
@@ -37,7 +37,7 @@ public class FullObjectGraphTraversalStrategy : IObjectGraphTraversalStrategy
     {
         if (maxRecursion <= 0)
         {
-            throw new ArgumentOutOfRangeException("maxRecursion", maxRecursion, "maxRecursion must be greater than 1");
+            throw new ArgumentOutOfRangeException(nameof(maxRecursion), maxRecursion, "maxRecursion must be greater than 1");
         }
 
         ArgumentNullException.ThrowIfNull(typeDescriptor);

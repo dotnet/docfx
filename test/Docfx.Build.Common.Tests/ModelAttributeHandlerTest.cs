@@ -90,12 +90,12 @@ public class ModelAttributeHandlerTest
             OtherProperty = "others",
             InnerModels = new List<InnerModel>
             {
-                new InnerModel
+                new()
                 {
                      Identity = "2.1",
                      CrefType = TestCrefType.Cref
                 },
-                new InnerModel
+                new()
                 {
                      Identity = "2.2",
                      CrefType = TestCrefType.Href

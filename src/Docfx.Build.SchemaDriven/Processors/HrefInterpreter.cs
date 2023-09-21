@@ -31,7 +31,7 @@ public class HrefInterpreter : IInterpreter
             return value;
         }
 
-        if (!(value is string val))
+        if (value is not string val)
         {
             throw new ArgumentException($"{value.GetType()} is not supported type string.");
         }

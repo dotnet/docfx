@@ -1,0 +1,6 @@
+# top-most EditorConfig file
+root = false
+
+[*.cs]
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent # IDE0058: Remove unnecessary expression value
+csharp_style_unused_value_assignment_preference           = discard_variable:silent # IDE0059: Remove unnecessary value assignment

@@ -5,7 +5,7 @@ namespace Docfx.Build.Engine;
 
 public sealed class EmptyResourceReader : ResourceFileReader
 {
-    private static readonly IEnumerable<string> Empty = new string[0];
+    private static readonly IEnumerable<string> Empty = Array.Empty<string>();
 
     public override bool IsEmpty => true;
     public override string Name => "Empty";

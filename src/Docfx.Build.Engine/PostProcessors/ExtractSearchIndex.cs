@@ -41,7 +41,7 @@ public class ExtractSearchIndex : IPostProcessor
     {
         if (outputFolder == null)
         {
-            throw new ArgumentNullException("Base directory can not be null");
+            throw new ArgumentNullException(nameof(outputFolder), "Base directory can not be null");
         }
         var indexData = new SortedDictionary<string, SearchIndexItem>();
         var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);
@@ -120,14 +120,14 @@ public class ExtractSearchIndex : IPostProcessor
         return new SearchIndexItem { Href = href, Title = title, Keywords = content };
     }
 
-    private string ExtractTitleFromHtml(HtmlDocument html)
+    private static string ExtractTitleFromHtml(HtmlDocument html)
     {
         var titleNode = html.DocumentNode.SelectSingleNode("//head/title");
         var originalTitle = titleNode?.InnerText;
         return NormalizeContent(originalTitle);
     }
 
-    private string NormalizeContent(string str)
+    private static string NormalizeContent(string str)
     {
         if (string.IsNullOrEmpty(str))
         {
@@ -137,7 +137,7 @@ public class ExtractSearchIndex : IPostProcessor
         return s_regexWhiteSpace.Replace(str, " ").Trim();
     }
 
-    private void ExtractTextFromNode(HtmlNode node, StringBuilder contentBuilder)
+    private static void ExtractTextFromNode(HtmlNode node, StringBuilder contentBuilder)
     {
         if (node == null)
         {

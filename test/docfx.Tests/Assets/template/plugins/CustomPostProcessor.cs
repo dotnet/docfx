@@ -2,6 +2,8 @@
 using System.Composition;
 using Docfx.Plugins;
 
+namespace docfx.Tests;
+
 [Export(nameof(CustomPostProcessor), typeof(IPostProcessor))]
 public class CustomPostProcessor : IPostProcessor
 {

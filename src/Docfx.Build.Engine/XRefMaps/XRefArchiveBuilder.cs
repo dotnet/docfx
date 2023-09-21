@@ -43,7 +43,7 @@ public class XRefArchiveBuilder
     {
         IXRefContainer container;
         container = await _downloader.DownloadAsync(uri);
-        if (!(container is XRefMap map))
+        if (container is not XRefMap map)
         {
             // not support download an xref archive, or reference to an xref archive
             return null;

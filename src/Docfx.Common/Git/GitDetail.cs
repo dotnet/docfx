@@ -38,9 +38,9 @@ public class GitDetail
     {
         if (obj == null) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (this.GetType() != obj.GetType()) return false;
+        if (GetType() != obj.GetType()) return false;
 
-        return Equals(this.ToString(), obj.ToString());
+        return Equals(ToString(), obj.ToString());
     }
 
     public override int GetHashCode()

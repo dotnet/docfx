@@ -5,10 +5,9 @@ using Docfx.Common;
 using Docfx.Tests.Common;
 using FluentAssertions;
 using Xunit;
+using Switches = Docfx.DataContracts.Common.Constants.Switches;
 
 namespace Docfx.Build.Engine.Tests;
-
-using Switches = DataContracts.Common.Constants.Switches;
 
 public partial class TemplateManagerUnitTest
 {

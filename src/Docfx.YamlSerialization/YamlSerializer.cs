@@ -36,8 +36,8 @@ public class YamlSerializer
         }
 
         _typeResolver = IsOptionSet(SerializationOptions.DefaultToStaticType)
-            ? (ITypeResolver)new StaticTypeResolver()
-            : (ITypeResolver)new DynamicTypeResolver();
+            ? new StaticTypeResolver()
+            : new DynamicTypeResolver();
     }
 
     private bool IsOptionSet(SerializationOptions option)
@@ -76,14 +76,14 @@ public class YamlSerializer
     {
         IObjectGraphVisitor<IEmitter> emittingVisitor = new EmittingObjectGraphVisitor(eventEmitter);
 
-        ObjectSerializer nestedObjectSerializer = (v, t) => SerializeValue(emitter, v, t);
+        void nestedObjectSerializer(object v, Type t = null) => SerializeValue(emitter, v, t);
 
         emittingVisitor = new CustomSerializationObjectGraphVisitor(emittingVisitor, Converters, nestedObjectSerializer);
 
         if (!IsOptionSet(SerializationOptions.DisableAliases))
         {
             var anchorAssigner = new AnchorAssigner(Converters);
-            traversalStrategy.Traverse<Nothing>(graph, anchorAssigner, default);
+            traversalStrategy.Traverse(graph, anchorAssigner, default);
 
             emittingVisitor = new AnchorAssigningObjectGraphVisitor(emittingVisitor, eventEmitter, anchorAssigner);
         }

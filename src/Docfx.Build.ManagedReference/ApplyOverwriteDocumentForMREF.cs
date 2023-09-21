@@ -21,7 +21,7 @@ public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
         return Transform<ItemViewModel>(fileModel, uid, host);
     }
 
-    public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
+    public static IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
     {
         return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
     }

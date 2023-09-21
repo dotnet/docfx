@@ -98,7 +98,7 @@ public sealed class XRefDetails
 
         return xref;
 
-        string ExtractValue(NameValueCollection collection, string properName)
+        static string ExtractValue(NameValueCollection collection, string properName)
         {
             var value = collection[properName];
             collection.Remove(properName);

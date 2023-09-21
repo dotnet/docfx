@@ -128,7 +128,7 @@ public class TocItemViewModel
 
     public TocItemViewModel Clone()
     {
-        var cloned = (TocItemViewModel)this.MemberwiseClone();
+        var cloned = (TocItemViewModel)MemberwiseClone();
         if (cloned.Items != null)
         {
             cloned.Items = Items.Clone();
@@ -147,7 +147,7 @@ public class TocItemViewModel
         result += PropertyInfo(nameof(TopicUid), TopicUid);
         return result;
 
-        string PropertyInfo(string name, string value)
+        static string PropertyInfo(string name, string value)
         {
             if (string.IsNullOrEmpty(value))
             {

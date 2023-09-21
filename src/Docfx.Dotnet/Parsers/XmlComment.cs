@@ -21,8 +21,8 @@ namespace Docfx.Dotnet;
 
 internal class XmlComment
 {
-    private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-    private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+    private const string IdSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
+    private static readonly Regex CommentIdRegex = new(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + IdSelector + ")$", RegexOptions.Compiled);
     private static readonly Regex RegionRegex = new(@"^\s*#region\s*(.*)$");
     private static readonly Regex XmlRegionRegex = new(@"^\s*<!--\s*<([^/\s].*)>\s*-->$");
     private static readonly Regex EndRegionRegex = new(@"^\s*#endregion\s*.*$");
@@ -159,7 +159,7 @@ internal class XmlComment
         }
     }
 
-    private (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
+    private static (string lang, string code) ResolveCodeSource(XElement node, XmlCommentParserContext context)
     {
         var source = node.Attribute("source")?.Value;
         if (string.IsNullOrEmpty(source))
@@ -260,7 +260,7 @@ internal class XmlComment
         return result;
     }
 
-    private static (Regex, Regex) GetRegionRegex(String source)
+    private static (Regex, Regex) GetRegionRegex(string source)
     {
         var ext = Path.GetExtension(source);
         switch (ext.ToUpper())
@@ -276,7 +276,7 @@ internal class XmlComment
         return (RegionRegex, EndRegionRegex);
     }
 
-    private void ResolveLangword(XNode node)
+    private static void ResolveLangword(XNode node)
     {
         foreach (var item in node.XPathSelectElements("//see[@langword]").ToList())
         {
@@ -426,7 +426,7 @@ internal class XmlComment
         }
     }
 
-    private IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
+    private static IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
     {
         var iterator = navigator.Clone().Select(selector);
         if (iterator == null)

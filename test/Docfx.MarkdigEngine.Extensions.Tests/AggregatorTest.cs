@@ -126,11 +126,11 @@ P4</p>
         }
     }
 
-    private void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
+    private static void TestAggregator(string content, string expected, IBlockAggregator blockAggregator)
     {
         var visitor = new MarkdownDocumentAggregatorVisitor(blockAggregator);
         var pipelineBuilder = new MarkdownPipelineBuilder();
-        pipelineBuilder.DocumentProcessed += document => visitor.Visit(document);
+        pipelineBuilder.DocumentProcessed += visitor.Visit;
 
         var pipeline = pipelineBuilder.Build();
         var html = Markdown.ToHtml(content, pipeline);

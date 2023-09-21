@@ -116,11 +116,11 @@ public sealed class RelativePath : IEquatable<RelativePath>
         }
         if (ParentDirectoryCount >= path.SubdirectoryCount)
         {
-            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
+            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + ParentDirectoryCount, _parts);
         }
         else
         {
-            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount, path.GetSubdirectories(this.ParentDirectoryCount).Concat(this._parts));
+            return Create(path._isFromWorkingFolder, path.ParentDirectoryCount, path.GetSubdirectories(ParentDirectoryCount).Concat(_parts));
         }
     }
 
@@ -209,7 +209,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
     {
         if (_parts.Length == 0)
         {
-            throw new InvalidOperationException($"Unable to get directory path for {this.ToString()}");
+            throw new InvalidOperationException($"Unable to get directory path for {this}");
         }
 
         return ChangeFileNameWithNoCheck(string.Empty);
@@ -499,7 +499,7 @@ public sealed class RelativePath : IEquatable<RelativePath>
                 var text = safe ? EncodedInvalidPartChars[chIndex] : EncodedUnsafeInvalidPartChars[chIndex];
                 var originIndex = origin.LastIndexOf(text, originLastIndex, StringComparison.OrdinalIgnoreCase);
                 originLastIndex = originIndex - 1;
-                sb.Insert(index, origin.Substring(originIndex, text.Length));
+                sb.Insert(index, origin.AsSpan(originIndex, text.Length));
             }
             parts[i] = modified ? sb.ToString() : value;
             if (sb != null)
@@ -554,10 +554,10 @@ public sealed class RelativePath : IEquatable<RelativePath>
     }
 
     public static bool operator ==(RelativePath left, RelativePath right) =>
-        object.Equals(left, right);
+        Equals(left, right);
 
     public static bool operator !=(RelativePath left, RelativePath right) =>
-        !object.Equals(left, right);
+        !Equals(left, right);
 
     public static implicit operator string(RelativePath path)
     {

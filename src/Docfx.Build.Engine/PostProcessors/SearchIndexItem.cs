@@ -18,7 +18,7 @@ public class SearchIndexItem
 
     public override bool Equals(object obj)
     {
-        return this.Equals(obj as SearchIndexItem);
+        return Equals(obj as SearchIndexItem);
     }
 
     public bool Equals(SearchIndexItem other)
@@ -31,7 +31,7 @@ public class SearchIndexItem
         {
             return true;
         }
-        return string.Equals(this.Title, other.Title) && string.Equals(this.Href, other.Href) && string.Equals(this.Keywords, other.Keywords);
+        return string.Equals(Title, other.Title) && string.Equals(Href, other.Href) && string.Equals(Keywords, other.Keywords);
     }
 
     public override int GetHashCode()

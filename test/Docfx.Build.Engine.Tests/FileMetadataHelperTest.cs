@@ -107,9 +107,9 @@ public class FileMetadataHelperTest
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
         Assert.NotNull(actualResults);
-        Assert.Equal(12, actualResults.Count());
+        Assert.Equal(12, actualResults.Count);
         var patterns = patternsA.Concat(patternsB).ToList();
-        for (var index = 0; index < patterns.Count(); index++)
+        for (var index = 0; index < patterns.Count; index++)
         {
             Assert.Equal(patterns[index], actualResults[index].Raw);
         }
@@ -138,7 +138,7 @@ public class FileMetadataHelperTest
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
         Assert.NotNull(actualResults);
-        Assert.Equal(2, actualResults.Count());
+        Assert.Equal(2, actualResults.Count);
         Assert.Equal(patterns[0], actualResults[0].Raw);
         Assert.Equal(patterns[2], actualResults[1].Raw);
     }
@@ -225,7 +225,7 @@ public class FileMetadataHelperTest
 
         var actualResults = FileMetadataHelper.GetChangedGlobs(left, right).ToList();
         Assert.NotNull(actualResults);
-        Assert.Equal(3, actualResults.Count());
+        Assert.Equal(3, actualResults.Count);
         Assert.Equal(patterns[5], actualResults[0].Raw);
         Assert.Equal(patterns[2], actualResults[1].Raw);
         Assert.Equal(patterns[4], actualResults[2].Raw);

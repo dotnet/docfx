@@ -55,7 +55,7 @@ public sealed class ConsoleLogListener : ILoggerListener
     {
     }
 
-    private ConsoleColor GetConsoleColor(LogLevel level)
+    private static ConsoleColor GetConsoleColor(LogLevel level)
     {
         return level switch
         {

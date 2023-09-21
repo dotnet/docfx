@@ -41,7 +41,7 @@ public sealed class ExtensibleObjectNodeDeserializer : INodeDeserializer
             }
 
             var propertyValue = nestedObjectDeserializer(reader, property.Type);
-            if (!(propertyValue is IValuePromise propertyValuePromise))
+            if (propertyValue is not IValuePromise propertyValuePromise)
             {
                 var convertedValue = TypeConverter.ChangeType(propertyValue, property.Type);
                 property.Write(value, convertedValue);

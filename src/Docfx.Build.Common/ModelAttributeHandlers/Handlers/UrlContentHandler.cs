@@ -80,7 +80,7 @@ public class UrlContentHandler : IModelAttributeHandler
                    select prop;
         }
 
-        private string GetHrefFromRoot(string originalHref, HandleModelAttributesContext context)
+        private static string GetHrefFromRoot(string originalHref, HandleModelAttributesContext context)
         {
             if (context.FileAndType == null || string.IsNullOrEmpty(originalHref) || !RelativePath.IsRelativePath(originalHref))
             {

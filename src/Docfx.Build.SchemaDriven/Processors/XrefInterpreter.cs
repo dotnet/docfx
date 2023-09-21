@@ -29,7 +29,7 @@ public class XrefInterpreter : IInterpreter
             return value;
         }
 
-        if (!(value is string val))
+        if (value is not string val)
         {
             throw new ArgumentException($"{value.GetType()} is not supported type string.");
         }
@@ -56,7 +56,7 @@ public class XrefInterpreter : IInterpreter
         return value;
     }
 
-    private void AddUidLinkSource(Dictionary<string, List<LinkSourceInfo>> uidLinkSources, LinkSourceInfo source)
+    private static void AddUidLinkSource(Dictionary<string, List<LinkSourceInfo>> uidLinkSources, LinkSourceInfo source)
     {
         var file = source.Target;
         if (!uidLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))

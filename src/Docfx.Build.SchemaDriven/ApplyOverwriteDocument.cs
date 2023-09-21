@@ -24,7 +24,7 @@ public class ApplyOverwriteDocument : BaseDocumentBuildStep
         host.GetAllUids().RunAll(uid => ApplyOverwriteToModel(overwriteApplier, uid, host));
     }
 
-    private void ApplyOverwriteToModel(OverwriteApplier overwriteApplier, string uid, IHostService host)
+    private static void ApplyOverwriteToModel(OverwriteApplier overwriteApplier, string uid, IHostService host)
     {
         var ms = host.LookupByUid(uid);
         var ods = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();

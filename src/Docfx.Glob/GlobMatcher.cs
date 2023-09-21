@@ -13,7 +13,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 {
     #region Private fields
     private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
-    private static readonly string[] EmptyString = new string[0];
+    private static readonly string[] EmptyString = Array.Empty<string>();
     private const char NegateChar = '!';
     private const string GlobStar = "**";
     private const string ReplacerGroupName = "replacer";
@@ -40,9 +40,9 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     private static readonly Regex GlobStarRegex = new(@"^\*{2,}/?$", RegexOptions.Compiled);
 
-    private GlobRegexItem[][] _items;
-    private bool _negate = false;
-    private bool _ignoreCase = false;
+    private readonly GlobRegexItem[][] _items;
+    private readonly bool _negate = false;
+    private readonly bool _ignoreCase = false;
     #endregion
 
     public const GlobMatcherOptions DefaultOptions = GlobMatcherOptions.AllowNegate | GlobMatcherOptions.IgnoreCase | GlobMatcherOptions.AllowGlobStar | GlobMatcherOptions.AllowExpand | GlobMatcherOptions.AllowEscape;
@@ -127,7 +127,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         return items;
     }
 
-    private IEnumerable<string> Split(string path, params char[] splitter)
+    private static IEnumerable<string> Split(string path, params char[] splitter)
     {
         var parts = path.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length == 0) yield break;
@@ -145,7 +145,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         return string.Join(@"\/", items);
     }
 
-    private bool IsFolderPath(string path)
+    private static bool IsFolderPath(string path)
     {
         return path.EndsWith("/", StringComparison.Ordinal);
     }
@@ -323,7 +323,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
     /// </summary>
     /// <param name="globParts"></param>
     /// <returns></returns>
-    private IEnumerable<string> ExpandGlobStarShortcut(IEnumerable<string> globParts)
+    private static IEnumerable<string> ExpandGlobStarShortcut(IEnumerable<string> globParts)
     {
         foreach (var part in globParts)
         {
@@ -523,11 +523,11 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             {
                 _parent = parentNode ?? this;
             }
-            abstract public GlobNode AddChar(char c);
-            abstract public GlobNode StartLevel();
-            abstract public GlobNode AddGroup();
-            abstract public GlobNode FinishLevel();
-            abstract public List<StringBuilder> Flatten();
+            public abstract GlobNode AddChar(char c);
+            public abstract GlobNode StartLevel();
+            public abstract GlobNode AddGroup();
+            public abstract GlobNode FinishLevel();
+            public abstract List<StringBuilder> Flatten();
         }
         public class TextNode : GlobNode
         {
@@ -646,7 +646,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
                         foreach (StringBuilder sb in result)
                         {
                             StringBuilder newSb = new(sb.ToString());
-                            newSb.Append(builder.ToString());
+                            newSb.Append(builder);
                             tmp.Add(newSb);
                         }
                     }
@@ -723,7 +723,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
             {
                 _chars.Insert(0, "\\");
             }
-            return $"[{_chars.ToString()}]";
+            return $"[{_chars}]";
         }
     }
 
@@ -768,7 +768,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
 
     public bool Equals(GlobMatcher other)
     {
-        if (ReferenceEquals(null, other))
+        if (other is null)
         {
             return false;
         }

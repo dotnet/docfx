@@ -15,8 +15,8 @@ public class CompositeCommandTest : TestBase
     /// <summary>
     /// Use MetadataCommand to generate YAML files from a c# project and a VB project separately
     /// </summary>
-    private string _outputFolder;
-    private string _projectFolder;
+    private readonly string _outputFolder;
+    private readonly string _projectFolder;
 
     public CompositeCommandTest()
     {

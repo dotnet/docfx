@@ -692,7 +692,7 @@ exports.getOptions = function (){
             _fakeResponses.Add(uri, responseMessage);
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (_fakeResponses.ContainsKey(request.RequestUri))
             {
@@ -769,7 +769,7 @@ exports.getOptions = function (){
         builder.Build(parameters);
     }
 
-    private IEnumerable<Assembly> LoadAssemblies()
+    private static IEnumerable<Assembly> LoadAssemblies()
     {
         yield return typeof(ConceptualDocumentProcessor).Assembly;
         yield return typeof(ManagedReferenceDocumentProcessor).Assembly;

@@ -5,7 +5,7 @@ namespace Docfx.Build.Engine;
 
 public class TemplateCollection : Dictionary<string, TemplateBundle>
 {
-    private TemplateBundle _defaultTemplate = null;
+    private readonly TemplateBundle _defaultTemplate = null;
 
     public IResourceFileReader Reader { get; }
 
@@ -24,7 +24,7 @@ public class TemplateCollection : Dictionary<string, TemplateBundle>
         }
         set
         {
-            this[key] = value;
+            base[key] = value;
         }
     }
 
@@ -32,7 +32,7 @@ public class TemplateCollection : Dictionary<string, TemplateBundle>
     {
         Reader = provider;
         MaxParallelism = maxParallelism;
-        base.TryGetValue("default", out _defaultTemplate);
+        TryGetValue("default", out _defaultTemplate);
     }
 
     private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceFileReader reader, DocumentBuildContext context, int maxParallelism)

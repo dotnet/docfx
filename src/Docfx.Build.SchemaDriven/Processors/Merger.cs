@@ -123,13 +123,13 @@ internal sealed class Merger
         }
     }
 
-    private void ThrowError(string message)
+    private static void ThrowError(string message)
     {
         Logger.LogError(message);
         throw new InvalidOverwriteDocumentException(message);
     }
 
-    private bool TestKey(object source, object overrides, BaseSchema schema)
+    private static bool TestKey(object source, object overrides, BaseSchema schema)
     {
         if (overrides == null || overrides == null)
         {

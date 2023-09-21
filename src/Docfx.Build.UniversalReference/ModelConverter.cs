@@ -388,7 +388,7 @@ public static class ModelConverter
         }
 
         var result = new List<ApiLanguageValuePair<T>>();
-        values = values ?? new SortedList<string, T>();
+        values ??= new SortedList<string, T>();
         foreach (var language in supportedLanguages)
         {
             result.Add(new ApiLanguageValuePair<T>

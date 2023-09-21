@@ -23,7 +23,7 @@ public class HtmlTabGroupBlockRenderer : HtmlObjectRenderer<TabGroupBlock>
         renderer.Write("</div>\n");
     }
 
-    private void WriteTabHeaders(HtmlRenderer renderer, TabGroupBlock block, string groupId)
+    private static void WriteTabHeaders(HtmlRenderer renderer, TabGroupBlock block, string groupId)
     {
         renderer.Write("<ul role=\"tablist\">\n");
         for (var i = 0; i < block.Items.Length; i++)
@@ -63,7 +63,7 @@ public class HtmlTabGroupBlockRenderer : HtmlObjectRenderer<TabGroupBlock>
         renderer.Write("</ul>\n");
     }
 
-    private void WriteTabSections(HtmlRenderer renderer, TabGroupBlock block, string groupId)
+    private static void WriteTabSections(HtmlRenderer renderer, TabGroupBlock block, string groupId)
     {
         for (var i = 0; i < block.Items.Length; i++)
         {
@@ -92,7 +92,7 @@ public class HtmlTabGroupBlockRenderer : HtmlObjectRenderer<TabGroupBlock>
         }
     }
 
-    private void AppendGroupId(HtmlRenderer renderer, string groupId, TabItemBlock item)
+    private static void AppendGroupId(HtmlRenderer renderer, string groupId, TabItemBlock item)
     {
         renderer.Write(groupId);
         renderer.Write("_");

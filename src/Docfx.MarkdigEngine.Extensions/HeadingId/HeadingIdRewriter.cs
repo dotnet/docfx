@@ -61,7 +61,7 @@ public class HeadingIdRewriter : IMarkdownObjectRewriter
     private static string ParseHeading(HeadingBlock headBlock)
     {
         var tokens = headBlock.Inline.ToList();
-        if (!(tokens[0] is HtmlInline openATag) || !(tokens[1] is HtmlInline closeATag))
+        if (tokens[0] is not HtmlInline openATag || tokens[1] is not HtmlInline closeATag)
         {
             return null;
         }

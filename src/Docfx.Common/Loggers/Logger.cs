@@ -15,8 +15,8 @@ public static class Logger
     private static readonly CompositeLogListener _syncListener = new();
     private static int _warningCount = 0;
     private static int _errorCount = 0;
-    public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
-    public volatile static bool WarningsAsErrors = false;
+    public static volatile LogLevel LogLevelThreshold = LogLevel.Info;
+    public static volatile bool WarningsAsErrors = false;
 
     public static void RegisterListener(ILoggerListener listener)
     {
