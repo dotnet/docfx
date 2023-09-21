@@ -1,8 +1,7 @@
 ﻿# Interface IInheritdoc
 
-_Namespace:_ [BuildFromProject](BuildFromProject.md)
-
-_Assembly:_ BuildFromProject.dll
+__Namespace:__ [BuildFromProject](BuildFromProject.md)  
+__Assembly:__ BuildFromProject.dll
 
 ```csharp
 public interface IInheritdoc

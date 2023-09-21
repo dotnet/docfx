@@ -1,8 +1,7 @@
 ﻿# Class A
 
-_Namespace:_ [BuildFromProject](BuildFromProject.md).[Issue8540](BuildFromProject.Issue8540.md).[A](BuildFromProject.Issue8540.A.md)
-
-_Assembly:_ BuildFromProject.dll
+__Namespace:__ [BuildFromProject](BuildFromProject.md).[Issue8540](BuildFromProject.Issue8540.md).[A](BuildFromProject.Issue8540.A.md)  
+__Assembly:__ BuildFromProject.dll
 
 ```csharp
 public class A

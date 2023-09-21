@@ -1,8 +1,7 @@
 ﻿# Interface IAnimal
 
-_Namespace:_ [CatLibrary](CatLibrary.md)
-
-_Assembly:_ CatLibrary.dll
+__Namespace:__ [CatLibrary](CatLibrary.md)  
+__Assembly:__ CatLibrary.dll
 
 This is <b>basic</b> interface of all animal.
 

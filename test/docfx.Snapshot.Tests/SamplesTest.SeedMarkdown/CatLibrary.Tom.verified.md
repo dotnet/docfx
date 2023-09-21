@@ -1,8 +1,7 @@
 ﻿# Class Tom
 
-_Namespace:_ [CatLibrary](CatLibrary.md)
-
-_Assembly:_ CatLibrary.dll
+__Namespace:__ [CatLibrary](CatLibrary.md)  
+__Assembly:__ CatLibrary.dll
 
 Tom class is only inherit from Object. Not any member inside itself.
 

@@ -1,8 +1,7 @@
 ﻿# Class Class1
 
-_Namespace:_ [BuildFromAssembly](BuildFromAssembly.md)
-
-_Assembly:_ BuildFromAssembly.dll
+__Namespace:__ [BuildFromAssembly](BuildFromAssembly.md)  
+__Assembly:__ BuildFromAssembly.dll
 
 This is a test class.
 
