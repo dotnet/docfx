@@ -1,6 +1,7 @@
 ﻿# Class CatException
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 ```csharp

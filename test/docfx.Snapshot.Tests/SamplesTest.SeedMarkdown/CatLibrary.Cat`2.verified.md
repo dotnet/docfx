@@ -1,6 +1,7 @@
 ﻿# Class Cat
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 <p>Here's main class of this <i>Demo</i>.</p>

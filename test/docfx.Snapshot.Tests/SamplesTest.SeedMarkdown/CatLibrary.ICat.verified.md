@@ -1,6 +1,7 @@
 ﻿# Interface ICat
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 Cat's interface

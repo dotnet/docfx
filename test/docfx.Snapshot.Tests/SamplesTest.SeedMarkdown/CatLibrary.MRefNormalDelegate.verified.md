@@ -1,6 +1,7 @@
 ﻿# Delegate MRefNormalDelegate
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 Delegate in the namespace

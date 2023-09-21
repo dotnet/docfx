@@ -1,6 +1,7 @@
 ﻿# Class Test
 
 _Namespace:_ [BuildFromProject](BuildFromProject.md)
+
 _Assembly:_ BuildFromProject.dll
 
 ```csharp
