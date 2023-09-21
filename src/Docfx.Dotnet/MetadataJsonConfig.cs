@@ -54,6 +54,22 @@ internal enum EnumSortOrder
 }
 
 /// <summary>
+/// Specifies the output file format.
+/// </summary>
+internal enum MetadataOutputFormat
+{
+    /// <summary>
+    /// Output as ManagedReference YAML files
+    /// </summary>
+    MrefYaml,
+
+    /// <summary>
+    /// Output as common-mark compliant markdown file
+    /// </summary>
+    Markdown,
+}
+
+/// <summary>
 /// MetadataJsonItemConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#11-properties-for-metadata"/>
@@ -70,6 +86,12 @@ internal class MetadataJsonItemConfig
     /// </summary>
     [JsonProperty("dest")]
     public string Destination { get; set; }
+
+    /// <summary>
+    /// Defines the output file format.
+    /// </summary>
+    [JsonProperty("outputFormat")]
+    public MetadataOutputFormat OutputFormat { get; set; }
 
     /// <summary>
     /// If set to true, DocFX would not render triple-slash-comments in source code as markdown.

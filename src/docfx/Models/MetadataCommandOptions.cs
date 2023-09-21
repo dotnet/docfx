@@ -17,6 +17,10 @@ internal class MetadataCommandOptions : LogOptions
     [CommandOption("-o|--output")]
     public string OutputFolder { get; set; }
 
+    [Description("Specify the output type")]
+    [CommandOption("--outputFormat")]
+    public MetadataOutputFormat? OutputFormat { get; set; }
+
     [Description("Path to docfx.json")]
     [CommandArgument(0, "[config]")]
     public string Config { get; set; }
