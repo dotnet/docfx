@@ -3,6 +3,7 @@
 
 using System.Text;
 using Docfx.Common;
+using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
@@ -20,6 +21,8 @@ static class MarkdownFormatter
 
         Directory.CreateDirectory(config.OutputFolder);
 
+        var toc = new TocViewModel();
+        var tocNodeByNamespace = new Dictionary<string, TocItemViewModel>();
         var filter = new SymbolFilter(config, options);
         var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods()).Where(filter.IncludeApi).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.Item1), SymbolEqualityComparer.Default);
@@ -30,9 +33,13 @@ static class MarkdownFormatter
             SaveCore(assembly, compilation);
         }
 
+        SortTocItems(toc);
+        YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
+
         void SaveCore(IAssemblySymbol assembly, Compilation compilation)
         {
             Logger.LogInfo($"Processing {assembly.Name}");
+
             VisitNamespace(assembly.GlobalNamespace);
 
             void VisitNamespace(INamespaceSymbol symbol)
@@ -52,8 +59,20 @@ static class MarkdownFormatter
                 if (!filter.IncludeApi(symbol))
                     return;
 
-                foreach (var subtype in symbol.GetTypeMembers())
-                    VisitNamedType(subtype);
+                var ns = symbol.ContainingNamespace.ToString()!;
+                if (!tocNodeByNamespace.TryGetValue(ns, out var tocNode))
+                {
+                    tocNode = new() { Name = ns, Href = $"{VisitorHelper.GetId(symbol.ContainingNamespace)}.md" };
+                    tocNodeByNamespace.Add(ns, tocNode);
+                    toc.Add(tocNode);
+                }
+
+                foreach (var type in symbol.GetTypeMembers())
+                {
+                    tocNode.Items ??= new();
+                    tocNode.Items.Add(new() { Name = type.Name, Href = $"{VisitorHelper.GetId(symbol)}.md" });
+                    VisitNamedType(type);
+                }
 
                 Save(symbol);
             }
@@ -68,6 +87,7 @@ static class MarkdownFormatter
                     case TypeKind.Enum: Enum(); break;
                     case TypeKind.Delegate: Delegate(); break;
                     case TypeKind.Interface or TypeKind.Structure or TypeKind.Class: Class(); break;
+                    default: throw new NotSupportedException($"Unknown symbol type kind {symbol.TypeKind}");
                 }
 
                 var filename = Path.Combine(config.OutputFolder, VisitorHelper.GetId(symbol) + ".md");
@@ -513,6 +533,17 @@ static class MarkdownFormatter
 
                     return File.ReadAllText(path);
                 }
+            }
+        }
+
+        static void SortTocItems(TocViewModel node)
+        {
+            node.Sort((a, b) => a.Name.CompareTo(b.Name));
+
+            foreach (var child in node)
+            {
+                if (child.Items is not null)
+                    SortTocItems(child.Items);
             }
         }
 
