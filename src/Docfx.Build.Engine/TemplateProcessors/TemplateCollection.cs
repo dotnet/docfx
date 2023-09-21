@@ -24,7 +24,7 @@ public class TemplateCollection : Dictionary<string, TemplateBundle>
         }
         set
         {
-            this[key] = value;
+            base[key] = value;
         }
     }
 
