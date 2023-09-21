@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 
 using Docfx.Build.Engine;
 using Docfx.Build.TableOfContents;
-using Docfx.Plugins;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -15,15 +14,15 @@ namespace Docfx.Build.SchemaDriven.Tests;
 [Collection("docfx STA")]
 public class LimitationReachedTest : TestBase
 {
-    private static Regex InputMatcher = new(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static Regex SchemaMatcher = new(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex InputMatcher = new(@"```(yml|yaml)\s*(### YamlMime:[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex SchemaMatcher = new(@"```json\s*(\{\s*""\$schema""[\s\S]*?)\s*```", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private string _outputFolder;
-    private string _inputFolder;
-    private string _templateFolder;
-    private FileCollection _defaultFiles;
-    private ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
+    private readonly string _templateFolder;
+    private readonly FileCollection _defaultFiles;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
+    private readonly TemplateManager _templateManager;
 
     private const string RawModelFileExtension = ".raw.json";
 
@@ -67,7 +66,7 @@ public class LimitationReachedTest : TestBase
         yield return typeof(SchemaDrivenProcessorTest).Assembly;
     }
 
-    private bool LimitationReached(TestListenerScope listener)
+    private static bool LimitationReached(TestListenerScope listener)
     {
         return listener.Items.SingleOrDefault(s => s.Message.StartsWith("Limitation reached when validating")) != null;
     }

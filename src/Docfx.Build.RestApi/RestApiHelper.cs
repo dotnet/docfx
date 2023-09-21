@@ -73,7 +73,7 @@ internal static class RestApiHelper
             }
 
             // For example "file.json#/definitions/reference"
-            if (reference.Contains("#"))
+            if (reference.Contains('#'))
             {
                 var values = reference.Split('#');
                 if (values.Length != 2)

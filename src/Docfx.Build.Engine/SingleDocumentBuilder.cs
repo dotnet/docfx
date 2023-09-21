@@ -8,7 +8,6 @@ using Docfx.Plugins;
 namespace Docfx.Build.Engine;
 
 #pragma warning disable CS0612 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
 
 public class SingleDocumentBuilder : IDisposable
 {
@@ -112,7 +111,7 @@ public class SingleDocumentBuilder : IDisposable
                 };
                 manifest.Groups = new List<ManifestGroupInfo>
                 {
-                    new ManifestGroupInfo(parameters.GroupInfo)
+                    new(parameters.GroupInfo)
                     {
                         XRefmap = (string)manifest.XRefMap
                     }
@@ -132,7 +131,7 @@ public class SingleDocumentBuilder : IDisposable
         }
     }
 
-    private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
+    private static void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
     {
         phaseProcessor.Process(hostServices, context.MaxParallelism);
     }
@@ -191,7 +190,7 @@ public class SingleDocumentBuilder : IDisposable
         }
     }
 
-    private void Prepare(
+    private static void Prepare(
         DocumentBuildContext context,
         TemplateProcessor templateProcessor,
         out IHostServiceCreator hostServiceCreator,
@@ -214,13 +213,14 @@ public class SingleDocumentBuilder : IDisposable
     private static string ExportXRefMap(DocumentBuildParameters parameters, DocumentBuildContext context)
     {
         Logger.LogVerbose("Exporting xref map...");
-        var xrefMap = new XRefMap();
-        xrefMap.References =
-            (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+        var xrefMap = new XRefMap
+        {
+            References = (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
              select new XRefSpec(xref)
              {
                  Href = context.UpdateHref(xref.Href, RelativePath.WorkingFolder)
-             }).ToList();
+             }).ToList(),
+        };
         xrefMap.Sort();
         string xrefMapFileNameWithVersion = GetXrefMapFileNameWithGroup(parameters);
         YamlUtility.Serialize(

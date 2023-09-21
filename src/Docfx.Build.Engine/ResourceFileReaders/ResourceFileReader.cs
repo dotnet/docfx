@@ -32,7 +32,7 @@ public abstract class ResourceFileReader : IResourceFileReader, IDisposable
 
     public IEnumerable<KeyValuePair<string, Stream>> GetResourceStreams(string selector = null)
     {
-        Func<string, bool> filter = s =>
+        bool filter(string s)
         {
             if (selector != null)
             {
@@ -43,7 +43,7 @@ public abstract class ResourceFileReader : IResourceFileReader, IDisposable
             {
                 return true;
             }
-        };
+        }
         foreach (var name in Names)
         {
             if (filter(name))

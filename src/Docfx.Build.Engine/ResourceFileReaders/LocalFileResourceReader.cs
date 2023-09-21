@@ -9,8 +9,8 @@ public sealed class LocalFileResourceReader : ResourceFileReader
 {
     private const int MaxSearchLevel = 5;
     // keep comparer to be case sensitive as to be consistent with zip entries
-    private static StringComparer ResourceComparer = StringComparer.Ordinal;
-    private string _directory = null;
+    private static readonly StringComparer ResourceComparer = StringComparer.Ordinal;
+    private readonly string _directory = null;
     private readonly int _maxDepth;
     private readonly HashSet<string> NamesHashSet;
 

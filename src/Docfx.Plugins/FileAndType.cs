@@ -107,7 +107,7 @@ public sealed class FileAndType
         {
             return true;
         }
-        if (ReferenceEquals(left, null))
+        if (left is null)
         {
             return false;
         }

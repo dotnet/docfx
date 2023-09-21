@@ -6,10 +6,10 @@ namespace Docfx;
 [Serializable]
 public class FileItems : List<string>
 {
-    private static IEnumerable<string> Empty = new List<string>();
+    private static readonly IEnumerable<string> Empty = new List<string>();
     public FileItems(string file) : base()
     {
-        this.Add(file);
+        Add(file);
     }
 
     public FileItems(IEnumerable<string> files) : base(files ?? Empty)

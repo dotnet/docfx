@@ -40,7 +40,7 @@ public class TemplateModelTransformer
     {
         if (item == null || item.Content == null)
         {
-            throw new ArgumentNullException("Content for item.Model should not be null!");
+            throw new ArgumentNullException(nameof(item), "Content for item.Model should not be null!");
         }
 
         var model = ConvertObjectToDictionary(item.Content);
@@ -170,7 +170,7 @@ public class TemplateModelTransformer
         return manifestItem;
     }
 
-    private void LogInvalidXRefs(List<XRefDetails> unresolvedXRefs)
+    private static void LogInvalidXRefs(List<XRefDetails> unresolvedXRefs)
     {
         if (unresolvedXRefs == null || unresolvedXRefs.Count == 0)
         {
@@ -184,7 +184,7 @@ public class TemplateModelTransformer
         foreach (var group in unresolvedXRefs.GroupBy(i => i.SourceFile))
         {
             // For each source file, print the first 10 invalid cross reference
-            var details = group.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber.ToString()}").Distinct().ToList();
+            var details = group.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber}").Distinct().ToList();
             var prefix = details.Count > MaxInvalidXrefMessagePerFile ? $"top {MaxInvalidXrefMessagePerFile} " : string.Empty;
             var message = $"Details for {prefix}invalid cross reference(s): {details.ToDelimitedString(", ")}";
 
@@ -250,7 +250,7 @@ public class TemplateModelTransformer
             return dictionary;
         }
 
-        if (!(ConvertToObjectHelper.ConvertStrongTypeToObject(model) is IDictionary<string, object> objectModel))
+        if (ConvertToObjectHelper.ConvertStrongTypeToObject(model) is not IDictionary<string, object> objectModel)
         {
             throw new ArgumentException("Only object model is supported for template transformation.");
         }

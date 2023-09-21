@@ -73,7 +73,7 @@ public class NestedColumnParser : BlockParser
         }
         else
         {
-            columnWidth.Append("1"); // default span is one
+            columnWidth.Append('1'); // default span is one
         }
 
         while (c.IsSpace())

@@ -12,7 +12,7 @@ namespace Docfx.Build.OverwriteDocuments.Tests;
 
 public class OverwriteDocumentModelCreatorTest
 {
-    private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creator");
+    private readonly TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("overwrite_document_model_creator");
 
     [Fact]
     public void YamlCodeBlockTest()
@@ -228,12 +228,12 @@ definitions:
         Assert.Equal(0, ex.Position);
     }
 
-    private string ExtractDictionaryKeys(Dictionary<object, object> dict)
+    private static string ExtractDictionaryKeys(Dictionary<object, object> dict)
     {
         return string.Join(",", dict.Keys.ToArray());
     }
 
-    private string ExtractDictionaryKeys(Dictionary<string, object> dict)
+    private static string ExtractDictionaryKeys(Dictionary<string, object> dict)
     {
         return string.Join(",", dict.Keys.ToArray());
     }

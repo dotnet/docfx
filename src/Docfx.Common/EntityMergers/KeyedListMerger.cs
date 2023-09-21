@@ -14,7 +14,7 @@ public class KeyedListMerger : MergerDecorator
 
     public override void Merge(ref object source, object overrides, Type type, IMergeContext context)
     {
-        if (source is IEnumerable && type != typeof(string))
+        if (source is IEnumerable enumerable && type != typeof(string))
         {
             foreach (var it in type.GetInterfaces())
             {
@@ -27,7 +27,7 @@ public class KeyedListMerger : MergerDecorator
                     }
                     if (it.IsAssignableFrom(overrides.GetType()))
                     {
-                        new ListMergerImpl(it.GetGenericArguments()[0]).Merge((IEnumerable)source, (IEnumerable)overrides, context);
+                        new ListMergerImpl(it.GetGenericArguments()[0]).Merge(enumerable, (IEnumerable)overrides, context);
                         return;
                     }
                 }

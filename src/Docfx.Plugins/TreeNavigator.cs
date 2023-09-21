@@ -5,7 +5,7 @@ namespace Docfx.Plugins;
 
 public class TreeNavigator
 {
-    private NavigatorTreeItem _tree;
+    private readonly NavigatorTreeItem _tree;
     private NavigatorTreeItem _current;
 
     public TreeNavigator(TreeItem tree)
@@ -96,7 +96,7 @@ public class TreeNavigator
         return false;
     }
 
-    private NavigatorTreeItem Init(TreeItem current, NavigatorTreeItem parent)
+    private static NavigatorTreeItem Init(TreeItem current, NavigatorTreeItem parent)
     {
         var tree = new NavigatorTreeItem
         {

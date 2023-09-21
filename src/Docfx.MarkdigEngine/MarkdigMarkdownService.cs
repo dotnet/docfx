@@ -98,9 +98,9 @@ public class MarkdigMarkdownService : IMarkdownService
     {
         ArgumentNullException.ThrowIfNull(document);
 
-        if (!(document.GetData("filePath") is string filePath))
+        if (document.GetData("filePath") is not string filePath)
         {
-            throw new ArgumentNullException("file path can't be found in AST.");
+            throw new ArgumentNullException(nameof(document), "file path can't be found in AST.");
         }
 
         var pipeline = CreateMarkdownPipeline(isInline);
@@ -185,9 +185,9 @@ public class MarkdigMarkdownService : IMarkdownService
         return path;
     }
 
-    private string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
+    private static string GetImageLink(string href, MarkdownObject origin, string altText) => GetLink(href, origin);
 
-    private void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
+    private static void ReportDependency(RelativePath filePathToDocset, string parentFileDirectoryToDocset)
     {
         var expectedPhysicalPath = EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePathToDocset);
         foreach (var physicalPath in expectedPhysicalPath)

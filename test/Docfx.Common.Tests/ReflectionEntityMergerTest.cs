@@ -117,15 +117,15 @@ public class ReflectionEntityMergerTest
     {
         var sample = new List<ListItemSample>
         {
-            new ListItemSample { Key1 = "qwe", Key2 = 1, Text = "O1" },
-            new ListItemSample { Key1 = "asd", Key2 = 1, Text = "O2" },
-            new ListItemSample { Key1 = "asd", Key2 = 2, Text = "O3" },
+            new() { Key1 = "qwe", Key2 = 1, Text = "O1" },
+            new() { Key1 = "asd", Key2 = 1, Text = "O2" },
+            new() { Key1 = "asd", Key2 = 2, Text = "O3" },
         };
         var overrides = new List<ListItemSample>
         {
-            new ListItemSample { Key1 = "___", Key2 = 1, Text = "N1" },
-            new ListItemSample { Key1 = "asd", Key2 = 1, Text = "N2" },
-            new ListItemSample { Key1 = "asd", Key2 = 2, Text = "N3" },
+            new() { Key1 = "___", Key2 = 1, Text = "N1" },
+            new() { Key1 = "asd", Key2 = 1, Text = "N2" },
+            new() { Key1 = "asd", Key2 = 2, Text = "N3" },
         };
         new MergerFacade(
             new KeyedListMerger(

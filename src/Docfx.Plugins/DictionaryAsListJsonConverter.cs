@@ -19,11 +19,11 @@ public class DictionaryAsListJsonConverter<T> : JsonConverter
         IEnumerable<JToken> jItems;
         if (reader.TokenType == JsonToken.StartObject)
         {
-            jItems = JContainer.Load(reader);
+            jItems = JToken.Load(reader);
         }
         else
         {
-            throw new JsonReaderException($"{reader.TokenType.ToString()} is not a valid {objectType.Name}.");
+            throw new JsonReaderException($"{reader.TokenType} is not a valid {objectType.Name}.");
         }
 
         return jItems.Select(s => ParseItem(s, serializer)).ToList();
@@ -40,7 +40,7 @@ public class DictionaryAsListJsonConverter<T> : JsonConverter
         writer.WriteEndObject();
     }
 
-    private KeyValuePair<string, T> ParseItem(JToken item, JsonSerializer serializer)
+    private static KeyValuePair<string, T> ParseItem(JToken item, JsonSerializer serializer)
     {
         if (item.Type == JTokenType.Property)
         {

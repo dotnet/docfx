@@ -81,7 +81,7 @@ public class LruList<T>
                 return true;
             }
         }
-        item = default(T);
+        item = default;
         return false;
     }
 

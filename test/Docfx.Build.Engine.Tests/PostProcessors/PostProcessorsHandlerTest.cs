@@ -57,7 +57,7 @@ public class PostProcessorsHandlerTest : TestBase
         foreach (var type in types)
         {
             var instance = Activator.CreateInstance(type);
-            if (!(instance is IPostProcessor postProcessor))
+            if (instance is not IPostProcessor postProcessor)
             {
                 throw new InvalidOperationException($"{type} should implement {nameof(IPostProcessor)}.");
             }

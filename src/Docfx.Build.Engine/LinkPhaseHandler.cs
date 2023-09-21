@@ -49,7 +49,7 @@ internal class LinkPhaseHandler : IPhaseHandler
 
     #region Private Methods
 
-    private void Postbuild(List<HostService> hostServices, int maxParallelism)
+    private static void Postbuild(List<HostService> hostServices, int maxParallelism)
     {
         hostServices.RunAll(
             hostService =>
@@ -204,7 +204,7 @@ internal class LinkPhaseHandler : IPhaseHandler
         }
     }
 
-    private InternalManifestItem GetManifestItem(FileModel model, SaveResult result)
+    private static InternalManifestItem GetManifestItem(FileModel model, SaveResult result)
     {
         return new InternalManifestItem
         {

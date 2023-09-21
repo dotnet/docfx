@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using Docfx.DataContracts.Common;
 using Docfx.Dotnet;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;

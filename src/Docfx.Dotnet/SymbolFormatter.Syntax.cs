@@ -57,7 +57,7 @@ partial class SymbolFormatter
         public SyntaxLanguage Language { get; init; }
         public SymbolFilter Filter { get; init; } = default!;
 
-        private ImmutableArray<SymbolDisplayPart>.Builder _parts = ImmutableArray.CreateBuilder<SymbolDisplayPart>();
+        private readonly ImmutableArray<SymbolDisplayPart>.Builder _parts = ImmutableArray.CreateBuilder<SymbolDisplayPart>();
 
         public ImmutableArray<SymbolDisplayPart> GetSyntax(ISymbol symbol)
         {

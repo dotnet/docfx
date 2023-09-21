@@ -8,7 +8,7 @@ namespace Docfx.Glob.Tests;
 
 public class GlobFileTest : TestBase
 {
-    private string _workingDirectory;
+    private readonly string _workingDirectory;
 
     public GlobFileTest()
     {

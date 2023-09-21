@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
-using System.Net;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
@@ -11,8 +10,6 @@ using Docfx.Common;
 using Docfx.Plugins;
 
 namespace Docfx;
-
-#pragma warning disable CS0618 // Type or member is obsolete
 
 internal static class DocumentBuilderWrapper
 {
@@ -135,10 +132,9 @@ internal static class DocumentBuilderWrapper
                 SitemapOptions = config.SitemapOptions,
                 DisableGitFeatures = config.DisableGitFeatures,
                 ConfigureMarkdig = options.ConfigureMarkdig,
+                Metadata = GetGlobalMetadata(config),
+                FileMetadata = GetFileMetadata(baseDirectory, config),
             };
-
-            parameters.Metadata = GetGlobalMetadata(config);
-            parameters.FileMetadata = GetFileMetadata(baseDirectory, config);
 
             if (config.PostProcessors != null)
             {

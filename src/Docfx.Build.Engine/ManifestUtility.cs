@@ -9,7 +9,6 @@ using Docfx.Plugins;
 namespace Docfx.Common;
 
 #pragma warning disable CS0612 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
 
 public static class ManifestUtility
 {

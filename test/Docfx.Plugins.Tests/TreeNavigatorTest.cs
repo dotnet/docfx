@@ -57,7 +57,7 @@ public class TreeNavigatorTest
         Assert.Equal("root", GetName(nav.Current));
     }
 
-    private TreeItem GenerateLeaf(string name)
+    private static TreeItem GenerateLeaf(string name)
     {
         return new TreeItem
         {
@@ -65,7 +65,7 @@ public class TreeNavigatorTest
         };
     }
 
-    private Dictionary<string, object> GenerateName(string name)
+    private static Dictionary<string, object> GenerateName(string name)
     {
         return new Dictionary<string, object>
         {
@@ -73,12 +73,11 @@ public class TreeNavigatorTest
         };
     }
 
-    private string GetName(TreeItem item)
+    private static string GetName(TreeItem item)
     {
-        object name = null;
-        if (item?.Metadata?.TryGetValue("name", out name) == true && name is string)
+        if (item?.Metadata?.TryGetValue("name", out object name) == true && name is string value)
         {
-            return (string)name;
+            return value;
         }
 
         return null;

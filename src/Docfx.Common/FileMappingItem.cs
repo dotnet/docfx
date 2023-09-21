@@ -55,7 +55,7 @@ public class FileMappingItem
     /// As discussed, `cwd` may lead to confusing and misunderstanding, so in version 1.3, `src` is introduced and `cwd` is kept for backward compatibility
     /// </summary>
     [JsonProperty("cwd")]
-    [Obsolete]
+    [Obsolete("Use src instead.")]
     public string CurrentWorkingDirectory
     {
         get

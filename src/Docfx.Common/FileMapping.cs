@@ -30,7 +30,7 @@ namespace Docfx;
 [Serializable]
 public class FileMapping
 {
-    private List<FileMappingItem> _items = new();
+    private readonly List<FileMappingItem> _items = new();
 
     /// <summary>
     /// Flags to distinguish items are expanded or not.
@@ -55,7 +55,7 @@ public class FileMapping
     /// </summary>
     public FileMapping(IEnumerable<FileMappingItem> items)
     {
-        foreach (var item in items) this.Add(item);
+        foreach (var item in items) Add(item);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class FileMapping
     /// </summary>
     public FileMapping(FileMappingItem item)
     {
-        this.Add(item);
+        Add(item);
     }
 
     /// <summary>

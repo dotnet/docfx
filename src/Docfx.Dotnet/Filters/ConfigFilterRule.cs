@@ -18,15 +18,15 @@ internal class ConfigFilterRule
 
     public bool CanVisitApi(SymbolFilterData symbol)
     {
-        return this.CanVisitCore(this.ApiRules, symbol);
+        return CanVisitCore(ApiRules, symbol);
     }
 
     public bool CanVisitAttribute(SymbolFilterData symbol)
     {
-        return this.CanVisitCore(this.AttributeRules, symbol);
+        return CanVisitCore(AttributeRules, symbol);
     }
 
-    private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
+    private static bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, SymbolFilterData symbol)
     {
         foreach (var ruleUnion in ruleItems)
         {

@@ -48,7 +48,7 @@ public static class ReflectionHelper
         var argumentTypes = tuple.Item3;
         if (type == typeof(void))
         {
-            return _ => { throw new ArgumentException("Void is not allowed.", nameof(type)); };
+            return _ => { throw new ArgumentException("Void is not allowed for type.", nameof(tuple)); };
         }
         if (type.IsValueType)
         {
@@ -62,7 +62,7 @@ public static class ReflectionHelper
         }
         if (Array.IndexOf(typeArguments, typeof(void)) != -1)
         {
-            return _ => { throw new ArgumentException("Void is not allowed.", nameof(typeArguments)); };
+            return _ => { throw new ArgumentException("Void is not allowed for typeArguments.", nameof(tuple)); };
         }
         var typeArgument = Array.Find(typeArguments, t => !t.IsVisible);
         if (typeArgument != null)
@@ -111,7 +111,7 @@ public static class ReflectionHelper
         var ctor = finalType.GetConstructor(argumentTypes);
         if (ctor == null)
         {
-            return _ => { throw new ArgumentException(nameof(argumentTypes)); };
+            return _ => { throw new ArgumentException("Failed to get ctor of argumentTypes", nameof(tuple)); };
         }
         return GetCreateInstanceFuncCore(ctor, argumentTypes);
     }

@@ -15,14 +15,14 @@ public static class UriUtility
     {
         ArgumentNullException.ThrowIfNull(uriString);
 
-        return uriString.IndexOf(FragmentMarker) != -1;
+        return uriString.Contains(FragmentMarker);
     }
 
     public static bool HasQueryString(string uriString)
     {
         ArgumentNullException.ThrowIfNull(uriString);
 
-        return uriString.IndexOf(QueryMarker) != -1;
+        return uriString.Contains(QueryMarker);
     }
 
     public static string GetFragment(string uriString)
@@ -102,7 +102,7 @@ public static class UriUtility
         var (query, path) = SplitPart(remaining, QueryMarker);
         return (path, query, fragment);
 
-        (string result, string remaining) SplitPart(string partial, char marker)
+        static (string result, string remaining) SplitPart(string partial, char marker)
         {
             var index = partial.IndexOf(marker);
             var result = index == -1 ? string.Empty : partial.Substring(index);

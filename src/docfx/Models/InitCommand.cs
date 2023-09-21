@@ -102,8 +102,9 @@ internal class InitCommand : Command<InitCommandOptions>
             new YesOrNoQuestion(
                 "Does the website contain .NET API documentation?", (s, m, c) =>
                 {
-                    m.Build = new BuildJsonConfig();
-                    m.Build.Output = "_site";
+                    m.Build = new BuildJsonConfig { 
+                        Output = "_site",
+                    };
                     m.Build.Templates.Add("default");
                     m.Build.Templates.Add("modern");
                     if (s)
@@ -155,7 +156,7 @@ internal class InitCommand : Command<InitCommandOptions>
         return 0;
     }
 
-    private void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
+    private static void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
     {
         var path = Path.Combine(outputFolder ?? string.Empty, ConfigName).ToDisplayPath();
         if (File.Exists(path))
@@ -170,7 +171,7 @@ internal class InitCommand : Command<InitCommandOptions>
         $"Successfully generated default docfx config file to {path}".WriteLineToConsole(ConsoleColor.Green);
     }
 
-    private void GenerateSeedProject(string outputFolder, DefaultConfigModel config, bool quiet, bool overwrite)
+    private static void GenerateSeedProject(string outputFolder, DefaultConfigModel config, bool quiet, bool overwrite)
     {
         if (Directory.Exists(outputFolder))
         {
@@ -363,7 +364,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
 
     private class SingleChoiceQuestion<T> : Question<T>
     {
-        private Func<string, T> _converter;
+        private readonly Func<string, T> _converter;
         /// <summary>
         /// Options, the first one as the default one
         /// </summary>

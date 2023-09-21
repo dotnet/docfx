@@ -3,6 +3,7 @@
 
 namespace Docfx.YamlSerialization;
 
+[AttributeUsage(AttributeTargets.Property)]
 public sealed class ExtensibleMemberAttribute : Attribute
 {
     public string Prefix { get; }

@@ -18,7 +18,7 @@ public class MergeTypeInterpreter : IInterpreter
         return value;
     }
 
-    private object MergeCore(object value, IProcessContext context)
+    private static object MergeCore(object value, IProcessContext context)
     {
         return value;
     }

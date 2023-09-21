@@ -18,10 +18,10 @@ namespace Docfx.Build.RestApi.Tests;
 [Collection("docfx STA")]
 public class RestApiDocumentProcessorTest : TestBase
 {
-    private string _outputFolder;
-    private string _inputFolder;
-    private FileCollection _defaultFiles;
-    private ApplyTemplateSettings _applyTemplateSettings;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
+    private readonly FileCollection _defaultFiles;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
 
     private const string RawModelFileExtension = ".raw.json";
     private const string SwaggerDirectory = "swagger";

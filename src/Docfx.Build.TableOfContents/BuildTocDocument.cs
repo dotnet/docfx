@@ -37,7 +37,7 @@ public class BuildTocDocument : BuildTocDocumentStepBase
 
     #region Private methods
 
-    private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism, HashSet<string> includedTocs)
+    private static void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism, HashSet<string> includedTocs)
     {
         var nearest = new ConcurrentDictionary<string, RelativeInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         models.RunAll(model =>
@@ -51,7 +51,7 @@ public class BuildTocDocument : BuildTocDocumentStepBase
         UpdateNearestTocForNotInTocItem(models, host, nearest, parallelism);
     }
 
-    private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
+    private static void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
     {
         var tocHref = item.TocHref;
         var type = Utility.GetHrefType(tocHref);
@@ -73,7 +73,7 @@ public class BuildTocDocument : BuildTocDocumentStepBase
         }
     }
 
-    private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, RelativeInfo> nearest, int parallelism)
+    private static void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, RelativeInfo> nearest, int parallelism)
     {
         var allSourceFiles = host.SourceFiles;
         var tocInfos = models.Select(m => new TocInfo(m)).ToArray();
@@ -101,7 +101,7 @@ public class BuildTocDocument : BuildTocDocumentStepBase
         }
     }
 
-    private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
+    private static void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, RelativeInfo> nearest)
     {
         if (!host.SourceFiles.TryGetValue(item, out var itemSource))
         {

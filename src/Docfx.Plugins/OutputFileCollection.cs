@@ -35,5 +35,7 @@ public class OutputFileCollection : ObservableDictionary<string, OutputFileInfo>
 
     #endregion
 
+#pragma warning disable CA1841 // Prefer Dictionary.Contains methods
     public bool ContainsValue(OutputFileInfo value) => Values.Contains(value);
+#pragma warning restore CA1841 // Prefer Dictionary.Contains methods
 }

@@ -21,9 +21,9 @@ public class BetterObjectDescriptor : IObjectDescriptor
         StaticType = staticType;
         ScalarStyle = scalarStyle == ScalarStyle.Any && NeedQuote(value) ? ScalarStyle.DoubleQuoted : scalarStyle;
 
-        bool NeedQuote(object val)
+        static bool NeedQuote(object val)
         {
-            if (!(val is string s))
+            if (val is not string s)
                 return false;
 
             return Regexes.BooleanLike.IsMatch(s)

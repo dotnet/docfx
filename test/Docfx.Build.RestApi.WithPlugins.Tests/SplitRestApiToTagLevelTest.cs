@@ -20,11 +20,11 @@ namespace Docfx.Build.RestApi.WithPlugins.Tests;
 [Collection("docfx STA")]
 public class SplitRestApiToTagLevelTest : TestBase
 {
-    private string _inputFolder;
-    private string _outputFolder;
-    private FileCollection _defaultFiles;
+    private readonly string _inputFolder;
+    private readonly string _outputFolder;
+    private readonly FileCollection _defaultFiles;
     private readonly ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly TemplateManager _templateManager;
 
     private const string RawModelFileExtension = ".raw.json";
 

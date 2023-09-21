@@ -112,7 +112,7 @@ public class MarkdownContentHandler : IModelAttributeHandler
                    select prop;
         }
 
-        private string Markup(string content, HandleModelAttributesContext context)
+        private static string Markup(string content, HandleModelAttributesContext context)
         {
             if (string.IsNullOrEmpty(content))
             {
@@ -127,7 +127,7 @@ public class MarkdownContentHandler : IModelAttributeHandler
             return MarkupCore(content, context);
         }
 
-        private bool TryMarkupPlaceholderContent(string currentValue, HandleModelAttributesContext context, out string result)
+        private static bool TryMarkupPlaceholderContent(string currentValue, HandleModelAttributesContext context, out string result)
         {
             result = null;
             if (context.EnableContentPlaceholder && IsPlaceholderContent(currentValue))

@@ -18,7 +18,7 @@ public class FileGlob
         }
         var globArray = patterns.Select(s => new GlobMatcher(s, options)).ToArray();
         var excludeGlobArray = excludePatterns == null ?
-            new GlobMatcher[0] :
+            Array.Empty<GlobMatcher>() :
             excludePatterns.Select(s => new GlobMatcher(s, options)).ToArray();
         return GetFilesCore(cwd, globArray, excludeGlobArray);
     }

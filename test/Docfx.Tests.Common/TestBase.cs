@@ -8,7 +8,7 @@ namespace Docfx.Tests.Common;
 public class TestBase : IClassFixture<TestBase>, IDisposable
 {
     private readonly List<string> _folderCollection = new();
-    private object _locker = new();
+    private readonly object _locker = new();
 
     protected string GetRandomFolder()
     {
@@ -37,12 +37,12 @@ public class TestBase : IClassFixture<TestBase>, IDisposable
         return folder;
     }
 
-    private string GetFolder()
+    private static string GetFolder()
     {
         var folder = Path.GetRandomFileName();
         if (Directory.Exists(folder))
         {
-            folder = folder + DateTime.Now.ToString("HHmmssffff");
+            folder += DateTime.Now.ToString("HHmmssffff");
             if (Directory.Exists(folder))
             {
                 throw new InvalidOperationException($"Random folder name collides {folder}");

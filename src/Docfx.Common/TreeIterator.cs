@@ -64,10 +64,10 @@ public static class TreeIterator
         if (predicate(current))
             return current;
         if (childrenGetter == null)
-            return default(T);
+            return default;
         var children = childrenGetter(current);
         if (children == null)
-            return default(T);
+            return default;
         foreach (var child in children)
         {
             var result = PreorderFirstOrDefault(child, childrenGetter, predicate);
@@ -77,6 +77,6 @@ public static class TreeIterator
             }
         }
 
-        return default(T);
+        return default;
     }
 }

@@ -12,9 +12,9 @@ public static class XrefUtility
 
         if (spec.TryGetValue(key, out var objValue) && objValue != null)
         {
-            if (objValue is string)
+            if (objValue is string stringValue)
             {
-                value = (string)objValue;
+                value = stringValue;
                 return true;
             }
             else

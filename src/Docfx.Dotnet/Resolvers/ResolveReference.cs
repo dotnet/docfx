@@ -63,7 +63,7 @@ internal class ResolveReference : IResolverPipeline
         }
     }
 
-    private void AddIndirectReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addedReferences)
+    private static void AddIndirectReference(ResolverContext context, MetadataItem page, List<ReferenceItem> addedReferences)
     {
         while (addedReferences.Count > 0)
         {
@@ -79,7 +79,7 @@ internal class ResolveReference : IResolverPipeline
         }
     }
 
-    private IEnumerable<string> GetReferenceKeys(MetadataItem current)
+    private static IEnumerable<string> GetReferenceKeys(MetadataItem current)
     {
         if (current.NamespaceName != null)
         {
@@ -169,7 +169,7 @@ internal class ResolveReference : IResolverPipeline
         }
     }
 
-    private IEnumerable<string> GetReferenceKeys(ReferenceItem reference)
+    private static IEnumerable<string> GetReferenceKeys(ReferenceItem reference)
     {
         if (reference.Definition != null)
         {

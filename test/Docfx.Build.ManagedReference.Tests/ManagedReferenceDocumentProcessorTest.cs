@@ -17,11 +17,11 @@ namespace Docfx.Build.ManagedReference.Tests;
 
 public class ManagedReferenceDocumentProcessorTest : TestBase
 {
-    private string _outputFolder;
-    private string _inputFolder;
-    private FileCollection _defaultFiles;
-    private ApplyTemplateSettings _applyTemplateSettings;
-    private TemplateManager _templateManager;
+    private readonly string _outputFolder;
+    private readonly string _inputFolder;
+    private readonly FileCollection _defaultFiles;
+    private readonly ApplyTemplateSettings _applyTemplateSettings;
+    private readonly TemplateManager _templateManager;
 
     private const string RawModelFileExtension = ".raw.json";
     private const string MrefDirectory = "mref";

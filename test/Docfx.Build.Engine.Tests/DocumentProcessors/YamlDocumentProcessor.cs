@@ -3,13 +3,10 @@
 
 using System.Collections.Immutable;
 using System.Composition;
-using System.Text;
 
 using Docfx.Build.Common;
 using Docfx.Common;
 using Docfx.Plugins;
-
-using Newtonsoft.Json;
 
 namespace Docfx.Build.Engine.Tests;
 
