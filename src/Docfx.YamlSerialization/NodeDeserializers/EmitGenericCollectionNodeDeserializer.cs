@@ -76,22 +76,20 @@ public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
     {
-        var list = result as IList<TItem>;
-
         reader.Consume<SequenceStart>();
         while (!reader.Accept<SequenceEnd>(out _))
         {
             var current = reader.Current;
 
             var value = nestedObjectDeserializer(reader, typeof(TItem));
-            if (!(value is IValuePromise promise))
+            if (value is not IValuePromise promise)
             {
                 result.Add(TypeConverter.ChangeType<TItem>(value));
             }
-            else if (list != null)
+            else if (result is IList<TItem> list)
             {
                 var index = list.Count;
-                result.Add(default(TItem));
+                result.Add(default);
                 promise.ValueAvailable += v => list[index] = TypeConverter.ChangeType<TItem>(v);
             }
             else

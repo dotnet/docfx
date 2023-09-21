@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
-using Docfx.Exceptions;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
@@ -16,7 +15,7 @@ namespace Docfx.Dotnet;
 internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
 {
     private static readonly Regex MemberSigRegex = new(@"^([\w\{\}`]+\.)+", RegexOptions.Compiled);
-    private static readonly IReadOnlyList<string> EmptyListOfString = new string[0];
+    private static readonly IReadOnlyList<string> EmptyListOfString = Array.Empty<string>();
     private readonly Compilation _compilation;
     private readonly YamlModelGenerator _generator;
     private readonly Dictionary<string, ReferenceItem> _references = new();
@@ -44,12 +43,11 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         {
             Name = VisitorHelper.GetId(symbol),
             CommentId = VisitorHelper.GetCommentId(symbol),
+            DisplayNames = new SortedList<SyntaxLanguage, string>(),
+            DisplayNamesWithType = new SortedList<SyntaxLanguage, string>(),
+            DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>(),
+            Source = VisitorHelper.GetSourceDetail(symbol, _compilation),
         };
-
-        item.DisplayNames = new SortedList<SyntaxLanguage, string>();
-        item.DisplayNamesWithType = new SortedList<SyntaxLanguage, string>();
-        item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>();
-        item.Source = VisitorHelper.GetSourceDetail(symbol, _compilation);
         var assemblyName = symbol.ContainingAssembly?.Name;
         item.AssemblyNameList = string.IsNullOrEmpty(assemblyName) || assemblyName is "?" ? null : new List<string> { assemblyName };
         if (symbol is not INamespaceSymbol)
@@ -94,17 +92,16 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         var item = new MetadataItem
         {
             Name = VisitorHelper.GetId(symbol),
+            DisplayNames = new SortedList<SyntaxLanguage, string>
+            {
+                { SyntaxLanguage.Default, symbol.MetadataName },
+            },
+                DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
+            {
+                { SyntaxLanguage.Default, symbol.MetadataName },
+            },
+            Type = MemberType.Assembly,
         };
-
-        item.DisplayNames = new SortedList<SyntaxLanguage, string>
-        {
-            { SyntaxLanguage.Default, symbol.MetadataName },
-        };
-        item.DisplayQualifiedNames = new SortedList<SyntaxLanguage, string>
-        {
-            { SyntaxLanguage.Default, symbol.MetadataName },
-        };
-        item.Type = MemberType.Assembly;
 
         IEnumerable<INamespaceSymbol> namespaces;
         if (!string.IsNullOrEmpty(VisitorHelper.GlobalNamespaceId))
@@ -184,7 +181,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
 
         item.Items = new List<MetadataItem>();
-        foreach (var member in symbol.GetMembers().Where(s => !(s is INamedTypeSymbol)))
+        foreach (var member in symbol.GetMembers().Where(s => s is not INamedTypeSymbol))
         {
             var memberItem = member.Accept(this);
             if (memberItem != null)
@@ -418,7 +415,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         return _generator.AddSpecReference(symbol, typeGenericParameters, methodGenericParameters, _references, this);
     }
 
-    private MemberType GetMemberTypeFromSymbol(ISymbol symbol)
+    private static MemberType GetMemberTypeFromSymbol(ISymbol symbol)
     {
         switch (symbol.Kind)
         {
@@ -519,7 +516,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         return result;
     }
 
-    private bool IsInheritable(ISymbol memberSymbol)
+    private static bool IsInheritable(ISymbol memberSymbol)
     {
         var kind = (memberSymbol as IMethodSymbol)?.MethodKind;
         if (kind != null)
@@ -660,7 +657,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
     private void AddInheritedMembers(INamedTypeSymbol symbol, INamedTypeSymbol type, Dictionary<string, string> dict, IReadOnlyList<string> typeParameterNames)
     {
         foreach (var m in from m in type.GetMembers()
-                          where !(m is INamedTypeSymbol)
+                          where m is not INamedTypeSymbol
                           where _filter.IncludeApi(m)
                           where m.DeclaredAccessibility is Accessibility.Public || !(symbol.IsSealed || symbol.TypeKind is TypeKind.Struct)
                           where IsInheritable(m)
@@ -746,7 +743,7 @@ internal class SymbolVisitorAdapter : SymbolVisitor<MetadataItem>
         }
         var result =
             (from attr in attributes
-             where !(attr.AttributeClass is IErrorTypeSymbol)
+             where attr.AttributeClass is not IErrorTypeSymbol
              where attr.AttributeConstructor != null
              where _filter.IncludeAttribute(attr.AttributeConstructor)
              select new AttributeInfo

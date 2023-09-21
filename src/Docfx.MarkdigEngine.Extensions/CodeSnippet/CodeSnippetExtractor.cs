@@ -17,9 +17,9 @@ public class CodeSnippetExtractor
 
     public CodeSnippetExtractor(string startLineTemplate, string endLineTemplate, bool isEndLineContainsTagName = true)
     {
-        this.StartLineTemplate = startLineTemplate;
-        this.EndLineTemplate = endLineTemplate;
-        this.IsEndLineContainsTagName = isEndLineContainsTagName;
+        StartLineTemplate = startLineTemplate;
+        EndLineTemplate = endLineTemplate;
+        IsEndLineContainsTagName = isEndLineContainsTagName;
     }
 
     public Dictionary<string, CodeRange> GetAllTags(string[] lines, ref HashSet<int> tagLines)
@@ -63,7 +63,7 @@ public class CodeSnippetExtractor
         return result;
     }
 
-    private bool MatchTag(string line, string template, out string tagName, bool containTagName = true)
+    private static bool MatchTag(string line, string template, out string tagName, bool containTagName = true)
     {
         tagName = string.Empty;
         if (string.IsNullOrEmpty(line) || string.IsNullOrEmpty(template)) return false;

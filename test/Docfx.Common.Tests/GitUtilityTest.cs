@@ -9,17 +9,17 @@ namespace Docfx.Common.Tests;
 [Collection("docfx STA")]
 public class GitUtilityTest : IDisposable
 {
-    private string _originalBranchName;
-    private const string envName = "DOCFX_SOURCE_BRANCH_NAME";
+    private readonly string _originalBranchName;
+    private const string EnvName = "DOCFX_SOURCE_BRANCH_NAME";
     public GitUtilityTest()
     {
-        _originalBranchName = Environment.GetEnvironmentVariable(envName);
-        Environment.SetEnvironmentVariable(envName, "special-branch");
+        _originalBranchName = Environment.GetEnvironmentVariable(EnvName);
+        Environment.SetEnvironmentVariable(EnvName, "special-branch");
     }
 
     public void Dispose()
     {
-        Environment.SetEnvironmentVariable(envName, _originalBranchName);
+        Environment.SetEnvironmentVariable(EnvName, _originalBranchName);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(10_000, GitUtility.GetGitTimeout());
     }
 
-    [Obsolete]
+    [Obsolete("It will be removed in a future version.")]
     [Fact]
     public void TestParseGitRepoInfo()
     {
@@ -69,7 +69,7 @@ public class GitUtilityTest : IDisposable
         Assert.Equal(RepoType.Vso, repoInfo.RepoType);
     }
 
-    [Obsolete]
+    [Obsolete("It will be removed in a future version.")]
     [Fact]
     public void TestCombineGitUrl()
     {

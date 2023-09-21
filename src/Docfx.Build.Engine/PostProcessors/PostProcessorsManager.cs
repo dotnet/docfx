@@ -12,7 +12,7 @@ namespace Docfx.Build.Engine;
 internal class PostProcessorsManager : IDisposable
 {
     private readonly List<PostProcessor> _postProcessors;
-    private IPostProcessorsHandler _postProcessorsHandler;
+    private readonly IPostProcessorsHandler _postProcessorsHandler;
 
     public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
     {

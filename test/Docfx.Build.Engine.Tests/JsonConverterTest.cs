@@ -63,7 +63,7 @@ public class JsonConverterTest
         CompareFileMetadataItems(deserialized1, deserialized2);
     }
 
-    private void CompareFileMetadataItems(FileMetadata raw, FileMetadata actual)
+    private static void CompareFileMetadataItems(FileMetadata raw, FileMetadata actual)
     {
         Assert.Equal(raw.Count, actual.Count);
         foreach (var pair in raw)

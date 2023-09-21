@@ -39,7 +39,7 @@ public sealed class LoggerFileScope : IDisposable
 
     public static LoggerFileScope Restore(object captured)
     {
-        if (!(captured is CapturedLoggerFileScope capturedScope))
+        if (captured is not CapturedLoggerFileScope capturedScope)
         {
             return null;
         }

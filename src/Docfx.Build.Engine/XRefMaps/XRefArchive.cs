@@ -80,10 +80,7 @@ public sealed class XRefArchive : IXRefContainer, IDisposable
         }
         catch (Exception) when (fs != null)
         {
-            if (archive != null)
-            {
-                archive.Dispose();
-            }
+            archive?.Dispose();
             fs.Close();
             throw;
         }

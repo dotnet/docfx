@@ -183,7 +183,7 @@ public class ConvertWrapper
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex.ToString()}");
+                    Logger.LogError($"Error happen when converting {tocJson} to Pdf. Details: {ex}");
                 }
             });
 
@@ -219,17 +219,17 @@ public class ConvertWrapper
         }
     }
 
-    private string NormalizeFilePath(string relativePath)
+    private static string NormalizeFilePath(string relativePath)
     {
         return relativePath.Replace('/', '\\').ToLower();
     }
 
-    private IList<ManifestItem> FindTocInManifest(Manifest manifest)
+    private static IList<ManifestItem> FindTocInManifest(Manifest manifest)
     {
         return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
     }
 
-    private ManifestItem FindSiblingCoverPageInManifest(Manifest manifest, ManifestItem tocFile)
+    private static ManifestItem FindSiblingCoverPageInManifest(Manifest manifest, ManifestItem tocFile)
     {
         return manifest.Files.SingleOrDefault(f =>
         {
@@ -238,7 +238,7 @@ public class ConvertWrapper
         });
     }
 
-    private void HtmlTransformer(string fullPath)
+    private static void HtmlTransformer(string fullPath)
     {
         var htmlFiles = Directory.GetFiles(fullPath, HtmlFilePattern, SearchOption.AllDirectories);
 
@@ -255,7 +255,7 @@ public class ConvertWrapper
         }
     }
 
-    private void RemoveQueryStringAndBookmarkTransformer(string tocPageFilePath)
+    private static void RemoveQueryStringAndBookmarkTransformer(string tocPageFilePath)
     {
         var transformer = new RemoveQueryStringTransformer();
         transformer.Transform(new List<string> { tocPageFilePath });
@@ -270,12 +270,12 @@ public class ConvertWrapper
         }
     }
 
-    private IList<TocModel> LoadTocModels(string basePath, ManifestItem tocFile)
+    private static IList<TocModel> LoadTocModels(string basePath, ManifestItem tocFile)
     {
         return JsonUtility.Deserialize<IList<TocModel>>(Path.Combine(basePath, ManifestUtility.GetRelativePath(tocFile, OutputType.TocJson)));
     }
 
-    private IEnumerable<string> GetManifestHtmls(Manifest manifest)
+    private static IEnumerable<string> GetManifestHtmls(Manifest manifest)
     {
         return from file in manifest.Files
                where file != null && IsType(file, ManifestItemType.Content)
@@ -284,7 +284,7 @@ public class ConvertWrapper
                select outputPath;
     }
 
-    private void ConvertTocModelToHtmlModel(IList<TocModel> tocModels, IList<HtmlModel> htmlModels, ConcurrentBag<string> tocHtmls)
+    private static void ConvertTocModelToHtmlModel(IList<TocModel> tocModels, IList<HtmlModel> htmlModels, ConcurrentBag<string> tocHtmls)
     {
         foreach (var tocModel in tocModels)
         {
@@ -309,14 +309,14 @@ public class ConvertWrapper
         }
     }
 
-    private IList<string> ManifestHtmlsExceptTocHtmls(Manifest manifest, ConcurrentBag<string> tocHtmls)
+    private static IList<string> ManifestHtmlsExceptTocHtmls(Manifest manifest, ConcurrentBag<string> tocHtmls)
     {
         var manifestConceptuals = GetManifestHtmls(manifest);
         var others = manifestConceptuals.Where(p => !tocHtmls.Contains(p)).Distinct().ToList();
         return others;
     }
 
-    private IList<HtmlModel> BuildHtmlModels(string basePath, IList<TocModel> tocModels, ConcurrentBag<string> tocHtmls)
+    private static IList<HtmlModel> BuildHtmlModels(string basePath, IList<TocModel> tocModels, ConcurrentBag<string> tocHtmls)
     {
         var htmlModels = new List<HtmlModel>();
         ConvertTocModelToHtmlModel(tocModels, htmlModels, tocHtmls);
@@ -342,7 +342,7 @@ public class ConvertWrapper
         converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
     }
 
-    private bool IsType(ManifestItem item, ManifestItemType targetType)
+    private static bool IsType(ManifestItem item, ManifestItemType targetType)
     {
         return ManifestUtility.GetDocumentType(item) == targetType;
     }

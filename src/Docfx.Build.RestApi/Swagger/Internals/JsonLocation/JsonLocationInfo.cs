@@ -19,7 +19,7 @@ internal class JsonLocationInfo
 
     public override bool Equals(object obj)
     {
-        if (!(obj is JsonLocationInfo other))
+        if (obj is not JsonLocationInfo other)
         {
             return false;
         }

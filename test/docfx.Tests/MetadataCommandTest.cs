@@ -4,7 +4,6 @@
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
-using Docfx.Dotnet;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -16,8 +15,8 @@ public class MetadataCommandTest : TestBase
     /// <summary>
     /// Use MetadataCommand to generate YAML files from a c# project and a VB project separately
     /// </summary>
-    private string _outputFolder;
-    private string _projectFolder;
+    private readonly string _outputFolder;
+    private readonly string _projectFolder;
 
     public MetadataCommandTest()
     {

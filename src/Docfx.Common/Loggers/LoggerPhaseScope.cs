@@ -88,7 +88,7 @@ public sealed class LoggerPhaseScope : IDisposable
 
     private static LoggerPhaseScope Restore(object captured, LogLevel? perfLogLevel)
     {
-        if (!(captured is CapturedLoggerPhaseScope capturedScope))
+        if (captured is not CapturedLoggerPhaseScope capturedScope)
         {
             return null;
         }

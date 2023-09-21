@@ -130,7 +130,7 @@ public class OverwriteApplier
         _merger.Merge(ref source, overwrite, uid, path, schema);
     }
 
-    private void UpdateXRefSpecs(List<XRefSpec> original, List<XRefSpec> overwrite)
+    private static void UpdateXRefSpecs(List<XRefSpec> original, List<XRefSpec> overwrite)
     {
         foreach (var xref in overwrite)
         {

@@ -12,7 +12,7 @@ namespace Docfx.YamlSerialization.NodeDeserializers;
 
 public class EmitArrayNodeDeserializer : INodeDeserializer
 {
-    private static MethodInfo DeserializeHelperMethod =
+    private static readonly MethodInfo DeserializeHelperMethod =
         typeof(EmitArrayNodeDeserializer).GetMethod(nameof(DeserializeHelper));
     private static readonly ConcurrentDictionary<Type, Func<IParser, Type, Func<IParser, Type, object>, object>> _funcCache =
         new();

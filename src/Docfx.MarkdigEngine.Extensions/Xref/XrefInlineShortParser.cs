@@ -39,7 +39,7 @@ class XrefInlineShortParser : InlineParser
         }
     }
 
-    private bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
+    private static bool MatchXrefShortcut(InlineProcessor processor, ref StringSlice slice)
     {
         if (!slice.CurrentChar.IsAlpha()) return false;
 
@@ -84,7 +84,7 @@ class XrefInlineShortParser : InlineParser
         return true;
     }
 
-    private bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)
+    private static bool MatchXrefShortcutWithQuote(InlineProcessor processor, ref StringSlice slice)
     {
         var saved = slice;
 

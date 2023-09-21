@@ -108,7 +108,7 @@ public static class TocHelper
         }
         catch (Exception ex)
         {
-            throw new NotSupportedException($"{file} is not a valid TOC file, detail: {ex.ToString()}.", ex);
+            throw new NotSupportedException($"{file} is not a valid TOC file, detail: {ex}.", ex);
         }
         if (obj is TocViewModel vm)
         {

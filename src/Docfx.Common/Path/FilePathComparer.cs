@@ -7,7 +7,7 @@ public class FilePathComparer
     : IEqualityComparer<string>
 {
     private readonly bool _ignoreToFullPath;
-    private readonly static StringComparer _stringComparer = GetStringComparer();
+    private static readonly StringComparer _stringComparer = GetStringComparer();
 
     public static readonly FilePathComparer OSPlatformSensitiveComparer = new();
     public static readonly FilePathComparer OSPlatformSensitiveRelativePathComparer = new(true);

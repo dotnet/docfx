@@ -22,10 +22,10 @@ public static class TestUtility
         Action<MarkdownObject> verifyAST = null,
         IEnumerable<string> optionalExtensions = null)
     {
-        errors = errors ?? Array.Empty<string>();
-        tokens = tokens ?? new Dictionary<string, string>();
-        files = files ?? new Dictionary<string, string>();
-        optionalExtensions = optionalExtensions ?? new List<string>();
+        errors ??= Array.Empty<string>();
+        tokens ??= new Dictionary<string, string>();
+        files ??= new Dictionary<string, string>();
+        optionalExtensions ??= new List<string>();
 
         var actualErrors = new List<string>();
         var actualDependencies = new HashSet<string>();

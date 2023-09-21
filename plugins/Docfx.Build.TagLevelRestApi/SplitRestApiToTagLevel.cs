@@ -50,7 +50,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         return collection;
     }
 
-    private Tuple<List<FileModel>, TreeItemRestructure> SplitModelToOperationGroup(FileModel model)
+    private static Tuple<List<FileModel>, TreeItemRestructure> SplitModelToOperationGroup(FileModel model)
     {
         if (model.Type != DocumentType.Article)
         {
@@ -102,7 +102,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         return Tuple.Create(splittedModels, treeItemRestruction);
     }
 
-    private IEnumerable<RestApiRootItemViewModel> GenerateTagModels(RestApiRootItemViewModel root)
+    private static IEnumerable<RestApiRootItemViewModel> GenerateTagModels(RestApiRootItemViewModel root)
     {
         foreach (var tag in root.Tags)
         {
@@ -125,7 +125,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         }
     }
 
-    private IEnumerable<RestApiChildItemViewModel> GetChildrenByTag(RestApiRootItemViewModel root, string tagName)
+    private static IEnumerable<RestApiChildItemViewModel> GetChildrenByTag(RestApiRootItemViewModel root, string tagName)
     {
         // Only group children into first tag, to keep cross reference unique
         var children = root.Children.Where(child => child.Tags != null && tagName == child.Tags.FirstOrDefault());
@@ -136,7 +136,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         }
     }
 
-    private FileModel GenerateNewFileModel(FileModel model, RestApiRootItemViewModel tagModel)
+    private static FileModel GenerateNewFileModel(FileModel model, RestApiRootItemViewModel tagModel)
     {
         var originalFile = model.FileAndType.File;
         var fileExtension = Path.GetExtension(originalFile);
@@ -158,7 +158,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         return newModel;
     }
 
-    private IEnumerable<string> CalculateUids(RestApiRootItemViewModel root)
+    private static IEnumerable<string> CalculateUids(RestApiRootItemViewModel root)
     {
         if (!string.IsNullOrEmpty(root.Uid))
         {
@@ -173,7 +173,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         }
     }
 
-    private TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
+    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
     {
         return new TreeItem
         {
@@ -185,7 +185,7 @@ public class SplitRestApiToTagLevel : BaseDocumentBuildStep
         };
     }
 
-    private Dictionary<string, object> MergeTagMetadata(RestApiRootItemViewModel root, RestApiTagViewModel tag)
+    private static Dictionary<string, object> MergeTagMetadata(RestApiRootItemViewModel root, RestApiTagViewModel tag)
     {
         var result = new Dictionary<string, object>(tag.Metadata);
         foreach (var pair in root.Metadata)

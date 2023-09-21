@@ -17,7 +17,7 @@ public class CollectionUtilityTest
     {
         var inputArray = input1.ToImmutableArray();
         var actual = inputArray.GetLongestCommonSequence(input2.ToImmutableArray());
-        Assert.Equal(expected.Length, actual.Count());
+        Assert.Equal(expected.Length, actual.Length);
         for (int i = 0; i < expected.Length; i++)
         {
             Assert.Equal(expected[i], actual[i]);

@@ -132,7 +132,7 @@ internal class MetadataMerger
         }
     }
 
-    private Dictionary<string, object> GetTableItem(IReadOnlyDictionary<string, object> metadata, ImmutableList<string> metaNames)
+    private static Dictionary<string, object> GetTableItem(IReadOnlyDictionary<string, object> metadata, ImmutableList<string> metaNames)
     {
         var tableItem = new Dictionary<string, object>();
         foreach (var metaName in metaNames)
@@ -163,7 +163,7 @@ internal class MetadataMerger
         ApplyTocMetadata(item, _propTable);
     }
 
-    private void ApplyTocMetadata(TocItemViewModel item, Dictionary<string, Dictionary<string, object>> table)
+    private static void ApplyTocMetadata(TocItemViewModel item, Dictionary<string, Dictionary<string, object>> table)
     {
         if (table.TryGetValue(item.Uid, out Dictionary<string, object> metadata))
         {

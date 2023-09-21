@@ -236,7 +236,7 @@ internal sealed class HostService : IHostService, IDisposable
 
     private void HandleUidsChanged(object sender, PropertyChangedEventArgs<ImmutableArray<UidDefinition>> e)
     {
-        if (!(sender is FileModel m))
+        if (sender is not FileModel m)
         {
             return;
         }
@@ -268,7 +268,7 @@ internal sealed class HostService : IHostService, IDisposable
 
     private void HandleFileOrBaseDirChanged(object sender, EventArgs e)
     {
-        if (!(sender is FileModel m))
+        if (sender is not FileModel m)
         {
             return;
         }

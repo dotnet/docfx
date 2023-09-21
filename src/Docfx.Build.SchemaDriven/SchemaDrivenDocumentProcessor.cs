@@ -3,13 +3,11 @@
 
 using System.Collections.Immutable;
 using System.Dynamic;
-using System.Text;
 using Docfx.Build.Common;
 using Docfx.Build.SchemaDriven.Processors;
 using Docfx.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
-using Newtonsoft.Json;
 
 namespace Docfx.Build.SchemaDriven;
 
@@ -117,7 +115,7 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                     }
 
                     var content = ConvertToObjectHelper.ConvertToDynamic(obj);
-                    if (!(_schema.MetadataReference.GetValue(content) is IDictionary<string, object> pageMetadata))
+                    if (_schema.MetadataReference.GetValue(content) is not IDictionary<string, object> pageMetadata)
                     {
                         pageMetadata = new ExpandoObject();
                         _schema.MetadataReference.SetValue(ref content, pageMetadata);
@@ -132,15 +130,15 @@ public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor
                     var fm = new FileModel(file, content)
                     {
                         LocalPathFromRoot = localPathFromRoot,
-                    };
-                    fm.MarkdownFragmentsModel = new FileModel(
+                        MarkdownFragmentsModel = new FileModel(
                         new FileAndType(
                             file.BaseDir,
                             markdownFragmentsFile,
                             DocumentType.MarkdownFragments,
                             file.SourceDir,
                             file.DestinationDir),
-                        markdownFragmentsContent);
+                        markdownFragmentsContent),
+                    };
                     fm.Properties.Schema = _schema;
                     fm.Properties.Metadata = pageMetadata;
                     fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;

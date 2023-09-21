@@ -13,7 +13,7 @@ class HtmlTabContentBlockRenderer : HtmlObjectRenderer<TabContentBlock>
     {
         foreach (var item in block)
         {
-            if (!(item is ThematicBreakBlock))
+            if (item is not ThematicBreakBlock)
             {
                 renderer.Render(item);
             }

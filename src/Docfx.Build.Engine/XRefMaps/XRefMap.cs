@@ -41,10 +41,7 @@ public class XRefMap : IXRefContainer
         {
             return;
         }
-        if (References != null)
-        {
-            References.Sort(XRefSpecUidComparer.Instance);
-        }
+        References?.Sort(XRefSpecUidComparer.Instance);
         Sorted = true;
     }
 

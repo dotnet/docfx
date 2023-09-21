@@ -52,7 +52,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         return collection;
     }
 
-    private Tuple<List<FileModel>, List<TreeItemRestructure>> SplitModelToOperationGroup(FileModel model)
+    private static Tuple<List<FileModel>, List<TreeItemRestructure>> SplitModelToOperationGroup(FileModel model)
     {
         if (model.Type != DocumentType.Article)
         {
@@ -88,7 +88,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         // Support both restructure by TopicHref and TopicUid
         var treeItemRestructions = new List<TreeItemRestructure>
         {
-            new TreeItemRestructure
+            new()
             {
                 ActionType = TreeItemActionType.AppendChild,
                 Key = model.Key,
@@ -96,7 +96,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
                 RestructuredItems = treeItems.OrderBy(s => s.Metadata[Constants.PropertyName.Name]).ToImmutableList(),
                 SourceFiles = new FileAndType[] { model.OriginalFileAndType }.ToImmutableList(),
             },
-            new TreeItemRestructure
+            new()
             {
                 ActionType = TreeItemActionType.AppendChild,
                 Key = content.Uid,
@@ -109,7 +109,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         return Tuple.Create(splittedModels, treeItemRestructions);
     }
 
-    private IEnumerable<RestApiRootItemViewModel> GenerateOperationModels(RestApiRootItemViewModel root)
+    private static IEnumerable<RestApiRootItemViewModel> GenerateOperationModels(RestApiRootItemViewModel root)
     {
         foreach (var child in root.Children)
         {
@@ -145,7 +145,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         }
     }
 
-    private FileModel GenerateNewFileModel(FileModel model, RestApiRootItemViewModel operationModel)
+    private static FileModel GenerateNewFileModel(FileModel model, RestApiRootItemViewModel operationModel)
     {
         var originalFile = model.FileAndType.File;
         var fileExtension = Path.GetExtension(originalFile);
@@ -167,7 +167,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         return newModel;
     }
 
-    private TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
+    private static TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)
     {
         return new TreeItem
         {
@@ -179,7 +179,7 @@ public class SplitRestApiToOperationLevel : BaseDocumentBuildStep
         };
     }
 
-    private Dictionary<string, object> MergeChildMetadata(RestApiRootItemViewModel root, RestApiChildItemViewModel child)
+    private static Dictionary<string, object> MergeChildMetadata(RestApiRootItemViewModel root, RestApiChildItemViewModel child)
     {
         var result = new Dictionary<string, object>(child.Metadata);
         foreach (var pair in root.Metadata)

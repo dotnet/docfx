@@ -54,7 +54,7 @@ public abstract class XRefRedirectionReader : IXRefContainerReader
         return null;
     }
 
-    private void AddRedirections(string uid, Stack<string> checkList, IXRefContainer current)
+    private static void AddRedirections(string uid, Stack<string> checkList, IXRefContainer current)
     {
         foreach (var r in current.GetRedirections().Reverse())
         {

@@ -9,9 +9,9 @@ public static class JTokenConverter
 {
     public static T Convert<T>(object obj)
     {
-        if (obj is T)
+        if (obj is T tObj)
         {
-            return (T)obj;
+            return tObj;
         }
 
         if (obj is JToken jToken)

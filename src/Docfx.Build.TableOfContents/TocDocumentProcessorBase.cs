@@ -99,7 +99,7 @@ public abstract class TocDocumentProcessorBase : DisposableDocumentProcessor
         toc.IsHrefUpdated = true;
     }
 
-    private void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context, string includedFrom)
+    private static void ResolveUid(TocItemViewModel item, FileModel model, IDocumentBuildContext context, string includedFrom)
     {
         if (item.TopicUid != null)
         {
@@ -124,7 +124,7 @@ public abstract class TocDocumentProcessorBase : DisposableDocumentProcessor
         }
     }
 
-    private XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context, string includedFrom)
+    private static XRefSpec GetXrefFromUid(string uid, FileModel model, IDocumentBuildContext context, string includedFrom)
     {
         var xref = context.GetXrefSpec(uid);
         if (xref == null)
@@ -137,7 +137,7 @@ public abstract class TocDocumentProcessorBase : DisposableDocumentProcessor
         return xref;
     }
 
-    private string ResolveHref(string pathToFile, string originalPathToFile, FileModel model, IDocumentBuildContext context, string propertyName)
+    private static string ResolveHref(string pathToFile, string originalPathToFile, FileModel model, IDocumentBuildContext context, string propertyName)
     {
         if (!Utility.IsSupportedRelativeHref(pathToFile))
         {

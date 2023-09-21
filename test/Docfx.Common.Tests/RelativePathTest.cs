@@ -138,7 +138,7 @@ public class RelativePathTest
     public void TestRelativePathGetDirectoryPathWithInvalidParentDirectoryShouldFail()
     {
         var relativePath = (RelativePath)"~/..";
-        Assert.Throws<InvalidOperationException>(() => relativePath.GetDirectoryPath());
+        Assert.Throws<InvalidOperationException>(relativePath.GetDirectoryPath);
     }
 
     [Fact]

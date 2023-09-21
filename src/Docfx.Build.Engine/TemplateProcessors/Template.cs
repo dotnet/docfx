@@ -29,7 +29,7 @@ public class Template
     {
         if (renderer == null && preprocessor == null)
         {
-            throw new ArgumentNullException("Both renderer and preprocessor are null");
+            throw new ArgumentNullException(nameof(preprocessor), "Both renderer and preprocessor are null");
         }
 
         Renderer = renderer;

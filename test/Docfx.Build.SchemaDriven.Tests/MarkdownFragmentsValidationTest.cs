@@ -61,14 +61,14 @@ public class MarkdownFragmentsValidationTest : TestBase
         var logs = _listener.Items;
         var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments).ToList();
         Assert.True(File.Exists(_rawModelFilePath));
-        Assert.Equal(5, warningLogs.Count());
+        Assert.Equal(5, warningLogs.Count);
         Assert.Equal(
             @"Markdown property `depot_name` is not allowed inside a YAML code block
 You cannot overwrite a readonly property: `site_name`, please add an `editable` tag on this property or mark its contentType as `markdown` in schema if you want to overwrite this property
 There is an invalid H2: `name`: the contentType of this property in schema must be `markdown`
 There is an invalid H2: `operations[id=""management.azure.com.advisor.fragmentsValidation.create""]/summary`: the contentType of this property in schema must be `markdown`
 ""/operations/1"" in overwrite object fails to overwrite ""/operations"" for ""management.azure.com.advisor.fragmentsValidation"" because it does not match any existing item.",
-            String.Join(Environment.NewLine, warningLogs.Select(x => x.Message)),
+            string.Join(Environment.NewLine, warningLogs.Select(x => x.Message)),
             ignoreLineEndingDifferences: true);
         Assert.Equal("14", warningLogs[2].Line);
         Assert.Equal("17", warningLogs[3].Line);

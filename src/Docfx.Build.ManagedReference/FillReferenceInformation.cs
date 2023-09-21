@@ -14,7 +14,7 @@ namespace Docfx.Build.ManagedReference;
 [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
 public class FillReferenceInformation : BaseDocumentBuildStep
 {
-    private Dictionary<string, SourceInfo> _items = new();
+    private readonly Dictionary<string, SourceInfo> _items = new();
 
     public override string Name => nameof(FillReferenceInformation);
 
@@ -70,7 +70,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep
         }
     }
 
-    private void FillContent(ReferenceViewModel r, dynamic item)
+    private static void FillContent(ReferenceViewModel r, dynamic item)
     {
         if (item.Metadata != null)
         {
@@ -110,7 +110,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep
         }
     }
 
-    private IEnumerable<string> GetUidsToFill(PageViewModel pageViewModel)
+    private static IEnumerable<string> GetUidsToFill(PageViewModel pageViewModel)
     {
         return (from i in pageViewModel.Items
                 from c in (i.Children ?? Enumerable.Empty<string>())

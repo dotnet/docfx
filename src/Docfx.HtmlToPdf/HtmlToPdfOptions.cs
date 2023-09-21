@@ -100,21 +100,21 @@ public class HtmlToPdfOptions
         {
             if (File.Exists(DefaultStyleSheet))
             {
-                sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append("\"");
+                sb.Append(" --user-style-sheet \"").Append(DefaultStyleSheet).Append('"');
             }
         }
         else
         {
-            sb.Append(" --user-style-sheet \"").Append(UserStyleSheet).Append("\"");
+            sb.Append(" --user-style-sheet \"").Append(UserStyleSheet).Append('"');
         }
 
         if (!string.IsNullOrEmpty(HeaderHtmlPath))
         {
-            sb.Append(" --header-html \"").Append(HeaderHtmlPath).Append("\"");
+            sb.Append(" --header-html \"").Append(HeaderHtmlPath).Append('"');
         }
         if (!string.IsNullOrEmpty(FooterHtmlPath))
         {
-            sb.Append(" --footer-html \"").Append(FooterHtmlPath).Append("\"");
+            sb.Append(" --footer-html \"").Append(FooterHtmlPath).Append('"');
         }
         if (!string.IsNullOrEmpty(LoadErrorHandling))
         {
@@ -126,7 +126,7 @@ public class HtmlToPdfOptions
         }
         if (!string.IsNullOrEmpty(AdditionalArguments))
         {
-            sb.Append(" ").Append(AdditionalArguments);
+            sb.Append(' ').Append(AdditionalArguments);
         }
 
         return sb.ToString();

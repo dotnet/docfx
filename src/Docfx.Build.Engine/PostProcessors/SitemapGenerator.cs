@@ -111,10 +111,10 @@ public class SitemapGenerator : IPostProcessor
             }
         }
 
-        options.BaseUrl = options.BaseUrl ?? rootOptions.BaseUrl;
-        options.ChangeFrequency = options.ChangeFrequency ?? rootOptions.ChangeFrequency;
-        options.Priority = options.Priority ?? rootOptions.Priority;
-        options.LastModified = options.LastModified ?? rootOptions.LastModified;
+        options.BaseUrl ??= rootOptions.BaseUrl;
+        options.ChangeFrequency ??= rootOptions.ChangeFrequency;
+        options.Priority ??= rootOptions.Priority;
+        options.LastModified ??= rootOptions.LastModified;
 
         if (options.Priority.HasValue && (options.Priority < 0 || options.Priority > 1))
         {

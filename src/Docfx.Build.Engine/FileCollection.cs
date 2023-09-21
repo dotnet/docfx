@@ -78,7 +78,7 @@ public class FileCollection
         _files.RemoveAll(match);
     }
 
-    private string ToRelative(string file, string rootedBaseDir)
+    private static string ToRelative(string file, string rootedBaseDir)
     {
         if (!Path.IsPathRooted(file))
         {

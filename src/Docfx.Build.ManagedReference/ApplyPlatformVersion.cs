@@ -77,7 +77,7 @@ public class ApplyPlatformVersion : BaseDocumentBuildStep
             }
             catch (Exception)
             {
-                Logger.LogWarning($"Unknown platform-version metadata: {jArray.ToString()}");
+                Logger.LogWarning($"Unknown platform-version metadata: {jArray}");
             }
         }
 

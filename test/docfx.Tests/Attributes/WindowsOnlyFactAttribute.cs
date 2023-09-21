@@ -4,22 +4,21 @@
 using System.Runtime.InteropServices;
 using Xunit;
 
-namespace docfx.Tests.Attributes
+namespace docfx.Tests.Attributes;
+
+/// <summary>
+/// XUnit Fact attribute that skips the test if the OS is not Windows.
+/// </summary>
+/// <remarks>
+/// Taken from https://github.com/dotnet/sdk/blob/a30e465a2e2ea4e2550f319a2dc088daaafe5649/src/Tests/Microsoft.NET.TestFramework/Attributes/WindowsOnlyFactAttribute.cs
+/// </remarks>
+public class WindowsOnlyFactAttribute : FactAttribute
 {
-    /// <summary>
-    /// XUnit Fact attribute that skips the test if the OS is not Windows.
-    /// </summary>
-    /// <remarks>
-    /// Taken from https://github.com/dotnet/sdk/blob/a30e465a2e2ea4e2550f319a2dc088daaafe5649/src/Tests/Microsoft.NET.TestFramework/Attributes/WindowsOnlyFactAttribute.cs
-    /// </remarks>
-    public class WindowsOnlyFactAttribute : FactAttribute
+    public WindowsOnlyFactAttribute()
     {
-        public WindowsOnlyFactAttribute()
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                this.Skip = "This test requires Windows to run";
-            }
+            Skip = "This test requires Windows to run";
         }
     }
 }

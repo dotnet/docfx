@@ -89,7 +89,7 @@ public class ZoneExtension : ITripleColonExtensionInfo
     {
         while (container != null)
         {
-            if (container is TripleColonBlock && ((TripleColonBlock)container).Extension.Name == Name)
+            if (container is TripleColonBlock block && block.Extension.Name == Name)
             {
                 logError("Zones cannot be nested.");
                 return false;

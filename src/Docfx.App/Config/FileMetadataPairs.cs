@@ -15,7 +15,7 @@ namespace Docfx;
 internal class FileMetadataPairs
 {
     // Order matters, the latter one overrides the former one
-    private List<FileMetadataPairsItem> _items;
+    private readonly List<FileMetadataPairsItem> _items;
 
     /// <summary>
     /// Gets FileMetadataPairs items.

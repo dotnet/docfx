@@ -25,7 +25,7 @@ public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument
                 base.GetMerger()));
     }
 
-    public IEnumerable<RestApiRootItemViewModel> GetRootItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
+    public static IEnumerable<RestApiRootItemViewModel> GetRootItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
     {
         return OverwriteDocumentReader.Transform<RestApiRootItemViewModel>(
             overwriteModel,
@@ -33,13 +33,13 @@ public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument
             s => (RestApiRootItemViewModel)BuildRestApiDocument.BuildItem(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
     }
 
-    public IEnumerable<RestApiRootItemViewModel> GetRootItemsToOverwrite(FileModel articleModel, string uid,
+    public static IEnumerable<RestApiRootItemViewModel> GetRootItemsToOverwrite(FileModel articleModel, string uid,
         IHostService host)
     {
         return new[] { (RestApiRootItemViewModel)articleModel.Content };
     }
 
-    public IEnumerable<RestApiChildItemViewModel> GetChildItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
+    public static IEnumerable<RestApiChildItemViewModel> GetChildItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
     {
         return OverwriteDocumentReader.Transform<RestApiChildItemViewModel>(
                 overwriteModel,
@@ -47,12 +47,12 @@ public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument
                 s => (RestApiChildItemViewModel)BuildRestApiDocument.BuildItem(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
     }
 
-    public IEnumerable<RestApiChildItemViewModel> GetChildItemsToOverwrite(FileModel articleModel, string uid, IHostService host)
+    public static IEnumerable<RestApiChildItemViewModel> GetChildItemsToOverwrite(FileModel articleModel, string uid, IHostService host)
     {
         return ((RestApiRootItemViewModel)articleModel.Content).Children.Where(c => c.Uid == uid);
     }
 
-    public IEnumerable<RestApiTagViewModel> GetTagsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
+    public static IEnumerable<RestApiTagViewModel> GetTagsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
     {
         return OverwriteDocumentReader.Transform<RestApiTagViewModel>(
             overwriteModel,
@@ -60,7 +60,7 @@ public class ApplyOverwriteDocumentForRestApi : ApplyOverwriteDocument
             s => BuildRestApiDocument.BuildTag(host, s, overwriteModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
     }
 
-    public IEnumerable<RestApiTagViewModel> GetTagItemsToOverwrite(FileModel articleModel, string uid, IHostService host)
+    public static IEnumerable<RestApiTagViewModel> GetTagItemsToOverwrite(FileModel articleModel, string uid, IHostService host)
     {
         return ((RestApiRootItemViewModel)articleModel.Content).Tags.Where(c => c.Uid == uid);
     }

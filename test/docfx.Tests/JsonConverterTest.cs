@@ -6,7 +6,6 @@ using System.Reflection;
 using Docfx.Common;
 using Docfx.Plugins;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Xunit;
 
@@ -40,7 +39,7 @@ public class JsonConverterTest
 
         BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
 
-        Assert.Equal(7, buildOptions.GlobalMetadata.Count());
+        Assert.Equal(7, buildOptions.GlobalMetadata.Count);
 
         JsonSerializerSettings settings = new()
         {
@@ -59,12 +58,12 @@ public class JsonConverterTest
         FileMetadataPairs item = new(
             new List<FileMetadataPairsItem>
             {
-                new FileMetadataPairsItem("*.md", 1L),
-                new FileMetadataPairsItem("*.m", true),
-                new FileMetadataPairsItem("abc", "string"),
-                new FileMetadataPairsItem("/[]\\*.cs", new Dictionary<string, object>{ ["key"] = "2" }),
-                new FileMetadataPairsItem("*/*.cs", new object[] { "1", "2" }),
-                new FileMetadataPairsItem("**", new Dictionary<string, object>{ ["key"] = new object[] {"1", "2" } }),
+                new("*.md", 1L),
+                new("*.m", true),
+                new("abc", "string"),
+                new("/[]\\*.cs", new Dictionary<string, object>{ ["key"] = "2" }),
+                new("*/*.cs", new object[] { "1", "2" }),
+                new("**", new Dictionary<string, object>{ ["key"] = new object[] {"1", "2" } }),
             });
         var result = JsonUtility.Serialize(item);
         Assert.Equal("{\"*.md\":1,\"*.m\":true,\"abc\":\"string\",\"/[]\\\\*.cs\":{\"key\":\"2\"},\"*/*.cs\":[\"1\",\"2\"],\"**\":{\"key\":[\"1\",\"2\"]}}", result);
@@ -153,10 +152,10 @@ internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
             && !typeof(string).IsAssignableFrom(property.PropertyType)
             && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
         {
-            Predicate<object> newShouldSerialize = obj =>
+            bool newShouldSerialize(object obj)
             {
-                return !(property.ValueProvider.GetValue(obj) is ICollection collection) || collection.Count != 0;
-            };
+                return property.ValueProvider.GetValue(obj) is not ICollection collection || collection.Count != 0;
+            }
             Predicate<object> oldShouldSerialize = property.ShouldSerialize;
             property.ShouldSerialize = oldShouldSerialize != null
                 ? o => oldShouldSerialize(o) && newShouldSerialize(o)
