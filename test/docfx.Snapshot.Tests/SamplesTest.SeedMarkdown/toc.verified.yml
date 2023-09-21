@@ -1,0 +1,53 @@
+﻿### YamlMime:TableOfContent
+- name: BuildFromAssembly
+  href: BuildFromAssembly.md
+- name: BuildFromCSharpSourceCode
+  href: BuildFromCSharpSourceCode.md
+- name: BuildFromProject
+  href: BuildFromProject.md
+  items:
+  - name: Class1
+    href: BuildFromProject.Inheritdoc.Issue6366.md
+  - name: Class2
+    href: BuildFromProject.Inheritdoc.Issue6366.md
+  - name: IIssue8948
+    href: BuildFromProject.Class1.md
+  - name: Issue6366
+    href: BuildFromProject.Inheritdoc.md
+  - name: Issue7035
+    href: BuildFromProject.Inheritdoc.md
+  - name: Issue7484
+    href: BuildFromProject.Inheritdoc.md
+  - name: Issue8101
+    href: BuildFromProject.Inheritdoc.md
+  - name: Issue8129
+    href: BuildFromProject.Inheritdoc.md
+  - name: Issue8665
+    href: BuildFromProject.Class1.md
+  - name: Issue8696Attribute
+    href: BuildFromProject.Class1.md
+  - name: Issue8948
+    href: BuildFromProject.Class1.md
+  - name: Test
+    href: BuildFromProject.Class1.md
+- name: BuildFromProject.Issue8540.A
+  href: BuildFromProject.Issue8540.A.md
+- name: BuildFromProject.Issue8540.B
+  href: BuildFromProject.Issue8540.B.md
+- name: BuildFromVBSourceCode
+  href: BuildFromVBSourceCode.md
+- name: CatLibrary
+  href: CatLibrary.md
+- name: CatLibrary.Core
+  href: CatLibrary.Core.md
+  items:
+  - name: ColorType
+    href: CatLibrary.Core.ContainersRefType.md
+  - name: ContainersRefTypeChild
+    href: CatLibrary.Core.ContainersRefType.md
+  - name: ContainersRefTypeChildInterface
+    href: CatLibrary.Core.ContainersRefType.md
+  - name: ContainersRefTypeDelegate
+    href: CatLibrary.Core.ContainersRefType.md
+- name: MRef.Demo.Enumeration
+  href: MRef.Demo.Enumeration.md
