@@ -1,8 +1,7 @@
 ﻿# Class Cat
 
-_Namespace:_ [CatLibrary](CatLibrary.md)
-
-_Assembly:_ CatLibrary.dll
+__Namespace:__ [CatLibrary](CatLibrary.md)  
+__Assembly:__ CatLibrary.dll
 
 <p>Here's main class of this <i>Demo</i>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>

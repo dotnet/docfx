@@ -1,8 +1,7 @@
 ﻿# Class Class1
 
-_Namespace:_ [BuildFromVBSourceCode](BuildFromVBSourceCode.md)
-
-_Assembly:_ ?.dll
+__Namespace:__ [BuildFromVBSourceCode](BuildFromVBSourceCode.md)  
+__Assembly:__ ?.dll
 
 This is summary from vb class...
 
