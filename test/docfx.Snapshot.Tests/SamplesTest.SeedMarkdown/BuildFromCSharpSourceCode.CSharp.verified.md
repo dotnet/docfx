@@ -1,6 +1,7 @@
 ﻿# Class CSharp
 
 _Namespace:_ [BuildFromCSharpSourceCode](BuildFromCSharpSourceCode.md)
+
 _Assembly:_ ?.dll
 
 ```csharp

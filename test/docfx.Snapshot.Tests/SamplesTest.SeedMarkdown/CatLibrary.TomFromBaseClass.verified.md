@@ -1,6 +1,7 @@
 ﻿# Class TomFromBaseClass
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 *TomFromBaseClass* inherits from @

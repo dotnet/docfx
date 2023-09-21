@@ -1,6 +1,7 @@
 ﻿# Delegate FakeDelegate
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 Fake delegate

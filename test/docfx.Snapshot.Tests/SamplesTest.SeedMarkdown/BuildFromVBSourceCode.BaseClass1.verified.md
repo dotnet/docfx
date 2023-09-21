@@ -1,6 +1,7 @@
 ﻿# Class BaseClass1
 
 _Namespace:_ [BuildFromVBSourceCode](BuildFromVBSourceCode.md)
+
 _Assembly:_ ?.dll
 
 This is the BaseClass

@@ -1,6 +1,7 @@
 ﻿# Delegate MRefDelegate
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 Generic delegate with many constrains.

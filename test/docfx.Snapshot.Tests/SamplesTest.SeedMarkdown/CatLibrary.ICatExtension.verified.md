@@ -1,6 +1,7 @@
 ﻿# Class ICatExtension
 
 _Namespace:_ [CatLibrary](CatLibrary.md)
+
 _Assembly:_ CatLibrary.dll
 
 It's the class that contains ICat interface's extension method.

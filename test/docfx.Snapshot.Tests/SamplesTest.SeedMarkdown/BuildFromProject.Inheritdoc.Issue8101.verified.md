@@ -1,6 +1,7 @@
 ﻿# Class Issue8101
 
 _Namespace:_ [BuildFromProject](BuildFromProject.md)
+
 _Assembly:_ BuildFromProject.dll
 
 ```csharp
