@@ -392,7 +392,7 @@ static class MarkdownFormatter
 
                 void Info()
                 {
-                    sb.AppendLine($"_Namespace:_ {FullLink(symbol.ContainingNamespace)}");
+                    sb.AppendLine($"_Namespace:_ {FullLink(symbol.ContainingNamespace)}").AppendLine();
                     sb.AppendLine($"_Assembly:_ {symbol.ContainingAssembly.Name}.dll").AppendLine();
                 }
 
