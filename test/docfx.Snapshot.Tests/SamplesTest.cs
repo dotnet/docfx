@@ -75,7 +75,7 @@ public class SamplesTest
             Assert.Equal(0, Exec(docfxPath, $"build {samplePath}/docfx.json"));
         }
 
-        await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -141,16 +141,16 @@ public class SamplesTest
                 if (theme is "light" && htmlUrls.TryAdd(url, url))
                 {
                     var html = await page.ContentAsync();
-                    await Verifier
-                        .Verify(new Target("html", NormalizeHtml(html)))
+                    await
+                        Verify(new Target("html", NormalizeHtml(html)))
                         .UseDirectory($"{nameof(SamplesTest)}.{nameof(SeedHtml)}/html")
                         .UseFileName(fileName)
                         .AutoVerify(includeBuildServer: false);
                 }
 
                 var bytes = await page.ScreenshotAsync(new() { FullPage = fullPage });
-                await Verifier
-                    .Verify(new Target("png", new MemoryStream(bytes)))
+                await
+                    Verify(new Target("png", new MemoryStream(bytes)))
                     .UseStreamComparer((received, verified, _) => CompareImage(received, verified, directory, fileName))
                     .UseDirectory(directory)
                     .UseFileName(fileName)
@@ -181,6 +181,17 @@ public class SamplesTest
     }
 
     [SnapshotFact]
+    public async Task SeedMarkdown()
+    {
+        var samplePath = $"{s_samplesDir}/seed";
+        Clean(samplePath);
+
+        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", nameof(SeedMarkdown) });
+
+        await VerifyDirectory($"{nameof(SeedMarkdown)}/obj/api", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+    }
+
+    [SnapshotFact]
     public async Task CSharp()
     {
         var samplePath = $"{s_samplesDir}/csharp";
@@ -198,7 +209,7 @@ public class SamplesTest
             Environment.SetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME", null);
         }
 
-        await Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
@@ -213,7 +224,7 @@ public class SamplesTest
         Assert.Equal(0, Exec("dotnet", "run --no-build -c Release --project build", workingDirectory: samplePath));
 #endif
 
-        return Verifier.VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
+        return VerifyDirectory($"{samplePath}/_site", IncludeFile).AutoVerify(includeBuildServer: false);
     }
 
     private static int Exec(string filename, string args, string workingDirectory = null)
@@ -241,7 +252,7 @@ public class SamplesTest
         return Path.GetExtension(file) switch
         {
             ".json" => Path.GetFileName(file) != "manifest.json",
-            ".yml" => true,
+            ".yml" or ".md" => true,
             _ => false,
         };
     }

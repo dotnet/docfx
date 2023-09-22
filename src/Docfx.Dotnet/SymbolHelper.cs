@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 
 #nullable enable
 
@@ -59,6 +60,28 @@ internal static class SymbolHelper
             m => m.Kind is SymbolKind.Method && !ReferenceEquals(m, symbol) && m.Name == symbol.Name);
     }
 
+    public static bool IsConstructor(IMethodSymbol method)
+    {
+        return method.MethodKind is MethodKind.Constructor or MethodKind.StaticConstructor;
+    }
+
+    public static bool IsMethod(IMethodSymbol method)
+    {
+        return method.MethodKind
+            is MethodKind.AnonymousFunction
+            or MethodKind.DelegateInvoke
+            or MethodKind.Destructor
+            or MethodKind.ExplicitInterfaceImplementation
+            or MethodKind.Ordinary
+            or MethodKind.ReducedExtension
+            or MethodKind.DeclareMethod;
+    }
+
+    public static bool IsOperator(IMethodSymbol method)
+    {
+        return method.MethodKind is MethodKind.BuiltinOperator or MethodKind.UserDefinedOperator or MethodKind.Conversion;
+    }
+
     public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)
     {
         if (!assembly.MightContainExtensionMethods)
@@ -84,6 +107,35 @@ internal static class SymbolHelper
             {
                 stack.Push(child);
             }
+        }
+    }
+
+    public static IEnumerable<ISymbol> GetInheritedMembers(this INamedTypeSymbol symbol, SymbolFilter filter)
+    {
+        for (var type = symbol.BaseType; type != null; type = type.BaseType)
+        {
+            foreach (var m in from m in type.GetMembers()
+                              where m is not INamedTypeSymbol
+                              where filter.IncludeApi(m)
+                              where m.DeclaredAccessibility is Accessibility.Public || !(symbol.IsSealed || symbol.TypeKind is TypeKind.Struct)
+                              where IsInheritable(m)
+                              select m)
+            {
+                yield return m;
+            }
+        }
+
+        static bool IsInheritable(ISymbol memberSymbol)
+        {
+            if (memberSymbol is IMethodSymbol { } method)
+            {
+                return method.MethodKind switch
+                {
+                    MethodKind.ExplicitInterfaceImplementation or MethodKind.DeclareMethod or MethodKind.Ordinary => true,
+                    _ => false,
+                };
+            }
+            return true;
         }
     }
 }

@@ -11,6 +11,8 @@ internal class ExtractMetadataConfig
 
     public string OutputFolder { get; init; }
 
+    public MetadataOutputFormat OutputFormat { get; init; }
+
     public bool ShouldSkipMarkup { get; init; }
 
     public string FilterConfigFile { get; init; }

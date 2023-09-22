@@ -138,6 +138,12 @@ internal class ExtractMetadataWorker : IDisposable
             return;
         }
 
+        if (_config.OutputFormat is MetadataOutputFormat.Markdown)
+        {
+            MarkdownFormatter.Save(assemblies, _config, _options);
+            return;
+        }
+
         var projectMetadataList = new List<MetadataItem>();
         var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods()).ToArray();
         var filter = new SymbolFilter(_config, _options);
