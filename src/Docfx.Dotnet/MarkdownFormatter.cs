@@ -3,7 +3,6 @@
 
 using System.Text;
 using Docfx.Common;
-using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
@@ -15,6 +14,28 @@ namespace Docfx.Dotnet;
 
 static class MarkdownFormatter
 {
+    enum TocNodeType
+    {
+        Namespace,
+        Class,
+        Struct,
+        Interface,
+        Enum,
+        Delegate,
+    }
+
+    class TocNode
+    {
+        public string name { get; init; } = "";
+        public string? href { get; init; }
+        public List<TocNode>? items { get; set; }
+
+        internal TocNodeType type;
+        internal string? id;
+        internal bool containsLeafNodes;
+        internal List<(ISymbol symbol, Compilation compilation)> symbols = new();
+    }
+
     public static void Save(List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
         Logger.LogWarning($"Markdown output format is experimental.");
@@ -24,30 +45,179 @@ static class MarkdownFormatter
         var filter = new SymbolFilter(config, options);
         var extensionMethods = assemblies.SelectMany(assembly => assembly.symbol.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.symbol), SymbolEqualityComparer.Default);
-        var allTypes = assemblies.SelectMany(a => a.symbol.GetAllTypes(filter).Select(t => (symbol: t, a.compilation))).ToList();
 
-        var allNamespaces = allTypes
-            .Select(t => (symbol: t.symbol.ContainingNamespace, t.compilation))
-            .DistinctBy(n => n.symbol, SymbolEqualityComparer.Default)
-            .GroupBy(n => VisitorHelper.GetId(n.symbol))
-            .ToDictionary(g => g.Key, g => g.ToList());
+        var tocNodes = new Dictionary<string, TocNode>();
+        var allSymbols = new List<(ISymbol symbol, Compilation compilation)>();
+        var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
 
-        Parallel.ForEach(allTypes, i => SaveNamedType(i.symbol, i.compilation));
-        Parallel.ForEach(allNamespaces, i => SaveNamespace(i.Key, i.Value));
+        allSymbols.Sort((a, b) => a.symbol.Name.CompareTo(b.symbol.Name));
+        SortToc(toc, root: true);
 
-        SaveToc();
+        YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
+        Parallel.ForEach(EnumerateToc(toc), n => SaveTocNode(n.id, n.symbols));
 
-        Logger.LogInfo($"Export succeed: {allTypes.Count} types and {allNamespaces.Count} namespaces.");
+        Logger.LogInfo($"Export succeed: {EnumerateToc(toc).Count()} items");
 
-        void SaveNamespace(string id, List<(INamespaceSymbol symbol, Compilation compilation)> namespaces)
+        IEnumerable<TocNode> CreateToc(ISymbol symbol, Compilation compilation)
         {
-            var ns = namespaces[0].symbol;
-            var compilation = namespaces[0].compilation;
-            var namespaceSymbols = namespaces.Select(n => n.symbol).ToHashSet(SymbolEqualityComparer.Default);
-            var types = allTypes.Where(t => namespaceSymbols.Contains(t.symbol.ContainingNamespace)).ToList();
+            if (!filter.IncludeApi(symbol))
+                yield break;
 
+            var id = VisitorHelper.GetId(symbol);
+
+            switch (symbol)
+            {
+                case INamespaceSymbol ns when ns.IsGlobalNamespace:
+                    foreach (var child in ns.GetNamespaceMembers())
+                    {
+                        foreach (var item in CreateToc(child, compilation))
+                            yield return item;
+                    }
+                    break;
+
+                case INamespaceSymbol ns:
+                    var idExists = true;
+                    if (!tocNodes.TryGetValue(id, out var node))
+                    {
+                        idExists = false;
+                        tocNodes.Add(id, node = new()
+                        {
+                            id = id,
+                            name = config.NamespaceLayout switch
+                            {
+                                NamespaceLayout.Nested => symbol.Name,
+                                NamespaceLayout.Flattened => symbol.ToString() ?? "",
+                            },
+                            href = $"{id}.md",
+                            type = TocNodeType.Namespace,
+                        });
+                    }
+
+                    node.items ??= new();
+                    node.symbols.Add((symbol, compilation));
+                    allSymbols.Add((symbol, compilation));
+
+                    foreach (var child in ns.GetNamespaceMembers())
+                    {
+                        if (config.NamespaceLayout is NamespaceLayout.Flattened)
+                            foreach (var item in CreateToc(child, compilation))
+                                yield return item;
+                        else if (config.NamespaceLayout is NamespaceLayout.Nested)
+                            node.items.AddRange(CreateToc(child, compilation));
+                    }
+
+                    foreach (var child in ns.GetTypeMembers())
+                    {
+                        node.items.AddRange(CreateToc(child, compilation));
+                    }
+
+                    node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
+                    if (!idExists && node.containsLeafNodes)
+                    {
+                        yield return node;
+                    }
+                    break;
+
+                case INamedTypeSymbol type:
+                    if (!tocNodes.TryGetValue(id, out node))
+                    {
+                        tocNodes.Add(id, node = new()
+                        {
+                            id = id,
+                            name = type.Name,
+                            href = $"{id}.md",
+                            containsLeafNodes = true,
+                            type = type.TypeKind switch
+                            {
+                                TypeKind.Class => TocNodeType.Class,
+                                TypeKind.Interface => TocNodeType.Interface,
+                                TypeKind.Struct => TocNodeType.Struct,
+                                TypeKind.Delegate => TocNodeType.Delegate,
+                                TypeKind.Enum => TocNodeType.Enum,
+                                _ => throw new NotSupportedException($"Unknown type kind {type.TypeKind}"),
+                            }
+                        });
+                        yield return node;
+                    }
+
+                    foreach (var child in type.GetTypeMembers())
+                    {
+                        foreach (var item in CreateToc(child, compilation))
+                            yield return item;
+                    }
+
+                    node.symbols.Add((symbol, compilation));
+                    allSymbols.Add((symbol, compilation));
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Unknown symbol {symbol}");
+            }
+        }
+
+        static void SortToc(List<TocNode> items, bool root)
+        {
+            items.Sort((a, b) => a.type.CompareTo(b.type) is var r && r is 0 ? a.name.CompareTo(b.name) : r);
+
+            if (!root)
+            {
+                InsertCategory(TocNodeType.Namespace, "Namespaces");
+                InsertCategory(TocNodeType.Class, "Classes");
+                InsertCategory(TocNodeType.Struct, "Structs");
+                InsertCategory(TocNodeType.Interface, "Interfaces");
+                InsertCategory(TocNodeType.Enum, "Enums");
+                InsertCategory(TocNodeType.Delegate, "Delegates");
+            }
+
+            foreach (var item in items)
+            {
+                if (item.items is not null)
+                    SortToc(item.items, root: false);
+            }
+
+            void InsertCategory(TocNodeType type, string name)
+            {
+                if (items.FirstOrDefault(i => i.type == type) is { } node)
+                    items.Insert(items.IndexOf(node), new() { name = name });
+            }
+        }
+
+        static IEnumerable<(string id, List<(ISymbol symbol, Compilation compilation)> symbols)> EnumerateToc(List<TocNode> items)
+        {
+            foreach (var item in items)
+            {
+                if (item.items is not null)
+                    foreach (var i in EnumerateToc(item.items))
+                        yield return i;
+
+                if (item.id is not null && item.symbols.Count > 0)
+                    yield return (item.id, item.symbols);
+            }
+        }
+
+        void SaveTocNode(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
+        {
+            switch (symbols[0].symbol)
+            {
+                case INamespaceSymbol ns: SaveNamespace(id, symbols); break;
+                case INamedTypeSymbol type: SaveNamedType(type, symbols[0].compilation); break;
+                default: throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
+            }
+        }
+
+        void SaveNamespace(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
+        {
             var sb = new StringBuilder();
-            sb.AppendLine($"# Namespace {Escape(ns.ToString()!)}").AppendLine();
+            var symbol = symbols[0].symbol;
+            var compilation = symbols[0].compilation;
+
+            var namespaceSymbols = symbols.Select(n => n.symbol).ToHashSet(SymbolEqualityComparer.Default);
+            var types = (
+                from s in allSymbols
+                where s.symbol.Kind is SymbolKind.NamedType && SymbolEqualityComparer.Default.Equals(s.symbol.ContainingNamespace, symbol)
+                select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
+
+            sb.AppendLine($"# Namespace {Escape(symbol.ToString()!)}").AppendLine();
 
             Summary();
             Namespaces();
@@ -61,16 +231,17 @@ static class MarkdownFormatter
 
             void Summary()
             {
-                var comment = Comment(ns, compilation);
+                var comment = Comment(symbol, compilation);
                 if (!string.IsNullOrEmpty(comment?.Summary))
                     sb.AppendLine(comment.Summary).AppendLine();
             }
 
             void Namespaces()
             {
-                var items = namespaces
-                    .SelectMany(n => n.symbol.GetNamespaceMembers().Select(symbol => (symbol, n.compilation)))
+                var items = symbols
+                    .SelectMany(n => ((INamespaceSymbol)n.symbol).GetNamespaceMembers().Select(symbol => (symbol, n.compilation)))
                     .DistinctBy(n => n.symbol.Name)
+                    .OrderBy(n => n.symbol.Name)
                     .ToList();
 
                 if (items.Count is 0)
@@ -206,10 +377,10 @@ static class MarkdownFormatter
 
             void Derived()
             {
-                var items = allTypes
-                    .Select(t => t.symbol)
-                    .Where(t => SymbolEqualityComparer.Default.Equals(t.BaseType, symbol))
-                    .OrderBy(t => t.Name).ToList();
+                var items = (
+                    from s in allSymbols
+                    where s.symbol.Kind is SymbolKind.NamedType && SymbolEqualityComparer.Default.Equals(((INamedTypeSymbol)s.symbol).BaseType, symbol)
+                    select s.symbol).ToList();
 
                 if (items.Count is 0)
                     return;
@@ -517,43 +688,6 @@ static class MarkdownFormatter
             string Cref(string commentId)
             {
                 return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? Link(symbol, compilation) : "";
-            }
-        }
-
-        void SaveToc()
-        {
-            var toc = new TocViewModel();
-            var tocNodeByNamespace = new Dictionary<string, TocItemViewModel>();
-
-            foreach (var (symbol, _) in allTypes)
-            {
-                var ns = symbol.ContainingNamespace.ToString()!;
-                if (!tocNodeByNamespace.TryGetValue(ns, out var namespaceTocNode))
-                {
-                    namespaceTocNode = new()
-                    {
-                        Name = ns,
-                        Href = $"{VisitorHelper.GetId(symbol.ContainingNamespace)}.md",
-                        Items = new(),
-                    };
-                    tocNodeByNamespace.Add(ns, namespaceTocNode);
-                    toc.Add(namespaceTocNode);
-                }
-                namespaceTocNode.Items.Add(new() { Name = symbol.Name, Href = $"{VisitorHelper.GetId(symbol)}.md" });
-            }
-
-            SortTocItems(toc);
-            YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
-
-            static void SortTocItems(TocViewModel node)
-            {
-                node.Sort((a, b) => a.Name.CompareTo(b.Name));
-
-                foreach (var child in node)
-                {
-                    if (child.Items is not null)
-                        SortTocItems(child.Items);
-                }
             }
         }
 
