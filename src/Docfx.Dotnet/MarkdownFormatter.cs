@@ -559,7 +559,7 @@ static class MarkdownFormatter
 
         string Link(ISymbol symbol, Compilation compilation)
         {
-            return symbol.Kind is SymbolKind.Method or SymbolKind.Namespace ? ShortLink() : FullLink();
+            return symbol.Kind is SymbolKind.Method or SymbolKind.Namespace or SymbolKind.Event or SymbolKind.Property or SymbolKind.Field ? ShortLink() : FullLink();
 
             string ShortLink()
             {
