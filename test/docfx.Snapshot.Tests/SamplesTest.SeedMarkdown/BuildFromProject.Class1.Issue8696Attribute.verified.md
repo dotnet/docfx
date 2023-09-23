@@ -51,7 +51,7 @@ public class Class1.Issue8696Attribute : Attribute
 [Attribute.IsDefined(ParameterInfo, Type)](https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type)), 
 [Attribute.IsDefined(ParameterInfo, Type, bool)](https://learn.microsoft.com/dotnet/api/system.attribute.isdefined#system-attribute-isdefined(system-reflection-parameterinfo-system-type-system-boolean)), 
 [Attribute.Match(object?)](https://learn.microsoft.com/dotnet/api/system.attribute.match), 
-[Attribute](https://learn.microsoft.com/dotnet/api/system.attribute).[TypeId](https://learn.microsoft.com/dotnet/api/system.attribute.typeid), 
+[Attribute.TypeId](https://learn.microsoft.com/dotnet/api/system.attribute.typeid), 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 

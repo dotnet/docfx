@@ -1,7 +1,7 @@
 ﻿# Class Issue231
 
 __Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
-__Assembly:__ CatLibrary.dll
+__Assembly:__ CatLibrary.Core.dll
 
 ```csharp
 public static class Issue231
@@ -24,10 +24,10 @@ public static class Issue231
 
 ## Methods
 
-### Bar(ContainersRefType)
+### Foo(ContainersRefType)
 
 ```csharp
-public static void Bar(this ContainersRefType c)
+public static void Foo(this ContainersRefType c)
 ```
 
 #### Parameters
