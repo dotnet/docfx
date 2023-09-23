@@ -1,6 +1,6 @@
 ﻿# Enum ColorType
 
-__Namespace:__ [MRef](MRef.md).[Demo](MRef.Demo.md).[Enumeration](MRef.Demo.Enumeration.md)  
+__Namespace:__ [MRef.Demo.Enumeration](MRef.Demo.Enumeration.md)  
 __Assembly:__ CatLibrary.dll
 
 Enumeration ColorType
