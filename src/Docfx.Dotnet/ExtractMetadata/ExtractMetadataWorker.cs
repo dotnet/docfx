@@ -145,8 +145,8 @@ internal class ExtractMetadataWorker : IDisposable
         }
 
         var projectMetadataList = new List<MetadataItem>();
-        var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods()).ToArray();
         var filter = new SymbolFilter(_config, _options);
+        var extensionMethods = assemblies.SelectMany(assembly => assembly.Item1.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.Item1), SymbolEqualityComparer.Default);
 
         foreach (var (assembly, compilation) in assemblies)
