@@ -79,8 +79,6 @@ public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
-## Events
-
 ### ContainersRefTypeEventHandler
 
 ```csharp

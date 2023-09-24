@@ -1,8 +1,5 @@
 ﻿# Namespace CatLibrary.Core
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll, CatLibrary.Core.dll
-
 ## Classes
 
 [ContainersRefType](CatLibrary.Core.ContainersRefType.md).[ContainersRefTypeChild](CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md)

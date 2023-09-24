@@ -34,3 +34,13 @@ public static void Bar(this ContainersRefType c)
 
 `c` [ContainersRefType](CatLibrary.Core.ContainersRefType.md)
 
+### Foo(ContainersRefType)
+
+```csharp
+public static void Foo(this ContainersRefType c)
+```
+
+#### Parameters
+
+`c` [ContainersRefType](CatLibrary.Core.ContainersRefType.md)
+

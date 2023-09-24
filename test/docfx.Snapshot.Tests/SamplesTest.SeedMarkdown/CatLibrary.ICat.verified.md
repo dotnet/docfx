@@ -18,8 +18,6 @@ public interface ICat : IAnimal
 [ICatExtension.Play(ICat, ContainersRefType.ColorType)](CatLibrary.ICatExtension.md#CatLibrary.ICatExtension.Play(CatLibrary.Core.ContainersRefType.ColorType)), 
 [ICatExtension.Sleep(ICat, long)](CatLibrary.ICatExtension.md#CatLibrary.ICatExtension.Sleep(System.Int64))
 
-## Events
-
 ### eat
 
 eat event of cat. Every cat must implement this event.

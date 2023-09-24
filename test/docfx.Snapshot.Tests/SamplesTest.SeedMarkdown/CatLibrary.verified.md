@@ -1,8 +1,5 @@
 ﻿# Namespace CatLibrary
 
-__Namespace:__   
-__Assembly:__ CatLibrary.dll, CatLibrary.Core.dll
-
 ## Namespaces
 
 [CatLibrary.Core](CatLibrary.Core.md)

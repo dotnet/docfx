@@ -264,8 +264,6 @@ Hint whether this cat has cheat mode.
 
 This is an argument exception
 
-## Events
-
 ### ownEat
 
 Eat event of this cat

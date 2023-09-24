@@ -1,8 +1,5 @@
 ﻿# Namespace BuildFromProject
 
-__Namespace:__   
-__Assembly:__ BuildFromProject.dll
-
 ## Namespaces
 
 [BuildFromProject.Issue8540](BuildFromProject.Issue8540.md)
