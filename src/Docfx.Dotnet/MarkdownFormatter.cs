@@ -334,7 +334,6 @@ static class MarkdownFormatter
 
                 sb.AppendLine($"# Namespace {Escape(symbol.ToString()!)}").AppendLine();
 
-                Info();
                 Summary(comment);
                 Namespaces();
                 Types(t => t.TypeKind is TypeKind.Class, "Classes");
@@ -459,8 +458,14 @@ static class MarkdownFormatter
 
                 void Fields()
                 {
-                    var items = type.GetMembers().OfType<IFieldSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                    if (!items.Any())
+                    var items = (
+                        from s in symbols
+                        from symbol in ((INamedTypeSymbol)s.symbol).GetMembers().OfType<IFieldSymbol>()
+                        where filter.IncludeApi(symbol)
+                        orderby symbol.Name
+                        select (symbol, s.compilation)).ToList();
+
+                    if (items.Count is 0)
                         return;
 
                     sb.AppendLine($"## Fields").AppendLine();
@@ -471,14 +476,20 @@ static class MarkdownFormatter
                         return;
                     }
 
-                    foreach (var item in items)
-                        Field(item, compilation, "###");
+                    foreach (var (s, c) in items)
+                        Field(s, c, "###");
                 }
 
                 void Properties()
                 {
-                    var items = type.GetMembers().OfType<IPropertySymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                    if (!items.Any())
+                    var items = (
+                        from s in symbols
+                        from symbol in ((INamedTypeSymbol)s.symbol).GetMembers().OfType<IPropertySymbol>()
+                        where filter.IncludeApi(symbol)
+                        orderby symbol.Name
+                        select (symbol, s.compilation)).ToList();
+
+                    if (items.Count is 0)
                         return;
 
                     sb.AppendLine($"## Properties").AppendLine();
@@ -489,16 +500,20 @@ static class MarkdownFormatter
                         return;
                     }
 
-                    foreach (var item in items)
-                        Property(item, compilation, "###");
+                    foreach (var (s, c) in items)
+                        Property(s, c, "###");
                 }
 
                 void Methods(Func<IMethodSymbol, bool> predicate, string headingText)
                 {
-                    var items = type.GetMembers().OfType<IMethodSymbol>().Where(filter.IncludeApi)
-                        .Where(predicate).OrderBy(m => m.Name).ToList();
+                    var items = (
+                        from s in symbols
+                        from symbol in ((INamedTypeSymbol)s.symbol).GetMembers().OfType<IMethodSymbol>()
+                        where filter.IncludeApi(symbol) && predicate(symbol)
+                        orderby symbol.Name
+                        select (symbol, s.compilation)).ToList();
 
-                    if (!items.Any())
+                    if (items.Count is 0)
                         return;
 
                     sb.AppendLine($"## {headingText}").AppendLine();
@@ -509,17 +524,21 @@ static class MarkdownFormatter
                         return;
                     }
 
-                    foreach (var item in items)
-                        Method(item, compilation, "###");
+                    foreach (var (s, c) in items)
+                        Method(s, c, "###");
                 }
 
                 void Events()
                 {
-                    var items = type.GetMembers().OfType<IEventSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                    if (!items.Any())
-                        return;
+                    var items = (
+                        from s in symbols
+                        from symbol in ((INamedTypeSymbol)s.symbol).GetMembers().OfType<IEventSymbol>()
+                        where filter.IncludeApi(symbol)
+                        orderby symbol.Name
+                        select (symbol, s.compilation)).ToList();
 
-                    sb.AppendLine($"## Events").AppendLine();
+                    if (items.Count is 0)
+                        return;
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
@@ -527,16 +546,16 @@ static class MarkdownFormatter
                         return;
                     }
 
-                    foreach (var item in items)
-                        Event(item, compilation, "###");
+                    foreach (var (s, c) in items)
+                        Event(s, c, "###");
                 }
 
-                void MemberSummaryList(IEnumerable<ISymbol> symbols)
+                void MemberSummaryList<T>(IEnumerable<(T, Compilation)> symbols) where T : ISymbol
                 {
-                    foreach (var symbol in symbols)
+                    foreach (var (s, c) in symbols)
                     {
-                        sb.AppendLine(NameOnlyLink(symbol, compilation)).AppendLine();
-                        Summary(Comment(symbol, compilation));
+                        sb.AppendLine(NameOnlyLink(s, c)).AppendLine();
+                        Summary(Comment(s, c));
                     }
                 }
 
