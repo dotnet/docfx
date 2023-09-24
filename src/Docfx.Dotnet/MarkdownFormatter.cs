@@ -16,12 +16,19 @@ static class MarkdownFormatter
 {
     enum TocNodeType
     {
+        None,
         Namespace,
         Class,
         Struct,
         Interface,
         Enum,
         Delegate,
+        Constructor,
+        Field,
+        Property,
+        Method,
+        Event,
+        Operator,
     }
 
     class TocNode
@@ -63,95 +70,152 @@ static class MarkdownFormatter
             if (!filter.IncludeApi(symbol))
                 yield break;
 
-            var id = VisitorHelper.GetId(symbol);
-
             switch (symbol)
             {
                 case INamespaceSymbol ns when ns.IsGlobalNamespace:
                     foreach (var child in ns.GetNamespaceMembers())
-                    {
                         foreach (var item in CreateToc(child, compilation))
                             yield return item;
-                    }
                     break;
 
                 case INamespaceSymbol ns:
-                    var idExists = true;
-                    if (!tocNodes.TryGetValue(id, out var node))
-                    {
-                        idExists = false;
-                        tocNodes.Add(id, node = new()
-                        {
-                            id = id,
-                            name = config.NamespaceLayout switch
-                            {
-                                NamespaceLayout.Nested => symbol.Name,
-                                NamespaceLayout.Flattened => symbol.ToString() ?? "",
-                            },
-                            href = $"{id}.md",
-                            type = TocNodeType.Namespace,
-                        });
-                    }
-
-                    node.items ??= new();
-                    node.symbols.Add((symbol, compilation));
-                    allSymbols.Add((symbol, compilation));
-
-                    foreach (var child in ns.GetNamespaceMembers())
-                    {
-                        if (config.NamespaceLayout is NamespaceLayout.Flattened)
-                            foreach (var item in CreateToc(child, compilation))
-                                yield return item;
-                        else if (config.NamespaceLayout is NamespaceLayout.Nested)
-                            node.items.AddRange(CreateToc(child, compilation));
-                    }
-
-                    foreach (var child in ns.GetTypeMembers())
-                    {
-                        node.items.AddRange(CreateToc(child, compilation));
-                    }
-
-                    node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
-                    if (!idExists && node.containsLeafNodes)
-                    {
-                        yield return node;
-                    }
+                    foreach (var item in CreateNamespaceToc(ns))
+                        yield return item;
                     break;
 
                 case INamedTypeSymbol type:
-                    if (!tocNodes.TryGetValue(id, out node))
-                    {
-                        tocNodes.Add(id, node = new()
-                        {
-                            id = id,
-                            name = type.Name,
-                            href = $"{id}.md",
-                            containsLeafNodes = true,
-                            type = type.TypeKind switch
-                            {
-                                TypeKind.Class => TocNodeType.Class,
-                                TypeKind.Interface => TocNodeType.Interface,
-                                TypeKind.Struct => TocNodeType.Struct,
-                                TypeKind.Delegate => TocNodeType.Delegate,
-                                TypeKind.Enum => TocNodeType.Enum,
-                                _ => throw new NotSupportedException($"Unknown type kind {type.TypeKind}"),
-                            }
-                        });
-                        yield return node;
-                    }
+                    foreach (var item in CreateNamedTypeToc(type))
+                        yield return item;
+                    break;
 
-                    foreach (var child in type.GetTypeMembers())
-                    {
-                        foreach (var item in CreateToc(child, compilation))
-                            yield return item;
-                    }
-
-                    node.symbols.Add((symbol, compilation));
-                    allSymbols.Add((symbol, compilation));
+                case IFieldSymbol or IPropertySymbol or IMethodSymbol or IEventSymbol:
+                    foreach (var item in CreateMemberToc(symbol))
+                        yield return item;
                     break;
 
                 default:
                     throw new NotSupportedException($"Unknown symbol {symbol}");
+            }
+
+            IEnumerable<TocNode> CreateNamespaceToc(INamespaceSymbol ns)
+            {
+                var idExists = true;
+                var id = VisitorHelper.FileNameId(VisitorHelper.GetId(symbol));
+                if (!tocNodes.TryGetValue(id, out var node))
+                {
+                    idExists = false;
+                    tocNodes.Add(id, node = new()
+                    {
+                        id = id,
+                        name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "",
+                        href = $"{id}.md",
+                        type = TocNodeType.Namespace,
+                    });
+                }
+
+                node.items ??= new();
+                node.symbols.Add((symbol, compilation));
+                allSymbols.Add((symbol, compilation));
+
+                foreach (var child in ns.GetNamespaceMembers())
+                {
+                    if (config.NamespaceLayout is NamespaceLayout.Flattened)
+                        foreach (var item in CreateToc(child, compilation))
+                            yield return item;
+                    else if (config.NamespaceLayout is NamespaceLayout.Nested)
+                        node.items.AddRange(CreateToc(child, compilation));
+                }
+
+                foreach (var child in ns.GetTypeMembers())
+                {
+                    node.items.AddRange(CreateToc(child, compilation));
+                }
+
+                node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
+                if (!idExists && node.containsLeafNodes)
+                {
+                    yield return node;
+                }
+            }
+
+            IEnumerable<TocNode> CreateNamedTypeToc(INamedTypeSymbol type)
+            {
+                var idExists = true;
+                var id = VisitorHelper.FileNameId(VisitorHelper.GetId(symbol));
+                if (!tocNodes.TryGetValue(id, out var node))
+                {
+                    idExists = false;
+                    tocNodes.Add(id, node = new()
+                    {
+                        id = id,
+                        name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp),
+                        href = $"{id}.md",
+                        containsLeafNodes = true,
+                        type = type.TypeKind switch
+                        {
+                            TypeKind.Class => TocNodeType.Class,
+                            TypeKind.Interface => TocNodeType.Interface,
+                            TypeKind.Struct => TocNodeType.Struct,
+                            TypeKind.Delegate => TocNodeType.Delegate,
+                            TypeKind.Enum => TocNodeType.Enum,
+                            _ => throw new NotSupportedException($"Unknown type kind {type.TypeKind}"),
+                        }
+                    });
+                }
+
+                foreach (var child in type.GetTypeMembers())
+                {
+                    foreach (var item in CreateToc(child, compilation))
+                        yield return item;
+                }
+
+                if (config.MemberLayout is MemberLayout.SeparatePages && type.TypeKind is TypeKind.Class or TypeKind.Interface or TypeKind.Struct)
+                {
+                    node.items ??= new();
+                    foreach (var member in type.GetMembers())
+                        node.items.AddRange(CreateToc(member, compilation));
+                }
+
+                node.symbols.Add((symbol, compilation));
+                allSymbols.Add((symbol, compilation));
+
+                if (!idExists)
+                {
+                    yield return node;
+                }
+            }
+
+            IEnumerable<TocNode> CreateMemberToc(ISymbol symbol)
+            {
+                var type = symbol switch
+                {
+                    IPropertySymbol => TocNodeType.Property,
+                    IFieldSymbol => TocNodeType.Field,
+                    IEventSymbol => TocNodeType.Event,
+                    IMethodSymbol method when SymbolHelper.IsConstructor(method) => TocNodeType.Constructor,
+                    IMethodSymbol method when SymbolHelper.IsMethod(method) => TocNodeType.Method,
+                    IMethodSymbol method when SymbolHelper.IsOperator(method) => TocNodeType.Operator,
+                    _ => TocNodeType.None,
+                };
+
+                if (type is TocNodeType.None)
+                    yield break;
+
+                var id = VisitorHelper.FileNameId(VisitorHelper.GetOverloadId(symbol));
+                if (!tocNodes.TryGetValue(id, out var node))
+                {
+                    tocNodes.Add(id, node = new()
+                    {
+                        id = id,
+                        name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true),
+                        href = $"{id}.md",
+                        containsLeafNodes = true,
+                        type = type,
+                    });
+                    yield return node;
+                }
+
+                node.symbols.Add((symbol, compilation));
             }
         }
 
@@ -167,6 +231,12 @@ static class MarkdownFormatter
                 InsertCategory(TocNodeType.Interface, "Interfaces");
                 InsertCategory(TocNodeType.Enum, "Enums");
                 InsertCategory(TocNodeType.Delegate, "Delegates");
+                InsertCategory(TocNodeType.Constructor, "Constructors");
+                InsertCategory(TocNodeType.Field, "Fields");
+                InsertCategory(TocNodeType.Property, "Properties");
+                InsertCategory(TocNodeType.Method, "Methods");
+                InsertCategory(TocNodeType.Event, "Events");
+                InsertCategory(TocNodeType.Operator, "Operators");
             }
 
             foreach (var item in items)
@@ -197,137 +267,164 @@ static class MarkdownFormatter
 
         void SaveTocNode(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
         {
-            switch (symbols[0].symbol)
-            {
-                case INamespaceSymbol ns: SaveNamespace(id, symbols); break;
-                case INamedTypeSymbol type: SaveNamedType(type, symbols[0].compilation); break;
-                default: throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
-            }
-        }
-
-        void SaveNamespace(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
-        {
             var sb = new StringBuilder();
             var symbol = symbols[0].symbol;
             var compilation = symbols[0].compilation;
+            var comment = Comment(symbol, compilation);
 
-            var namespaceSymbols = symbols.Select(n => n.symbol).ToHashSet(SymbolEqualityComparer.Default);
-            var types = (
-                from s in allSymbols
-                where s.symbol.Kind is SymbolKind.NamedType && SymbolEqualityComparer.Default.Equals(s.symbol.ContainingNamespace, symbol)
-                select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
+            switch (symbols[0].symbol)
+            {
+                case INamespaceSymbol ns:
+                    Namespace();
+                    break;
 
-            sb.AppendLine($"# Namespace {Escape(symbol.ToString()!)}").AppendLine();
+                case INamedTypeSymbol type:
+                    switch (type.TypeKind)
+                    {
+                        case TypeKind.Enum: Enum(type); break;
+                        case TypeKind.Delegate: Delegate(type); break;
+                        case TypeKind.Interface or TypeKind.Structure or TypeKind.Class: ClassLike(type); break;
+                        default: throw new NotSupportedException($"Unknown symbol type kind {type.TypeKind}");
+                    }
+                    break;
 
-            Summary();
-            Namespaces();
-            Types(t => t.TypeKind is TypeKind.Class, "Classes");
-            Types(t => t.TypeKind is TypeKind.Struct, "Structs");
-            Types(t => t.TypeKind is TypeKind.Interface, "Interfaces");
-            Types(t => t.TypeKind is TypeKind.Enum, "Enums");
-            Types(t => t.TypeKind is TypeKind.Delegate, "Delegates");
+                case IFieldSymbol:
+                    MemberHeader("Field");
+                    foreach (var (s, c) in symbols)
+                        Field((IFieldSymbol)s, c, "##");
+                    break;
+
+                case IPropertySymbol:
+                    MemberHeader("Property");
+                    foreach (var (s, c) in symbols)
+                        Property((IPropertySymbol)s, c, "##");
+                    break;
+
+                case IEventSymbol:
+                    MemberHeader("Event");
+                    foreach (var (s, c) in symbols)
+                        Event((IEventSymbol)s, c, "##");
+                    break;
+
+                case IMethodSymbol method:
+                    MemberHeader(method switch
+                    {
+                        _ when SymbolHelper.IsConstructor(method) => "Constructor",
+                        _ when SymbolHelper.IsOperator(method) => "Operator",
+                        _ when SymbolHelper.IsMember(method) => "Method",
+                        _ => throw new NotSupportedException($"Unknown method type {method.MethodKind}"),
+                    }); ;
+                    foreach (var (s, c) in symbols)
+                        Method((IMethodSymbol)s, c, "##");
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
+            }
 
             File.WriteAllText(Path.Combine(config.OutputFolder, $"{id}.md"), sb.ToString());
 
-            void Summary()
+            void Namespace()
             {
-                var comment = Comment(symbol, compilation);
-                if (!string.IsNullOrEmpty(comment?.Summary))
-                    sb.AppendLine(comment.Summary).AppendLine();
-            }
+                var namespaceSymbols = symbols.Select(n => n.symbol).ToHashSet(SymbolEqualityComparer.Default);
+                var types = (
+                    from s in allSymbols
+                    where s.symbol.Kind is SymbolKind.NamedType && namespaceSymbols.Contains(s.symbol.ContainingNamespace)
+                    select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
 
-            void Namespaces()
-            {
-                var items = symbols
-                    .SelectMany(n => ((INamespaceSymbol)n.symbol).GetNamespaceMembers().Select(symbol => (symbol, n.compilation)))
-                    .DistinctBy(n => n.symbol.Name)
-                    .OrderBy(n => n.symbol.Name)
-                    .ToList();
+                sb.AppendLine($"# Namespace {Escape(symbol.ToString()!)}").AppendLine();
 
-                if (items.Count is 0)
-                    return;
+                Info();
+                Summary(comment);
+                Namespaces();
+                Types(t => t.TypeKind is TypeKind.Class, "Classes");
+                Types(t => t.TypeKind is TypeKind.Struct, "Structs");
+                Types(t => t.TypeKind is TypeKind.Interface, "Interfaces");
+                Types(t => t.TypeKind is TypeKind.Enum, "Enums");
+                Types(t => t.TypeKind is TypeKind.Delegate, "Delegates");
 
-                sb.AppendLine($"## Namespaces").AppendLine();
+                File.WriteAllText(Path.Combine(config.OutputFolder, $"{id}.md"), sb.ToString());
 
-                foreach (var (symbol, compilation) in items)
+                void Namespaces()
                 {
-                    sb.AppendLine(Link(symbol, compilation)).AppendLine();
-                    var comment = Comment(symbol, compilation);
-                    if (!string.IsNullOrEmpty(comment?.Summary))
-                        sb.AppendLine(comment.Summary).AppendLine();
+                    var items = symbols
+                        .SelectMany(n => ((INamespaceSymbol)n.symbol).GetNamespaceMembers().Select(symbol => (symbol, n.compilation)))
+                        .DistinctBy(n => n.symbol.Name)
+                        .OrderBy(n => n.symbol.Name)
+                        .ToList();
+
+                    if (items.Count is 0)
+                        return;
+
+                    sb.AppendLine($"## Namespaces").AppendLine();
+
+                    foreach (var (symbol, compilation) in items)
+                    {
+                        sb.AppendLine(Link(symbol, compilation)).AppendLine();
+                        var comment = Comment(symbol, compilation);
+                        if (!string.IsNullOrEmpty(comment?.Summary))
+                            sb.AppendLine(comment.Summary).AppendLine();
+                    }
+                }
+
+                void Types(Func<INamedTypeSymbol, bool> predicate, string headingText)
+                {
+                    var items = types.Where(t => predicate(t.symbol)).ToList();
+                    if (items.Count == 0)
+                        return;
+
+                    sb.AppendLine($"## {headingText}").AppendLine();
+
+                    foreach (var (symbol, compilation) in items)
+                    {
+                        sb.AppendLine(Link(symbol, compilation)).AppendLine();
+                        var comment = Comment(symbol, compilation);
+                        if (!string.IsNullOrEmpty(comment?.Summary))
+                            sb.AppendLine(comment.Summary).AppendLine();
+                    }
                 }
             }
 
-            void Types(Func<INamedTypeSymbol, bool> predicate, string headingText)
+            void Enum(INamedTypeSymbol type)
             {
-                var items = types.Where(t => predicate(t.symbol)).ToList();
-                if (items.Count == 0)
-                    return;
-
-                sb.AppendLine($"## {headingText}").AppendLine();
-
-                foreach (var (symbol, compilation) in items)
-                {
-                    sb.AppendLine(Link(symbol, compilation)).AppendLine();
-                    var comment = Comment(symbol, compilation);
-                    if (!string.IsNullOrEmpty(comment?.Summary))
-                        sb.AppendLine(comment.Summary).AppendLine();
-                }
-            }
-        }
-
-        void SaveNamedType(INamedTypeSymbol symbol, Compilation compilation)
-        {
-            var sb = new StringBuilder();
-            var comment = Comment(symbol, compilation);
-
-            switch (symbol.TypeKind)
-            {
-                case TypeKind.Enum: Enum(); break;
-                case TypeKind.Delegate: Delegate(); break;
-                case TypeKind.Interface or TypeKind.Structure or TypeKind.Class: Class(); break;
-                default: throw new NotSupportedException($"Unknown symbol type kind {symbol.TypeKind}");
-            }
-
-            var filename = Path.Combine(config.OutputFolder, VisitorHelper.GetId(symbol).Replace('`', '-') + ".md");
-            File.WriteAllText(filename, sb.ToString());
-
-            void Enum()
-            {
-                sb.AppendLine($"# Enum {Escape(symbol.Name)}").AppendLine();
+                sb.AppendLine($"# Enum {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 Info();
                 Summary(comment);
                 Syntax(symbol);
 
-                EnumFields();
+                ExtensionMethods(type);
+
+                EnumFields(type);
 
                 Examples(comment);
                 Remarks(comment);
                 SeeAlsos(comment);
             }
 
-            void Delegate()
+            void Delegate(INamedTypeSymbol type)
             {
-                sb.AppendLine($"# Delegate {Escape(symbol.Name)}").AppendLine();
+                sb.AppendLine($"# Delegate {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 Info();
                 Summary(comment);
                 Syntax(symbol);
 
-                var invokeMethod = symbol.DelegateInvokeMethod!;
+                var invokeMethod = type.DelegateInvokeMethod!;
                 Parameters(invokeMethod, comment);
                 Returns(invokeMethod, comment);
                 TypeParameters(invokeMethod.ContainingType, comment);
 
+                ExtensionMethods(type);
+
                 Examples(comment);
                 Remarks(comment);
                 SeeAlsos(comment);
             }
 
-            void Class()
+            void ClassLike(INamedTypeSymbol type)
             {
-                var typeHeader = symbol.TypeKind switch
+                var typeHeader = type.TypeKind switch
                 {
                     TypeKind.Interface => "Interface",
                     TypeKind.Class => "Class",
@@ -335,7 +432,7 @@ static class MarkdownFormatter
                     _ => throw new InvalidOperationException(),
                 };
 
-                sb.AppendLine($"# {typeHeader} {Escape(symbol.Name)}").AppendLine();
+                sb.AppendLine($"# {typeHeader} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 Info();
                 Summary(comment);
@@ -346,7 +443,7 @@ static class MarkdownFormatter
                 Derived();
                 Implements();
                 InheritedMembers();
-                ExtensionMethods();
+                ExtensionMethods(type);
 
                 Examples(comment);
                 Remarks(comment);
@@ -359,61 +456,150 @@ static class MarkdownFormatter
                 Methods(SymbolHelper.IsOperator, "Operators");
 
                 SeeAlsos(comment);
+
+                void Fields()
+                {
+                    var items = type.GetMembers().OfType<IFieldSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
+                    if (!items.Any())
+                        return;
+
+                    sb.AppendLine($"## Fields").AppendLine();
+
+                    if (config.MemberLayout is MemberLayout.SeparatePages)
+                    {
+                        MemberSummaryList(items);
+                        return;
+                    }
+
+                    foreach (var item in items)
+                        Field(item, compilation, "###");
+                }
+
+                void Properties()
+                {
+                    var items = type.GetMembers().OfType<IPropertySymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
+                    if (!items.Any())
+                        return;
+
+                    sb.AppendLine($"## Properties").AppendLine();
+
+                    if (config.MemberLayout is MemberLayout.SeparatePages)
+                    {
+                        MemberSummaryList(items);
+                        return;
+                    }
+
+                    foreach (var item in items)
+                        Property(item, compilation, "###");
+                }
+
+                void Methods(Func<IMethodSymbol, bool> predicate, string headingText)
+                {
+                    var items = type.GetMembers().OfType<IMethodSymbol>().Where(filter.IncludeApi)
+                        .Where(predicate).OrderBy(m => m.Name).ToList();
+
+                    if (!items.Any())
+                        return;
+
+                    sb.AppendLine($"## {headingText}").AppendLine();
+
+                    if (config.MemberLayout is MemberLayout.SeparatePages)
+                    {
+                        MemberSummaryList(items);
+                        return;
+                    }
+
+                    foreach (var item in items)
+                        Method(item, compilation, "###");
+                }
+
+                void Events()
+                {
+                    var items = type.GetMembers().OfType<IEventSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
+                    if (!items.Any())
+                        return;
+
+                    sb.AppendLine($"## Events").AppendLine();
+
+                    if (config.MemberLayout is MemberLayout.SeparatePages)
+                    {
+                        MemberSummaryList(items);
+                        return;
+                    }
+
+                    foreach (var item in items)
+                        Event(item, compilation, "###");
+                }
+
+                void MemberSummaryList(IEnumerable<ISymbol> symbols)
+                {
+                    foreach (var symbol in symbols)
+                    {
+                        sb.AppendLine(NameOnlyLink(symbol, compilation)).AppendLine();
+                        Summary(Comment(symbol, compilation));
+                    }
+                }
+
+                void Inheritance()
+                {
+                    var items = new List<ISymbol>();
+                    for (var i = type; i != null; i = i.BaseType)
+                        items.Add(i);
+
+                    if (items.Count <= 1)
+                        return;
+
+                    items.Reverse();
+                    sb.AppendLine($"#### Inheritance");
+                    List(" \u2190 ", items);
+                }
+
+                void Derived()
+                {
+                    var items = (
+                        from s in allSymbols
+                        where s.symbol.Kind is SymbolKind.NamedType && SymbolEqualityComparer.Default.Equals(((INamedTypeSymbol)s.symbol).BaseType, symbol)
+                        select s.symbol).ToList();
+
+                    if (items.Count is 0)
+                        return;
+
+                    sb.AppendLine($"#### Derived");
+                    List(", ", items);
+                }
+
+                void Implements()
+                {
+                    var items = type.AllInterfaces.Where(filter.IncludeApi).ToList();
+                    if (items.Count is 0)
+                        return;
+
+                    sb.AppendLine($"#### Implements");
+                    List(", ", items);
+                }
+
+                void InheritedMembers()
+                {
+                    var items = type.GetInheritedMembers(filter).ToList();
+                    if (items.Count is 0)
+                        return;
+
+                    sb.AppendLine($"#### Inherited Members");
+                    List(", ", items);
+                }
             }
 
-            void Inheritance()
+            void MemberHeader(string headingText)
             {
-                var items = new List<ISymbol>();
-                for (var type = symbol; type != null; type = type.BaseType)
-                    items.Add(type);
-
-                if (items.Count <= 1)
-                    return;
-
-                items.Reverse();
-                sb.AppendLine($"#### Inheritance");
-                List(" \u2190 ", items);
+                sb.AppendLine($"# {headingText} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true))}").AppendLine();
+                Info();
             }
 
-            void Derived()
-            {
-                var items = (
-                    from s in allSymbols
-                    where s.symbol.Kind is SymbolKind.NamedType && SymbolEqualityComparer.Default.Equals(((INamedTypeSymbol)s.symbol).BaseType, symbol)
-                    select s.symbol).ToList();
-
-                if (items.Count is 0)
-                    return;
-
-                sb.AppendLine($"#### Derived");
-                List(", ", items);
-            }
-
-            void Implements()
-            {
-                var items = symbol.AllInterfaces.Where(filter.IncludeApi).ToList();
-                if (items.Count is 0)
-                    return;
-
-                sb.AppendLine($"#### Implements");
-                List(", ", items);
-            }
-
-            void InheritedMembers()
-            {
-                var items = symbol.GetInheritedMembers(filter).ToList();
-                if (items.Count is 0)
-                    return;
-
-                sb.AppendLine($"#### Inherited Members");
-                List(", ", items);
-            }
-
-            void ExtensionMethods()
+            void ExtensionMethods(INamedTypeSymbol type)
             {
                 var items = extensionMethods
                     .Where(m => m.Language == symbol.Language)
-                    .Select(m => m.ReduceExtensionMethod(symbol))
+                    .Select(m => m.ReduceExtensionMethod(type))
                     .OfType<IMethodSymbol>()
                     .OrderBy(i => i.Name)
                     .ToList();
@@ -475,128 +661,78 @@ static class MarkdownFormatter
                 }
             }
 
-            void Methods(Func<IMethodSymbol, bool> predicate, string headingText)
+            void Method(IMethodSymbol symbol, Compilation compilation, string heading)
             {
-                var items = symbol.GetMembers().OfType<IMethodSymbol>().Where(filter.IncludeApi)
-                    .Where(predicate).OrderBy(m => m.Name).ToList();
+                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
-                if (!items.Any())
-                    return;
+                var comment = Comment(symbol, compilation);
+                Summary(comment);
+                Syntax(symbol);
 
-                sb.AppendLine($"## {headingText}").AppendLine();
+                Parameters(symbol, comment, $"{heading}#");
+                Returns(symbol, comment, $"{heading}#");
+                TypeParameters(symbol, comment, $"{heading}#");
 
-                foreach (var item in items)
-                    Method(item);
-
-                void Method(IMethodSymbol symbol)
-                {
-                    sb.AppendLine($"### {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
-
-                    var comment = Comment(symbol, compilation);
-                    Summary(comment);
-                    Syntax(symbol);
-
-                    Parameters(symbol, comment, "####");
-                    Returns(symbol, comment, "####");
-                    TypeParameters(symbol, comment, "####");
-
-                    Examples(comment, "####");
-                    Remarks(comment, "####");
-                    Exceptions(comment, "####");
-                    SeeAlsos(comment, "####");
-                }
+                Examples(comment, $"{heading}#");
+                Remarks(comment, $"{heading}#");
+                Exceptions(comment, $"{heading}#");
+                SeeAlsos(comment, $"{heading}#");
             }
 
-            void Fields()
+            void Field(IFieldSymbol symbol, Compilation compilation, string heading)
             {
-                var items = symbol.GetMembers().OfType<IFieldSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                if (!items.Any())
-                    return;
+                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
-                sb.AppendLine($"## Fields").AppendLine();
+                var comment = Comment(symbol, compilation);
+                Summary(comment);
+                Syntax(symbol);
 
-                foreach (var item in items)
-                    Field(item);
+                sb.AppendLine("Field Value").AppendLine();
+                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
 
-                void Field(IFieldSymbol symbol)
-                {
-                    sb.AppendLine($"### {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
-
-                    var comment = Comment(symbol, compilation);
-                    Summary(comment);
-                    Syntax(symbol);
-
-                    sb.AppendLine("Field Value").AppendLine();
-                    sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
-
-                    Examples(comment, "####");
-                    Remarks(comment, "####");
-                    Exceptions(comment, "####");
-                    SeeAlsos(comment, "####");
-                }
+                Examples(comment, $"{heading}#");
+                Remarks(comment, $"{heading}#");
+                Exceptions(comment, $"{heading}#");
+                SeeAlsos(comment, $"{heading}#");
             }
 
-            void Properties()
+            void Property(IPropertySymbol symbol, Compilation compilation, string heading)
             {
-                var items = symbol.GetMembers().OfType<IPropertySymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                if (!items.Any())
-                    return;
+                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
-                sb.AppendLine($"## Properties").AppendLine();
+                var comment = Comment(symbol, compilation);
+                Summary(comment);
+                Syntax(symbol);
 
-                foreach (var item in items)
-                    Property(item);
+                sb.AppendLine("Property Value").AppendLine();
+                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
 
-                void Property(IPropertySymbol symbol)
-                {
-                    sb.AppendLine($"### {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
-
-                    var comment = Comment(symbol, compilation);
-                    Summary(comment);
-                    Syntax(symbol);
-
-                    sb.AppendLine("Property Value").AppendLine();
-                    sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
-
-                    Examples(comment, "####");
-                    Remarks(comment, "####");
-                    Exceptions(comment, "####");
-                    SeeAlsos(comment, "####");
-                }
+                Examples(comment, $"{heading}#");
+                Remarks(comment, $"{heading}#");
+                Exceptions(comment, $"{heading}#");
+                SeeAlsos(comment, $"{heading}#");
             }
 
-            void Events()
+            void Event(IEventSymbol symbol, Compilation compilation, string heading)
             {
-                var items = symbol.GetMembers().OfType<IEventSymbol>().Where(filter.IncludeApi).OrderBy(m => m.Name).ToList();
-                if (!items.Any())
-                    return;
+                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
-                sb.AppendLine($"## Events").AppendLine();
+                var comment = Comment(symbol, compilation);
+                Summary(comment);
+                Syntax(symbol);
 
-                foreach (var item in items)
-                    Event(item);
+                sb.AppendLine("Event Type").AppendLine();
+                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
 
-                void Event(IEventSymbol symbol)
-                {
-                    sb.AppendLine($"### {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
-
-                    var comment = Comment(symbol, compilation);
-                    Summary(comment);
-                    Syntax(symbol);
-
-                    sb.AppendLine("Event Type").AppendLine();
-                    sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
-
-                    Examples(comment, "####");
-                    Remarks(comment, "####");
-                    Exceptions(comment, "####");
-                    SeeAlsos(comment, "####");
-                }
+                Examples(comment, $"{heading}#");
+                Remarks(comment, $"{heading}#");
+                Exceptions(comment, $"{heading}#");
+                SeeAlsos(comment, $"{heading}#");
             }
 
-            void EnumFields()
+            void EnumFields(INamedTypeSymbol type)
             {
-                var items = symbol.GetMembers().OfType<IFieldSymbol>().Where(filter.IncludeApi).ToList();
+                var items = type.GetMembers().OfType<IFieldSymbol>().Where(filter.IncludeApi).ToList();
                 if (!items.Any())
                     return;
 
@@ -616,8 +752,9 @@ static class MarkdownFormatter
 
             void Info()
             {
+                var assemblies = string.Join(", ", symbols.Select(s => s.symbol.ContainingAssembly.Name).Distinct().Select(n => $"{n}.dll"));
                 sb.AppendLine($"__Namespace:__ {Link(symbol.ContainingNamespace, compilation)}  ");
-                sb.AppendLine($"__Assembly:__ {symbol.ContainingAssembly.Name}.dll").AppendLine();
+                sb.AppendLine($"__Assembly:__ {assemblies}").AppendLine();
             }
 
             void Summary(XmlComment? comment)
@@ -710,6 +847,13 @@ static class MarkdownFormatter
                 return string.Concat(linkItems.Select(i =>
                     string.IsNullOrEmpty(i.Href) ? Escape(i.DisplayName) : $"[{Escape(i.DisplayName)}]({Escape(i.Href)})"));
             }
+        }
+
+        string NameOnlyLink(ISymbol symbol, Compilation compilation)
+        {
+            var title = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp);
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
+            return string.IsNullOrEmpty(url) ? Escape(title) : $"[{Escape(title)}]({Escape(url)})";
         }
 
         XmlComment? Comment(ISymbol symbol, Compilation compilation)
