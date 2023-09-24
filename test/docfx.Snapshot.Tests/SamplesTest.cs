@@ -188,7 +188,7 @@ public class SamplesTest
 
         Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", nameof(SeedMarkdown) });
 
-        await VerifyDirectory($"{nameof(SeedMarkdown)}/obj/api", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory($"{nameof(SeedMarkdown)}", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]

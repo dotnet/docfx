@@ -83,9 +83,17 @@ internal class MetadataJsonItemConfig
 
     /// <summary>
     /// Defines the output folder of the generated metadata files.
+    /// Command line --output argument prepends this value.
     /// </summary>
     [JsonProperty("dest")]
     public string Destination { get; set; }
+
+    /// <summary>
+    /// Defines the output folder of the generated metadata files.
+    /// Command line --output argument override this value.
+    /// </summary>
+    [JsonProperty("output")]
+    public string Output { get; set; }
 
     /// <summary>
     /// Defines the output file format.
