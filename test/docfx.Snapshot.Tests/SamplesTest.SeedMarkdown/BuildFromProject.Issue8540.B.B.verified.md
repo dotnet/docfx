@@ -1,6 +1,6 @@
 ﻿# Class B
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md).[Issue8540](BuildFromProject.Issue8540.md).[B](BuildFromProject.Issue8540.B.md)  
+__Namespace:__ [BuildFromProject.Issue8540.B](BuildFromProject.Issue8540.B.md)  
 __Assembly:__ BuildFromProject.dll
 
 ```csharp

@@ -1,22 +1,20 @@
-﻿# Class Complex
+﻿# Class Class1.Test<T>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+__Namespace:__ [BuildFromProject](BuildFromProject.md)  
+__Assembly:__ BuildFromProject.dll
 
 ```csharp
-public class Complex<T, J>
+public class Class1.Test<T>
 ```
 
 ## Type Parameters
 
 `T`
 
-`J`
-
 #### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Complex](CatLibrary.Complex-2.md)<T, J>
+[Class1](BuildFromProject.Class1.md).[Test](BuildFromProject.Class1.Test-1.md)<T>
 
 #### Inherited Members
 

@@ -17,6 +17,11 @@ internal static class VisitorHelper
     public static string GlobalNamespaceId { get; set; }
     private static readonly Regex GenericMethodPostFix = new(@"``\d+$", RegexOptions.Compiled);
 
+    public static string FileNameId(string id)
+    {
+        return id.Replace('`', '-').Replace('#', '-').Replace("*", "");
+    }
+
     public static string GetId(ISymbol symbol)
     {
         if (symbol == null)

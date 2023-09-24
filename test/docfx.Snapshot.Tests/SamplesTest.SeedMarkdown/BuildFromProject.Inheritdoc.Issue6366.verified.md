@@ -1,4 +1,4 @@
-﻿# Class Issue6366
+﻿# Class Inheritdoc.Issue6366
 
 __Namespace:__ [BuildFromProject](BuildFromProject.md)  
 __Assembly:__ BuildFromProject.dll

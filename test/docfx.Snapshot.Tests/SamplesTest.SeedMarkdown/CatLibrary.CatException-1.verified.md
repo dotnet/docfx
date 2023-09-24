@@ -1,4 +1,4 @@
-﻿# Class CatException
+﻿# Class CatException<T>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll

@@ -34,16 +34,9 @@ internal static partial class SymbolFormatter
     private static readonly SymbolDisplayFormat s_methodQualifiedNameFormat = s_qualifiedNameFormat
         .WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeParamsRefOut);
 
-    private static readonly SymbolDisplayFormat s_linkItemNameWithTypeFormat = new(
-        memberOptions: SymbolDisplayMemberOptions.IncludeContainingType,
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
-
-    private static readonly SymbolDisplayFormat s_linkItemQualifiedNameFormat = s_linkItemNameWithTypeFormat
-        .WithTypeQualificationStyle(SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-
-    public static string GetName(ISymbol symbol, SyntaxLanguage language)
+    public static string GetName(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true, bool overload = false)
     {
-        return GetNameParts(symbol, language).ToDisplayString();
+        return GetNameParts(symbol, language, nullableReferenceType, overload).ToDisplayString();
     }
 
     public static ImmutableArray<SymbolDisplayPart> GetNameParts(

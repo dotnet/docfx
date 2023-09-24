@@ -1,20 +1,22 @@
-﻿# Class Class1
+﻿# Class Complex<T, J>
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+__Namespace:__ [CatLibrary](CatLibrary.md)  
+__Assembly:__ CatLibrary.dll
 
 ```csharp
-public abstract class Inheritdoc.Issue6366.Class1<T>
+public class Complex<T, J>
 ```
 
 ## Type Parameters
 
 `T`
 
+`J`
+
 #### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue6366](BuildFromProject.Inheritdoc.Issue6366.md).[Class1](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md)<T>
+[Complex](CatLibrary.Complex-2.md)<T, J>
 
 #### Inherited Members
 
@@ -25,30 +27,4 @@ public abstract class Inheritdoc.Issue6366.Class1<T>
 [object.MemberwiseClone()](https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone), 
 [object.ReferenceEquals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
 [object.ToString()](https://learn.microsoft.com/dotnet/api/system.object.tostring)
-
-## Methods
-
-### TestMethod1(T, int)
-
-This text inherited.
-
-```csharp
-public abstract T TestMethod1(T parm1, int parm2)
-```
-
-#### Parameters
-
-`parm1` T
-
-This text NOT inherited.
-
-`parm2` [int](https://learn.microsoft.com/dotnet/api/system.int32)
-
-This text inherited.
-
-#### Returns
-
-T
-
-This text inherited.
 

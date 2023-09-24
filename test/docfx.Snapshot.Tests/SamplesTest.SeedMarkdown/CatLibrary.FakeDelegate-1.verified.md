@@ -1,4 +1,4 @@
-﻿# Delegate FakeDelegate
+﻿# Delegate FakeDelegate<T>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll

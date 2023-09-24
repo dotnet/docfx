@@ -43,8 +43,8 @@ internal static partial class SymbolUrlResolver
             "!" => null,
             "N" or "T" => $"{uid.Replace('`', '-')}{ext}",
             "M" or "F" or "P" or "E" => memberLayout is MemberLayout.SeparatePages && !symbol.IsEnumMember()
-                ? $"{VisitorHelper.GetId(symbol).Replace('`', '-')}{ext}"
-                : $"{VisitorHelper.GetId(symbol.ContainingType).Replace('`', '-')}{ext}#{Regex.Replace(uid, @"/\W/", "_")}",
+                ? $"{VisitorHelper.FileNameId(VisitorHelper.GetOverloadId(symbol))}{ext}#{Regex.Replace(uid, @"/\W/", "_")}"
+                : $"{VisitorHelper.FileNameId(VisitorHelper.GetId(symbol.ContainingType))}{ext}#{Regex.Replace(uid, @"/\W/", "_")}",
             _ => throw new NotSupportedException($"Unknown comment ID format '{type}'"),
         };
     }

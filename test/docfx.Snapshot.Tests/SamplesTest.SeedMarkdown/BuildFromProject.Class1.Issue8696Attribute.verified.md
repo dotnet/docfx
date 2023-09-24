@@ -1,4 +1,4 @@
-﻿# Class Issue8696Attribute
+﻿# Class Class1.Issue8696Attribute
 
 __Namespace:__ [BuildFromProject](BuildFromProject.md)  
 __Assembly:__ BuildFromProject.dll

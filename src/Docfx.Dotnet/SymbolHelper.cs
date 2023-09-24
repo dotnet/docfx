@@ -82,30 +82,62 @@ internal static class SymbolHelper
         return method.MethodKind is MethodKind.BuiltinOperator or MethodKind.UserDefinedOperator or MethodKind.Conversion;
     }
 
-    public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly)
+    public static IEnumerable<IMethodSymbol> FindExtensionMethods(this IAssemblySymbol assembly, SymbolFilter filter)
     {
         if (!assembly.MightContainExtensionMethods)
             return Array.Empty<IMethodSymbol>();
 
         return
-            from ns in assembly.GetAllNamespaces()
+            from ns in assembly.GetAllNamespaces(filter)
             from type in ns.GetTypeMembers()
             where type.MightContainExtensionMethods
             from member in type.GetMembers()
             where member.Kind is SymbolKind.Method && ((IMethodSymbol)member).IsExtensionMethod
+            where filter.IncludeApi(member)
             select (IMethodSymbol)member;
     }
 
-    public static IEnumerable<INamespaceSymbol> GetAllNamespaces(this IAssemblySymbol assembly)
+    public static IEnumerable<INamespaceSymbol> GetAllNamespaces(this IAssemblySymbol assembly, SymbolFilter filter)
     {
         var stack = new Stack<INamespaceSymbol>();
         stack.Push(assembly.GlobalNamespace);
-        while (stack.TryPop(out var ns))
+        while (stack.TryPop(out var item))
         {
-            yield return ns;
-            foreach (var child in ns.GetNamespaceMembers())
+            if (!filter.IncludeApi(item))
+                continue;
+
+            yield return item;
+            foreach (var child in item.GetNamespaceMembers())
             {
                 stack.Push(child);
+            }
+        }
+    }
+
+    public static IEnumerable<INamedTypeSymbol> GetAllTypes(this IAssemblySymbol assembly, SymbolFilter filter)
+    {
+        var stack = new Stack<INamespaceOrTypeSymbol>();
+        stack.Push(assembly.GlobalNamespace);
+
+        while (stack.TryPop(out var item))
+        {
+            if (!filter.IncludeApi(item))
+                continue;
+
+            if (item is INamedTypeSymbol type)
+            {
+                yield return type;
+
+                foreach (var child in type.GetTypeMembers())
+                    stack.Push(child);
+            }
+            else if (item is INamespaceSymbol ns)
+            {
+                foreach (var child in ns.GetNamespaceMembers())
+                    stack.Push(child);
+
+                foreach (var child in ns.GetTypeMembers())
+                    stack.Push(child);
             }
         }
     }

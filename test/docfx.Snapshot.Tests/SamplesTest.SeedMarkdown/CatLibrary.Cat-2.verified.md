@@ -1,4 +1,4 @@
-﻿# Class Cat
+﻿# Class Cat<T, K>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll
@@ -263,8 +263,6 @@ Hint whether this cat has cheat mode.
 [ArgumentException](https://learn.microsoft.com/dotnet/api/system.argumentexception)
 
 This is an argument exception
-
-## Events
 
 ### ownEat
 

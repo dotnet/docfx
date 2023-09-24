@@ -1,4 +1,4 @@
-﻿# Struct Issue8129
+﻿# Struct Inheritdoc.Issue8129
 
 __Namespace:__ [BuildFromProject](BuildFromProject.md)  
 __Assembly:__ BuildFromProject.dll

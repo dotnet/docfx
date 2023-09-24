@@ -1,4 +1,4 @@
-﻿# Interface IIssue8948
+﻿# Interface Class1.IIssue8948
 
 __Namespace:__ [BuildFromProject](BuildFromProject.md)  
 __Assembly:__ BuildFromProject.dll

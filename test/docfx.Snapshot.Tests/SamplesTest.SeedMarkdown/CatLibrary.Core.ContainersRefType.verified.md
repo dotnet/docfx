@@ -1,6 +1,6 @@
 ﻿# Struct ContainersRefType
 
-__Namespace:__ [CatLibrary](CatLibrary.md).[Core](CatLibrary.Core.md)  
+__Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
 __Assembly:__ CatLibrary.Core.dll
 
 Struct ContainersRefType
@@ -78,8 +78,6 @@ public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)
 #### Returns
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
-
-## Events
 
 ### ContainersRefTypeEventHandler
 

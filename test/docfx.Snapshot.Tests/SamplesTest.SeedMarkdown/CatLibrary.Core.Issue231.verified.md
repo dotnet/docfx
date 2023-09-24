@@ -1,7 +1,7 @@
 ﻿# Class Issue231
 
-__Namespace:__ [CatLibrary](CatLibrary.md).[Core](CatLibrary.Core.md)  
-__Assembly:__ CatLibrary.Core.dll
+__Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
+__Assembly:__ CatLibrary.dll, CatLibrary.Core.dll
 
 ```csharp
 public static class Issue231
@@ -23,6 +23,16 @@ public static class Issue231
 [object.ToString()](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
 ## Methods
+
+### Bar(ContainersRefType)
+
+```csharp
+public static void Bar(this ContainersRefType c)
+```
+
+#### Parameters
+
+`c` [ContainersRefType](CatLibrary.Core.ContainersRefType.md)
 
 ### Foo(ContainersRefType)
 
