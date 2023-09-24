@@ -1,28 +1,13 @@
 ﻿# Namespace CatLibrary
 
+__Namespace:__   
+__Assembly:__ CatLibrary.dll, CatLibrary.Core.dll
+
 ## Namespaces
 
 [CatLibrary.Core](CatLibrary.Core.md)
 
 ## Classes
-
-[ICatExtension](CatLibrary.ICatExtension.md)
-
-It's the class that contains ICat interface's extension method.
-<p>This class must be <b>public</b> and <b>static</b>.</p>
-<p>Also it shouldn't be a geneic class</p>
-
-[CatException](CatLibrary.CatException-1.md)<T>
-
-[TomFromBaseClass](CatLibrary.TomFromBaseClass.md)
-
-*TomFromBaseClass* inherits from @
-
-[Tom](CatLibrary.Tom.md)
-
-Tom class is only inherit from Object. Not any member inside itself.
-
-[Complex](CatLibrary.Complex-2.md)<T, J>
 
 [Cat](CatLibrary.Cat-2.md)<T, K>
 
@@ -32,15 +17,33 @@ Tom class is only inherit from Object. Not any member inside itself.
 <p>this class is a template class. It has two Generic parameter. they are: <code class="typeparamref">T</code> and <code class="typeparamref">K</code>.</p>
 <p>The extension method of this class can refer to <xref href="CatLibrary.ICatExtension" data-throw-if-not-resolved="false"></xref> class</p>
 
+[CatException](CatLibrary.CatException-1.md)<T>
+
+[Complex](CatLibrary.Complex-2.md)<T, J>
+
+[ICatExtension](CatLibrary.ICatExtension.md)
+
+It's the class that contains ICat interface's extension method.
+<p>This class must be <b>public</b> and <b>static</b>.</p>
+<p>Also it shouldn't be a geneic class</p>
+
+[Tom](CatLibrary.Tom.md)
+
+Tom class is only inherit from Object. Not any member inside itself.
+
+[TomFromBaseClass](CatLibrary.TomFromBaseClass.md)
+
+*TomFromBaseClass* inherits from @
+
 ## Interfaces
-
-[ICat](CatLibrary.ICat.md)
-
-Cat's interface
 
 [IAnimal](CatLibrary.IAnimal.md)
 
 This is <b>basic</b> interface of all animal.
+
+[ICat](CatLibrary.ICat.md)
+
+Cat's interface
 
 ## Delegates
 

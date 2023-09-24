@@ -1,5 +1,8 @@
 ﻿# Namespace BuildFromVBSourceCode
 
+__Namespace:__ [](.md)  
+__Assembly:__ ?.dll
+
 ## Classes
 
 [BaseClass1](BuildFromVBSourceCode.BaseClass1.md)

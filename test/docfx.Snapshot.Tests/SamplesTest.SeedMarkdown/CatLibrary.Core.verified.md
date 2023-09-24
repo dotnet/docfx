@@ -1,14 +1,17 @@
 ﻿# Namespace CatLibrary.Core
 
+__Namespace:__ [CatLibrary](CatLibrary.md)  
+__Assembly:__ CatLibrary.dll, CatLibrary.Core.dll
+
 ## Classes
 
-[Issue231](CatLibrary.Core.Issue231.md)
-
-[Issue231](CatLibrary.Core.Issue231.md)
+[ContainersRefType](CatLibrary.Core.ContainersRefType.md).[ContainersRefTypeChild](CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md)
 
 [ExplicitLayoutClass](CatLibrary.Core.ExplicitLayoutClass.md)
 
-[ContainersRefType](CatLibrary.Core.ContainersRefType.md).[ContainersRefTypeChild](CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md)
+[Issue231](CatLibrary.Core.Issue231.md)
+
+[Issue231](CatLibrary.Core.Issue231.md)
 
 ## Structs
 

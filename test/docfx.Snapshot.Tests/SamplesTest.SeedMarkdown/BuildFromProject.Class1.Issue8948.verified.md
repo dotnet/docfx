@@ -1,4 +1,4 @@
-﻿# Class Issue8948
+﻿# Class Class1.Issue8948
 
 __Namespace:__ [BuildFromProject](BuildFromProject.md)  
 __Assembly:__ BuildFromProject.dll

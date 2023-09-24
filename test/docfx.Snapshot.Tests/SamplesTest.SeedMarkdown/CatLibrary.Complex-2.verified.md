@@ -1,4 +1,4 @@
-﻿# Class Complex
+﻿# Class Complex<T, J>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll

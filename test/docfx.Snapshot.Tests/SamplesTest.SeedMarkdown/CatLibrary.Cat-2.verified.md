@@ -1,4 +1,4 @@
-﻿# Class Cat
+﻿# Class Cat<T, K>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll

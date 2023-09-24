@@ -1,4 +1,4 @@
-﻿# Delegate ContainersRefTypeDelegate
+﻿# Delegate ContainersRefType.ContainersRefTypeDelegate
 
 __Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
 __Assembly:__ CatLibrary.Core.dll

@@ -1,4 +1,4 @@
-﻿# Delegate MRefDelegate
+﻿# Delegate MRefDelegate<K, T, L>
 
 __Namespace:__ [CatLibrary](CatLibrary.md)  
 __Assembly:__ CatLibrary.dll

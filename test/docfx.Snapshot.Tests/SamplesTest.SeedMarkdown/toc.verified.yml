@@ -2,59 +2,72 @@
 - name: BuildFromAssembly
   href: BuildFromAssembly.md
   items:
+  - name: Classes
   - name: Class1
     href: BuildFromAssembly.Class1.md
 - name: BuildFromCSharpSourceCode
   href: BuildFromCSharpSourceCode.md
   items:
+  - name: Classes
   - name: CSharp
     href: BuildFromCSharpSourceCode.CSharp.md
 - name: BuildFromProject
   href: BuildFromProject.md
   items:
-  - name: Class1
-    href: BuildFromProject.Inheritdoc.Issue6366.Class1`1.md
+  - name: Namespaces
+  - name: Issue8540
+    href: BuildFromProject.Issue8540.md
+    items:
+    - name: Namespaces
+    - name: A
+      href: BuildFromProject.Issue8540.A.md
+      items:
+      - name: Classes
+      - name: A
+        href: BuildFromProject.Issue8540.A.A.md
+    - name: B
+      href: BuildFromProject.Issue8540.B.md
+      items:
+      - name: Classes
+      - name: B
+        href: BuildFromProject.Issue8540.B.B.md
+  - name: Classes
   - name: Class1
     href: BuildFromProject.Class1.md
-  - name: Class2
-    href: BuildFromProject.Inheritdoc.Issue6366.Class2.md
-  - name: IInheritdoc
-    href: BuildFromProject.IInheritdoc.md
-  - name: IIssue8948
-    href: BuildFromProject.Class1.IIssue8948.md
+  - name: Class1.Issue8665
+    href: BuildFromProject.Class1.Issue8665.md
+  - name: Class1.Issue8696Attribute
+    href: BuildFromProject.Class1.Issue8696Attribute.md
+  - name: Class1.Issue8948
+    href: BuildFromProject.Class1.Issue8948.md
+  - name: Class1.Test<T>
+    href: BuildFromProject.Class1.Test-1.md
   - name: Inheritdoc
     href: BuildFromProject.Inheritdoc.md
-  - name: Issue6366
+  - name: Inheritdoc.Issue6366
     href: BuildFromProject.Inheritdoc.Issue6366.md
-  - name: Issue7035
+  - name: Inheritdoc.Issue6366.Class1<T>
+    href: BuildFromProject.Inheritdoc.Issue6366.Class1-1.md
+  - name: Inheritdoc.Issue6366.Class2
+    href: BuildFromProject.Inheritdoc.Issue6366.Class2.md
+  - name: Inheritdoc.Issue7035
     href: BuildFromProject.Inheritdoc.Issue7035.md
-  - name: Issue7484
+  - name: Inheritdoc.Issue7484
     href: BuildFromProject.Inheritdoc.Issue7484.md
-  - name: Issue8101
+  - name: Inheritdoc.Issue8101
     href: BuildFromProject.Inheritdoc.Issue8101.md
-  - name: Issue8129
+  - name: Structs
+  - name: Inheritdoc.Issue8129
     href: BuildFromProject.Inheritdoc.Issue8129.md
-  - name: Issue8665
-    href: BuildFromProject.Class1.Issue8665.md
-  - name: Issue8696Attribute
-    href: BuildFromProject.Class1.Issue8696Attribute.md
-  - name: Issue8948
-    href: BuildFromProject.Class1.Issue8948.md
-  - name: Test
-    href: BuildFromProject.Class1.Test`1.md
-- name: BuildFromProject.Issue8540.A
-  href: BuildFromProject.Issue8540.A.md
-  items:
-  - name: A
-    href: BuildFromProject.Issue8540.A.A.md
-- name: BuildFromProject.Issue8540.B
-  href: BuildFromProject.Issue8540.B.md
-  items:
-  - name: B
-    href: BuildFromProject.Issue8540.B.B.md
+  - name: Interfaces
+  - name: Class1.IIssue8948
+    href: BuildFromProject.Class1.IIssue8948.md
+  - name: IInheritdoc
+    href: BuildFromProject.IInheritdoc.md
 - name: BuildFromVBSourceCode
   href: BuildFromVBSourceCode.md
   items:
+  - name: Classes
   - name: BaseClass1
     href: BuildFromVBSourceCode.BaseClass1.md
   - name: Class1
@@ -62,49 +75,65 @@
 - name: CatLibrary
   href: CatLibrary.md
   items:
-  - name: Cat
-    href: CatLibrary.Cat`2.md
-  - name: CatException
-    href: CatLibrary.CatException`1.md
-  - name: Complex
-    href: CatLibrary.Complex`2.md
-  - name: FakeDelegate
-    href: CatLibrary.FakeDelegate`1.md
-  - name: IAnimal
-    href: CatLibrary.IAnimal.md
-  - name: ICat
-    href: CatLibrary.ICat.md
+  - name: Namespaces
+  - name: Core
+    href: CatLibrary.Core.md
+    items:
+    - name: Classes
+    - name: ContainersRefType.ContainersRefTypeChild
+      href: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md
+    - name: ExplicitLayoutClass
+      href: CatLibrary.Core.ExplicitLayoutClass.md
+    - name: Issue231
+      href: CatLibrary.Core.Issue231.md
+    - name: Structs
+    - name: ContainersRefType
+      href: CatLibrary.Core.ContainersRefType.md
+    - name: Interfaces
+    - name: ContainersRefType.ContainersRefTypeChildInterface
+      href: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md
+    - name: Enums
+    - name: ContainersRefType.ColorType
+      href: CatLibrary.Core.ContainersRefType.ColorType.md
+    - name: Delegates
+    - name: ContainersRefType.ContainersRefTypeDelegate
+      href: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md
+  - name: Classes
+  - name: Cat<T, K>
+    href: CatLibrary.Cat-2.md
+  - name: CatException<T>
+    href: CatLibrary.CatException-1.md
+  - name: Complex<T, J>
+    href: CatLibrary.Complex-2.md
   - name: ICatExtension
     href: CatLibrary.ICatExtension.md
-  - name: MRefDelegate
-    href: CatLibrary.MRefDelegate`3.md
-  - name: MRefNormalDelegate
-    href: CatLibrary.MRefNormalDelegate.md
   - name: Tom
     href: CatLibrary.Tom.md
   - name: TomFromBaseClass
     href: CatLibrary.TomFromBaseClass.md
-- name: CatLibrary.Core
-  href: CatLibrary.Core.md
+  - name: Interfaces
+  - name: IAnimal
+    href: CatLibrary.IAnimal.md
+  - name: ICat
+    href: CatLibrary.ICat.md
+  - name: Delegates
+  - name: FakeDelegate<T>
+    href: CatLibrary.FakeDelegate-1.md
+  - name: MRefDelegate<K, T, L>
+    href: CatLibrary.MRefDelegate-3.md
+  - name: MRefNormalDelegate
+    href: CatLibrary.MRefNormalDelegate.md
+- name: MRef
+  href: MRef.md
   items:
-  - name: ColorType
-    href: CatLibrary.Core.ContainersRefType.ColorType.md
-  - name: ContainersRefType
-    href: CatLibrary.Core.ContainersRefType.md
-  - name: ContainersRefTypeChild
-    href: CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.md
-  - name: ContainersRefTypeChildInterface
-    href: CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md
-  - name: ContainersRefTypeDelegate
-    href: CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.md
-  - name: ExplicitLayoutClass
-    href: CatLibrary.Core.ExplicitLayoutClass.md
-  - name: Issue231
-    href: CatLibrary.Core.Issue231.md
-  - name: Issue231
-    href: CatLibrary.Core.Issue231.md
-- name: MRef.Demo.Enumeration
-  href: MRef.Demo.Enumeration.md
-  items:
-  - name: ColorType
-    href: MRef.Demo.Enumeration.ColorType.md
+  - name: Namespaces
+  - name: Demo
+    href: MRef.Demo.md
+    items:
+    - name: Namespaces
+    - name: Enumeration
+      href: MRef.Demo.Enumeration.md
+      items:
+      - name: Enums
+      - name: ColorType
+        href: MRef.Demo.Enumeration.ColorType.md
