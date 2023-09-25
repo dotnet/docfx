@@ -48,4 +48,8 @@ internal class MetadataCommandOptions : LogOptions
     [Description("Determines the namespace layout in table of contents.")]
     [CommandOption("--namespaceLayout")]
     public NamespaceLayout? NamespaceLayout { get; set; }
+
+    [Description("Determines the member page layout.")]
+    [CommandOption("--memberLayout")]
+    public MemberLayout? MemberLayout { get; set; }
 }

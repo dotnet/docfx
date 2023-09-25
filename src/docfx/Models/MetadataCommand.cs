@@ -29,6 +29,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
             item.DisableGitFeatures |= options.DisableGitFeatures;
             item.DisableDefaultFilter |= options.DisableDefaultFilter;
             item.NamespaceLayout = options.NamespaceLayout ?? item.NamespaceLayout;
+            item.MemberLayout = options.MemberLayout ?? item.MemberLayout;
             item.OutputFormat = options.OutputFormat ?? item.OutputFormat;
 
             if (!string.IsNullOrEmpty(options.FilterConfigFile))
