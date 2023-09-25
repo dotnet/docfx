@@ -15,7 +15,7 @@ public class GenerateMetadataFromCSUnitTest
     private static MetadataItem Verify(string code, ExtractMetadataConfig config = null)
     {
         var compilation = CompilationHelper.CreateCompilationFromCSharpCode(code, "test.dll");
-        var extensionMethods = compilation.Assembly.FindExtensionMethods().ToArray();
+        var extensionMethods = compilation.Assembly.FindExtensionMethods(new(new(), new())).ToArray();
         return compilation.Assembly.GenerateMetadataItem(compilation, config, extensionMethods: extensionMethods);
     }
 

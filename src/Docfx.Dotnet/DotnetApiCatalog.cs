@@ -119,6 +119,7 @@ public static class DotnetApiCatalog
             IncludePrivateMembers = configModel?.IncludePrivateMembers ?? false,
             GlobalNamespaceId = configModel?.GlobalNamespaceId,
             MSBuildProperties = configModel?.MSBuildProperties,
+            OutputFormat = configModel?.OutputFormat ?? default,
             OutputFolder = Path.GetFullPath(Path.Combine(outputDirectory, outputFolder)),
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,

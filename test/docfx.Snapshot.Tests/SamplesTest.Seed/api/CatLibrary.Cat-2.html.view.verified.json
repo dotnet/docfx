@@ -2919,7 +2919,7 @@
                     }
                   ]
                 },
-                "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">...</p>\n"
+                "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">..</p>\n"
               },
               {
                 "id": "rsr",
@@ -2966,7 +2966,7 @@
                     }
                   ]
                 },
-                "description": "<pre><code sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\"></code></pre>\n"
+                "description": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">~~</p>\n"
               }
             ],
             "return": {

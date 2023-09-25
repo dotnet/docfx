@@ -177,8 +177,8 @@ namespace CatLibrary
         /// <summary>
         /// Addition operator of this class.
         /// </summary>
-        /// <param name="lsr">...</param>
-        /// <param name="rsr">~~~</param>
+        /// <param name="lsr">..</param>
+        /// <param name="rsr">~~</param>
         /// <returns>Result with <i>int</i> type.</returns>
         public static int operator +(Cat<T, K> lsr, int rsr) { return 1; }
 

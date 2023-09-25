@@ -34,16 +34,9 @@ internal static partial class SymbolFormatter
     private static readonly SymbolDisplayFormat s_methodQualifiedNameFormat = s_qualifiedNameFormat
         .WithParameterOptions(SymbolDisplayParameterOptions.IncludeType | SymbolDisplayParameterOptions.IncludeParamsRefOut);
 
-    private static readonly SymbolDisplayFormat s_linkItemNameWithTypeFormat = new(
-        memberOptions: SymbolDisplayMemberOptions.IncludeContainingType,
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes);
-
-    private static readonly SymbolDisplayFormat s_linkItemQualifiedNameFormat = s_linkItemNameWithTypeFormat
-        .WithTypeQualificationStyle(SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-
-    public static string GetName(ISymbol symbol, SyntaxLanguage language)
+    public static string GetName(ISymbol symbol, SyntaxLanguage language, bool nullableReferenceType = true, bool overload = false)
     {
-        return GetNameParts(symbol, language).ToDisplayString();
+        return GetNameParts(symbol, language, nullableReferenceType, overload).ToDisplayString();
     }
 
     public static ImmutableArray<SymbolDisplayPart> GetNameParts(
@@ -108,7 +101,7 @@ internal static partial class SymbolFormatter
     }
 
     public static List<LinkItem> ToLinkItems(this ImmutableArray<SymbolDisplayPart> parts,
-        Compilation compilation, MemberLayout memberLayout, HashSet<IAssemblySymbol> allAssemblies, bool overload)
+        Compilation compilation, MemberLayout memberLayout, HashSet<IAssemblySymbol> allAssemblies, bool overload, SymbolUrlKind urlKind = SymbolUrlKind.Html)
     {
         var result = new List<LinkItem>();
         foreach (var part in parts)
@@ -133,7 +126,7 @@ internal static partial class SymbolFormatter
             {
                 Name = overload ? VisitorHelper.GetOverloadId(symbol) : VisitorHelper.GetId(symbol),
                 DisplayName = part.ToString(),
-                Href = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, memberLayout, allAssemblies),
+                Href = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, memberLayout, urlKind, allAssemblies),
                 IsExternalPath = symbol.IsExtern || symbol.DeclaringSyntaxReferences.Length == 0,
             };
         }
