@@ -4,6 +4,7 @@
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
+using Docfx.Dotnet;
 using Docfx.Tests.Common;
 using Xunit;
 
@@ -26,41 +27,37 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProject()
+    public async Task TestMetadataCommandFromCSProject()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
         var sourceFile = Path.Combine(_projectFolder, "test.cs");
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(), Directory.GetCurrentDirectory());
 
         CheckResult();
     }
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromDll()
+    public async Task TestMetadataCommandFromDll()
     {
         var dllFile = Path.Combine(_projectFolder, "test.dll");
         File.Copy("Assets/test.dll.sample.1", dllFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = dllFile,
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(dllFile)) { Expanded = true } }),
+            new(), Directory.GetCurrentDirectory());
 
         CheckResult();
     }
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromMultipleFrameworksCSProject()
+    public async Task TestMetadataCommandFromMultipleFrameworksCSProject()
     {
         // Create default project
         var projectFile = Path.Combine(_projectFolder, "multi-frameworks-test.csproj");
@@ -68,19 +65,21 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/multi-frameworks-test.csproj.sample.1", projectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-            MSBuildProperties = "TargetFramework=net6.0"
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Destination = _outputFolder,
+                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                MSBuildProperties = new() { ["TargetFramework"] = "net6.0" },
+            }),
+            new(), Directory.GetCurrentDirectory());
 
         CheckResult();
     }
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromVBProject()
+    public async Task TestMetadataCommandFromVBProject()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -91,11 +90,9 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.vbproj.sample.1", projectFile);
         File.Copy("Assets/test.vb.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(), Directory.GetCurrentDirectory());
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -145,58 +142,7 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithFilterInConfig()
-    {
-        // Create default project
-        Directory.CreateDirectory(Path.Combine(_projectFolder, "src"));
-        Directory.CreateDirectory(Path.Combine(_projectFolder, "doc"));
-        var projectFile = Path.Combine(_projectFolder, "src", "test.csproj");
-        var sourceFile = Path.Combine(_projectFolder, "src", "test.cs");
-        var docfxFile = Path.Combine(_projectFolder, "doc", "docfx.json");
-        var filterFile = Path.Combine(_projectFolder, "doc", "filter.yaml");
-        File.Copy("Assets/test.csproj.sample.1", projectFile);
-        File.Copy("Assets/test.cs.sample.1", sourceFile);
-        File.Copy("Assets/docfx.json_metadata/docfxWithFilter.json", docfxFile);
-        File.Copy("Assets/filter.yaml.sample", filterFile);
-
-        new MetadataCommand().Execute(null, new()
-        {
-            Config = docfxFile,
-            OutputFolder = Path.GetFullPath(_outputFolder),
-        });
-
-        Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
-
-        var file = Path.Combine(_outputFolder, "toc.yml");
-        Assert.True(File.Exists(file));
-        var tocViewModel = YamlUtility.Deserialize<TocRootViewModel>(file).Items;
-        Assert.Equal("Foo", tocViewModel[0].Uid);
-        Assert.Equal("Foo", tocViewModel[0].Name);
-        Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
-        Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
-
-        file = Path.Combine(_outputFolder, "Foo.yml");
-        Assert.True(File.Exists(file));
-        var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo", memberViewModel.Items[0].Uid);
-        Assert.Equal("Foo", memberViewModel.Items[0].Id);
-        Assert.Equal("Foo", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo", memberViewModel.Items[0].FullName);
-
-        file = Path.Combine(_outputFolder, "Foo.Bar.yml");
-        Assert.True(File.Exists(file));
-        memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
-        Assert.Equal("Bar", memberViewModel.Items[0].Id);
-        Assert.Equal("Bar", memberViewModel.Items[0].Name);
-        Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
-        Assert.Single(memberViewModel.Items);
-        Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithFilterInOption()
+    public async Task TestMetadataCommandFromCSProjectWithFilterInOption()
     {
         // Create default project
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -206,12 +152,14 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
         File.Copy("Assets/filter.yaml.sample", filterFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-            FilterConfigFile = filterFile,
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Destination = _outputFolder,
+                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                FilterConfigFile = filterFile,
+            }),
+            new(), Directory.GetCurrentDirectory());
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -244,7 +192,7 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithDuplicateProjectReference()
+    public async Task TestMetadataCommandFromCSProjectWithDuplicateProjectReference()
     {
         // Create default project
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
@@ -254,30 +202,30 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/ref.csproj.sample.1", refProjectFile);
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(), Directory.GetCurrentDirectory());
 
         CheckResult();
     }
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithMultipleNamespaces()
+    public async Task TestMetadataCommandFromCSProjectWithMultipleNamespaces()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
         var sourceFile = Path.Combine(_projectFolder, "test.cs");
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-            NamespaceLayout = NamespaceLayout.Nested
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Destination = _outputFolder,
+                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                NamespaceLayout = NamespaceLayout.Nested,
+            }),
+            new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -302,19 +250,21 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithMultipleNamespacesWithFlatToc()
+    public async Task TestMetadataCommandFromCSProjectWithMultipleNamespacesWithFlatToc()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
         var sourceFile = Path.Combine(_projectFolder, "test.cs");
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-            NamespaceLayout = NamespaceLayout.Flattened
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Destination = _outputFolder,
+                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                NamespaceLayout = NamespaceLayout.Flattened,
+            }),
+            new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));
@@ -339,19 +289,21 @@ public class MetadataCommandTest : TestBase
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestMetadataCommandFromCSProjectWithMultipleNamespacesWithGapsWithNestedToc()
+    public async Task TestMetadataCommandFromCSProjectWithMultipleNamespacesWithGapsWithNestedToc()
     {
         var projectFile = Path.Combine(_projectFolder, "test.csproj");
         var sourceFile = Path.Combine(_projectFolder, "test.cs");
         File.Copy("Assets/test.csproj.sample.1", projectFile);
         File.Copy("Assets/test-multinamespace-withgaps.cs.sample.1", sourceFile);
 
-        new MetadataCommand().Execute(null, new()
-        {
-            OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-            Config = projectFile,
-            NamespaceLayout = NamespaceLayout.Nested
-        });
+        await DotnetApiCatalog.Exec(
+            new(new MetadataJsonItemConfig
+            {
+                Destination = _outputFolder,
+                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                NamespaceLayout = NamespaceLayout.Nested,
+            }),
+            new(), Directory.GetCurrentDirectory());
 
         var file = Path.Combine(_outputFolder, "toc.yml");
         Assert.True(File.Exists(file));

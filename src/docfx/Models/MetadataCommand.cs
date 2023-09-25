@@ -14,35 +14,14 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
     {
         return CommandHelper.Run(options, () =>
         {
-            var config = ParseOptions(options, out var baseDirectory, out var outputFolder);
-            DotnetApiCatalog.Exec(config, new(), baseDirectory, outputFolder).GetAwaiter().GetResult();
+            var (config, baseDirectory) = CommandHelper.GetConfig<MetadataConfig>(options.Config);
+            MergeOptionsToConfig(options, config);
+            DotnetApiCatalog.Exec(config.Item, new(), baseDirectory, options.OutputFolder).GetAwaiter().GetResult();
         });
     }
 
-    private static MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
+    private static void MergeOptionsToConfig(MetadataCommandOptions options, MetadataConfig config)
     {
-        MetadataConfig config;
-
-        if (options.Config != null && !string.Equals(Path.GetFileName(options.Config), DataContracts.Common.Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase))
-        {
-            config = new()
-            {
-                Item = new()
-                {
-                    new()
-                    {
-                        Destination = options.OutputFolder,
-                        Source = new FileMapping(new FileMappingItem(new[]{ options.Config })) { Expanded = true },
-                    }
-                }
-            };
-            baseDirectory = Directory.GetCurrentDirectory();
-        }
-        else
-        {
-            (config, baseDirectory) = CommandHelper.GetConfig<MetadataConfig>(options.Config);
-        }
-
         var msbuildProperties = ResolveMSBuildProperties(options);
         foreach (var item in config.Item)
         {
@@ -75,10 +54,6 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
                 }
             }
         }
-
-        outputFolder = options.OutputFolder;
-
-        return config.Item;
     }
 
     private static Dictionary<string, string> ResolveMSBuildProperties(MetadataCommandOptions options)
