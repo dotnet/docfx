@@ -44,8 +44,9 @@ jobs:
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- docs/docfx.json
 
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json --outputFormat markdown --output samples/seed/md
+    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json --outputFormat markdown --output samples/seed/md2 --namespaceLayout nested --memberLayout separatePages
     - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- build samples/seed/docfx.json --output docs/_site/seed
-    - run: dotnet run -c Release --no-build -f net8.0 --project src/docfx -- metadata samples/seed/docfx.json --outputFormat markdown --output docs/_site/seed/md
 
     - uses: actions/upload-artifact@v3
       if: matrix.os == 'ubuntu-latest'
