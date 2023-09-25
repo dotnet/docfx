@@ -68,7 +68,7 @@ public static class DotnetApiCatalog
                     EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
                     // TODO: Use plugin to generate metadata for files with different extension?
-                    using var worker = new ExtractMetadataWorker(ConvertConfig(item, outputDirectory ?? configDirectory), options);
+                    using var worker = new ExtractMetadataWorker(ConvertConfig(item, configDirectory, outputDirectory), options);
                     await worker.ExtractMetadataAsync();
                 }
 
@@ -103,11 +103,14 @@ public static class DotnetApiCatalog
         }
     }
 
-    private static ExtractMetadataConfig ConvertConfig(MetadataJsonItemConfig configModel, string outputDirectory)
+    private static ExtractMetadataConfig ConvertConfig(MetadataJsonItemConfig configModel, string configDirectory, string outputDirectory)
     {
         var projects = configModel.Source;
         var references = configModel.References;
-        var outputFolder = configModel.Destination ?? "_api";
+
+        var outputFolder = Path.GetFullPath(Path.Combine(
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, configModel.Output ?? "") : outputDirectory,
+            configModel.Destination ?? ""));
 
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
@@ -120,7 +123,7 @@ public static class DotnetApiCatalog
             GlobalNamespaceId = configModel?.GlobalNamespaceId,
             MSBuildProperties = configModel?.MSBuildProperties,
             OutputFormat = configModel?.OutputFormat ?? default,
-            OutputFolder = Path.GetFullPath(Path.Combine(outputDirectory, outputFolder)),
+            OutputFolder = outputFolder,
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             NoRestore = configModel?.NoRestore ?? false,

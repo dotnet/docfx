@@ -295,9 +295,13 @@ Configuration options that are applied for `docfx metadata` command:
 
 Specifies the source projects using [File Mappings](#file-mappings).
 
+### `output`
+
+Defines the output folder of the generated metadata files relative to `docfx.json` directory. The `docfx metadata --output <outdir>` command line argument overrides this value.
+
 ### `dest`
 
-Defines the output folder of the generated metadata files. Relative paths are relative to the docfx.json file being used. To go up a folder use `../`.
+Defines the output folder of the generated metadata files relative to `docfx.json` directory.  The `docfx metadata --output <outdir>` command line argument prepends this value.
 
 ### `shouldSkipMarkup`
 
