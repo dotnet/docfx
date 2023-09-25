@@ -1,5 +1,10 @@
 <Project>
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <!--
+      Suppress warnings similar to the following:
+          warning NU1507: There are 2 package sources defined in your configuration.
+     -->
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 </Project>

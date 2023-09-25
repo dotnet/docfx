@@ -108,6 +108,10 @@ public static class DotnetApiCatalog
         var projects = configModel.Source;
         var references = configModel.References;
 
+        var outputFolder = Path.GetFullPath(Path.Combine(
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, configModel.Output ?? "") : outputDirectory,
+            configModel.Destination ?? ""));
+
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
 
@@ -119,7 +123,7 @@ public static class DotnetApiCatalog
             GlobalNamespaceId = configModel?.GlobalNamespaceId,
             MSBuildProperties = configModel?.MSBuildProperties,
             OutputFormat = configModel?.OutputFormat ?? default,
-            OutputFolder = Path.GetFullPath(Path.Combine(configDirectory, outputDirectory ?? configModel.Output ?? "", configModel.Destination ?? "")),
+            OutputFolder = outputFolder,
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
             NoRestore = configModel?.NoRestore ?? false,

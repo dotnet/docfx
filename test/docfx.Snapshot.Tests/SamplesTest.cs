@@ -180,15 +180,16 @@ public class SamplesTest
         }
     }
 
-    [SnapshotFact]
+    [Fact]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
+        var outputPath = nameof(SeedMarkdown);
         Clean(samplePath);
 
-        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", nameof(SeedMarkdown) });
+        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
 
-        await VerifyDirectory($"{nameof(SeedMarkdown)}", IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
     }
 
     [SnapshotFact]
