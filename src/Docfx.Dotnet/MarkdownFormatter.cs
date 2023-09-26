@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Text;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
@@ -52,6 +53,7 @@ static class MarkdownFormatter
         var filter = new SymbolFilter(config, options);
         var extensionMethods = assemblies.SelectMany(assembly => assembly.symbol.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.symbol), SymbolEqualityComparer.Default);
+        var commentCache = new ConcurrentDictionary<ISymbol, XmlComment>(SymbolEqualityComparer.Default);
 
         var tocNodes = new Dictionary<string, TocNode>();
         var allSymbols = new List<(ISymbol symbol, Compilation compilation)>();
@@ -873,34 +875,38 @@ static class MarkdownFormatter
 
         XmlComment? Comment(ISymbol symbol, Compilation compilation)
         {
-            var src = VisitorHelper.GetSourceDetail(symbol, compilation);
-            var context = new XmlCommentParserContext
+            // Cache XML comment to avoid duplicated parsing and warnings
+            return commentCache.GetOrAdd(symbol, symbol =>
             {
-                SkipMarkup = config.ShouldSkipMarkup,
-                AddReferenceDelegate = (a, b) => { },
-                Source = src,
-                ResolveCode = ResolveCode,
-            };
-
-            var comment = symbol.GetDocumentationComment(compilation, expandIncludes: true, expandInheritdoc: true);
-            return XmlComment.Parse(comment.FullXmlFragment, context);
-
-            string? ResolveCode(string source)
-            {
-                var basePath = config.CodeSourceBasePath ?? (
-                    src?.Path is { } sourcePath
-                        ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
-                        : null);
-
-                var path = Path.GetFullPath(Path.Combine(basePath ?? "", source));
-                if (!File.Exists(path))
+                var src = VisitorHelper.GetSourceDetail(symbol, compilation);
+                var context = new XmlCommentParserContext
                 {
-                    Logger.LogWarning($"Source file '{path}' not found.");
-                    return null;
-                }
+                    SkipMarkup = config.ShouldSkipMarkup,
+                    AddReferenceDelegate = (a, b) => { },
+                    Source = src,
+                    ResolveCode = ResolveCode,
+                };
 
-                return File.ReadAllText(path);
-            }
+                var comment = symbol.GetDocumentationComment(compilation, expandIncludes: true, expandInheritdoc: true);
+                return XmlComment.Parse(comment.FullXmlFragment, context);
+
+                string? ResolveCode(string source)
+                {
+                    var basePath = config.CodeSourceBasePath ?? (
+                        src?.Path is { } sourcePath
+                            ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
+                            : null);
+
+                    var path = Path.GetFullPath(Path.Combine(basePath ?? "", source));
+                    if (!File.Exists(path))
+                    {
+                        Logger.LogWarning($"Source file '{path}' not found.");
+                        return null;
+                    }
+
+                    return File.ReadAllText(path);
+                }
+            });
         }
 
         static string Escape(string text)
