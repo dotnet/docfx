@@ -6,5 +6,7 @@
   items:
   - name: .NET API
     href: obj/api/
+  - name: .NET API (markdown)
+    href: obj/md/
   - name: REST API
     href: restapi/
