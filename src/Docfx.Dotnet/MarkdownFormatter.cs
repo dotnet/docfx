@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Text;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
@@ -52,6 +53,7 @@ static class MarkdownFormatter
         var filter = new SymbolFilter(config, options);
         var extensionMethods = assemblies.SelectMany(assembly => assembly.symbol.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.symbol), SymbolEqualityComparer.Default);
+        var commentCache = new ConcurrentDictionary<ISymbol, XmlComment>(SymbolEqualityComparer.Default);
 
         var tocNodes = new Dictionary<string, TocNode>();
         var allSymbols = new List<(ISymbol symbol, Compilation compilation)>();
@@ -225,7 +227,6 @@ static class MarkdownFormatter
 
             if (!root)
             {
-                InsertCategory(TocNodeType.Namespace, "Namespaces");
                 InsertCategory(TocNodeType.Class, "Classes");
                 InsertCategory(TocNodeType.Struct, "Structs");
                 InsertCategory(TocNodeType.Interface, "Interfaces");
@@ -355,11 +356,11 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"## Namespaces").AppendLine();
+                    sb.AppendLine($"### Namespaces").AppendLine();
 
                     foreach (var (symbol, compilation) in items)
                     {
-                        sb.AppendLine(Link(symbol, compilation)).AppendLine();
+                        sb.AppendLine(ShortLink(symbol, compilation)).AppendLine();
                         var comment = Comment(symbol, compilation);
                         if (!string.IsNullOrEmpty(comment?.Summary))
                             sb.AppendLine(comment.Summary).AppendLine();
@@ -372,11 +373,11 @@ static class MarkdownFormatter
                     if (items.Count == 0)
                         return;
 
-                    sb.AppendLine($"## {headingText}").AppendLine();
+                    sb.AppendLine($"### {headingText}").AppendLine();
 
                     foreach (var (symbol, compilation) in items)
                     {
-                        sb.AppendLine(Link(symbol, compilation)).AppendLine();
+                        sb.AppendLine(ShortLink(symbol, compilation)).AppendLine();
                         var comment = Comment(symbol, compilation);
                         if (!string.IsNullOrEmpty(comment?.Summary))
                             sb.AppendLine(comment.Summary).AppendLine();
@@ -562,14 +563,14 @@ static class MarkdownFormatter
                 void Inheritance()
                 {
                     var items = new List<ISymbol>();
-                    for (var i = type; i != null; i = i.BaseType)
+                    for (var i = type; i is not null && i.SpecialType is not SpecialType.System_ValueType; i = i.BaseType)
                         items.Add(i);
 
                     if (items.Count <= 1)
                         return;
 
                     items.Reverse();
-                    sb.AppendLine($"#### Inheritance");
+                    sb.AppendLine($"###### Inheritance");
                     List(" \u2190 ", items);
                 }
 
@@ -583,7 +584,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"#### Derived");
+                    sb.AppendLine($"###### Derived");
                     List(", ", items);
                 }
 
@@ -593,7 +594,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"#### Implements");
+                    sb.AppendLine($"###### Implements");
                     List(", ", items);
                 }
 
@@ -603,7 +604,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"#### Inherited Members");
+                    sb.AppendLine($"###### Inherited Members");
                     List(", ", items);
                 }
             }
@@ -626,13 +627,13 @@ static class MarkdownFormatter
                 if (items.Count is 0)
                     return;
 
-                sb.AppendLine($"#### Extension Methods");
+                sb.AppendLine($"###### Extension Methods");
                 List(", ", items);
             }
 
             void List(string separator, IEnumerable<ISymbol> items)
             {
-                sb.AppendLine(string.Join(separator, items.Select(i => "\n" + Link(i, compilation)))).AppendLine();
+                sb.AppendLine(string.Join(separator, items.Select(i => "\n" + ShortLink(i, compilation)))).AppendLine();
             }
 
             void Parameters(ISymbol symbol, XmlComment? comment, string heading = "##")
@@ -645,7 +646,7 @@ static class MarkdownFormatter
 
                 foreach (var param in parameters)
                 {
-                    sb.AppendLine($"`{Escape(param.Name)}` {Link(param.Type, compilation)}").AppendLine();
+                    sb.AppendLine($"`{Escape(param.Name)}` {FullLink(param.Type, compilation)}").AppendLine();
 
                     if (comment?.Parameters?.TryGetValue(param.Name, out var value) ?? false)
                         sb.AppendLine($"{value}").AppendLine();
@@ -658,7 +659,7 @@ static class MarkdownFormatter
                     return;
 
                 sb.AppendLine($"{heading} Returns").AppendLine();
-                sb.AppendLine(Link(symbol.ReturnType, compilation)).AppendLine();
+                sb.AppendLine(FullLink(symbol.ReturnType, compilation)).AppendLine();
 
                 if (!string.IsNullOrEmpty(comment?.Returns))
                     sb.AppendLine($"{comment.Returns}").AppendLine();
@@ -706,8 +707,8 @@ static class MarkdownFormatter
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine("Field Value").AppendLine();
-                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
+                sb.AppendLine($"{heading}# Field Value").AppendLine();
+                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
 
                 Examples(comment, $"{heading}#");
                 Remarks(comment, $"{heading}#");
@@ -723,8 +724,8 @@ static class MarkdownFormatter
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine("Property Value").AppendLine();
-                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
+                sb.AppendLine($"{heading}# Property Value").AppendLine();
+                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
 
                 Examples(comment, $"{heading}#");
                 Remarks(comment, $"{heading}#");
@@ -740,8 +741,8 @@ static class MarkdownFormatter
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine("Event Type").AppendLine();
-                sb.AppendLine(Link(symbol.Type, compilation)).AppendLine();
+                sb.AppendLine($"{heading}# Event Type").AppendLine();
+                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
 
                 Examples(comment, $"{heading}#");
                 Remarks(comment, $"{heading}#");
@@ -771,9 +772,11 @@ static class MarkdownFormatter
 
             void Info()
             {
-                var assemblies = string.Join(", ", symbols.Select(s => s.symbol.ContainingAssembly.Name).Distinct().Select(n => $"{n}.dll"));
-                sb.AppendLine($"__Namespace:__ {Link(symbol.ContainingNamespace, compilation)}  ");
-                sb.AppendLine($"__Assembly:__ {assemblies}").AppendLine();
+                sb.AppendLine($"Namespace: {ShortLink(symbol.ContainingNamespace, compilation)}  ");
+
+                var assemblies = symbols.Select(s => s.symbol.ContainingAssembly.Name).Where(n => n != "?").Distinct().Select(n => $"{n}.dll").ToList();
+                if (assemblies.Count > 0)
+                    sb.AppendLine($"Assembly: {string.Join(", ", assemblies)}").AppendLine();
             }
 
             void Summary(XmlComment? comment)
@@ -843,29 +846,24 @@ static class MarkdownFormatter
 
             string Cref(string commentId)
             {
-                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? Link(symbol, compilation) : "";
+                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? FullLink(symbol, compilation) : "";
             }
         }
 
-        string Link(ISymbol symbol, Compilation compilation)
+        string ShortLink(ISymbol symbol, Compilation compilation)
         {
-            return symbol.Kind is SymbolKind.Method or SymbolKind.Namespace or SymbolKind.Event or SymbolKind.Property or SymbolKind.Field ? ShortLink() : FullLink();
+            var title = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
+            return string.IsNullOrEmpty(url) ? Escape(title) : $"[{Escape(title)}]({Escape(url)})";
+        }
 
-            string ShortLink()
-            {
-                var title = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
-                var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
-                return string.IsNullOrEmpty(url) ? Escape(title) : $"[{Escape(title)}]({Escape(url)})";
-            }
+        string FullLink(ISymbol symbol, Compilation compilation)
+        {
+            var parts = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp);
+            var linkItems = SymbolFormatter.ToLinkItems(parts, compilation, config.MemberLayout, allAssemblies, overload: false, SymbolUrlKind.Markdown);
 
-            string FullLink()
-            {
-                var parts = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp);
-                var linkItems = SymbolFormatter.ToLinkItems(parts, compilation, config.MemberLayout, allAssemblies, overload: false, SymbolUrlKind.Markdown);
-
-                return string.Concat(linkItems.Select(i =>
-                    string.IsNullOrEmpty(i.Href) ? Escape(i.DisplayName) : $"[{Escape(i.DisplayName)}]({Escape(i.Href)})"));
-            }
+            return string.Concat(linkItems.Select(i =>
+                string.IsNullOrEmpty(i.Href) ? Escape(i.DisplayName) : $"[{Escape(i.DisplayName)}]({Escape(i.Href)})"));
         }
 
         string NameOnlyLink(ISymbol symbol, Compilation compilation)
@@ -877,34 +875,38 @@ static class MarkdownFormatter
 
         XmlComment? Comment(ISymbol symbol, Compilation compilation)
         {
-            var src = VisitorHelper.GetSourceDetail(symbol, compilation);
-            var context = new XmlCommentParserContext
+            // Cache XML comment to avoid duplicated parsing and warnings
+            return commentCache.GetOrAdd(symbol, symbol =>
             {
-                SkipMarkup = config.ShouldSkipMarkup,
-                AddReferenceDelegate = (a, b) => { },
-                Source = src,
-                ResolveCode = ResolveCode,
-            };
-
-            var comment = symbol.GetDocumentationComment(compilation, expandIncludes: true, expandInheritdoc: true);
-            return XmlComment.Parse(comment.FullXmlFragment, context);
-
-            string? ResolveCode(string source)
-            {
-                var basePath = config.CodeSourceBasePath ?? (
-                    src?.Path is { } sourcePath
-                        ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
-                        : null);
-
-                var path = Path.GetFullPath(Path.Combine(basePath ?? "", source));
-                if (!File.Exists(path))
+                var src = VisitorHelper.GetSourceDetail(symbol, compilation);
+                var context = new XmlCommentParserContext
                 {
-                    Logger.LogWarning($"Source file '{path}' not found.");
-                    return null;
-                }
+                    SkipMarkup = config.ShouldSkipMarkup,
+                    AddReferenceDelegate = (a, b) => { },
+                    Source = src,
+                    ResolveCode = ResolveCode,
+                };
 
-                return File.ReadAllText(path);
-            }
+                var comment = symbol.GetDocumentationComment(compilation, expandIncludes: true, expandInheritdoc: true);
+                return XmlComment.Parse(comment.FullXmlFragment, context);
+
+                string? ResolveCode(string source)
+                {
+                    var basePath = config.CodeSourceBasePath ?? (
+                        src?.Path is { } sourcePath
+                            ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, sourcePath)))
+                            : null);
+
+                    var path = Path.GetFullPath(Path.Combine(basePath ?? "", source));
+                    if (!File.Exists(path))
+                    {
+                        Logger.LogWarning($"Source file '{path}' not found.");
+                        return null;
+                    }
+
+                    return File.ReadAllText(path);
+                }
+            });
         }
 
         static string Escape(string text)

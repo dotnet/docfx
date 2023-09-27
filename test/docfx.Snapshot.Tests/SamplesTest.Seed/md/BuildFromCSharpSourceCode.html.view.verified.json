@@ -1,0 +1,42 @@
+﻿{
+  "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.md\" sourcestartlinenumber=\"3\">Classes</h3>\n<p sourcefile=\"obj/md/BuildFromCSharpSourceCode.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.md\" sourcestartlinenumber=\"5\">CSharp</a></p>\n",
+  "type": "Conceptual",
+  "source": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromCSharpSourceCode.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "path": "obj/md/BuildFromCSharpSourceCode.md",
+  "documentation": {
+    "remote": {
+      "path": "samples/seed/obj/md/BuildFromCSharpSourceCode.md",
+      "branch": "main",
+      "repo": "https://github.com/dotnet/docfx"
+    },
+    "startLine": 0.0,
+    "endLine": 0.0,
+    "isExternal": false
+  },
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "rawTitle": "<h1 id=\"namespace-buildfromcsharpsourcecode\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.md\" sourcestartlinenumber=\"1\">Namespace BuildFromCSharpSourceCode</h1>",
+  "title": "Namespace BuildFromCSharpSourceCode",
+  "wordCount": 2.0,
+  "_key": "obj/md/BuildFromCSharpSourceCode.md",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "md/BuildFromCSharpSourceCode.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/md/toc.yml",
+  "_tocPath": "md/toc.html",
+  "_tocRel": "toc.html",
+  "_disableToc": false,
+  "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/obj/md/BuildFromCSharpSourceCode.md/#L1"
+}

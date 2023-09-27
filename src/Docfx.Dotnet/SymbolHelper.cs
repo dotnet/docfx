@@ -144,8 +144,11 @@ internal static class SymbolHelper
 
     public static IEnumerable<ISymbol> GetInheritedMembers(this INamedTypeSymbol symbol, SymbolFilter filter)
     {
-        for (var type = symbol.BaseType; type != null; type = type.BaseType)
+        for (var type = symbol.BaseType; type is not null; type = type.BaseType)
         {
+            if (type.SpecialType is SpecialType.System_ValueType)
+                continue;
+
             foreach (var m in from m in type.GetMembers()
                               where m is not INamedTypeSymbol
                               where filter.IncludeApi(m)
