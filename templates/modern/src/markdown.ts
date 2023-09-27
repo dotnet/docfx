@@ -169,6 +169,7 @@ function renderAnchor() {
   }, window.docfx.anchors)
 
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
+  location.href = location.href
 }
 
 /**
