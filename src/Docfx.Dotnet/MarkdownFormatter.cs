@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Text;
+using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
@@ -102,7 +103,7 @@ static class MarkdownFormatter
             IEnumerable<TocNode> CreateNamespaceToc(INamespaceSymbol ns)
             {
                 var idExists = true;
-                var id = VisitorHelper.FileNameId(VisitorHelper.GetId(symbol));
+                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     idExists = false;
@@ -143,7 +144,7 @@ static class MarkdownFormatter
             IEnumerable<TocNode> CreateNamedTypeToc(INamedTypeSymbol type)
             {
                 var idExists = true;
-                var id = VisitorHelper.FileNameId(VisitorHelper.GetId(symbol));
+                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     idExists = false;
@@ -203,7 +204,7 @@ static class MarkdownFormatter
                 if (type is TocNodeType.None)
                     yield break;
 
-                var id = VisitorHelper.FileNameId(VisitorHelper.GetOverloadId(symbol));
+                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetOverloadId(symbol));
                 if (!tocNodes.TryGetValue(id, out var node))
                 {
                     tocNodes.Add(id, node = new()
@@ -683,7 +684,8 @@ static class MarkdownFormatter
 
             void Method(IMethodSymbol symbol, Compilation compilation, string heading)
             {
-                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
+                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -701,7 +703,8 @@ static class MarkdownFormatter
 
             void Field(IFieldSymbol symbol, Compilation compilation, string heading)
             {
-                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
+                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -718,7 +721,8 @@ static class MarkdownFormatter
 
             void Property(IPropertySymbol symbol, Compilation compilation, string heading)
             {
-                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
+                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -735,7 +739,8 @@ static class MarkdownFormatter
 
             void Event(IEventSymbol symbol, Compilation compilation, string heading)
             {
-                sb.AppendLine($"{heading} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
+                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
