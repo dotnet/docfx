@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
-using System.Text;
 using System.Text.RegularExpressions;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
@@ -45,7 +44,7 @@ static class MarkdownFormatter
         internal List<(ISymbol symbol, Compilation compilation)> symbols = new();
     }
 
-    public static void Save(List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
+    public static void Save(Func<string, string, OutputWriter> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
         Logger.LogWarning($"Markdown output format is experimental.");
 
@@ -269,7 +268,7 @@ static class MarkdownFormatter
 
         void SaveTocNode(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
         {
-            var sb = new StringBuilder();
+            var writer = output(config.OutputFolder, id);
             var symbol = symbols[0].symbol;
             var compilation = symbols[0].compilation;
             var comment = Comment(symbol, compilation);
@@ -293,19 +292,19 @@ static class MarkdownFormatter
                 case IFieldSymbol:
                     MemberHeader("Field");
                     foreach (var (s, c) in symbols)
-                        Field((IFieldSymbol)s, c, "##");
+                        Field((IFieldSymbol)s, c, 2);
                     break;
 
                 case IPropertySymbol:
                     MemberHeader("Property");
                     foreach (var (s, c) in symbols)
-                        Property((IPropertySymbol)s, c, "##");
+                        Property((IPropertySymbol)s, c, 2);
                     break;
 
                 case IEventSymbol:
                     MemberHeader("Event");
                     foreach (var (s, c) in symbols)
-                        Event((IEventSymbol)s, c, "##");
+                        Event((IEventSymbol)s, c, 2);
                     break;
 
                 case IMethodSymbol method:
@@ -317,14 +316,14 @@ static class MarkdownFormatter
                         _ => throw new NotSupportedException($"Unknown method type {method.MethodKind}"),
                     }); ;
                     foreach (var (s, c) in symbols)
-                        Method((IMethodSymbol)s, c, "##");
+                        Method((IMethodSymbol)s, c, 2);
                     break;
 
                 default:
                     throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
             }
 
-            File.WriteAllText(Path.Combine(config.OutputFolder, $"{id}.md"), sb.ToString());
+            writer.End();
 
             void Namespace()
             {
@@ -334,7 +333,7 @@ static class MarkdownFormatter
                     where s.symbol.Kind is SymbolKind.NamedType && namespaceSymbols.Contains(s.symbol.ContainingNamespace)
                     select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
 
-                sb.AppendLine($"# Namespace {Escape(symbol.ToString()!)}").AppendLine();
+                writer.Heading(1, $"Namespace {symbol}");
 
                 Summary(comment);
                 Namespaces();
@@ -343,8 +342,6 @@ static class MarkdownFormatter
                 Types(t => t.TypeKind is TypeKind.Interface, "Interfaces");
                 Types(t => t.TypeKind is TypeKind.Enum, "Enums");
                 Types(t => t.TypeKind is TypeKind.Delegate, "Delegates");
-
-                File.WriteAllText(Path.Combine(config.OutputFolder, $"{id}.md"), sb.ToString());
 
                 void Namespaces()
                 {
@@ -357,14 +354,14 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"### Namespaces").AppendLine();
+                    writer.Heading(3, "Namespaces");
 
                     foreach (var (symbol, compilation) in items)
                     {
-                        sb.AppendLine(ShortLink(symbol, compilation)).AppendLine();
+                        writer.Text(ShortLink(symbol, compilation));
                         var comment = Comment(symbol, compilation);
                         if (!string.IsNullOrEmpty(comment?.Summary))
-                            sb.AppendLine(comment.Summary).AppendLine();
+                            writer.Markdown(comment.Summary);
                     }
                 }
 
@@ -374,23 +371,22 @@ static class MarkdownFormatter
                     if (items.Count == 0)
                         return;
 
-                    sb.AppendLine($"### {headingText}").AppendLine();
-
+                    writer.Heading(3,  headingText);
                     foreach (var (symbol, compilation) in items)
                     {
-                        sb.AppendLine(ShortLink(symbol, compilation)).AppendLine();
+                        writer.Text(ShortLink(symbol, compilation));
                         var comment = Comment(symbol, compilation);
                         if (!string.IsNullOrEmpty(comment?.Summary))
-                            sb.AppendLine(comment.Summary).AppendLine();
+                            writer.Markdown(comment.Summary);
                     }
                 }
             }
 
             void Enum(INamedTypeSymbol type)
             {
-                sb.AppendLine($"# Enum {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(3, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp));
 
-                Info();
+                writer.Facts(Facts().ToArray());
                 Summary(comment);
                 Syntax(symbol);
 
@@ -405,9 +401,9 @@ static class MarkdownFormatter
 
             void Delegate(INamedTypeSymbol type)
             {
-                sb.AppendLine($"# Delegate {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(1, $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
 
-                Info();
+                writer.Facts(Facts().ToArray());
                 Summary(comment);
                 Syntax(symbol);
 
@@ -433,9 +429,9 @@ static class MarkdownFormatter
                     _ => throw new InvalidOperationException(),
                 };
 
-                sb.AppendLine($"# {typeHeader} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(1, $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
 
-                Info();
+                writer.Facts(Facts().ToArray());
                 Summary(comment);
                 Syntax(symbol);
 
@@ -470,7 +466,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"## Fields").AppendLine();
+                    writer.Heading(2, "Fields");
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
@@ -479,7 +475,7 @@ static class MarkdownFormatter
                     }
 
                     foreach (var (s, c) in items)
-                        Field(s, c, "###");
+                        Field(s, c, 3);
                 }
 
                 void Properties()
@@ -494,7 +490,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"## Properties").AppendLine();
+                    writer.Heading(2, "Properties");
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
@@ -503,7 +499,7 @@ static class MarkdownFormatter
                     }
 
                     foreach (var (s, c) in items)
-                        Property(s, c, "###");
+                        Property(s, c, 3);
                 }
 
                 void Methods(Func<IMethodSymbol, bool> predicate, string headingText)
@@ -518,8 +514,7 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"## {headingText}").AppendLine();
-
+                    writer.Heading(2, "headingText");
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
                         MemberSummaryList(items);
@@ -527,7 +522,7 @@ static class MarkdownFormatter
                     }
 
                     foreach (var (s, c) in items)
-                        Method(s, c, "###");
+                        Method(s, c, 3);
                 }
 
                 void Events()
@@ -549,14 +544,14 @@ static class MarkdownFormatter
                     }
 
                     foreach (var (s, c) in items)
-                        Event(s, c, "###");
+                        Event(s, c, 3);
                 }
 
                 void MemberSummaryList<T>(IEnumerable<(T, Compilation)> symbols) where T : ISymbol
                 {
                     foreach (var (s, c) in symbols)
                     {
-                        sb.AppendLine(NameOnlyLink(s, c)).AppendLine();
+                        writer.Text(NameOnlyLink(s, c));
                         Summary(Comment(s, c));
                     }
                 }
@@ -571,8 +566,8 @@ static class MarkdownFormatter
                         return;
 
                     items.Reverse();
-                    sb.AppendLine($"###### Inheritance");
-                    List(" \u2190 ", items);
+                    writer.Heading(6, "Inheritance");
+                    List(items, ListDelimiter.LeftArrow);
                 }
 
                 void Derived()
@@ -585,8 +580,8 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"###### Derived");
-                    List(", ", items);
+                    writer.Heading(6, "Derived");
+                    List(items);
                 }
 
                 void Implements()
@@ -595,8 +590,8 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"###### Implements");
-                    List(", ", items);
+                    writer.Heading(6, "Implements");
+                    List(items);
                 }
 
                 void InheritedMembers()
@@ -605,15 +600,15 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    sb.AppendLine($"###### Inherited Members");
-                    List(", ", items);
+                    writer.Heading(6, "Inherited Members");
+                    List(items);
                 }
             }
 
             void MemberHeader(string headingText)
             {
-                sb.AppendLine($"# {headingText} {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true))}").AppendLine();
-                Info();
+                writer.Heading(1, $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}");
+                writer.Facts(Facts().ToArray());
             }
 
             void ExtensionMethods(INamedTypeSymbol type)
@@ -628,131 +623,129 @@ static class MarkdownFormatter
                 if (items.Count is 0)
                     return;
 
-                sb.AppendLine($"###### Extension Methods");
-                List(", ", items);
+                writer.Heading(6, "Extension Methods");
+                List(items);
             }
 
-            void List(string separator, IEnumerable<ISymbol> items)
+            void List(IEnumerable<ISymbol> items, ListDelimiter delimiter = default)
             {
-                sb.AppendLine(string.Join(separator, items.Select(i => "\n" + ShortLink(i, compilation)))).AppendLine();
+                writer.JumpList(delimiter, items.Select(i => ShortLink(i, compilation)).ToArray());
             }
 
-            void Parameters(ISymbol symbol, XmlComment? comment, string heading = "##")
+            void Parameters(ISymbol symbol, XmlComment? comment, int headingLevel = 2)
             {
                 var parameters = symbol.GetParameters();
                 if (!parameters.Any())
                     return;
 
-                sb.AppendLine($"{heading} Parameters").AppendLine();
+                writer.Heading(headingLevel, "Parameters");
+                writer.ParameterList(parameters.Select(ToParameter).ToArray());
 
-                foreach (var param in parameters)
+                Parameter ToParameter(IParameterSymbol param)
                 {
-                    sb.AppendLine($"`{Escape(param.Name)}` {FullLink(param.Type, compilation)}").AppendLine();
-
-                    if (comment?.Parameters?.TryGetValue(param.Name, out var value) ?? false)
-                        sb.AppendLine($"{value}").AppendLine();
+                    var docs = comment?.Parameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
+                    return new(param.Name, FullLink(param.Type, compilation), null, docs);
                 }
             }
 
-            void Returns(IMethodSymbol symbol, XmlComment? comment, string heading = "##")
+            void Returns(IMethodSymbol symbol, XmlComment? comment, int headingLevel = 2)
             {
                 if (symbol.ReturnType is null || symbol.ReturnType.SpecialType is SpecialType.System_Void)
                     return;
 
-                sb.AppendLine($"{heading} Returns").AppendLine();
-                sb.AppendLine(FullLink(symbol.ReturnType, compilation)).AppendLine();
+                writer.Heading(headingLevel, "Returns");
+                writer.Text(FullLink(symbol.ReturnType, compilation));
 
                 if (!string.IsNullOrEmpty(comment?.Returns))
-                    sb.AppendLine($"{comment.Returns}").AppendLine();
+                    writer.Markdown($"{comment.Returns}");
             }
 
-            void TypeParameters(ISymbol symbol, XmlComment? comment, string heading = "##")
+            void TypeParameters(ISymbol symbol, XmlComment? comment, int headingLevel = 2)
             {
                 if (symbol.GetTypeParameters() is { } typeParameters && typeParameters.Length is 0)
                     return;
 
-                sb.AppendLine($"{heading} Type Parameters").AppendLine();
+                writer.Heading(headingLevel, "Type Parameters");
+                writer.ParameterList(typeParameters.Select(ToParameter).ToArray());
 
-                foreach (var param in typeParameters)
+                Parameter ToParameter(ITypeParameterSymbol param)
                 {
-                    sb.AppendLine($"`{Escape(param.Name)}`").AppendLine();
-
-                    if (comment?.TypeParameters?.TryGetValue(param.Name, out var value) ?? false)
-                        sb.AppendLine($"{value}").AppendLine();
+                    var docs = comment?.TypeParameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
+                    return new(param.Name, docs: docs);
                 }
             }
 
-            void Method(IMethodSymbol symbol, Compilation compilation, string heading)
+            void Method(IMethodSymbol symbol, Compilation compilation, int headingLevel)
             {
                 var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                Parameters(symbol, comment, $"{heading}#");
-                Returns(symbol, comment, $"{heading}#");
-                TypeParameters(symbol, comment, $"{heading}#");
+                Parameters(symbol, comment, headingLevel + 1);
+                Returns(symbol, comment, headingLevel + 1);
+                TypeParameters(symbol, comment, headingLevel + 1);
 
-                Examples(comment, $"{heading}#");
-                Remarks(comment, $"{heading}#");
-                Exceptions(comment, $"{heading}#");
-                SeeAlsos(comment, $"{heading}#");
+                Examples(comment, headingLevel + 1);
+                Remarks(comment, headingLevel + 1);
+                Exceptions(comment, headingLevel + 1);
+                SeeAlsos(comment, headingLevel + 1);
             }
 
-            void Field(IFieldSymbol symbol, Compilation compilation, string heading)
+            void Field(IFieldSymbol symbol, Compilation compilation, int headingLevel)
             {
                 var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine($"{heading}# Field Value").AppendLine();
-                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
+                writer.Heading(headingLevel + 1, "Field Value");
+                writer.Text(FullLink(symbol.Type, compilation));
 
-                Examples(comment, $"{heading}#");
-                Remarks(comment, $"{heading}#");
-                Exceptions(comment, $"{heading}#");
-                SeeAlsos(comment, $"{heading}#");
+                Examples(comment, headingLevel + 1);
+                Remarks(comment, headingLevel + 1);
+                Exceptions(comment, headingLevel + 1);
+                SeeAlsos(comment, headingLevel + 1);
             }
 
-            void Property(IPropertySymbol symbol, Compilation compilation, string heading)
+            void Property(IPropertySymbol symbol, Compilation compilation, int headingLevel)
             {
                 var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine($"{heading}# Property Value").AppendLine();
-                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
+                writer.Heading(headingLevel + 1, "Property Value");
+                writer.Text(FullLink(symbol.Type, compilation));
 
-                Examples(comment, $"{heading}#");
-                Remarks(comment, $"{heading}#");
-                Exceptions(comment, $"{heading}#");
-                SeeAlsos(comment, $"{heading}#");
+                Examples(comment, headingLevel + 1);
+                Remarks(comment, headingLevel + 1);
+                Exceptions(comment, headingLevel + 1);
+                SeeAlsos(comment, headingLevel + 1);
             }
 
-            void Event(IEventSymbol symbol, Compilation compilation, string heading)
+            void Event(IEventSymbol symbol, Compilation compilation, int headingLevel)
             {
                 var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                sb.AppendLine($"{heading} <a id=\"{fragment}\"></a> {Escape(SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp))}").AppendLine();
+                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                sb.AppendLine($"{heading}# Event Type").AppendLine();
-                sb.AppendLine(FullLink(symbol.Type, compilation)).AppendLine();
+                writer.Heading(headingLevel + 1, "Event Type");
+                writer.Text(FullLink(symbol.Type, compilation));
 
-                Examples(comment, $"{heading}#");
-                Remarks(comment, $"{heading}#");
-                Exceptions(comment, $"{heading}#");
-                SeeAlsos(comment, $"{heading}#");
+                Examples(comment, headingLevel + 1);
+                Remarks(comment, headingLevel + 1);
+                Exceptions(comment, headingLevel + 1);
+                SeeAlsos(comment, headingLevel + 1);
             }
 
             void EnumFields(INamedTypeSymbol type)
@@ -764,118 +757,115 @@ static class MarkdownFormatter
                 if (config.EnumSortOrder is EnumSortOrder.Alphabetic)
                     items = items.OrderBy(m => m.Name).ToList();
 
-                sb.AppendLine($"## Fields").AppendLine();
+                writer.Heading(2, "Fields");
+                writer.ParameterList(items.Select(ToParameter).ToArray());
 
-                foreach (var item in items)
+                Parameter ToParameter(IFieldSymbol item)
                 {
-                    sb.AppendLine($"### `{Escape(item.Name)} = {item.ConstantValue}`").AppendLine();
-
-                    if (Comment(item, compilation) is { } comment)
-                        sb.AppendLine($"{Escape(comment.Summary)}").AppendLine();
+                    var docs = Comment(item, compilation) is { } comment ? comment.Summary : null;
+                    return new(item.Name, null, $"{item.ConstantValue}", docs);
                 }
             }
 
-            void Info()
+            IEnumerable<Fact> Facts()
             {
-                sb.AppendLine($"Namespace: {ShortLink(symbol.ContainingNamespace, compilation)}  ");
+                yield return new("Namespace", ShortLink(symbol.ContainingNamespace, compilation));
 
                 var assemblies = symbols.Select(s => s.symbol.ContainingAssembly.Name).Where(n => n != "?").Distinct().Select(n => $"{n}.dll").ToList();
                 if (assemblies.Count > 0)
-                    sb.AppendLine($"Assembly: {string.Join(", ", assemblies)}").AppendLine();
+                    yield return new("Assembly", new[] { new TextSpan(string.Join(", ", assemblies)) });
             }
 
             void Summary(XmlComment? comment)
             {
                 if (!string.IsNullOrEmpty(comment?.Summary))
-                    sb.AppendLine(comment.Summary).AppendLine();
+                    writer.Markdown(comment.Summary);
             }
 
             void Syntax(ISymbol symbol)
             {
                 var syntax = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.CSharp, filter);
-                sb.AppendLine("```csharp").AppendLine(syntax).AppendLine("```").AppendLine();
+                writer.Declaration(syntax, "csharp");
             }
 
-            void Examples(XmlComment? comment, string heading = "##")
+            void Examples(XmlComment? comment, int headingLevel = 2)
             {
                 if (comment?.Examples?.Count > 0)
                 {
-                    sb.AppendLine($"{heading} Examples").AppendLine();
+                    writer.Heading(headingLevel, "Examples");
 
                     foreach (var example in comment.Examples)
-                        sb.AppendLine(example).AppendLine();
+                        writer.Markdown(example);
                 }
             }
 
-            void Remarks(XmlComment? comment, string heading = "##")
+            void Remarks(XmlComment? comment, int headingLevel = 2)
             {
                 if (!string.IsNullOrEmpty(comment?.Remarks))
                 {
-                    sb.AppendLine($"{heading} Remarks").AppendLine();
-                    sb.AppendLine(comment.Remarks).AppendLine();
+                    writer.Heading(headingLevel, "Remarks");
+                    writer.Markdown(comment.Remarks);
                 }
             }
 
-            void Exceptions(XmlComment? comment, string heading = "##")
+            void Exceptions(XmlComment? comment, int headingLevel = 2)
             {
                 if (comment?.Exceptions?.Count > 0)
                 {
-                    sb.AppendLine($"{heading} Exceptions").AppendLine();
+                    writer.Heading(headingLevel, "Exceptions");
 
                     foreach (var exception in comment.Exceptions)
                     {
-                        sb.AppendLine(Cref(exception.CommentId)).AppendLine();
-                        sb.AppendLine(exception.Description).AppendLine();
+                        writer.Text(Cref(exception.CommentId));
+                        writer.Markdown(exception.Description);
                     }
                 }
             }
 
-            void SeeAlsos(XmlComment? comment, string heading = "##")
+            void SeeAlsos(XmlComment? comment, int headingLevel = 2)
             {
                 if (comment?.SeeAlsos?.Count > 0)
                 {
-                    sb.AppendLine($"{heading} See Also").AppendLine();
+                    writer.Heading(headingLevel, "See Also");
 
                     foreach (var seealso in comment.SeeAlsos)
                     {
-                        var content = seealso.LinkType switch
+                        writer.Text(seealso.LinkType switch
                         {
                             LinkType.CRef => Cref(seealso.CommentId),
-                            LinkType.HRef => $"<{Escape(seealso.LinkId)}>",
+                            LinkType.HRef => new[] { new TextSpan(seealso.LinkId, (string?)seealso.LinkId) },
                             _ => throw new NotSupportedException($"{seealso.LinkType}"),
-                        };
-                        sb.AppendLine(content).AppendLine();
+                        });
                     }
                 }
             }
 
-            string Cref(string commentId)
+            TextSpan[] Cref(string commentId)
             {
-                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? FullLink(symbol, compilation) : "";
+                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? FullLink(symbol, compilation) : Array.Empty<TextSpan>();
             }
         }
 
-        string ShortLink(ISymbol symbol, Compilation compilation)
+        TextSpan[] ShortLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
             var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
-            return string.IsNullOrEmpty(url) ? Escape(title) : $"[{Escape(title)}]({Escape(url)})";
+            return new[] { new TextSpan(title, url) };
         }
 
-        string FullLink(ISymbol symbol, Compilation compilation)
+        TextSpan[] FullLink(ISymbol symbol, Compilation compilation)
         {
             var parts = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp);
             var linkItems = SymbolFormatter.ToLinkItems(parts, compilation, config.MemberLayout, allAssemblies, overload: false, SymbolUrlKind.Markdown);
 
-            return string.Concat(linkItems.Select(i =>
-                string.IsNullOrEmpty(i.Href) ? Escape(i.DisplayName) : $"[{Escape(i.DisplayName)}]({Escape(i.Href)})"));
+            return linkItems.Select(i => new TextSpan(i.DisplayName, (string?)i.Href)).ToArray();
         }
 
-        string NameOnlyLink(ISymbol symbol, Compilation compilation)
+        TextSpan[] NameOnlyLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp);
             var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
-            return string.IsNullOrEmpty(url) ? Escape(title) : $"[{Escape(title)}]({Escape(url)})";
+            return new[] { new TextSpan(title, url) };
         }
 
         XmlComment? Comment(ISymbol symbol, Compilation compilation)
@@ -912,11 +902,6 @@ static class MarkdownFormatter
                     return File.ReadAllText(path);
                 }
             });
-        }
-
-        static string Escape(string text)
-        {
-            return text;
         }
     }
 }

@@ -140,7 +140,7 @@ internal class ExtractMetadataWorker : IDisposable
 
         if (_config.OutputFormat is MetadataOutputFormat.Markdown)
         {
-            MarkdownFormatter.Save(assemblies, _config, _options);
+            MarkdownFormatter.Save(MarkdownWriter.Create, assemblies, _config, _options);
             return;
         }
 

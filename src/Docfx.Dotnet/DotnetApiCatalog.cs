@@ -12,7 +12,7 @@ namespace Docfx.Dotnet;
 /// <summary>
 /// Provides access to a .NET API definitions and their associated documentation.
 /// </summary>
-public static class DotnetApiCatalog
+public static partial class DotnetApiCatalog
 {
     /// <summary>
     /// Generates metadata reference YAML files using docfx.json config.
