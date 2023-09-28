@@ -259,7 +259,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11.StaticAbstractMembersInInterfaces.IGetNext`1.op_Increment(`0)\">++</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">++</a>"
               }
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment_"

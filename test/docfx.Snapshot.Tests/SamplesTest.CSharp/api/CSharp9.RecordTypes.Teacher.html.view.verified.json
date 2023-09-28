@@ -824,7 +824,7 @@
       "uid": "CSharp9.RecordTypes.Person.FirstName",
       "isExtensionMethod": false,
       "parent": "CSharp9.RecordTypes.Person",
-      "href": "CSharp9.RecordTypes.Person.html#CSharp9.RecordTypes.Person.FirstName",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_FirstName",
       "name": [
         {
           "lang": "csharp",
@@ -875,7 +875,7 @@
       "uid": "CSharp9.RecordTypes.Person.LastName",
       "isExtensionMethod": false,
       "parent": "CSharp9.RecordTypes.Person",
-      "href": "CSharp9.RecordTypes.Person.html#CSharp9.RecordTypes.Person.LastName",
+      "href": "CSharp9.RecordTypes.Person.html#CSharp9_RecordTypes_Person_LastName",
       "name": [
         {
           "lang": "csharp",

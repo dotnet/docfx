@@ -1170,7 +1170,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.Core.Issue231",
       "definition": "CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)",
-      "href": "CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_",
       "name": [
         {
           "lang": "csharp",
@@ -1204,11 +1204,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_\">Bar</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         }
       ],
       "level": 0.0
@@ -1219,7 +1219,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.Core.Issue231",
       "definition": "CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)",
-      "href": "CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)",
+      "href": "CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_",
       "name": [
         {
           "lang": "csharp",
@@ -1253,11 +1253,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary.Core.Issue231.Foo(CatLibrary.Core.ContainersRefType)\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Core.Issue231.html#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_\">Foo</a>(<a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>)"
         }
       ],
       "level": 0.0

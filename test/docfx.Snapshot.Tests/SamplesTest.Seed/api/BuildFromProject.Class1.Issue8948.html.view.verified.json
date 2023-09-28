@@ -217,11 +217,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html#BuildFromProject.Class1.IIssue8948.DoNothing``1\">DoNothing</a>&lt;T&gt;()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing__1\">DoNothing</a>&lt;T&gt;()"
                 },
                 {
                   "lang": "vb",
-                  "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html#BuildFromProject.Class1.IIssue8948.DoNothing``1\">DoNothing</a>(Of T)()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.IIssue8948.html#BuildFromProject_Class1_IIssue8948_DoNothing__1\">DoNothing</a>(Of T)()"
                 }
               ]
             }

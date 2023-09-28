@@ -459,7 +459,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.Tom",
       "isExternal": true,
-      "href": "CatLibrary.Tom.html#CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})",
+      "href": "CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__",
       "name": [
         {
           "lang": "csharp",
@@ -493,11 +493,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;<a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>&gt;, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>&gt;)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>&lt;<a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>&gt;, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>&lt;<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>&gt;)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>), <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>))"
+          "value": "<a class=\"xref\" href=\"CatLibrary.Tom.html#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__\">TomMethod</a>(<a class=\"xref\" href=\"CatLibrary.Complex-2.html\">Complex</a>(Of <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>, <a class=\"xref\" href=\"CatLibrary.TomFromBaseClass.html\">TomFromBaseClass</a>), <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.tuple-2\">Tuple</a>(Of <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>, <a class=\"xref\" href=\"CatLibrary.Tom.html\">Tom</a>))"
         }
       ],
       "level": 0.0,

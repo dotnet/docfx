@@ -310,7 +310,7 @@
       "uid": "CatLibrary.IAnimal.Name",
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
-      "href": "CatLibrary.IAnimal.html#CatLibrary.IAnimal.Name",
+      "href": "CatLibrary.IAnimal.html#CatLibrary_IAnimal_Name",
       "name": [
         {
           "lang": "csharp",
@@ -400,7 +400,7 @@
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Item(System.Int32)\">this[]</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Item_System_Int32_\">this[]</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
         }
       ],
       "level": 0.0,
@@ -413,7 +413,7 @@
       "uid": "CatLibrary.IAnimal.Eat",
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
-      "href": "CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat",
+      "href": "CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat",
       "name": [
         {
           "lang": "csharp",
@@ -447,11 +447,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat\">Eat</a>()"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat\">Eat</a>()"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat\">Eat</a>()"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat\">Eat</a>()"
         }
       ],
       "level": 0.0,
@@ -466,7 +466,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
       "definition": "CatLibrary.IAnimal.Eat``1(``0)",
-      "href": "CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat``1(``0)",
+      "href": "CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_",
       "name": [
         {
           "lang": "csharp",
@@ -500,11 +500,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat``1(``0)\">Eat</a>&lt;Tool&gt;(Tool)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_\">Eat</a>&lt;Tool&gt;(Tool)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat``1(``0)\">Eat</a>(Of Tool)(Tool)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat__1___0_\">Eat</a>(Of Tool)(Tool)"
         }
       ],
       "level": 0.0
@@ -514,7 +514,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.IAnimal",
       "isExternal": true,
-      "href": "CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat(System.String)",
+      "href": "CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_",
       "name": [
         {
           "lang": "csharp",
@@ -548,11 +548,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat(System.String)\">Eat</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_\">Eat</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary.IAnimal.Eat(System.String)\">Eat</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.IAnimal.html#CatLibrary_IAnimal_Eat_System_String_\">Eat</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.string\">String</a>)"
         }
       ],
       "level": 0.0,
@@ -569,7 +569,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.ICatExtension",
       "definition": "CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)",
-      "href": "CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)",
+      "href": "CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_",
       "name": [
         {
           "lang": "csharp",
@@ -603,11 +603,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Play(CatLibrary.ICat,CatLibrary.Core.ContainersRefType.ColorType)\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_\">Play</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ColorType</a>)"
         }
       ],
       "level": 0.0
@@ -618,7 +618,7 @@
       "isExtensionMethod": false,
       "parent": "CatLibrary.ICatExtension",
       "definition": "CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)",
-      "href": "CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)",
+      "href": "CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_",
       "name": [
         {
           "lang": "csharp",
@@ -652,11 +652,11 @@
       "specName": [
         {
           "lang": "csharp",
-          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">long</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">long</a>)"
         },
         {
           "lang": "vb",
-          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary.ICatExtension.Sleep(CatLibrary.ICat,System.Int64)\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">Long</a>)"
+          "value": "<a class=\"xref\" href=\"CatLibrary.ICatExtension.html#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_\">Sleep</a>(<a class=\"xref\" href=\"CatLibrary.ICat.html\">ICat</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int64\">Long</a>)"
         }
       ],
       "level": 0.0
