@@ -306,7 +306,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Addition(`0,`0)\">+</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Addition__0__0_\">+</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Addition_"
@@ -577,7 +577,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedAddition(`0,`0)\">+</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition__0__0_\">+</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedAddition_"
@@ -801,7 +801,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedDecrement(`0)\">--</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement__0_\">--</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedDecrement_"
@@ -1072,7 +1072,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedDivision(`0,`0)\">/</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision__0__0_\">/</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedDivision_"
@@ -1519,7 +1519,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedIncrement(`0)\">++</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement__0_\">++</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedIncrement_"
@@ -1790,7 +1790,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedMultiply(`0,`0)\">*</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply__0__0_\">*</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedMultiply_"
@@ -2061,7 +2061,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedSubtraction(`0,`0)\">-</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction__0__0_\">-</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedSubtraction_"
@@ -2285,7 +2285,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_CheckedUnaryNegation(`0)\">-</a>"
+                "value": "operator checked <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation__0_\">-</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_CheckedUnaryNegation_"
@@ -2509,7 +2509,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Decrement(`0)\">--</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Decrement__0_\">--</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Decrement_"
@@ -2780,7 +2780,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Division(`0,`0)\">/</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Division__0__0_\">/</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Division_"
@@ -3227,7 +3227,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Increment(`0)\">++</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Increment__0_\">++</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Increment_"
@@ -3498,7 +3498,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Multiply(`0,`0)\">*</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Multiply__0__0_\">*</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Multiply_"
@@ -3769,7 +3769,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_Subtraction(`0,`0)\">-</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_Subtraction__0__0_\">-</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_Subtraction_"
@@ -3993,7 +3993,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11.CheckedUserDefinedOperators`1.op_UnaryNegation(`0)\">-</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.CheckedUserDefinedOperators-1.html#CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation__0_\">-</a>"
               }
             ],
             "id": "CSharp11_CheckedUserDefinedOperators_1_op_UnaryNegation_"

@@ -308,11 +308,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.html#BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.TestMethod1(System.Boolean,System.Int32)\">TestMethod1</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">bool</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>)"
+                "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_\">TestMethod1</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">bool</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>)"
               },
               {
                 "lang": "vb",
-                "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.html#BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.TestMethod1(System.Boolean,System.Int32)\">TestMethod1</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
+                "value": "<a class=\"xref\" href=\"BuildFromProject.Inheritdoc.Issue6366.Class1-1.html#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_\">TestMethod1</a>(<a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.boolean\">Boolean</a>, <a class=\"xref\" href=\"https://learn.microsoft.com/dotnet/api/system.int32\">Integer</a>)"
               }
             ]
           },

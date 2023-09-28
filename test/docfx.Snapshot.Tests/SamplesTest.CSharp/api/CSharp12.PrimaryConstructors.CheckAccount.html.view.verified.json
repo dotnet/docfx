@@ -859,11 +859,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12.PrimaryConstructors.BankAccount.ToString\">ToString</a>()"
+                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString\">ToString</a>()"
               },
               {
                 "lang": "vb",
-                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12.PrimaryConstructors.BankAccount.ToString\">ToString</a>()"
+                "value": "<a class=\"xref\" href=\"CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_ToString\">ToString</a>()"
               }
             ]
           },
@@ -1325,7 +1325,7 @@
       "uid": "CSharp12.PrimaryConstructors.BankAccount.AccountID",
       "isExtensionMethod": false,
       "parent": "CSharp12.PrimaryConstructors.BankAccount",
-      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12.PrimaryConstructors.BankAccount.AccountID",
+      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_AccountID",
       "name": [
         {
           "lang": "csharp",
@@ -1376,7 +1376,7 @@
       "uid": "CSharp12.PrimaryConstructors.BankAccount.Owner",
       "isExtensionMethod": false,
       "parent": "CSharp12.PrimaryConstructors.BankAccount",
-      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12.PrimaryConstructors.BankAccount.Owner",
+      "href": "CSharp12.PrimaryConstructors.BankAccount.html#CSharp12_PrimaryConstructors_BankAccount_Owner",
       "name": [
         {
           "lang": "csharp",

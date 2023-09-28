@@ -819,11 +819,11 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "<a class=\"xref\" href=\"BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)\">WithDeclarationKeyword</a>(<a class=\"xref\" href=\"BuildFromVBSourceCode.Class1.html\">Class1</a>)"
+                "value": "<a class=\"xref\" href=\"BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_\">WithDeclarationKeyword</a>(<a class=\"xref\" href=\"BuildFromVBSourceCode.Class1.html\">Class1</a>)"
               },
               {
                 "lang": "vb",
-                "value": "<a class=\"xref\" href=\"BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)\">WithDeclarationKeyword</a>(<a class=\"xref\" href=\"BuildFromVBSourceCode.Class1.html\">Class1</a>)"
+                "value": "<a class=\"xref\" href=\"BuildFromVBSourceCode.BaseClass1.html#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_\">WithDeclarationKeyword</a>(<a class=\"xref\" href=\"BuildFromVBSourceCode.Class1.html\">Class1</a>)"
               }
             ]
           },

@@ -15,6 +15,10 @@ internal static partial class SymbolUrlResolver
 {
     public static string? GetSymbolUrl(ISymbol symbol, Compilation compilation, MemberLayout memberLayout, SymbolUrlKind urlKind, HashSet<IAssemblySymbol> allAssemblies)
     {
+        // Reduce symbol into generic definitions
+        symbol = symbol is IMethodSymbol method ? method.ReducedFrom ?? symbol : symbol;
+        symbol = symbol.OriginalDefinition ?? symbol;
+
         return GetDocfxUrl(symbol, memberLayout, urlKind, allAssemblies)
             ?? GetMicrosoftLearnUrl(symbol)
             ?? GetPdbSourceLinkUrl(compilation, symbol);
@@ -41,10 +45,10 @@ internal static partial class SymbolUrlResolver
         return type switch
         {
             "!" => null,
-            "N" or "T" => $"{uid.Replace('`', '-')}{ext}",
+            "N" or "T" => $"{VisitorHelper.PathFriendlyId(uid)}{ext}",
             "M" or "F" or "P" or "E" => memberLayout is MemberLayout.SeparatePages && !symbol.IsEnumMember()
-                ? $"{VisitorHelper.FileNameId(VisitorHelper.GetOverloadId(symbol))}{ext}#{Regex.Replace(uid, @"/\W/", "_")}"
-                : $"{VisitorHelper.FileNameId(VisitorHelper.GetId(symbol.ContainingType))}{ext}#{Regex.Replace(uid, @"/\W/", "_")}",
+                ? $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetOverloadId(symbol))}{ext}#{Regex.Replace(uid, @"\W", "_")}"
+                : $"{VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol.ContainingType))}{ext}#{Regex.Replace(uid, @"\W", "_")}",
             _ => throw new NotSupportedException($"Unknown comment ID format '{type}'"),
         };
     }

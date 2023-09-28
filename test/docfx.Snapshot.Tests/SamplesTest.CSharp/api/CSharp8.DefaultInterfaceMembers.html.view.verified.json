@@ -807,7 +807,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html#CSharp8.DefaultInterfaceMembers.op_UnaryPlus(CSharp8.DefaultInterfaceMembers)\">+</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp8.DefaultInterfaceMembers.html#CSharp8_DefaultInterfaceMembers_op_UnaryPlus_CSharp8_DefaultInterfaceMembers_\">+</a>"
               }
             ],
             "id": "CSharp8_DefaultInterfaceMembers_op_UnaryPlus_"

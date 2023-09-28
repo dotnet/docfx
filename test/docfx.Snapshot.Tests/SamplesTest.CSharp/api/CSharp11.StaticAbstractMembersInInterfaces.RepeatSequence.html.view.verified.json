@@ -769,7 +769,7 @@
             "specName": [
               {
                 "lang": "csharp",
-                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\">++</a>"
+                "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html#CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_\">++</a>"
               }
             ],
             "id": "CSharp11_StaticAbstractMembersInInterfaces_RepeatSequence_op_Increment_"
@@ -812,11 +812,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.html#CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\">++</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
+                  "value": "operator <a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">++</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
                 },
                 {
                   "lang": "vb",
-                  "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.html#CSharp11.StaticAbstractMembersInInterfaces.IGetNext{CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence}.op_Increment(CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence)\">op_Increment</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
+                  "value": "<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.IGetNext-1.html#CSharp11_StaticAbstractMembersInInterfaces_IGetNext_1_op_Increment__0_\">op_Increment</a>(<a class=\"xref\" href=\"CSharp11.StaticAbstractMembersInInterfaces.RepeatSequence.html\">RepeatSequence</a>)"
                 }
               ]
             }

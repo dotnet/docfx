@@ -521,11 +521,11 @@
               "specName": [
                 {
                   "lang": "csharp",
-                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject.IInheritdoc.Issue7629\">Issue7629</a>()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629\">Issue7629</a>()"
                 },
                 {
                   "lang": "vb",
-                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject.IInheritdoc.Issue7629\">Issue7629</a>()"
+                  "value": "<a class=\"xref\" href=\"BuildFromProject.IInheritdoc.html#BuildFromProject_IInheritdoc_Issue7629\">Issue7629</a>()"
                 }
               ]
             }
