@@ -44,7 +44,7 @@
     <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.121" Condition="'$(TargetFramework)' != 'net8.0'"  />
     <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.121" Condition="'$(TargetFramework)' == 'net8.0'"  />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
-    <PackageVersion Include="Verify.Xunit" Version="21.2.0" />
+    <PackageVersion Include="Verify.Xunit" Version="21.3.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.1" />
     <PackageVersion Include="xunit" Version="2.5.1" />
   </ItemGroup>
