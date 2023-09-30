@@ -53,7 +53,7 @@ public class TemplateModelTransformer
 
         var manifestItem = new ManifestItem
         {
-            DocumentType = item.DocumentType,
+            Type = item.DocumentType,
             SourceRelativePath = item.LocalPathFromRoot,
             Metadata = item.Metadata,
             Version = _context.VersionName,
@@ -70,7 +70,7 @@ public class TemplateModelTransformer
                 RelativePath = item.ResourceFile,
                 LinkToPath = GetLinkToPath(item.ResourceFile),
             };
-            manifestItem.OutputFiles.Add("resource", ofi);
+            manifestItem.Output.Add("resource", ofi);
         }
 
         // 2. process model
@@ -292,7 +292,7 @@ public class TemplateModelTransformer
             RelativePath = destFilePath,
             LinkToPath = GetLinkToPath(destFilePath),
         };
-        manifestItem.OutputFiles.Add(extension, ofi);
+        manifestItem.Output.Add(extension, ofi);
     }
 
     private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter, out List<XRefDetails> unresolvedXRefs)

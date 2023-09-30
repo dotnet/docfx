@@ -135,7 +135,7 @@ public class ConvertWrapper
                     var coverPage = FindSiblingCoverPageInManifest(manifest, tocFile);
                     if (coverPage != null)
                     {
-                        var coverPageHtmlRelativeFilePath = coverPage.OutputFiles[".html"].RelativePath;
+                        var coverPageHtmlRelativeFilePath = coverPage.Output[".html"].RelativePath;
                         var coverPageHtmlFilePath = Path.Combine(basePath, coverPageHtmlRelativeFilePath);
                         if (File.Exists(coverPageHtmlFilePath))
                         {

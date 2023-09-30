@@ -49,7 +49,7 @@ internal sealed class HtmlPostProcessor : IPostProcessor
             manifest = handler.PreHandle(manifest);
         }
         foreach (var tuple in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                              from output in item.OutputFiles
+                              from output in item.Output
                               where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
                               select new
                               {

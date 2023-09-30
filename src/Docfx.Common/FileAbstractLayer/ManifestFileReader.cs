@@ -38,7 +38,7 @@ public class ManifestFileReader : IFileReader
         lock (Manifest)
         {
             return (from f in Manifest.Files
-                    from ofi in f.OutputFiles.Values
+                    from ofi in f.Output.Values
                     select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).Distinct().ToList();
         }
     }

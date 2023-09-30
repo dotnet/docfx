@@ -19,7 +19,7 @@ public class ManifestFileAbstractLayerTest : TestBase
             {
                 new ManifestItem
                 {
-                    OutputFiles =
+                    Output =
                     {
                         [".txt"] = new OutputFileInfo
                         {
@@ -54,7 +54,7 @@ public class ManifestFileAbstractLayerTest : TestBase
                 new ManifestItem
                 {
                     SourceRelativePath = "temp.md",
-                    OutputFiles =
+                    Output =
                     {
                         [".txt"] = new OutputFileInfo
                         {
@@ -92,14 +92,14 @@ public class ManifestFileAbstractLayerTest : TestBase
 
         {
             var pp = fal.GetPhysicalPath("temp.txt");
-            Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".txt"].LinkToPath);
+            Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").Output[".txt"].LinkToPath);
             Assert.True(File.Exists(pp));
             Assert.Equal("👍", File.ReadAllText(pp));
         }
 
         {
             var pp = fal.GetPhysicalPath("temp.html");
-            Assert.Equal(pp, manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
+            Assert.Equal(pp, manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").Output[".html"].LinkToPath);
             Assert.False(File.Exists(Path.Combine(manifestFolder, "temp.html")));
             Assert.True(File.Exists(pp));
             Assert.Equal("😎", File.ReadAllText(pp));
@@ -107,7 +107,7 @@ public class ManifestFileAbstractLayerTest : TestBase
 
         manifest.Dereference(manifestFolder, 2);
 
-        Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
+        Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").Output[".html"].LinkToPath);
         Assert.True(File.Exists(Path.Combine(manifestFolder, "temp.html")));
         Assert.Equal("😎", File.ReadAllText(Path.Combine(manifestFolder, "temp.html")));
     }

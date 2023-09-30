@@ -28,26 +28,26 @@ public class SitemapGenerator : IPostProcessor
 
     public Manifest Process(Manifest manifest, string outputFolder)
     {
-        if (string.IsNullOrEmpty(manifest.SitemapOptions?.BaseUrl))
+        if (string.IsNullOrEmpty(manifest.Sitemap?.BaseUrl))
         {
             return manifest;
         }
 
-        if (!manifest.SitemapOptions.BaseUrl.EndsWith("/", StringComparison.Ordinal))
+        if (!manifest.Sitemap.BaseUrl.EndsWith("/", StringComparison.Ordinal))
         {
-            manifest.SitemapOptions.BaseUrl += '/';
+            manifest.Sitemap.BaseUrl += '/';
         }
 
-        if (!Uri.TryCreate(manifest.SitemapOptions.BaseUrl, UriKind.Absolute, out var baseUri))
+        if (!Uri.TryCreate(manifest.Sitemap.BaseUrl, UriKind.Absolute, out var baseUri))
         {
-            Logger.LogWarning($"Base url {manifest.SitemapOptions.BaseUrl} is not in a valid uri format.");
+            Logger.LogWarning($"Base url {manifest.Sitemap.BaseUrl} is not in a valid uri format.");
             return manifest;
         }
 
-        if (manifest.SitemapOptions.Priority.HasValue && (manifest.SitemapOptions.Priority < 0 || manifest.SitemapOptions.Priority > 1))
+        if (manifest.Sitemap.Priority.HasValue && (manifest.Sitemap.Priority < 0 || manifest.Sitemap.Priority > 1))
         {
-            Logger.LogWarning($"Invalid priority {manifest.SitemapOptions.Priority}, priority must be between 0.0 and 1.0. Use default value 0.5 instead");
-            manifest.SitemapOptions.Priority = 0.5;
+            Logger.LogWarning($"Invalid priority {manifest.Sitemap.Priority}, priority must be between 0.0 and 1.0. Use default value 0.5 instead");
+            manifest.Sitemap.Priority = 0.5;
         }
 
         var sitemapDocument = new XStreamingElement(Namespace + "urlset", GetElements(manifest, baseUri));
@@ -60,7 +60,7 @@ public class SitemapGenerator : IPostProcessor
 
     private static IEnumerable<XElement> GetElements(Manifest manifest, Uri baseUri)
     {
-        var sitemapOptions = manifest.SitemapOptions;
+        var sitemapOptions = manifest.Sitemap;
         var sitemapTargetFiles = GetManifestFilesForSitemap(manifest).OrderBy(x => x.relativeHtmlPath);
 
         foreach (var (relativeHtmlPath, file) in sitemapTargetFiles)
@@ -70,7 +70,7 @@ public class SitemapGenerator : IPostProcessor
             var currentBaseUri = baseUri;
             if (options.BaseUrl != sitemapOptions.BaseUrl && !Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out currentBaseUri))
             {
-                Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.SitemapOptions.BaseUrl} instead.");
+                Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.Sitemap.BaseUrl} instead.");
                 currentBaseUri = baseUri;
             }
 
@@ -153,7 +153,7 @@ public class SitemapGenerator : IPostProcessor
 
         foreach (var file in manifest.Files)
         {
-            switch (file.DocumentType)
+            switch (file.Type)
             {
                 // Skip non sitemap target files.
                 case DataContracts.Common.Constants.DocumentType.Toc:
@@ -165,7 +165,7 @@ public class SitemapGenerator : IPostProcessor
             }
 
             // Skip if manifest don't contains HTML output file.
-            if (!file.OutputFiles.TryGetValue(HtmlExtension, out var info))
+            if (!file.Output.TryGetValue(HtmlExtension, out var info))
             {
                 continue;
             }

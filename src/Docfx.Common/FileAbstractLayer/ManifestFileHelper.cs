@@ -57,7 +57,7 @@ public static class ManifestFileHelper
 
     private static void AddFileCore(ManifestItem item, string extension, string targetRelativePath)
     {
-        item.OutputFiles[extension] = new OutputFileInfo
+        item.Output[extension] = new OutputFileInfo
         {
             RelativePath = targetRelativePath,
         };
@@ -101,7 +101,7 @@ public static class ManifestFileHelper
 
     private static bool RemoveFileCore(ManifestItem item, string extension)
     {
-        return item.OutputFiles.Remove(extension);
+        return item.Output.Remove(extension);
     }
 
     public static void Modify(this Manifest manifest, Action<Manifest> action)
@@ -138,7 +138,7 @@ public static class ManifestFileHelper
             .Create();
         Parallel.ForEach(
             from f in manifest.Files
-            from ofi in f.OutputFiles.Values
+            from ofi in f.Output.Values
             where ofi.LinkToPath != null
             select ofi,
             new ParallelOptions { MaxDegreeOfParallelism = parallelism },

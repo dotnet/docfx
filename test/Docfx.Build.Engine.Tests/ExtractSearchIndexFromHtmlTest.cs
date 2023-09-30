@@ -213,7 +213,7 @@ public class ExtractSearchIndexFromHtmlTest
         };
 
         var manifestItem = new ManifestItem();
-        manifestItem.OutputFiles.Add(".html", outputFileInfo);
+        manifestItem.Output.Add(".html", outputFileInfo);
 
         var manifest = new Manifest();
         manifest.Files.Add(manifestItem);

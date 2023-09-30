@@ -17,7 +17,7 @@ public static class ManifestUtility
         ArgumentNullException.ThrowIfNull(manifestItems);
 
         var manifestItemGroups = (from item in manifestItems
-                                  from output in item.OutputFiles.Values
+                                  from output in item.Output.Values
                                   let relativePath = output?.RelativePath
                                   select new { item, relativePath }).GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -43,8 +43,8 @@ public static class ManifestUtility
         ArgumentNullException.ThrowIfNull(manifests);
 
         var xrefMaps = (from manifest in manifests
-                                where manifest.XRefMap != null
-                                select manifest.XRefMap).ToList();
+                                where manifest.Xrefmap != null
+                                select manifest.Xrefmap).ToList();
         var manifestGroupInfos = (from manifest in manifests
                                   from g in manifest.Groups ?? Enumerable.Empty<ManifestGroupInfo>()
                                   select g).ToList();
@@ -53,7 +53,7 @@ public static class ManifestUtility
              from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
              select file).Distinct())
         {
-            XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
+            Xrefmap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
             SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
             Groups = manifestGroupInfos.Count > 0 ? manifestGroupInfos : null,
         };

@@ -9,32 +9,32 @@ public static class ManifestUtility
 {
     public static string GetRelativePath(ManifestItem item, OutputType type)
     {
-        if (item?.OutputFiles == null)
+        if (item?.Output == null)
         {
             return null;
         }
         switch (type)
         {
             case OutputType.Html:
-                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension, out OutputFileInfo content))
+                if (item.Output.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension, out OutputFileInfo content))
                 {
                     return content.RelativePath;
                 }
                 break;
             case OutputType.TocJson:
-                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.TocFileExtension, out content))
+                if (item.Output.TryGetValue(BuildToolConstants.OutputFileExtensions.TocFileExtension, out content))
                 {
                     return content.RelativePath;
                 }
                 break;
             case OutputType.RawPageJson:
-                if (item.OutputFiles.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentRawPageExtension, out content))
+                if (item.Output.TryGetValue(BuildToolConstants.OutputFileExtensions.ContentRawPageExtension, out content))
                 {
                     return content.RelativePath;
                 }
                 break;
             case OutputType.Resource:
-                if (item.OutputFiles.TryGetValue(ManifestConstants.BuildManifestItem.OutputResource, out content))
+                if (item.Output.TryGetValue(ManifestConstants.BuildManifestItem.OutputResource, out content))
                 {
                     return content.RelativePath;
                 }
@@ -77,7 +77,7 @@ public static class ManifestUtility
 
     public static ManifestItemType GetDocumentType(ManifestItem item)
     {
-        var type = item.DocumentType;
+        var type = item.Type;
         if (Enum.TryParse(type, out ManifestItemType actualType))
         {
             return actualType;

@@ -34,7 +34,7 @@ public class RemoveDebugInfoTest : TestBase
             SourceBasePath = _outputFolder,
             Files =
             {
-                new ManifestItem { SourceRelativePath = "a.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
+                new ManifestItem { SourceRelativePath = "a.md", Output = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
             }
         };
 

@@ -46,7 +46,7 @@ public class SitemapGeneratorTests : TestBase
         }
         )
         {
-            SitemapOptions = new SitemapOptions
+            Sitemap = new SitemapOptions
             {
                 BaseUrl = "https://example.com",
                 Priority = 1,
@@ -62,7 +62,7 @@ public class SitemapGeneratorTests : TestBase
         manifest = sitemapGenerator.Process(manifest, outputFolder);
 
         // Assert
-        Assert.Equal("https://example.com/", manifest.SitemapOptions.BaseUrl);
+        Assert.Equal("https://example.com/", manifest.Sitemap.BaseUrl);
         Assert.True(File.Exists(sitemapPath));
 
         var sitemap = XDocument.Load(sitemapPath);
@@ -81,13 +81,13 @@ public class SitemapGeneratorTests : TestBase
     {
         var result = new ManifestItem
         {
-            DocumentType = documentType,
+            Type = documentType,
             SourceRelativePath = documentType + ".dummy"
         };
 
         if (outputFileExtension != null)
         {
-            result.OutputFiles.Add(outputFileExtension, new OutputFileInfo
+            result.Output.Add(outputFileExtension, new OutputFileInfo
             {
                 RelativePath = documentType + outputFileExtension,
             });

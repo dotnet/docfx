@@ -40,7 +40,7 @@ public class TemplateProcessorUnitTest : TestBase
         };
         var output = Process("index", "input", new { reference = "reference" }, xref);
 
-        Assert.Equal($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.OutputFiles[".html"].RelativePath.ToNormalizedPath());
+        Assert.Equal($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.Output[".html"].RelativePath.ToNormalizedPath());
         Assert.Equal(@"
 <h2>reference</h2><p>hello world</p>Good!
 ", File.ReadAllText(Path.Combine(_outputFolder, "input.html")));

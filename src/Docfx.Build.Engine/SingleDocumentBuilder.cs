@@ -104,16 +104,16 @@ public class SingleDocumentBuilder : IDisposable
 
                 BuildCore(phaseProcessor, hostServices, context);
 
-                var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
+                var manifest = new Manifest(context.ManifestItems.Where(m => m.Output?.Count > 0))
                 {
-                    XRefMap = ExportXRefMap(parameters, context),
+                    Xrefmap = ExportXRefMap(parameters, context),
                     SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                 };
                 manifest.Groups = new List<ManifestGroupInfo>
                 {
                     new(parameters.GroupInfo)
                     {
-                        XRefmap = (string)manifest.XRefMap
+                        XRefmap = (string)manifest.Xrefmap
                     }
                 };
                 return manifest;

@@ -26,14 +26,14 @@ public class Manifest
     }
 
     [JsonProperty("sitemap")]
-    public SitemapOptions SitemapOptions { get; set; }
+    public SitemapOptions Sitemap { get; set; }
 
     [JsonProperty("source_base_path")]
     public string SourceBasePath { get; set; }
 
     [Obsolete]
     [JsonProperty("xrefmap")]
-    public object XRefMap { get; set; }
+    public object Xrefmap { get; set; }
 
     [JsonProperty("files")]
     public ManifestItemCollection Files { get; }
@@ -75,24 +75,24 @@ public class Manifest
             {
                 foreach (ManifestItem item in e.NewItems)
                 {
-                    foreach (var ofi in item.OutputFiles.Values)
+                    foreach (var ofi in item.Output.Values)
                     {
                         AddItem(ofi.RelativePath, ofi);
                         ofi.PropertyChanged += OutputFileInfoPropertyChanged;
                     }
-                    item.OutputFiles.CollectionChanged += ManifestItemOutputChanged;
+                    item.Output.CollectionChanged += ManifestItemOutputChanged;
                 }
             }
             if (e.OldItems != null)
             {
                 foreach (ManifestItem item in e.OldItems)
                 {
-                    foreach (var ofi in item.OutputFiles.Values)
+                    foreach (var ofi in item.Output.Values)
                     {
                         RemoveItem(ofi.RelativePath, ofi);
                         ofi.PropertyChanged -= OutputFileInfoPropertyChanged;
                     }
-                    item.OutputFiles.CollectionChanged -= ManifestItemOutputChanged;
+                    item.Output.CollectionChanged -= ManifestItemOutputChanged;
                 }
             }
         }

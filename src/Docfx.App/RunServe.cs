@@ -105,7 +105,7 @@ internal static class RunServe
             relativePath = relativePath.Replace('\\', '/'); // Normalize path.
             var manifestFile = manifest.Files
                                        .Where(x => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(x.SourceRelativePath, relativePath))
-                                       .FirstOrDefault(x => x.OutputFiles.TryGetValue(".html", out outputFileInfo));
+                                       .FirstOrDefault(x => x.Output.TryGetValue(".html", out outputFileInfo));
 
             if (outputFileInfo != null)
             {

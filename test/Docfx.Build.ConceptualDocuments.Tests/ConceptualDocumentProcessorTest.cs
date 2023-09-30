@@ -387,7 +387,7 @@ Some content";
         // Test `manifest.json` content
         var manifest = GetOutputManifest();
         Assert.True(manifest.Files.Count == 1);
-        Assert.True(manifest.Files[0].DocumentType == Constants.DocumentType.Redirection);
+        Assert.True(manifest.Files[0].Type == Constants.DocumentType.Redirection);
     }
 
     #region Private Helpers

@@ -13,7 +13,7 @@ public class SourceFileInfo
     {
         return new SourceFileInfo
         {
-            DocumentType = manifestItem.DocumentType,
+            DocumentType = manifestItem.Type,
             SourceRelativePath = manifestItem.SourceRelativePath,
         };
     }

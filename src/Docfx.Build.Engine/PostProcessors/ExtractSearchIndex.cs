@@ -46,8 +46,8 @@ public class ExtractSearchIndex : IPostProcessor
         var indexData = new SortedDictionary<string, SearchIndexItem>();
         var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);
         var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                         from output in item.OutputFiles
-                         where item.DocumentType != "Toc" && output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                         from output in item.Output
+                         where item.Type != "Toc" && output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
                          select output.Value.RelativePath).ToList();
         if (htmlFiles.Count == 0)
         {
@@ -85,9 +85,9 @@ public class ExtractSearchIndex : IPostProcessor
         // add index.json to manifest as resource file
         var manifestItem = new ManifestItem
         {
-            DocumentType = "Resource",
+            Type = "Resource",
         };
-        manifestItem.OutputFiles.Add("resource", new OutputFileInfo
+        manifestItem.Output.Add("resource", new OutputFileInfo
         {
             RelativePath = PathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
         });

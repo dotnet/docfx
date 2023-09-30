@@ -143,7 +143,7 @@ public class DocumentBuilder : IDisposable
             using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
             {
                 var generatedManifest = ManifestUtility.MergeManifest(manifests);
-                generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
+                generatedManifest.Sitemap = parameters.FirstOrDefault()?.SitemapOptions;
                 ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                 ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
@@ -162,7 +162,7 @@ public class DocumentBuilder : IDisposable
                     if (parameters[0].KeepFileLink)
                     {
                         var count = (from f in generatedManifest.Files
-                                     from o in f.OutputFiles
+                                     from o in f.Output
                                      select o.Value into v
                                      where v.LinkToPath != null
                                      select v).Count();

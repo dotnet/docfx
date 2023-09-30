@@ -37,14 +37,14 @@ public class ValidateBookmarkTest : TestBase
             SourceBasePath = _outputFolder,
             Files =
             {
-                new ManifestItem { SourceRelativePath = "a.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
-                new ManifestItem { SourceRelativePath = "b.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "b.html" } } } },
-                new ManifestItem { SourceRelativePath = "c.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "c.html" } } } },
-                new ManifestItem { SourceRelativePath = "d.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
-                new ManifestItem { SourceRelativePath = "e.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
-                new ManifestItem { SourceRelativePath = "f.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "Dir/f.html" } } } },
-                new ManifestItem { SourceRelativePath = "g.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "g.html" } } } },
-                new ManifestItem { SourceRelativePath = "h.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "h.html" } } }, Metadata =  new Dictionary<string, object> { { "rawTitle", "<h1 id=\"welcome\">Welcome</h1>" } } },
+                new ManifestItem { SourceRelativePath = "a.md", Output = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
+                new ManifestItem { SourceRelativePath = "b.md", Output = { { ".html", new OutputFileInfo { RelativePath = "b.html" } } } },
+                new ManifestItem { SourceRelativePath = "c.md", Output = { { ".html", new OutputFileInfo { RelativePath = "c.html" } } } },
+                new ManifestItem { SourceRelativePath = "d.md", Output = { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
+                new ManifestItem { SourceRelativePath = "e.md", Output = { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
+                new ManifestItem { SourceRelativePath = "f.md", Output = { { ".html", new OutputFileInfo { RelativePath = "Dir/f.html" } } } },
+                new ManifestItem { SourceRelativePath = "g.md", Output = { { ".html", new OutputFileInfo { RelativePath = "g.html" } } } },
+                new ManifestItem { SourceRelativePath = "h.md", Output = { { ".html", new OutputFileInfo { RelativePath = "h.html" } } }, Metadata =  new Dictionary<string, object> { { "rawTitle", "<h1 id=\"welcome\">Welcome</h1>" } } },
             }
         };
 
@@ -96,8 +96,8 @@ public class ValidateBookmarkTest : TestBase
             SourceBasePath = _outputFolder,
             Files =
             {
-                new ManifestItem { SourceRelativePath = "test.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "test.html" } } } },
-                new ManifestItem { SourceRelativePath = "testNoCheckBookmark.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "testNoCheckBookmark.html" } } } },
+                new ManifestItem { SourceRelativePath = "test.md", Output = { { ".html", new OutputFileInfo { RelativePath = "test.html" } } } },
+                new ManifestItem { SourceRelativePath = "testNoCheckBookmark.md", Output = { { ".html", new OutputFileInfo { RelativePath = "testNoCheckBookmark.html" } } } },
             }
         };
         File.WriteAllText(Path.Combine(_outputFolder, "test.html"), @"<a href='test.html#invalid'>test</a>");

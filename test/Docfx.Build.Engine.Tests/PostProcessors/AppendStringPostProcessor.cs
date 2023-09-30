@@ -23,7 +23,7 @@ internal class AppendStringPostProcessor : IPostProcessor
         foreach (var file in manifest.Files ?? Enumerable.Empty<ManifestItem>())
         {
             string htmlRelativePath = null;
-            foreach (var outputFile in file.OutputFiles)
+            foreach (var outputFile in file.Output)
             {
                 if (outputFile.Key.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
@@ -42,7 +42,7 @@ internal class AppendStringPostProcessor : IPostProcessor
             if (htmlRelativePath != null)
             {
                 var targetRelativePath = Path.ChangeExtension(htmlRelativePath, AdditionalExtensionString);
-                file.OutputFiles.Add(AdditionalExtensionString,
+                file.Output.Add(AdditionalExtensionString,
                     new OutputFileInfo
                     {
                         RelativePath = targetRelativePath

@@ -8,13 +8,13 @@ namespace Docfx.Plugins;
 public class ManifestItem
 {
     [JsonProperty("type")]
-    public string DocumentType { get; set; }
+    public string Type { get; set; }
 
     [JsonProperty("source_relative_path")]
     public string SourceRelativePath { get; set; }
 
     [JsonProperty("output")]
-    public OutputFileCollection OutputFiles { get; } = new OutputFileCollection();
+    public OutputFileCollection Output { get; } = new OutputFileCollection();
 
     [JsonProperty("version")]
     public string Version { get; set; }
