@@ -1,7 +1,7 @@
 ﻿# Delegate MRefDelegate<K, T, L>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 Generic delegate with many constrains.
 
@@ -9,7 +9,7 @@ Generic delegate with many constrains.
 public delegate void MRefDelegate<K, T, L>(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable<long>
 ```
 
-## Parameters
+#### Parameters
 
 `k` K
 
@@ -23,17 +23,17 @@ Type T.
 
 Type L.
 
-## Type Parameters
+#### Type Parameters
 
-`K`
+`K` 
 
 Generic K.
 
-`T`
+`T` 
 
 Generic T.
 
-`L`
+`L` 
 
 Generic L.
 

@@ -61,7 +61,7 @@ class MarkdownWriter : PageWriter
         _sb.Append($"{new string('#', level)} ");
         if (!string.IsNullOrEmpty(id))
             _sb.Append($"<a id=\"{id}\"></a>");
-        _sb.Append(title).AppendLine();
+        _sb.AppendLine(title).AppendLine();
     }
 
     public override void Facts(params Fact[] facts)
@@ -81,17 +81,17 @@ class MarkdownWriter : PageWriter
         for (var i = 0; i < items.Length - 1; i++)
         {
             Text(items[i]);
-            _sb.Append(delimiter switch
+            _sb.AppendLine(delimiter switch
             {
                 ListDelimiter.LeftArrow => " \u2190 ",
                 ListDelimiter.Comma => ", ",
-                ListDelimiter.NewLine => Environment.NewLine,
+                ListDelimiter.NewLine => "  ",
                 _ => throw new NotSupportedException($"Unknown delimiter {delimiter}"),
             });
         }
 
         Text(items[^1]);
-        _sb.AppendLine();
+        _sb.AppendLine().AppendLine();
     }
 
     public override void Markdown(string markdown)

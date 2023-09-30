@@ -1,27 +1,27 @@
 ﻿# Class CatException<T>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 ```csharp
 public class CatException<T> : Exception, ISerializable
 ```
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Exception](https://learn.microsoft.com/dotnet/api/system.exception) ← 
-[CatException](CatLibrary.CatException-1.md)<T>
+[CatException<T>](CatLibrary.CatException-1.md)
 
-#### Implements
+###### Implements
 
 [ISerializable](https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable)
 
-#### Inherited Members
+###### Inherited Members
 
 [Exception.GetBaseException()](https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception), 
 [Exception.GetObjectData(SerializationInfo, StreamingContext)](https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata), 

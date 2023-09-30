@@ -1,22 +1,22 @@
 ﻿# Class Class1.Test<T>
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Class1.Test<T>
 ```
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Class1](BuildFromProject.Class1.md).[Test](BuildFromProject.Class1.Test-1.md)<T>
+[Class1.Test<T>](BuildFromProject.Class1.Test-1.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 

@@ -136,7 +136,7 @@ partial class DotnetApiCatalog
 
             void Enum(INamedTypeSymbol type)
             {
-                writer.Heading(3, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp));
+                writer.Heading(1, $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
 
                 writer.Facts(Facts().ToArray());
                 Summary(comment);

@@ -1,7 +1,7 @@
 ﻿# Class Inheritdoc.Issue7484
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 This is a test class to have something for DocFX to document.
 
@@ -9,12 +9,12 @@ This is a test class to have something for DocFX to document.
 public class Inheritdoc.Issue7484
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue7484](BuildFromProject.Inheritdoc.Issue7484.md)
+[Inheritdoc.Issue7484](BuildFromProject.Inheritdoc.Issue7484.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -35,7 +35,7 @@ A string that could have something.
 
 ## Constructors
 
-### Issue7484()
+### <a id="BuildFromProject_Inheritdoc_Issue7484__ctor"></a>Issue7484()
 
 This is a constructor to document.
 
@@ -45,7 +45,7 @@ public Issue7484()
 
 ## Properties
 
-### DoDad
+### <a id="BuildFromProject_Inheritdoc_Issue7484_DoDad"></a>DoDad
 
 A string that could have something.
 
@@ -53,13 +53,13 @@ A string that could have something.
 public string DoDad { get; }
 ```
 
-Property Value
+#### Property Value
 
 [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 ## Methods
 
-### BoolReturningMethod(bool)
+### <a id="BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_"></a>BoolReturningMethod(bool)
 
 Simple method to generate docs for.
 

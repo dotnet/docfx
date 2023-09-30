@@ -1,7 +1,6 @@
 ﻿# Class BaseClass1
 
-__Namespace:__ [BuildFromVBSourceCode](BuildFromVBSourceCode.md)  
-__Assembly:__ ?.dll
+Namespace: [BuildFromVBSourceCode](BuildFromVBSourceCode.md)
 
 This is the BaseClass
 
@@ -9,16 +8,16 @@ This is the BaseClass
 public abstract class BaseClass1
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [BaseClass1](BuildFromVBSourceCode.BaseClass1.md)
 
-#### Derived
+###### Derived
 
 [Class1](BuildFromVBSourceCode.Class1.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object, object)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -31,7 +30,7 @@ public abstract class BaseClass1
 
 ## Methods
 
-### WithDeclarationKeyword(Class1)
+### <a id="BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_"></a>WithDeclarationKeyword(Class1)
 
 ```csharp
 public abstract DateTime WithDeclarationKeyword(Class1 keyword)

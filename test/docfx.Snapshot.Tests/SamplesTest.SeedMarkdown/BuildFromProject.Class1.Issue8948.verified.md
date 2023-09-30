@@ -1,22 +1,22 @@
 ﻿# Class Class1.Issue8948
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Class1.Issue8948 : Class1.IIssue8948
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Class1](BuildFromProject.Class1.md).[Issue8948](BuildFromProject.Class1.Issue8948.md)
+[Class1.Issue8948](BuildFromProject.Class1.Issue8948.md)
 
-#### Implements
+###### Implements
 
-[Class1](BuildFromProject.Class1.md).[IIssue8948](BuildFromProject.Class1.IIssue8948.md)
+[Class1.IIssue8948](BuildFromProject.Class1.IIssue8948.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -28,7 +28,7 @@ public class Class1.Issue8948 : Class1.IIssue8948
 
 ## Methods
 
-### DoNothing<T>()
+### <a id="BuildFromProject_Class1_Issue8948_DoNothing__1"></a>DoNothing<T>()
 
 Does nothing with generic type T.
 
@@ -38,7 +38,7 @@ public void DoNothing<T>()
 
 #### Type Parameters
 
-`T`
+`T` 
 
 A generic type.
 

@@ -1,21 +1,21 @@
 ﻿# Class Inheritdoc.Issue6366.Class2
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue6366](BuildFromProject.Inheritdoc.Issue6366.md).[Class1](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md)<[bool](https://learn.microsoft.com/dotnet/api/system.boolean)> ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue6366](BuildFromProject.Inheritdoc.Issue6366.md).[Class2](BuildFromProject.Inheritdoc.Issue6366.Class2.md)
+[Inheritdoc.Issue6366.Class1<bool>](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md) ← 
+[Inheritdoc.Issue6366.Class2](BuildFromProject.Inheritdoc.Issue6366.Class2.md)
 
-#### Inherited Members
+###### Inherited Members
 
-[Inheritdoc.Issue6366.Class1<bool>.TestMethod1(bool, int)](BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.md#BuildFromProject.Inheritdoc.Issue6366.Class1{System.Boolean}.TestMethod1(System.Boolean,System.Int32)), 
+[Inheritdoc.Issue6366.Class1<bool>.TestMethod1(bool, int)](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md#BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_), 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
@@ -26,7 +26,7 @@ public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>
 
 ## Methods
 
-### TestMethod1(bool, int)
+### <a id="BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_"></a>TestMethod1(bool, int)
 
 This text inherited.
 

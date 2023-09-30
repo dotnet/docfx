@@ -1,19 +1,19 @@
 ﻿# Class Class1.Issue8696Attribute
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Class1.Issue8696Attribute : Attribute
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Attribute](https://learn.microsoft.com/dotnet/api/system.attribute) ← 
-[Class1](BuildFromProject.Class1.md).[Issue8696Attribute](BuildFromProject.Class1.Issue8696Attribute.md)
+[Class1.Issue8696Attribute](BuildFromProject.Class1.Issue8696Attribute.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [Attribute.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.attribute.equals), 
 [Attribute.GetCustomAttribute(Assembly, Type)](https://learn.microsoft.com/dotnet/api/system.attribute.getcustomattribute#system-attribute-getcustomattribute(system-reflection-assembly-system-type)), 
@@ -62,7 +62,7 @@ public class Class1.Issue8696Attribute : Attribute
 
 ## Constructors
 
-### Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
+### <a id="BuildFromProject_Class1_Issue8696Attribute__ctor_System_String_System_Int32_System_Int32_System_String___System_Boolean_System_Type_"></a>Issue8696Attribute(string?, int, int, string[]?, bool, Type?)
 
 ```csharp
 [Class1.Issue8696("Changes the name of the server in the server list", 0, 0, null, false, null)]

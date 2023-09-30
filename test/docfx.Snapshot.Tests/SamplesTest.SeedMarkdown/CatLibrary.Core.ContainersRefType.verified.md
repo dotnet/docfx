@@ -1,7 +1,7 @@
 ﻿# Struct ContainersRefType
 
-__Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
-__Assembly:__ CatLibrary.Core.dll
+Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
+Assembly: CatLibrary.Core.dll
 
 Struct ContainersRefType
 
@@ -9,17 +9,8 @@ Struct ContainersRefType
 public struct ContainersRefType
 ```
 
-#### Inheritance
+###### Inherited Members
 
-[object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[ValueType](https://learn.microsoft.com/dotnet/api/system.valuetype) ← 
-[ContainersRefType](CatLibrary.Core.ContainersRefType.md)
-
-#### Inherited Members
-
-[ValueType.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.valuetype.equals), 
-[ValueType.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode), 
-[ValueType.ToString()](https://learn.microsoft.com/dotnet/api/system.valuetype.tostring), 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
@@ -27,14 +18,14 @@ public struct ContainersRefType
 [object.ReferenceEquals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
 [object.ToString()](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
-#### Extension Methods
+###### Extension Methods
 
-[Issue231.Bar(ContainersRefType)](CatLibrary.Core.Issue231.md#CatLibrary.Core.Issue231.Bar), 
-[Issue231.Foo(ContainersRefType)](CatLibrary.Core.Issue231.md#CatLibrary.Core.Issue231.Foo)
+[Issue231.Bar(ContainersRefType)](CatLibrary.Core.Issue231.md#CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_), 
+[Issue231.Foo(ContainersRefType)](CatLibrary.Core.Issue231.md#CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_)
 
 ## Fields
 
-### ColorCount
+### <a id="CatLibrary_Core_ContainersRefType_ColorCount"></a>ColorCount
 
 ColorCount
 
@@ -42,13 +33,13 @@ ColorCount
 public long ColorCount
 ```
 
-Field Value
+#### Field Value
 
 [long](https://learn.microsoft.com/dotnet/api/system.int64)
 
 ## Properties
 
-### GetColorCount
+### <a id="CatLibrary_Core_ContainersRefType_GetColorCount"></a>GetColorCount
 
 GetColorCount
 
@@ -56,13 +47,13 @@ GetColorCount
 public long GetColorCount { get; }
 ```
 
-Property Value
+#### Property Value
 
 [long](https://learn.microsoft.com/dotnet/api/system.int64)
 
 ## Methods
 
-### ContainersRefTypeNonRefMethod(params object[])
+### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___"></a>ContainersRefTypeNonRefMethod(params object[])
 
 ContainersRefTypeNonRefMethod
 <param name="parmsArray">array</param>
@@ -79,13 +70,13 @@ public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
-### ContainersRefTypeEventHandler
+### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler"></a>ContainersRefTypeEventHandler
 
 ```csharp
 public event EventHandler ContainersRefTypeEventHandler
 ```
 
-Event Type
+#### Event Type
 
 [EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
 

@@ -1,7 +1,7 @@
 ﻿# Class Cat<T, K>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 <p>Here's main class of this <i>Demo</i>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>
@@ -14,27 +14,27 @@ __Assembly:__ CatLibrary.dll
 public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct
 ```
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
 This type should be class and can new instance.
 
-`K`
+`K` 
 
 This type is a struct type, class type can't be used for this parameter.
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Cat](CatLibrary.Cat-2.md)<T, K>
+[Cat<T, K>](CatLibrary.Cat-2.md)
 
-#### Implements
+###### Implements
 
 [ICat](CatLibrary.ICat.md), 
 [IAnimal](CatLibrary.IAnimal.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -44,10 +44,10 @@ This type is a struct type, class type can't be used for this parameter.
 [object.ReferenceEquals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
 [object.ToString()](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
-#### Extension Methods
+###### Extension Methods
 
-[ICatExtension.Play(ICat, ContainersRefType.ColorType)](CatLibrary.ICatExtension.md#CatLibrary.ICatExtension.Play(CatLibrary.Core.ContainersRefType.ColorType)), 
-[ICatExtension.Sleep(ICat, long)](CatLibrary.ICatExtension.md#CatLibrary.ICatExtension.Sleep(System.Int64))
+[ICatExtension.Play(ICat, ContainersRefType.ColorType)](CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_), 
+[ICatExtension.Sleep(ICat, long)](CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_)
 
 ## Examples
 
@@ -66,7 +66,7 @@ unsafe
 
 ## Constructors
 
-### Cat()
+### <a id="CatLibrary_Cat_2__ctor"></a>Cat()
 
 Default constructor.
 
@@ -74,7 +74,7 @@ Default constructor.
 public Cat()
 ```
 
-### Cat(T)
+### <a id="CatLibrary_Cat_2__ctor__0_"></a>Cat(T)
 
 Constructor with one generic parameter.
 
@@ -88,7 +88,7 @@ public Cat(T ownType)
 
 This parameter type defined by class.
 
-### Cat(string, out int, string, bool)
+### <a id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_"></a>Cat(string, out int, string, bool)
 
 It's a complex constructor. The parameter will have some attributes.
 
@@ -116,7 +116,7 @@ It's an in parameter.
 
 ## Fields
 
-### isHealthy
+### <a id="CatLibrary_Cat_2_isHealthy"></a>isHealthy
 
 Field with attribute.
 
@@ -126,13 +126,13 @@ Field with attribute.
 public bool isHealthy
 ```
 
-Field Value
+#### Field Value
 
 [bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 ## Properties
 
-### Age
+### <a id="CatLibrary_Cat_2_Age"></a>Age
 
 Hint cat's age.
 
@@ -140,11 +140,11 @@ Hint cat's age.
 protected int Age { get; set; }
 ```
 
-Property Value
+#### Property Value
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
-### Name
+### <a id="CatLibrary_Cat_2_Name"></a>Name
 
 EII property.
 
@@ -152,11 +152,11 @@ EII property.
 public string Name { get; }
 ```
 
-Property Value
+#### Property Value
 
 [string](https://learn.microsoft.com/dotnet/api/system.string)
 
-### this[string]
+### <a id="CatLibrary_Cat_2_Item_System_String_"></a>this[string]
 
 This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.
 
@@ -164,13 +164,13 @@ This is index property of Cat. You can see that the visibility is different betw
 public int this[string a] { protected get; set; }
 ```
 
-Property Value
+#### Property Value
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 ## Methods
 
-### CalculateFood(DateTime)
+### <a id="CatLibrary_Cat_2_CalculateFood_System_DateTime_"></a>CalculateFood(DateTime)
 
 It's a method with complex return type.
 
@@ -190,7 +190,7 @@ Date time to now.
 
 It's a relationship map of different kind food.
 
-### Equals(object)
+### <a id="CatLibrary_Cat_2_Equals_System_Object_"></a>Equals(object)
 
 Override the method of <code>Object.Equals(object obj).</code>
 
@@ -210,7 +210,7 @@ Can pass any class type.
 
 The return value tell you whehter the compare operation is successful.
 
-### GetTailLength(int*, params object[])
+### <a id="CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___"></a>GetTailLength(int*, params object[])
 
 It's an <code>unsafe</code> method.
 As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we need to add <code class="languageKeyword">unsafe</code> keyword.
@@ -235,7 +235,7 @@ Optional parameters.
 
 Return cat tail's length.
 
-### Jump(T, K, ref bool)
+### <a id="CatLibrary_Cat_2_Jump__0__1_System_Boolean__"></a>Jump(T, K, ref bool)
 
 This method have attribute above it.
 
@@ -264,7 +264,7 @@ Hint whether this cat has cheat mode.
 
 This is an argument exception
 
-### ownEat
+### <a id="CatLibrary_Cat_2_ownEat"></a>ownEat
 
 Eat event of this cat
 
@@ -272,13 +272,13 @@ Eat event of this cat
 public event EventHandler ownEat
 ```
 
-Event Type
+#### Event Type
 
 [EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
 
 ## Operators
 
-### operator +(Cat<T, K>, int)
+### <a id="CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_"></a>operator +(Cat<T, K>, int)
 
 Addition operator of this class.
 
@@ -302,7 +302,7 @@ public static int operator +(Cat<T, K> lsr, int rsr)
 
 Result with <i>int</i> type.
 
-### explicit operator Tom(Cat<T, K>)
+### <a id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom"></a>explicit operator Tom(Cat<T, K>)
 
 Expilicit operator of this class.
 <p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>
@@ -323,7 +323,7 @@ Instance of this class.
 
 Advanced class type of cat.
 
-### operator -(Cat<T, K>, int)
+### <a id="CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_"></a>operator -(Cat<T, K>, int)
 
 Similar with operaotr +, refer to that topic.
 

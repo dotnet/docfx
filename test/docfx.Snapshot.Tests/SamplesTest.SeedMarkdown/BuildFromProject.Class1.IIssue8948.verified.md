@@ -1,7 +1,7 @@
 ﻿# Interface Class1.IIssue8948
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public interface Class1.IIssue8948
@@ -9,7 +9,7 @@ public interface Class1.IIssue8948
 
 ## Methods
 
-### DoNothing<T>()
+### <a id="BuildFromProject_Class1_IIssue8948_DoNothing__1"></a>DoNothing<T>()
 
 Does nothing with generic type <code class="typeparamref">T</code>.
 
@@ -19,7 +19,8 @@ void DoNothing<T>()
 
 #### Type Parameters
 
-`T`
+`T` 
 
 A generic type.
+
 

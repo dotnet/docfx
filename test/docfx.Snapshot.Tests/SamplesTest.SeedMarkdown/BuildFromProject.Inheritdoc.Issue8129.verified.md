@@ -1,23 +1,14 @@
 ﻿# Struct Inheritdoc.Issue8129
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public struct Inheritdoc.Issue8129
 ```
 
-#### Inheritance
+###### Inherited Members
 
-[object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[ValueType](https://learn.microsoft.com/dotnet/api/system.valuetype) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue8129](BuildFromProject.Inheritdoc.Issue8129.md)
-
-#### Inherited Members
-
-[ValueType.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.valuetype.equals), 
-[ValueType.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.valuetype.gethashcode), 
-[ValueType.ToString()](https://learn.microsoft.com/dotnet/api/system.valuetype.tostring), 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
@@ -27,7 +18,7 @@ public struct Inheritdoc.Issue8129
 
 ## Constructors
 
-### Issue8129(string)
+### <a id="BuildFromProject_Inheritdoc_Issue8129__ctor_System_String_"></a>Issue8129(string)
 
 ```csharp
 public Issue8129(string foo)

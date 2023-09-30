@@ -1,7 +1,7 @@
 ﻿# Class TomFromBaseClass
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 *TomFromBaseClass* inherits from @
 
@@ -9,15 +9,15 @@ __Assembly:__ CatLibrary.dll
 public class TomFromBaseClass : Tom
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Tom](CatLibrary.Tom.md) ← 
 [TomFromBaseClass](CatLibrary.TomFromBaseClass.md)
 
-#### Inherited Members
+###### Inherited Members
 
-[Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)](CatLibrary.Tom.md#CatLibrary.Tom.TomMethod(CatLibrary.Complex{CatLibrary.TomFromBaseClass,CatLibrary.TomFromBaseClass},System.Tuple{System.String,CatLibrary.Tom})), 
+[Tom.TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)](CatLibrary.Tom.md#CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__), 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
@@ -28,7 +28,7 @@ public class TomFromBaseClass : Tom
 
 ## Constructors
 
-### TomFromBaseClass(int)
+### <a id="CatLibrary_TomFromBaseClass__ctor_System_Int32_"></a>TomFromBaseClass(int)
 
 This is a #ctor with parameter
 
@@ -39,6 +39,4 @@ public TomFromBaseClass(int k)
 #### Parameters
 
 `k` [int](https://learn.microsoft.com/dotnet/api/system.int32)
-
-
 

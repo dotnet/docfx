@@ -1,22 +1,22 @@
 ﻿# Class Inheritdoc.Issue6366.Class1<T>
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public abstract class Inheritdoc.Issue6366.Class1<T>
 ```
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue6366](BuildFromProject.Inheritdoc.Issue6366.md).[Class1](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md)<T>
+[Inheritdoc.Issue6366.Class1<T>](BuildFromProject.Inheritdoc.Issue6366.Class1-1.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -28,7 +28,7 @@ public abstract class Inheritdoc.Issue6366.Class1<T>
 
 ## Methods
 
-### TestMethod1(T, int)
+### <a id="BuildFromProject_Inheritdoc_Issue6366_Class1_1_TestMethod1__0_System_Int32_"></a>TestMethod1(T, int)
 
 This text inherited.
 

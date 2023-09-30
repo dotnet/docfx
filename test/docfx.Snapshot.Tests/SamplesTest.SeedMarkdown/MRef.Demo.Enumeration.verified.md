@@ -1,8 +1,9 @@
 ﻿# Namespace MRef.Demo.Enumeration
 
-## Enums
+### Enums
 
 [ColorType](MRef.Demo.Enumeration.ColorType.md)
 
 Enumeration ColorType
+
 

@@ -1,24 +1,24 @@
 ﻿# Class Complex<T, J>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 ```csharp
 public class Complex<T, J>
 ```
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
-`J`
+`J` 
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Complex](CatLibrary.Complex-2.md)<T, J>
+[Complex<T, J>](CatLibrary.Complex-2.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 

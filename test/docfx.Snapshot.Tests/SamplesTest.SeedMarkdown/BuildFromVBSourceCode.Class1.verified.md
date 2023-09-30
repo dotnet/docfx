@@ -1,7 +1,6 @@
 ﻿# Class Class1
 
-__Namespace:__ [BuildFromVBSourceCode](BuildFromVBSourceCode.md)  
-__Assembly:__ ?.dll
+Namespace: [BuildFromVBSourceCode](BuildFromVBSourceCode.md)
 
 This is summary from vb class...
 
@@ -9,15 +8,15 @@ This is summary from vb class...
 public class Class1 : BaseClass1
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [BaseClass1](BuildFromVBSourceCode.BaseClass1.md) ← 
 [Class1](BuildFromVBSourceCode.Class1.md)
 
-#### Inherited Members
+###### Inherited Members
 
-[BaseClass1.WithDeclarationKeyword(Class1)](BuildFromVBSourceCode.BaseClass1.md#BuildFromVBSourceCode.BaseClass1.WithDeclarationKeyword(BuildFromVBSourceCode.Class1)), 
+[BaseClass1.WithDeclarationKeyword(Class1)](BuildFromVBSourceCode.BaseClass1.md#BuildFromVBSourceCode_BaseClass1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_), 
 [object.Equals(object)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object, object)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
 [object.Finalize()](https://learn.microsoft.com/dotnet/api/system.object.finalize), 
@@ -29,7 +28,7 @@ public class Class1 : BaseClass1
 
 ## Fields
 
-### ValueClass
+### <a id="BuildFromVBSourceCode_Class1_ValueClass"></a>ValueClass
 
 This is a *Value* type
 
@@ -37,26 +36,26 @@ This is a *Value* type
 public Class1 ValueClass
 ```
 
-Field Value
+#### Field Value
 
 [Class1](BuildFromVBSourceCode.Class1.md)
 
 ## Properties
 
-### Keyword
+### <a id="BuildFromVBSourceCode_Class1_Keyword"></a>Keyword
 
 ```csharp
 [Obsolete("This member is obsolete.", true)]
 public Class1 Keyword { get; }
 ```
 
-Property Value
+#### Property Value
 
 [Class1](BuildFromVBSourceCode.Class1.md)
 
 ## Methods
 
-### Value(string)
+### <a id="BuildFromVBSourceCode_Class1_Value_System_String_"></a>Value(string)
 
 This is a *Function*
 
@@ -78,7 +77,7 @@ Name as the **String**
 **Returns**
  Ahooo
 
-### WithDeclarationKeyword(Class1)
+### <a id="BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_"></a>WithDeclarationKeyword(Class1)
 
 What is **Sub**?
 

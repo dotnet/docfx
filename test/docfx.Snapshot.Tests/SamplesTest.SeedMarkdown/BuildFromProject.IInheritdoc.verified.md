@@ -1,7 +1,7 @@
 ﻿# Interface IInheritdoc
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public interface IInheritdoc
@@ -9,7 +9,7 @@ public interface IInheritdoc
 
 ## Methods
 
-### Issue7629()
+### <a id="BuildFromProject_IInheritdoc_Issue7629"></a>Issue7629()
 
 This method should do something...
 

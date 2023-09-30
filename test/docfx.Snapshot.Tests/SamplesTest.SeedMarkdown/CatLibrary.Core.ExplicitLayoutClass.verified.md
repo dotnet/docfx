@@ -1,18 +1,18 @@
 ﻿# Class ExplicitLayoutClass
 
-__Namespace:__ [CatLibrary.Core](CatLibrary.Core.md)  
-__Assembly:__ CatLibrary.Core.dll
+Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
+Assembly: CatLibrary.Core.dll
 
 ```csharp
 public class ExplicitLayoutClass
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [ExplicitLayoutClass](CatLibrary.Core.ExplicitLayoutClass.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 

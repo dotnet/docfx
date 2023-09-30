@@ -1,7 +1,7 @@
 ﻿# Class Tom
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 Tom class is only inherit from Object. Not any member inside itself.
 
@@ -9,16 +9,16 @@ Tom class is only inherit from Object. Not any member inside itself.
 public class Tom
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Tom](CatLibrary.Tom.md)
 
-#### Derived
+###### Derived
 
 [TomFromBaseClass](CatLibrary.TomFromBaseClass.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -30,7 +30,7 @@ public class Tom
 
 ## Methods
 
-### TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
+### <a id="CatLibrary_Tom_TomMethod_CatLibrary_Complex_CatLibrary_TomFromBaseClass_CatLibrary_TomFromBaseClass__System_Tuple_System_String_CatLibrary_Tom__"></a>TomMethod(Complex<TomFromBaseClass, TomFromBaseClass>, Tuple<string, Tom>)
 
 This is a Tom Method with complex type as return
 

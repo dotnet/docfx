@@ -1,18 +1,17 @@
 ﻿# Class CSharp
 
-__Namespace:__ [BuildFromCSharpSourceCode](BuildFromCSharpSourceCode.md)  
-__Assembly:__ ?.dll
+Namespace: [BuildFromCSharpSourceCode](BuildFromCSharpSourceCode.md)
 
 ```csharp
 public class CSharp
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [CSharp](BuildFromCSharpSourceCode.CSharp.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -24,7 +23,7 @@ public class CSharp
 
 ## Methods
 
-### Main(string[])
+### <a id="BuildFromCSharpSourceCode_CSharp_Main_System_String___"></a>Main(string[])
 
 ```csharp
 public static void Main(string[] args)

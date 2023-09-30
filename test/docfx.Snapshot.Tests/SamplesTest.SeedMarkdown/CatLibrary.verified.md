@@ -1,12 +1,12 @@
 ﻿# Namespace CatLibrary
 
-## Namespaces
+### Namespaces
 
 [CatLibrary.Core](CatLibrary.Core.md)
 
-## Classes
+### Classes
 
-[Cat](CatLibrary.Cat-2.md)<T, K>
+[Cat<T, K>](CatLibrary.Cat-2.md)
 
 <p>Here's main class of this <i>Demo</i>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>
@@ -14,9 +14,9 @@
 <p>this class is a template class. It has two Generic parameter. they are: <code class="typeparamref">T</code> and <code class="typeparamref">K</code>.</p>
 <p>The extension method of this class can refer to <xref href="CatLibrary.ICatExtension" data-throw-if-not-resolved="false"></xref> class</p>
 
-[CatException](CatLibrary.CatException-1.md)<T>
+[CatException<T>](CatLibrary.CatException-1.md)
 
-[Complex](CatLibrary.Complex-2.md)<T, J>
+[Complex<T, J>](CatLibrary.Complex-2.md)
 
 [ICatExtension](CatLibrary.ICatExtension.md)
 
@@ -32,7 +32,7 @@ Tom class is only inherit from Object. Not any member inside itself.
 
 *TomFromBaseClass* inherits from @
 
-## Interfaces
+### Interfaces
 
 [IAnimal](CatLibrary.IAnimal.md)
 
@@ -42,13 +42,13 @@ This is <b>basic</b> interface of all animal.
 
 Cat's interface
 
-## Delegates
+### Delegates
 
-[FakeDelegate](CatLibrary.FakeDelegate-1.md)<T>
+[FakeDelegate<T>](CatLibrary.FakeDelegate-1.md)
 
 Fake delegate
 
-[MRefDelegate](CatLibrary.MRefDelegate-3.md)<K, T, L>
+[MRefDelegate<K, T, L>](CatLibrary.MRefDelegate-3.md)
 
 Generic delegate with many constrains.
 

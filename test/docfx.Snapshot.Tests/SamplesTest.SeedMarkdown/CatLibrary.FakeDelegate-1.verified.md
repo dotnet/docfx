@@ -1,7 +1,7 @@
 ﻿# Delegate FakeDelegate<T>
 
-__Namespace:__ [CatLibrary](CatLibrary.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 Fake delegate
 
@@ -9,7 +9,7 @@ Fake delegate
 public delegate int FakeDelegate<T>(long num, string name, params object[] scores)
 ```
 
-## Parameters
+#### Parameters
 
 `num` [long](https://learn.microsoft.com/dotnet/api/system.int64)
 
@@ -23,15 +23,15 @@ Fake para
 
 Optional Parameter.
 
-## Returns
+#### Returns
 
 [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 Return a fake number to confuse you.
 
-## Type Parameters
+#### Type Parameters
 
-`T`
+`T` 
 
 Fake para
 

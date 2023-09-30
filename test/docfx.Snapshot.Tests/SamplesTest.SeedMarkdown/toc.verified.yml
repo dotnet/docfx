@@ -14,11 +14,9 @@
 - name: BuildFromProject
   href: BuildFromProject.md
   items:
-  - name: Namespaces
   - name: Issue8540
     href: BuildFromProject.Issue8540.md
     items:
-    - name: Namespaces
     - name: A
       href: BuildFromProject.Issue8540.A.md
       items:
@@ -75,7 +73,6 @@
 - name: CatLibrary
   href: CatLibrary.md
   items:
-  - name: Namespaces
   - name: Core
     href: CatLibrary.Core.md
     items:
@@ -126,11 +123,9 @@
 - name: MRef
   href: MRef.md
   items:
-  - name: Namespaces
   - name: Demo
     href: MRef.Demo.md
     items:
-    - name: Namespaces
     - name: Enumeration
       href: MRef.Demo.Enumeration.md
       items:

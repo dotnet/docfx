@@ -1,18 +1,18 @@
 ﻿# Class Inheritdoc.Issue7035
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Inheritdoc.Issue7035
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc](BuildFromProject.Inheritdoc.md).[Issue7035](BuildFromProject.Inheritdoc.Issue7035.md)
+[Inheritdoc.Issue7035](BuildFromProject.Inheritdoc.Issue7035.md)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -24,13 +24,13 @@ public class Inheritdoc.Issue7035
 
 ## Methods
 
-### A()
+### <a id="BuildFromProject_Inheritdoc_Issue7035_A"></a>A()
 
 ```csharp
 public void A()
 ```
 
-### B()
+### <a id="BuildFromProject_Inheritdoc_Issue7035_B"></a>B()
 
 ```csharp
 public void B()

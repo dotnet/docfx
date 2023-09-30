@@ -1,7 +1,7 @@
 ﻿# Enum ColorType
 
-__Namespace:__ [MRef.Demo.Enumeration](MRef.Demo.Enumeration.md)  
-__Assembly:__ CatLibrary.dll
+Namespace: [MRef.Demo.Enumeration](MRef.Demo.Enumeration.md)  
+Assembly: CatLibrary.dll
 
 Enumeration ColorType
 
@@ -11,15 +11,15 @@ public enum ColorType
 
 ## Fields
 
-### `Red = 0`
+`Red = 0` 
 
 this color is red
 
-### `Blue = 1`
+`Blue = 1` 
 
 blue like river
 
-### `Yellow = 2`
+`Yellow = 2` 
 
 yellow comes from desert
 

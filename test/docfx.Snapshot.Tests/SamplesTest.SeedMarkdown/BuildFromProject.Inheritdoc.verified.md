@@ -1,23 +1,23 @@
 ﻿# Class Inheritdoc
 
-__Namespace:__ [BuildFromProject](BuildFromProject.md)  
-__Assembly:__ BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Inheritdoc : IInheritdoc, IDisposable
 ```
 
-#### Inheritance
+###### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Inheritdoc](BuildFromProject.Inheritdoc.md)
 
-#### Implements
+###### Implements
 
 [IInheritdoc](BuildFromProject.IInheritdoc.md), 
 [IDisposable](https://learn.microsoft.com/dotnet/api/system.idisposable)
 
-#### Inherited Members
+###### Inherited Members
 
 [object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
 [object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
@@ -29,7 +29,7 @@ public class Inheritdoc : IInheritdoc, IDisposable
 
 ## Methods
 
-### Dispose()
+### <a id="BuildFromProject_Inheritdoc_Dispose"></a>Dispose()
 
 Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 
@@ -37,7 +37,7 @@ Performs application-defined tasks associated with freeing, releasing, or resett
 public void Dispose()
 ```
 
-### Issue7628()
+### <a id="BuildFromProject_Inheritdoc_Issue7628"></a>Issue7628()
 
 This method should do something...
 
@@ -45,7 +45,7 @@ This method should do something...
 public void Issue7628()
 ```
 
-### Issue7629()
+### <a id="BuildFromProject_Inheritdoc_Issue7629"></a>Issue7629()
 
 This method should do something...
 
