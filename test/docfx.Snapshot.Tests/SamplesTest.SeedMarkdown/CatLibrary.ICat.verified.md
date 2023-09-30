@@ -1,7 +1,7 @@
 ﻿# Interface ICat
 
-Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Namespace: [CatLibrary](CatLibrary\.md)  
+Assembly: CatLibrary\.dll
 
 Cat's interface
 
@@ -11,12 +11,12 @@ public interface ICat : IAnimal
 
 ###### Implements
 
-[IAnimal](CatLibrary.IAnimal.md)
+[IAnimal](CatLibrary\.IAnimal\.md)
 
 ###### Extension Methods
 
-[ICatExtension.Play(ICat, ContainersRefType.ColorType)](CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_), 
-[ICatExtension.Sleep(ICat, long)](CatLibrary.ICatExtension.md#CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_)
+[ICatExtension\.Play\(ICat, ContainersRefType\.ColorType\)](CatLibrary\.ICatExtension\.md\#CatLibrary\_ICatExtension\_Play\_CatLibrary\_ICat\_CatLibrary\_Core\_ContainersRefType\_ColorType\_), 
+[ICatExtension\.Sleep\(ICat, long\)](CatLibrary\.ICatExtension\.md\#CatLibrary\_ICatExtension\_Sleep\_CatLibrary\_ICat\_System\_Int64\_)
 
 ### <a id="CatLibrary_ICat_eat"></a>eat
 
@@ -28,5 +28,5 @@ event EventHandler eat
 
 #### Event Type
 
-[EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
+[EventHandler](https://learn\.microsoft\.com/dotnet/api/system\.eventhandler)
 

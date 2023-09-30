@@ -1,7 +1,7 @@
 ﻿# Enum ColorType
 
-Namespace: [MRef.Demo.Enumeration](MRef.Demo.Enumeration.md)  
-Assembly: CatLibrary.dll
+Namespace: [MRef\.Demo\.Enumeration](MRef\.Demo\.Enumeration\.md)  
+Assembly: CatLibrary\.dll
 
 Enumeration ColorType
 
@@ -32,5 +32,5 @@ Red/Blue/Yellow can become all color you want.
 
 ## See Also
 
-[object](https://learn.microsoft.com/dotnet/api/system.object)
+[object](https://learn\.microsoft\.com/dotnet/api/system\.object)
 

@@ -1,7 +1,7 @@
-﻿# Enum ContainersRefType.ColorType
+﻿# Enum ContainersRefType\.ColorType
 
-Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
-Assembly: CatLibrary.Core.dll
+Namespace: [CatLibrary\.Core](CatLibrary\.Core\.md)  
+Assembly: CatLibrary\.Core\.dll
 
 Enumeration ColorType
 
@@ -22,5 +22,4 @@ blue
 `Yellow = 2` 
 
 yellow
-
 

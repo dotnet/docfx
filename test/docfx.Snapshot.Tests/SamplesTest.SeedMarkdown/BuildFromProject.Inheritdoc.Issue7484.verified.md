@@ -1,7 +1,7 @@
-﻿# Class Inheritdoc.Issue7484
+﻿# Class Inheritdoc\.Issue7484
 
-Namespace: [BuildFromProject](BuildFromProject.md)  
-Assembly: BuildFromProject.dll
+Namespace: [BuildFromProject](BuildFromProject\.md)  
+Assembly: BuildFromProject\.dll
 
 This is a test class to have something for DocFX to document.
 
@@ -11,18 +11,18 @@ public class Inheritdoc.Issue7484
 
 ###### Inheritance
 
-[object](https://learn.microsoft.com/dotnet/api/system.object) ← 
-[Inheritdoc.Issue7484](BuildFromProject.Inheritdoc.Issue7484.md)
+[object](https://learn\.microsoft\.com/dotnet/api/system\.object) ← 
+[Inheritdoc\.Issue7484](BuildFromProject\.Inheritdoc\.Issue7484\.md)
 
 ###### Inherited Members
 
-[object.Equals(object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)), 
-[object.Equals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)), 
-[object.GetHashCode()](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
-[object.GetType()](https://learn.microsoft.com/dotnet/api/system.object.gettype), 
-[object.MemberwiseClone()](https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone), 
-[object.ReferenceEquals(object?, object?)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
-[object.ToString()](https://learn.microsoft.com/dotnet/api/system.object.tostring)
+[object\.Equals\(object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\)), 
+[object\.Equals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
+[object\.GetHashCode\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gethashcode), 
+[object\.GetType\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gettype), 
+[object\.MemberwiseClone\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.memberwiseclone), 
+[object\.ReferenceEquals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.referenceequals), 
+[object\.ToString\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.tostring)
 
 ## Remarks
 
@@ -35,7 +35,7 @@ A string that could have something.
 
 ## Constructors
 
-### <a id="BuildFromProject_Inheritdoc_Issue7484__ctor"></a>Issue7484()
+### <a id="BuildFromProject_Inheritdoc_Issue7484__ctor"></a>Issue7484\(\)
 
 This is a constructor to document.
 
@@ -55,11 +55,11 @@ public string DoDad { get; }
 
 #### Property Value
 
-[string](https://learn.microsoft.com/dotnet/api/system.string)
+[string](https://learn\.microsoft\.com/dotnet/api/system\.string)
 
 ## Methods
 
-### <a id="BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_"></a>BoolReturningMethod(bool)
+### <a id="BuildFromProject_Inheritdoc_Issue7484_BoolReturningMethod_System_Boolean_"></a>BoolReturningMethod\(bool\)
 
 Simple method to generate docs for.
 
@@ -69,13 +69,13 @@ public bool BoolReturningMethod(bool source)
 
 #### Parameters
 
-`source` [bool](https://learn.microsoft.com/dotnet/api/system.boolean)
+`source` [bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
 
 A meaningless boolean value, much like most questions in the world.
 
 #### Returns
 
-[bool](https://learn.microsoft.com/dotnet/api/system.boolean)
+[bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
 
 An exactly equivalently meaningless boolean value, much like most answers in the world.
 

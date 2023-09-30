@@ -1,7 +1,6 @@
-﻿# Namespace BuildFromProject.Issue8540.A
+﻿# Namespace BuildFromProject\.Issue8540\.A
 
 ### Classes
 
-[A](BuildFromProject.Issue8540.A.A.md)
-
+[A](BuildFromProject\.Issue8540\.A\.A\.md)
 
