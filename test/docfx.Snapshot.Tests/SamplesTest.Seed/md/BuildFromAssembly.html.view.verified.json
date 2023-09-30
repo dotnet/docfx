@@ -1,5 +1,5 @@
 ﻿{
-  "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"3\">Classes</h3>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"5\"><a href=\"~/obj/md/BuildFromAssembly.Class1.md\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"5\">Class1</a></p>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"7\">This is a test class.</p>\n",
+  "conceptual": "\n<h3 id=\"classes\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"2\">Classes</h3>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"3\"><a href=\"~/obj/md/BuildFromAssembly.Class1.md\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"3\">Class1</a></p>\n<p sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"5\">This is a test class.</p>\n",
   "type": "Conceptual",
   "source": {
     "remote": {
