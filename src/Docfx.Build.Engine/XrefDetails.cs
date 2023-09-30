@@ -10,7 +10,6 @@ using HtmlAgilityPack;
 
 namespace Docfx.Build.Engine;
 
-[Serializable]
 public sealed class XRefDetails
 {
     public string Uid { get; private set; }

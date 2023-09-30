@@ -10,7 +10,6 @@ namespace Docfx.Build.RestApi.Swagger;
 /// <summary>
 /// TODO: need a converter
 /// </summary>
-[Serializable]
 public class PathItemObject
 {
     /// <summary>

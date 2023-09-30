@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
 
-[Serializable]
 public class ApiParameterBuildOutput
 {
     [YamlMember(Alias = "id")]

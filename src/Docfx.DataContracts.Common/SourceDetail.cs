@@ -7,7 +7,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.Common;
 
-[Serializable]
 public class SourceDetail
 {
     [YamlMember(Alias = "remote")]

@@ -10,7 +10,6 @@ namespace Docfx;
 /// PdfJsonConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#13-properties-for-pdf"/>
-[Serializable]
 internal class PdfJsonConfig : BuildJsonConfig
 {
     /// <summary>

@@ -7,7 +7,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.ManagedReference.BuildOutputs;
 
-[Serializable]
 public class ApiExceptionInfoBuildOutput
 {
     [YamlMember(Alias = "type")]

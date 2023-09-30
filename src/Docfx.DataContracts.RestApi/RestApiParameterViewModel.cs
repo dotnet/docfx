@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
-[Serializable]
 public class RestApiParameterViewModel
 {
     [YamlMember(Alias = "description")]

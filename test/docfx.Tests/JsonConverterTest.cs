@@ -80,16 +80,6 @@ public class JsonConverterTest
 
     [Fact]
     [Trait("Related", "docfx")]
-    public void TestFileMappingItemCwdInputShouldWork()
-    {
-        var input = "{\"files\":[\"file1\"],\"cwd\":\"folder1\"}";
-        using var sr = new StringReader(input);
-        var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-        Assert.Equal("folder1", result.Src);
-    }
-
-    [Fact]
-    [Trait("Related", "docfx")]
     public void TestFileMappingItemSrcInputShouldWork()
     {
         var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";

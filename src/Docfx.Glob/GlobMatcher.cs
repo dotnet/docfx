@@ -8,7 +8,6 @@ using Docfx.Common;
 
 namespace Docfx.Glob;
 
-[Serializable]
 public class GlobMatcher : IEquatable<GlobMatcher>
 {
     #region Private fields
@@ -727,8 +726,7 @@ public class GlobMatcher : IEquatable<GlobMatcher>
         }
     }
 
-    [Serializable]
-    private sealed class GlobRegexItem
+        private sealed class GlobRegexItem
     {
         public static readonly GlobRegexItem GlobStar = new(GlobRegexItemType.GlobStar);
         public static readonly GlobRegexItem GlobStarForFileOnly = new(GlobRegexItemType.GlobStarForFileOnly);

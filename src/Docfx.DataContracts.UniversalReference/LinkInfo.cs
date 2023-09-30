@@ -10,7 +10,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
 
-[Serializable]
 public class LinkInfo
 {
     [YamlMember(Alias = "linkType")]
@@ -37,7 +36,6 @@ public class LinkInfo
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }
 
-[Serializable]
 public enum LinkType
 {
     CRef,

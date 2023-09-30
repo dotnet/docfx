@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
 
-[Serializable]
 public class ApiLinkInfoBuildOutput
 {
     [YamlMember(Alias = "linkType")]

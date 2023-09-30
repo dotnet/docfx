@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public class LinkInfo
 {
     [YamlMember(Alias = "linkType")]
@@ -36,7 +35,6 @@ public class LinkInfo
     }
 }
 
-[Serializable]
 public enum LinkType
 {
     CRef,

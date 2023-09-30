@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
 
-[Serializable]
 public class AttributeInfo
 {
     [YamlMember(Alias = "type")]

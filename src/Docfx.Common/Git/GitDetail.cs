@@ -6,7 +6,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Common.Git;
 
-[Serializable]
 public class GitDetail
 {
     /// <summary>

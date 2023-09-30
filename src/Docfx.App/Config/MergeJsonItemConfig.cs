@@ -10,7 +10,6 @@ namespace Docfx;
 /// <summary>
 /// MergeJsonItemConfig.
 /// </summary>
-[Serializable]
 internal class MergeJsonItemConfig
 {
     /// <summary>

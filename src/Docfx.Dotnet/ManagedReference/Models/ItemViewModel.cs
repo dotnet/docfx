@@ -13,7 +13,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public class ItemViewModel : IOverwriteDocumentViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

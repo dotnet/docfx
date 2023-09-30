@@ -10,7 +10,6 @@ namespace Docfx;
 /// </summary>
 /// <see cref="BuildJsonConfig.FileMetadata"/>
 /// <see cref="MergeJsonItemConfig.FileMetadata"/>
-[Serializable]
 [JsonConverter(typeof(FileMetadataPairsConverter))]
 internal class FileMetadataPairs
 {

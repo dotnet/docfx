@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
-[Serializable]
 public class RestApiItemViewModelBase : IOverwriteDocumentViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

@@ -3,7 +3,6 @@
 
 namespace Docfx.DataContracts.Common;
 
-[Serializable]
 public class TocViewModel
     : List<TocItemViewModel>
 {

@@ -6,7 +6,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.Common;
 
-[Serializable]
 public class SpecViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

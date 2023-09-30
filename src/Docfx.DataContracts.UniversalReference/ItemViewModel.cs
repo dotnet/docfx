@@ -13,7 +13,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
 
-[Serializable]
 public class ItemViewModel : IOverwriteDocumentViewModel
 {
     /// <summary>

@@ -5,7 +5,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Dotnet;
 
-[Serializable]
 internal class ConfigFilterRuleItemUnion
 {
     private ConfigFilterRuleIncludeItem _include;

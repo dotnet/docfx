@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
 
-[Serializable]
 public class ApiNames
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

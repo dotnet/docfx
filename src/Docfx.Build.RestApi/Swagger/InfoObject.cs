@@ -10,7 +10,6 @@ namespace Docfx.Build.RestApi.Swagger;
 /// <summary>
 /// Info object
 /// </summary>
-[Serializable]
 public class InfoObject
 {
     /// <summary>

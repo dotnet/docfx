@@ -7,7 +7,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.RestApi.Swagger;
 
-[Serializable]
 public class ResponseObject
 {
     [YamlMember(Alias = "description")]

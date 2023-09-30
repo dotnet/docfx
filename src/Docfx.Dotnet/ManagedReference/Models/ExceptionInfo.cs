@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public class ExceptionInfo
 {
     [YamlMember(Alias = "type")]

@@ -172,8 +172,7 @@ public static class Logger
         ConsoleUtility.WriteLine($"    {_errorCount} error(s)\n", _errorCount > 0 ? ConsoleColor.Red : ConsoleColor.White);
     }
 
-    [Serializable]
-    private class LogItem : ILogItem
+        private class LogItem : ILogItem
     {
         public string File { get; set; }
 

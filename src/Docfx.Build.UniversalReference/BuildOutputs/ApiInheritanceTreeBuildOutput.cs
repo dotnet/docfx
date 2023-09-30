@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
 
-[Serializable]
 public class ApiInheritanceTreeBuildOutput
 {
     [YamlMember(Alias = Constants.PropertyName.Type)]

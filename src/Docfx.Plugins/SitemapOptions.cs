@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
 
-[Serializable]
 public class SitemapOptions : SitemapElementOptions
 {
     [JsonProperty("fileOptions")]

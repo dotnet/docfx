@@ -9,7 +9,6 @@ namespace Docfx;
 /// ListWithStringFallback.
 /// </summary>
 [JsonConverter(typeof(ListWithStringFallbackConverter))]
-[Serializable]
 internal class ListWithStringFallback : List<string>
 {
     /// <summary>

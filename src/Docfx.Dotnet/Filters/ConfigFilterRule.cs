@@ -7,7 +7,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Dotnet;
 
-[Serializable]
 internal class ConfigFilterRule
 {
     [YamlMember(Alias = "apiRules")]

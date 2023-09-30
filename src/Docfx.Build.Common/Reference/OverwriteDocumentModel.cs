@@ -11,7 +11,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.Common;
 
-[Serializable]
 public class OverwriteDocumentModel
 {
     [ExtensibleMember]

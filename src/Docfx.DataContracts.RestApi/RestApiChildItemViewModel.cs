@@ -7,7 +7,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
-[Serializable]
 public class RestApiChildItemViewModel : RestApiItemViewModelBase
 {
     [YamlMember(Alias = Constants.PropertyName.Path)]

@@ -3,7 +3,6 @@
 
 namespace Docfx.Common.Git;
 
-[Serializable]
 public enum RepoType
 {
     Unknown,

@@ -8,7 +8,6 @@ namespace Docfx;
 /// <summary>
 /// Data model for a file-mapping item
 /// </summary>
-[Serializable]
 public class FileMappingItem
 {
     /// <summary>

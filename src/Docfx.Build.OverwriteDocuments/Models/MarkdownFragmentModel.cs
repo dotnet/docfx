@@ -5,7 +5,6 @@ using Markdig.Syntax;
 
 namespace Docfx.Build.OverwriteDocuments;
 
-[Serializable]
 public class MarkdownFragmentModel
 {
     public string Uid { get; set; }

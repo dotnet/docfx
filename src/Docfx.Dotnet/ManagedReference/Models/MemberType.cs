@@ -3,7 +3,6 @@
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public enum MemberType
 {
     Default,

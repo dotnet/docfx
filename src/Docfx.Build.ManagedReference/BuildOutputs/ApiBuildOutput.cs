@@ -11,7 +11,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.ManagedReference.BuildOutputs;
 
-[Serializable]
 public class ApiBuildOutput
 {
     [YamlMember(Alias = "uid")]

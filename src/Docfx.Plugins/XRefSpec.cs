@@ -2,7 +2,6 @@
 
 namespace Docfx.Plugins;
 
-[Serializable]
 public sealed class XRefSpec : IDictionary<string, object>
 {
     public const string UidKey = "uid";

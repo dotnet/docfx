@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.Common;
 
-[Serializable]
 public class TocItemViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

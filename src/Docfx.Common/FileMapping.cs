@@ -27,7 +27,6 @@ namespace Docfx;
 ///     e.g. <code>projects: ["file1", "file2"]</code>
 /// </summary>
 [JsonConverter(typeof(FileMappingConverter))]
-[Serializable]
 public class FileMapping
 {
     private readonly List<FileMappingItem> _items = new();

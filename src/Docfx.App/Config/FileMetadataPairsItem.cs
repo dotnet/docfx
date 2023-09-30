@@ -10,7 +10,6 @@ namespace Docfx;
 /// Glob/Value pair to define define file's metadata.
 /// </summary>
 /// <see cref="FileMetadataPairs"/>
-[Serializable]
 internal class FileMetadataPairsItem
 {
     /// <summary>

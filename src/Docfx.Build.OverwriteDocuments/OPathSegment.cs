@@ -3,7 +3,6 @@
 
 namespace Docfx.Build.OverwriteDocuments;
 
-[Serializable]
 public class OPathSegment
 {
     public string SegmentName { get; set; }

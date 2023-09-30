@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public class PageViewModel
 {
     [YamlMember(Alias = "items")]

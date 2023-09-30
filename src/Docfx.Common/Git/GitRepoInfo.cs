@@ -3,7 +3,6 @@
 
 namespace Docfx.Common.Git;
 
-[Serializable]
 public class GitRepoInfo
 {
     public RepoType RepoType { get; set; }

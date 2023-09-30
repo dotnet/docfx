@@ -6,7 +6,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Build.UniversalReference;
 
-[Serializable]
 public class ApiLanguageValuePairWithLevel<T> : ApiLanguageValuePair<T>
 {
     [YamlMember(Alias = "level")]

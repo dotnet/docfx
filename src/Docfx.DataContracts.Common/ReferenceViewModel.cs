@@ -9,7 +9,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.Common;
 
-[Serializable]
 public class ReferenceViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Uid)]

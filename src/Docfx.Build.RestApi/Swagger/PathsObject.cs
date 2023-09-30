@@ -3,7 +3,6 @@
 
 namespace Docfx.Build.RestApi.Swagger;
 
-[Serializable]
 public class PathsObject : Dictionary<string, PathItemObject>
 {
 }

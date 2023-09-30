@@ -3,7 +3,6 @@
 
 namespace Docfx;
 
-[Serializable]
 public class FileItems : List<string>
 {
     private static readonly IEnumerable<string> Empty = new List<string>();

@@ -10,7 +10,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.UniversalReference;
 
-[Serializable]
 public class ApiParameter
 {
     [YamlMember(Alias = "id")]

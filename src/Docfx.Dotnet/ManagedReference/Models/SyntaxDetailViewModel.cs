@@ -12,7 +12,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.ManagedReference;
 
-[Serializable]
 public class SyntaxDetailViewModel
 {
     [YamlMember(Alias = Constants.PropertyName.Content)]

@@ -8,7 +8,6 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.DataContracts.RestApi;
 
-[Serializable]
 public class RestApiResponseViewModel
 {
     [YamlMember(Alias = "statusCode")]

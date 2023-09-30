@@ -8,7 +8,6 @@ namespace Docfx;
 /// <summary>
 /// Group configuration.
 /// </summary>
-[Serializable]
 internal class GroupConfig
 {
     /// <summary>
