@@ -1,5 +1,5 @@
 ﻿{
-  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"2\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"2\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.Core.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"5\">public interface ContainersRefType.ContainersRefTypeChildInterface\n</code></pre>\n",
+  "conceptual": "\n<p sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"3\">Namespace: <a href=\"~/obj/md/CatLibrary.Core.md\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"3\">CatLibrary.Core</a><br>\nAssembly: CatLibrary.Core.dll</p>\n<pre><code class=\"lang-csharp\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"6\">public interface ContainersRefType.ContainersRefTypeChildInterface\n</code></pre>\n",
   "type": "Conceptual",
   "source": {
     "remote": {
