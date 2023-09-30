@@ -85,13 +85,13 @@ public class SymbolUrlResolverUnitTest
         Assert.NotNull(type);
         var compilationLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, type));
         Assert.True(compilationLink?.StartsWith("https://github.com/"));
-        Assert.True(compilationLink?.EndsWith("/blob/*/src/Docfx.Dotnet/DotnetApiCatalog.cs"));
+        Assert.True(compilationLink?.EndsWith(".cs"));
 
         var method = type.GetMembers(nameof(DotnetApiCatalog.GenerateManagedReferenceYamlFiles)).FirstOrDefault();
         Assert.NotNull(method);
         var methodLink = ReplaceSHA(SymbolUrlResolver.GetPdbSourceLinkUrl(compilation, method));
         Assert.True(compilationLink?.StartsWith("https://github.com/"));
-        Assert.True(compilationLink?.EndsWith("/blob/*/src/Docfx.Dotnet/DotnetApiCatalog.cs"));
+        Assert.True(compilationLink?.EndsWith(".cs"));
 
         static string ReplaceSHA(string value)
         {

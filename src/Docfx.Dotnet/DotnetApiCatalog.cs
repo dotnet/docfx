@@ -12,7 +12,7 @@ namespace Docfx.Dotnet;
 /// <summary>
 /// Provides access to a .NET API definitions and their associated documentation.
 /// </summary>
-public static class DotnetApiCatalog
+public static partial class DotnetApiCatalog
 {
     /// <summary>
     /// Generates metadata reference YAML files using docfx.json config.
@@ -67,21 +67,32 @@ public static class DotnetApiCatalog
                     VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
                     EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
 
-                    // TODO: Use plugin to generate metadata for files with different extension?
-                    using var worker = new ExtractMetadataWorker(ConvertConfig(item, configDirectory, outputDirectory), options);
-                    await worker.ExtractMetadataAsync();
+                    await Build(ConvertConfig(item, configDirectory, outputDirectory), options);
                 }
 
                 VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
             }
         }
-        catch (AggregateException e)
-        {
-            throw e.GetBaseException();
-        }
         finally
         {
             EnvironmentContext.Clean();
+        }
+
+        async Task Build(ExtractMetadataConfig config, DotnetApiOptions options)
+        {
+            var assemblies = await Compile(config, options);
+
+            switch (config.OutputFormat)
+            {
+                case MetadataOutputFormat.Markdown:
+                    Logger.LogWarning($"Markdown output format is experimental.");
+                    CreatePages(MarkdownWriter.Create, assemblies, config, options);
+                    break;
+
+                case MetadataOutputFormat.Mref:
+                    CreateManagedReference(assemblies, config, options);
+                    break;
+            }
         }
     }
 
