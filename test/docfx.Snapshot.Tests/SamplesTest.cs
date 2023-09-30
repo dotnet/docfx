@@ -180,6 +180,18 @@ public class SamplesTest
         }
     }
 
+    [Fact]
+    public async Task SeedMarkdown()
+    {
+        var samplePath = $"{s_samplesDir}/seed";
+        var outputPath = nameof(SeedMarkdown);
+        Clean(samplePath);
+
+        Program.Main(new[] { "metadata", $"{samplePath}/docfx.json", "--outputFormat", "markdown", "--output", outputPath });
+
+        await VerifyDirectory(outputPath, IncludeFile, fileScrubber: ScrubFile).AutoVerify(includeBuildServer: false);
+    }
+
     [SnapshotFact]
     public async Task CSharp()
     {
