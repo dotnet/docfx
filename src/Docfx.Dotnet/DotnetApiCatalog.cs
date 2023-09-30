@@ -116,12 +116,12 @@ public static partial class DotnetApiCatalog
 
     private static ExtractMetadataConfig ConvertConfig(MetadataJsonItemConfig configModel, string configDirectory, string outputDirectory)
     {
-        var projects = configModel.Source;
+        var projects = configModel.Src;
         var references = configModel.References;
 
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, configModel.Output ?? "") : outputDirectory,
-            configModel.Destination ?? ""));
+            configModel.Dest ?? ""));
 
         var expandedFiles = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
         var expandedReferences = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, references);
@@ -129,10 +129,10 @@ public static partial class DotnetApiCatalog
         return new ExtractMetadataConfig
         {
             ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
-            FilterConfigFile = configModel?.FilterConfigFile is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.FilterConfigFile)),
+            FilterConfigFile = configModel?.Filter is null ? null : Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, configModel.Filter)),
             IncludePrivateMembers = configModel?.IncludePrivateMembers ?? false,
             GlobalNamespaceId = configModel?.GlobalNamespaceId,
-            MSBuildProperties = configModel?.MSBuildProperties,
+            MSBuildProperties = configModel?.Properties,
             OutputFormat = configModel?.OutputFormat ?? default,
             OutputFolder = outputFolder,
             CodeSourceBasePath = configModel?.CodeSourceBasePath,

@@ -85,7 +85,7 @@ public class JsonConverterTest
         var input = "{\"files\":[\"file1\"],\"cwd\":\"folder1\"}";
         using var sr = new StringReader(input);
         var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-        Assert.Equal("folder1", result.SourceFolder);
+        Assert.Equal("folder1", result.Src);
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class JsonConverterTest
         var input = "{\"files\":[\"file1\"],\"src\":\"folder1\"}";
         using var sr = new StringReader(input);
         var result = JsonUtility.Deserialize<FileMappingItem>(sr);
-        Assert.Equal("folder1", result.SourceFolder);
+        Assert.Equal("folder1", result.Src);
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class JsonConverterTest
         var fileMappingItem = new FileMappingItem
         {
             Files = new FileItems("file1"),
-            SourceFolder = "folder1"
+            Src = "folder1"
         };
 
         var result = JsonUtility.Serialize(fileMappingItem);

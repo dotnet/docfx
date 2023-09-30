@@ -11,11 +11,6 @@ namespace Docfx;
 [Serializable]
 public class FileMappingItem
 {
-    private string _sourceFolder;
-    private string _cwd;
-    private string _version;
-    private string _group;
-
     /// <summary>
     /// The name of current item, the value is not used for now
     /// </summary>
@@ -38,55 +33,13 @@ public class FileMappingItem
     /// `src` defines the root folder for the source files, it has the same meaning as `cwd`
     /// </summary>
     [JsonProperty("src")]
-    public string SourceFolder
-    {
-        get
-        {
-            return _sourceFolder;
-        }
-        set
-        {
-            _sourceFolder = value;
-        }
-    }
-
-    /// <summary>
-    /// `cwd` defines the root folder for the source files, it has the same meaning as `src`
-    /// As discussed, `cwd` may lead to confusing and misunderstanding, so in version 1.3, `src` is introduced and `cwd` is kept for backward compatibility
-    /// </summary>
-    [JsonProperty("cwd")]
-    [Obsolete("Use src instead.")]
-    public string CurrentWorkingDirectory
-    {
-        get
-        {
-            return _cwd;
-        }
-        set
-        {
-            _cwd = value;
-            _sourceFolder = value;
-        }
-    }
+    public string Src { get; set; }
 
     /// <summary>
     /// The destination folder for the files if copy/transform is used
     /// </summary>
     [JsonProperty("dest")]
-    public string DestinationFolder { get; set; }
-
-    [JsonProperty("version")]
-    public string VersionName
-    {
-        get
-        {
-            return _version;
-        }
-        set
-        {
-            _version = value;
-        }
-    }
+    public string Dest { get; set; }
 
     /// <summary>
     /// Group name for the current file-mapping item.
@@ -95,18 +48,7 @@ public class FileMappingItem
     /// Cross reference doesn't support cross different groups.
     /// </summary>
     [JsonProperty("group")]
-    public string GroupName
-    {
-        get
-        {
-            return _group ?? _version;
-        }
-        set
-        {
-            _group = value;
-            _version = value;
-        }
-    }
+    public string Group { get; set; }
 
     /// <summary>
     /// The Root TOC Path used for navbar in current group, relative to output root.
@@ -120,7 +62,7 @@ public class FileMappingItem
     /// By default the pattern is case insensitive
     /// </summary>
     [JsonProperty("case")]
-    public bool? CaseSensitive { get; set; }
+    public bool? Case { get; set; }
 
     /// <summary>
     /// Disable pattern begin with `!` to mean negate
@@ -134,28 +76,28 @@ public class FileMappingItem
     /// By default the usage is enabled.
     /// </summary>
     [JsonProperty("noExpand")]
-    public bool? DisableExpand { get; set; }
+    public bool? NoExpand { get; set; }
 
     /// <summary>
     /// Disable the usage of `\` to escape values.
     /// By default the usage is enabled.
     /// </summary>
     [JsonProperty("noEscape")]
-    public bool? DisableEscape { get; set; }
+    public bool? NoEscape { get; set; }
 
     /// <summary>
     /// Disable the usage of `**` to match everything including `/` when it is the beginning of the pattern or is after `/`.
     /// By default the usage is enable.
     /// </summary>
     [JsonProperty("noGlobStar")]
-    public bool? DisableGlobStar { get; set; }
+    public bool? NoGlobStar { get; set; }
 
     /// <summary>
     /// Allow files start with `.` to be matched even if `.` is not explicitly specified in the pattern.
     /// By default files start with `.` will not be matched by `*` unless the pattern starts with `.`.
     /// </summary>
     [JsonProperty("dot")]
-    public bool? AllowDotMatch { get; set; }
+    public bool? Dot { get; set; }
 
     public FileMappingItem() { }
 

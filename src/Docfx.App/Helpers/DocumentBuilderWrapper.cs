@@ -29,7 +29,7 @@ internal static class DocumentBuilderWrapper
             }
         }
 
-        if (!string.IsNullOrEmpty(config.SitemapOptions?.BaseUrl))
+        if (!string.IsNullOrEmpty(config.Sitemap?.BaseUrl))
         {
             postProcessorNames = postProcessorNames.Add("SitemapGenerator");
         }
@@ -129,7 +129,7 @@ internal static class DocumentBuilderWrapper
             var parameters = new DocumentBuildParameters
             {
                 OutputBaseDir = outputDirectory,
-                SitemapOptions = config.SitemapOptions,
+                SitemapOptions = config.Sitemap,
                 DisableGitFeatures = config.DisableGitFeatures,
                 ConfigureMarkdig = options.ConfigureMarkdig,
                 Metadata = GetGlobalMetadata(config),
@@ -140,18 +140,18 @@ internal static class DocumentBuilderWrapper
             {
                 parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
             }
-            if (config.XRefMaps != null)
+            if (config.Xref != null)
             {
-                parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
+                parameters.XRefMaps = config.Xref.ToImmutableArray();
             }
 
             string outputFolderForDebugFiles = null;
-            if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))
+            if (!string.IsNullOrEmpty(config.DebugOutput))
             {
-                outputFolderForDebugFiles = Path.Combine(baseDirectory, config.OutputFolderForDebugFiles);
+                outputFolderForDebugFiles = Path.Combine(baseDirectory, config.DebugOutput);
             }
 
-            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.EnableDebugMode ?? false)
+            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.Debug ?? false)
             {
                 TransformDocument = config.DryRun != true,
             };
@@ -248,9 +248,9 @@ internal static class DocumentBuilderWrapper
             }
         }
 
-        if (config.GlobalMetadataFilePaths != null)
+        if (config.GlobalMetadataFiles != null)
         {
-            foreach (var path in config.GlobalMetadataFilePaths)
+            foreach (var path in config.GlobalMetadataFiles)
             {
                 foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, object>>(path))
                 {
@@ -278,9 +278,9 @@ internal static class DocumentBuilderWrapper
             }
         }
 
-        if (config.FileMetadataFilePaths != null)
+        if (config.FileMetadataFiles != null)
         {
-            foreach (var path in config.FileMetadataFilePaths)
+            foreach (var path in config.FileMetadataFiles)
             {
                 foreach (var (key, value) in JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path))
                 {
@@ -323,7 +323,7 @@ internal static class DocumentBuilderWrapper
         if (fileMapping == null) return;
         foreach (var item in fileMapping.Items)
         {
-            string version = item.GroupName ?? item.VersionName ?? string.Empty;
+            string version = item.Group ?? string.Empty;
             if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
             {
                 if (parameters.TryGetValue(type, out FileMapping mapping))
@@ -367,8 +367,8 @@ internal static class DocumentBuilderWrapper
                 fileCollection.Add(
                     type,
                     item.Files,
-                    item.SourceFolder,
-                    item.DestinationFolder);
+                    item.Src,
+                    item.Dest);
             }
         }
     }

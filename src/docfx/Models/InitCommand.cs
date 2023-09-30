@@ -35,8 +35,8 @@ internal class InitCommand : Command<InitCommandOptions>
                         var item = new FileMapping(new FileMappingItem(s));
                         m.Metadata.Add(new MetadataJsonItemConfig
                         {
-                             Source = item,
-                             Destination = DefaultMetadataOutputFolder,
+                             Src = item,
+                             Dest = DefaultMetadataOutputFolder,
                         });
                         m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml", "api/index.md"));
                     }
@@ -105,8 +105,8 @@ internal class InitCommand : Command<InitCommandOptions>
                     m.Build = new BuildJsonConfig { 
                         Output = "_site",
                     };
-                    m.Build.Templates.Add("default");
-                    m.Build.Templates.Add("modern");
+                    m.Build.Template.Add("default");
+                    m.Build.Template.Add("modern");
                     if (s)
                     {
                         m.Metadata = new MetadataJsonConfig();

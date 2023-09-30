@@ -74,19 +74,19 @@ internal class PdfJsonConfig : BuildJsonConfig
     /// Specify the path for the css to generate pdf, default value is styles/default.css.
     /// </summary>
     [JsonProperty("css")]
-    public string CssFilePath { get; set; }
+    public string Css { get; set; }
 
     /// <summary>
     /// Specify the base path for ExternalLinkFormat.
     /// </summary>
     [JsonProperty("base")]
-    public string BasePath { get; set; }
+    public string Base { get; set; }
 
     /// <summary>
     /// Specify how to handle pages that fail to load: abort, ignore or skip(default abort)
     /// </summary>
     [JsonProperty("errorHandling")]
-    public string LoadErrorHandling { get; set; }
+    public string ErrorHandling { get; set; }
 
     /// <summary>
     /// Specify options specific to the wkhtmltopdf tooling used by the pdf command.
@@ -104,17 +104,17 @@ internal class PdfJsonConfig : BuildJsonConfig
     /// Gets or sets the outline option.
     /// </summary>
     [JsonProperty("outline")]
-    public OutlineOption OutlineOption { get; set; } = OutlineOption.DefaultOutline;
+    public OutlineOption Outline { get; set; } = OutlineOption.DefaultOutline;
 
     /// <summary>
     /// Gets or sets the cover page title.
     /// </summary>
     [JsonProperty("coverTitle")]
-    public string CoverPageTitle { get; set; } = "Cover Page";
+    public string CoverTitle { get; set; } = "Cover Page";
 
     /// <summary>
     /// Are input arguments set using command line
     /// </summary>
     [JsonProperty("noStdin")]
-    public bool NoInputStreamArgs { get; set; }
+    public bool NoStdin { get; set; }
 }

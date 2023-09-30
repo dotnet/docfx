@@ -22,7 +22,7 @@ public class GlobUtility
         var expandedFileMapping = new FileMapping();
         foreach (var item in fileMapping.Items)
         {
-            string expandedSourceFolder = Path.Combine(baseDirectory, Environment.ExpandEnvironmentVariables(item.SourceFolder ?? string.Empty));
+            string expandedSourceFolder = Path.Combine(baseDirectory, Environment.ExpandEnvironmentVariables(item.Src ?? string.Empty));
             var options = GetMatchOptionsFromItem(item);
             var fileItems = new FileItems(FileGlob.GetFiles(expandedSourceFolder, item.Files, item.Exclude, options));
             if (fileItems.Count == 0)
@@ -38,9 +38,9 @@ public class GlobUtility
             expandedFileMapping.Add(
                 new FileMappingItem
                 {
-                    SourceFolder = expandedSourceFolder,
+                    Src = expandedSourceFolder,
                     Files = fileItems,
-                    DestinationFolder = item.DestinationFolder
+                    Dest = item.Dest
                 });
         }
 
@@ -50,11 +50,11 @@ public class GlobUtility
 
     private static GlobMatcherOptions GetMatchOptionsFromItem(FileMappingItem item)
     {
-        GlobMatcherOptions options = item?.CaseSensitive ?? false ? GlobMatcherOptions.None : GlobMatcherOptions.IgnoreCase;
-        if (item?.AllowDotMatch ?? false) options |= GlobMatcherOptions.AllowDotMatch;
-        if (!(item?.DisableEscape ?? false)) options |= GlobMatcherOptions.AllowEscape;
-        if (!(item?.DisableExpand ?? false)) options |= GlobMatcherOptions.AllowExpand;
-        if (!(item?.DisableGlobStar ?? false)) options |= GlobMatcherOptions.AllowGlobStar;
+        GlobMatcherOptions options = item?.Case ?? false ? GlobMatcherOptions.None : GlobMatcherOptions.IgnoreCase;
+        if (item?.Dot ?? false) options |= GlobMatcherOptions.AllowDotMatch;
+        if (!(item?.NoEscape ?? false)) options |= GlobMatcherOptions.AllowEscape;
+        if (!(item?.NoExpand ?? false)) options |= GlobMatcherOptions.AllowExpand;
+        if (!(item?.NoGlobStar ?? false)) options |= GlobMatcherOptions.AllowGlobStar;
         if (!(item?.DisableNegate ?? false)) options |= GlobMatcherOptions.AllowNegate;
         return options;
     }

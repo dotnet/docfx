@@ -33,7 +33,7 @@ internal class BuildCommand : Command<BuildCommandOptions>
         // Override config file with options from command line
         if (options.Templates != null && options.Templates.Any())
         {
-            config.Templates = new ListWithStringFallback(options.Templates);
+            config.Template = new ListWithStringFallback(options.Templates);
         }
 
         if (options.PostProcessors != null && options.PostProcessors.Any())
@@ -43,26 +43,26 @@ internal class BuildCommand : Command<BuildCommandOptions>
 
         if (options.Themes != null && options.Themes.Any())
         {
-            config.Themes = new ListWithStringFallback(options.Themes);
+            config.Theme = new ListWithStringFallback(options.Themes);
         }
 
         if (options.XRefMaps != null)
         {
-            config.XRefMaps =
+            config.Xref =
                 new ListWithStringFallback(
-                    (config.XRefMaps ?? new ListWithStringFallback())
+                    (config.Xref ?? new ListWithStringFallback())
                     .Concat(options.XRefMaps)
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Distinct());
         }
 
-        config.EnableDebugMode |= options.EnableDebugMode;
+        config.Debug |= options.EnableDebugMode;
         config.ExportRawModel |= options.ExportRawModel;
         config.ExportViewModel |= options.ExportViewModel;
 
         if (!string.IsNullOrEmpty(options.OutputFolderForDebugFiles))
         {
-            config.OutputFolderForDebugFiles = Path.GetFullPath(options.OutputFolderForDebugFiles);
+            config.DebugOutput = Path.GetFullPath(options.OutputFolderForDebugFiles);
         }
         if (!string.IsNullOrEmpty(options.RawModelOutputFolder))
         {
@@ -82,8 +82,8 @@ internal class BuildCommand : Command<BuildCommandOptions>
             config.MarkdownEngineProperties = JsonConvert.DeserializeObject<MarkdownServiceProperties>(options.MarkdownEngineProperties);
         }
 
-        config.GlobalMetadataFilePaths =
-            new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
+        config.GlobalMetadataFiles =
+            new ListWithStringFallback(config.GlobalMetadataFiles.Select(
                 path => PathUtility.IsRelativePath(path) ? Path.Combine(configDirectory, path) : path).Reverse());
 
         SetGlobalMetadataFromCommandLineArgs();

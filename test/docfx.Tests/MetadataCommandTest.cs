@@ -35,7 +35,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -49,7 +49,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.dll.sample.1", dllFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(dllFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(dllFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -68,9 +68,9 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Destination = _outputFolder,
-                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
-                MSBuildProperties = new() { ["TargetFramework"] = "net6.0" },
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem(projectFile)) { Expanded = true },
+                Properties = new() { ["TargetFramework"] = "net6.0" },
             }),
             new(), Directory.GetCurrentDirectory());
 
@@ -91,7 +91,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.vb.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
@@ -155,9 +155,9 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Destination = _outputFolder,
-                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
-                FilterConfigFile = filterFile,
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem(projectFile)) { Expanded = true },
+                Filter = filterFile,
             }),
             new(), Directory.GetCurrentDirectory());
 
@@ -203,7 +203,7 @@ public class MetadataCommandTest : TestBase
         File.Copy("Assets/test.cs.sample.1", sourceFile);
 
         await DotnetApiCatalog.Exec(
-            new(new MetadataJsonItemConfig { Destination = _outputFolder, Source = new(new FileMappingItem(projectFile)) { Expanded = true } }),
+            new(new MetadataJsonItemConfig { Dest = _outputFolder, Src = new(new FileMappingItem(projectFile)) { Expanded = true } }),
             new(), Directory.GetCurrentDirectory());
 
         CheckResult();
@@ -221,8 +221,8 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Destination = _outputFolder,
-                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),
             new(), Directory.GetCurrentDirectory());
@@ -260,8 +260,8 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Destination = _outputFolder,
-                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Flattened,
             }),
             new(), Directory.GetCurrentDirectory());
@@ -299,8 +299,8 @@ public class MetadataCommandTest : TestBase
         await DotnetApiCatalog.Exec(
             new(new MetadataJsonItemConfig
             {
-                Destination = _outputFolder,
-                Source = new(new FileMappingItem(projectFile)) { Expanded = true },
+                Dest = _outputFolder,
+                Src = new(new FileMappingItem(projectFile)) { Expanded = true },
                 NamespaceLayout = NamespaceLayout.Nested,
             }),
             new(), Directory.GetCurrentDirectory());

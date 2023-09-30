@@ -79,14 +79,14 @@ internal class MetadataJsonItemConfig
     /// Defines the source projects to have metadata generated.
     /// </summary>
     [JsonProperty("src")]
-    public FileMapping Source { get; set; }
+    public FileMapping Src { get; set; }
 
     /// <summary>
     /// Defines the output folder of the generated metadata files.
     /// Command line --output argument prepends this value.
     /// </summary>
     [JsonProperty("dest")]
-    public string Destination { get; set; }
+    public string Dest { get; set; }
 
     /// <summary>
     /// Defines the output folder of the generated metadata files.
@@ -117,7 +117,7 @@ internal class MetadataJsonItemConfig
     /// Defines the filter configuration file.
     /// </summary>
     [JsonProperty("filter")]
-    public string FilterConfigFile { get; set; }
+    public string Filter { get; set; }
 
     /// <summary>
     /// Include private or internal APIs.
@@ -138,7 +138,7 @@ internal class MetadataJsonItemConfig
     ///  command line argument.
     /// </summary>
     [JsonProperty("properties")]
-    public Dictionary<string, string> MSBuildProperties { get; set; }
+    public Dictionary<string, string> Properties { get; set; }
 
     /// <summary>
     /// Disables generation of view source links.
@@ -185,6 +185,7 @@ internal class MetadataJsonItemConfig
     /// - `samePage` (default): Places members in the same page as their containing type.
     /// - `separatePages`: Places members in separate pages.
     /// </summary>
+    [JsonProperty("enumSortOrder")]
     public EnumSortOrder EnumSortOrder { get; init; }
 
     /// <summary>

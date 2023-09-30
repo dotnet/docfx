@@ -91,7 +91,7 @@ internal static class RunMerge
         }
         return from file in mapping.Items
                from item in file.Files
-               select Path.Combine(file.SourceFolder ?? Directory.GetCurrentDirectory(), item);
+               select Path.Combine(file.Src ?? Directory.GetCurrentDirectory(), item);
     }
 
     private static FileCollection GetFileCollectionFromFileMapping(string baseDirectory, DocumentType type, FileMapping files)
@@ -99,7 +99,7 @@ internal static class RunMerge
         var result = new FileCollection(baseDirectory);
         foreach (var mapping in files.Items)
         {
-            result.Add(type, mapping.Files, mapping.SourceFolder, mapping.DestinationFolder);
+            result.Add(type, mapping.Files, mapping.Src, mapping.Dest);
         }
         return result;
     }

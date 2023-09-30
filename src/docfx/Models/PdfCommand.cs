@@ -30,7 +30,7 @@ internal class PdfCommand : Command<PdfCommandOptions>
 
         if (!string.IsNullOrEmpty(options.CssFilePath))
         {
-            config.CssFilePath = options.CssFilePath;
+            config.Css = options.CssFilePath;
         }
 
         if (!string.IsNullOrEmpty(options.Name))
@@ -50,7 +50,7 @@ internal class PdfCommand : Command<PdfCommandOptions>
 
         if (!string.IsNullOrEmpty(options.BasePath))
         {
-            config.BasePath = options.BasePath;
+            config.Base = options.BasePath;
         }
 
         if (!string.IsNullOrEmpty(options.RawOutputFolder))
@@ -60,7 +60,7 @@ internal class PdfCommand : Command<PdfCommandOptions>
 
         if (!string.IsNullOrEmpty(options.LoadErrorHandling))
         {
-            config.LoadErrorHandling = options.LoadErrorHandling;
+            config.ErrorHandling = options.LoadErrorHandling;
         }
 
         if (options.GeneratesAppendices.HasValue)
@@ -85,7 +85,7 @@ internal class PdfCommand : Command<PdfCommandOptions>
 
         if (options.NoInputStreamArgs.HasValue)
         {
-            config.NoInputStreamArgs = options.NoInputStreamArgs.Value;
+            config.NoStdin = options.NoInputStreamArgs.Value;
         }
 
         if (!string.IsNullOrEmpty(options.FilePath))

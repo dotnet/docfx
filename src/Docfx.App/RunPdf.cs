@@ -27,20 +27,20 @@ internal static class RunPdf
         var wkhtmltopdfFilePath = config.Wkhtmltopdf?.FilePath is null ? null : Path.Combine(baseDirectory, config.Wkhtmltopdf.FilePath);
         ConvertWrapper.PrerequisiteCheck(wkhtmltopdfFilePath);
 
-        if (config.Templates == null || config.Templates.Count == 0)
+        if (config.Template == null || config.Template.Count == 0)
         {
-            config.Templates = new ListWithStringFallback(new List<string> { "pdf.default" });
+            config.Template = new ListWithStringFallback(new List<string> { "pdf.default" });
         }
 
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
-            config.Destination ?? ""));
+            config.Dest ?? ""));
 
         var rawOutputFolder = string.IsNullOrEmpty(config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : config.RawOutputFolder;
         var options = new PdfOptions
         {
-            BasePath = config.BasePath,
-            CssFilePath = config.CssFilePath,
+            BasePath = config.Base,
+            CssFilePath = config.Css,
             DestDirectory = outputFolder,
             Host = config.Host,
             Locale = config.Locale,
@@ -48,17 +48,17 @@ internal static class RunPdf
             GenerateAppendices = config.GeneratesAppendices,
             PdfConvertParallelism = config.MaxParallelism == null || config.MaxParallelism <= 0 ? Environment.ProcessorCount : config.MaxParallelism.Value,
             PdfDocsetName = config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
-            SourceDirectory = Path.Combine(rawOutputFolder, config.Destination ?? string.Empty),
+            SourceDirectory = Path.Combine(rawOutputFolder, config.Dest ?? string.Empty),
             ExcludeTocs = config.ExcludedTocs?.ToArray(),
             KeepRawFiles = config.KeepRawFiles,
             ExcludeDefaultToc = config.ExcludeDefaultToc,
-            LoadErrorHandling = config.LoadErrorHandling,
+            LoadErrorHandling = config.ErrorHandling,
             FilePath = wkhtmltopdfFilePath,
             AdditionalPdfCommandArgs = config.Wkhtmltopdf?.AdditionalArguments,
             TocTitle = config.TocTitle,
-            OutlineOption = config.OutlineOption,
-            CoverPageTitle = config.CoverPageTitle,
-            NoInputStreamArgs = config.NoInputStreamArgs,
+            OutlineOption = config.Outline,
+            CoverPageTitle = config.CoverTitle,
+            NoInputStreamArgs = config.NoStdin,
         };
 
         // 1. call BuildCommand to generate html files first

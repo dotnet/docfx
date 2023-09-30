@@ -37,7 +37,7 @@ internal class BuildJsonConfig
     /// Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.
     /// </summary>
     [JsonProperty("xref")]
-    public ListWithStringFallback XRefMaps { get; set; }
+    public ListWithStringFallback Xref { get; set; }
 
     /// <summary>
     /// Defines the output folder of the generated build files.
@@ -45,7 +45,7 @@ internal class BuildJsonConfig
     /// </summary>
     [Obsolete("Use output instead.")]
     [JsonProperty("dest")]
-    public string Destination { get; set; }
+    public string Dest { get; set; }
 
     /// <summary>
     /// Defines the output folder of the generated build files.
@@ -65,7 +65,7 @@ internal class BuildJsonConfig
     /// Specify a list of JSON file path containing globalMetadata settings.
     /// </summary>
     [JsonProperty("globalMetadataFiles")]
-    public ListWithStringFallback GlobalMetadataFilePaths { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback GlobalMetadataFiles { get; set; } = new ListWithStringFallback();
 
     /// <summary>
     /// Metadata that applies to some specific files.
@@ -81,7 +81,7 @@ internal class BuildJsonConfig
     /// Specify a list of JSON file path containing fileMetadata settings.
     /// </summary>
     [JsonProperty("fileMetadataFiles")]
-    public ListWithStringFallback FileMetadataFilePaths { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback FileMetadataFiles { get; set; } = new ListWithStringFallback();
 
     /// <summary>
     /// The templates applied to each file in the documentation. It can be a string or an array.
@@ -89,7 +89,7 @@ internal class BuildJsonConfig
     /// If omitted, embedded default template will be used.
     /// </summary>
     [JsonProperty("template")]
-    public ListWithStringFallback Templates { get; set; } = new ListWithStringFallback();
+    public ListWithStringFallback Template { get; set; } = new ListWithStringFallback();
 
     /// <summary>
     /// The themes applied to the documentation.
@@ -99,7 +99,7 @@ internal class BuildJsonConfig
     /// If omitted, no theme will be applied, the default theme inside the template will be used.
     /// </summary>
     [JsonProperty("theme")]
-    public ListWithStringFallback Themes { get; set; }
+    public ListWithStringFallback Theme { get; set; }
 
     /// <summary>
     /// Specify PostProcessor array.
@@ -119,14 +119,14 @@ internal class BuildJsonConfig
     /// If not specified, it is false
     /// </summary>
     [JsonProperty("debug")]
-    public bool? EnableDebugMode { get; set; }
+    public bool? Debug { get; set; }
 
     /// <summary>
     /// The output folder for files generated for debugging purpose when in debug mode.
     /// If not specified, it is ${TempPath}/docfx
     /// </summary>
     [JsonProperty("debugOutput")]
-    public string OutputFolderForDebugFiles { get; set; }
+    public string DebugOutput { get; set; }
 
     /// <summary>
     /// If set to true, data model to run template script will be extracted in .raw.model.json extension.
@@ -206,7 +206,7 @@ internal class BuildJsonConfig
     /// Specifies the options for the sitemap.xml file.
     /// </summary>
     [JsonProperty("sitemap")]
-    public SitemapOptions SitemapOptions { get; set; }
+    public SitemapOptions Sitemap { get; set; }
 
     /// <summary>
     /// Disable fetching Git related information for articles.

@@ -34,7 +34,7 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
 
             if (!string.IsNullOrEmpty(options.FilterConfigFile))
             {
-                item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);
+                item.Filter = Path.GetFullPath(options.FilterConfigFile);
             }
 
             if (!string.IsNullOrEmpty(options.GlobalNamespaceId))
@@ -42,16 +42,16 @@ internal class MetadataCommand : Command<MetadataCommandOptions>
                 item.GlobalNamespaceId = options.GlobalNamespaceId;
             }
 
-            if (item.MSBuildProperties == null)
+            if (item.Properties == null)
             {
-                item.MSBuildProperties = msbuildProperties;
+                item.Properties = msbuildProperties;
             }
             else
             {
                 // Command line properties overwrites the one defined in docfx.json
                 foreach (var pair in msbuildProperties)
                 {
-                    item.MSBuildProperties[pair.Key] = pair.Value;
+                    item.Properties[pair.Key] = pair.Value;
                 }
             }
         }

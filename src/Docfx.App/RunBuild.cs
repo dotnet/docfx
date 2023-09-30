@@ -20,12 +20,12 @@ internal static class RunBuild
     /// </summary>
     public static string Exec(BuildJsonConfig config, BuildOptions options, string configDirectory, string outputDirectory = null)
     {
-        if (config.Templates == null || config.Templates.Count == 0)
+        if (config.Template == null || config.Template.Count == 0)
         {
-            config.Templates = new ListWithStringFallback { Constants.DefaultTemplateName };
+            config.Template = new ListWithStringFallback { Constants.DefaultTemplateName };
         }
 
-        var templateManager = new TemplateManager(config.Templates, config.Themes, configDirectory);
+        var templateManager = new TemplateManager(config.Template, config.Theme, configDirectory);
 
         EnvironmentContext.SetGitFeaturesDisabled(config.DisableGitFeatures);
         EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(configDirectory) ? Directory.GetCurrentDirectory() : configDirectory));
@@ -40,7 +40,7 @@ internal static class RunBuild
         var baseDirectory = EnvironmentContext.BaseDirectory;
         var outputFolder = Path.GetFullPath(Path.Combine(
             string.IsNullOrEmpty(outputDirectory) ? Path.Combine(baseDirectory, config.Output ?? "") : outputDirectory,
-            config.Destination ?? ""));
+            config.Dest ?? ""));
 
         try
         {
