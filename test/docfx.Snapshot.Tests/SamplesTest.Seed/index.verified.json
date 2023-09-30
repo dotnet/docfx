@@ -397,7 +397,7 @@
   "md/BuildFromProject.html": {
     "href": "md/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Inheritdoc.Issue6366.Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1 Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948"
   },
   "md/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "md/BuildFromVBSourceCode.BaseClass1.html",
@@ -431,8 +431,8 @@
   },
   "md/CatLibrary.Core.ContainersRefType.ColorType.html": {
     "href": "md/CatLibrary.Core.ContainersRefType.ColorType.html",
-    "title": "Enum ContainersRefType.ColorType | docfx seed website",
-    "keywords": "Enum ContainersRefType.ColorType Namespace: CatLibrary.Core Assembly: CatLibrary.Core.dll Enumeration ColorType public enum ContainersRefType.ColorType Fields Red = 0 red Blue = 1 blue Yellow = 2 yellow"
+    "title": "ContainersRefType.ColorType | docfx seed website",
+    "keywords": "ContainersRefType.ColorType Namespace: CatLibrary.Core Assembly: CatLibrary.Core.dll Enumeration ColorType public enum ContainersRefType.ColorType Fields Red = 0 red Blue = 1 blue Yellow = 2 yellow"
   },
   "md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html": {
     "href": "md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html",
@@ -516,8 +516,8 @@
   },
   "md/MRef.Demo.Enumeration.ColorType.html": {
     "href": "md/MRef.Demo.Enumeration.ColorType.html",
-    "title": "Enum ColorType | docfx seed website",
-    "keywords": "Enum ColorType Namespace: MRef.Demo.Enumeration Assembly: CatLibrary.dll Enumeration ColorType public enum ColorType Fields Red = 0 this color is red Blue = 1 blue like river Yellow = 2 yellow comes from desert Remarks Red/Blue/Yellow can become all color you want. See Also object"
+    "title": "ColorType | docfx seed website",
+    "keywords": "ColorType Namespace: MRef.Demo.Enumeration Assembly: CatLibrary.dll Enumeration ColorType public enum ColorType Fields Red = 0 this color is red Blue = 1 blue like river Yellow = 2 yellow comes from desert Remarks Red/Blue/Yellow can become all color you want. See Also object"
   },
   "md/MRef.Demo.Enumeration.html": {
     "href": "md/MRef.Demo.Enumeration.html",
