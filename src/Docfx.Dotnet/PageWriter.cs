@@ -134,7 +134,7 @@ class MarkdownWriter : PageWriter
 
     private string Escape(string text)
     {
-        const string EscapeChars = @"\`*_{}[]()#+-.!>~";
+        const string EscapeChars = "\\`*_{}[]()#+-!>~\"'";
 
         var needEscape = false;
         foreach (var c in text)
