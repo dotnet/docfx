@@ -10,26 +10,33 @@ namespace Docfx.Dotnet;
 enum ListDelimiter
 {
     Comma,
+    NewLine,
     LeftArrow,
 }
 
 readonly record struct TextSpan(string text, string? href = null);
 readonly record struct Fact(string name, TextSpan[] value);
-readonly record struct Parameter(string name, TextSpan[]? type = null, string? defaultValue = null, string? docs = null);
 
-abstract class OutputWriter
+class Parameter
+{
+    public string? name { get; init; }
+    public TextSpan[]? type { get; init; }
+    public string? defaultValue { get; init; }
+    public string? docs { get; init; }
+}
+
+abstract class PageWriter
 {
     public abstract void Heading(int level, string title, string? id = null);
     public abstract void Facts(params Fact[] facts);
-    public abstract void Text(params TextSpan[] spans);
     public abstract void Markdown(string markdown);
     public abstract void ParameterList(params Parameter[] parameters);
-    public abstract void JumpList(ListDelimiter delimiter, params TextSpan[][] items);
+    public abstract void List(ListDelimiter delimiter, params TextSpan[][] items);
     public abstract void Declaration(string syntax, string? language = null);
     public abstract void End();
 }
 
-class MarkdownWriter : OutputWriter
+class MarkdownWriter : PageWriter
 {
     private string _path = default!;
     private readonly StringBuilder _sb = new();
@@ -64,15 +71,12 @@ class MarkdownWriter : OutputWriter
             var item = facts[i];
             _sb.Append(item.name).Append(": ");
             Text(item.value);
-
-            if (i ==  facts.Length - 1)
-                _sb.AppendLine();
-            else
-                _sb.Append("  ");
+            _sb.AppendLine(i == facts.Length - 1 ? "" : "  ");
         }
+        _sb.AppendLine();
     }
 
-    public override void JumpList(ListDelimiter delimiter, params TextSpan[][] items)
+    public override void List(ListDelimiter delimiter, params TextSpan[][] items)
     {
         for (var i = 0; i < items.Length - 1; i++)
         {
@@ -80,11 +84,14 @@ class MarkdownWriter : OutputWriter
             _sb.Append(delimiter switch
             {
                 ListDelimiter.LeftArrow => " \u2190 ",
-                _ => ", ",
+                ListDelimiter.Comma => ", ",
+                ListDelimiter.NewLine => Environment.NewLine,
+                _ => throw new NotSupportedException($"Unknown delimiter {delimiter}"),
             });
         }
 
         Text(items[^1]);
+        _sb.AppendLine();
     }
 
     public override void Markdown(string markdown)
@@ -96,22 +103,25 @@ class MarkdownWriter : OutputWriter
     {
         foreach (var param in parameters)
         {
-            _sb.Append('`').Append(param.name);
-            if (!string.IsNullOrEmpty(param.defaultValue))
-                _sb.Append(" = ").Append(param.defaultValue);
-            _sb.Append("` ");
+            if (!string.IsNullOrEmpty(param.name))
+            {
+                _sb.Append('`').Append(param.name);
+                if (!string.IsNullOrEmpty(param.defaultValue))
+                    _sb.Append(" = ").Append(param.defaultValue);
+                _sb.Append("` ");
+            }
 
             if (param.type != null)
                 Text(param.type);
 
-            _sb.AppendLine();
+            _sb.AppendLine().AppendLine();
 
             if (!string.IsNullOrEmpty(param.docs))
                 _sb.AppendLine(param.docs).AppendLine();
         }
     }
 
-    public override void Text(params TextSpan[] spans)
+    private void Text(params TextSpan[] spans)
     {
         foreach (var span in spans)
         {

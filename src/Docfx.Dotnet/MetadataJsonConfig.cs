@@ -61,7 +61,7 @@ internal enum MetadataOutputFormat
     /// <summary>
     /// Output as ManagedReference YAML files
     /// </summary>
-    MrefYaml,
+    ManagedReference,
 
     /// <summary>
     /// Output as common-mark compliant markdown file

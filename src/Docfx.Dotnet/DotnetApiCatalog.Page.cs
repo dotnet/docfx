@@ -13,258 +13,23 @@ using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Docfx.Dotnet;
 
-static class MarkdownFormatter
+partial class DotnetApiCatalog
 {
-    enum TocNodeType
+    private static void CreatePages(Func<string, string, PageWriter> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
-        None,
-        Namespace,
-        Class,
-        Struct,
-        Interface,
-        Enum,
-        Delegate,
-        Constructor,
-        Field,
-        Property,
-        Method,
-        Event,
-        Operator,
-    }
-
-    class TocNode
-    {
-        public string name { get; init; } = "";
-        public string? href { get; init; }
-        public List<TocNode>? items { get; set; }
-
-        internal TocNodeType type;
-        internal string? id;
-        internal bool containsLeafNodes;
-        internal List<(ISymbol symbol, Compilation compilation)> symbols = new();
-    }
-
-    public static void Save(Func<string, string, OutputWriter> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
-    {
-        Logger.LogWarning($"Markdown output format is experimental.");
-
         Directory.CreateDirectory(config.OutputFolder);
 
         var filter = new SymbolFilter(config, options);
         var extensionMethods = assemblies.SelectMany(assembly => assembly.symbol.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.symbol), SymbolEqualityComparer.Default);
         var commentCache = new ConcurrentDictionary<ISymbol, XmlComment>(SymbolEqualityComparer.Default);
-
-        var tocNodes = new Dictionary<string, TocNode>();
-        var allSymbols = new List<(ISymbol symbol, Compilation compilation)>();
-        var toc = assemblies.SelectMany(a => CreateToc(a.symbol.GlobalNamespace, a.compilation)).ToList();
-
+        var toc = CreateToc(assemblies, config, options);
+        var allSymbols = EnumerateToc(toc).SelectMany(node => node.symbols).ToList();
         allSymbols.Sort((a, b) => a.symbol.Name.CompareTo(b.symbol.Name));
-        SortToc(toc, root: true);
 
-        YamlUtility.Serialize(Path.Combine(config.OutputFolder, "toc.yml"), toc, YamlMime.TableOfContent);
         Parallel.ForEach(EnumerateToc(toc), n => SaveTocNode(n.id, n.symbols));
 
         Logger.LogInfo($"Export succeed: {EnumerateToc(toc).Count()} items");
-
-        IEnumerable<TocNode> CreateToc(ISymbol symbol, Compilation compilation)
-        {
-            if (!filter.IncludeApi(symbol))
-                yield break;
-
-            switch (symbol)
-            {
-                case INamespaceSymbol ns when ns.IsGlobalNamespace:
-                    foreach (var child in ns.GetNamespaceMembers())
-                        foreach (var item in CreateToc(child, compilation))
-                            yield return item;
-                    break;
-
-                case INamespaceSymbol ns:
-                    foreach (var item in CreateNamespaceToc(ns))
-                        yield return item;
-                    break;
-
-                case INamedTypeSymbol type:
-                    foreach (var item in CreateNamedTypeToc(type))
-                        yield return item;
-                    break;
-
-                case IFieldSymbol or IPropertySymbol or IMethodSymbol or IEventSymbol:
-                    foreach (var item in CreateMemberToc(symbol))
-                        yield return item;
-                    break;
-
-                default:
-                    throw new NotSupportedException($"Unknown symbol {symbol}");
-            }
-
-            IEnumerable<TocNode> CreateNamespaceToc(INamespaceSymbol ns)
-            {
-                var idExists = true;
-                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
-                if (!tocNodes.TryGetValue(id, out var node))
-                {
-                    idExists = false;
-                    tocNodes.Add(id, node = new()
-                    {
-                        id = id,
-                        name = config.NamespaceLayout is NamespaceLayout.Nested ? symbol.Name : symbol.ToString() ?? "",
-                        href = $"{id}.md",
-                        type = TocNodeType.Namespace,
-                    });
-                }
-
-                node.items ??= new();
-                node.symbols.Add((symbol, compilation));
-                allSymbols.Add((symbol, compilation));
-
-                foreach (var child in ns.GetNamespaceMembers())
-                {
-                    if (config.NamespaceLayout is NamespaceLayout.Flattened)
-                        foreach (var item in CreateToc(child, compilation))
-                            yield return item;
-                    else if (config.NamespaceLayout is NamespaceLayout.Nested)
-                        node.items.AddRange(CreateToc(child, compilation));
-                }
-
-                foreach (var child in ns.GetTypeMembers())
-                {
-                    node.items.AddRange(CreateToc(child, compilation));
-                }
-
-                node.containsLeafNodes = node.items.Any(i => i.containsLeafNodes);
-                if (!idExists && node.containsLeafNodes)
-                {
-                    yield return node;
-                }
-            }
-
-            IEnumerable<TocNode> CreateNamedTypeToc(INamedTypeSymbol type)
-            {
-                var idExists = true;
-                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetId(symbol));
-                if (!tocNodes.TryGetValue(id, out var node))
-                {
-                    idExists = false;
-                    tocNodes.Add(id, node = new()
-                    {
-                        id = id,
-                        name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp),
-                        href = $"{id}.md",
-                        containsLeafNodes = true,
-                        type = type.TypeKind switch
-                        {
-                            TypeKind.Class => TocNodeType.Class,
-                            TypeKind.Interface => TocNodeType.Interface,
-                            TypeKind.Struct => TocNodeType.Struct,
-                            TypeKind.Delegate => TocNodeType.Delegate,
-                            TypeKind.Enum => TocNodeType.Enum,
-                            _ => throw new NotSupportedException($"Unknown type kind {type.TypeKind}"),
-                        }
-                    });
-                }
-
-                foreach (var child in type.GetTypeMembers())
-                {
-                    foreach (var item in CreateToc(child, compilation))
-                        yield return item;
-                }
-
-                if (config.MemberLayout is MemberLayout.SeparatePages && type.TypeKind is TypeKind.Class or TypeKind.Interface or TypeKind.Struct)
-                {
-                    node.items ??= new();
-                    foreach (var member in type.GetMembers())
-                        node.items.AddRange(CreateToc(member, compilation));
-                }
-
-                node.symbols.Add((symbol, compilation));
-                allSymbols.Add((symbol, compilation));
-
-                if (!idExists)
-                {
-                    yield return node;
-                }
-            }
-
-            IEnumerable<TocNode> CreateMemberToc(ISymbol symbol)
-            {
-                var type = symbol switch
-                {
-                    IPropertySymbol => TocNodeType.Property,
-                    IFieldSymbol => TocNodeType.Field,
-                    IEventSymbol => TocNodeType.Event,
-                    IMethodSymbol method when SymbolHelper.IsConstructor(method) => TocNodeType.Constructor,
-                    IMethodSymbol method when SymbolHelper.IsMethod(method) => TocNodeType.Method,
-                    IMethodSymbol method when SymbolHelper.IsOperator(method) => TocNodeType.Operator,
-                    _ => TocNodeType.None,
-                };
-
-                if (type is TocNodeType.None)
-                    yield break;
-
-                var id = VisitorHelper.PathFriendlyId(VisitorHelper.GetOverloadId(symbol));
-                if (!tocNodes.TryGetValue(id, out var node))
-                {
-                    tocNodes.Add(id, node = new()
-                    {
-                        id = id,
-                        name = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true),
-                        href = $"{id}.md",
-                        containsLeafNodes = true,
-                        type = type,
-                    });
-                    yield return node;
-                }
-
-                node.symbols.Add((symbol, compilation));
-            }
-        }
-
-        static void SortToc(List<TocNode> items, bool root)
-        {
-            items.Sort((a, b) => a.type.CompareTo(b.type) is var r && r is 0 ? a.name.CompareTo(b.name) : r);
-
-            if (!root)
-            {
-                InsertCategory(TocNodeType.Class, "Classes");
-                InsertCategory(TocNodeType.Struct, "Structs");
-                InsertCategory(TocNodeType.Interface, "Interfaces");
-                InsertCategory(TocNodeType.Enum, "Enums");
-                InsertCategory(TocNodeType.Delegate, "Delegates");
-                InsertCategory(TocNodeType.Constructor, "Constructors");
-                InsertCategory(TocNodeType.Field, "Fields");
-                InsertCategory(TocNodeType.Property, "Properties");
-                InsertCategory(TocNodeType.Method, "Methods");
-                InsertCategory(TocNodeType.Event, "Events");
-                InsertCategory(TocNodeType.Operator, "Operators");
-            }
-
-            foreach (var item in items)
-            {
-                if (item.items is not null)
-                    SortToc(item.items, root: false);
-            }
-
-            void InsertCategory(TocNodeType type, string name)
-            {
-                if (items.FirstOrDefault(i => i.type == type) is { } node)
-                    items.Insert(items.IndexOf(node), new() { name = name });
-            }
-        }
-
-        static IEnumerable<(string id, List<(ISymbol symbol, Compilation compilation)> symbols)> EnumerateToc(List<TocNode> items)
-        {
-            foreach (var item in items)
-            {
-                if (item.items is not null)
-                    foreach (var i in EnumerateToc(item.items))
-                        yield return i;
-
-                if (item.id is not null && item.symbols.Count > 0)
-                    yield return (item.id, item.symbols);
-            }
-        }
 
         void SaveTocNode(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
         {
@@ -355,14 +120,7 @@ static class MarkdownFormatter
                         return;
 
                     writer.Heading(3, "Namespaces");
-
-                    foreach (var (symbol, compilation) in items)
-                    {
-                        writer.Text(ShortLink(symbol, compilation));
-                        var comment = Comment(symbol, compilation);
-                        if (!string.IsNullOrEmpty(comment?.Summary))
-                            writer.Markdown(comment.Summary);
-                    }
+                    SummaryList(items);
                 }
 
                 void Types(Func<INamedTypeSymbol, bool> predicate, string headingText)
@@ -371,14 +129,8 @@ static class MarkdownFormatter
                     if (items.Count == 0)
                         return;
 
-                    writer.Heading(3,  headingText);
-                    foreach (var (symbol, compilation) in items)
-                    {
-                        writer.Text(ShortLink(symbol, compilation));
-                        var comment = Comment(symbol, compilation);
-                        if (!string.IsNullOrEmpty(comment?.Summary))
-                            writer.Markdown(comment.Summary);
-                    }
+                    writer.Heading(3, headingText);
+                    SummaryList(items);
                 }
             }
 
@@ -408,9 +160,9 @@ static class MarkdownFormatter
                 Syntax(symbol);
 
                 var invokeMethod = type.DelegateInvokeMethod!;
-                Parameters(invokeMethod, comment);
-                Returns(invokeMethod, comment);
-                TypeParameters(invokeMethod.ContainingType, comment);
+                Parameters(invokeMethod, comment, 4);
+                Returns(invokeMethod, comment, 4);
+                TypeParameters(invokeMethod.ContainingType, comment, 4);
 
                 ExtensionMethods(type);
 
@@ -435,7 +187,7 @@ static class MarkdownFormatter
                 Summary(comment);
                 Syntax(symbol);
 
-                TypeParameters(symbol, comment);
+                TypeParameters(symbol, comment, 4);
                 Inheritance();
                 Derived();
                 Implements();
@@ -470,7 +222,7 @@ static class MarkdownFormatter
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
-                        MemberSummaryList(items);
+                        SummaryList(items);
                         return;
                     }
 
@@ -494,7 +246,7 @@ static class MarkdownFormatter
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
-                        MemberSummaryList(items);
+                        SummaryList(items);
                         return;
                     }
 
@@ -514,10 +266,10 @@ static class MarkdownFormatter
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(2, "headingText");
+                    writer.Heading(2, headingText);
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
-                        MemberSummaryList(items);
+                        SummaryList(items);
                         return;
                     }
 
@@ -539,21 +291,12 @@ static class MarkdownFormatter
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
-                        MemberSummaryList(items);
+                        SummaryList(items);
                         return;
                     }
 
                     foreach (var (s, c) in items)
                         Event(s, c, 3);
-                }
-
-                void MemberSummaryList<T>(IEnumerable<(T, Compilation)> symbols) where T : ISymbol
-                {
-                    foreach (var (s, c) in symbols)
-                    {
-                        writer.Text(NameOnlyLink(s, c));
-                        Summary(Comment(s, c));
-                    }
                 }
 
                 void Inheritance()
@@ -627,12 +370,23 @@ static class MarkdownFormatter
                 List(items);
             }
 
-            void List(IEnumerable<ISymbol> items, ListDelimiter delimiter = default)
+            void SummaryList<T>(IEnumerable<(T, Compilation)> items) where T : ISymbol
             {
-                writer.JumpList(delimiter, items.Select(i => ShortLink(i, compilation)).ToArray());
+                writer.ParameterList(items.Select(i =>
+                {
+                    var (symbol, compilation) = i;
+                    var comment = Comment(symbol, compilation);
+                    var type = symbol is INamedTypeSymbol ? ShortLink(symbol, compilation) : NameOnlyLink(symbol, compilation);
+                    return new Parameter { type =type, docs = comment?.Summary };
+                }).ToArray());
             }
 
-            void Parameters(ISymbol symbol, XmlComment? comment, int headingLevel = 2)
+            void List(IEnumerable<ISymbol> items, ListDelimiter delimiter = ListDelimiter.Comma)
+            {
+                writer.List(delimiter, items.Select(i => ShortLink(i, compilation)).ToArray());
+            }
+
+            void Parameters(ISymbol symbol, XmlComment? comment, int headingLevel)
             {
                 var parameters = symbol.GetParameters();
                 if (!parameters.Any())
@@ -644,23 +398,20 @@ static class MarkdownFormatter
                 Parameter ToParameter(IParameterSymbol param)
                 {
                     var docs = comment?.Parameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
-                    return new(param.Name, FullLink(param.Type, compilation), null, docs);
+                    return new() { name = param.Name, type = FullLink(param.Type, compilation), docs = docs };
                 }
             }
 
-            void Returns(IMethodSymbol symbol, XmlComment? comment, int headingLevel = 2)
+            void Returns(IMethodSymbol symbol, XmlComment? comment, int headingLevel)
             {
                 if (symbol.ReturnType is null || symbol.ReturnType.SpecialType is SpecialType.System_Void)
                     return;
 
                 writer.Heading(headingLevel, "Returns");
-                writer.Text(FullLink(symbol.ReturnType, compilation));
-
-                if (!string.IsNullOrEmpty(comment?.Returns))
-                    writer.Markdown($"{comment.Returns}");
+                writer.ParameterList(new Parameter { type = FullLink(symbol.ReturnType, compilation), docs = comment?.Returns });
             }
 
-            void TypeParameters(ISymbol symbol, XmlComment? comment, int headingLevel = 2)
+            void TypeParameters(ISymbol symbol, XmlComment? comment, int headingLevel)
             {
                 if (symbol.GetTypeParameters() is { } typeParameters && typeParameters.Length is 0)
                     return;
@@ -671,7 +422,7 @@ static class MarkdownFormatter
                 Parameter ToParameter(ITypeParameterSymbol param)
                 {
                     var docs = comment?.TypeParameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
-                    return new(param.Name, docs: docs);
+                    return new() { name = param.Name, docs = docs };
                 }
             }
 
@@ -704,7 +455,7 @@ static class MarkdownFormatter
                 Syntax(symbol);
 
                 writer.Heading(headingLevel + 1, "Field Value");
-                writer.Text(FullLink(symbol.Type, compilation));
+                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -722,7 +473,7 @@ static class MarkdownFormatter
                 Syntax(symbol);
 
                 writer.Heading(headingLevel + 1, "Property Value");
-                writer.Text(FullLink(symbol.Type, compilation));
+                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -740,7 +491,7 @@ static class MarkdownFormatter
                 Syntax(symbol);
 
                 writer.Heading(headingLevel + 1, "Event Type");
-                writer.Text(FullLink(symbol.Type, compilation));
+                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -763,7 +514,7 @@ static class MarkdownFormatter
                 Parameter ToParameter(IFieldSymbol item)
                 {
                     var docs = Comment(item, compilation) is { } comment ? comment.Summary : null;
-                    return new(item.Name, null, $"{item.ConstantValue}", docs);
+                    return new() { name = item.Name, defaultValue = $"{item.ConstantValue}", docs = docs };
                 }
             }
 
@@ -813,12 +564,8 @@ static class MarkdownFormatter
                 if (comment?.Exceptions?.Count > 0)
                 {
                     writer.Heading(headingLevel, "Exceptions");
-
-                    foreach (var exception in comment.Exceptions)
-                    {
-                        writer.Text(Cref(exception.CommentId));
-                        writer.Markdown(exception.Description);
-                    }
+                    writer.ParameterList(comment.Exceptions.Select(
+                        e => new Parameter() { type = Cref(e.CommentId), docs = e.Description }).ToArray());
                 }
             }
 
@@ -827,16 +574,12 @@ static class MarkdownFormatter
                 if (comment?.SeeAlsos?.Count > 0)
                 {
                     writer.Heading(headingLevel, "See Also");
-
-                    foreach (var seealso in comment.SeeAlsos)
+                    writer.List(ListDelimiter.NewLine, comment.SeeAlsos.Select(s => s.LinkType switch
                     {
-                        writer.Text(seealso.LinkType switch
-                        {
-                            LinkType.CRef => Cref(seealso.CommentId),
-                            LinkType.HRef => new[] { new TextSpan(seealso.LinkId, (string?)seealso.LinkId) },
-                            _ => throw new NotSupportedException($"{seealso.LinkType}"),
-                        });
-                    }
+                        LinkType.CRef => Cref(s.CommentId),
+                        LinkType.HRef => new[] { new TextSpan(s.LinkId, (string?)s.LinkId) },
+                        _ => throw new NotSupportedException($"{s.LinkType}"),
+                    }).ToArray());
                 }
             }
 
