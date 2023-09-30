@@ -297,11 +297,18 @@ Specifies the source projects using [File Mappings](#file-mappings).
 
 ### `output`
 
-Defines the output folder of the generated metadata files relative to `docfx.json` directory. The `docfx metadata --output <outdir>` command line argument overrides this value.
+Specifies the output folder of the generated metadata files relative to `docfx.json` directory. The `docfx metadata --output <outdir>` command line argument overrides this value.
+
+### `outputFormat`
+
+Specifies the generated output file format.
+
+- `mref` (default): output as ManagedReference YAML files.
+- `markdown`: Output as common-mark compliant markdown file.
 
 ### `dest`
 
-Defines the output folder of the generated metadata files relative to `docfx.json` directory.  The `docfx metadata --output <outdir>` command line argument prepends this value.
+Specifies the output folder of the generated metadata files relative to `docfx.json` directory.  The `docfx metadata --output <outdir>` command line argument prepends this value.
 
 ### `shouldSkipMarkup`
 
@@ -309,7 +316,7 @@ If set to true, DocFX would not render triple-slash-comments in source code as m
 
 ### `filter`
 
-Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](../tutorial/howto_filter_out_unwanted_apis_attributes.md) for more details.
+Specifies the filter configuration file, please go to [How to filter out unwanted apis attributes](../tutorial/howto_filter_out_unwanted_apis_attributes.md) for more details.
 
 ### `disableDefaultFilter`
 
@@ -321,7 +328,7 @@ Disables generation of view source links.
 
 ### `properties`
 
-Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
+Specifies an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
 
 ```json
 {
@@ -343,14 +350,14 @@ Do not run `dotnet restore` before building the projects.
 
 ### `namespaceLayout`
 
-Defines how namespaces in TOC are organized:
+Specifies how namespaces in TOC are organized:
 
 - `flattened` (default): Renders namespaces as a single flat list.
 - `nested`: Renders namespaces in a nested tree form.
 
 ### `memberLayout`
 
-Defines how member pages are organized:
+Specifies how member pages are organized:
 
 - `samePage` (default): Places members in the same page as their containing type.
 - `separatePages`: Places members in separate pages.
@@ -361,7 +368,7 @@ When enabled, continues documentation generation in case of compilation errors.
 
 ### `EnumSortOrder`
 
-Defines how enum members are sorted:
+Specifies how enum members are sorted:
 
 - `alphabetic` (default): Sort enum members in alphabetic order.
 - `declaringOrder`: Sort enum members in the order as they are declared in the source code.

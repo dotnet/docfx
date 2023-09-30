@@ -89,7 +89,7 @@ public static partial class DotnetApiCatalog
                     CreatePages(MarkdownWriter.Create, assemblies, config, options);
                     break;
 
-                case MetadataOutputFormat.ManagedReference:
+                case MetadataOutputFormat.Mref:
                     CreateManagedReference(assemblies, config, options);
                     break;
             }
