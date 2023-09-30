@@ -61,15 +61,15 @@ class MarkdownWriter : PageWriter
         _sb.Append($"{new string('#', level)} ");
         if (!string.IsNullOrEmpty(id))
             _sb.Append($"<a id=\"{id}\"></a>");
-        _sb.AppendLine(title).AppendLine();
+        _sb.AppendLine(Escape(title)).AppendLine();
     }
 
     public override void Facts(params Fact[] facts)
     {
-        for (var i =  0; i < facts.Length; i++)
+        for (var i = 0; i < facts.Length; i++)
         {
             var item = facts[i];
-            _sb.Append(item.name).Append(": ");
+            _sb.Append(Escape(item.name)).Append(": ");
             Text(item.value);
             _sb.AppendLine(i == facts.Length - 1 ? "" : "  ");
         }
@@ -105,9 +105,9 @@ class MarkdownWriter : PageWriter
         {
             if (!string.IsNullOrEmpty(param.name))
             {
-                _sb.Append('`').Append(param.name);
+                _sb.Append('`').Append(Escape(param.name));
                 if (!string.IsNullOrEmpty(param.defaultValue))
-                    _sb.Append(" = ").Append(param.defaultValue);
+                    _sb.Append(" = ").Append(Escape(param.defaultValue));
                 _sb.Append("` ");
             }
 
@@ -126,9 +126,37 @@ class MarkdownWriter : PageWriter
         foreach (var span in spans)
         {
             if (string.IsNullOrEmpty(span.href))
-                _sb.Append(span.text);
+                _sb.Append(Escape(span.text));
             else
-                _sb.Append($"[{span.text}]({span.href})");
+                _sb.Append($"[{Escape(span.text)}]({Escape(span.href)})");
         }
+    }
+
+    private string Escape(string text)
+    {
+        const string EscapeChars = @"\`*_{}[]()#+-.!>~";
+
+        var needEscape = false;
+        foreach (var c in text)
+        {
+            if (EscapeChars.Contains(c))
+            {
+                needEscape = true;
+                break;
+            }
+        }
+
+        if (!needEscape)
+            return text;
+
+        var sb = new StringBuilder();
+        foreach (var c in text)
+        {
+            if (EscapeChars.Contains(c))
+                sb.Append('\\');
+            sb.Append(c);
+        }
+
+        return sb.ToString();
     }
 }
