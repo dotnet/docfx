@@ -1,7 +1,7 @@
 ﻿# Interface IAnimal
 
-Namespace: [CatLibrary](CatLibrary\.md)  
-Assembly: CatLibrary\.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 This is <b>basic</b> interface of all animal.
 
@@ -21,7 +21,7 @@ string Name { get; }
 
 #### Property Value
 
-[string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+[string](https://learn.microsoft.com/dotnet/api/system.string)
 
 ### <a id="CatLibrary_IAnimal_Item_System_Int32_"></a>this\[int\]
 
@@ -33,7 +33,7 @@ string this[int index] { get; }
 
 #### Property Value
 
-[string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+[string](https://learn.microsoft.com/dotnet/api/system.string)
 
 ## Methods
 
@@ -75,7 +75,7 @@ void Eat(string food)
 
 #### Parameters
 
-`food` [string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+`food` [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 Food to eat
 

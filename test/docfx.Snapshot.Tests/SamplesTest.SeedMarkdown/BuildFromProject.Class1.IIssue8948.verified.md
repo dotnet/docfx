@@ -1,7 +1,7 @@
-﻿# Interface Class1\.IIssue8948
+﻿# Interface Class1.IIssue8948
 
-Namespace: [BuildFromProject](BuildFromProject\.md)  
-Assembly: BuildFromProject\.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public interface Class1.IIssue8948

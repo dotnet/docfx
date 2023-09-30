@@ -1,7 +1,7 @@
 ﻿# Class Cat<T, K\>
 
-Namespace: [CatLibrary](CatLibrary\.md)  
-Assembly: CatLibrary\.dll
+Namespace: [CatLibrary](CatLibrary.md)  
+Assembly: CatLibrary.dll
 
 <p>Here's main class of this <i>Demo</i>.</p>
 <p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>
@@ -26,28 +26,28 @@ This type is a struct type, class type can't be used for this parameter.
 
 ###### Inheritance
 
-[object](https://learn\.microsoft\.com/dotnet/api/system\.object) ← 
-[Cat<T, K\>](CatLibrary\.Cat\-2\.md)
+[object](https://learn.microsoft.com/dotnet/api/system.object) ← 
+[Cat<T, K\>](CatLibrary.Cat\-2.md)
 
 ###### Implements
 
-[ICat](CatLibrary\.ICat\.md), 
-[IAnimal](CatLibrary\.IAnimal\.md)
+[ICat](CatLibrary.ICat.md), 
+[IAnimal](CatLibrary.IAnimal.md)
 
 ###### Inherited Members
 
-[object\.Equals\(object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\)), 
-[object\.Equals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
-[object\.GetHashCode\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gethashcode), 
-[object\.GetType\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gettype), 
-[object\.MemberwiseClone\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.memberwiseclone), 
-[object\.ReferenceEquals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.referenceequals), 
-[object\.ToString\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.tostring)
+[object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
+[object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
+[object.GetHashCode\(\)](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
+[object.GetType\(\)](https://learn.microsoft.com/dotnet/api/system.object.gettype), 
+[object.MemberwiseClone\(\)](https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone), 
+[object.ReferenceEquals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
+[object.ToString\(\)](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
 ###### Extension Methods
 
-[ICatExtension\.Play\(ICat, ContainersRefType\.ColorType\)](CatLibrary\.ICatExtension\.md\#CatLibrary\_ICatExtension\_Play\_CatLibrary\_ICat\_CatLibrary\_Core\_ContainersRefType\_ColorType\_), 
-[ICatExtension\.Sleep\(ICat, long\)](CatLibrary\.ICatExtension\.md\#CatLibrary\_ICatExtension\_Sleep\_CatLibrary\_ICat\_System\_Int64\_)
+[ICatExtension.Play\(ICat, ContainersRefType.ColorType\)](CatLibrary.ICatExtension.md\#CatLibrary\_ICatExtension\_Play\_CatLibrary\_ICat\_CatLibrary\_Core\_ContainersRefType\_ColorType\_), 
+[ICatExtension.Sleep\(ICat, long\)](CatLibrary.ICatExtension.md\#CatLibrary\_ICatExtension\_Sleep\_CatLibrary\_ICat\_System\_Int64\_)
 
 ## Examples
 
@@ -98,19 +98,19 @@ public Cat(string nickName, out int age, string realName, bool isHealthy)
 
 #### Parameters
 
-`nickName` [string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+`nickName` [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 it's string type.
 
-`age` [int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+`age` [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 It's an out and ref parameter.
 
-`realName` [string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+`realName` [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 It's an out paramter.
 
-`isHealthy` [bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
+`isHealthy` [bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 It's an in parameter.
 
@@ -128,7 +128,7 @@ public bool isHealthy
 
 #### Field Value
 
-[bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
+[bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 ## Properties
 
@@ -142,7 +142,7 @@ protected int Age { get; set; }
 
 #### Property Value
 
-[int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+[int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 ### <a id="CatLibrary_Cat_2_Name"></a>Name
 
@@ -154,7 +154,7 @@ public string Name { get; }
 
 #### Property Value
 
-[string](https://learn\.microsoft\.com/dotnet/api/system\.string)
+[string](https://learn.microsoft.com/dotnet/api/system.string)
 
 ### <a id="CatLibrary_Cat_2_Item_System_String_"></a>this\[string\]
 
@@ -166,7 +166,7 @@ public int this[string a] { protected get; set; }
 
 #### Property Value
 
-[int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+[int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 ## Methods
 
@@ -180,13 +180,13 @@ public Dictionary<string, List<int>> CalculateFood(DateTime date)
 
 #### Parameters
 
-`date` [DateTime](https://learn\.microsoft\.com/dotnet/api/system\.datetime)
+`date` [DateTime](https://learn.microsoft.com/dotnet/api/system.datetime)
 
 Date time to now.
 
 #### Returns
 
-[Dictionary](https://learn\.microsoft\.com/dotnet/api/system\.collections\.generic\.dictionary\-2)<[string](https://learn\.microsoft\.com/dotnet/api/system\.string), [List](https://learn\.microsoft\.com/dotnet/api/system\.collections\.generic\.list\-1)<[int](https://learn\.microsoft\.com/dotnet/api/system\.int32)\>\>
+[Dictionary](https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary\-2)<[string](https://learn.microsoft.com/dotnet/api/system.string), [List](https://learn.microsoft.com/dotnet/api/system.collections.generic.list\-1)<[int](https://learn.microsoft.com/dotnet/api/system.int32)\>\>
 
 It's a relationship map of different kind food.
 
@@ -200,13 +200,13 @@ public override bool Equals(object obj)
 
 #### Parameters
 
-`obj` [object](https://learn\.microsoft\.com/dotnet/api/system\.object)
+`obj` [object](https://learn.microsoft.com/dotnet/api/system.object)
 
 Can pass any class type.
 
 #### Returns
 
-[bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
+[bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 The return value tell you whehter the compare operation is successful.
 
@@ -221,17 +221,17 @@ public long GetTailLength(int* catName, params object[] parameters)
 
 #### Parameters
 
-`catName` [int](https://learn\.microsoft\.com/dotnet/api/system\.int32)\*
+`catName` [int](https://learn.microsoft.com/dotnet/api/system.int32)\*
 
 Thie represent for cat name length.
 
-`parameters` [object](https://learn\.microsoft\.com/dotnet/api/system\.object)\[\]
+`parameters` [object](https://learn.microsoft.com/dotnet/api/system.object)\[\]
 
 Optional parameters.
 
 #### Returns
 
-[long](https://learn\.microsoft\.com/dotnet/api/system\.int64)
+[long](https://learn.microsoft.com/dotnet/api/system.int64)
 
 Return cat tail's length.
 
@@ -254,13 +254,13 @@ Type come from class define.
 
 Type come from class define.
 
-`cheat` [bool](https://learn\.microsoft\.com/dotnet/api/system\.boolean)
+`cheat` [bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 Hint whether this cat has cheat mode.
 
 #### Exceptions
 
-[ArgumentException](https://learn\.microsoft\.com/dotnet/api/system\.argumentexception)
+[ArgumentException](https://learn.microsoft.com/dotnet/api/system.argumentexception)
 
 This is an argument exception
 
@@ -274,7 +274,7 @@ public event EventHandler ownEat
 
 #### Event Type
 
-[EventHandler](https://learn\.microsoft\.com/dotnet/api/system\.eventhandler)
+[EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
 
 ## Operators
 
@@ -288,17 +288,17 @@ public static int operator +(Cat<T, K> lsr, int rsr)
 
 #### Parameters
 
-`lsr` [Cat](CatLibrary\.Cat\-2\.md)<T, K\>
+`lsr` [Cat](CatLibrary.Cat\-2.md)<T, K\>
 
 ..
 
-`rsr` [int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+`rsr` [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 ~~
 
 #### Returns
 
-[int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+[int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 Result with <i>int</i> type.
 
@@ -313,13 +313,13 @@ public static explicit operator Tom(Cat<T, K> src)
 
 #### Parameters
 
-`src` [Cat](CatLibrary\.Cat\-2\.md)<T, K\>
+`src` [Cat](CatLibrary.Cat\-2.md)<T, K\>
 
 Instance of this class.
 
 #### Returns
 
-[Tom](CatLibrary\.Tom\.md)
+[Tom](CatLibrary.Tom.md)
 
 Advanced class type of cat.
 
@@ -333,11 +333,11 @@ public static int operator -(Cat<T, K> lsr, int rsr)
 
 #### Parameters
 
-`lsr` [Cat](CatLibrary\.Cat\-2\.md)<T, K\>
+`lsr` [Cat](CatLibrary.Cat\-2.md)<T, K\>
 
-`rsr` [int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+`rsr` [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 #### Returns
 
-[int](https://learn\.microsoft\.com/dotnet/api/system\.int32)
+[int](https://learn.microsoft.com/dotnet/api/system.int32)
 

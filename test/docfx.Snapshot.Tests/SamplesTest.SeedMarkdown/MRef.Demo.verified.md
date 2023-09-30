@@ -1,6 +1,6 @@
-﻿# Namespace MRef\.Demo
+﻿# Namespace MRef.Demo
 
 ### Namespaces
 
-[MRef\.Demo\.Enumeration](MRef\.Demo\.Enumeration\.md)
+[MRef.Demo.Enumeration](MRef.Demo.Enumeration.md)
 

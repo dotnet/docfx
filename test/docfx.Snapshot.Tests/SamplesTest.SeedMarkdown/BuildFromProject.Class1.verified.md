@@ -1,7 +1,7 @@
 ﻿# Class Class1
 
-Namespace: [BuildFromProject](BuildFromProject\.md)  
-Assembly: BuildFromProject\.dll
+Namespace: [BuildFromProject](BuildFromProject.md)  
+Assembly: BuildFromProject.dll
 
 ```csharp
 public class Class1 : IClass1
@@ -9,8 +9,8 @@ public class Class1 : IClass1
 
 ###### Inheritance
 
-[object](https://learn\.microsoft\.com/dotnet/api/system\.object) ← 
-[Class1](BuildFromProject\.Class1\.md)
+[object](https://learn.microsoft.com/dotnet/api/system.object) ← 
+[Class1](BuildFromProject.Class1.md)
 
 ###### Implements
 
@@ -18,13 +18,13 @@ IClass1
 
 ###### Inherited Members
 
-[object\.Equals\(object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\)), 
-[object\.Equals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
-[object\.GetHashCode\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gethashcode), 
-[object\.GetType\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.gettype), 
-[object\.MemberwiseClone\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.memberwiseclone), 
-[object\.ReferenceEquals\(object?, object?\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.referenceequals), 
-[object\.ToString\(\)](https://learn\.microsoft\.com/dotnet/api/system\.object\.tostring)
+[object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
+[object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
+[object.GetHashCode\(\)](https://learn.microsoft.com/dotnet/api/system.object.gethashcode), 
+[object.GetType\(\)](https://learn.microsoft.com/dotnet/api/system.object.gettype), 
+[object.MemberwiseClone\(\)](https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone), 
+[object.ReferenceEquals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
+[object.ToString\(\)](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
 ## Methods
 
@@ -167,8 +167,8 @@ public void Issue896()
 
 #### See Also
 
-[Class1](BuildFromProject\.Class1\.md)\.[Test](BuildFromProject\.Class1\.Test\-1\.md)<T\>  
-[Class1](BuildFromProject\.Class1\.md)
+[Class1](BuildFromProject.Class1.md).[Test](BuildFromProject.Class1.Test\-1.md)<T\>  
+[Class1](BuildFromProject.Class1.md)
 
 ### <a id="BuildFromProject_Class1_Issue9216"></a>Issue9216\(\)
 
@@ -186,7 +186,7 @@ public static double Issue9216()
 
 #### Returns
 
-[double](https://learn\.microsoft\.com/dotnet/api/system\.double)
+[double](https://learn.microsoft.com/dotnet/api/system.double)
 
 ### <a id="BuildFromProject_Class1_XmlCommentIncludeTag"></a>XmlCommentIncludeTag\(\)
 
