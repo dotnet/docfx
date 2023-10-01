@@ -8,6 +8,5 @@ namespace Docfx.Plugins;
 public class SitemapOptions : SitemapElementOptions
 {
     [JsonProperty("fileOptions")]
-    [JsonConverter(typeof(DictionaryAsListJsonConverter<SitemapElementOptions>))]
-    public IList<KeyValuePair<string, SitemapElementOptions>> FileOptions { get; set; }
+    public Dictionary<string, SitemapElementOptions> FileOptions { get; set; }
 }

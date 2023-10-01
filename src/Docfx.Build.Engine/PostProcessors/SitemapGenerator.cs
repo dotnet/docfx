@@ -130,13 +130,12 @@ public class SitemapGenerator : IPostProcessor
         if (options.FileOptions != null)
         {
             // As the latter one overrides the former one, match the pattern from latter to former
-            for (var i = options.FileOptions.Count - 1; i >= 0; i--)
+            foreach (var (key, value) in options.FileOptions.Reverse())
             {
-                var item = options.FileOptions[i];
-                var glob = new GlobMatcher(item.Key);
+                var glob = new GlobMatcher(key);
                 if (glob.Match(sourcePath))
                 {
-                    return item.Value;
+                    return value;
                 }
             }
         }
