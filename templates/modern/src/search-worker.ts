@@ -2,81 +2,64 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import lunr from 'lunr'
+import { get, set, createStore } from 'idb-keyval'
+import { DocfxOptions } from './options'
 
-let lunrIndex
-
-let stopWords = null
-let searchData = {}
-
-lunr.tokenizer.separator = /[\s\-.()]+/
-
-const stopWordsRequest = new XMLHttpRequest()
-stopWordsRequest.open('GET', '../search-stopwords.json')
-stopWordsRequest.onload = function() {
-  if (this.status !== 200) {
-    return
-  }
-  stopWords = JSON.parse(this.responseText)
-  buildIndex()
+type SearchHit = {
+  href: string
+  title: string
+  keywords: string
 }
-stopWordsRequest.send()
 
-const searchDataRequest = new XMLHttpRequest()
+let search: (q: string) => SearchHit[]
 
-searchDataRequest.open('GET', '../index.json')
-searchDataRequest.onload = function() {
-  if (this.status !== 200) {
-    return
-  }
-  searchData = JSON.parse(this.responseText)
-
-  buildIndex()
-
+async function loadIndex() {
+  const { index, data } = await loadIndexCore()
+  search = q => index.search(q).map(({ ref }) => data[ref])
   postMessage({ e: 'index-ready' })
 }
-searchDataRequest.send()
 
-onmessage = function(oEvent) {
-  const q = oEvent.data.q
-  const results = []
-  if (lunrIndex) {
-    const hits = lunrIndex.search(q)
-    hits.forEach(function(hit) {
-      const item = searchData[hit.ref]
-      results.push({ href: item.href, title: item.title, keywords: item.keywords })
-    })
+async function loadIndexCore() {
+  const res = await fetch('../index.json')
+  const etag = res.headers.get('etag')
+  const data = await res.json() as { [key: string]: SearchHit }
+  const cache = createStore('docfx', 'lunr')
+
+  if (etag) {
+    const value = JSON.parse(await get('index', cache) || '{}')
+    if (value && value.etag === etag) {
+      return { index: lunr.Index.load(value), data }
+    }
   }
-  postMessage({ e: 'query-ready', q, d: results })
+
+  const main = await import('./main.js')
+  const docfx = main.default as DocfxOptions
+
+  const index = lunr(function() {
+    this.pipeline.remove(lunr.stopWordFilter)
+    this.ref('href')
+    this.field('title', { boost: 50 })
+    this.field('keywords', { boost: 20 })
+
+    lunr.tokenizer.separator = /[\s\-.()]+/
+    docfx.configureLunr?.(this)
+
+    for (const key in data) {
+      this.add(data[key])
+    }
+  })
+
+  if (etag) {
+    await set('index', JSON.stringify(Object.assign(index.toJSON(), { etag })), cache)
+  }
+
+  return { index, data }
 }
 
-function buildIndex() {
-  if (stopWords !== null && !isEmpty(searchData)) {
-    lunrIndex = lunr(function() {
-      this.pipeline.remove(lunr.stopWordFilter)
-      this.ref('href')
-      this.field('title', { boost: 50 })
-      this.field('keywords', { boost: 20 })
+loadIndex().catch(console.error)
 
-      for (const prop in searchData) {
-        if (Object.prototype.hasOwnProperty.call(searchData, prop)) {
-          this.add(searchData[prop])
-        }
-      }
-
-      const docfxStopWordFilter = lunr.generateStopWordFilter(stopWords)
-      lunr.Pipeline.registerFunction(docfxStopWordFilter, 'docfxStopWordFilter')
-      this.pipeline.add(docfxStopWordFilter)
-      this.searchPipeline.add(docfxStopWordFilter)
-    })
+onmessage = function(e) {
+  if (search) {
+    postMessage({ e: 'query-ready', d: search(e.data.q) })
   }
-}
-
-function isEmpty(obj) {
-  if (!obj) return true
-
-  for (const prop in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, prop)) { return false }
-  }
-
-  return true
 }

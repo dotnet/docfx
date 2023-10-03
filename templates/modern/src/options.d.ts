@@ -5,6 +5,7 @@ import BootstrapIcons from 'bootstrap-icons/font/bootstrap-icons.json'
 import { HLJSApi } from 'highlight.js'
 import { AnchorJSOptions } from 'anchor-js'
 import { MermaidConfig } from 'mermaid'
+import lunr from 'lunr'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
@@ -37,4 +38,7 @@ export type DocfxOptions = {
 
   /** Configures [hightlight.js](https://highlightjs.org/) */
   configureHljs?: (hljs: HLJSApi) => void,
+
+  /** Configures [lunr](https://lunrjs.com/docs/index.html) */
+  configureLunr?: (lunr: lunr.Builder) => void,
 }
