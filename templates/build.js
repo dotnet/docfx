@@ -52,6 +52,9 @@ async function buildModernTemplate() {
       'modern/src/docfx.ts',
       'modern/src/search-worker.ts',
     ],
+    external: [
+      './main.js'
+    ],
     plugins: [
       sassPlugin()
     ],
