@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+import { options } from './helper'
+
 export async function highlight() {
   const codeBlocks = document.querySelectorAll('pre code')
   if (codeBlocks.length <= 0) {
@@ -8,8 +10,8 @@ export async function highlight() {
   }
 
   const { default: hljs } = await import('highlight.js')
-
-  window.docfx.configureHljs?.(hljs)
+  const { configureHljs } = await options()
+  configureHljs?.(hljs)
 
   document.querySelectorAll('pre code').forEach(block => {
     hljs.highlightElement(block as HTMLElement)

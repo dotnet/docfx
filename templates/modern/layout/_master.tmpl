@@ -39,11 +39,7 @@
   </head>
 
   {{^redirect_url}}
-  <script type="module">
-    import options from './{{_rel}}public/main.js'
-    import { init } from './{{_rel}}public/docfx.min.js'
-    init(options)
-  </script>
+  <script type="module" src="./{{_rel}}public/docfx.min.js"></script>
 
   <script>
     const theme = localStorage.getItem('theme') || 'auto'

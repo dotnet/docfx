@@ -3,7 +3,7 @@
 
 import { html } from 'lit-html'
 import { Theme } from './options'
-import { loc } from './helper'
+import { loc, options } from './helper'
 
 function setTheme(theme: Theme) {
   localStorage.setItem('theme', theme)
@@ -14,20 +14,20 @@ function setTheme(theme: Theme) {
   }
 }
 
-function getDefaultTheme() {
-  return localStorage.getItem('theme') as Theme || window.docfx.defaultTheme || 'auto'
+async function getDefaultTheme() {
+  return localStorage.getItem('theme') as Theme || (await options()).defaultTheme || 'auto'
 }
 
-export function initTheme() {
-  setTheme(getDefaultTheme())
+export async function initTheme() {
+  setTheme(await getDefaultTheme())
 }
 
 export function getTheme(): 'light' | 'dark' {
   return document.documentElement.getAttribute('data-bs-theme') as 'light' | 'dark'
 }
 
-export function themePicker(refresh: () => void) {
-  const theme = getDefaultTheme()
+export async function themePicker(refresh: () => void) {
+  const theme = await getDefaultTheme()
   const icon = theme === 'light' ? 'sun' : theme === 'dark' ? 'moon' : 'circle-half'
 
   return html`

@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-import { breakWord, meta, loc } from './helper'
+import { breakWord, meta, loc, options } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 import { getTheme } from './theme'
@@ -15,11 +15,11 @@ export async function renderMarkdown() {
   renderAlerts()
   renderLinks()
   renderTabs()
-  renderAnchor()
   renderCodeCopy()
   renderClickableImage()
 
   await Promise.all([
+    renderAnchor(),
     renderMath(),
     renderMermaid()
   ])
@@ -48,7 +48,8 @@ async function renderMermaid() {
 
   // Turn off deterministic ids on re-render
   const deterministicIds = mermaidRenderCount === 0
-  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, window.docfx.mermaid))
+  const { mermaid: mermaidOptions } = await options()
+  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, mermaidOptions))
   mermaidRenderCount++
 
   const nodes = []
@@ -161,12 +162,13 @@ function renderLinks() {
 /**
  * Render anchor # for headings
  */
-function renderAnchor() {
+async function renderAnchor() {
   const anchors = new AnchorJs()
+  const { anchors: anchorsOptions } = await options()
   anchors.options = Object.assign({
     visible: 'hover',
     icon: '#'
-  }, window.docfx.anchors)
+  }, anchorsOptions)
 
   anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
 
