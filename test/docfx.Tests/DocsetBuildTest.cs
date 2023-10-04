@@ -235,7 +235,7 @@ public class DocsetBuildTest : TestBase
                 <meta http-equiv="refresh" content="0;URL='redirected.html'">
               </head>
             </html>
-            """, result);
+            """.Replace("\r\n","\n"), result.Trim());
 
         // Test redirect page.is excluded from sitemap.
         var sitemapXml = outputs["sitemap.xml"]();
