@@ -11,7 +11,7 @@
 {{#items.0}}
 <ul class="tocLevel{{level}}">
 {{/items.0}}
-{{>partials/toc.li}}    
+{{>partials/toc.li}}
 {{#items.0}}
 </ul>
 {{/items.0}}

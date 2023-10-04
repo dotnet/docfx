@@ -10,7 +10,7 @@ body[data-yaml-mime="ManagedReference"] article {
   }
 
   h3[data-uid] {
-    position: relative;  
+    position: relative;
     font-weight: 400;
     margin-top: 3rem;
     padding-bottom: 5px;
@@ -81,11 +81,11 @@ body[data-yaml-mime="ManagedReference"] article {
         margin-left: .25rem;
         display: inline-block;
       }
-  
+
       >dt {
         display: inline-block;
       }
-  
+
       >dt::after {
         content: ":";
       }
