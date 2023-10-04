@@ -3,7 +3,6 @@
 
 import lunr from 'lunr'
 import { get, set, createStore } from 'idb-keyval'
-import { DocfxOptions } from './options'
 
 type SearchHit = {
   href: string
@@ -32,17 +31,15 @@ async function loadIndexCore() {
     }
   }
 
-  const main = await import('./main.js')
-  const docfx = main.default as DocfxOptions
+  const { configureLunr } = await import('./main.js').then(m => m.default) as DocfxOptions
 
   const index = lunr(function() {
-    this.pipeline.remove(lunr.stopWordFilter)
     this.ref('href')
     this.field('title', { boost: 50 })
     this.field('keywords', { boost: 20 })
 
     lunr.tokenizer.separator = /[\s\-.()]+/
-    docfx.configureLunr?.(this)
+    configureLunr?.(this)
 
     for (const key in data) {
       this.add(data[key])

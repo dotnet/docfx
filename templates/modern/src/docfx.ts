@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import 'bootstrap'
-import { DocfxOptions } from './options'
 import { highlight } from './highlight'
 import { renderMarkdown } from './markdown'
 import { enableSearch } from './search'
@@ -15,7 +14,7 @@ import './docfx.scss'
 
 declare global {
   interface Window {
-    docfx: DocfxOptions & {
+    docfx: {
       ready?: boolean,
       searchReady?: boolean,
       searchResultReady?: boolean,
@@ -23,8 +22,8 @@ declare global {
   }
 }
 
-export async function init(options: DocfxOptions) {
-  window.docfx = Object.assign({}, options)
+async function init() {
+  window.docfx = window.docfx || {}
 
   initTheme()
   enableSearch()
@@ -43,3 +42,5 @@ export async function init(options: DocfxOptions) {
     renderBreadcrumb([...navbar, ...toc])
   }
 }
+
+init().catch(console.error)

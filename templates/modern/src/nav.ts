@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { render, html, TemplateResult } from 'lit-html'
-import { breakWordLit, meta, isExternalHref, loc } from './helper'
+import { breakWordLit, meta, isExternalHref, loc, options } from './helper'
 import { themePicker } from './theme'
 import { TocNode } from './toc'
 
@@ -25,6 +25,7 @@ export async function renderNavbar(): Promise<NavItem[]> {
     return
   }
 
+  const { iconLinks } = await options()
   const navItems = await loadNavItems()
   const activeItem = findActiveItem(navItems)
 
@@ -51,17 +52,17 @@ export async function renderNavbar(): Promise<NavItem[]> {
   })
     }</ul>`
 
-  function renderCore() {
+  async function renderCore() {
     const icons = html`
       <form class="icons">
-        ${window.docfx.iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
-        ${themePicker(renderCore)}
+        ${iconLinks?.map(i => html`<a href="${i.href}" title="${i.title}" class="btn border-0"><i class="bi bi-${i.icon}"></i></a>`)}
+        ${await themePicker(renderCore)}
       </form>`
 
     render(html`${menu} ${icons}`, navbar)
   }
 
-  renderCore()
+  await renderCore()
 
   return activeItem ? [activeItem] : []
 

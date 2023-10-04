@@ -1,7 +1,8 @@
 {
   "extends": "stylelint-config-standard-scss",
   "ignoreFiles": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.js"
   ],
   "rules": {
     "selector-class-pattern": null,

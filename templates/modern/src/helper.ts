@@ -2,6 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { html, TemplateResult } from 'lit-html'
+import { DocfxOptions } from './options'
+
+export async function options(): Promise<DocfxOptions> {
+  return await import('./main.js').then(m => m.default) as DocfxOptions
+}
 
 /**
  * Get the value of an HTML meta tag.
