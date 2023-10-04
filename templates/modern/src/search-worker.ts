@@ -34,7 +34,6 @@ async function loadIndexCore() {
   const { configureLunr } = await import('./main.js').then(m => m.default) as DocfxOptions
 
   const index = lunr(function() {
-    this.pipeline.remove(lunr.stopWordFilter)
     this.ref('href')
     this.field('title', { boost: 50 })
     this.field('keywords', { boost: 20 })
