@@ -326,7 +326,7 @@ exports.transform = function (model) {
     }
 
     function addComplexTypeMetadata(child, definitions) {
-        // Add variations of x-internal-ref-name to support 
+        // Add variations of x-internal-ref-name to support
         if (child && child['x-internal-ref-name']) {
             child.cTypeId = child['x-internal-ref-name'].replace(/\./g, '_');
             child.cType = child['x-internal-ref-name'].replace(/([A-Z])/g, '<wbr>$1');

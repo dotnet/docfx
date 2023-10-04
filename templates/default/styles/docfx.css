@@ -829,7 +829,7 @@ footer {
   .toc .level1 > li {
     display: block;
   }
-  
+
   .toc .level1 > li:after {
     display: none;
   }

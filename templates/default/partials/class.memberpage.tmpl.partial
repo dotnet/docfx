@@ -23,7 +23,7 @@
       </td>
       <td class="markdown level1 summary">{{{summary}}}</td>
     </tr>
-    {{/children}}    
+    {{/children}}
   {{#children.0}}
   </tbody>
 </table>

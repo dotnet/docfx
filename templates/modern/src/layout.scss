@@ -36,7 +36,7 @@ body[data-layout="landing"] {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  
+
   >header {
     display: flex;
     align-items: stretch;
@@ -154,7 +154,7 @@ body[data-layout="landing"] {
           @include media-breakpoint-down(lg) {
             margin: 0 1rem;
           }
-  
+
           @include media-breakpoint-down(md) {
             margin: 0;
           }

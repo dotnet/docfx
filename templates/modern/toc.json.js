@@ -57,7 +57,7 @@ function transformMemberPage(model) {
               items.push(element);
           }
       }, this);
-      
+
       // With order defined in groupNames
       for (var key in groupNames) {
           if (groupNames.hasOwnProperty(key) && grouped.hasOwnProperty(key)) {

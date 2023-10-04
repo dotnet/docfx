@@ -17,6 +17,6 @@ exports.transform = function (model) {
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);
   }
-  
+
   return model;
 }

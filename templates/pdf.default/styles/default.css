@@ -925,9 +925,9 @@ table th {
 
 /* prevent NOTE sections from being split by a page break.*/
 @media print {
-   .NOTE, .TIP, .IMPORTANT, .CAUTION, .WARNING{
-       break-inside: avoid-page;
-       page-break-inside: avoid;
+    .NOTE, .TIP, .IMPORTANT, .CAUTION, .WARNING{
+        break-inside: avoid-page;
+        page-break-inside: avoid;
     }
 }
 
