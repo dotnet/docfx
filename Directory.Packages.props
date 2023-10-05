@@ -33,7 +33,7 @@
     <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageVersion Include="YamlDotNet" Version="13.4.0" />
+    <PackageVersion Include="YamlDotNet" Version="13.5.1" />
 
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
