@@ -1,0 +1,496 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Block": {
+            "anyOf": [
+                {
+                    "description": "Represents a markdown block",
+                    "properties": {
+                        "markdown": {
+                            "description": "Markdown content",
+                            "type": "string",
+                            "contentType": "markdown"
+                        }
+                    },
+                    "required": [
+                        "markdown"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h1": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h1"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h2": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h2"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h3": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h3"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h4": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h4"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h5": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h5"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "properties": {
+                        "h6": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "h6"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "api1": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "api1"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "deprecated": {
+                                    "description": "Is this API deprecated, or the deprecation reason",
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                },
+                                "id": {
+                                    "description": "API URL fragment",
+                                    "type": "string"
+                                },
+                                "metadata": {
+                                    "additionalProperties": {
+                                                "type": "string"
+                                    },
+                                    "description": "Opaque metadata about the API as HTML data-* attributes",
+                                    "type": "object"
+                                },
+                                "src": {
+                                    "description": "API source URL",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "api2": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "api2"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "deprecated": {
+                                    "description": "Is this API deprecated, or the deprecation reason",
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                },
+                                "id": {
+                                    "description": "API URL fragment",
+                                    "type": "string"
+                                },
+                                "metadata": {
+                                    "additionalProperties": {
+                                                "type": "string"
+                                    },
+                                    "description": "Opaque metadata about the API as HTML data-* attributes",
+                                    "type": "object"
+                                },
+                                "src": {
+                                    "description": "API source URL",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "api3": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "api3"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "deprecated": {
+                                    "description": "Is this API deprecated, or the deprecation reason",
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                },
+                                "id": {
+                                    "description": "API URL fragment",
+                                    "type": "string"
+                                },
+                                "metadata": {
+                                    "additionalProperties": {
+                                                "type": "string"
+                                    },
+                                    "description": "Opaque metadata about the API as HTML data-* attributes",
+                                    "type": "object"
+                                },
+                                "src": {
+                                    "description": "API source URL",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "api4": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "api4"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "deprecated": {
+                                    "description": "Is this API deprecated, or the deprecation reason",
+                                    "type": [
+                                        "string",
+                                        "boolean"
+                                    ]
+                                },
+                                "id": {
+                                    "description": "API URL fragment",
+                                    "type": "string"
+                                },
+                                "metadata": {
+                                    "additionalProperties": {
+                                                "type": "string"
+                                    },
+                                    "description": "Opaque metadata about the API as HTML data-* attributes",
+                                    "type": "object"
+                                },
+                                "src": {
+                                    "description": "API source URL",
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
+                    "description": "Represents a sheet of facts",
+                    "properties": {
+                        "facts": {
+                            "items": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "value": {
+                                        "$ref": "#/definitions/Inline"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "value"
+                                ],
+                                "type": "object"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "facts"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "description": "Represents a list of content",
+                    "properties": {
+                        "list": {
+                            "items": {
+                                "$ref": "#/definitions/Inline"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "list"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "description": "Represents a single inheritance chain from base type to derived type",
+                    "properties": {
+                        "inheritance": {
+                            "items": {
+                                "$ref": "#/definitions/Inline"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "inheritance"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "description": "Represents a code block",
+                    "properties": {
+                        "code": {
+                            "description": "Code text",
+                            "type": "string"
+                        },
+                        "languageId": {
+                            "description": "Code [langauge identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code"
+                    ],
+                    "type": "object"
+                },
+                {
+                    "description": "Represents a set of parameters",
+                    "properties": {
+                        "parameters": {
+                            "items": {
+                                "properties": {
+                                    "default": {
+                                        "description": "Parameter default value",
+                                        "type": "string"
+                                    },
+                                    "deprecated": {
+                                        "description": "Is this parameter deprecated, or the deprecation reason",
+                                        "type": [
+                                            "string",
+                                            "boolean"
+                                        ]
+                                    },
+                                    "description": {
+                                        "description": "Parameter description in markdown format",
+                                        "type": "string",
+                                        "contentType": "markdown"
+                                    },
+                                    "name": {
+                                        "description": "Parameter name",
+                                        "type": "string"
+                                    },
+                                    "optional": {
+                                        "description": "Is this parameter optional?",
+                                        "type": "boolean"
+                                    },
+                                    "type": {
+                                        "anyOf": [
+                                            {
+                                                "items": {
+                                                    "anyOf": [
+                                                        {
+                                                            "properties": {
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "url": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "text"
+                                                            ],
+                                                            "type": "object"
+                                                        },
+                                                        {
+                                                            "type": "string"
+                                                        }
+                                                    ]
+                                                },
+                                                "type": "array"
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ],
+                                        "description": "Parameter type"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    "required": [
+                        "parameters"
+                    ],
+                    "type": "object"
+                }
+            ],
+            "description": "Represents block level elements"
+        },
+        "Inline": {
+            "anyOf": [
+                {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "properties": {
+                                    "text": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "text"
+                                ],
+                                "type": "object"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                {
+                    "type": "string"
+                }
+            ],
+            "description": "Represents an inline composed of text or links"
+        }
+    },
+    "description": "Represents a general API page",
+    "properties": {
+        "body": {
+            "description": "Page body",
+            "items": {
+                "$ref": "#/definitions/Block"
+            },
+            "type": "array"
+        },
+        "languageId": {
+            "description": "Default code [language identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)",
+            "type": "string"
+        },
+        "metadata": {
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    {
+                        "type": "string"
+                    }
+                ]
+            },
+            "description": "Opaque metadata about the page as HTML <meta> tags",
+            "type": "object"
+        },
+        "title": {
+            "description": "Page title",
+            "type": "string"
+        }
+    },
+    "required": [
+        "body",
+        "title"
+    ],
+    "type": "object"
+}
+
