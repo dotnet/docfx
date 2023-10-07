@@ -16,16 +16,6 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <!--
-      The NuGet.Frameworks package is required to run csproj based tests targeting .NET 7.0.200.
-
-      Microsoft.NET.Test.Sdk bundles an old NuGet.Frameworks package to the output folder,
-      which takes predence over the one shipped with .NET SDK.
-      .NET 7.0.200 SDK depends on a newer NuGet.Frameworks package this is not availble on NuGet.org yet.
-
-      This only impact test since MSBuildLocator will resolve NuGet.Frameworks package from the appropreciate .NET SDK location.
-    -->
-    <PackageReference Include="NuGet.Frameworks" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="xunit" />
   </ItemGroup>
