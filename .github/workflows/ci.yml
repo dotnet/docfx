@@ -72,7 +72,7 @@ jobs:
         SNAPSHOT_TEST: true
         BUILD_SERVER: ${{ github.event_name != 'pull_request' }}
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       if: github.event_name == 'pull_request'
       with:
         commit_message: 'test(snapshot): update snapshots for ${{ github.sha }}'
