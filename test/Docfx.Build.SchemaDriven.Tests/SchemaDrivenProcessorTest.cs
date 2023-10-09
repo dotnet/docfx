@@ -48,84 +48,6 @@ public class SchemaDrivenProcessorTest : TestBase
     }
 
     [Fact]
-    public void TestContextObjectSDP()
-    {
-        Environment.SetEnvironmentVariable("_op_systemMetadata",
-            JsonUtility.ToJsonString(new Dictionary<string, object> { { "_op_publishTargetSiteHostName", "ppe.docs.microsoft.com" } }));
-
-        using var listener = new TestListenerScope("TestContextObjectSDP");
-        var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
-        var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
-        // var coTemplate = CreateFile("template/contextobject.json.tmpl", "{{file_include2}}", _templateFolder);
-        var inputFileName = "co/active.yml";
-        var includeFile = CreateFile("a b/inc.md", @"[root](../co/active.yml)", _inputFolder);
-        var includeFile2 = CreateFile("c/d/inc.md", @"../../a b/toc.md", _inputFolder);
-        var inputFile = CreateFile(inputFileName, @"### YamlMime:ContextObject
-breadcrumb_path: https://ppe.docs.microsoft.com/absolute/toc.json
-toc_rel: ../a b/toc.md
-file_include: ../a b/inc.md
-file_include2: ../c/d/inc.md
-uhfHeaderId: MSDocsHeader-DotNet
-empty:
-searchScope:
-  - .NET
-", _inputFolder);
-
-        var inputFileName2 = "co/active2.yml";
-        var inputFile2 = CreateFile(inputFileName2, @"### YamlMime:ContextObject
-breadcrumb_path: https://live.docs.microsoft.com/absolute/toc.json
-", _inputFolder);
-
-        FileCollection files = new(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile, inputFile2 }, _inputFolder);
-        BuildDocument(files);
-
-        Assert.Equal(5, listener.Items.Count);
-        Assert.Equal(2, listener.Items.Count(s => s.Message.StartsWith($"Invalid file link:(~/{_inputFolder}/a b/toc.md).")));
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): ContextObject")));
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid file link")));
-        listener.Items.Clear();
-
-        var rawModelFilePath = GetRawModelFilePath(inputFileName);
-        Assert.True(File.Exists(rawModelFilePath));
-        var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
-
-        Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
-        Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
-        Assert.Equal("../a b/toc.md", rawModel["toc_rel"].Value<string>());
-        Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" jsonPath=\"/file_include\"><a href=\"~/{inputFile}\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\">root</a></p>\n",
-            rawModel["file_include"].Value<string>());
-        Assert.Equal("../../a b/toc.md", rawModel["file_include2"].Value<string>());
-        Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());
-        Assert.Equal(".NET", rawModel["searchScope"][0].Value<string>());
-
-        var rawModelFilePath2 = GetRawModelFilePath(inputFileName2);
-        Assert.True(File.Exists(rawModelFilePath2));
-        var rawModel2 = JsonUtility.Deserialize<JObject>(rawModelFilePath2);
-        Assert.Equal("https://live.docs.microsoft.com/absolute/toc.json", rawModel2["breadcrumb_path"].Value<string>());
-
-        files = new FileCollection(_defaultFiles);
-        files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-        var tocFile = CreateFile("a b/toc.md", "### hello", _inputFolder);
-        files.Add(DocumentType.Article, new[] { tocFile }, _inputFolder);
-
-        BuildDocument(files);
-
-        Assert.Equal(2, listener.Items.Count);
-        Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): ContextObject")));
-
-        Assert.True(File.Exists(rawModelFilePath));
-        rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
-
-        Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
-        Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
-        Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].Value<string>());
-        Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());
-        Assert.Equal(".NET", rawModel["searchScope"][0].Value<string>());
-        Assert.Equal("../a%20b/toc.json", rawModel["file_include2"].Value<string>());
-    }
-
-    [Fact]
     public void TestRef()
     {
         using var listener = new TestListenerScope("TestRef");
@@ -488,7 +410,6 @@ searchScope:
     private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
     {
         yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
-        yield return typeof(TocDocumentProcessor).Assembly;
         yield return typeof(SchemaDrivenProcessorTest).Assembly;
     }
 

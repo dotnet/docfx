@@ -243,7 +243,7 @@ public class DocumentBuilderTest : TestBase
                         "",
                         "<p>Test XRef: <a class=\"xref\" href=\"check-xrefmap.html\">Hello World</a>",
                         "Test link: <a href=\"test/test.html\">link text</a>",
-                        "Test link: <a href=\"../Docfx.Build.Engine.Tests.dll\">link text 2</a>",
+                        "Test link: <a href=\"../Docfx.Build.Tests.dll\">link text 2</a>",
                         "Test link style xref: <a class=\"xref\" href=\"test/test.html\" title=\"title\">link text 3</a>",
                         "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>",
                         "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>",
@@ -771,10 +771,7 @@ exports.getOptions = function (){
 
     private static IEnumerable<Assembly> LoadAssemblies()
     {
-        yield return typeof(ConceptualDocumentProcessor).Assembly;
         yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
-        yield return typeof(ResourceDocumentProcessor).Assembly;
-        yield return typeof(TocDocumentProcessor).Assembly;
         yield return typeof(DocumentBuilderTest).Assembly;
     }
 

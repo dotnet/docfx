@@ -151,7 +151,6 @@ public class SplitRestApiToTagLevelTest : TestBase
     private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
     {
         yield return typeof(RestApiDocumentProcessor).Assembly;
-        yield return typeof(TocDocumentProcessor).Assembly;
         yield return typeof(SplitRestApiToTagLevel).Assembly;
     }
 
