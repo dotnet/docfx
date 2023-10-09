@@ -10,11 +10,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Docfx.Build.Common\Docfx.Build.Common.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
-    <ProjectReference Include="..\..\src\Docfx.Build.ResourceFiles\Docfx.Build.ResourceFiles.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.SchemaDriven\Docfx.Build.SchemaDriven.csproj" />
-    <ProjectReference Include="..\..\src\Docfx.Build.TableOfContents\Docfx.Build.TableOfContents.csproj" />
-    <ProjectReference Include="..\..\src\Docfx.Build.ConceptualDocuments\Docfx.Build.ConceptualDocuments.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
     <ProjectReference Include="..\..\src\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\..\src\Docfx.DataContracts.Common\Docfx.DataContracts.Common.csproj" />
