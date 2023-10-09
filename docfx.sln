@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Common", "src\Docfx.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.Common", "src\Docfx.Build.Common\Docfx.Build.Common.csproj", "{1A6D574B-5CA8-4976-B0F1-9CF338A3A930}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.Engine", "src\Docfx.Build.Engine\Docfx.Build.Engine.csproj", "{A98C8639-61A5-444C-AAFB-B2CFBA66A550}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build", "src\Docfx.Build\Docfx.Build.csproj", "{A98C8639-61A5-444C-AAFB-B2CFBA66A550}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.ManagedReference", "src\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj", "{C6459834-F6DE-4309-80AF-0E3CDB1FC14E}"
 EndProject
@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.Tests", "test\docfx.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.Common.Tests", "test\Docfx.Build.Common.Tests\Docfx.Build.Common.Tests.csproj", "{7F6019A6-C1AB-4B5C-BD3C-E8D271F3469D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.Engine.Tests", "test\Docfx.Build.Engine.Tests\Docfx.Build.Engine.Tests.csproj", "{56BE5194-7881-4F22-9018-A79C3C4B958A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Build.Tests", "test\Docfx.Build.Tests\Docfx.Build.Tests.csproj", "{56BE5194-7881-4F22-9018-A79C3C4B958A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docfx.Common.Tests", "test\Docfx.Common.Tests\Docfx.Common.Tests.csproj", "{B2EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
 EndProject

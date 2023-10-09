@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
-    <ProjectReference Include="..\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
     <ProjectReference Include="..\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
     <ProjectReference Include="..\Docfx.Build.SchemaDriven\Docfx.Build.SchemaDriven.csproj" />
