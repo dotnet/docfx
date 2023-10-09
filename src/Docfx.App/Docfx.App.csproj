@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates"/>
+    <Content Include="templates/**" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" PackagePath="contentFiles/any/any/templates" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,13 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Docfx.Build.Common\Docfx.Build.Common.csproj" />
-    <ProjectReference Include="..\Docfx.Build.ConceptualDocuments\Docfx.Build.ConceptualDocuments.csproj" />
-    <ProjectReference Include="..\Docfx.Build.Engine\Docfx.Build.Engine.csproj" />
+    <ProjectReference Include="..\Docfx.Build\Docfx.Build.csproj" />
     <ProjectReference Include="..\Docfx.Build.ManagedReference\Docfx.Build.ManagedReference.csproj" />
-    <ProjectReference Include="..\Docfx.Build.ResourceFiles\Docfx.Build.ResourceFiles.csproj" />
     <ProjectReference Include="..\Docfx.Build.RestApi\Docfx.Build.RestApi.csproj" />
     <ProjectReference Include="..\Docfx.Build.SchemaDriven\Docfx.Build.SchemaDriven.csproj" />
-    <ProjectReference Include="..\Docfx.Build.TableOfContents\Docfx.Build.TableOfContents.csproj" />
     <ProjectReference Include="..\Docfx.Build.UniversalReference\Docfx.Build.UniversalReference.csproj" />
     <ProjectReference Include="..\Docfx.Common\Docfx.Common.csproj" />
     <ProjectReference Include="..\Docfx.HtmlToPdf\Docfx.HtmlToPdf.csproj" />

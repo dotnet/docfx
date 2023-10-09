@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Docfx.Build.SchemaDriven;
 using Docfx.Common;
+using Docfx.DataContracts.Common;
 using Docfx.MarkdigEngine;
 using Docfx.Plugins;
 using Newtonsoft.Json;
@@ -232,7 +233,6 @@ public class DocumentBuilder : IDisposable
                     return result;
                 }
 
-                var siteHostName = TryGetPublishTargetSiteHostNameFromEnvironment();
                 var markdigMarkdownService = CreateMarkdigMarkdownService(parameter, resource);
                 foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
                 {
@@ -244,8 +244,7 @@ public class DocumentBuilder : IDisposable
                         var sdp = new SchemaDrivenDocumentProcessor(
                             schema,
                             new CompositionContainer(CompositionContainer.DefaultContainer),
-                            markdigMarkdownService,
-                            siteHostName);
+                            markdigMarkdownService);
                         Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                         result.Add(sdp);
                     }
@@ -303,21 +302,6 @@ public class DocumentBuilder : IDisposable
 
         Logger.LogVerbose($"Plugin hash is '{result}'");
         return result;
-    }
-
-    private static string TryGetPublishTargetSiteHostNameFromEnvironment()
-    {
-        string metadataString = Environment.GetEnvironmentVariable(Constants.OPSEnvironmentVariable.SystemMetadata);
-
-        if (metadataString != null)
-        {
-            var metadata = JsonUtility.FromJsonString<Dictionary<string, object>>(metadataString)?.ToImmutableDictionary();
-            if (metadata.TryGetValue(Constants.OPSEnvironmentVariable.OpPublishTargetSiteHostName, out object publishTargetSiteHostName))
-            {
-                return (string)publishTargetSiteHostName;
-            }
-        }
-        return null;
     }
 
     public void Dispose()

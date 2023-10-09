@@ -325,7 +325,7 @@ public class TemplateModelTransformer
         {
             foreach (var xref in xrefNodes)
             {
-                var (resolved, warn) = UpdateXref(xref, context, Constants.DefaultLanguage, out var xrefDetails);
+                var (resolved, warn) = UpdateXref(xref, context, "csharp", out var xrefDetails);
                 if (warn)
                 {
                     unresolvedXRefs.Add(xrefDetails);

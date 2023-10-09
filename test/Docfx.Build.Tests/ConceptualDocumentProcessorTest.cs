@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Web;
 using Docfx.Build.ConceptualDocuments;
 using Docfx.Build.Engine;
@@ -418,13 +419,8 @@ Some content";
             TemplateManager = _templateManager
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(Array.Empty<Assembly>(), ImmutableArray<string>.Empty);
         builder.Build(parameters);
-    }
-
-    private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
-    {
-        yield return typeof(ConceptualDocumentProcessor).Assembly;
     }
 
     private sealed class FileCreator

@@ -942,14 +942,8 @@ items:
             }.ToImmutableDictionary(),
         };
 
-        using var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty);
+        using var builder = new DocumentBuilder(Array.Empty<Assembly>(), ImmutableArray<string>.Empty);
         builder.Build(parameters);
-    }
-
-    private static IEnumerable<Assembly> LoadAssemblies()
-    {
-        yield return typeof(ConceptualDocumentProcessor).Assembly;
-        yield return typeof(TocDocumentProcessor).Assembly;
     }
 
     private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual, bool noMetadata = true)
