@@ -390,7 +390,7 @@ This is a CAT class</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Serializable</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Serializable</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -460,7 +460,7 @@ This is a CAT class</p>
 
   <h2 id="CatLibrary_Cat_2_examples">Examples<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_examples" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h2>
   <p>Here's example of how to create an instance of this class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
-<pre><code class="lang-c# hljs language-c">var a = new Cat(object, <span class="hljs-type">int</span>)();
+<pre><code class="lang-c# hljs language-c" data-highlighted="yes">var a = new Cat(object, <span class="hljs-type">int</span>)();
 <span class="hljs-type">int</span> catNumber = new <span class="hljs-type">int</span>();
 unsafe
 {
@@ -489,7 +489,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>()</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -516,7 +516,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> nickName, <span class="hljs-keyword">out</span> <span class="hljs-built_in">int</span> age, <span class="hljs-built_in">string</span> realName, <span class="hljs-built_in">bool</span> isHealthy</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -558,7 +558,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Cat</span>(<span class="hljs-params">T ownType</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-1">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-1" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -593,7 +593,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">ContextStatic</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">ContextStatic</span>]
 [<span class="hljs-meta">NonSerialized</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
@@ -630,7 +630,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -662,7 +662,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">this</span>[<span class="hljs-built_in">string</span> a] { <span class="hljs-keyword">protected</span> <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-2">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-2" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -701,7 +701,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Name { <span class="hljs-keyword">get</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -738,7 +738,7 @@ unsafe
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> Dictionary&lt;<span class="hljs-built_in">string</span>, List&lt;<span class="hljs-built_in">int</span>&gt;&gt; CalculateFood(DateTime date)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-3">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-3" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -783,7 +783,7 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">override</span> <span class="hljs-built_in">bool</span> <span class="hljs-title">Equals</span>(<span class="hljs-params"><span class="hljs-built_in">object</span> obj</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-4">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-4" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -823,7 +823,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">long</span> <span class="hljs-title">GetTailLength</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>* catName, <span class="hljs-keyword">params</span> <span class="hljs-built_in">object</span>[] parameters</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-5">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-5" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -865,7 +865,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Conditional(<span class="hljs-string">"Debug"</span>)</span>]
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Jump</span>(<span class="hljs-params">T ownType, K anotherOwnType, <span class="hljs-keyword">ref</span> <span class="hljs-built_in">bool</span> cheat</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -913,7 +913,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -948,7 +948,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> +(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-7">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-7" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -991,7 +991,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">explicit</span> <span class="hljs-keyword">operator</span> <span class="hljs-title">Tom</span>(<span class="hljs-params">Cat&lt;T, K&gt; src</span>)</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-8">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-8" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
@@ -1030,7 +1030,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> <span class="hljs-keyword">operator</span> -(Cat&lt;T, K&gt; lsr, <span class="hljs-built_in">int</span> rsr)</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
   <h4 class="section" id="parameters-9">Parameters<a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#parameters-9" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h4>
