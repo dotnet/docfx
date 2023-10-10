@@ -32,7 +32,7 @@
     "highlight.js": "^11.9.0",
     "idb-keyval": "^6.2.1",
     "jquery": "3.7.0",
-    "lit-html": "^2.8.0",
+    "lit-html": "^3.0.0",
     "lunr": "2.3.9",
     "mathjax": "^3.2.2",
     "mermaid": "^10.5.0"
