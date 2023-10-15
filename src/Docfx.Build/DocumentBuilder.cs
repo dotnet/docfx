@@ -60,7 +60,6 @@ public class DocumentBuilder : IDisposable
             throw new ArgumentException("Parameters are empty.", nameof(parameters));
         }
 
-        var markdownServiceProvider = GetMarkdownServiceProvider();
         var logCodesLogListener = new LogCodesLogListener();
         Logger.RegisterListener(logCodesLogListener);
 
@@ -124,7 +123,12 @@ public class DocumentBuilder : IDisposable
 
                     using (new LoggerPhaseScope("BuildCore"))
                     {
-                        manifests.Add(BuildCore(parameter, markdownServiceProvider));
+                        using var builder = new SingleDocumentBuilder
+                        {
+                            MetadataValidators = MetadataValidators.ToList(),
+                            Processors = Processors,
+                        };
+                        manifests.Add(builder.Build(parameter));
                     }
                 }
             }
@@ -199,25 +203,6 @@ public class DocumentBuilder : IDisposable
         {
             Logger.UnregisterListener(logCodesLogListener);
         }
-
-        IMarkdownServiceProvider GetMarkdownServiceProvider()
-        {
-            return new MarkdigServiceProvider
-            {
-                ConfigureMarkdig = parameters[0].ConfigureMarkdig
-            };
-        }
-    }
-
-    internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider)
-    {
-        using var builder = new SingleDocumentBuilder
-        {
-            MetadataValidators = MetadataValidators.ToList(),
-            Processors = Processors,
-            MarkdownServiceProvider = markdownServiceProvider,
-        };
-        return builder.Build(parameter);
     }
 
     private List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)

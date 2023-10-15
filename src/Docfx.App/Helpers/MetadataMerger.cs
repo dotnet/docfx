@@ -65,7 +65,7 @@ internal class MetadataMerger
                 Metadata = parameters.Metadata,
                 OutputBaseDir = parameters.OutputBaseDir,
             },
-            new MarkdigServiceProvider().CreateMarkdownService(
+            new MarkdigMarkdownService(
                 new MarkdownServiceParameters
                 {
                     BasePath = fc.DefaultBaseDir,

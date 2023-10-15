@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using Docfx.Common;
+using Docfx.MarkdigEngine;
 using Docfx.Plugins;
 
 namespace Docfx.Build.Engine;
@@ -16,9 +17,6 @@ public class SingleDocumentBuilder : IDisposable
 
     public IEnumerable<IDocumentProcessor> Processors { get; set; }
     public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
-    public IMarkdownServiceProvider MarkdownServiceProvider { get; set; }
-
-    private IMarkdownService MarkdownService { get; set; }
 
     public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
     {
@@ -81,14 +79,6 @@ public class SingleDocumentBuilder : IDisposable
                                               ?? new TemplateProcessor(new EmptyResourceReader(), context, 16);
                 using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
                 {
-                    if (MarkdownService == null)
-                    {
-                        using (new LoggerPhaseScope("CreateMarkdownService", LogLevel.Verbose))
-                        {
-                            MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
-                            context.MarkdownService = MarkdownService;
-                        }
-                    }
                     Prepare(
                         context,
                         templateProcessor,
@@ -142,6 +132,16 @@ public class SingleDocumentBuilder : IDisposable
         TemplateProcessor templateProcessor,
         IHostServiceCreator creator)
     {
+        var markdownService = new MarkdigMarkdownService(
+            new MarkdownServiceParameters
+            {
+                BasePath = parameters.Files.DefaultBaseDir,
+                TemplateDir = parameters.TemplateDir,
+                Extensions = parameters.MarkdownEngineParameters,
+                Tokens = templateProcessor.Tokens.ToImmutableDictionary(),
+            },
+            configureMarkdig: parameters.ConfigureMarkdig);
+
         var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                      from p in (from processor in processors
                                 let priority = processor.GetProcessingPriority(file)
@@ -178,7 +178,7 @@ public class SingleDocumentBuilder : IDisposable
                         () => creator.CreateHostService(
                             parameters,
                             templateProcessor,
-                            MarkdownService,
+                            markdownService,
                             MetadataValidators,
                             processor,
                             item)
@@ -244,18 +244,6 @@ public class SingleDocumentBuilder : IDisposable
         return XRefMapFileName;
     }
 
-    private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)
-    {
-        return MarkdownServiceProvider.CreateMarkdownService(
-            new MarkdownServiceParameters
-            {
-                BasePath = parameters.Files.DefaultBaseDir,
-                TemplateDir = parameters.TemplateDir,
-                Extensions = parameters.MarkdownEngineParameters,
-                Tokens = tokens,
-            });
-    }
-
     public void Dispose()
     {
         using (new PerformanceScope("DisposeDocumentProcessors"))
@@ -265,8 +253,6 @@ public class SingleDocumentBuilder : IDisposable
                 Logger.LogVerbose($"Disposing processor {processor.Name} ...");
                 (processor as IDisposable)?.Dispose();
             }
-            (MarkdownService as IDisposable)?.Dispose();
-            MarkdownService = null;
         }
     }
 }

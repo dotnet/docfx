@@ -297,7 +297,7 @@ public class ModelAttributeHandlerTest
         {
             Host = new HostService(null, Enumerable.Empty<FileModel>())
             {
-                MarkdownService = new MarkdigServiceProvider().CreateMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
+                MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
                 SourceFiles = new Dictionary<string, FileAndType>
                 {
                     { "~/test" , new FileAndType(Environment.CurrentDirectory, "test", DocumentType.Article)},

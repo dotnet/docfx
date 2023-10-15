@@ -28,7 +28,7 @@ This is unit test!";
         File.WriteAllText(fullPath, content);
         var host = new HostService(null, Enumerable.Empty<FileModel>())
         {
-            MarkdownService = new MarkdigServiceProvider().CreateMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
+            MarkdownService = new MarkdigMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
             SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
         };
 
