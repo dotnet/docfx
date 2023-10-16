@@ -16,7 +16,7 @@ jobs:
         dotnet-version: |
           6.x
           7.x
-          8.0.100-rc.1.23455.8
+          8.0.100-rc.2.23502.2
 
     - run: npm install
       working-directory: templates
