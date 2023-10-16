@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <InternalsVisibleTo Include="Docfx.App" />
     <InternalsVisibleTo Include="Docfx.Build.Common.Tests" />
   </ItemGroup>
 

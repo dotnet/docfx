@@ -12,7 +12,6 @@ namespace Docfx;
 /// BuildJsonConfig.
 /// </summary>
 /// <see href="https://dotnet.github.io/docfx/reference/docfx-json-reference.html#12-properties-for-build"/>
-[Serializable]
 internal class BuildJsonConfig
 {
     /// <summary>

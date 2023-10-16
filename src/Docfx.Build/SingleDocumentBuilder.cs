@@ -10,7 +10,7 @@ namespace Docfx.Build.Engine;
 
 #pragma warning disable CS0612 // Type or member is obsolete
 
-public class SingleDocumentBuilder : IDisposable
+class SingleDocumentBuilder : IDisposable
 {
     private const string PhaseName = "Build Document";
     private const string XRefMapFileName = "xrefmap.yml";
@@ -40,7 +40,7 @@ public class SingleDocumentBuilder : IDisposable
         return hostService.Models;
     }
 
-    public Manifest Build(DocumentBuildParameters parameters)
+    public Manifest Build(DocumentBuildParameters parameters, IMarkdownService markdownService)
     {
         ArgumentNullException.ThrowIfNull(parameters);
 
@@ -58,11 +58,6 @@ public class SingleDocumentBuilder : IDisposable
         }
         parameters.Metadata ??= ImmutableDictionary<string, object>.Empty;
 
-        return BuildCore(parameters);
-    }
-
-    private Manifest BuildCore(DocumentBuildParameters parameters)
-    {
         using (new LoggerPhaseScope(PhaseName, LogLevel.Verbose))
         {
             Directory.CreateDirectory(parameters.OutputBaseDir);
@@ -87,7 +82,7 @@ public class SingleDocumentBuilder : IDisposable
                 }
                 using (new LoggerPhaseScope("Load", LogLevel.Verbose))
                 {
-                    hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
+                    hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, markdownService);
                 }
 
                 templateProcessor.CopyTemplateResources(context.ApplyTemplateSettings);
@@ -130,18 +125,9 @@ public class SingleDocumentBuilder : IDisposable
         DocumentBuildParameters parameters,
         IEnumerable<IDocumentProcessor> processors,
         TemplateProcessor templateProcessor,
-        IHostServiceCreator creator)
+        IHostServiceCreator creator,
+        IMarkdownService markdownService)
     {
-        var markdownService = new MarkdigMarkdownService(
-            new MarkdownServiceParameters
-            {
-                BasePath = parameters.Files.DefaultBaseDir,
-                TemplateDir = parameters.TemplateDir,
-                Extensions = parameters.MarkdownEngineParameters,
-                Tokens = templateProcessor.Tokens.ToImmutableDictionary(),
-            },
-            configureMarkdig: parameters.ConfigureMarkdig);
-
         var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                      from p in (from processor in processors
                                 let priority = processor.GetProcessingPriority(file)

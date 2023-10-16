@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Composition.Hosting;
 using System.Reflection;
-using System.Text;
 using Docfx.Build.SchemaDriven;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
@@ -63,8 +62,10 @@ public class DocumentBuilder : IDisposable
         var logCodesLogListener = new LogCodesLogListener();
         Logger.RegisterListener(logCodesLogListener);
 
+        var markdownService = CreateMarkdigMarkdownService(parameters[0]);
+
         // Load schema driven processor from template
-        var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
+        LoadSchemaDrivenDocumentProcessors(parameters[0]);
 
         try
         {
@@ -128,7 +129,7 @@ public class DocumentBuilder : IDisposable
                             MetadataValidators = MetadataValidators.ToList(),
                             Processors = Processors,
                         };
-                        manifests.Add(builder.Build(parameter));
+                        manifests.Add(builder.Build(parameter, markdownService));
                     }
                 }
             }
@@ -203,57 +204,58 @@ public class DocumentBuilder : IDisposable
         {
             Logger.UnregisterListener(logCodesLogListener);
         }
-    }
 
-    private List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
-    {
-        using (new LoggerPhaseScope(nameof(LoadSchemaDrivenDocumentProcessors)))
+        List<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
-            var result = new List<IDocumentProcessor>();
-
-            using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
+            using (new LoggerPhaseScope(nameof(LoadSchemaDrivenDocumentProcessors)))
             {
-                if (resource == null || resource.IsEmpty)
-                {
-                    return result;
-                }
+                var result = new List<IDocumentProcessor>();
 
-                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter, resource);
-                foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
+                using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
                 {
-                    var fileName = Path.GetFileName(pair.Path);
-
-                    using (new LoggerFileScope(fileName))
+                    if (resource == null || resource.IsEmpty)
                     {
-                        var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
-                        var sdp = new SchemaDrivenDocumentProcessor(
-                            schema,
-                            new CompositionContainer(CompositionContainer.DefaultContainer),
-                            markdigMarkdownService);
-                        Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                        result.Add(sdp);
+                        return result;
+                    }
+
+                    foreach (var pair in resource.GetResources(@"^schemas/.*\.schema\.json"))
+                    {
+                        var fileName = Path.GetFileName(pair.Path);
+
+                        using (new LoggerFileScope(fileName))
+                        {
+                            var schema = DocumentSchema.Load(pair.Content, fileName.Remove(fileName.Length - ".schema.json".Length));
+                            var sdp = new SchemaDrivenDocumentProcessor(
+                                schema,
+                                new CompositionContainer(CompositionContainer.DefaultContainer),
+                                markdownService);
+                            Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                            result.Add(sdp);
+                        }
                     }
                 }
-            }
 
-            if (result.Count > 0)
-            {
-                Logger.LogInfo($"{result.Count} schema driven document processor plug-in(s) loaded.");
-                Processors = Processors.Union(result);
+                if (result.Count > 0)
+                {
+                    Logger.LogInfo($"{result.Count} schema driven document processor plug-in(s) loaded.");
+                    Processors = Processors.Union(result);
+                }
+                return result;
             }
-            return result;
         }
     }
 
-    private static MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters, CompositeResourceReader resourceProvider)
+    private static MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
     {
+        using var resource = parameters.TemplateManager?.CreateTemplateResource();
+
         return new MarkdigMarkdownService(
             new MarkdownServiceParameters
             {
                 BasePath = parameters.Files.DefaultBaseDir,
                 TemplateDir = parameters.TemplateDir,
                 Extensions = parameters.MarkdownEngineParameters,
-                Tokens = TemplateProcessorUtility.LoadTokens(resourceProvider)?.ToImmutableDictionary(),
+                Tokens = resource is null ? null : TemplateProcessorUtility.LoadTokens(resource)?.ToImmutableDictionary(),
             },
             parameters.ConfigureMarkdig);
     }
@@ -262,31 +264,6 @@ public class DocumentBuilder : IDisposable
     {
         JsonUtility.Serialize(Constants.ManifestFileName, manifest, Formatting.Indented);
         Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
-    }
-
-    private static string ComputePluginHash(List<Assembly> assemblyList)
-    {
-        Logger.LogVerbose("Calculating plugin hash...");
-
-        var result = string.Empty;
-        if (assemblyList?.Count > 0)
-        {
-            var builder = new StringBuilder();
-            foreach (var assembly in
-                from assembly in assemblyList
-                orderby assembly.FullName
-                select assembly)
-            {
-                var hashPart = assembly.FullName;
-                builder.AppendLine(hashPart);
-                var fileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-                Logger.LogVerbose($"New assembly info added: '{hashPart}'. Detailed file version: '{fileVersion}'");
-            }
-            result = HashUtility.GetSha256HashString(builder.ToString());
-        }
-
-        Logger.LogVerbose($"Plugin hash is '{result}'");
-        return result;
     }
 
     public void Dispose()
