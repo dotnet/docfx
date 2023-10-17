@@ -46,6 +46,6 @@
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
     <PackageVersion Include="Verify.Xunit" Version="22.1.4" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
-    <PackageVersion Include="xunit" Version="2.5.2" />
+    <PackageVersion Include="xunit" Version="2.5.3" />
   </ItemGroup>
 </Project>
