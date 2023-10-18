@@ -22,6 +22,11 @@ export async function initTheme() {
   setTheme(await getDefaultTheme())
 }
 
+export function onThemeChange(callback: (theme: 'light' | 'dark') => void) {
+  return new MutationObserver(() => callback(getTheme()))
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] })
+}
+
 export function getTheme(): 'light' | 'dark' {
   return document.documentElement.getAttribute('data-bs-theme') as 'light' | 'dark'
 }

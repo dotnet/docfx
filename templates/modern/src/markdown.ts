@@ -4,7 +4,7 @@
 import { breakWord, meta, loc, options } from './helper'
 import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
-import { getTheme } from './theme'
+import { getTheme, onThemeChange } from './theme'
 
 /**
  * Initialize markdown rendering.
@@ -23,6 +23,8 @@ export async function renderMarkdown() {
     renderMath(),
     renderMermaid()
   ])
+
+  onThemeChange(renderMermaid)
 }
 
 async function renderMath() {
@@ -32,14 +34,14 @@ async function renderMath() {
   }
 }
 
-let mermaidRenderCount = 0
-
 /**
  * Render mermaid diagrams.
  */
 async function renderMermaid() {
+  console.log('asdf')
   const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
-  if (diagrams.length <= 0) {
+  const processedDiagrams = document.querySelectorAll<HTMLElement>('pre.mermaid[data-mermaid]')
+  if (diagrams.length <= 0 && processedDiagrams.length <= 0) {
     return
   }
 
@@ -47,18 +49,26 @@ async function renderMermaid() {
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
 
   // Turn off deterministic ids on re-render
-  const deterministicIds = mermaidRenderCount === 0
   const { mermaid: mermaidOptions } = await options()
-  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, mermaidOptions))
-  mermaidRenderCount++
+  mermaid.initialize(Object.assign({ startOnLoad: false, theme }, mermaidOptions))
 
   const nodes = []
   diagrams.forEach(e => {
     // Rerender when elements becomes visible due to https://github.com/mermaid-js/mermaid/issues/1846
     if (e.offsetParent) {
       nodes.push(e.parentElement)
+      const code = e.innerHTML
       e.parentElement.classList.add('mermaid')
-      e.parentElement.innerHTML = e.innerHTML
+      e.parentElement.setAttribute('data-mermaid', code)
+      e.parentElement.innerHTML = code
+    }
+  })
+
+  processedDiagrams.forEach(e => {
+    if (e.offsetParent) {
+      e.removeAttribute('data-processed')
+      e.innerHTML = e.getAttribute('data-mermaid')
+      nodes.push(e)
     }
   })
 
