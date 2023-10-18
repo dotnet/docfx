@@ -176,7 +176,7 @@ public class SamplesTest
 
         static string NormalizeHtml(string html)
         {
-            return Regex.Replace(html, "<!--.*?-->", "");
+            return Regex.Replace(Regex.Replace(html, "<!--.*?-->", ""), @"mermaid-\d+", "");
         }
     }
 
@@ -270,12 +270,6 @@ public class SamplesTest
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
-        }
-
-        if (Path.GetExtension(path) == ".html" && builder.ToString() is { } html)
-        {
-            builder.Clear();
-            builder.Append(Regex.Replace(html, @"mermaid-\d+", ""));
         }
     }
 
