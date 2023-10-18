@@ -260,7 +260,7 @@ public class SamplesTest
 
     private void ScrubFile(string path, StringBuilder builder)
     {
-        if (Path.GetExtension(path) is ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
+        if (Path.GetExtension(path) == ".json" && JsonNode.Parse(builder.ToString()) is JsonObject obj)
         {
             obj.Remove("__global");
             obj.Remove("_systemKeys");
@@ -270,6 +270,12 @@ public class SamplesTest
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             }));
+        }
+
+        if (Path.GetExtension(path) == ".html" && builder.ToString() is { } html)
+        {
+            builder.Clear();
+            builder.Append(Regex.Replace(html, @"mermaid-\d+", ""));
         }
     }
 

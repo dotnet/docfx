@@ -34,12 +34,11 @@ async function renderMath() {
   }
 }
 
-let mermaidRenderCount = 0
-
 /**
  * Render mermaid diagrams.
  */
 async function renderMermaid() {
+  console.log('asdf')
   const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
   const processedDiagrams = document.querySelectorAll<HTMLElement>('pre.mermaid[data-mermaid]')
   if (diagrams.length <= 0 && processedDiagrams.length <= 0) {
@@ -50,10 +49,8 @@ async function renderMermaid() {
   const theme = getTheme() === 'dark' ? 'dark' : 'default'
 
   // Turn off deterministic ids on re-render
-  const deterministicIds = mermaidRenderCount === 0
   const { mermaid: mermaidOptions } = await options()
-  mermaid.initialize(Object.assign({ startOnLoad: false, deterministicIds, theme }, mermaidOptions))
-  mermaidRenderCount++
+  mermaid.initialize(Object.assign({ startOnLoad: false, theme }, mermaidOptions))
 
   const nodes = []
   diagrams.forEach(e => {
