@@ -59,15 +59,15 @@ async function renderMermaid() {
       nodes.push(e.parentElement)
       const code = e.innerHTML
       e.parentElement.classList.add('mermaid')
-      e.parentElement.setAttribute("data-mermaid", code)
+      e.parentElement.setAttribute('data-mermaid', code)
       e.parentElement.innerHTML = code
     }
   })
 
   processedDiagrams.forEach(e => {
     if (e.offsetParent) {
-      e.removeAttribute("data-processed")
-      e.innerHTML = e.getAttribute("data-mermaid")
+      e.removeAttribute('data-processed')
+      e.innerHTML = e.getAttribute('data-mermaid')
       nodes.push(e)
     }
   })
