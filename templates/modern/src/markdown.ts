@@ -38,7 +38,6 @@ async function renderMath() {
  * Render mermaid diagrams.
  */
 async function renderMermaid() {
-  console.log('asdf')
   const diagrams = document.querySelectorAll<HTMLElement>('pre code.lang-mermaid')
   const processedDiagrams = document.querySelectorAll<HTMLElement>('pre.mermaid[data-mermaid]')
   if (diagrams.length <= 0 && processedDiagrams.length <= 0) {
