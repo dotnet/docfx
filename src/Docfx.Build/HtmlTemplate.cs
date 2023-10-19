@@ -18,7 +18,7 @@ struct HtmlTemplate
 
     public static HtmlTemplate Html(FormattableString template)
     {
-        var format = Regex.Replace(template.Format, "(\\s+[a-zA-Z0-9_-]+)=[\"']{(\\d)}[\"']", RenderAttribute);
+        var format = Regex.Replace(template.Format, "(\\s+[a-zA-Z0-9_-]+)=([\"']){(\\d)}[\"']", RenderAttribute);
         var html = string.Format(format, Array.ConvertAll(template.GetArguments(), Render));
         return new() { _html = html };
 
@@ -35,15 +35,15 @@ struct HtmlTemplate
 
         string RenderAttribute(Match m)
         {
-            var i = int.Parse(m.Groups[2].ToString());
+            var i = int.Parse(m.Groups[3].ToString());
             var arg = template.GetArgument(i);
 
             return arg switch
             {
                 null => "",
                 bool b => b ? m.Groups[1].ToString() : "",
-                string str => !string.IsNullOrEmpty(str) ? $"{m.Groups[1]}=\"{WebUtility.HtmlEncode(str)}\"" : "",
-                _ => $"{m.Groups[1]}=\"{WebUtility.HtmlEncode(arg.ToString())}\"",
+                string str => !string.IsNullOrEmpty(str) ? $"{m.Groups[1]}={m.Groups[2]}{WebUtility.HtmlEncode(str)}{m.Groups[2]}" : "",
+                _ => $"{m.Groups[1]}={m.Groups[2]}{WebUtility.HtmlEncode(arg.ToString())}{m.Groups[2]}",
             };
         }
     }

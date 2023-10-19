@@ -113,6 +113,20 @@ partial class DotnetApiCatalog
                 });
             }
 
+            void Api(int level, string title, ISymbol symbol)
+            {
+                var uid = VisitorHelper.GetId(symbol);
+                var id = Regex.Replace(uid, @"\W", "_");
+                var commentId = VisitorHelper.GetCommentId(symbol);
+                body.Add(level switch
+                {
+                    1 => (Api)new Api1 { api1 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    2 => (Api)new Api2 { api2 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    3 => (Api)new Api3 { api3 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    4 => (Api)new Api4 { api4 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                });
+            }
+
             void Namespace()
             {
                 var namespaceSymbols = symbols.Select(n => n.symbol).ToHashSet(SymbolEqualityComparer.Default);
@@ -121,7 +135,7 @@ partial class DotnetApiCatalog
                     where s.symbol.Kind is SymbolKind.NamedType && namespaceSymbols.Contains(s.symbol.ContainingNamespace)
                     select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
 
-                Heading(1, title = $"Namespace {symbol}");
+                Api(1, title = $"Namespace {symbol}", symbol);
 
                 Summary(comment);
                 Namespaces();
@@ -159,7 +173,7 @@ partial class DotnetApiCatalog
 
             void Enum(INamedTypeSymbol type)
             {
-                Heading(1, title = $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -176,7 +190,7 @@ partial class DotnetApiCatalog
 
             void Delegate(INamedTypeSymbol type)
             {
-                Heading(1, title = $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -204,7 +218,7 @@ partial class DotnetApiCatalog
                     _ => throw new InvalidOperationException(),
                 };
 
-                Heading(1, title = $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -374,7 +388,7 @@ partial class DotnetApiCatalog
 
             void MemberHeader(string headingText)
             {
-                Heading(1, title = $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}");
+                Api(1, title = $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}", symbol);
                 body.Add(new Facts { facts = Facts().ToArray() });
             }
 
@@ -456,8 +470,7 @@ partial class DotnetApiCatalog
 
             void Method(IMethodSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -475,8 +488,7 @@ partial class DotnetApiCatalog
 
             void Field(IFieldSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -499,8 +511,7 @@ partial class DotnetApiCatalog
 
             void Property(IPropertySymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -523,8 +534,7 @@ partial class DotnetApiCatalog
 
             void Event(IEventSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);

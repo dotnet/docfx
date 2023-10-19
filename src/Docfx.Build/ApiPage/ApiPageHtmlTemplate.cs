@@ -3,6 +3,7 @@
 
 #if NET7_0_OR_GREATER
 
+using System.Net;
 using static Docfx.Build.HtmlTemplate;
 
 #nullable enable
@@ -41,11 +42,15 @@ static class ApiPageHtmlTemplate
 
         HtmlTemplate Api(Api api) => api.Value switch
         {
-            Api1 api1 => Html($"<h1 class='section' data-uid id='{api1.id}'>{api1.api1}</h1>"),
-            Api2 api2 => Html($"<h2 class='section' data-uid id='{api2.id}'>{api2.api2}</h2>"),
-            Api3 api3 => Html($"<h3 class='section' data-uid id='{api3.id}'>{api3.api3}</h3>"),
-            Api4 api4 => Html($"<h4 class='section' data-uid id='{api4.id}'>{api4.api4}</h4>"),
+            Api1 api1 => Html($"<h1 class='section api' {Attributes(api1.metadata)} id='{api1.id}'>{api1.api1}</h1>"),
+            Api2 api2 => Html($"<h2 class='section api' {Attributes(api2.metadata)} id='{api2.id}'>{api2.api2}</h2>"),
+            Api3 api3 => Html($"<h3 class='section api' {Attributes(api3.metadata)} id='{api3.id}'>{api3.api3}</h3>"),
+            Api4 api4 => Html($"<h4 class='section api' {Attributes(api4.metadata)} id='{api4.id}'>{api4.api4}</h4>"),
         };
+
+        HtmlTemplate Attributes(Dictionary<string, string>? metadata) => metadata is null
+            ? default
+            : UnsafeHtml(string.Join(" ", metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
 
         HtmlTemplate Facts(Facts facts) => facts.facts.Length is 0 ? default : Html(
             $"""

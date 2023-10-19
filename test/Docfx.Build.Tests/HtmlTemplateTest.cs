@@ -26,7 +26,8 @@ public class HtmlTemplateTest
         Assert.Equal("<h1></h1>", Html($"<h1 id=\"{false}\"></h1>").ToString());
         Assert.Equal("<h1></h1>", Html($"<h1 id=\"{null}\"></h1>").ToString());
         Assert.Equal("<h1></h1>", Html($"<h1 id='{""}'></h1>").ToString());
-        Assert.Equal("<h1 id=\"a\"></h1>", Html($"<h1 id='{"a"}'></h1>").ToString());
+        Assert.Equal("<h1 id='a'></h1>", Html($"<h1 id='{"a"}'></h1>").ToString());
+        Assert.Equal("<h1 id=\"a\"></h1>", Html($"<h1 id=\"{"a"}\"></h1>").ToString());
         Assert.Equal("<h1 id></h1>", Html($"<h1 id=\"{true}\"></h1>").ToString());
     }
 }
