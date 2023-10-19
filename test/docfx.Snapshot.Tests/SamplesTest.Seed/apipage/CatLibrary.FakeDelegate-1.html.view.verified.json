@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Delegate FakeDelegate<T>",
+  "content": "<h1 class='section'>Delegate FakeDelegate&lt;T&gt;</h1><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href=\"CatLibrary.html\">CatLibrary</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake delegate</p>\n<pre><code class=\"lang-csharp\">public delegate int FakeDelegate&lt;T&gt;(long num, string name, params object[] scores)</code></pre><h4 class='section'>Parameters</h4><dl class='parameters'><dt>\r\n<code>num</code>\r\n<a href=\"https://learn.microsoft.com/dotnet/api/system.int64\">long</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n</dd><dt>\r\n<code>name</code>\r\n<a href=\"https://learn.microsoft.com/dotnet/api/system.string\">string</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n</dd><dt>\r\n<code>scores</code>\r\n<a href=\"https://learn.microsoft.com/dotnet/api/system.object\">object</a>[]\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Optional Parameter.</p>\n</dd></dl><h4 class='section'>Returns</h4><dl class='parameters'><dt>\r\n\r\n<a href=\"https://learn.microsoft.com/dotnet/api/system.int32\">int</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Return a fake number to confuse you.</p>\n</dd></dl><h4 class='section'>Type Parameters</h4><dl class='parameters'><dt>\r\n<code>T</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.FakeDelegate-1.yml\" sourceStartLineNumber=\"1\">Fake para</p>\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.FakeDelegate-1.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.FakeDelegate-1.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

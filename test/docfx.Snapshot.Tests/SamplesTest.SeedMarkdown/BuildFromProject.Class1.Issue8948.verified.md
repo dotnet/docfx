@@ -1,22 +1,22 @@
 ﻿# Class Class1.Issue8948
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
-Assembly: BuildFromProject.dll
+Assembly: BuildFromProject.dll  
 
 ```csharp
 public class Class1.Issue8948 : Class1.IIssue8948
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Class1.Issue8948](BuildFromProject.Class1.Issue8948.md)
 
-###### Implements
+#### Implements
 
 [Class1.IIssue8948](BuildFromProject.Class1.IIssue8948.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
@@ -28,7 +28,7 @@ public class Class1.Issue8948 : Class1.IIssue8948
 
 ## Methods
 
-### <a id="BuildFromProject_Class1_Issue8948_DoNothing__1"></a>DoNothing<T\>\(\)
+### <a id="BuildFromProject_Class1_Issue8948_DoNothing__1"></a> DoNothing<T\>\(\)
 
 Does nothing with generic type T.
 

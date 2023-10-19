@@ -1,7 +1,7 @@
 ﻿# Delegate ContainersRefType.ContainersRefTypeDelegate
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
-Assembly: CatLibrary.Core.dll
+Assembly: CatLibrary.Core.dll  
 
 Delegate ContainersRefTypeDelegate
 

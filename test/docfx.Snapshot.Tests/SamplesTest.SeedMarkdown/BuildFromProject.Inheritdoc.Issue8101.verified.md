@@ -1,18 +1,18 @@
 ﻿# Class Inheritdoc.Issue8101
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
-Assembly: BuildFromProject.dll
+Assembly: BuildFromProject.dll  
 
 ```csharp
 public class Inheritdoc.Issue8101
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Inheritdoc.Issue8101](BuildFromProject.Inheritdoc.Issue8101.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
@@ -24,7 +24,7 @@ public class Inheritdoc.Issue8101
 
 ## Methods
 
-### <a id="BuildFromProject_Inheritdoc_Issue8101_Tween_System_Single_System_Single_System_Single_System_Action_System_Single__"></a>Tween\(float, float, float, Action<float\>\)
+### <a id="BuildFromProject_Inheritdoc_Issue8101_Tween_System_Single_System_Single_System_Single_System_Action_System_Single__"></a> Tween\(float, float, float, Action<float\>\)
 
 Create a new tween.
 
@@ -52,11 +52,11 @@ A callback that will be invoked every time the tween value changes.
 
 #### Returns
 
-[object](https://learn.microsoft.com/dotnet/api/system.object)
+ [object](https://learn.microsoft.com/dotnet/api/system.object)
 
 The newly created tween instance.
 
-### <a id="BuildFromProject_Inheritdoc_Issue8101_Tween_System_Int32_System_Int32_System_Single_System_Action_System_Int32__"></a>Tween\(int, int, float, Action<int\>\)
+### <a id="BuildFromProject_Inheritdoc_Issue8101_Tween_System_Int32_System_Int32_System_Single_System_Action_System_Int32__"></a> Tween\(int, int, float, Action<int\>\)
 
 Create a new tween.
 
@@ -84,7 +84,7 @@ A callback that will be invoked every time the tween value changes.
 
 #### Returns
 
-[object](https://learn.microsoft.com/dotnet/api/system.object)
+ [object](https://learn.microsoft.com/dotnet/api/system.object)
 
 The newly created tween instance.
 

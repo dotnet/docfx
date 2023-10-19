@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Namespace BuildFromVBSourceCode",
+  "content": "<h1 class='section'>Namespace BuildFromVBSourceCode</h1><h3 class='section'>Classes</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"BuildFromVBSourceCode.BaseClass1.html\">BaseClass1</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/BuildFromVBSourceCode.yml\" sourceStartLineNumber=\"1\">This is the BaseClass</p>\n</dd><dt>\r\n\r\n<a href=\"BuildFromVBSourceCode.Class1.html\">Class1</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/BuildFromVBSourceCode.yml\" sourceStartLineNumber=\"1\">This is summary from vb class...</p>\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromVBSourceCode.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromVBSourceCode.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

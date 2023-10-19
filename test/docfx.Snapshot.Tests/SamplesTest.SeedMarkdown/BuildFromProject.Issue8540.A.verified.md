@@ -2,5 +2,5 @@
 
 ### Classes
 
-[A](BuildFromProject.Issue8540.A.A.md)
+ [A](BuildFromProject.Issue8540.A.A.md)
 

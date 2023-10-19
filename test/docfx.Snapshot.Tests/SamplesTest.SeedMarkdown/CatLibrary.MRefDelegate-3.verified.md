@@ -1,7 +1,7 @@
 ﻿# Delegate MRefDelegate<K, T, L\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Assembly: CatLibrary.dll  
 
 Generic delegate with many constrains.
 

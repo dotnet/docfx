@@ -2,7 +2,7 @@
 
 ### Enums
 
-[ColorType](MRef.Demo.Enumeration.ColorType.md)
+ [ColorType](MRef.Demo.Enumeration.ColorType.md)
 
 Enumeration ColorType
 
