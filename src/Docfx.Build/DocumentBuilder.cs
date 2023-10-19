@@ -24,7 +24,6 @@ public class DocumentBuilder : IDisposable
 
     private readonly CompositionHost _container;
     private readonly PostProcessorsManager _postProcessorsManager;
-    private readonly List<Assembly> _assemblyList;
 
     public DocumentBuilder(IEnumerable<Assembly> assemblies, ImmutableArray<string> postProcessorNames)
     {
@@ -35,12 +34,6 @@ public class DocumentBuilder : IDisposable
             assemblyList.Add(typeof(DocumentBuilder).Assembly);
             _container = CompositionContainer.GetContainer(assemblyList);
             _container.SatisfyImports(this);
-            _assemblyList = assemblyList;
-        }
-        Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
-        foreach (var processor in Processors)
-        {
-            Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
         }
         _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
     }
@@ -63,6 +56,16 @@ public class DocumentBuilder : IDisposable
         Logger.RegisterListener(logCodesLogListener);
 
         var markdownService = CreateMarkdigMarkdownService(parameters[0]);
+
+#if NET7_0_OR_GREATER
+        Processors = Processors.Append(new ApiPage.ApiPageDocumentProcessor(markdownService));
+#endif
+
+        Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
+        foreach (var processor in Processors)
+        {
+            Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+        }
 
         // Load schema driven processor from template
         LoadSchemaDrivenDocumentProcessors(parameters[0]);
