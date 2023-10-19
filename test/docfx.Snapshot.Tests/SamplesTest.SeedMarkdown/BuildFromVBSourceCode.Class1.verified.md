@@ -1,4 +1,4 @@
-﻿# Class Class1
+﻿# <a id="BuildFromVBSourceCode_Class1"></a> Class Class1
 
 Namespace: [BuildFromVBSourceCode](BuildFromVBSourceCode.md)  
 

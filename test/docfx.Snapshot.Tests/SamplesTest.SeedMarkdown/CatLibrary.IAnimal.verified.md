@@ -1,4 +1,4 @@
-﻿# Interface IAnimal
+﻿# <a id="CatLibrary_IAnimal"></a> Interface IAnimal
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

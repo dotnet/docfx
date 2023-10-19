@@ -1,4 +1,4 @@
-﻿# Class Class1.Test<T\>
+﻿# <a id="BuildFromProject_Class1_Test_1"></a> Class Class1.Test<T\>
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

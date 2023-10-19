@@ -1,4 +1,4 @@
-﻿# Interface IInheritdoc
+﻿# <a id="BuildFromProject_IInheritdoc"></a> Interface IInheritdoc
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

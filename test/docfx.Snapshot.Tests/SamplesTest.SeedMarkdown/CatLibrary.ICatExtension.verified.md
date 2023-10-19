@@ -1,4 +1,4 @@
-﻿# Class ICatExtension
+﻿# <a id="CatLibrary_ICatExtension"></a> Class ICatExtension
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

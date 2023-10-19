@@ -1,4 +1,4 @@
-﻿# Delegate MRefNormalDelegate
+﻿# <a id="CatLibrary_MRefNormalDelegate"></a> Delegate MRefNormalDelegate
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

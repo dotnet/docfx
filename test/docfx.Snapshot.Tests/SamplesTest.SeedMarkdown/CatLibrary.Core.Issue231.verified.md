@@ -1,4 +1,4 @@
-﻿# Class Issue231
+﻿# <a id="CatLibrary_Core_Issue231"></a> Class Issue231
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
 Assembly: CatLibrary.dll, CatLibrary.Core.dll  

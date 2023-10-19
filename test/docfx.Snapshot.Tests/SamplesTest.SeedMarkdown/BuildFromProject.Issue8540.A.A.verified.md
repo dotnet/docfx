@@ -1,4 +1,4 @@
-﻿# Class A
+﻿# <a id="BuildFromProject_Issue8540_A_A"></a> Class A
 
 Namespace: [BuildFromProject.Issue8540.A](BuildFromProject.Issue8540.A.md)  
 Assembly: BuildFromProject.dll  

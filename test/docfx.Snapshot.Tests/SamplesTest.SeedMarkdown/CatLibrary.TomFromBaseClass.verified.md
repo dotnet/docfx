@@ -1,4 +1,4 @@
-﻿# Class TomFromBaseClass
+﻿# <a id="CatLibrary_TomFromBaseClass"></a> Class TomFromBaseClass
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

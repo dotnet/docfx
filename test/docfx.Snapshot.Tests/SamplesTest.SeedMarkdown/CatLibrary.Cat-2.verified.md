@@ -1,4 +1,4 @@
-﻿# Class Cat<T, K\>
+﻿# <a id="CatLibrary_Cat_2"></a> Class Cat<T, K\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

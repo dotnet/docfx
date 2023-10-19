@@ -1,4 +1,4 @@
-﻿# Class Complex<T, J\>
+﻿# <a id="CatLibrary_Complex_2"></a> Class Complex<T, J\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

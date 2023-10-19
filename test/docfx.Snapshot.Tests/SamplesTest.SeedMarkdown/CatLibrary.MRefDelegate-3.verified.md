@@ -1,4 +1,4 @@
-﻿# Delegate MRefDelegate<K, T, L\>
+﻿# <a id="CatLibrary_MRefDelegate_3"></a> Delegate MRefDelegate<K, T, L\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

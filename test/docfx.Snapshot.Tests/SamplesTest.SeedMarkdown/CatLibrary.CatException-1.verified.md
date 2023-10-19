@@ -1,4 +1,4 @@
-﻿# Class CatException<T\>
+﻿# <a id="CatLibrary_CatException_1"></a> Class CatException<T\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

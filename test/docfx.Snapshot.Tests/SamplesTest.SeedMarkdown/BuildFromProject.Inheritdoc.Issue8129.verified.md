@@ -1,4 +1,4 @@
-﻿# Struct Inheritdoc.Issue8129
+﻿# <a id="BuildFromProject_Inheritdoc_Issue8129"></a> Struct Inheritdoc.Issue8129
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

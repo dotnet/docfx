@@ -1,4 +1,4 @@
-﻿# Class ContainersRefType.ContainersRefTypeChild
+﻿# <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeChild"></a> Class ContainersRefType.ContainersRefTypeChild
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
 Assembly: CatLibrary.Core.dll  

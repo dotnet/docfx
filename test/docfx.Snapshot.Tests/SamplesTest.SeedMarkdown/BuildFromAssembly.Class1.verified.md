@@ -1,4 +1,4 @@
-﻿# Class Class1
+﻿# <a id="BuildFromAssembly_Class1"></a> Class Class1
 
 Namespace: [BuildFromAssembly](BuildFromAssembly.md)  
 Assembly: BuildFromAssembly.dll  

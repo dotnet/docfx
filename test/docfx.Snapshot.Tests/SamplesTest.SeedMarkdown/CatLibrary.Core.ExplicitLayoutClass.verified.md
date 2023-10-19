@@ -1,4 +1,4 @@
-﻿# Class ExplicitLayoutClass
+﻿# <a id="CatLibrary_Core_ExplicitLayoutClass"></a> Class ExplicitLayoutClass
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
 Assembly: CatLibrary.Core.dll  

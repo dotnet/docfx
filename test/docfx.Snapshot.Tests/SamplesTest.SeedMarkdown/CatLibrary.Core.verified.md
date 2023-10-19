@@ -1,4 +1,4 @@
-﻿# Namespace CatLibrary.Core
+﻿# <a id="CatLibrary_Core"></a> Namespace CatLibrary.Core
 
 ### Classes
 

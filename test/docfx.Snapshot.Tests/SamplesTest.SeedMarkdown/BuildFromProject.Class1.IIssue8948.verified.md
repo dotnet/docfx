@@ -1,4 +1,4 @@
-﻿# Interface Class1.IIssue8948
+﻿# <a id="BuildFromProject_Class1_IIssue8948"></a> Interface Class1.IIssue8948
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

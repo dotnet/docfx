@@ -1,4 +1,4 @@
-﻿# Class Inheritdoc.Issue6366.Class1<T\>
+﻿# <a id="BuildFromProject_Inheritdoc_Issue6366_Class1_1"></a> Class Inheritdoc.Issue6366.Class1<T\>
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

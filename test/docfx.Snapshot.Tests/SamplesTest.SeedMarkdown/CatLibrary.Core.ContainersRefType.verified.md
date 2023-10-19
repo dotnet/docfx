@@ -1,4 +1,4 @@
-﻿# Struct ContainersRefType
+﻿# <a id="CatLibrary_Core_ContainersRefType"></a> Struct ContainersRefType
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
 Assembly: CatLibrary.Core.dll  

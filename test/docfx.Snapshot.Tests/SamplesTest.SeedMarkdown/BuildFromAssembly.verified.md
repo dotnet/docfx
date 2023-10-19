@@ -1,4 +1,4 @@
-﻿# Namespace BuildFromAssembly
+﻿# <a id="BuildFromAssembly"></a> Namespace BuildFromAssembly
 
 ### Classes
 

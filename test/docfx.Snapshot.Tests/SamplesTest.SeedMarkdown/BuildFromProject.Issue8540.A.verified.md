@@ -1,4 +1,4 @@
-﻿# Namespace BuildFromProject.Issue8540.A
+﻿# <a id="BuildFromProject_Issue8540_A"></a> Namespace BuildFromProject.Issue8540.A
 
 ### Classes
 

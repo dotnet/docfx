@@ -1,4 +1,4 @@
-﻿# Class Inheritdoc
+﻿# <a id="BuildFromProject_Inheritdoc"></a> Class Inheritdoc
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
 Assembly: BuildFromProject.dll  

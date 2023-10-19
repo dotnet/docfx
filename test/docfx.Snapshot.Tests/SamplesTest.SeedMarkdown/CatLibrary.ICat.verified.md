@@ -1,4 +1,4 @@
-﻿# Interface ICat
+﻿# <a id="CatLibrary_ICat"></a> Interface ICat
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  

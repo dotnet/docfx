@@ -1,4 +1,4 @@
-﻿# Class CSharp
+﻿# <a id="BuildFromCSharpSourceCode_CSharp"></a> Class CSharp
 
 Namespace: [BuildFromCSharpSourceCode](BuildFromCSharpSourceCode.md)  
 

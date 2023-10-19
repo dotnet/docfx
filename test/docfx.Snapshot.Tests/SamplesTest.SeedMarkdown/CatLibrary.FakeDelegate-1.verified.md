@@ -1,4 +1,4 @@
-﻿# Delegate FakeDelegate<T\>
+﻿# <a id="CatLibrary_FakeDelegate_1"></a> Delegate FakeDelegate<T\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
 Assembly: CatLibrary.dll  
