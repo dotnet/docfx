@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Interface IInheritdoc",
+  "content": "<h1 class='section'>Interface IInheritdoc</h1><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href=\"BuildFromProject.html\">BuildFromProject</a></dd></dl><dl><dt>Assembly</dt><dd>BuildFromProject.dll</dd></dl>\r\n</div><pre><code class=\"lang-csharp\">public interface IInheritdoc</code></pre><h2 class='section'>Methods</h2><h3 class='section' id=\"BuildFromProject_IInheritdoc_Issue7629\">Issue7629()</h3><p sourceFile=\"obj/apipage/BuildFromProject.IInheritdoc.yml\" sourceStartLineNumber=\"1\">This method should do something...</p>\n<pre><code class=\"lang-csharp\">void Issue7629()</code></pre>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/BuildFromProject.IInheritdoc.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/BuildFromProject.IInheritdoc.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

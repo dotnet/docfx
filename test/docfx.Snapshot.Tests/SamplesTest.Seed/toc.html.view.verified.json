@@ -41,6 +41,15 @@
           "leaf": true
         },
         {
+          "name": ".NET API (apipage)",
+          "href": "apipage/BuildFromAssembly.html",
+          "tocHref": "apipage/toc.html",
+          "topicHref": "apipage/BuildFromAssembly.html",
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
           "name": "REST API",
           "href": "restapi/petstore.html",
           "tocHref": "restapi/toc.html",

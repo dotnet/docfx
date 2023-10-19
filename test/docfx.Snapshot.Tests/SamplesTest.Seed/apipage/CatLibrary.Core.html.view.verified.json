@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Namespace CatLibrary.Core",
+  "content": "<h1 class='section'>Namespace CatLibrary.Core</h1><h3 class='section'>Classes</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChild.html\">ContainersRefType.ContainersRefTypeChild</a>\r\n</dt>\r\n<dd></dd><dt>\r\n\r\n<a href=\"CatLibrary.Core.ExplicitLayoutClass.html\">ExplicitLayoutClass</a>\r\n</dt>\r\n<dd></dd><dt>\r\n\r\n<a href=\"CatLibrary.Core.Issue231.html\">Issue231</a>\r\n</dt>\r\n<dd></dd><dt>\r\n\r\n<a href=\"CatLibrary.Core.Issue231.html\">Issue231</a>\r\n</dt>\r\n<dd></dd></dl><h3 class='section'>Structs</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"CatLibrary.Core.ContainersRefType.html\">ContainersRefType</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Struct ContainersRefType</p>\n</dd></dl><h3 class='section'>Interfaces</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.html\">ContainersRefType.ContainersRefTypeChildInterface</a>\r\n</dt>\r\n<dd></dd></dl><h3 class='section'>Enums</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"CatLibrary.Core.ContainersRefType.ColorType.html\">ContainersRefType.ColorType</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n</dd></dl><h3 class='section'>Delegates</h3><dl class='parameters'><dt>\r\n\r\n<a href=\"CatLibrary.Core.ContainersRefType.ContainersRefTypeDelegate.html\">ContainersRefType.ContainersRefTypeDelegate</a>\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.yml\" sourceStartLineNumber=\"1\">Delegate ContainersRefTypeDelegate</p>\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.Core.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.Core.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

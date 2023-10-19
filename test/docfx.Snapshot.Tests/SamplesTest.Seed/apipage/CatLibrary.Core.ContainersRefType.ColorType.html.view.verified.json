@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Enum ContainersRefType.ColorType",
+  "content": "<h1 class='section'>Enum ContainersRefType.ColorType</h1><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href=\"CatLibrary.Core.html\">CatLibrary.Core</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.Core.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n<pre><code class=\"lang-csharp\">public enum ContainersRefType.ColorType</code></pre><h2 class='section'>Fields</h2><dl class='parameters'><dt>\r\n<code>Red = 0</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourceStartLineNumber=\"1\">red</p>\n</dd><dt>\r\n<code>Blue = 1</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourceStartLineNumber=\"1\">blue</p>\n</dd><dt>\r\n<code>Yellow = 2</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.Core.ContainersRefType.ColorType.yml\" sourceStartLineNumber=\"1\">yellow</p>\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.Core.ContainersRefType.ColorType.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.Core.ContainersRefType.ColorType.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

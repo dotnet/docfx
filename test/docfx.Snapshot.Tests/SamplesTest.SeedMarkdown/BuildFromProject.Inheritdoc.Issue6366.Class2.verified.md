@@ -1,19 +1,19 @@
 ﻿# Class Inheritdoc.Issue6366.Class2
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
-Assembly: BuildFromProject.dll
+Assembly: BuildFromProject.dll  
 
 ```csharp
 public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Inheritdoc.Issue6366.Class1<bool\>](BuildFromProject.Inheritdoc.Issue6366.Class1\-1.md) ← 
 [Inheritdoc.Issue6366.Class2](BuildFromProject.Inheritdoc.Issue6366.Class2.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [Inheritdoc.Issue6366.Class1<bool\>.TestMethod1\(bool, int\)](BuildFromProject.Inheritdoc.Issue6366.Class1\-1.md\#BuildFromProject\_Inheritdoc\_Issue6366\_Class1\_1\_TestMethod1\_\_0\_System\_Int32\_), 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
@@ -26,7 +26,7 @@ public class Inheritdoc.Issue6366.Class2 : Inheritdoc.Issue6366.Class1<bool>
 
 ## Methods
 
-### <a id="BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_"></a>TestMethod1\(bool, int\)
+### <a id="BuildFromProject_Inheritdoc_Issue6366_Class2_TestMethod1_System_Boolean_System_Int32_"></a> TestMethod1\(bool, int\)
 
 This text inherited.
 
@@ -46,7 +46,7 @@ This text inherited.
 
 #### Returns
 
-[bool](https://learn.microsoft.com/dotnet/api/system.boolean)
+ [bool](https://learn.microsoft.com/dotnet/api/system.boolean)
 
 This text inherited.
 

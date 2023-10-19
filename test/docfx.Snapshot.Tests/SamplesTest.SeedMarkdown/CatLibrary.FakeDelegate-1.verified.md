@@ -1,7 +1,7 @@
 ﻿# Delegate FakeDelegate<T\>
 
 Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Assembly: CatLibrary.dll  
 
 Fake delegate
 
@@ -25,7 +25,7 @@ Optional Parameter.
 
 #### Returns
 
-[int](https://learn.microsoft.com/dotnet/api/system.int32)
+ [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 Return a fake number to confuse you.
 

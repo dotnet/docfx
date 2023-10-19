@@ -28,6 +28,12 @@
           "topicHref": "md/BuildFromAssembly.html"
         },
         {
+          "name": ".NET API (apipage)",
+          "href": "apipage/BuildFromAssembly.html",
+          "tocHref": "apipage/toc.html",
+          "topicHref": "apipage/BuildFromAssembly.html"
+        },
+        {
           "name": "REST API",
           "href": "restapi/petstore.html",
           "tocHref": "restapi/toc.html",

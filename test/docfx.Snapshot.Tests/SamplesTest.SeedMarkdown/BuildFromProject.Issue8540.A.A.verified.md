@@ -1,18 +1,18 @@
 ﻿# Class A
 
 Namespace: [BuildFromProject.Issue8540.A](BuildFromProject.Issue8540.A.md)  
-Assembly: BuildFromProject.dll
+Assembly: BuildFromProject.dll  
 
 ```csharp
 public class A
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [A](BuildFromProject.Issue8540.A.A.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 

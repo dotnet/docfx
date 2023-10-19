@@ -1,7 +1,7 @@
 ﻿# Enum ContainersRefType.ColorType
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
-Assembly: CatLibrary.Core.dll
+Assembly: CatLibrary.Core.dll  
 
 Enumeration ColorType
 

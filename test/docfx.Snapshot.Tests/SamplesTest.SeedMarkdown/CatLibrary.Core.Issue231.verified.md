@@ -1,18 +1,18 @@
 ﻿# Class Issue231
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
-Assembly: CatLibrary.dll, CatLibrary.Core.dll
+Assembly: CatLibrary.dll, CatLibrary.Core.dll  
 
 ```csharp
 public static class Issue231
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Issue231](CatLibrary.Core.Issue231.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
@@ -24,7 +24,7 @@ public static class Issue231
 
 ## Methods
 
-### <a id="CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_"></a>Bar\(ContainersRefType\)
+### <a id="CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_"></a> Bar\(ContainersRefType\)
 
 ```csharp
 public static void Bar(this ContainersRefType c)
@@ -34,7 +34,7 @@ public static void Bar(this ContainersRefType c)
 
 `c` [ContainersRefType](CatLibrary.Core.ContainersRefType.md)
 
-### <a id="CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_"></a>Foo\(ContainersRefType\)
+### <a id="CatLibrary_Core_Issue231_Foo_CatLibrary_Core_ContainersRefType_"></a> Foo\(ContainersRefType\)
 
 ```csharp
 public static void Foo(this ContainersRefType c)

@@ -1,7 +1,7 @@
 ﻿# Class Class1
 
 Namespace: [BuildFromAssembly](BuildFromAssembly.md)  
-Assembly: BuildFromAssembly.dll
+Assembly: BuildFromAssembly.dll  
 
 This is a test class.
 
@@ -9,12 +9,12 @@ This is a test class.
 public class Class1
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Class1](BuildFromAssembly.Class1.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.GetType\(\)](https://learn.microsoft.com/dotnet/api/system.object.gettype), 
 [object.MemberwiseClone\(\)](https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone), 
@@ -26,7 +26,7 @@ public class Class1
 
 ## Constructors
 
-### <a id="BuildFromAssembly_Class1__ctor"></a>Class1\(\)
+### <a id="BuildFromAssembly_Class1__ctor"></a> Class1\(\)
 
 ```csharp
 public Class1()
@@ -34,7 +34,7 @@ public Class1()
 
 ## Methods
 
-### <a id="BuildFromAssembly_Class1_HelloWorld"></a>HelloWorld\(\)
+### <a id="BuildFromAssembly_Class1_HelloWorld"></a> HelloWorld\(\)
 
 Hello World.
 

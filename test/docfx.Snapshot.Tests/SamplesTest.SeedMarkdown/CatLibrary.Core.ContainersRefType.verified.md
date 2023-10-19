@@ -1,7 +1,7 @@
 ﻿# Struct ContainersRefType
 
 Namespace: [CatLibrary.Core](CatLibrary.Core.md)  
-Assembly: CatLibrary.Core.dll
+Assembly: CatLibrary.Core.dll  
 
 Struct ContainersRefType
 
@@ -9,7 +9,7 @@ Struct ContainersRefType
 public struct ContainersRefType
 ```
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
@@ -18,14 +18,14 @@ public struct ContainersRefType
 [object.ReferenceEquals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.referenceequals), 
 [object.ToString\(\)](https://learn.microsoft.com/dotnet/api/system.object.tostring)
 
-###### Extension Methods
+#### Extension Methods
 
 [Issue231.Bar\(ContainersRefType\)](CatLibrary.Core.Issue231.md\#CatLibrary\_Core\_Issue231\_Bar\_CatLibrary\_Core\_ContainersRefType\_), 
 [Issue231.Foo\(ContainersRefType\)](CatLibrary.Core.Issue231.md\#CatLibrary\_Core\_Issue231\_Foo\_CatLibrary\_Core\_ContainersRefType\_)
 
 ## Fields
 
-### <a id="CatLibrary_Core_ContainersRefType_ColorCount"></a>ColorCount
+### <a id="CatLibrary_Core_ContainersRefType_ColorCount"></a> ColorCount
 
 ColorCount
 
@@ -35,11 +35,11 @@ public long ColorCount
 
 #### Field Value
 
-[long](https://learn.microsoft.com/dotnet/api/system.int64)
+ [long](https://learn.microsoft.com/dotnet/api/system.int64)
 
 ## Properties
 
-### <a id="CatLibrary_Core_ContainersRefType_GetColorCount"></a>GetColorCount
+### <a id="CatLibrary_Core_ContainersRefType_GetColorCount"></a> GetColorCount
 
 GetColorCount
 
@@ -49,11 +49,11 @@ public long GetColorCount { get; }
 
 #### Property Value
 
-[long](https://learn.microsoft.com/dotnet/api/system.int64)
+ [long](https://learn.microsoft.com/dotnet/api/system.int64)
 
 ## Methods
 
-### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___"></a>ContainersRefTypeNonRefMethod\(params object\[\]\)
+### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeNonRefMethod_System_Object___"></a> ContainersRefTypeNonRefMethod\(params object\[\]\)
 
 ContainersRefTypeNonRefMethod
 <param name="parmsArray">array</param>
@@ -68,9 +68,9 @@ public static int ContainersRefTypeNonRefMethod(params object[] parmsArray)
 
 #### Returns
 
-[int](https://learn.microsoft.com/dotnet/api/system.int32)
+ [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
-### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler"></a>ContainersRefTypeEventHandler
+### <a id="CatLibrary_Core_ContainersRefType_ContainersRefTypeEventHandler"></a> ContainersRefTypeEventHandler
 
 ```csharp
 public event EventHandler ContainersRefTypeEventHandler
@@ -78,5 +78,5 @@ public event EventHandler ContainersRefTypeEventHandler
 
 #### Event Type
 
-[EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
+ [EventHandler](https://learn.microsoft.com/dotnet/api/system.eventhandler)
 
