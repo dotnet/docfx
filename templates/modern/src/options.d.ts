@@ -36,6 +36,9 @@ export type DocfxOptions = {
   /** Configures mermaid diagram options */
   mermaid?: MermaidConfig,
 
+  /** A list of [lunr languages](https://github.com/MihaiValentin/lunr-languages#readme) such as fr, es for full text search */
+  lunrLanguages?: string[],
+
   /** Configures [hightlight.js](https://highlightjs.org/) */
   configureHljs?: (hljs: HLJSApi) => void,
 

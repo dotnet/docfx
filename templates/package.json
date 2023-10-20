@@ -34,6 +34,7 @@
     "jquery": "3.7.0",
     "lit-html": "^3.0.0",
     "lunr": "2.3.9",
+    "lunr-languages": "^1.14.0",
     "mathjax": "^3.2.2",
     "mermaid": "^10.5.0"
   },
