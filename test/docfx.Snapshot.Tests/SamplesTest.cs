@@ -180,7 +180,7 @@ public class SamplesTest
         }
     }
 
-    [Fact]
+    [SnapshotFact]
     public async Task SeedMarkdown()
     {
         var samplePath = $"{s_samplesDir}/seed";
