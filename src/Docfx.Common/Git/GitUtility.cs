@@ -112,8 +112,9 @@ public static class GitUtility
         {
             var gitPath = Path.Combine(directory, ".git");
 
-            // git submodule contains only a .git file instead of a .git folder
-            return Directory.Exists(gitPath) || File.Exists(gitPath);
+            // GitReader does not support .git as file in submodules
+            // https://github.com/kekyo/GitReader/blob/4126738704ee8b6e330e99c6bc81e9de8bc925c9/GitReader.Core/Primitive/PrimitiveRepositoryFacade.cs#L27-L30
+            return Directory.Exists(gitPath);
         }
     }
 
