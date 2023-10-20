@@ -26,20 +26,7 @@ public class GitUtilityTest : IDisposable
     public void Environment_ForBranchName()
     {
         var info = GitUtility.TryGetFileDetail(Directory.GetCurrentDirectory());
-        Assert.Equal("special-branch", info.RemoteBranch);
-    }
-
-    [Fact]
-    public void Environment_ForGitTimeout()
-    {
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "3000");
-        Assert.Equal(3000, GitUtility.GetGitTimeout());
-
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "0");
-        Assert.Equal(10_000, GitUtility.GetGitTimeout());
-
-        Environment.SetEnvironmentVariable(GitUtility.GitTimeoutEnvVarName, "");
-        Assert.Equal(10_000, GitUtility.GetGitTimeout());
+        Assert.Equal("special-branch", info.Branch);
     }
 
     [Obsolete("It will be removed in a future version.")]
@@ -67,18 +54,5 @@ public class GitUtilityTest : IDisposable
         Assert.Equal("Docfx", repoInfo.RepoName);
         Assert.Equal("FakeProject", repoInfo.RepoProject);
         Assert.Equal(RepoType.Vso, repoInfo.RepoType);
-    }
-
-    [Obsolete("It will be removed in a future version.")]
-    [Fact]
-    public void TestCombineGitUrl()
-    {
-        var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
-        var url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.GitHub);
-        Assert.Equal("https://github.com/dotnet/docfx/blob/dev/src/docfx/Program.cs", url.AbsoluteUri);
-
-        repoInfo = GitUtility.Parse("https://mseng.visualstudio.com/FakeProject/_git/Docfx");
-        url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.Vso);
-        Assert.Equal("https://mseng.visualstudio.com/DefaultCollection/FakeProject/_git/Docfx?path=%2fsrc%2fdocfx%2fProgram.cs&version=GBdev&_a=contents", url.AbsoluteUri);
     }
 }
