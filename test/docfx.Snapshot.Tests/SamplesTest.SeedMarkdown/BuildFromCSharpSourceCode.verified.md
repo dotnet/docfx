@@ -1,6 +1,6 @@
-﻿# Namespace BuildFromCSharpSourceCode
+﻿# <a id="BuildFromCSharpSourceCode"></a> Namespace BuildFromCSharpSourceCode
 
 ### Classes
 
-[CSharp](BuildFromCSharpSourceCode.CSharp.md)
+ [CSharp](BuildFromCSharpSourceCode.CSharp.md)
 

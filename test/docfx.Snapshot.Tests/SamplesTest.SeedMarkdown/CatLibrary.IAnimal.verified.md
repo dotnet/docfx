@@ -1,7 +1,7 @@
-﻿# Interface IAnimal
+﻿# <a id="CatLibrary_IAnimal"></a> Interface IAnimal
 
 Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Assembly: CatLibrary.dll  
 
 This is <b>basic</b> interface of all animal.
 
@@ -11,7 +11,7 @@ public interface IAnimal
 
 ## Properties
 
-### <a id="CatLibrary_IAnimal_Name"></a>Name
+### <a id="CatLibrary_IAnimal_Name"></a> Name
 
 Name of Animal.
 
@@ -21,9 +21,9 @@ string Name { get; }
 
 #### Property Value
 
-[string](https://learn.microsoft.com/dotnet/api/system.string)
+ [string](https://learn.microsoft.com/dotnet/api/system.string)
 
-### <a id="CatLibrary_IAnimal_Item_System_Int32_"></a>this\[int\]
+### <a id="CatLibrary_IAnimal_Item_System_Int32_"></a> this\[int\]
 
 Return specific number animal's name.
 
@@ -33,11 +33,11 @@ string this[int index] { get; }
 
 #### Property Value
 
-[string](https://learn.microsoft.com/dotnet/api/system.string)
+ [string](https://learn.microsoft.com/dotnet/api/system.string)
 
 ## Methods
 
-### <a id="CatLibrary_IAnimal_Eat"></a>Eat\(\)
+### <a id="CatLibrary_IAnimal_Eat"></a> Eat\(\)
 
 Animal's eat method.
 
@@ -45,7 +45,7 @@ Animal's eat method.
 void Eat()
 ```
 
-### <a id="CatLibrary_IAnimal_Eat__1___0_"></a>Eat<Tool\>\(Tool\)
+### <a id="CatLibrary_IAnimal_Eat__1___0_"></a> Eat<Tool\>\(Tool\)
 
 Overload method of eat. This define the animal eat by which tool.
 
@@ -65,7 +65,7 @@ Tool name.
 
 It's a class type.
 
-### <a id="CatLibrary_IAnimal_Eat_System_String_"></a>Eat\(string\)
+### <a id="CatLibrary_IAnimal_Eat_System_String_"></a> Eat\(string\)
 
 Feed the animal with some food
 

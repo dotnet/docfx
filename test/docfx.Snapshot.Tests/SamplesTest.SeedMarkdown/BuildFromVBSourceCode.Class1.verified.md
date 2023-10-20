@@ -1,6 +1,6 @@
-﻿# Class Class1
+﻿# <a id="BuildFromVBSourceCode_Class1"></a> Class Class1
 
-Namespace: [BuildFromVBSourceCode](BuildFromVBSourceCode.md)
+Namespace: [BuildFromVBSourceCode](BuildFromVBSourceCode.md)  
 
 This is summary from vb class...
 
@@ -8,13 +8,13 @@ This is summary from vb class...
 public class Class1 : BaseClass1
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [BaseClass1](BuildFromVBSourceCode.BaseClass1.md) ← 
 [Class1](BuildFromVBSourceCode.Class1.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [BaseClass1.WithDeclarationKeyword\(Class1\)](BuildFromVBSourceCode.BaseClass1.md\#BuildFromVBSourceCode\_BaseClass1\_WithDeclarationKeyword\_BuildFromVBSourceCode\_Class1\_), 
 [object.Equals\(object\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
@@ -28,7 +28,7 @@ public class Class1 : BaseClass1
 
 ## Fields
 
-### <a id="BuildFromVBSourceCode_Class1_ValueClass"></a>ValueClass
+### <a id="BuildFromVBSourceCode_Class1_ValueClass"></a> ValueClass
 
 This is a *Value* type
 
@@ -38,11 +38,11 @@ public Class1 ValueClass
 
 #### Field Value
 
-[Class1](BuildFromVBSourceCode.Class1.md)
+ [Class1](BuildFromVBSourceCode.Class1.md)
 
 ## Properties
 
-### <a id="BuildFromVBSourceCode_Class1_Keyword"></a>Keyword
+### <a id="BuildFromVBSourceCode_Class1_Keyword"></a> Keyword
 
 ```csharp
 [Obsolete("This member is obsolete.", true)]
@@ -51,11 +51,11 @@ public Class1 Keyword { get; }
 
 #### Property Value
 
-[Class1](BuildFromVBSourceCode.Class1.md)
+ [Class1](BuildFromVBSourceCode.Class1.md)
 
 ## Methods
 
-### <a id="BuildFromVBSourceCode_Class1_Value_System_String_"></a>Value\(string\)
+### <a id="BuildFromVBSourceCode_Class1_Value_System_String_"></a> Value\(string\)
 
 This is a *Function*
 
@@ -72,12 +72,12 @@ Name as the **String**
 
 #### Returns
 
-[int](https://learn.microsoft.com/dotnet/api/system.int32)
+ [int](https://learn.microsoft.com/dotnet/api/system.int32)
 
 **Returns**
  Ahooo
 
-### <a id="BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_"></a>WithDeclarationKeyword\(Class1\)
+### <a id="BuildFromVBSourceCode_Class1_WithDeclarationKeyword_BuildFromVBSourceCode_Class1_"></a> WithDeclarationKeyword\(Class1\)
 
 What is **Sub**?
 
@@ -91,5 +91,5 @@ public override DateTime WithDeclarationKeyword(Class1 keyword)
 
 #### Returns
 
-[DateTime](https://learn.microsoft.com/dotnet/api/system.datetime)
+ [DateTime](https://learn.microsoft.com/dotnet/api/system.datetime)
 

@@ -1,0 +1,18 @@
+﻿{
+  "_appName": "Seed",
+  "_appTitle": "docfx seed website",
+  "_enableSearch": true,
+  "title": "Delegate MRefDelegate<K, T, L>",
+  "content": "<h1 class='section api' data-uid='CatLibrary.MRefDelegate`3' data-commentId='T:CatLibrary.MRefDelegate`3' id='CatLibrary_MRefDelegate_3'>Delegate MRefDelegate&lt;K, T, L&gt;</h1><div class=\"facts text-secondary\">\r\n<dl><dt>Namespace</dt><dd><a href='CatLibrary.html'>CatLibrary</a></dd></dl><dl><dt>Assembly</dt><dd>CatLibrary.dll</dd></dl>\r\n</div><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Generic delegate with many constrains.</p>\n<pre><code class='lang-csharp'>public delegate void MRefDelegate&lt;K, T, L&gt;(K k, T t, L l) where K : class, IComparable where T : struct where L : Tom, IEnumerable&lt;long&gt;</code></pre><h4 class='section'>Parameters</h4><dl class='parameters'><dt>\r\n<code>k</code>\r\nK\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Type K.</p>\n</dd><dt>\r\n<code>t</code>\r\nT\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Type T.</p>\n</dd><dt>\r\n<code>l</code>\r\nL\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Type L.</p>\n</dd></dl><h4 class='section'>Type Parameters</h4><dl class='parameters'><dt>\r\n<code>K</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Generic K.</p>\n</dd><dt>\r\n<code>T</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Generic T.</p>\n</dd><dt>\r\n<code>L</code>\r\n\r\n</dt>\r\n<dd><p sourceFile=\"obj/apipage/CatLibrary.MRefDelegate-3.yml\" sourceStartLineNumber=\"1\">Generic L.</p>\n</dd></dl>",
+  "yamlmime": "ApiPage",
+  "_disableNextArticle": true,
+  "_key": "obj/apipage/CatLibrary.MRefDelegate-3.yml",
+  "_navKey": "~/toc.yml",
+  "_navPath": "toc.html",
+  "_navRel": "../toc.html",
+  "_path": "apipage/CatLibrary.MRefDelegate-3.html",
+  "_rel": "../",
+  "_tocKey": "~/obj/apipage/toc.yml",
+  "_tocPath": "apipage/toc.html",
+  "_tocRel": "toc.html"
+}

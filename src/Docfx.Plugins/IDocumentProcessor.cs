@@ -12,7 +12,6 @@ public interface IDocumentProcessor
     ProcessingPriority GetProcessingPriority(FileAndType file);
     FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata);
 
-    // TODO: rename
     SaveResult Save(FileModel model);
 
     void UpdateHref(FileModel model, IDocumentBuildContext context);

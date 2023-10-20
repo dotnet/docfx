@@ -3,7 +3,7 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
-body[data-yaml-mime="ManagedReference"] article {
+body[data-yaml-mime="ManagedReference"], body[data-yaml-mime="ApiPage"] article {
   h1[data-uid] {
     position: relative;
     padding-right: 1.6rem;

@@ -1,7 +1,7 @@
-﻿# Class TomFromBaseClass
+﻿# <a id="CatLibrary_TomFromBaseClass"></a> Class TomFromBaseClass
 
 Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Assembly: CatLibrary.dll  
 
 *TomFromBaseClass* inherits from @
 
@@ -9,13 +9,13 @@ Assembly: CatLibrary.dll
 public class TomFromBaseClass : Tom
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Tom](CatLibrary.Tom.md) ← 
 [TomFromBaseClass](CatLibrary.TomFromBaseClass.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [Tom.TomMethod\(Complex<TomFromBaseClass, TomFromBaseClass\>, Tuple<string, Tom\>\)](CatLibrary.Tom.md\#CatLibrary\_Tom\_TomMethod\_CatLibrary\_Complex\_CatLibrary\_TomFromBaseClass\_CatLibrary\_TomFromBaseClass\_\_System\_Tuple\_System\_String\_CatLibrary\_Tom\_\_), 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
@@ -28,7 +28,7 @@ public class TomFromBaseClass : Tom
 
 ## Constructors
 
-### <a id="CatLibrary_TomFromBaseClass__ctor_System_Int32_"></a>TomFromBaseClass\(int\)
+### <a id="CatLibrary_TomFromBaseClass__ctor_System_Int32_"></a> TomFromBaseClass\(int\)
 
 This is a #ctor with parameter
 

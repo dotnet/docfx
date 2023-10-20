@@ -1,8 +1,11 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+
+#if NET7_0_OR_GREATER
 
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
+using Docfx.Build.ApiPage;
 using Docfx.Common;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
@@ -15,7 +18,7 @@ namespace Docfx.Dotnet;
 
 partial class DotnetApiCatalog
 {
-    private static void CreatePages(Func<string, string, PageWriter> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
+    private static void CreatePages(Action<string, string, ApiPage> output, List<(IAssemblySymbol symbol, Compilation compilation)> assemblies, ExtractMetadataConfig config, DotnetApiOptions options)
     {
         Directory.CreateDirectory(config.OutputFolder);
 
@@ -23,6 +26,7 @@ partial class DotnetApiCatalog
         var extensionMethods = assemblies.SelectMany(assembly => assembly.symbol.FindExtensionMethods(filter)).ToArray();
         var allAssemblies = new HashSet<IAssemblySymbol>(assemblies.Select(a => a.symbol), SymbolEqualityComparer.Default);
         var commentCache = new ConcurrentDictionary<ISymbol, XmlComment>(SymbolEqualityComparer.Default);
+        var symbolUrlKind = config.OutputFormat is MetadataOutputFormat.Markdown ? SymbolUrlKind.Markdown : SymbolUrlKind.Html;
         var toc = CreateToc(assemblies, config, options);
         var allSymbols = EnumerateToc(toc).SelectMany(node => node.symbols).ToList();
         allSymbols.Sort((a, b) => a.symbol.Name.CompareTo(b.symbol.Name));
@@ -33,7 +37,8 @@ partial class DotnetApiCatalog
 
         void SaveTocNode(string id, List<(ISymbol symbol, Compilation compilation)> symbols)
         {
-            var writer = output(config.OutputFolder, id);
+            var title = "";
+            var body = new List<Block>();
             var symbol = symbols[0].symbol;
             var compilation = symbols[0].compilation;
             var comment = Comment(symbol, compilation);
@@ -88,7 +93,39 @@ partial class DotnetApiCatalog
                     throw new NotSupportedException($"Unknown symbol type kind {symbols[0].symbol}");
             }
 
-            writer.End();
+            output(config.OutputFolder, id, new ApiPage
+            {
+                title = title,
+                languageId = "csharp",
+                body = body.ToArray(),
+            });
+
+            void Heading(int level, string title, string? id = null)
+            {
+                body.Add(level switch
+                {
+                    1 => (Heading)new H1 { h1 = title, id = id },
+                    2 => (Heading)new H2 { h2 = title, id = id },
+                    3 => (Heading)new H3 { h3 = title, id = id },
+                    4 => (Heading)new H4 { h4 = title, id = id },
+                    5 => (Heading)new H5 { h5 = title, id = id },
+                    6 => (Heading)new H6 { h6 = title, id = id },
+                });
+            }
+
+            void Api(int level, string title, ISymbol symbol)
+            {
+                var uid = VisitorHelper.GetId(symbol);
+                var id = Regex.Replace(uid, @"\W", "_");
+                var commentId = VisitorHelper.GetCommentId(symbol);
+                body.Add(level switch
+                {
+                    1 => (Api)new Api1 { api1 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    2 => (Api)new Api2 { api2 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    3 => (Api)new Api3 { api3 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    4 => (Api)new Api4 { api4 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                });
+            }
 
             void Namespace()
             {
@@ -98,7 +135,7 @@ partial class DotnetApiCatalog
                     where s.symbol.Kind is SymbolKind.NamedType && namespaceSymbols.Contains(s.symbol.ContainingNamespace)
                     select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
 
-                writer.Heading(1, $"Namespace {symbol}");
+                Api(1, title = $"Namespace {symbol}", symbol);
 
                 Summary(comment);
                 Namespaces();
@@ -119,7 +156,7 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(3, "Namespaces");
+                    Heading(3, "Namespaces");
                     SummaryList(items);
                 }
 
@@ -129,16 +166,16 @@ partial class DotnetApiCatalog
                     if (items.Count == 0)
                         return;
 
-                    writer.Heading(3, headingText);
+                    Heading(3, headingText);
                     SummaryList(items);
                 }
             }
 
             void Enum(INamedTypeSymbol type)
             {
-                writer.Heading(1, $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
-                writer.Facts(Facts().ToArray());
+                body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
                 Syntax(symbol);
 
@@ -153,9 +190,9 @@ partial class DotnetApiCatalog
 
             void Delegate(INamedTypeSymbol type)
             {
-                writer.Heading(1, $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
-                writer.Facts(Facts().ToArray());
+                body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
                 Syntax(symbol);
 
@@ -181,9 +218,9 @@ partial class DotnetApiCatalog
                     _ => throw new InvalidOperationException(),
                 };
 
-                writer.Heading(1, $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}");
+                Api(1, title = $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
 
-                writer.Facts(Facts().ToArray());
+                body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
                 Syntax(symbol);
 
@@ -218,7 +255,7 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(2, "Fields");
+                    Heading(2, "Fields");
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
@@ -242,7 +279,7 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(2, "Properties");
+                    Heading(2, "Properties");
 
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
@@ -266,7 +303,7 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(2, headingText);
+                    Heading(2, headingText);
                     if (config.MemberLayout is MemberLayout.SeparatePages)
                     {
                         SummaryList(items);
@@ -309,8 +346,9 @@ partial class DotnetApiCatalog
                         return;
 
                     items.Reverse();
-                    writer.Heading(6, "Inheritance");
-                    List(items, ListDelimiter.LeftArrow);
+
+                    Heading(4, "Inheritance");
+                    body.Add(new Inheritance { inheritance = items.Select(i => ShortLink(i, compilation)).ToArray() });
                 }
 
                 void Derived()
@@ -323,8 +361,8 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(6, "Derived");
-                    List(items);
+                    Heading(4, "Derived");
+                    body.Add(new List { list = items.Select(i => ShortLink(i, compilation)).ToArray() });
                 }
 
                 void Implements()
@@ -333,8 +371,8 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(6, "Implements");
-                    List(items);
+                    Heading(4, "Implements");
+                    body.Add(new List { list = items.Select(i => ShortLink(i, compilation)).ToArray() });
                 }
 
                 void InheritedMembers()
@@ -343,15 +381,15 @@ partial class DotnetApiCatalog
                     if (items.Count is 0)
                         return;
 
-                    writer.Heading(6, "Inherited Members");
-                    List(items);
+                    Heading(4, "Inherited Members");
+                    body.Add(new List { list = items.Select(i => ShortLink(i, compilation)).ToArray() });
                 }
             }
 
             void MemberHeader(string headingText)
             {
-                writer.Heading(1, $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}");
-                writer.Facts(Facts().ToArray());
+                Api(1, title = $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}", symbol);
+                body.Add(new Facts { facts = Facts().ToArray() });
             }
 
             void ExtensionMethods(INamedTypeSymbol type)
@@ -366,24 +404,22 @@ partial class DotnetApiCatalog
                 if (items.Count is 0)
                     return;
 
-                writer.Heading(6, "Extension Methods");
-                List(items);
+                Heading(4, "Extension Methods");
+                body.Add(new List { list = items.Select(i => ShortLink(i, compilation)).ToArray() });
             }
 
             void SummaryList<T>(IEnumerable<(T, Compilation)> items) where T : ISymbol
             {
-                writer.ParameterList(items.Select(i =>
+                body.Add(new Parameters
                 {
-                    var (symbol, compilation) = i;
-                    var comment = Comment(symbol, compilation);
-                    var type = symbol is INamedTypeSymbol ? ShortLink(symbol, compilation) : NameOnlyLink(symbol, compilation);
-                    return new Parameter { type =type, docs = comment?.Summary };
-                }).ToArray());
-            }
-
-            void List(IEnumerable<ISymbol> items, ListDelimiter delimiter = ListDelimiter.Comma)
-            {
-                writer.List(delimiter, items.Select(i => ShortLink(i, compilation)).ToArray());
+                    parameters = items.Select(i =>
+                    {
+                        var (symbol, compilation) = i;
+                        var comment = Comment(symbol, compilation);
+                        var type = symbol is INamedTypeSymbol ? ShortLink(symbol, compilation) : NameOnlyLink(symbol, compilation);
+                        return new Parameter { type = type, description = comment?.Summary };
+                    }).ToArray()
+                });
             }
 
             void Parameters(ISymbol symbol, XmlComment? comment, int headingLevel)
@@ -392,13 +428,13 @@ partial class DotnetApiCatalog
                 if (!parameters.Any())
                     return;
 
-                writer.Heading(headingLevel, "Parameters");
-                writer.ParameterList(parameters.Select(ToParameter).ToArray());
+                Heading(headingLevel, "Parameters");
+                body.Add(new Parameters { parameters = parameters.Select(ToParameter).ToArray() });
 
                 Parameter ToParameter(IParameterSymbol param)
                 {
                     var docs = comment?.Parameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
-                    return new() { name = param.Name, type = FullLink(param.Type, compilation), docs = docs };
+                    return new() { name = param.Name, type = FullLink(param.Type, compilation), description = docs, optional = param.IsOptional ? true : null };
                 }
             }
 
@@ -407,8 +443,14 @@ partial class DotnetApiCatalog
                 if (symbol.ReturnType is null || symbol.ReturnType.SpecialType is SpecialType.System_Void)
                     return;
 
-                writer.Heading(headingLevel, "Returns");
-                writer.ParameterList(new Parameter { type = FullLink(symbol.ReturnType, compilation), docs = comment?.Returns });
+                Heading(headingLevel, "Returns");
+                body.Add(new Parameters
+                {
+                    parameters = new[]
+                    {
+                        new Parameter() { type = FullLink(symbol.ReturnType, compilation), description = comment?.Returns }
+                    }
+                });
             }
 
             void TypeParameters(ISymbol symbol, XmlComment? comment, int headingLevel)
@@ -416,20 +458,19 @@ partial class DotnetApiCatalog
                 if (symbol.GetTypeParameters() is { } typeParameters && typeParameters.Length is 0)
                     return;
 
-                writer.Heading(headingLevel, "Type Parameters");
-                writer.ParameterList(typeParameters.Select(ToParameter).ToArray());
+                Heading(headingLevel, "Type Parameters");
+                body.Add(new Parameters { parameters = typeParameters.Select(ToParameter).ToArray() });
 
                 Parameter ToParameter(ITypeParameterSymbol param)
                 {
                     var docs = comment?.TypeParameters is { } p && p.TryGetValue(param.Name, out var value) ? value : null;
-                    return new() { name = param.Name, docs = docs };
+                    return new() { name = param.Name, description = docs };
                 }
             }
 
             void Method(IMethodSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -447,15 +488,20 @@ partial class DotnetApiCatalog
 
             void Field(IFieldSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                writer.Heading(headingLevel + 1, "Field Value");
-                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
+                Heading(headingLevel + 1, "Field Value");
+                body.Add(new Parameters
+                {
+                    parameters = new[]
+                    {
+                        new Parameter() { type = FullLink(symbol.Type, compilation) }
+                    }
+                });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -465,15 +511,20 @@ partial class DotnetApiCatalog
 
             void Property(IPropertySymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                writer.Heading(headingLevel + 1, "Property Value");
-                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
+                Heading(headingLevel + 1, "Property Value");
+                body.Add(new Parameters
+                {
+                    parameters = new[]
+                    {
+                        new Parameter() { type = FullLink(symbol.Type, compilation) }
+                    }
+                });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -483,15 +534,20 @@ partial class DotnetApiCatalog
 
             void Event(IEventSymbol symbol, Compilation compilation, int headingLevel)
             {
-                var fragment = Regex.Replace(VisitorHelper.GetId(symbol), @"\W", "_");
-                writer.Heading(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), fragment);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
                 Syntax(symbol);
 
-                writer.Heading(headingLevel + 1, "Event Type");
-                writer.ParameterList(new Parameter { type = FullLink(symbol.Type, compilation) });
+                Heading(headingLevel + 1, "Event Type");
+                body.Add(new Parameters
+                {
+                    parameters = new[]
+                    {
+                        new Parameter() { type = FullLink(symbol.Type, compilation) }
+                    }
+                });
 
                 Examples(comment, headingLevel + 1);
                 Remarks(comment, headingLevel + 1);
@@ -508,13 +564,13 @@ partial class DotnetApiCatalog
                 if (config.EnumSortOrder is EnumSortOrder.Alphabetic)
                     items = items.OrderBy(m => m.Name).ToList();
 
-                writer.Heading(2, "Fields");
-                writer.ParameterList(items.Select(ToParameter).ToArray());
+                body.Add((Heading)new H2 { h2 = "Fields" });
+                body.Add(new Parameters { parameters = items.Select(ToParameter).ToArray() });
 
                 Parameter ToParameter(IFieldSymbol item)
                 {
                     var docs = Comment(item, compilation) is { } comment ? comment.Summary : null;
-                    return new() { name = item.Name, defaultValue = $"{item.ConstantValue}", docs = docs };
+                    return new() { name = item.Name, @default = $"{item.ConstantValue}", description = docs };
                 }
             }
 
@@ -524,29 +580,29 @@ partial class DotnetApiCatalog
 
                 var assemblies = symbols.Select(s => s.symbol.ContainingAssembly.Name).Where(n => n != "?").Distinct().Select(n => $"{n}.dll").ToList();
                 if (assemblies.Count > 0)
-                    yield return new("Assembly", new[] { new TextSpan(string.Join(", ", assemblies)) });
+                    yield return new("Assembly", (Span)string.Join(", ", assemblies));
             }
 
             void Summary(XmlComment? comment)
             {
                 if (!string.IsNullOrEmpty(comment?.Summary))
-                    writer.Markdown(comment.Summary);
+                    body.Add(new Markdown { markdown = comment.Summary });
             }
 
             void Syntax(ISymbol symbol)
             {
                 var syntax = SymbolFormatter.GetSyntax(symbol, SyntaxLanguage.CSharp, filter);
-                writer.Declaration(syntax, "csharp");
+                body.Add(new Code { code = syntax });
             }
 
             void Examples(XmlComment? comment, int headingLevel = 2)
             {
                 if (comment?.Examples?.Count > 0)
                 {
-                    writer.Heading(headingLevel, "Examples");
+                    Heading(headingLevel, "Examples");
 
                     foreach (var example in comment.Examples)
-                        writer.Markdown(example);
+                        body.Add(new Markdown { markdown = example });
                 }
             }
 
@@ -554,8 +610,8 @@ partial class DotnetApiCatalog
             {
                 if (!string.IsNullOrEmpty(comment?.Remarks))
                 {
-                    writer.Heading(headingLevel, "Remarks");
-                    writer.Markdown(comment.Remarks);
+                    Heading(headingLevel, "Remarks");
+                    body.Add(new Markdown { markdown = comment.Remarks });
                 }
             }
 
@@ -563,9 +619,15 @@ partial class DotnetApiCatalog
             {
                 if (comment?.Exceptions?.Count > 0)
                 {
-                    writer.Heading(headingLevel, "Exceptions");
-                    writer.ParameterList(comment.Exceptions.Select(
-                        e => new Parameter() { type = Cref(e.CommentId), docs = e.Description }).ToArray());
+                    Heading(headingLevel, "Exceptions");
+                    body.Add(new Parameters
+                    {
+                        parameters = comment.Exceptions.Select(e => new Parameter()
+                        {
+                            type = Cref(e.CommentId),
+                            description = e.Description,
+                        }).ToArray()
+                    });
                 }
             }
 
@@ -573,42 +635,50 @@ partial class DotnetApiCatalog
             {
                 if (comment?.SeeAlsos?.Count > 0)
                 {
-                    writer.Heading(headingLevel, "See Also");
-                    writer.List(ListDelimiter.NewLine, comment.SeeAlsos.Select(s => s.LinkType switch
+                    Heading(headingLevel, "See Also");
+                    body.Add(new List
                     {
-                        LinkType.CRef => Cref(s.CommentId),
-                        LinkType.HRef => new[] { new TextSpan(s.LinkId, (string?)s.LinkId) },
-                        _ => throw new NotSupportedException($"{s.LinkType}"),
-                    }).ToArray());
+                        list = comment.SeeAlsos.Select(s => s.LinkType switch
+                        {
+                            LinkType.CRef => Cref(s.CommentId),
+                            LinkType.HRef => Link(s.LinkId, s.LinkId),
+                            _ => throw new NotSupportedException($"{s.LinkType}"),
+                        }).ToArray()
+                    });
                 }
             }
 
-            TextSpan[] Cref(string commentId)
+            Inline Cref(string commentId)
             {
-                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? FullLink(symbol, compilation) : Array.Empty<TextSpan>();
+                return DocumentationCommentId.GetFirstSymbolForDeclarationId(commentId, compilation) is { } symbol ? FullLink(symbol, compilation) : Array.Empty<Span>();
             }
         }
 
-        TextSpan[] ShortLink(ISymbol symbol, Compilation compilation)
+        Inline ShortLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetNameWithType(symbol, SyntaxLanguage.CSharp);
-            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
-            return new[] { new TextSpan(title, url) };
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies);
+            return Link(title, url);
         }
 
-        TextSpan[] FullLink(ISymbol symbol, Compilation compilation)
+        Inline FullLink(ISymbol symbol, Compilation compilation)
         {
             var parts = SymbolFormatter.GetNameWithTypeParts(symbol, SyntaxLanguage.CSharp);
-            var linkItems = SymbolFormatter.ToLinkItems(parts, compilation, config.MemberLayout, allAssemblies, overload: false, SymbolUrlKind.Markdown);
+            var linkItems = SymbolFormatter.ToLinkItems(parts, compilation, config.MemberLayout, allAssemblies, overload: false, symbolUrlKind);
 
-            return linkItems.Select(i => new TextSpan(i.DisplayName, (string?)i.Href)).ToArray();
+            return linkItems.Select(i => Link(i.DisplayName, i.Href)).ToArray();
         }
 
-        TextSpan[] NameOnlyLink(ISymbol symbol, Compilation compilation)
+        Inline NameOnlyLink(ISymbol symbol, Compilation compilation)
         {
             var title = SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp);
-            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, SymbolUrlKind.Markdown, allAssemblies);
-            return new[] { new TextSpan(title, url) };
+            var url = SymbolUrlResolver.GetSymbolUrl(symbol, compilation, config.MemberLayout, symbolUrlKind, allAssemblies);
+            return Link(title, url);
+        }
+
+        Span Link(string text, string? url)
+        {
+            return string.IsNullOrEmpty(url) ? text : new LinkSpan { text = text, url = url };
         }
 
         XmlComment? Comment(ISymbol symbol, Compilation compilation)
@@ -648,3 +718,5 @@ partial class DotnetApiCatalog
         }
     }
 }
+
+#endif

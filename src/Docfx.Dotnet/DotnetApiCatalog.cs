@@ -1,11 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json;
 using Docfx.Common;
 using Docfx.Exceptions;
 using Docfx.Plugins;
 using Microsoft.Build.Locator;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.Serialization;
 
 namespace Docfx.Dotnet;
 
@@ -85,8 +87,34 @@ public static partial class DotnetApiCatalog
             switch (config.OutputFormat)
             {
                 case MetadataOutputFormat.Markdown:
+#if NET7_0_OR_GREATER
                     Logger.LogWarning($"Markdown output format is experimental.");
-                    CreatePages(MarkdownWriter.Create, assemblies, config, options);
+                    CreatePages(WriteMarkdown, assemblies, config, options);
+
+                    void WriteMarkdown(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
+                    {
+                        File.WriteAllText(Path.Combine(outputFolder, $"{id}.md"), Docfx.Build.ApiPage.ApiPageMarkdownTemplate.Render(apiPage));
+                    }
+#else
+                    Logger.LogError($"Markdown output format is only supported for docfx built against .NET 7 or greater.");
+#endif
+                    break;
+
+                case MetadataOutputFormat.ApiPage:
+#if NET7_0_OR_GREATER
+                    Logger.LogWarning($"ApiPage output format is experimental.");
+                    var serializer = new DeserializerBuilder().WithAttemptingUnquotedStringTypeDeserialization().Build();
+                    CreatePages(WriteYaml, assemblies, config, options);
+
+                    void WriteYaml(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
+                    {
+                        var json = JsonSerializer.Serialize(apiPage, Docfx.Build.ApiPage.ApiPage.JsonSerializerOptions);
+                        var obj = serializer.Deserialize(json);
+                        YamlUtility.Serialize(Path.Combine(outputFolder, $"{id}.yml"), obj, "YamlMime:ApiPage");
+                    }
+#else
+                    Logger.LogError($"ApiPage output format is only supported for docfx built against .NET 7 or greater.");
+#endif
                     break;
 
                 case MetadataOutputFormat.Mref:

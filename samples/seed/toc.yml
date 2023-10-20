@@ -8,5 +8,7 @@
     href: obj/api/
   - name: .NET API (markdown)
     href: obj/md/
+  - name: .NET API (apipage)
+    href: obj/apipage/
   - name: REST API
     href: restapi/

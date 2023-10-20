@@ -1,7 +1,7 @@
-﻿# Class ICatExtension
+﻿# <a id="CatLibrary_ICatExtension"></a> Class ICatExtension
 
 Namespace: [CatLibrary](CatLibrary.md)  
-Assembly: CatLibrary.dll
+Assembly: CatLibrary.dll  
 
 It's the class that contains ICat interface's extension method.
 <p>This class must be <b>public</b> and <b>static</b>.</p>
@@ -11,12 +11,12 @@ It's the class that contains ICat interface's extension method.
 public static class ICatExtension
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [ICatExtension](CatLibrary.ICatExtension.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
@@ -28,7 +28,7 @@ public static class ICatExtension
 
 ## Methods
 
-### <a id="CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_"></a>Play\(ICat, ColorType\)
+### <a id="CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_"></a> Play\(ICat, ColorType\)
 
 Extension method to let cat play
 
@@ -46,7 +46,7 @@ Cat
 
 Something to play
 
-### <a id="CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_"></a>Sleep\(ICat, long\)
+### <a id="CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_"></a> Sleep\(ICat, long\)
 
 Extension method hint that how long the cat can sleep.
 

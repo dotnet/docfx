@@ -67,6 +67,11 @@ internal enum MetadataOutputFormat
     /// Output as common-mark compliant markdown file
     /// </summary>
     Markdown,
+
+    /// <summary>
+    /// Output as ApiPage YAML files
+    /// </summary>
+    ApiPage,
 }
 
 /// <summary>

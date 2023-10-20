@@ -1,17 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-/**
- * This file is used to generate the API page JSON schema. To generate the schema:
- *   1. run `npx typescript-json-schema ApiPage.schema.d.ts ApiPage --required --strictNullChecks --out ApiPage.schema.json`
- *   2. manually mark properties as markdown
- */
-
 /** Define the markdown content type */
 type markdown = string;
 
 /** Represents an inline composed of text or links */
-type Inline = string | (string | { text: string; url?: string })[];
+type Span = string | { text: string; url?: string };
+type Inline = Span | Span[];
 
 /** Represents a markdown block */
 type Markdown = {
@@ -44,7 +39,7 @@ type Api = (
   /** API source URL */
   src?: string;
 
-  /** Opaque metadata about the API as HTML data-* attributes  */
+  /** Opaque metadata about the API as HTML data-{key} attributes  */
   metadata?: { [key: string]: string };
 };
 
@@ -71,31 +66,33 @@ type Code = {
   /** Code text */
   code: string;
 
-  /** Code [langauge identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers) */
+  /** Code [language identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers) */
   languageId?: string;
 };
 
+type Param = {
+  /** Parameter name */
+  name?: string;
+
+  /** Parameter type */
+  type?: Inline;
+
+  /** Parameter default value */
+  default?: string;
+
+  /** Parameter description in markdown format */
+  description?: markdown;
+
+  /** Is this parameter deprecated, or the deprecation reason */
+  deprecated?: boolean | string;
+
+  /** Is this parameter optional? */
+  optional?: boolean;
+}
+
 /** Represents a set of parameters */
 type Params = {
-  parameters: {
-    /** Parameter name */
-    name?: string;
-
-    /** Parameter type */
-    type?: Inline;
-
-    /** Parameter default value */
-    default?: string;
-
-    /** Parameter description in markdown format */
-    description?: markdown;
-
-    /** Is this parameter deprecated, or the deprecation reason */
-    deprecated?: boolean | string;
-
-    /** Is this parameter optional? */
-    optional?: boolean;
-  }[];
+  parameters: Param[];
 };
 
 /** Represents block level elements */
@@ -114,7 +111,7 @@ type ApiPage = {
   /** Page title */
   title: string;
 
-  /** Opaque metadata about the page as HTML <meta> tags  */
+  /** Opaque metadata about the page as HTML \<meta> tags  */
   metadata?: { [key: string]: string | string[] };
 
   /** Default code [language identifier](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers) */

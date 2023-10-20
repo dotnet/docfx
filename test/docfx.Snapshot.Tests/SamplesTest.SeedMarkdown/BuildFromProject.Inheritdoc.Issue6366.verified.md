@@ -1,18 +1,18 @@
-﻿# Class Inheritdoc.Issue6366
+﻿# <a id="BuildFromProject_Inheritdoc_Issue6366"></a> Class Inheritdoc.Issue6366
 
 Namespace: [BuildFromProject](BuildFromProject.md)  
-Assembly: BuildFromProject.dll
+Assembly: BuildFromProject.dll  
 
 ```csharp
 public class Inheritdoc.Issue6366
 ```
 
-###### Inheritance
+#### Inheritance
 
 [object](https://learn.microsoft.com/dotnet/api/system.object) ← 
 [Inheritdoc.Issue6366](BuildFromProject.Inheritdoc.Issue6366.md)
 
-###### Inherited Members
+#### Inherited Members
 
 [object.Equals\(object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\)), 
 [object.Equals\(object?, object?\)](https://learn.microsoft.com/dotnet/api/system.object.equals\#system\-object\-equals\(system\-object\-system\-object\)), 
