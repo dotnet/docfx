@@ -105,9 +105,9 @@ public class OverwriteApplier
             {
                 ["remote"] = overwrite.Documentation.Remote == null ? null : new Dictionary<string, object>
                 {
-                    ["path"] = overwrite.Documentation.Remote.RelativePath,
-                    ["branch"] = overwrite.Documentation.Remote.RemoteBranch,
-                    ["repo"] = overwrite.Documentation.Remote.RemoteRepositoryUrl,
+                    ["path"] = overwrite.Documentation.Remote.Path,
+                    ["branch"] = overwrite.Documentation.Remote.Branch,
+                    ["repo"] = overwrite.Documentation.Remote.Repo,
                 }
                 ["path"] = overwrite.Documentation?.Path,
                 ["startLine"] = overwrite.Documentation?.StartLine ?? 0,

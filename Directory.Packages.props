@@ -3,19 +3,17 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-
   <ItemGroup>
+    <PackageVersion Include="GitReader" Version="1.4.0" />
     <PackageVersion Include="HtmlAgilityPack" Version="1.11.54" />
     <PackageVersion Include="ICSharpCode.Decompiler" Version="8.1.1.7464" />
     <PackageVersion Include="IgnoresAccessChecksToGenerator" Version="0.6.0" />
     <PackageVersion Include="Jint" Version="3.0.0-beta-2052" />
     <PackageVersion Include="JsonSchema.Net" Version="5.2.6" />
     <PackageVersion Include="Markdig" Version="0.33.0" />
-
-     <!-- "17.3.2" is the latest compatible version for .NET 6 -->
+    <!-- "17.3.2" is the latest compatible version for .NET 6 -->
     <PackageVersion Include="Microsoft.Build" Version="[17.3.2]" Condition="'$(TargetFramework)' == 'net6.0'" />
-    <PackageVersion Include="Microsoft.Build" Version="17.7.2"   Condition="'$(TargetFramework)' != 'net6.0'" />
-
+    <PackageVersion Include="Microsoft.Build" Version="17.7.2" Condition="'$(TargetFramework)' != 'net6.0'" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.6.10" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
@@ -36,15 +34,14 @@
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageVersion Include="YamlDotNet" Version="13.7.1" />
-
     <!-- Test only -->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.3.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' != 'net8.0'"  />
-    <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' == 'net8.0'"  />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' != 'net8.0'" />
+    <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />
     <PackageVersion Include="Verify.Xunit" Version="22.1.4" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />

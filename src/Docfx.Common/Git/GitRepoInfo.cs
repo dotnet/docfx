@@ -14,16 +14,4 @@ public class GitRepoInfo
     public string RepoProject { get; set; }
 
     public Uri NormalizedRepoUrl { get; set; }
-
-    public string RepoRootPath { get; set; }
-
-    public string LocalBranch { get; set; }
-
-    public string RemoteBranch { get; set; }
-
-    public string RemoteOriginUrl { get; set; }
-
-    public string RemoteHeadCommitId { get; set; }
-
-    public string LocalHeadCommitId { get; set; }
 }

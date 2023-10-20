@@ -6,49 +6,20 @@ using YamlDotNet.Serialization;
 
 namespace Docfx.Common.Git;
 
-public class GitDetail
+public record GitDetail
 {
     /// <summary>
     /// Relative path of current file to the Git Root Directory
     /// </summary>
     [YamlMember(Alias = "path")]
     [JsonProperty("path")]
-    public string RelativePath { get; set; }
+    public string Path { get; set; }
 
     [YamlMember(Alias = "branch")]
     [JsonProperty("branch")]
-    public string RemoteBranch { get; set; }
+    public string Branch { get; set; }
 
     [YamlMember(Alias = "repo")]
     [JsonProperty("repo")]
-    public string RemoteRepositoryUrl { get; set; }
-
-    // remove it to avoid config hash changed
-    //[YamlMember(Alias = "commit")]
-    //[JsonProperty("commit")]
-    //public string CommitId { get; set; }
-
-    // remove it to avoid config hash changed
-    //[JsonProperty("key")]
-    //[YamlMember(Alias = "key")]
-    //public string Description { get; set; }
-
-    public override bool Equals(object obj)
-    {
-        if (obj == null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (GetType() != obj.GetType()) return false;
-
-        return Equals(ToString(), obj.ToString());
-    }
-
-    public override int GetHashCode()
-    {
-        return ToString().GetHashCode();
-    }
-
-    public override string ToString()
-    {
-        return $"branch: {RemoteBranch}, url: {RemoteRepositoryUrl}, file: {RelativePath}";
-    }
+    public string Repo { get; set; }
 }

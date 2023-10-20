@@ -93,8 +93,8 @@ public class UniversalReferenceDocumentProcessorTest : TestBase
         Assert.Equal("Value", classModel.Name[0].Value);
         Assert.Equal("cntk.core.Value", classModel.FullName[0].Value);
 
-        Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.RemoteRepositoryUrl);
-        Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.RelativePath);
+        Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.Repo);
+        Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.Path);
         Assert.Equal(182, classModel.Source[0].Value.StartLine);
 
         Assert.Equal(6, classModel.Syntax.Parameters.Count);

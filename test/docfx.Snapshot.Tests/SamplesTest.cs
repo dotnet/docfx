@@ -176,7 +176,10 @@ public class SamplesTest
 
         static string NormalizeHtml(string html)
         {
-            return Regex.Replace(Regex.Replace(html, "<!--.*?-->", ""), @"mermaid-\d+", "");
+            html = Regex.Replace(html, "<!--.*?-->", "");
+            html = Regex.Replace(html, @"mermaid-\d+", "");
+            html = Regex.Replace(html, @"flowchart-\w+-\d", "");
+            return html;
         }
     }
 
