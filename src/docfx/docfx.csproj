@@ -7,6 +7,10 @@
     <Description>The docfx command line tool published as .NET tool</Description>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../../THIRD-PARTY-NOTICES.TXT" CopyToOutputDirectory="PreserveNewest" PackageCopyToOutput="true" />
+  </ItemGroup>
+
   <!-- Custom target to merge docfx templates to TargetFramework independent folder.
        By default, docfx templates is packed to `tools/$(TargetFramework)/any/templates/*`.
        This target rewrite PackagePath and template files are placed at `templates/*` directory. -->
