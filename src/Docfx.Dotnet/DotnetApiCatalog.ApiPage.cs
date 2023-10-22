@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Docfx.Build.ApiPage;
 using Docfx.Common;
+using Docfx.Common.Git;
 using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
@@ -113,17 +114,22 @@ partial class DotnetApiCatalog
                 });
             }
 
-            void Api(int level, string title, ISymbol symbol)
+            void Api(int level, string title, ISymbol symbol, Compilation compilation)
             {
                 var uid = VisitorHelper.GetId(symbol);
                 var id = Regex.Replace(uid, @"\W", "_");
                 var commentId = VisitorHelper.GetCommentId(symbol);
+                var source = config.DisableGitFeatures ? null : VisitorHelper.GetSourceDetail(symbol, compilation);
+                var git = source is null || source.Remote is null ? null
+                    : new GitSource(source.Remote.Repo, source.Remote.Branch, source.Remote.Path, source.StartLine + 1);
+                var src = git is null ? null : options.SourceUrl?.Invoke(git) ?? GitUtility.GetSourceUrl(git);
+
                 body.Add(level switch
                 {
-                    1 => (Api)new Api1 { api1 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    2 => (Api)new Api2 { api2 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    3 => (Api)new Api3 { api3 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    4 => (Api)new Api4 { api4 = title, id = id, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    1 => (Api)new Api1 { api1 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    2 => (Api)new Api2 { api2 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    3 => (Api)new Api3 { api3 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    4 => (Api)new Api4 { api4 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
                 });
             }
 
@@ -135,7 +141,7 @@ partial class DotnetApiCatalog
                     where s.symbol.Kind is SymbolKind.NamedType && namespaceSymbols.Contains(s.symbol.ContainingNamespace)
                     select (symbol: (INamedTypeSymbol)s.symbol, s.compilation)).ToList();
 
-                Api(1, title = $"Namespace {symbol}", symbol);
+                Api(1, title = $"Namespace {symbol}", symbol, compilation);
 
                 Summary(comment);
                 Namespaces();
@@ -173,7 +179,7 @@ partial class DotnetApiCatalog
 
             void Enum(INamedTypeSymbol type)
             {
-                Api(1, title = $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
+                Api(1, title = $"Enum {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol, compilation);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -190,7 +196,7 @@ partial class DotnetApiCatalog
 
             void Delegate(INamedTypeSymbol type)
             {
-                Api(1, title = $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
+                Api(1, title = $"Delegate {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol, compilation);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -218,7 +224,7 @@ partial class DotnetApiCatalog
                     _ => throw new InvalidOperationException(),
                 };
 
-                Api(1, title = $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol);
+                Api(1, title = $"{typeHeader} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp)}", symbol, compilation);
 
                 body.Add(new Facts { facts = Facts().ToArray() });
                 Summary(comment);
@@ -388,7 +394,7 @@ partial class DotnetApiCatalog
 
             void MemberHeader(string headingText)
             {
-                Api(1, title = $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}", symbol);
+                Api(1, title = $"{headingText} {SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp, overload: true)}", symbol, compilation);
                 body.Add(new Facts { facts = Facts().ToArray() });
             }
 
@@ -470,7 +476,7 @@ partial class DotnetApiCatalog
 
             void Method(IMethodSymbol symbol, Compilation compilation, int headingLevel)
             {
-                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol, compilation);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -488,7 +494,7 @@ partial class DotnetApiCatalog
 
             void Field(IFieldSymbol symbol, Compilation compilation, int headingLevel)
             {
-                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol, compilation);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -511,7 +517,7 @@ partial class DotnetApiCatalog
 
             void Property(IPropertySymbol symbol, Compilation compilation, int headingLevel)
             {
-                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol, compilation);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);
@@ -534,7 +540,7 @@ partial class DotnetApiCatalog
 
             void Event(IEventSymbol symbol, Compilation compilation, int headingLevel)
             {
-                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol);
+                Api(headingLevel, SymbolFormatter.GetName(symbol, SyntaxLanguage.CSharp), symbol, compilation);
 
                 var comment = Comment(symbol, compilation);
                 Summary(comment);

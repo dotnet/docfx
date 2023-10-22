@@ -40,17 +40,25 @@ static class ApiPageHtmlTemplate
             H6 h6 => Html($"<h6 class='section' id='{h6.id}'>{h6.h6}</h6>"),
         };
 
-        HtmlTemplate Api(Api api) => api.Value switch
+        HtmlTemplate Api(Api api)
         {
-            Api1 api1 => Html($"<h1 class='section api' {Attributes(api1.metadata)} id='{api1.id}'>{api1.api1}</h1>"),
-            Api2 api2 => Html($"<h2 class='section api' {Attributes(api2.metadata)} id='{api2.id}'>{api2.api2}</h2>"),
-            Api3 api3 => Html($"<h3 class='section api' {Attributes(api3.metadata)} id='{api3.id}'>{api3.api3}</h3>"),
-            Api4 api4 => Html($"<h4 class='section api' {Attributes(api4.metadata)} id='{api4.id}'>{api4.api4}</h4>"),
-        };
+            var value = (ApiBase)api.Value;
+            var attributes = value.metadata is null
+                ? default
+                : UnsafeHtml(string.Join(" ", value.metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
 
-        HtmlTemplate Attributes(Dictionary<string, string>? metadata) => metadata is null
-            ? default
-            : UnsafeHtml(string.Join(" ", metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
+            var src = string.IsNullOrEmpty(value.src)
+                ? default
+                : Html($" <a class='header-action link-secondary' title='View source' href='{value.src}'><i class='bi bi-code-slash'></i></a>");
+
+            return api.Value switch
+            {
+                Api1 api1 => Html($"<h1 class='section api' {attributes} id='{value.id}'>{api1.api1}{src}</h1>"),
+                Api2 api2 => Html($"<h2 class='section api' {attributes} id='{value.id}'>{api2.api2}{src}</h2>"),
+                Api3 api3 => Html($"<h3 class='section api' {attributes} id='{value.id}'>{api3.api3}{src}</h3>"),
+                Api4 api4 => Html($"<h4 class='section api' {attributes} id='{value.id}'>{api4.api4}{src}</h4>"),
+            };
+        }
 
         HtmlTemplate Facts(Facts facts) => facts.facts.Length is 0 ? default : Html(
             $"""
