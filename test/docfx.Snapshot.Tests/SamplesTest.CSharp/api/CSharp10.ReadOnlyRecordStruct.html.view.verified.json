@@ -262,8 +262,7 @@
             "id": ".ctor",
             "path": "src/CSharp10.cs",
             "startLine": 2.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -449,8 +448,7 @@
             "id": "X",
             "path": "src/CSharp10.cs",
             "startLine": 2.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -629,8 +627,7 @@
             "id": "Y",
             "path": "src/CSharp10.cs",
             "startLine": 2.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -809,8 +806,7 @@
             "id": "Z",
             "path": "src/CSharp10.cs",
             "startLine": 2.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -922,8 +918,7 @@
     "id": "ReadOnlyRecordStruct",
     "path": "src/CSharp10.cs",
     "startLine": 2.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

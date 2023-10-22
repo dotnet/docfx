@@ -170,8 +170,7 @@
             "id": "SomeMethod",
             "path": "src/CSharp8.cs",
             "startLine": 147.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -303,8 +302,7 @@
             "id": "SomeOtherMethod",
             "path": "src/CSharp8.cs",
             "startLine": 157.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -416,8 +414,7 @@
     "id": "Issue4007",
     "path": "src/CSharp8.cs",
     "startLine": 145.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

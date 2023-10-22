@@ -94,8 +94,7 @@
     "id": "Test",
     "path": "dotnet/project/Project/Class1.cs",
     "startLine": 4.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

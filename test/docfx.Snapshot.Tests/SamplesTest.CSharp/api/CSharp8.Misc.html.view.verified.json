@@ -167,8 +167,7 @@
             "id": "AsynchronousStreams",
             "path": "src/CSharp8.cs",
             "startLine": 97.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -346,8 +345,7 @@
             "id": "GenerateSequence",
             "path": "src/CSharp8.cs",
             "startLine": 105.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -479,8 +477,7 @@
             "id": "IndicesAndRanges",
             "path": "src/CSharp8.cs",
             "startLine": 119.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -705,8 +702,7 @@
             "id": "IsExpression",
             "path": "src/CSharp8.cs",
             "startLine": 77.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -838,8 +834,7 @@
             "id": "NullCoalescingAssignment",
             "path": "src/CSharp8.cs",
             "startLine": 127.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -971,8 +966,7 @@
             "id": "StackallocInNestedExpressions",
             "path": "src/CSharp8.cs",
             "startLine": 133.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1197,8 +1191,7 @@
             "id": "StaticLocalFunctions",
             "path": "src/CSharp8.cs",
             "startLine": 88.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1423,8 +1416,7 @@
             "id": "SwitchExpression",
             "path": "src/CSharp8.cs",
             "startLine": 80.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1556,8 +1548,7 @@
             "id": "UsingDeclaration",
             "path": "src/CSharp8.cs",
             "startLine": 114.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1669,8 +1660,7 @@
     "id": "Misc",
     "path": "src/CSharp8.cs",
     "startLine": 75.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

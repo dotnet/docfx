@@ -122,8 +122,7 @@
             "id": "MyProperty",
             "path": "src/ExampleClass.cs",
             "startLine": 10.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "MyExample",
           "overload": {
@@ -232,8 +231,7 @@
     "id": "MyProperty",
     "path": "src/ExampleClass.cs",
     "startLine": 10.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "MyExample",

@@ -400,8 +400,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 126.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -513,8 +512,7 @@
     "id": "Issue8696Attribute",
     "path": "dotnet/project/Project/Class1.cs",
     "startLine": 124.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

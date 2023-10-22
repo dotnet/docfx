@@ -168,8 +168,7 @@
             "id": "Field",
             "path": "src/CSharp8.cs",
             "startLine": 70.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -311,8 +310,7 @@
             "id": "Property",
             "path": "src/CSharp8.cs",
             "startLine": 68.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -546,8 +544,7 @@
             "id": "DoSomething",
             "path": "src/CSharp8.cs",
             "startLine": 72.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -659,8 +656,7 @@
     "id": "NullableReferenceTypes",
     "path": "src/CSharp8.cs",
     "startLine": 66.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

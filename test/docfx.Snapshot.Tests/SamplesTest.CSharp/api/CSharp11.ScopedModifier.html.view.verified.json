@@ -216,8 +216,7 @@
             "id": "CreateSpan",
             "path": "src/CSharp11.cs",
             "startLine": 58.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -329,8 +328,7 @@
     "id": "ScopedModifier",
     "path": "src/CSharp11.cs",
     "startLine": 56.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

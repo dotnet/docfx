@@ -168,8 +168,7 @@
             "id": "S1",
             "path": "src/CSharp10.cs",
             "startLine": 22.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -303,8 +302,7 @@
             "id": "S2",
             "path": "src/CSharp10.cs",
             "startLine": 23.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -438,8 +436,7 @@
             "id": "S3",
             "path": "src/CSharp10.cs",
             "startLine": 24.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -507,8 +504,7 @@
     "id": "ConstantInterpolatedStrings",
     "path": "src/CSharp10.cs",
     "startLine": 20.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

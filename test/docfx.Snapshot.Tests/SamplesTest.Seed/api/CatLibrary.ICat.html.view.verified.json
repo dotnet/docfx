@@ -168,8 +168,7 @@
             "id": "eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 59.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -237,8 +236,7 @@
     "id": "ICat",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 53.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

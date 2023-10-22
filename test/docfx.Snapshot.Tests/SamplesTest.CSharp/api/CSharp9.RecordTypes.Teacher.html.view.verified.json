@@ -262,8 +262,7 @@
             "id": ".ctor",
             "path": "src/CSharp9.cs",
             "startLine": 11.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -449,8 +448,7 @@
             "id": "Grade",
             "path": "src/CSharp9.cs",
             "startLine": 11.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -562,8 +560,7 @@
     "id": "Teacher",
     "path": "src/CSharp9.cs",
     "startLine": 11.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

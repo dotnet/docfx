@@ -216,8 +216,7 @@
             "id": ".ctor",
             "path": "src/CSharp10.cs",
             "startLine": 4.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -403,8 +402,7 @@
             "id": "Measurement",
             "path": "src/CSharp10.cs",
             "startLine": 4.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -583,8 +581,7 @@
             "id": "TakenAt",
             "path": "src/CSharp10.cs",
             "startLine": 4.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -696,8 +693,7 @@
     "id": "RecordStruct",
     "path": "src/CSharp10.cs",
     "startLine": 4.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

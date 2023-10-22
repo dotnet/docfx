@@ -218,8 +218,7 @@
             "id": "Play",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 340.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -447,8 +446,7 @@
             "id": "Sleep",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 333.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -560,8 +558,7 @@
     "id": "ICatExtension",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 326.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

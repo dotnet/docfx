@@ -122,8 +122,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 110.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -303,8 +302,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 112.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -530,8 +528,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 114.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -803,8 +800,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 116.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -990,8 +986,7 @@
             "id": "Bar",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 107.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1170,8 +1165,7 @@
             "id": "Baz",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 108.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1350,8 +1344,7 @@
             "id": "Foo",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 106.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1463,8 +1456,7 @@
     "id": "Issue8665",
     "path": "dotnet/project/Project/Class1.cs",
     "startLine": 104.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

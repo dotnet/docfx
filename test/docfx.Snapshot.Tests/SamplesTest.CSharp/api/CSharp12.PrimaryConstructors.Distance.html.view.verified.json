@@ -216,8 +216,7 @@
             "id": ".ctor",
             "path": "src/CSharp12.cs",
             "startLine": 6.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -402,8 +401,7 @@
             "id": "Direction",
             "path": "src/CSharp12.cs",
             "startLine": 9.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -537,8 +535,7 @@
             "id": "Magnitude",
             "path": "src/CSharp12.cs",
             "startLine": 8.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -606,8 +603,7 @@
     "id": "Distance",
     "path": "src/CSharp12.cs",
     "startLine": 6.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

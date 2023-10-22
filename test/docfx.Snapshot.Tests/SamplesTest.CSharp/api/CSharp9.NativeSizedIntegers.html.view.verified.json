@@ -168,8 +168,7 @@
             "id": "X",
             "path": "src/CSharp9.cs",
             "startLine": 23.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -303,8 +302,7 @@
             "id": "Y",
             "path": "src/CSharp9.cs",
             "startLine": 24.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -372,8 +370,7 @@
     "id": "NativeSizedIntegers",
     "path": "src/CSharp9.cs",
     "startLine": 21.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

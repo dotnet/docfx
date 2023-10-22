@@ -169,8 +169,7 @@
             "id": "PressureInMillibars",
             "path": "src/CSharp9.cs",
             "startLine": 18.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -349,8 +348,7 @@
             "id": "RecordedAt",
             "path": "src/CSharp9.cs",
             "startLine": 16.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -529,8 +527,7 @@
             "id": "TemperatureInCelsius",
             "path": "src/CSharp9.cs",
             "startLine": 17.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -642,8 +639,7 @@
     "id": "InitOnlySetters",
     "path": "src/CSharp9.cs",
     "startLine": 14.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

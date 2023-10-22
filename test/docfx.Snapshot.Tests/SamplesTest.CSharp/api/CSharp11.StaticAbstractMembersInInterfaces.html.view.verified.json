@@ -94,8 +94,7 @@
     "id": "StaticAbstractMembersInInterfaces",
     "path": "src/CSharp11.cs",
     "startLine": 2.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

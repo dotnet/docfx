@@ -94,8 +94,7 @@
     "id": "Nested",
     "path": "src/CSharp8.cs",
     "startLine": 40.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

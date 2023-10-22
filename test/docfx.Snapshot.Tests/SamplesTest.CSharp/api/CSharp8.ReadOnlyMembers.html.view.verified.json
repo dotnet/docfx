@@ -169,8 +169,7 @@
             "id": "Counter",
             "path": "src/CSharp8.cs",
             "startLine": 20.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -349,8 +348,7 @@
             "id": "X",
             "path": "src/CSharp8.cs",
             "startLine": 9.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -529,8 +527,7 @@
             "id": "Y",
             "path": "src/CSharp8.cs",
             "startLine": 10.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -714,8 +711,7 @@
             "id": "Sum",
             "path": "src/CSharp8.cs",
             "startLine": 12.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -893,8 +889,7 @@
             "id": "ToString",
             "path": "src/CSharp8.cs",
             "startLine": 17.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1049,8 +1044,7 @@
     "id": "ReadOnlyMembers",
     "path": "src/CSharp8.cs",
     "startLine": 7.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

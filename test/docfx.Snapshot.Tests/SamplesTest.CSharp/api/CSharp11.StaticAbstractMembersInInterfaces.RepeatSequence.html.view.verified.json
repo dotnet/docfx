@@ -122,8 +122,7 @@
             "id": ".ctor",
             "path": "src/CSharp11.cs",
             "startLine": 14.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -308,8 +307,7 @@
             "id": "Text",
             "path": "src/CSharp11.cs",
             "startLine": 12.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -450,8 +448,7 @@
             "id": "ToString",
             "path": "src/CSharp11.cs",
             "startLine": 19.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -726,8 +723,7 @@
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
             "startLine": 16.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -880,8 +876,7 @@
     "id": "RepeatSequence",
     "path": "src/CSharp11.cs",
     "startLine": 9.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

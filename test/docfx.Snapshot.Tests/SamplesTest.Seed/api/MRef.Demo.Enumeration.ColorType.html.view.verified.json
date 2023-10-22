@@ -168,8 +168,7 @@
             "id": "Red",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 404.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -303,8 +302,7 @@
             "id": "Blue",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 408.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -438,8 +436,7 @@
             "id": "Yellow",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 412.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -507,8 +504,7 @@
     "id": "ColorType",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 399.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

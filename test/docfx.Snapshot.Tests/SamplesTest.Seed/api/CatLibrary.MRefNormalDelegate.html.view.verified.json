@@ -94,8 +94,7 @@
     "id": "MRefNormalDelegate",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 349.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

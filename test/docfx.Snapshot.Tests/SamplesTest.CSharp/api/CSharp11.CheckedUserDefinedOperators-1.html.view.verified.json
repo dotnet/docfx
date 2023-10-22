@@ -264,8 +264,7 @@
             "id": "op_Addition",
             "path": "src/CSharp11.cs",
             "startLine": 28.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -535,8 +534,7 @@
             "id": "op_CheckedAddition",
             "path": "src/CSharp11.cs",
             "startLine": 37.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -759,8 +757,7 @@
             "id": "op_CheckedDecrement",
             "path": "src/CSharp11.cs",
             "startLine": 35.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1030,8 +1027,7 @@
             "id": "op_CheckedDivision",
             "path": "src/CSharp11.cs",
             "startLine": 40.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1253,8 +1249,7 @@
             "id": "op_CheckedExplicit",
             "path": "src/CSharp11.cs",
             "startLine": 41.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1477,8 +1472,7 @@
             "id": "op_CheckedIncrement",
             "path": "src/CSharp11.cs",
             "startLine": 34.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1748,8 +1742,7 @@
             "id": "op_CheckedMultiply",
             "path": "src/CSharp11.cs",
             "startLine": 39.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -2019,8 +2012,7 @@
             "id": "op_CheckedSubtraction",
             "path": "src/CSharp11.cs",
             "startLine": 38.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -2243,8 +2235,7 @@
             "id": "op_CheckedUnaryNegation",
             "path": "src/CSharp11.cs",
             "startLine": 36.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -2467,8 +2458,7 @@
             "id": "op_Decrement",
             "path": "src/CSharp11.cs",
             "startLine": 26.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -2738,8 +2728,7 @@
             "id": "op_Division",
             "path": "src/CSharp11.cs",
             "startLine": 31.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -2961,8 +2950,7 @@
             "id": "op_Explicit",
             "path": "src/CSharp11.cs",
             "startLine": 32.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -3185,8 +3173,7 @@
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
             "startLine": 25.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -3456,8 +3443,7 @@
             "id": "op_Multiply",
             "path": "src/CSharp11.cs",
             "startLine": 30.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -3727,8 +3713,7 @@
             "id": "op_Subtraction",
             "path": "src/CSharp11.cs",
             "startLine": 29.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -3951,8 +3936,7 @@
             "id": "op_UnaryNegation",
             "path": "src/CSharp11.cs",
             "startLine": 27.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -4060,8 +4044,7 @@
     "id": "CheckedUserDefinedOperators",
     "path": "src/CSharp11.cs",
     "startLine": 23.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

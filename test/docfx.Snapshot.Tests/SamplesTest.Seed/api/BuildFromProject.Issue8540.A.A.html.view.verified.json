@@ -94,8 +94,7 @@
     "id": "A",
     "path": "dotnet/project/Project/Namespace.cs",
     "startLine": 2.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"
