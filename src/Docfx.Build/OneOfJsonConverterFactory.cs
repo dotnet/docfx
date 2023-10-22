@@ -10,7 +10,7 @@ using OneOf;
 
 namespace Docfx.Build;
 
-public class OneOfJsonConverterFactory : JsonConverterFactory
+class OneOfJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
     {
