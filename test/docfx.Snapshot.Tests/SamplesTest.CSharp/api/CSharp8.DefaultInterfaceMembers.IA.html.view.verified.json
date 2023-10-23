@@ -122,8 +122,7 @@
             "id": "M",
             "path": "src/CSharp8.cs",
             "startLine": 50.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -235,8 +234,7 @@
     "id": "IA",
     "path": "src/CSharp8.cs",
     "startLine": 48.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

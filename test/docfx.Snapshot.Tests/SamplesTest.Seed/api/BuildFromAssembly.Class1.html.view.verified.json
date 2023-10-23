@@ -117,8 +117,7 @@
           "source": {
             "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromAssembly"
@@ -251,8 +250,7 @@
           "source": {
             "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
             "startLine": 0.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromAssembly"
@@ -358,8 +356,7 @@
   "source": {
     "href": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/assembly/Class1.cs",
     "startLine": 0.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromAssembly"

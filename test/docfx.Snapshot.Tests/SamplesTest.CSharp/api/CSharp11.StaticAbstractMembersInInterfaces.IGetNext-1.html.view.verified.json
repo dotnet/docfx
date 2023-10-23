@@ -217,8 +217,7 @@
             "id": "op_Increment",
             "path": "src/CSharp11.cs",
             "startLine": 6.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -326,8 +325,7 @@
     "id": "IGetNext",
     "path": "src/CSharp11.cs",
     "startLine": 4.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

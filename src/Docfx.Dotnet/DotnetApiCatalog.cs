@@ -165,6 +165,7 @@ public static partial class DotnetApiCatalog
             OutputFolder = outputFolder,
             CodeSourceBasePath = configModel?.CodeSourceBasePath,
             DisableDefaultFilter = configModel?.DisableDefaultFilter ?? false,
+            DisableGitFeatures = configModel?.DisableGitFeatures ?? false,
             NoRestore = configModel?.NoRestore ?? false,
             NamespaceLayout = configModel?.NamespaceLayout ?? default,
             MemberLayout = configModel?.MemberLayout ?? default,

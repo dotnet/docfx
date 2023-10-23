@@ -169,8 +169,7 @@
             "id": "FirstName",
             "path": "src/CSharp11.cs",
             "startLine": 46.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -349,8 +348,7 @@
             "id": "LastName",
             "path": "src/CSharp11.cs",
             "startLine": 48.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -529,8 +527,7 @@
             "id": "MiddleName",
             "path": "src/CSharp11.cs",
             "startLine": 47.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -642,8 +639,7 @@
     "id": "RequiredModifier",
     "path": "src/CSharp11.cs",
     "startLine": 44.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

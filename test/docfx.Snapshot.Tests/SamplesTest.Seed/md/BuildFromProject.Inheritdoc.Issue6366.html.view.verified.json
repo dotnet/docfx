@@ -8,8 +8,7 @@
       "repo": "https://github.com/dotnet/docfx"
     },
     "startLine": 0.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "path": "obj/md/BuildFromProject.Inheritdoc.Issue6366.md",
   "documentation": {
@@ -19,8 +18,7 @@
       "repo": "https://github.com/dotnet/docfx"
     },
     "startLine": 0.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "_appName": "Seed",
   "_appTitle": "docfx seed website",

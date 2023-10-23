@@ -215,8 +215,7 @@
             "id": "WithDeclarationKeyword",
             "path": "dotnet/vb/Class1.vb",
             "startLine": 45.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromVBSourceCode",
           "overload": {
@@ -325,8 +324,7 @@
     "id": "BaseClass1",
     "path": "dotnet/vb/Class1.vb",
     "startLine": 44.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "BuildFromVBSourceCode",

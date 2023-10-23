@@ -168,8 +168,7 @@
             "id": "ValueClass",
             "path": "dotnet/vb/Class1.vb",
             "startLine": 13.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromVBSourceCode",
           "example": [],
@@ -308,8 +307,7 @@
             "id": "Keyword",
             "path": "dotnet/vb/Class1.vb",
             "startLine": 15.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromVBSourceCode",
           "overload": {
@@ -556,8 +554,7 @@
             "id": "Value",
             "path": "dotnet/vb/Class1.vb",
             "startLine": 36.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromVBSourceCode",
           "example": [],
@@ -779,8 +776,7 @@
             "id": "WithDeclarationKeyword",
             "path": "dotnet/vb/Class1.vb",
             "startLine": 25.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromVBSourceCode",
           "example": [],
@@ -932,8 +928,7 @@
     "id": "Class1",
     "path": "dotnet/vb/Class1.vb",
     "startLine": 5.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "BuildFromVBSourceCode",

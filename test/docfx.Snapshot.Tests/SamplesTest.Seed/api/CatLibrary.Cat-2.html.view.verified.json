@@ -122,8 +122,7 @@
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 121.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -445,8 +444,7 @@
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 136.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -628,8 +626,7 @@
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 127.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -814,8 +811,7 @@
             "id": "isHealthy",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 230.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -969,8 +965,7 @@
             "id": "Age",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 212.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -1198,8 +1193,7 @@
             "id": "this[]",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 203.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -1378,8 +1372,7 @@
             "id": "Name",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 254.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -1658,8 +1651,7 @@
             "id": "CalculateFood",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 144.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "documentation": {
             "remote": {
@@ -1669,8 +1661,7 @@
             },
             "path": "specs/Cat.CalculateFood.md",
             "startLine": 1.0,
-            "endLine": 15.0,
-            "isExternal": false
+            "endLine": 15.0
           },
           "assemblies": [
             "CatLibrary"
@@ -1945,8 +1936,7 @@
             "id": "Equals",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 164.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -2263,8 +2253,7 @@
             "id": "GetTailLength",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 173.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -2541,8 +2530,7 @@
             "id": "Jump",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 153.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -2787,8 +2775,7 @@
             "id": "ownEat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 222.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -3025,8 +3012,7 @@
             "id": "op_Addition",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 182.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -3249,8 +3235,7 @@
             "id": "op_Explicit",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 195.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -3517,8 +3502,7 @@
             "id": "op_Subtraction",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 187.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -3626,8 +3610,7 @@
     "id": "Cat",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 112.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "documentation": {
     "remote": {
@@ -3637,8 +3620,7 @@
     },
     "path": "specs/Cat.md",
     "startLine": 1.0,
-    "endLine": 4.0,
-    "isExternal": false
+    "endLine": 4.0
   },
   "assemblies": [
     "CatLibrary"

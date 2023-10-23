@@ -168,8 +168,7 @@
             "id": "ColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 17.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -311,8 +310,7 @@
             "id": "GetColorCount",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 49.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -544,8 +542,7 @@
             "id": "ContainersRefTypeNonRefMethod",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 67.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -730,8 +727,7 @@
             "id": "ContainersRefTypeEventHandler",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 85.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -799,8 +795,7 @@
     "id": "ContainersRefType",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
     "startLine": 11.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary.Core"

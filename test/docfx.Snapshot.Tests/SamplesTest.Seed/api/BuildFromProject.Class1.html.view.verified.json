@@ -122,8 +122,7 @@
             "id": "Issue1651",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 31.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -255,8 +254,7 @@
             "id": "Issue1887",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 150.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -388,8 +386,7 @@
             "id": "Issue2623",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 76.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -523,8 +520,7 @@
             "id": "Issue2723",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 95.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -656,8 +652,7 @@
             "id": "Issue4017",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 54.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -791,8 +786,7 @@
             "id": "Issue4392",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 100.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -924,8 +918,7 @@
             "id": "Issue7484",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 41.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1062,8 +1055,7 @@
             "id": "Issue8764",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 102.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1195,8 +1187,7 @@
             "id": "Issue896",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 18.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1468,8 +1459,7 @@
             "id": "Issue9216",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 161.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1601,8 +1591,7 @@
             "id": "XmlCommentIncludeTag",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 10.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -1758,8 +1747,7 @@
     "id": "Class1",
     "path": "dotnet/project/Project/Class1.cs",
     "startLine": 2.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

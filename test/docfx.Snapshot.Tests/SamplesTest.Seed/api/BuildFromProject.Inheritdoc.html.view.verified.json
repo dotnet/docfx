@@ -122,8 +122,7 @@
             "id": "Dispose",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 12.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -299,8 +298,7 @@
             "id": "Issue7628",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 17.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -432,8 +430,7 @@
             "id": "Issue7629",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 14.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -589,8 +586,7 @@
     "id": "Inheritdoc",
     "path": "dotnet/project/Project/Inheritdoc.cs",
     "startLine": 10.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

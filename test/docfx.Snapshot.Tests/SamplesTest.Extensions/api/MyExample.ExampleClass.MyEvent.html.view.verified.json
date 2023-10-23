@@ -61,8 +61,7 @@
     "id": "MyEvent",
     "path": "src/ExampleClass.cs",
     "startLine": 6.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "MyExample",

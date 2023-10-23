@@ -359,8 +359,7 @@
             "id": "Tween",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 32.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -729,8 +728,7 @@
             "id": "Tween",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 29.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -842,8 +840,7 @@
     "id": "Issue8101",
     "path": "dotnet/project/Project/Inheritdoc.cs",
     "startLine": 19.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

@@ -218,8 +218,7 @@
             "id": "this[]",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 28.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -398,8 +397,7 @@
             "id": "Name",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 21.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -538,8 +536,7 @@
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 33.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -720,8 +717,7 @@
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 47.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -909,8 +905,7 @@
             "id": "Eat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 40.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -1022,8 +1017,7 @@
     "id": "IAnimal",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 15.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "documentation": {
     "remote": {
@@ -1033,8 +1027,7 @@
     },
     "path": "specs/CatLibrary.IAnimal.md",
     "startLine": 1.0,
-    "endLine": 4.0,
-    "isExternal": false
+    "endLine": 4.0
   },
   "assemblies": [
     "CatLibrary"

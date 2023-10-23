@@ -266,8 +266,7 @@
             "id": "TestMethod1",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 101.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -379,8 +378,7 @@
     "id": "Class1",
     "path": "dotnet/project/Project/Inheritdoc.cs",
     "startLine": 93.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

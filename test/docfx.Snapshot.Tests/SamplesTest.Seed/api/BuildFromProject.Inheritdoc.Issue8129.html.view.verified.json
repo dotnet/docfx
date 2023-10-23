@@ -170,8 +170,7 @@
             "id": ".ctor",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 38.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -283,8 +282,7 @@
     "id": "Issue8129",
     "path": "dotnet/project/Project/Inheritdoc.cs",
     "startLine": 35.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

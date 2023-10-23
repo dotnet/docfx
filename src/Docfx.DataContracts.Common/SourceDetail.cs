@@ -13,10 +13,6 @@ public class SourceDetail
     [JsonProperty("remote")]
     public GitDetail Remote { get; set; }
 
-    [YamlMember(Alias = "base")]
-    [JsonProperty("base")]
-    public string BasePath { get; set; }
-
     [YamlMember(Alias = "id")]
     [JsonProperty("id")]
     public string Name { get; set; }
@@ -42,15 +38,4 @@ public class SourceDetail
     [YamlMember(Alias = "endLine")]
     [JsonProperty("endLine")]
     public int EndLine { get; set; }
-
-    [YamlMember(Alias = "content")]
-    [JsonProperty("content")]
-    public string Content { get; set; }
-
-    /// <summary>
-    /// The external path for current source if it is not locally available
-    /// </summary>
-    [YamlMember(Alias = "isExternal")]
-    [JsonProperty("isExternal")]
-    public bool IsExternalPath { get; set; }
 }

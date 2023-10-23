@@ -381,8 +381,7 @@
             "id": "Example",
             "path": "src/CSharp9.cs",
             "startLine": 29.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -494,8 +493,7 @@
     "id": "FunctionPointers",
     "path": "src/CSharp9.cs",
     "startLine": 27.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

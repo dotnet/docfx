@@ -367,8 +367,7 @@
     "id": "ExampleClass",
     "path": "src/ExampleClass.cs",
     "startLine": 4.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "MyExample",

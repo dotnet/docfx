@@ -122,8 +122,7 @@
             "id": "A",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 85.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -255,8 +254,7 @@
             "id": "B",
             "path": "dotnet/project/Project/Inheritdoc.cs",
             "startLine": 88.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -368,8 +366,7 @@
     "id": "Issue7035",
     "path": "dotnet/project/Project/Inheritdoc.cs",
     "startLine": 82.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

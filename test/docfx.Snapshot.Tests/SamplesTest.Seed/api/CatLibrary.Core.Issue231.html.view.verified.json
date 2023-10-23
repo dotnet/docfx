@@ -170,8 +170,7 @@
             "id": "Bar",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 420.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -351,8 +350,7 @@
             "id": "Foo",
             "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
             "startLine": 104.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary.Core"
@@ -464,8 +462,7 @@
     "id": "Issue231",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 418.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

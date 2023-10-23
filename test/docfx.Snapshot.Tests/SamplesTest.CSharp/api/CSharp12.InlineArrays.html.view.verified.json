@@ -94,8 +94,7 @@
     "id": "InlineArrays",
     "path": "src/CSharp12.cs",
     "startLine": 73.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

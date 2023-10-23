@@ -170,8 +170,7 @@
             "id": "Main",
             "path": "dotnet/csharp/CSharp.cs",
             "startLine": 9.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "namespace": "BuildFromCSharpSourceCode",
           "overload": {
@@ -280,8 +279,7 @@
     "id": "CSharp",
     "path": "dotnet/csharp/CSharp.cs",
     "startLine": 7.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "namespace": {
     "uid": "BuildFromCSharpSourceCode",

@@ -171,8 +171,7 @@
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
             "startLine": 309.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CatLibrary"
@@ -284,8 +283,7 @@
     "id": "TomFromBaseClass",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
     "startLine": 302.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary"

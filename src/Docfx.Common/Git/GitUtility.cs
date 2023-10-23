@@ -11,23 +11,16 @@ using GitReader;
 
 namespace Docfx.Common.Git;
 
+public record GitSource(string Repo, string Branch, string Path, int Line);
+
 public static class GitUtility
 {
     record Repo(string path, string url, string branch);
 
-    private static Regex GitHubRepoUrlRegex =
-        new(@"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
-
-    private static readonly Regex VsoGitRepoUrlRegex =
-        new(@"^(((https|http):\/\/(?<account>\S+))|((ssh:\/\/)(?<account>\S+)@(?:\S+)))\.visualstudio\.com(?<port>:\d+)?(?:\/DefaultCollection)?(\/(?<project>[^\/]+)(\/.*)*)*\/(?:_git|_ssh)\/(?<repository>([^._,]|[^._,][^@~;{}'+=,<>|\/\\?:&$*""#[\]]*[^.,]))$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    private static readonly string GitHubNormalizedRepoUrlTemplate = "https://github.com/{0}/{1}";
-    private static readonly string VsoNormalizedRepoUrlTemplate = "https://{0}.visualstudio.com/DefaultCollection/{1}/_git/{2}";
-
     private static readonly ConcurrentDictionary<string, Repo?> s_cache = new();
 
     private static readonly string? s_branch =
-        Env("DOCFX_SOURCE_BRANCH_NAME") ?? 
+        Env("DOCFX_SOURCE_BRANCH_NAME") ??
         Env("GITHUB_REF_NAME") ??  // GitHub Actions
         Env("APPVEYOR_REPO_BRANCH") ?? // AppVeyor
         Env("Git_Branch") ?? // Team City
@@ -57,14 +50,43 @@ public static class GitUtility
 
     public static string? RawContentUrlToContentUrl(string rawUrl)
     {
-        if (EnvironmentContext.GitFeaturesDisabled)
-            return null;
-
         // GitHub
         return Regex.Replace(
             rawUrl,
             @"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$",
             string.IsNullOrEmpty(s_branch) ? "https://github.com/$1/$2/blob/$3/$4" : $"https://github.com/$1/$2/blob/{s_branch}/$4");
+    }
+
+    public static string? GetSourceUrl(GitSource source)
+    {
+        var repo = source.Repo.StartsWith("git") ? GitUrlToHttps(source.Repo) : source.Repo;
+        repo = repo.TrimEnd('/').TrimEnd(".git");
+
+        if (!Uri.TryCreate(repo, UriKind.Absolute, out var url))
+            return null;
+
+        var path = source.Path.Replace('\\', '/');
+
+        return url.Host switch
+        {
+            "github.com" => $"https://github.com{url.AbsolutePath}/blob/{source.Branch}/{path}{(source.Line > 0 ? $"#L{source.Line}" : null)}",
+            "bitbucket.org" => $"https://bitbucket.org{url.AbsolutePath}/src/{source.Branch}/{path}{(source.Line > 0 ? $"#lines-{source.Line}" : null)}",
+            _ when url.Host.EndsWith(".visualstudio.com") || url.Host == "dev.azure.com" =>
+                $"https://{url.Host}{url.AbsolutePath}?path={path}&version={(IsCommit(source.Branch) ? "GC" : "GB")}{source.Branch}{(source.Line > 0 ? $"&line={source.Line}" : null)}",
+            _ => null,
+        };
+
+        static bool IsCommit(string branch)
+        {
+            return branch.Length == 40 && branch.All(char.IsLetterOrDigit);
+        }
+
+        static string GitUrlToHttps(string url)
+        {
+            var pos = url.IndexOf('@');
+            if (pos == -1) return url;
+            return $"https://{url.Substring(pos + 1).Replace(":[0-9]+", "").Replace(':', '/')}";
+        }
     }
 
     private static Repo? GetRepoInfo(string? directory)
@@ -116,55 +138,5 @@ public static class GitUtility
             // https://github.com/kekyo/GitReader/blob/4126738704ee8b6e330e99c6bc81e9de8bc925c9/GitReader.Core/Primitive/PrimitiveRepositoryFacade.cs#L27-L30
             return Directory.Exists(gitPath);
         }
-    }
-
-    [Obsolete("Docfx parses repoUrl in template preprocessor. This method is never used.")]
-    public static GitRepoInfo Parse(string repoUrl)
-    {
-#if NET7_0_OR_GREATER
-        ArgumentException.ThrowIfNullOrEmpty(repoUrl);
-#else
-        if (string.IsNullOrEmpty(repoUrl))
-        {
-            throw new ArgumentNullException(nameof(repoUrl));
-        }
-#endif
-
-        var githubMatch = GitHubRepoUrlRegex.Match(repoUrl);
-        if (githubMatch.Success)
-        {
-            var gitRepositoryAccount = githubMatch.Groups["account"].Value;
-            var gitRepositoryName = githubMatch.Groups["repository"].Value;
-            return new GitRepoInfo
-            {
-                RepoType = RepoType.GitHub,
-                RepoAccount = gitRepositoryAccount,
-                RepoName = gitRepositoryName,
-                RepoProject = null,
-                NormalizedRepoUrl = new Uri(string.Format(GitHubNormalizedRepoUrlTemplate, gitRepositoryAccount, gitRepositoryName))
-            };
-        }
-
-        var vsoMatch = VsoGitRepoUrlRegex.Match(repoUrl);
-        if (vsoMatch.Success)
-        {
-            var gitRepositoryAccount = vsoMatch.Groups["account"].Value;
-            var gitRepositoryName = vsoMatch.Groups["repository"].Value;
-
-            // VSO has this logic: if the project name and repository name are same, then VSO will return the url without project name.
-            // Sample: if you visit https://cpubwin.visualstudio.com/drivers/_git/drivers, it will return https://cpubwin.visualstudio.com/_git/drivers
-            // We need to normalize it to keep same behavior with other projects. Always return https://<account>.visualstudio.com/<collection>/<project>/_git/<repository>
-            var gitRepositoryProject = string.IsNullOrEmpty(vsoMatch.Groups["project"].Value) ? gitRepositoryName : vsoMatch.Groups["project"].Value;
-            return new GitRepoInfo
-            {
-                RepoType = RepoType.Vso,
-                RepoAccount = gitRepositoryAccount,
-                RepoName = Uri.UnescapeDataString(gitRepositoryName),
-                RepoProject = gitRepositoryProject,
-                NormalizedRepoUrl = new Uri(string.Format(VsoNormalizedRepoUrlTemplate, gitRepositoryAccount, gitRepositoryProject, gitRepositoryName))
-            };
-        }
-
-        throw new NotSupportedException($"'{repoUrl}' is not a valid Vso/GitHub repository url");
     }
 }

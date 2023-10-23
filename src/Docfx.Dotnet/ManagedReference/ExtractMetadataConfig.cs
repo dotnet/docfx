@@ -25,6 +25,8 @@ internal class ExtractMetadataConfig
 
     public bool DisableDefaultFilter { get; init; }
 
+    public bool DisableGitFeatures { get; init; }
+
     public bool NoRestore { get; init; }
 
     public NamespaceLayout NamespaceLayout { get; init; }

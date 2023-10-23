@@ -262,8 +262,7 @@
             "id": ".ctor",
             "path": "src/CSharp12.cs",
             "startLine": 20.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -449,8 +448,7 @@
             "id": "CurrentBalance",
             "path": "src/CSharp12.cs",
             "startLine": 22.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -637,8 +635,7 @@
             "id": "Deposit",
             "path": "src/CSharp12.cs",
             "startLine": 24.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -816,8 +813,7 @@
             "id": "ToString",
             "path": "src/CSharp12.cs",
             "startLine": 46.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1040,8 +1036,7 @@
             "id": "Withdrawal",
             "path": "src/CSharp12.cs",
             "startLine": 33.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -1153,8 +1148,7 @@
     "id": "CheckAccount",
     "path": "src/CSharp12.cs",
     "startLine": 20.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

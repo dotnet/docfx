@@ -128,8 +128,7 @@
             "id": "DoNothing",
             "path": "dotnet/project/Project/Class1.cs",
             "startLine": 144.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "BuildFromProject"
@@ -285,8 +284,7 @@
     "id": "Issue8948",
     "path": "dotnet/project/Project/Class1.cs",
     "startLine": 141.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "BuildFromProject"

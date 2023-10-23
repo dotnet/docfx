@@ -94,8 +94,7 @@
     "id": "ContainersRefTypeChild",
     "path": "dotnet/solution/CatLibrary.Core/BaseClass.cs",
     "startLine": 79.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CatLibrary.Core"

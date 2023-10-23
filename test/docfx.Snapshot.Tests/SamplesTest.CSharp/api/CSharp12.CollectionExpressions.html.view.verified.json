@@ -168,8 +168,7 @@
             "id": "a",
             "path": "src/CSharp12.cs",
             "startLine": 52.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -303,8 +302,7 @@
             "id": "twoD",
             "path": "src/CSharp12.cs",
             "startLine": 56.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -447,8 +445,7 @@
             "id": "b",
             "path": "src/CSharp12.cs",
             "startLine": 54.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -560,8 +557,7 @@
     "id": "CollectionExpressions",
     "path": "src/CSharp12.cs",
     "startLine": 50.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

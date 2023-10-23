@@ -216,8 +216,7 @@
             "id": ".ctor",
             "path": "src/CSharp12.cs",
             "startLine": 12.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -403,8 +402,7 @@
             "id": "AccountID",
             "path": "src/CSharp12.cs",
             "startLine": 14.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -583,8 +581,7 @@
             "id": "Owner",
             "path": "src/CSharp12.cs",
             "startLine": 15.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -769,8 +766,7 @@
             "id": "ToString",
             "path": "src/CSharp12.cs",
             "startLine": 17.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -925,8 +921,7 @@
     "id": "BankAccount",
     "path": "src/CSharp12.cs",
     "startLine": 12.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"

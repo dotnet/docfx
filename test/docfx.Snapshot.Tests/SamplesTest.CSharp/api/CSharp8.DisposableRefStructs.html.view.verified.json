@@ -122,8 +122,7 @@
             "id": "Dispose",
             "path": "src/CSharp8.cs",
             "startLine": 56.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -255,8 +254,7 @@
             "id": "DoSomething",
             "path": "src/CSharp8.cs",
             "startLine": 60.0,
-            "endLine": 0.0,
-            "isExternal": false
+            "endLine": 0.0
           },
           "assemblies": [
             "CSharp"
@@ -368,8 +366,7 @@
     "id": "DisposableRefStructs",
     "path": "src/CSharp8.cs",
     "startLine": 54.0,
-    "endLine": 0.0,
-    "isExternal": false
+    "endLine": 0.0
   },
   "assemblies": [
     "CSharp"
