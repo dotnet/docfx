@@ -48,6 +48,10 @@ export async function renderToc(): Promise<TocNode[]> {
     const lastActiveElement = activeElements[activeElements.length - 1]
     if (lastActiveElement) {
       lastActiveElement.scrollIntoView({ block: 'nearest' })
+      /* eslint-disable no-self-assign */
+      if (location.hash) {
+        location.href = location.href
+      }
     }
   }
 
