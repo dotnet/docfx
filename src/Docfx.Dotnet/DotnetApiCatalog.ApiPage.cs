@@ -12,6 +12,7 @@ using Docfx.DataContracts.ManagedReference;
 using Docfx.Plugins;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Shared.Extensions;
+using OneOf;
 
 #nullable enable
 
@@ -123,13 +124,16 @@ partial class DotnetApiCatalog
                 var git = source is null || source.Remote is null ? null
                     : new GitSource(source.Remote.Repo, source.Remote.Branch, source.Remote.Path, source.StartLine + 1);
                 var src = git is null ? null : options.SourceUrl?.Invoke(git) ?? GitUtility.GetSourceUrl(git);
+                var obsoleteAttribute = symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ObsoleteAttribute");
+                var deprecated = obsoleteAttribute is null ? null :
+                    obsoleteAttribute.ConstructorArguments.FirstOrDefault().Value is string reason && !string.IsNullOrEmpty(reason) ? (OneOf<bool, string>?)reason : true;
 
                 body.Add(level switch
                 {
-                    1 => (Api)new Api1 { api1 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    2 => (Api)new Api2 { api2 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    3 => (Api)new Api3 { api3 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
-                    4 => (Api)new Api4 { api4 = title, id = id, src = src, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    1 => (Api)new Api1 { api1 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    2 => (Api)new Api2 { api2 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    3 => (Api)new Api3 { api3 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
+                    4 => (Api)new Api4 { api4 = title, id = id, src = src, deprecated = deprecated, metadata = new() { ["uid"] = uid, ["commentId"] = commentId } },
                 });
             }
 
