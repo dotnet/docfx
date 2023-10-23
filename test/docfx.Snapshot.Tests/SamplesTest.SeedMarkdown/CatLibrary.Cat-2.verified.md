@@ -11,6 +11,7 @@ Assembly: CatLibrary.dll
 
 ```csharp
 [Serializable]
+[Obsolete]
 public class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct
 ```
 
@@ -123,6 +124,7 @@ Field with attribute.
 ```csharp
 [ContextStatic]
 [NonSerialized]
+[Obsolete]
 public bool isHealthy
 ```
 
@@ -137,6 +139,7 @@ public bool isHealthy
 Hint cat's age.
 
 ```csharp
+[Obsolete]
 protected int Age { get; set; }
 ```
 
@@ -269,6 +272,7 @@ This is an argument exception
 Eat event of this cat
 
 ```csharp
+[Obsolete("This _event handler_ is deprecated.")]
 public event EventHandler ownEat
 ```
 

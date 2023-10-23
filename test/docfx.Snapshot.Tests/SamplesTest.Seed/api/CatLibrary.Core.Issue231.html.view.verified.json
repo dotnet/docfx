@@ -169,7 +169,7 @@
             },
             "id": "Bar",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 420.0,
+            "startLine": 424.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -225,7 +225,7 @@
           "summary": "",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_Issue231_Bar_CatLibrary_Core_ContainersRefType_.md&value=---%0Auid%3A%20CatLibrary.Core.Issue231.Bar(CatLibrary.Core.ContainersRefType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L421",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L425",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -461,7 +461,7 @@
     },
     "id": "Issue231",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 418.0,
+    "startLine": 422.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -938,7 +938,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Core_Issue231.md&value=---%0Auid%3A%20CatLibrary.Core.Issue231%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L419",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L423",
   "summary": "",
   "remarks": "",
   "conceptual": "",

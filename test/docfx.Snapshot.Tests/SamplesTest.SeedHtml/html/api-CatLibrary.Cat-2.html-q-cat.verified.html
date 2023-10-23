@@ -391,6 +391,7 @@ This is a CAT class</p>
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Serializable</span>]
+[<span class="hljs-meta">Obsolete</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span>&lt;<span class="hljs-title">T</span>, <span class="hljs-title">K</span>&gt; : <span class="hljs-title">ICat</span>, <span class="hljs-title">IAnimal</span> <span class="hljs-keyword">where</span> <span class="hljs-title">T</span> : <span class="hljs-keyword">class</span>, <span class="hljs-title">new</span>() <span class="hljs-keyword">where</span> <span class="hljs-title">K</span> : <span class="hljs-title">struct</span></code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -481,7 +482,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor" data-uid="CatLibrary.Cat`2.#ctor">
   Cat()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L123"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Default constructor.</p>
@@ -508,7 +509,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" data-uid="CatLibrary.Cat`2.#ctor(System.String,System.Int32@,System.String,System.Boolean)">
   Cat(string, out int, string, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L138"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's a complex constructor. The parameter will have some attributes.</p>
@@ -550,7 +551,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2__ctor__0_" data-uid="CatLibrary.Cat`2.#ctor(`0)">
   Cat(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L129"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2__ctor__0_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Constructor with one generic parameter.</p>
@@ -585,7 +586,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_isHealthy" data-uid="CatLibrary.Cat`2.isHealthy">
   isHealthy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L235"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_isHealthy" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Field with attribute.</p>
@@ -595,6 +596,7 @@ unsafe
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">ContextStatic</span>]
 [<span class="hljs-meta">NonSerialized</span>]
+[<span class="hljs-meta">Obsolete</span>]
 <span class="hljs-keyword">public</span> <span class="hljs-built_in">bool</span> isHealthy</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
@@ -622,7 +624,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Age" data-uid="CatLibrary.Cat`2.Age">
   Age
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L214"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Age" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Hint cat's age.</p>
@@ -630,7 +632,8 @@ unsafe
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Obsolete</span>]
+<span class="hljs-keyword">protected</span> <span class="hljs-built_in">int</span> Age { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -654,7 +657,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Item_System_String_" data-uid="CatLibrary.Cat`2.Item(System.String)">
   this[string]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L205"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Item_System_String_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>
@@ -693,7 +696,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Name" data-uid="CatLibrary.Cat`2.Name">
   Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L259"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Name" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>EII property.</p>
@@ -728,7 +731,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_CalculateFood_System_DateTime_" data-uid="CatLibrary.Cat`2.CalculateFood(System.DateTime)">
   Override CalculateFood Name
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L145"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L146"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_CalculateFood_System_DateTime_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's an overridden summary in <code>markdown</code> format</p>
@@ -775,7 +778,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_Equals_System_Object_" data-uid="CatLibrary.Cat`2.Equals(System.Object)">
   Equals(object)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L166"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Equals_System_Object_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Override the method of <code>Object.Equals(object obj).</code></p>
@@ -814,7 +817,7 @@ unsafe
 
   <h3 id="CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" data-uid="CatLibrary.Cat`2.GetTailLength(System.Int32*,System.Object[])">
   GetTailLength(int*, params object[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L175"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>It's an <code>unsafe</code> method.
@@ -857,7 +860,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_Jump__0__1_System_Boolean__" data-uid="CatLibrary.Cat`2.Jump(`0,`1,System.Boolean@)">
   Jump(T, K, ref bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L155"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_Jump__0__1_System_Boolean__" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>This method have attribute above it.</p>
@@ -905,7 +908,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_ownEat" data-uid="CatLibrary.Cat`2.ownEat">
   ownEat
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L226"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_ownEat" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Eat event of this cat</p>
@@ -913,7 +916,8 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes"><span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
+    <pre><code class="lang-csharp hljs language-csharp" data-highlighted="yes">[<span class="hljs-meta">Obsolete(<span class="hljs-string">"This _event handler_ is deprecated."</span>)</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> EventHandler ownEat</code><a class="btn border-0 code-action" href="#" title="Copy"><i class="bi bi-clipboard"></i></a></pre>
   </div>
 
 
@@ -940,7 +944,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Addition(CatLibrary.Cat{`0,`1},System.Int32)">
   operator +(Cat&lt;T, K&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L184"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Addition operator of this class.</p>
@@ -982,7 +986,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" data-uid="CatLibrary.Cat`2.op_Explicit(CatLibrary.Cat{`0,`1})~CatLibrary.Tom">
   explicit operator Tom(Cat&lt;T, K&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L197"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Expilicit operator of this class.</p>
@@ -1022,7 +1026,7 @@ As you see, <code class="paramref">catName</code> is a <b>pointer</b>, so we nee
 
   <h3 id="CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" data-uid="CatLibrary.Cat`2.op_Subtraction(CatLibrary.Cat{`0,`1},System.Int32)">
   operator -(Cat&lt;T, K&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L189"><i class="bi bi-code-slash"></i></a>
   <a class="anchorjs-link " aria-label="Anchor" data-anchorjs-icon="#" href="#CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_" style="margin-left: 0.1875em; padding-right: 0.1875em; padding-left: 0.1875em;"></a></h3>
 
   <div class="markdown level1 summary"><p>Similar with operaotr +, refer to that topic.</p>

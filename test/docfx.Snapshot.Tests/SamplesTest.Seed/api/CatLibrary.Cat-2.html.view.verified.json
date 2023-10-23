@@ -121,7 +121,7 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 121.0,
+            "startLine": 122.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -178,7 +178,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Default constructor.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L122",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L123",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -443,7 +443,7 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 136.0,
+            "startLine": 137.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -500,7 +500,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's a complex constructor. The parameter will have some attributes.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor_System_String_System_Int32__System_String_System_Boolean_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(System.String%2CSystem.Int32%40%2CSystem.String%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L137",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L138",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -625,7 +625,7 @@
             },
             "id": ".ctor",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 127.0,
+            "startLine": 128.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -682,7 +682,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Constructor with one generic parameter.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2__ctor__0_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.%23ctor(%600)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L128",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L129",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -748,11 +748,11 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "[ContextStatic]\n[NonSerialized]\npublic bool isHealthy"
+                "value": "[ContextStatic]\n[NonSerialized]\n[Obsolete]\npublic bool isHealthy"
               },
               {
                 "lang": "vb",
-                "value": "<ContextStatic>\n<NonSerialized>\nPublic isHealthy As Boolean"
+                "value": "<ContextStatic>\n<NonSerialized>\n<Obsolete>\nPublic isHealthy As Boolean"
               }
             ],
             "return": null,
@@ -810,7 +810,7 @@
             },
             "id": "isHealthy",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 230.0,
+            "startLine": 234.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -829,13 +829,18 @@
               "type": "System.NonSerializedAttribute",
               "ctor": "System.NonSerializedAttribute.#ctor",
               "arguments": []
+            },
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor",
+              "arguments": []
             }
           ],
           "type": "field",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Field with attribute.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_isHealthy.md&value=---%0Auid%3A%20CatLibrary.Cat%602.isHealthy%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L231",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L235",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -901,11 +906,11 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "protected int Age { get; set; }"
+                "value": "[Obsolete]\nprotected int Age { get; set; }"
               },
               {
                 "lang": "vb",
-                "value": "Protected Property Age As Integer"
+                "value": "<Obsolete>\nProtected Property Age As Integer"
               }
             ],
             "parameters": [],
@@ -964,7 +969,7 @@
             },
             "id": "Age",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 212.0,
+            "startLine": 213.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -1017,11 +1022,18 @@
             "id": "CatLibrary_Cat_2_Age_"
           },
           "level": 0.0,
+          "attributes": [
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor",
+              "arguments": []
+            }
+          ],
           "type": "property",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Hint cat's age.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Age.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Age%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L213",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L214",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -1192,7 +1204,7 @@
             },
             "id": "this[]",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 203.0,
+            "startLine": 204.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -1249,7 +1261,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This is index property of Cat. You can see that the visibility is different between <code>get</code> and <code>set</code> method.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Item_System_String_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Item(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L204",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L205",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -1371,7 +1383,7 @@
             },
             "id": "Name",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 254.0,
+            "startLine": 258.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -1473,7 +1485,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">EII property.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Name.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L255",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L259",
           "remarks": "",
           "conceptual": "",
           "seealso": null,
@@ -1650,7 +1662,7 @@
             },
             "id": "CalculateFood",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 144.0,
+            "startLine": 145.0,
             "endLine": 0.0
           },
           "documentation": {
@@ -1766,7 +1778,7 @@
           "summary": "<p sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">It's an overridden summary in <code sourcefile=\"specs/Cat.CalculateFood.md\" sourcestartlinenumber=\"1\">markdown</code> format</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/specs/Cat.CalculateFood.md/#L2",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L145",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L146",
           "remarks": "",
           "implements": "",
           "seealso": null,
@@ -1935,7 +1947,7 @@
             },
             "id": "Equals",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 164.0,
+            "startLine": 165.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -2035,7 +2047,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Override the method of <code>Object.Equals(object obj).</code></p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Equals_System_Object_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Equals(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L165",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L166",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -2252,7 +2264,7 @@
             },
             "id": "GetTailLength",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 173.0,
+            "startLine": 174.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -2309,7 +2321,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">It's an <code>unsafe</code> method.\nAs you see, <code class=\"paramref\">catName</code> is a <b>pointer</b>, so we need to add <code class=\"languageKeyword\">unsafe</code> keyword.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_GetTailLength_System_Int32__System_Object___.md&value=---%0Auid%3A%20CatLibrary.Cat%602.GetTailLength(System.Int32*%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L174",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L175",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -2529,7 +2541,7 @@
             },
             "id": "Jump",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 153.0,
+            "startLine": 154.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -2646,7 +2658,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">This method have attribute above it.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_Jump__0__1_System_Boolean__.md&value=---%0Auid%3A%20CatLibrary.Cat%602.Jump(%600%2C%601%2CSystem.Boolean%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L154",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L155",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -2712,11 +2724,11 @@
             "content": [
               {
                 "lang": "csharp",
-                "value": "public event EventHandler ownEat"
+                "value": "[Obsolete(\"This _event handler_ is deprecated.\")]\npublic event EventHandler ownEat"
               },
               {
                 "lang": "vb",
-                "value": "Public Event ownEat As EventHandler"
+                "value": "<Obsolete(\"This _event handler_ is deprecated.\")>\nPublic Event ownEat As EventHandler"
               }
             ],
             "return": null,
@@ -2774,7 +2786,7 @@
             },
             "id": "ownEat",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 222.0,
+            "startLine": 225.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -2783,11 +2795,23 @@
           "namespace": "CatLibrary",
           "example": [],
           "level": 0.0,
+          "attributes": [
+            {
+              "type": "System.ObsoleteAttribute",
+              "ctor": "System.ObsoleteAttribute.#ctor(System.String)",
+              "arguments": [
+                {
+                  "type": "System.String",
+                  "value": "This _event handler_ is deprecated."
+                }
+              ]
+            }
+          ],
           "type": "event",
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Eat event of this cat</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_ownEat.md&value=---%0Auid%3A%20CatLibrary.Cat%602.ownEat%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L223",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L226",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -3011,7 +3035,7 @@
             },
             "id": "op_Addition",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 182.0,
+            "startLine": 183.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -3064,7 +3088,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Addition operator of this class.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Addition(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L183",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L184",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -3234,7 +3258,7 @@
             },
             "id": "op_Explicit",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 195.0,
+            "startLine": 196.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -3287,7 +3311,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Expilicit operator of this class.</p>\n<p>It means this cat can evolve to change to Tom. Tom and Jerry.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Explicit_CatLibrary_Cat__0__1___CatLibrary_Tom.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Explicit(CatLibrary.Cat%7B%600%2C%601%7D)~CatLibrary.Tom%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L196",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L197",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -3501,7 +3525,7 @@
             },
             "id": "op_Subtraction",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 187.0,
+            "startLine": 188.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -3554,7 +3578,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\">Similar with operaotr +, refer to that topic.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_Cat_2_op_Subtraction_CatLibrary_Cat__0__1__System_Int32_.md&value=---%0Auid%3A%20CatLibrary.Cat%602.op_Subtraction(CatLibrary.Cat%7B%600%2C%601%7D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L188",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L189",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -3681,11 +3705,11 @@
     "content": [
       {
         "lang": "csharp",
-        "value": "[Serializable]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct"
+        "value": "[Serializable]\n[Obsolete]\npublic class Cat<T, K> : ICat, IAnimal where T : class, new() where K : struct"
       },
       {
         "lang": "vb",
-        "value": "<Serializable>\nPublic Class Cat(Of T As {Class, New}, K As Structure) Implements ICat, IAnimal"
+        "value": "<Serializable>\n<Obsolete>\nPublic Class Cat(Of T As {Class, New}, K As Structure) Implements ICat, IAnimal"
       }
     ],
     "typeParameters": [
@@ -4241,6 +4265,11 @@
     {
       "type": "System.SerializableAttribute",
       "ctor": "System.SerializableAttribute.#ctor",
+      "arguments": []
+    },
+    {
+      "type": "System.ObsoleteAttribute",
+      "ctor": "System.ObsoleteAttribute.#ctor",
       "arguments": []
     }
   ],
