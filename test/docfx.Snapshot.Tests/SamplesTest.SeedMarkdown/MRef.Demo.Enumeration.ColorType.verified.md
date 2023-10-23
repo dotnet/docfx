@@ -15,13 +15,19 @@ public enum ColorType
 
 this color is red
 
+
+
 `Blue = 1` 
 
 blue like river
 
+
+
 `Yellow = 2` 
 
 yellow comes from desert
+
+
 
 ## Remarks
 

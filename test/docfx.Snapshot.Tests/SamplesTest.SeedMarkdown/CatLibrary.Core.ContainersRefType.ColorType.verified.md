@@ -15,11 +15,17 @@ public enum ContainersRefType.ColorType
 
 red
 
+
+
 `Blue = 1` 
 
 blue
 
+
+
 `Yellow = 2` 
 
 yellow
+
+
 

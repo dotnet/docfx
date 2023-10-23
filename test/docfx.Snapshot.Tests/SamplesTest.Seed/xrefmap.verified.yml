@@ -376,6 +376,30 @@ references:
   isSpec: "True"
   fullName: BuildFromProject.Class1.Issue9216
   nameWithType: Class1.Issue9216
+- uid: BuildFromProject.Class1.Issue9260
+  name: Class1.Issue9260
+  href: api/BuildFromProject.Class1.Issue9260.html
+  commentId: T:BuildFromProject.Class1.Issue9260
+  fullName: BuildFromProject.Class1.Issue9260
+  nameWithType: Class1.Issue9260
+- uid: BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  name: OldAndUnusedValue
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_OldAndUnusedValue
+  commentId: F:BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  fullName: BuildFromProject.Class1.Issue9260.OldAndUnusedValue
+  nameWithType: Class1.Issue9260.OldAndUnusedValue
+- uid: BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  name: OldAndUnusedValue2
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_OldAndUnusedValue2
+  commentId: F:BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  fullName: BuildFromProject.Class1.Issue9260.OldAndUnusedValue2
+  nameWithType: Class1.Issue9260.OldAndUnusedValue2
+- uid: BuildFromProject.Class1.Issue9260.Value
+  name: Value
+  href: api/BuildFromProject.Class1.Issue9260.html#BuildFromProject_Class1_Issue9260_Value
+  commentId: F:BuildFromProject.Class1.Issue9260.Value
+  fullName: BuildFromProject.Class1.Issue9260.Value
+  nameWithType: Class1.Issue9260.Value
 - uid: BuildFromProject.Class1.Test`1
   name: Class1.Test<T>
   href: api/BuildFromProject.Class1.Test-1.html

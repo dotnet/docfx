@@ -62,6 +62,9 @@
     href: BuildFromProject.Class1.IIssue8948.md
   - name: IInheritdoc
     href: BuildFromProject.IInheritdoc.md
+  - name: Enums
+  - name: Class1.Issue9260
+    href: BuildFromProject.Class1.Issue9260.md
 - name: BuildFromVBSourceCode
   href: BuildFromVBSourceCode.md
   items:

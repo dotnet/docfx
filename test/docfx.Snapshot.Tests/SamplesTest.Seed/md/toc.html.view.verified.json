@@ -276,6 +276,23 @@
           "level": 3.0,
           "items": [],
           "leaf": true
+        },
+        {
+          "name": "Enums",
+          "topicHref": null,
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
+        },
+        {
+          "name": "Class1.Issue9260",
+          "href": "BuildFromProject.Class1.Issue9260.html",
+          "topicHref": "BuildFromProject.Class1.Issue9260.html",
+          "tocHref": null,
+          "level": 3.0,
+          "items": [],
+          "leaf": true
         }
       ],
       "tocHref": null,
