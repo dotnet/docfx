@@ -39,6 +39,11 @@
     "title": "Class Class1.Issue8948 | docfx seed website",
     "keywords": "Class Class1.Issue8948 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Issue8948 : Class1.IIssue8948 Inheritance object Class1.Issue8948 Implements Class1.IIssue8948 Inherited Members object.Equals(object) object.Equals(object, object) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object, object) object.ToString() Methods DoNothing<T>() Does nothing with generic type T. public void DoNothing<T>() Type Parameters T A generic type."
   },
+  "api/BuildFromProject.Class1.Issue9260.html": {
+    "href": "api/BuildFromProject.Class1.Issue9260.html",
+    "title": "Enum Class1.Issue9260 | docfx seed website",
+    "keywords": "Enum Class1.Issue9260 Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue9260 Fields Value = 0 This is a regular enum value. [Obsolete] OldAndUnusedValue = 1 This is old and unused. You shouldn't use it anymore. [Obsolete(\"Use Value\")] OldAndUnusedValue2 = 2 This is old and unused. You shouldn't use it anymore."
+  },
   "api/BuildFromProject.Class1.Test-1.html": {
     "href": "api/BuildFromProject.Class1.Test-1.html",
     "title": "Class Class1.Test<T> | docfx seed website",
@@ -122,7 +127,7 @@
   "api/BuildFromProject.html": {
     "href": "api/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Class1 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue6366.Class1<T> Inheritdoc.Issue6366.Class2 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Structs Inheritdoc.Issue8129 Interfaces Class1.IIssue8948 IInheritdoc Enums Class1.Issue9260"
   },
   "api/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "api/BuildFromVBSourceCode.BaseClass1.html",
@@ -289,6 +294,11 @@
     "title": "Class Class1.Issue8948 | docfx seed website",
     "keywords": "Class Class1.Issue8948 Namespace BuildFromProject Assembly BuildFromProject.dll public class Class1.Issue8948 : Class1.IIssue8948 Inheritance object Class1.Issue8948 Implements Class1.IIssue8948 Inherited Members object.Equals(object?) object.Equals(object?, object?) object.GetHashCode() object.GetType() object.MemberwiseClone() object.ReferenceEquals(object?, object?) object.ToString() Methods DoNothing<T>() Does nothing with generic type T. public void DoNothing<T>() Type Parameters T A generic type."
   },
+  "apipage/BuildFromProject.Class1.Issue9260.html": {
+    "href": "apipage/BuildFromProject.Class1.Issue9260.html",
+    "title": "Enum Class1.Issue9260 | docfx seed website",
+    "keywords": "Enum Class1.Issue9260 Namespace BuildFromProject Assembly BuildFromProject.dll public enum Class1.Issue9260 Fields Value = 0 This is a regular enum value. This is a remarks section. Very important remarks about Value go here. OldAndUnusedValue = 1 Deprecated This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead. OldAndUnusedValue2 = 2 Deprecated Use Value This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead."
+  },
   "apipage/BuildFromProject.Class1.Test-1.html": {
     "href": "apipage/BuildFromProject.Class1.Test-1.html",
     "title": "Class Class1.Test<T> | docfx seed website",
@@ -372,7 +382,7 @@
   "apipage/BuildFromProject.html": {
     "href": "apipage/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
   },
   "apipage/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "apipage/BuildFromVBSourceCode.BaseClass1.html",
@@ -574,6 +584,11 @@
     "title": "Class Class1.Issue8948 | docfx seed website",
     "keywords": "Class Class1.Issue8948 Namespace: BuildFromProject Assembly: BuildFromProject.dll public class Class1.Issue8948 : Class1.IIssue8948 Inheritance object ← Class1.Issue8948 Implements Class1.IIssue8948 Inherited Members object.Equals(object?), object.Equals(object?, object?), object.GetHashCode(), object.GetType(), object.MemberwiseClone(), object.ReferenceEquals(object?, object?), object.ToString() Methods DoNothing<T>() Does nothing with generic type T. public void DoNothing<T>() Type Parameters T A generic type."
   },
+  "md/BuildFromProject.Class1.Issue9260.html": {
+    "href": "md/BuildFromProject.Class1.Issue9260.html",
+    "title": "Enum Class1.Issue9260 | docfx seed website",
+    "keywords": "Enum Class1.Issue9260 Namespace: BuildFromProject Assembly: BuildFromProject.dll public enum Class1.Issue9260 Fields Value = 0 This is a regular enum value. This is a remarks section. Very important remarks about Value go here. OldAndUnusedValue = 1 This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead. OldAndUnusedValue2 = 2 This is old and unused. You shouldn't use it anymore. Don't use this, seriously! Use Value instead."
+  },
   "md/BuildFromProject.Class1.Test-1.html": {
     "href": "md/BuildFromProject.Class1.Test-1.html",
     "title": "Class Class1.Test<T> | docfx seed website",
@@ -657,7 +672,7 @@
   "md/BuildFromProject.html": {
     "href": "md/BuildFromProject.html",
     "title": "Namespace BuildFromProject | docfx seed website",
-    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948"
+    "keywords": "Namespace BuildFromProject Namespaces BuildFromProject.Issue8540 Classes Inheritdoc.Issue6366.Class1<T> Class1 Inheritdoc.Issue6366.Class2 Inheritdoc Inheritdoc.Issue6366 Inheritdoc.Issue7035 Inheritdoc.Issue7484 This is a test class to have something for DocFX to document. Inheritdoc.Issue8101 Class1.Issue8665 Class1.Issue8696Attribute Class1.Issue8948 Class1.Test<T> Structs Inheritdoc.Issue8129 Interfaces IInheritdoc Class1.IIssue8948 Enums Class1.Issue9260"
   },
   "md/BuildFromVBSourceCode.BaseClass1.html": {
     "href": "md/BuildFromVBSourceCode.BaseClass1.html",
