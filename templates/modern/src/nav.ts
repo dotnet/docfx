@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+import AnchorJs from 'anchor-js'
 import { render, html, TemplateResult } from 'lit-html'
 import { breakWordLit, meta, isExternalHref, loc, options } from './helper'
 import { themePicker } from './theme'
@@ -95,34 +96,41 @@ export function renderBreadcrumb(breadcrumb: (NavItem | TocNode)[]) {
   }
 }
 
-export function renderInThisArticle() {
+export async function renderInThisArticle() {
+  await renderAnchors()
   const affix = document.getElementById('affix')
   if (affix) {
-    render(document.body.getAttribute('data-yaml-mime') === 'ManagedReference' ? inThisArticleForManagedReference() : inThisArticleForConceptual(), affix)
+    render(inThisArticle(), affix)
   }
 }
 
-function inThisArticleForConceptual() {
-  const headings = document.querySelectorAll<HTMLHeadingElement>('article h2')
-  if (headings.length > 0) {
-    return html`
-      <h5 class="border-bottom">${loc('inThisArticle')}</h5>
-      <ul>${Array.from(headings).map(h => html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`)}</ul>`
+async function renderAnchors() {
+  const anchors = new AnchorJs()
+  const { anchors: anchorsOptions } = await options()
+  anchors.options = Object.assign({
+    visible: 'hover',
+    icon: '#'
+  }, anchorsOptions)
+
+  anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
+
+  /* eslint-disable no-self-assign */
+  if (location.hash) {
+    location.href = location.href
   }
 }
 
-function inThisArticleForManagedReference(): TemplateResult {
-  let headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h2, article h3'))
-  headings = headings.filter((h, i) => h.tagName === 'H3' || headings[i + 1]?.tagName === 'H3')
+function inThisArticle(): TemplateResult {
+  const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h2, article h3'))
+  console.log(headings)
 
   if (headings.length > 0) {
     return html`
       <h5 class="border-bottom">${loc('inThisArticle')}</h5>
-      <ul>${headings.map(h => {
-      return h.tagName === 'H2'
-        ? html`<li><h6>${breakWordLit(h.innerText)}</h6></li>`
+      <ul>${headings.map(h => h.tagName === 'H2'
+        ? html`<li><a class="link-body-emphasis" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
         : html`<li><a class="link-secondary" href="#${h.id}">${breakWordLit(h.innerText)}</a></li>`
-    })}</ul>`
+    )}</ul>`
   }
 }
 
