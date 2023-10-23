@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 import { breakWord, meta, loc, options } from './helper'
-import AnchorJs from 'anchor-js'
 import { html, render } from 'lit-html'
 import { getTheme, onThemeChange } from './theme'
 
@@ -19,7 +18,6 @@ export async function renderMarkdown() {
   renderClickableImage()
 
   await Promise.all([
-    renderAnchor(),
     renderMath(),
     renderMermaid()
   ])
@@ -166,25 +164,6 @@ function renderLinks() {
       a.classList.add('external')
     }
   })
-}
-
-/**
- * Render anchor # for headings
- */
-async function renderAnchor() {
-  const anchors = new AnchorJs()
-  const { anchors: anchorsOptions } = await options()
-  anchors.options = Object.assign({
-    visible: 'hover',
-    icon: '#'
-  }, anchorsOptions)
-
-  anchors.add('article h2:not(.no-anchor), article h3:not(.no-anchor), article h4:not(.no-anchor)')
-
-  /* eslint-disable no-self-assign */
-  if (location.hash) {
-    location.href = location.href
-  }
 }
 
 /**

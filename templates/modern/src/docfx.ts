@@ -27,9 +27,9 @@ async function init() {
 
   initTheme()
   enableSearch()
-  renderInThisArticle()
 
   await Promise.all([
+    renderInThisArticle(),
     renderMarkdown(),
     renderNav(),
     highlight()
