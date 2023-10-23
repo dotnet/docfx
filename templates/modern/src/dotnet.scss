@@ -65,8 +65,12 @@ body[data-yaml-mime="ManagedReference"], body[data-yaml-mime="ApiPage"] article 
   }
 
   dl.parameters {
-    >dt>code {
-      margin-right: .2em;
+    >dt {
+      margin: 1em 0;
+      &>code {
+        margin-right: .2em;
+        font-size: 1em;
+      }
     }
   }
 
