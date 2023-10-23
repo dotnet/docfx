@@ -122,7 +122,6 @@ async function renderAnchors() {
 
 function inThisArticle(): TemplateResult {
   const headings = Array.from(document.querySelectorAll<HTMLHeadingElement>('article h2, article h3'))
-  console.log(headings)
 
   if (headings.length > 0) {
     return html`
