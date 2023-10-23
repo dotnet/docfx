@@ -217,7 +217,7 @@
             },
             "id": "Play",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 340.0,
+            "startLine": 344.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -274,7 +274,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Extension method to let cat play</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Play_CatLibrary_ICat_CatLibrary_Core_ContainersRefType_ColorType_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Play(CatLibrary.ICat%2CCatLibrary.Core.ContainersRefType.ColorType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L341",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L345",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -445,7 +445,7 @@
             },
             "id": "Sleep",
             "path": "dotnet/solution/CatLibrary/Class1.cs",
-            "startLine": 333.0,
+            "startLine": 337.0,
             "endLine": 0.0
           },
           "assemblies": [
@@ -502,7 +502,7 @@
           "summary": "<p sourcefile=\"obj/api/CatLibrary.ICatExtension.yml\" sourcestartlinenumber=\"1\">Extension method hint that how long the cat can sleep.</p>\n",
           "platform": null,
           "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension_Sleep_CatLibrary_ICat_System_Int64_.md&value=---%0Auid%3A%20CatLibrary.ICatExtension.Sleep(CatLibrary.ICat%2CSystem.Int64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L334",
+          "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L338",
           "remarks": "",
           "conceptual": "",
           "implements": "",
@@ -557,7 +557,7 @@
     },
     "id": "ICatExtension",
     "path": "dotnet/solution/CatLibrary/Class1.cs",
-    "startLine": 326.0,
+    "startLine": 330.0,
     "endLine": 0.0
   },
   "assemblies": [
@@ -1036,7 +1036,7 @@
   "_tocRel": "toc.html",
   "yamlmime": "ManagedReference",
   "docurl": "https://github.com/dotnet/docfx/new/main/apiSpec/new?filename=CatLibrary_ICatExtension.md&value=---%0Auid%3A%20CatLibrary.ICatExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A",
-  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L327",
+  "sourceurl": "https://github.com/dotnet/docfx/blob/main/samples/seed/dotnet/solution/CatLibrary/Class1.cs/#L331",
   "remarks": "",
   "conceptual": "",
   "implements": "",
