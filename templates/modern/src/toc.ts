@@ -114,7 +114,7 @@ export async function renderToc(): Promise<TocNode[]> {
       const isExpanded = (tocFilter !== '' && expanded !== false && children != null) || expanded === true
 
       return html`
-        <li class=${classMap({ expanded: isExpanded, active: activeNodes.includes(node) })}>
+        <li class=${classMap({ expander: !isLeaf, expanded: isExpanded, active: activeNodes.includes(node) })}>
           ${isLeaf ? null : html`<span class='expand-stub' @click=${toggleExpand}></span>`}
           ${dom}
           ${children}
