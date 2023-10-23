@@ -33,7 +33,7 @@ type Api = (
   /** API URL fragment */
   id?: string;
 
-  /** Is this API deprecated, or the deprecation reason */
+  /** Is this API deprecated, or the deprecation reason in markdown format */
   deprecated?: boolean | string;
 
   /** API source URL */

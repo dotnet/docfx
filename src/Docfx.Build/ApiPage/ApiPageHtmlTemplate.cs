@@ -47,16 +47,27 @@ static class ApiPageHtmlTemplate
                 ? default
                 : UnsafeHtml(string.Join(" ", value.metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
 
+            var isDeprecated = value.deprecated?.Value switch
+            {
+                bool b when b => true,
+                string s => true,
+                _ => false,
+            };
+            var deprecated = isDeprecated ? Html($" <span class='badge rounded-pill text-bg-danger' style='font-size: .5em; vertical-align: middle'>Deprecated</span>") : default;
+            var deprecatedReason = value.deprecated?.Value is string ds && !string.IsNullOrEmpty(ds)
+                ? Html($"\n<div class='alert alert-warning' role='alert'>{UnsafeHtml(markup(ds))}</div>")
+                : default;
+
             var src = string.IsNullOrEmpty(value.src)
                 ? default
                 : Html($" <a class='header-action link-secondary' title='View source' href='{value.src}'><i class='bi bi-code-slash'></i></a>");
 
             return api.Value switch
             {
-                Api1 api1 => Html($"<h1 class='section api' {attributes} id='{value.id}'>{api1.api1}{src}</h1>"),
-                Api2 api2 => Html($"<h2 class='section api' {attributes} id='{value.id}'>{api2.api2}{src}</h2>"),
-                Api3 api3 => Html($"<h3 class='section api' {attributes} id='{value.id}'>{api3.api3}{src}</h3>"),
-                Api4 api4 => Html($"<h4 class='section api' {attributes} id='{value.id}'>{api4.api4}{src}</h4>"),
+                Api1 api1 => Html($"<h1 class='section api' {attributes} id='{value.id}'>{api1.api1}{deprecated}{src}</h1>{deprecatedReason}"),
+                Api2 api2 => Html($"<h2 class='section api' {attributes} id='{value.id}'>{api2.api2}{deprecated}{src}</h2>{deprecatedReason}"),
+                Api3 api3 => Html($"<h3 class='section api' {attributes} id='{value.id}'>{api3.api3}{deprecated}{src}</h3>{deprecatedReason}"),
+                Api4 api4 => Html($"<h4 class='section api' {attributes} id='{value.id}'>{api4.api4}{deprecated}{src}</h4>{deprecatedReason}"),
             };
         }
 
