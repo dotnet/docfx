@@ -160,4 +160,33 @@ public class Class1 : IClass1
     /// $$\left\{\begin{matrix}a, a&lt;b \\ b, b&gt;a\\ \end{matrix} \right.$$
     /// </summary>
     public static double Issue9216() => 0.0;
+
+    public enum Issue9260
+    {
+        /// <summary>
+        /// This is a regular enum value.
+        /// </summary>
+        /// <remarks>
+        /// This is a remarks section. Very important remarks about Value go here.
+        /// </remarks>
+        Value,
+
+        /// <summary>
+        /// This is old and unused. You shouldn't use it anymore.
+        /// </summary>
+        /// <remarks>
+        /// Don't use this, seriously! Use Value instead.
+        /// </remarks>
+        [Obsolete]
+        OldAndUnusedValue,
+
+        /// <summary>
+        /// This is old and unused. You shouldn't use it anymore.
+        /// </summary>
+        /// <remarks>
+        /// Don't use this, seriously! Use Value instead.
+        /// </remarks>
+        [Obsolete("Use Value")]
+        OldAndUnusedValue2,
+    }
 }

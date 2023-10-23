@@ -42,3 +42,7 @@ This is a test class to have something for DocFX to document.
 
  [Class1.IIssue8948](BuildFromProject.Class1.IIssue8948.md)
 
+### Enums
+
+ [Class1.Issue9260](BuildFromProject.Class1.Issue9260.md)
+

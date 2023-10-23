@@ -3,7 +3,7 @@
  * The .NET Foundation licenses this file to you under the MIT license.
  */
 
-body[data-yaml-mime="ManagedReference"], body[data-yaml-mime="ApiPage"] article {
+body[data-yaml-mime="ManagedReference"] article, body[data-yaml-mime="ApiPage"] article {
   h1[data-uid] {
     position: relative;
     padding-right: 1.6rem;
@@ -65,8 +65,13 @@ body[data-yaml-mime="ManagedReference"], body[data-yaml-mime="ApiPage"] article 
   }
 
   dl.parameters {
-    >dt>code {
-      margin-right: .2em;
+    >dt {
+      margin: 1em 0;
+      
+      &>code {
+        margin-right: .2em;
+        font-size: 1em;
+      }
     }
   }
 

@@ -979,6 +979,75 @@
           "hideSubtitle": false
         }
       ]
+    },
+    {
+      "inEnum": true,
+      "typePropertyName": "inEnum",
+      "id": "enums",
+      "children": [
+        {
+          "uid": "BuildFromProject.Class1.Issue9260",
+          "isExtensionMethod": false,
+          "parent": "BuildFromProject",
+          "href": "BuildFromProject.Class1.html",
+          "name": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9260"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9260"
+            }
+          ],
+          "nameWithType": [
+            {
+              "lang": "csharp",
+              "value": "Class1.Issue9260"
+            },
+            {
+              "lang": "vb",
+              "value": "Class1.Issue9260"
+            }
+          ],
+          "fullName": [
+            {
+              "lang": "csharp",
+              "value": "BuildFromProject.Class1.Issue9260"
+            },
+            {
+              "lang": "vb",
+              "value": "BuildFromProject.Class1.Issue9260"
+            }
+          ],
+          "specName": [
+            {
+              "lang": "csharp",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+            },
+            {
+              "lang": "vb",
+              "value": "<a class=\"xref\" href=\"BuildFromProject.Class1.html\">Class1</a>.<a class=\"xref\" href=\"BuildFromProject.Class1.Issue9260.html\">Issue9260</a>"
+            }
+          ],
+          "level": 0.0,
+          "summary": "",
+          "type": "enum",
+          "platform": null,
+          "isEii": false,
+          "docurl": "",
+          "sourceurl": "",
+          "remarks": "",
+          "conceptual": "",
+          "syntax": "",
+          "implements": "",
+          "example": "",
+          "seealso": null,
+          "id": "BuildFromProject_Class1_Issue9260",
+          "hideTitleType": false,
+          "hideSubtitle": false
+        }
+      ]
     }
   ],
   "langs": [

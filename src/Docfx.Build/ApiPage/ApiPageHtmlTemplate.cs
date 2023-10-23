@@ -4,6 +4,7 @@
 #if NET7_0_OR_GREATER
 
 using System.Net;
+using OneOf;
 using static Docfx.Build.HtmlTemplate;
 
 #nullable enable
@@ -47,28 +48,42 @@ static class ApiPageHtmlTemplate
                 ? default
                 : UnsafeHtml(string.Join(" ", value.metadata.Select(m => $"data-{WebUtility.HtmlEncode(m.Key)}='{WebUtility.HtmlEncode(m.Value)}'")));
 
-            var isDeprecated = value.deprecated?.Value switch
+            var (level, title) = api.Value switch
             {
-                bool b when b => true,
-                string s => true,
-                _ => false,
+                Api1 a1 => (1, a1.api1),
+                Api2 a2 => (2, a2.api2),
+                Api3 a3 => (3, a3.api3),
+                Api4 a4 => (4, a4.api4),
             };
-            var deprecated = isDeprecated ? Html($" <span class='badge rounded-pill text-bg-danger' style='font-size: .5em; vertical-align: middle'>Deprecated</span>") : default;
-            var deprecatedReason = value.deprecated?.Value is string ds && !string.IsNullOrEmpty(ds)
-                ? Html($"\n<div class='alert alert-warning' role='alert'>{UnsafeHtml(markup(ds))}</div>")
-                : default;
+
+            var deprecated = DeprecatedBadge(value.deprecated);
+            var deprecatedReason = DeprecatedReason(value.deprecated);
+            var titleHtml = deprecated is null ? Html($"{title}") : Html($"<span style='text-decoration: line-through'>{title}</span>");
 
             var src = string.IsNullOrEmpty(value.src)
                 ? default
                 : Html($" <a class='header-action link-secondary' title='View source' href='{value.src}'><i class='bi bi-code-slash'></i></a>");
 
-            return api.Value switch
+            return Html($"<h{level} class='section api' {attributes} id='{value.id}'>{titleHtml} {deprecated} {src}</h{level}> {deprecatedReason}");
+        }
+
+        HtmlTemplate? DeprecatedBadge(OneOf<bool, string>? value, string fontSize = ".5em")
+        {
+            var isDeprecated = value?.Value switch
             {
-                Api1 api1 => Html($"<h1 class='section api' {attributes} id='{value.id}'>{api1.api1}{deprecated}{src}</h1>{deprecatedReason}"),
-                Api2 api2 => Html($"<h2 class='section api' {attributes} id='{value.id}'>{api2.api2}{deprecated}{src}</h2>{deprecatedReason}"),
-                Api3 api3 => Html($"<h3 class='section api' {attributes} id='{value.id}'>{api3.api3}{deprecated}{src}</h3>{deprecatedReason}"),
-                Api4 api4 => Html($"<h4 class='section api' {attributes} id='{value.id}'>{api4.api4}{deprecated}{src}</h4>{deprecatedReason}"),
+                bool b when b => true,
+                string s => true,
+                _ => false,
             };
+
+            return isDeprecated ? Html($" <span class='badge rounded-pill text-bg-danger' style='font-size: {fontSize}; vertical-align: middle'>Deprecated</span>") : null;
+        }
+
+        HtmlTemplate DeprecatedReason(OneOf<bool, string>? value)
+        {
+            return value?.Value is string ds && !string.IsNullOrEmpty(ds)
+                ? Html($"\n<div class='alert alert-warning' role='alert'>{UnsafeHtml(markup(ds))}</div>")
+                : default;
         }
 
         HtmlTemplate Facts(Facts facts) => facts.facts.Length is 0 ? default : Html(
@@ -102,17 +117,25 @@ static class ApiPageHtmlTemplate
         HtmlTemplate Parameters(Parameters parameters) => parameters.parameters.Length is 0 ? default : Html(
             $"<dl class='parameters'>{parameters.parameters.Select(Parameter)}</dl>");
 
-        HtmlTemplate Parameter(Parameter parameter) => Html(
-            $"""
-            <dt>
-            {(string.IsNullOrEmpty(parameter.name) ? default
-                : string.IsNullOrEmpty(parameter.@default)
-                    ? Html($"<code>{parameter.name}</code>")
-                    : Html($"<code>{parameter.name} = {parameter.@default}</code>"))}
-            {Inline(parameter.type)}
-            </dt>
-            <dd>{(string.IsNullOrEmpty(parameter.description) ? default : UnsafeHtml(markup(parameter.description)))}</dd>
-            """);
+        HtmlTemplate Parameter(Parameter parameter)
+        {
+            var deprecated = DeprecatedBadge(parameter.deprecated, ".875em");
+            var lineThrough = deprecated is not null ? UnsafeHtml(" style='text-decoration: line-through'") : default;
+
+            var title = string.IsNullOrEmpty(parameter.name) ? default
+                    : string.IsNullOrEmpty(parameter.@default)
+                        ? Html($"<code{lineThrough}>{parameter.name}</code>")
+                        : Html($"<code{lineThrough}>{parameter.name} = {parameter.@default}</code>");
+
+            return Html(
+                $"""
+                <dt>{title} {Inline(parameter.type)} {deprecated}</dt>
+                <dd>
+                {DeprecatedReason(parameter.deprecated)}
+                {(string.IsNullOrEmpty(parameter.description) ? default : UnsafeHtml(markup(parameter.description)))}
+                </dd>
+                """);
+        }
 
         HtmlTemplate Inline(Inline? inline) => inline?.Value switch
         {
