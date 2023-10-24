@@ -13,7 +13,9 @@ export default {
       title: 'Twitter'
     }
   ],
+  lunrLanguages: ['en', 'ru'],
   configureHljs: function (hljs) {
     hljs.registerLanguage('bicep', bicep);
   },
 }
+

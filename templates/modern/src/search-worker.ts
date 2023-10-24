@@ -26,19 +26,19 @@ async function loadIndexCore() {
   const data = await res.json() as { [key: string]: SearchHit }
   const cache = createStore('docfx', 'lunr')
 
-  if (etag) {
-    const value = JSON.parse(await get('index', cache) || '{}')
-    if (value && value.etag === etag) {
-      return { index: lunr.Index.load(value), data }
-    }
-  }
-
   const { lunrLanguages, configureLunr } = await import('./main.js').then(m => m.default) as DocfxOptions
 
   if (lunrLanguages && lunrLanguages.length > 0) {
     multi(lunr)
     stemmer(lunr)
     await Promise.all(lunrLanguages.map(initLanguage))
+  }
+
+  if (etag) {
+    const value = JSON.parse(await get('index', cache) || '{}')
+    if (value && value.etag === etag) {
+      return { index: lunr.Index.load(value), data }
+    }
   }
 
   const index = lunr(function() {
