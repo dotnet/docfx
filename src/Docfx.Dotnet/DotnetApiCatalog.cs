@@ -88,7 +88,6 @@ public static partial class DotnetApiCatalog
             {
                 case MetadataOutputFormat.Markdown:
 #if NET7_0_OR_GREATER
-                    Logger.LogWarning($"Markdown output format is experimental.");
                     CreatePages(WriteMarkdown, assemblies, config, options);
 
                     void WriteMarkdown(string outputFolder, string id, Build.ApiPage.ApiPage apiPage)
