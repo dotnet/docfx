@@ -4,8 +4,6 @@
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Docfx.Plugins;
-using GitReader.Primitive;
-using GitReader;
 
 #nullable enable
 
@@ -98,45 +96,67 @@ public static class GitUtility
         {
             if (IsGitRoot(directory))
             {
-                return GetRepoInfoCore(directory).Result;
+                return GetRepoInfoCore(directory);
             }
 
             return GetRepoInfo(Path.GetDirectoryName(directory));
         });
 
-        static async Task<Repo?> GetRepoInfoCore(string directory)
+        static Repo? GetRepoInfoCore(string directory)
         {
-            using var repo = await Repository.Factory.OpenPrimitiveAsync(directory);
-
-            var url = repo.RemoteUrls.FirstOrDefault(r => r.Key == "origin").Value
-                ?? repo.RemoteUrls.FirstOrDefault().Value;
-
+            var remoteUrls = ParseRemoteUrls(directory).ToArray();
+            var url = remoteUrls.FirstOrDefault(r => r.key == "origin").value ?? remoteUrls.FirstOrDefault().value;
             if (string.IsNullOrEmpty(url))
                 return null;
 
-            var branch = s_branch ?? await GetBranchName();
+            var branch = s_branch ?? GetBranchName();
             if (string.IsNullOrEmpty(branch))
                 return null;
 
             return new(directory, url, branch);
 
-            async Task<string?> GetBranchName()
+            string? GetBranchName()
             {
-                if (await repo.GetCurrentHeadReferenceAsync() is { } head)
-                {
-                    return head.Name == "HEAD" ? head.Target.ToString() : head.Name;
-                }
-                return null;
+                var headPath = Path.Combine(directory, ".git", "HEAD");
+                var head = File.Exists(headPath) ? File.ReadAllText(headPath).Trim() : null;
+                if (head == null)
+                    return null;
+
+                if (head.StartsWith("ref: "))
+                    return head.Substring("ref: ".Length).Replace("refs/heads/", "").Replace("refs/remotes/", "").Replace("refs/tags/", "");
+
+                return head;
             }
         }
 
         static bool IsGitRoot(string directory)
         {
             var gitPath = Path.Combine(directory, ".git");
-
-            // GitReader does not support .git as file in submodules
-            // https://github.com/kekyo/GitReader/blob/4126738704ee8b6e330e99c6bc81e9de8bc925c9/GitReader.Core/Primitive/PrimitiveRepositoryFacade.cs#L27-L30
             return Directory.Exists(gitPath);
+        }
+
+        static IEnumerable<(string key, string value)> ParseRemoteUrls(string directory)
+        {
+            var configPath = Path.Combine(directory, ".git", "config");
+            if (!File.Exists(configPath))
+                yield break;
+
+            var key = "";
+
+            foreach (var text in File.ReadAllLines(configPath))
+            {
+                var line = text.Trim();
+                if (line.StartsWith("["))
+                {
+                    var remote = Regex.Replace(line, @"\[remote\s+\""(.+)?\""\]", "$1");
+                    key = remote != line ? remote : "";
+                }
+                else if (line.StartsWith("url = ") && !string.IsNullOrEmpty(key))
+                {
+                    var value = line.Substring("url = ".Length).Trim();
+                    yield return (key, value);
+                }
+            }
         }
     }
 }
