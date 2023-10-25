@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx;
@@ -14,30 +15,35 @@ public class FileMappingItem
     /// The name of current item, the value is not used for now
     /// </summary>
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; }
 
     /// <summary>
     /// The file glob pattern collection, with path relative to property `src`/`cwd` is value is set
     /// </summary>
     [JsonProperty("files")]
+    [JsonPropertyName("files")]
     public FileItems Files { get; set; }
 
     /// <summary>
     /// The file glob pattern collection for files that should be excluded, with path relative to property `src`/`cwd` is value is set
     /// </summary>
     [JsonProperty("exclude")]
+    [JsonPropertyName("exclude")]
     public FileItems Exclude { get; set; }
 
     /// <summary>
     /// `src` defines the root folder for the source files, it has the same meaning as `cwd`
     /// </summary>
     [JsonProperty("src")]
+    [JsonPropertyName("src")]
     public string Src { get; set; }
 
     /// <summary>
     /// The destination folder for the files if copy/transform is used
     /// </summary>
     [JsonProperty("dest")]
+    [JsonPropertyName("dest")]
     public string Dest { get; set; }
 
     /// <summary>
@@ -47,6 +53,7 @@ public class FileMappingItem
     /// Cross reference doesn't support cross different groups.
     /// </summary>
     [JsonProperty("group")]
+    [JsonPropertyName("group")]
     public string Group { get; set; }
 
     /// <summary>
@@ -54,6 +61,7 @@ public class FileMappingItem
     /// If not set, will use the toc in output root in current group if exists.
     /// </summary>
     [JsonProperty("rootTocPath")]
+    [JsonPropertyName("rootTocPath")]
     public string RootTocPath { get; set; }
 
     /// <summary>
@@ -61,6 +69,7 @@ public class FileMappingItem
     /// By default the pattern is case insensitive
     /// </summary>
     [JsonProperty("case")]
+    [JsonPropertyName("case")]
     public bool? Case { get; set; }
 
     /// <summary>
@@ -68,6 +77,7 @@ public class FileMappingItem
     /// By default the usage is enabled.
     /// </summary>
     [JsonProperty("noNegate")]
+    [JsonPropertyName("noNegate")]
     public bool? DisableNegate { get; set; }
 
     /// <summary>
@@ -75,6 +85,7 @@ public class FileMappingItem
     /// By default the usage is enabled.
     /// </summary>
     [JsonProperty("noExpand")]
+    [JsonPropertyName("noExpand")]
     public bool? NoExpand { get; set; }
 
     /// <summary>
@@ -82,6 +93,7 @@ public class FileMappingItem
     /// By default the usage is enabled.
     /// </summary>
     [JsonProperty("noEscape")]
+    [JsonPropertyName("noEscape")]
     public bool? NoEscape { get; set; }
 
     /// <summary>
@@ -89,6 +101,7 @@ public class FileMappingItem
     /// By default the usage is enable.
     /// </summary>
     [JsonProperty("noGlobStar")]
+    [JsonPropertyName("noGlobStar")]
     public bool? NoGlobStar { get; set; }
 
     /// <summary>
@@ -96,6 +109,7 @@ public class FileMappingItem
     /// By default files start with `.` will not be matched by `*` unless the pattern starts with `.`.
     /// </summary>
     [JsonProperty("dot")]
+    [JsonPropertyName("dot")]
     public bool? Dot { get; set; }
 
     public FileMappingItem() { }

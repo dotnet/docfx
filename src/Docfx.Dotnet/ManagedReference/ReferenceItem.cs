@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using Docfx.DataContracts.Common;
 using Docfx.DataContracts.ManagedReference;
 using Newtonsoft.Json;
@@ -13,30 +14,37 @@ internal class ReferenceItem
 {
     [YamlMember(Alias = "name")]
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public SortedList<SyntaxLanguage, List<LinkItem>> NameParts { get; set; }
 
     [YamlMember(Alias = "nameWithType")]
     [JsonProperty("nameWithType")]
+    [JsonPropertyName("nameWithType")]
     public SortedList<SyntaxLanguage, List<LinkItem>> NameWithTypeParts { get; set; }
 
     [YamlMember(Alias = "qualifiedName")]
     [JsonProperty("qualifiedName")]
+    [JsonPropertyName("qualifiedName")]
     public SortedList<SyntaxLanguage, List<LinkItem>> QualifiedNameParts { get; set; }
 
     [YamlMember(Alias = "isDefinition")]
     [JsonProperty("isDefinition")]
+    [JsonPropertyName("isDefinition")]
     public bool? IsDefinition { get; set; }
 
     [YamlMember(Alias = "definition")]
     [JsonProperty("definition")]
+    [JsonPropertyName("definition")]
     public string Definition { get; set; }
 
     [YamlMember(Alias = "parent")]
     [JsonProperty("parent")]
+    [JsonPropertyName("parent")]
     public string Parent { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.CommentId)]
     [JsonProperty(Constants.PropertyName.CommentId)]
+    [JsonPropertyName(Constants.PropertyName.CommentId)]
     public string CommentId { get; set; }
 
     internal ReferenceItem Clone()
@@ -158,10 +166,12 @@ internal class LinkItem
 {
     [YamlMember(Alias = "id")]
     [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public string Name { get; set; }
 
     [YamlMember(Alias = "name")]
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string DisplayName { get; set; }
 
     /// <summary>
@@ -169,6 +179,7 @@ internal class LinkItem
     /// </summary>
     [YamlMember(Alias = "isExternal")]
     [JsonProperty("isExternal")]
+    [JsonPropertyName("isExternal")]
     public bool IsExternalPath { get; set; }
 
     /// <summary>
@@ -176,6 +187,7 @@ internal class LinkItem
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Href)]
     [JsonProperty(Constants.PropertyName.Href)]
+    [JsonPropertyName(Constants.PropertyName.Href)]
     public string Href { get; set; }
 
     public LinkItem Clone() => (LinkItem)MemberwiseClone();

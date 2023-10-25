@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
-
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -13,6 +13,7 @@ public class OutputFileInfo : INotifyPropertyChanged
     private string _linkToPath;
 
     [JsonProperty("relative_path")]
+    [JsonPropertyName("relative_path")]
     public string RelativePath
     {
         get { return _relativePath; }
@@ -25,6 +26,7 @@ public class OutputFileInfo : INotifyPropertyChanged
     }
 
     [JsonProperty("link_to_path")]
+    [JsonPropertyName("link_to_path")]
     public string LinkToPath
     {
         get { return _linkToPath; }
@@ -36,7 +38,8 @@ public class OutputFileInfo : INotifyPropertyChanged
         }
     }
 
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     public event PropertyChangedEventHandler PropertyChanged;

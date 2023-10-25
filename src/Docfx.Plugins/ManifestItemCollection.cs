@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
 
-[JsonConverter(typeof(ManifestItemCollectionConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(ManifestItemCollectionConverter))]
 public class ManifestItemCollection : ObservableCollection<ManifestItem>
 {
     public ManifestItemCollection() { }

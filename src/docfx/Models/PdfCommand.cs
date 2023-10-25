@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
@@ -97,6 +98,7 @@ internal class PdfCommand : Command<PdfCommandOptions>
     private sealed class PdfConfig
     {
         [JsonProperty("pdf")]
+        [JsonPropertyName("pdf")]
         public PdfJsonConfig Item { get; set; }
     }
 }

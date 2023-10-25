@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.Common.EntityMergers;
 using Docfx.DataContracts.Common;
@@ -15,140 +16,174 @@ public class ApiBuildOutput
 {
     [YamlMember(Alias = "uid")]
     [JsonProperty("uid")]
+    [JsonPropertyName("uid")]
     public string Uid { get; set; }
 
     [YamlMember(Alias = "isEii")]
     [JsonProperty("isEii")]
+    [JsonPropertyName("isEii")]
     public bool IsExplicitInterfaceImplementation { get; set; }
 
     [YamlMember(Alias = "isExtensionMethod")]
     [JsonProperty("isExtensionMethod")]
+    [JsonPropertyName("isExtensionMethod")]
     public bool IsExtensionMethod { get; set; }
 
     [YamlMember(Alias = "parent")]
     [JsonProperty("parent")]
+    [JsonPropertyName("parent")]
     public ApiReferenceBuildOutput Parent { get; set; }
 
     [YamlMember(Alias = "children")]
     [JsonProperty("children")]
+    [JsonPropertyName("children")]
     public List<ApiReferenceBuildOutput> Children { get; set; }
 
     [YamlMember(Alias = "href")]
     [JsonProperty("href")]
+    [JsonPropertyName("href")]
     public string Href { get; set; }
 
     [YamlMember(Alias = "langs")]
     [JsonProperty("langs")]
+    [JsonPropertyName("langs")]
     public string[] SupportedLanguages { get; set; } = new string[] { "csharp", "vb" };
 
     [YamlMember(Alias = "name")]
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public List<ApiLanguageValuePair> Name { get; set; }
 
     [YamlMember(Alias = "nameWithType")]
     [JsonProperty("nameWithType")]
+    [JsonPropertyName("nameWithType")]
     public List<ApiLanguageValuePair> NameWithType { get; set; }
 
     [YamlMember(Alias = "fullName")]
     [JsonProperty("fullName")]
+    [JsonPropertyName("fullName")]
     public List<ApiLanguageValuePair> FullName { get; set; }
 
     [YamlMember(Alias = "type")]
     [JsonProperty("type")]
+    [JsonPropertyName("type")]
     public MemberType? Type { get; set; }
 
     [YamlMember(Alias = "source")]
     [JsonProperty("source")]
+    [JsonPropertyName("source")]
     public SourceDetail Source { get; set; }
 
     [YamlMember(Alias = "documentation")]
     [JsonProperty("documentation")]
+    [JsonPropertyName("documentation")]
     public SourceDetail Documentation { get; set; }
 
     [YamlMember(Alias = "assemblies")]
     [JsonProperty("assemblies")]
+    [JsonPropertyName("assemblies")]
     public List<string> AssemblyNameList { get; set; }
 
     [YamlMember(Alias = "namespace")]
     [JsonProperty("namespace")]
+    [JsonPropertyName("namespace")]
     public ApiReferenceBuildOutput NamespaceName { get; set; }
 
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
+    [JsonPropertyName("summary")]
     public string Summary { get; set; } = null;
 
     [YamlMember(Alias = "remarks")]
     [JsonProperty("remarks")]
+    [JsonPropertyName("remarks")]
     public string Remarks { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
     [JsonProperty(Constants.PropertyName.AdditionalNotes)]
+    [JsonPropertyName(Constants.PropertyName.AdditionalNotes)]
     public AdditionalNotes AdditionalNotes { get; set; }
 
     [YamlMember(Alias = "example")]
     [JsonProperty("example")]
+    [JsonPropertyName("example")]
     public List<string> Examples { get; set; }
 
     [YamlMember(Alias = "syntax")]
     [JsonProperty("syntax")]
+    [JsonPropertyName("syntax")]
     public ApiSyntaxBuildOutput Syntax { get; set; }
 
     [YamlMember(Alias = "overridden")]
     [JsonProperty("overridden")]
+    [JsonPropertyName("overridden")]
     public ApiNames Overridden { get; set; }
 
     [YamlMember(Alias = "overload")]
     [JsonProperty("overload")]
+    [JsonPropertyName("overload")]
     public ApiNames Overload { get; set; }
 
     [YamlMember(Alias = "exceptions")]
     [JsonProperty("exceptions")]
+    [JsonPropertyName("exceptions")]
     public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
 
     [YamlMember(Alias = "seealso")]
     [JsonProperty("seealso")]
+    [JsonPropertyName("seealso")]
     public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
     [YamlMember(Alias = "inheritance")]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty("inheritance")]
+    [JsonPropertyName("inheritance")]
     public List<ApiReferenceBuildOutput> Inheritance { get; set; }
 
     [YamlMember(Alias = "derivedClasses")]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty("derivedClasses")]
+    [JsonPropertyName("derivedClasses")]
     public List<ApiReferenceBuildOutput> DerivedClasses { get; set; }
 
     [YamlMember(Alias = "level")]
     [JsonProperty("level")]
+    [JsonPropertyName("level")]
     public int Level { get { return Inheritance != null ? Inheritance.Count : 0; } }
 
     [YamlMember(Alias = "implements")]
     [JsonProperty("implements")]
+    [JsonPropertyName("implements")]
     public List<ApiNames> Implements { get; set; }
 
     [YamlMember(Alias = "inheritedMembers")]
     [JsonProperty("inheritedMembers")]
+    [JsonPropertyName("inheritedMembers")]
     public List<ApiReferenceBuildOutput> InheritedMembers { get; set; }
 
     [YamlMember(Alias = "extensionMethods")]
     [JsonProperty("extensionMethods")]
+    [JsonPropertyName("extensionMethods")]
     public List<ApiReferenceBuildOutput> ExtensionMethods { get; set; }
 
     [YamlMember(Alias = "conceptual")]
     [JsonProperty("conceptual")]
+    [JsonPropertyName("conceptual")]
     public string Conceptual { get; set; }
 
     [YamlMember(Alias = "platform")]
     [JsonProperty("platform")]
+    [JsonPropertyName("platform")]
     public List<string> Platform { get; set; }
 
     [YamlMember(Alias = "attributes")]
     [JsonProperty("attributes")]
+    [JsonPropertyName("attributes")]
     public List<AttributeInfo> Attributes { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     public static ApiBuildOutput FromModel(PageViewModel model)
