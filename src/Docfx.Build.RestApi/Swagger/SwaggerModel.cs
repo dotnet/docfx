@@ -13,7 +13,8 @@ public class SwaggerModel
     /// The original swagger.json content
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string Raw { get; set; }
 
     /// <summary>

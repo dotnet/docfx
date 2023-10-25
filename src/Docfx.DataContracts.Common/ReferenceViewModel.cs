@@ -40,7 +40,8 @@ public class ReferenceViewModel
     public string Name { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.NameWithType)]
@@ -48,7 +49,8 @@ public class ReferenceViewModel
     public string NameWithType { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.FullName)]
@@ -56,15 +58,18 @@ public class ReferenceViewModel
     public string FullName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Spec)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Additional { get; private set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]

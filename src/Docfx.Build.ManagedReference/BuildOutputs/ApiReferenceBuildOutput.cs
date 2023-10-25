@@ -139,7 +139,8 @@ public class ApiReferenceBuildOutput
     public int? Index { get; set; }
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]

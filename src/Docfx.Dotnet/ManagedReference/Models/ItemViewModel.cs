@@ -60,11 +60,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Name { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameForCSharp
     {
         get
@@ -86,7 +88,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameForVB
     {
         get
@@ -112,11 +115,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string NameWithType { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameWithTypeForCSharp
     {
         get
@@ -138,7 +143,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameWithTypeForVB
     {
         get
@@ -164,11 +170,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string FullName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string FullNameForCSharp
     {
         get
@@ -190,7 +198,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string FullNameForVB
     {
         get
@@ -275,8 +284,9 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [JsonProperty("seealso")]
     public List<LinkInfo> SeeAlsos { get; set; }
 
-    [JsonIgnore]
     [YamlIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     [UniqueIdentityReference]
     public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
 
@@ -326,7 +336,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<AttributeInfo> Attributes { get; set; }
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]

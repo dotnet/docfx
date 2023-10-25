@@ -78,7 +78,8 @@ public class XRefMap : IXRefContainer
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsEmbeddedRedirections => false;
 
     public IEnumerable<XRefMapRedirection> GetRedirections() =>

@@ -12,7 +12,8 @@ namespace Docfx.Dotnet;
 internal class MetadataItem : ICloneable
 {
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsInvalid { get; set; }
 
     [JsonProperty(Constants.PropertyName.IsEii)]
@@ -133,7 +134,8 @@ internal class MetadataItem : ICloneable
     public Dictionary<string, ReferenceItem> References { get; set; }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public XmlComment CommentModel { get; set; }
 
     public override string ToString()

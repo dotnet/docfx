@@ -40,7 +40,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Parent { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Parent)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> ParentInDevLangs { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = "package")]
@@ -49,7 +50,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Package { get; set; }
 
     [ExtensibleMember("package" + Constants.PrefixSeparator)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> PackageInDevLangs { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.Children)]
@@ -59,7 +61,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> Children { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Children)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> ChildrenInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     /// <summary>
@@ -79,7 +82,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Name { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.NameWithType)]
@@ -87,7 +91,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string NameWithType { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.FullName)]
@@ -95,7 +100,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string FullName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.Type)]
@@ -110,7 +116,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// item's source code's source detail in different dev langs
     /// </summary>
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Source)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, SourceDetail> SourceInDevLangs { get; set; } = new SortedList<string, SourceDetail>();
 
     /// <summary>
@@ -127,7 +134,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> AssemblyNameList { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Assemblies)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> AssemblyNameListInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     [YamlMember(Alias = Constants.PropertyName.Namespace)]
@@ -136,7 +144,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string NamespaceName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Namespace)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NamespaceNameInDevLangs { get; set; } = new SortedList<string, string>();
 
     /// <summary>
@@ -181,7 +190,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Overridden { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Overridden)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> OverriddenInDevLangs { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = Constants.PropertyName.Overload)]
@@ -190,7 +200,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public string Overload { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Overload)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> OverloadInDevLangs { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = "exceptions")]
@@ -198,7 +209,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<ExceptionInfo> Exceptions { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Exceptions)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<ExceptionInfo>> ExceptionsInDevLangs { get; set; } = new SortedList<string, List<ExceptionInfo>>();
 
     [YamlMember(Alias = "seealso")]
@@ -214,13 +226,15 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [JsonProperty("see")]
     public List<LinkInfo> Sees { get; set; }
 
-    [JsonIgnore]
     [YamlIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     [UniqueIdentityReference]
     public List<string> SeeAlsosUidReference => SeeAlsos?.Where(s => s.LinkType == LinkType.CRef).Select(s => s.LinkId).ToList();
 
-    [JsonIgnore]
     [YamlIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     [UniqueIdentityReference]
     public List<string> SeesUidReference => Sees?.Where(s => s.LinkType == LinkType.CRef).Select(s => s.LinkId).ToList();
 
@@ -233,13 +247,15 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [JsonProperty(Constants.PropertyName.Inheritance)]
     public List<InheritanceTree> Inheritance { get; set; }
 
-    [JsonIgnore]
     [YamlIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     [UniqueIdentityReference]
     public List<string> InheritanceUidReference => GetInheritanceUidReference(Inheritance)?.ToList() ?? new List<string>();
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Inheritance)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<InheritanceTree>> InheritanceInDevLangs { get; set; } = new SortedList<string, List<InheritanceTree>>();
 
     [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
@@ -249,7 +265,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> DerivedClasses { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.DerivedClasses)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> DerivedClassesInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     [YamlMember(Alias = Constants.PropertyName.Implements)]
@@ -259,7 +276,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> Implements { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Implements)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> ImplementsInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     [YamlMember(Alias = Constants.PropertyName.InheritedMembers)]
@@ -269,7 +287,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> InheritedMembers { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.InheritedMembers)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> InheritedMembersInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     [YamlMember(Alias = Constants.PropertyName.ExtensionMethods)]
@@ -279,7 +298,8 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> ExtensionMethods { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.ExtensionMethods)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> ExtensionMethodsInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     /// <summary>
@@ -297,11 +317,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     public List<string> Platform { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Platform)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, List<string>> PlatformInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]

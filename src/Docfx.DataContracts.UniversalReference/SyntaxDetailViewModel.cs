@@ -19,7 +19,8 @@ public class SyntaxDetailViewModel
     public string Content { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Content)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> Contents { get; set; } = new SortedList<string, string>();
 
     [YamlMember(Alias = "parameters")]
@@ -40,11 +41,13 @@ public class SyntaxDetailViewModel
     public ApiParameter Return { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Return)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, ApiParameter> ReturnInDevLangs { get; set; } = new SortedList<string, ApiParameter>();
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]

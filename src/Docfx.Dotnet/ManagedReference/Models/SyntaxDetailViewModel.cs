@@ -19,11 +19,13 @@ public class SyntaxDetailViewModel
     public string Content { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Content)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> Contents { get; set; } = new SortedList<string, string>();
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string ContentForCSharp
     {
         get
@@ -45,7 +47,8 @@ public class SyntaxDetailViewModel
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string ContentForVB
     {
         get

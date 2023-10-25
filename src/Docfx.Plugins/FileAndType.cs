@@ -44,7 +44,8 @@ public sealed class FileAndType
         StringComparer = GetStringComparer();
     }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public StringComparer StringComparer { get; }
 
     [JsonProperty("baseDir")]
@@ -53,7 +54,8 @@ public sealed class FileAndType
     [JsonProperty("file")]
     public string File { get; }
 
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string FullPath { get; }
 
     [JsonProperty("type")]

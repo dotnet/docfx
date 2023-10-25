@@ -43,35 +43,40 @@ public class OverwriteDocumentModel
     /// Links to other files
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public HashSet<string> LinkToFiles { get; set; } = new HashSet<string>();
 
     /// <summary>
     /// Links to other Uids
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public HashSet<string> LinkToUids { get; set; } = new HashSet<string>();
 
     /// <summary>
     /// Link sources information for file
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
     /// <summary>
     /// Link sources information for Uid
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
     /// <summary>
     /// Dependencies extracted from the markdown content
     /// </summary>
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public ImmutableArray<string> Dependency { get; set; } = ImmutableArray<string>.Empty;
 
     public T ConvertTo<T>() where T : class

@@ -24,11 +24,13 @@ public class TocItemViewModel
     public string DisplayName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameForCSharp
     {
         get
@@ -40,7 +42,8 @@ public class TocItemViewModel
     }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string NameForVB
     {
         get
@@ -76,7 +79,8 @@ public class TocItemViewModel
     public string OriginalTopicHref { get; set; }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string AggregatedHref { get; set; }
 
     [YamlMember(Alias = "includedFrom")]
@@ -100,7 +104,8 @@ public class TocItemViewModel
     public string TopicUid { get; set; }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public string AggregatedUid { get; set; }
 
     [YamlMember(Alias = "items")]
@@ -108,11 +113,13 @@ public class TocItemViewModel
     public TocViewModel Items { get; set; }
 
     [YamlIgnore]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsHrefUpdated { get; set; }
 
     [ExtensibleMember]
-    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     [EditorBrowsable(EditorBrowsableState.Never)]
