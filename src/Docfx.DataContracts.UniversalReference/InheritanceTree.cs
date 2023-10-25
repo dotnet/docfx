@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.Common.EntityMergers;
 using Docfx.DataContracts.Common;
 using Docfx.YamlSerialization;
@@ -14,6 +15,7 @@ public class InheritanceTree
 {
     [YamlMember(Alias = Constants.PropertyName.Type)]
     [JsonProperty(Constants.PropertyName.Type)]
+    [JsonPropertyName(Constants.PropertyName.Type)]
     [UniqueIdentityReference]
     public string Type { get; set; }
 
@@ -24,6 +26,7 @@ public class InheritanceTree
     [YamlMember(Alias = Constants.PropertyName.Inheritance)]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty(Constants.PropertyName.Inheritance)]
+    [JsonPropertyName(Constants.PropertyName.Inheritance)]
     public List<InheritanceTree> Inheritance { get; set; }
 
     [ExtensibleMember]

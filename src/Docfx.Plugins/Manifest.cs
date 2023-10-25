@@ -3,7 +3,7 @@
 
 using System.Collections.Specialized;
 using System.ComponentModel;
-
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -26,19 +26,24 @@ public class Manifest
     }
 
     [JsonProperty("sitemap")]
+    [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
 
     [JsonProperty("source_base_path")]
+    [JsonPropertyName("source_base_path")]
     public string SourceBasePath { get; set; }
 
     [Obsolete]
     [JsonProperty("xrefmap")]
+    [JsonPropertyName("xrefmap")]
     public object Xrefmap { get; set; }
 
     [JsonProperty("files")]
+    [JsonPropertyName("files")]
     public ManifestItemCollection Files { get; }
 
     [JsonProperty("groups")]
+    [JsonPropertyName("groups")]
     public List<ManifestGroupInfo> Groups { get; set; }
 
     #region Public Methods

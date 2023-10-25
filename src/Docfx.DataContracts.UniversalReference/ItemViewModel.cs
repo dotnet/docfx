@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
-
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.Common.EntityMergers;
 using Docfx.DataContracts.Common;
@@ -20,11 +20,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Uid)]
     [JsonProperty(Constants.PropertyName.Uid)]
+    [JsonPropertyName(Constants.PropertyName.Uid)]
     [MergeOption(MergeOption.MergeKey)]
     public string Uid { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.CommentId)]
     [JsonProperty(Constants.PropertyName.CommentId)]
+    [JsonPropertyName(Constants.PropertyName.CommentId)]
     public string CommentId { get; set; }
 
     /// <summary>
@@ -32,10 +34,12 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Id)]
     [JsonProperty(Constants.PropertyName.Id)]
+    [JsonPropertyName(Constants.PropertyName.Id)]
     public string Id { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Parent)]
     [JsonProperty(Constants.PropertyName.Parent)]
+    [JsonPropertyName(Constants.PropertyName.Parent)]
     [UniqueIdentityReference]
     public string Parent { get; set; }
 
@@ -46,6 +50,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = "package")]
     [JsonProperty("package")]
+    [JsonPropertyName("package")]
     [UniqueIdentityReference]
     public string Package { get; set; }
 
@@ -57,6 +62,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.Children)]
     [MergeOption(MergeOption.Ignore)] // todo : merge more children
     [JsonProperty(Constants.PropertyName.Children)]
+    [JsonPropertyName(Constants.PropertyName.Children)]
     [UniqueIdentityReference]
     public List<string> Children { get; set; }
 
@@ -71,14 +77,17 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Href)]
     [JsonProperty(Constants.PropertyName.Href)]
+    [JsonPropertyName(Constants.PropertyName.Href)]
     public string Href { get; set; }
 
     [YamlMember(Alias = "langs")]
     [JsonProperty("langs")]
+    [JsonPropertyName("langs")]
     public string[] SupportedLanguages { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Name)]
     [JsonProperty(Constants.PropertyName.Name)]
+    [JsonPropertyName(Constants.PropertyName.Name)]
     public string Name { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
@@ -88,6 +97,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = Constants.PropertyName.NameWithType)]
     [JsonProperty(Constants.PropertyName.NameWithType)]
+    [JsonPropertyName(Constants.PropertyName.NameWithType)]
     public string NameWithType { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
@@ -97,6 +107,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = Constants.PropertyName.FullName)]
     [JsonProperty(Constants.PropertyName.FullName)]
+    [JsonPropertyName(Constants.PropertyName.FullName)]
     public string FullName { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
@@ -106,10 +117,12 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = Constants.PropertyName.Type)]
     [JsonProperty(Constants.PropertyName.Type)]
+    [JsonPropertyName(Constants.PropertyName.Type)]
     public string Type { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Source)]
     [JsonProperty(Constants.PropertyName.Source)]
+    [JsonPropertyName(Constants.PropertyName.Source)]
     public SourceDetail Source { get; set; }
 
     /// <summary>
@@ -126,11 +139,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Documentation)]
     [JsonProperty(Constants.PropertyName.Documentation)]
+    [JsonPropertyName(Constants.PropertyName.Documentation)]
     public SourceDetail Documentation { get; set; }
 
     [YamlMember(Alias = Constants.ExtensionMemberPrefix.Assemblies)]
     [MergeOption(MergeOption.Ignore)] // todo : merge more children
     [JsonProperty(Constants.ExtensionMemberPrefix.Assemblies)]
+    [JsonPropertyName(Constants.ExtensionMemberPrefix.Assemblies)]
     public List<string> AssemblyNameList { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Assemblies)]
@@ -140,6 +155,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = Constants.PropertyName.Namespace)]
     [JsonProperty(Constants.PropertyName.Namespace)]
+    [JsonPropertyName(Constants.PropertyName.Namespace)]
     [UniqueIdentityReference]
     public string NamespaceName { get; set; }
 
@@ -154,6 +170,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
+    [JsonPropertyName("summary")]
     [MarkdownContent]
     public string Summary { get; set; }
 
@@ -163,6 +180,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = "remarks")]
     [JsonProperty("remarks")]
+    [JsonPropertyName("remarks")]
     [MarkdownContent]
     public string Remarks { get; set; }
 
@@ -172,6 +190,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = "example")]
     [JsonProperty("example")]
+    [JsonPropertyName("example")]
     [MergeOption(MergeOption.Replace)]
     [MarkdownContent]
     public List<string> Examples { get; set; }
@@ -182,10 +201,12 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = "syntax")]
     [JsonProperty("syntax")]
+    [JsonPropertyName("syntax")]
     public SyntaxDetailViewModel Syntax { get; set; }
 
     [YamlMember(Alias = "overridden")]
     [JsonProperty("overridden")]
+    [JsonPropertyName("overridden")]
     [UniqueIdentityReference]
     public string Overridden { get; set; }
 
@@ -196,6 +217,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = Constants.PropertyName.Overload)]
     [JsonProperty(Constants.PropertyName.Overload)]
+    [JsonPropertyName(Constants.PropertyName.Overload)]
     [UniqueIdentityReference]
     public string Overload { get; set; }
 
@@ -206,6 +228,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = "exceptions")]
     [JsonProperty("exceptions")]
+    [JsonPropertyName("exceptions")]
     public List<ExceptionInfo> Exceptions { get; set; }
 
     [ExtensibleMember(Constants.ExtensionMemberPrefix.Exceptions)]
@@ -215,15 +238,18 @@ public class ItemViewModel : IOverwriteDocumentViewModel
 
     [YamlMember(Alias = "seealso")]
     [JsonProperty("seealso")]
+    [JsonPropertyName("seealso")]
     public List<LinkInfo> SeeAlsos { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.SeeAlsoContent)]
     [JsonProperty(Constants.PropertyName.SeeAlsoContent)]
+    [JsonPropertyName(Constants.PropertyName.SeeAlsoContent)]
     [MarkdownContent]
     public string SeeAlsoContent { get; set; }
 
     [YamlMember(Alias = "see")]
     [JsonProperty("see")]
+    [JsonPropertyName("see")]
     public List<LinkInfo> Sees { get; set; }
 
     [YamlIgnore]
@@ -245,6 +271,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.Inheritance)]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty(Constants.PropertyName.Inheritance)]
+    [JsonPropertyName(Constants.PropertyName.Inheritance)]
     public List<InheritanceTree> Inheritance { get; set; }
 
     [YamlIgnore]
@@ -261,6 +288,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
     [MergeOption(MergeOption.Ignore)]
     [JsonProperty(Constants.PropertyName.DerivedClasses)]
+    [JsonPropertyName(Constants.PropertyName.DerivedClasses)]
     [UniqueIdentityReference]
     public List<string> DerivedClasses { get; set; }
 
@@ -272,6 +300,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.Implements)]
     [MergeOption(MergeOption.Ignore)] // todo : merge more children
     [JsonProperty(Constants.PropertyName.Implements)]
+    [JsonPropertyName(Constants.PropertyName.Implements)]
     [UniqueIdentityReference]
     public List<string> Implements { get; set; }
 
@@ -283,6 +312,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.InheritedMembers)]
     [MergeOption(MergeOption.Ignore)] // todo : merge more children
     [JsonProperty(Constants.PropertyName.InheritedMembers)]
+    [JsonPropertyName(Constants.PropertyName.InheritedMembers)]
     [UniqueIdentityReference]
     public List<string> InheritedMembers { get; set; }
 
@@ -294,6 +324,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     [YamlMember(Alias = Constants.PropertyName.ExtensionMethods)]
     [MergeOption(MergeOption.Ignore)] // todo : merge more children
     [JsonProperty(Constants.PropertyName.ExtensionMethods)]
+    [JsonPropertyName(Constants.PropertyName.ExtensionMethods)]
     [UniqueIdentityReference]
     public List<string> ExtensionMethods { get; set; }
 
@@ -308,11 +339,13 @@ public class ItemViewModel : IOverwriteDocumentViewModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Conceptual)]
     [JsonProperty(Constants.PropertyName.Conceptual)]
+    [JsonPropertyName(Constants.PropertyName.Conceptual)]
     [MarkdownContent]
     public string Conceptual { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.Platform)]
     [JsonProperty(Constants.PropertyName.Platform)]
+    [JsonPropertyName(Constants.PropertyName.Platform)]
     [MergeOption(MergeOption.Replace)]
     public List<string> Platform { get; set; }
 

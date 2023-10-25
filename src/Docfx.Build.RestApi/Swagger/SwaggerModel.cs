@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
@@ -22,6 +23,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "info")]
     [JsonProperty("info")]
+    [JsonPropertyName("info")]
     public InfoObject Info { get; set; }
 
     /// <summary>
@@ -29,6 +31,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "host")]
     [JsonProperty("host")]
+    [JsonPropertyName("host")]
     public string Host { get; set; }
 
     /// <summary>
@@ -36,6 +39,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "basePath")]
     [JsonProperty("basePath")]
+    [JsonPropertyName("basePath")]
     public string BasePath { get; set; }
 
     /// <summary>
@@ -43,14 +47,17 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "paths")]
     [JsonProperty("paths")]
+    [JsonPropertyName("paths")]
     public PathsObject Paths { get; set; }
 
     [YamlMember(Alias = "description")]
     [JsonProperty("description")]
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
+    [JsonPropertyName("summary")]
     public string Summary { get; set; }
 
     /// <summary>
@@ -58,6 +65,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "definitions")]
     [JsonProperty("definitions")]
+    [JsonPropertyName("definitions")]
     public object Definitions { get; set; }
 
     /// <summary>
@@ -65,6 +73,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "parameters")]
     [JsonProperty("parameters")]
+    [JsonPropertyName("parameters")]
     public object Parameters { get; set; }
 
     /// <summary>
@@ -72,6 +81,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "responses")]
     [JsonProperty("responses")]
+    [JsonPropertyName("responses")]
     public object Responses { get; set; }
 
     /// <summary>
@@ -79,6 +89,7 @@ public class SwaggerModel
     /// </summary>
     [YamlMember(Alias = "tags")]
     [JsonProperty("tags")]
+    [JsonPropertyName("tags")]
     public List<TagItemObject> Tags { get; set; }
 
     [ExtensibleMember]

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Common;
@@ -101,18 +102,31 @@ public sealed class ReportLogListener : ILoggerListener
     public class ReportItem
     {
         [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
+
         [JsonProperty("source")]
+        [JsonPropertyName("source")]
         public string Source { get; set; }
+
         [JsonProperty("file")]
+        [JsonPropertyName("file")]
         public string File { get; set; }
+
         [JsonProperty("line")]
+        [JsonPropertyName("line")]
         public string Line { get; set; }
+
         [JsonProperty("date_time")]
+        [JsonPropertyName("date_time")]
         public DateTime DateTime { get; set; }
+
         [JsonProperty("message_severity")]
+        [JsonPropertyName("message_severity")]
         public MessageSeverity Severity { get; set; }
+
         [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public string Code { get; set; }
     }
 

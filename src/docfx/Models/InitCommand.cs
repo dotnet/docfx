@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
@@ -559,9 +560,11 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
     private class DefaultConfigModel
     {
         [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public MetadataJsonConfig Metadata { get; set; }
 
         [JsonProperty("build")]
+        [JsonPropertyName("build")]
         public BuildJsonConfig Build { get; set; }
     }
 }

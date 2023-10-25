@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -12,6 +13,7 @@ public class MarkdownServiceProperties
     /// Enables line numbers.
     /// </summary>
     [JsonProperty("enableSourceInfo")]
+    [JsonPropertyName("enableSourceInfo")]
     public bool EnableSourceInfo { get; set; } = true;
 
     /// <summary>
@@ -19,9 +21,11 @@ public class MarkdownServiceProperties
     /// enabled by default by DocFX.
     /// </summary>
     [JsonProperty("markdigExtensions")]
+    [JsonPropertyName("markdigExtensions")]
     public string[] MarkdigExtensions { get; set; }
 
     [JsonProperty("fallbackFolders")]
+    [JsonPropertyName("fallbackFolders")]
     public string[] FallbackFolders { get; set; }
 
     /// <summary>
@@ -29,6 +33,7 @@ public class MarkdownServiceProperties
     /// E.g., TIP -> alert alert-info
     /// </summary>
     [JsonProperty("alerts")]
+    [JsonPropertyName("alerts")]
     public Dictionary<string, string> Alerts { get; set; }
 }
 

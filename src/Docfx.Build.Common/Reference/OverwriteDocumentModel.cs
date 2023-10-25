@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
 using Docfx.Plugins;
@@ -23,6 +24,7 @@ public class OverwriteDocumentModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Uid)]
     [JsonProperty(Constants.PropertyName.Uid)]
+    [JsonPropertyName(Constants.PropertyName.Uid)]
     public string Uid { get; set; }
 
     /// <summary>
@@ -30,6 +32,7 @@ public class OverwriteDocumentModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Conceptual)]
     [JsonProperty(Constants.PropertyName.Conceptual)]
+    [JsonPropertyName(Constants.PropertyName.Conceptual)]
     public string Conceptual { get; set; }
 
     /// <summary>
@@ -37,6 +40,7 @@ public class OverwriteDocumentModel
     /// </summary>
     [YamlMember(Alias = Constants.PropertyName.Documentation)]
     [JsonProperty(Constants.PropertyName.Documentation)]
+    [JsonPropertyName(Constants.PropertyName.Documentation)]
     public SourceDetail Documentation { get; set; }
 
     /// <summary>

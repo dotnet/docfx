@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
@@ -14,6 +15,7 @@ public class TagItemObject
     /// </summary>
     [YamlMember(Alias = "name")]
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; }
 
     /// <summary>
@@ -21,6 +23,7 @@ public class TagItemObject
     /// </summary>
     [YamlMember(Alias = "description")]
     [JsonProperty("description")]
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
     /// <summary>
@@ -28,6 +31,7 @@ public class TagItemObject
     /// </summary>
     [YamlMember(Alias = "x-bookmark-id")]
     [JsonProperty("x-bookmark-id")]
+    [JsonPropertyName("x-bookmark-id")]
     public string BookmarkId { get; set; }
 
     [ExtensibleMember]

@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Docfx.Plugins;
@@ -50,9 +51,11 @@ public sealed class FileAndType
     public StringComparer StringComparer { get; }
 
     [JsonProperty("baseDir")]
+    [JsonPropertyName("baseDir")]
     public string BaseDir { get; }
 
     [JsonProperty("file")]
+    [JsonPropertyName("file")]
     public string File { get; }
 
     [Newtonsoft.Json.JsonIgnore]
@@ -60,12 +63,15 @@ public sealed class FileAndType
     public string FullPath { get; }
 
     [JsonProperty("type")]
+    [JsonPropertyName("type")]
     public DocumentType Type { get; }
 
     [JsonProperty("sourceDir")]
+    [JsonPropertyName("sourceDir")]
     public string SourceDir { get; set; }
 
     [JsonProperty("destinationDir")]
+    [JsonPropertyName("destinationDir")]
     public string DestinationDir { get; set; }
 
     public FileAndType ChangeBaseDir(string baseDir)

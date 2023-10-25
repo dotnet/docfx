@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Docfx.Dotnet;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
@@ -60,12 +61,15 @@ class DefaultCommand : Command<DefaultCommand.Options>
     class Config
     {
         [JsonProperty("build")]
+        [JsonPropertyName("build")]
         public BuildJsonConfig Build { get; set; }
 
         [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public MetadataJsonConfig Metadata { get; set; }
 
         [JsonProperty("pdf")]
+        [JsonPropertyName("pdf")]
         public PdfJsonConfig Pdf { get; set; }
     }
 }

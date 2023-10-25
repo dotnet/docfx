@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.YamlSerialization;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
@@ -14,22 +15,27 @@ public class OperationObject
     /// </summary>
     [YamlMember(Alias = "operationId")]
     [JsonProperty("operationId")]
+    [JsonPropertyName("operationId")]
     public string OperationId { get; set; }
 
     [YamlMember(Alias = "description")]
     [JsonProperty("description")]
+    [JsonPropertyName("description")]
     public string Description { get; set; }
 
     [YamlMember(Alias = "summary")]
     [JsonProperty("summary")]
+    [JsonPropertyName("summary")]
     public string Summary { get; set; }
 
     [YamlMember(Alias = "tags")]
     [JsonProperty("tags")]
+    [JsonPropertyName("tags")]
     public List<string> Tags { get; set; }
 
     [YamlMember(Alias = "parameters")]
     [JsonProperty("parameters")]
+    [JsonPropertyName("parameters")]
     public List<ParameterObject> Parameters { get; set; }
 
     /// <summary>
@@ -37,6 +43,7 @@ public class OperationObject
     /// </summary>
     [YamlMember(Alias = "responses")]
     [JsonProperty("responses")]
+    [JsonPropertyName("responses")]
     public Dictionary<string, ResponseObject> Responses { get; set; }
 
     [ExtensibleMember]

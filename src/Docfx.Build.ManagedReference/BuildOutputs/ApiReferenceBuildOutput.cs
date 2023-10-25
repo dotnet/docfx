@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 using System.Web;
 using Docfx.Common;
 using Docfx.DataContracts.Common;
@@ -16,126 +17,157 @@ public class ApiReferenceBuildOutput
 {
     [YamlMember(Alias = "uid")]
     [JsonProperty("uid")]
+    [JsonPropertyName("uid")]
     public string Uid { get; set; }
 
     [YamlMember(Alias = "isEii")]
     [JsonProperty("isEii")]
+    [JsonPropertyName("isEii")]
     public bool IsExplicitInterfaceImplementation { get; set; }
 
     [YamlMember(Alias = "isExtensionMethod")]
     [JsonProperty("isExtensionMethod")]
+    [JsonPropertyName("isExtensionMethod")]
     public bool IsExtensionMethod { get; set; }
 
     [YamlMember(Alias = "parent")]
     [JsonProperty("parent")]
+    [JsonPropertyName("parent")]
     public string Parent { get; set; }
 
     [YamlMember(Alias = "definition")]
     [JsonProperty("definition")]
+    [JsonPropertyName("definition")]
     public string Definition { get; set; }
-
-    [JsonProperty("isExternal")]
+      
     [YamlMember(Alias = "isExternal")]
+    [JsonProperty("isExternal")]
+    [JsonPropertyName("isExternal")]
     public bool? IsExternal { get; set; }
 
     [YamlMember(Alias = "href")]
     [JsonProperty("href")]
+    [JsonPropertyName("href")]
     public string Href { get; set; }
 
     [YamlMember(Alias = "name")]
     [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public List<ApiLanguageValuePair> Name { get; set; }
 
     [YamlMember(Alias = "nameWithType")]
     [JsonProperty("nameWithType")]
+    [JsonPropertyName("nameWithType")]
     public List<ApiLanguageValuePair> NameWithType { get; set; }
 
     [YamlMember(Alias = "fullName")]
     [JsonProperty("fullName")]
+    [JsonPropertyName("fullName")]
     public List<ApiLanguageValuePair> FullName { get; set; }
 
     [YamlMember(Alias = "specName")]
     [JsonProperty("specName")]
+    [JsonPropertyName("specName")]
     public List<ApiLanguageValuePair> Spec { get; set; }
 
     [YamlMember(Alias = "syntax")]
     [JsonProperty("syntax")]
+    [JsonPropertyName("syntax")]
     public ApiSyntaxBuildOutput Syntax { get; set; }
 
     [YamlMember(Alias = "source")]
     [JsonProperty("source")]
+    [JsonPropertyName("source")]
     public SourceDetail Source { get; set; }
 
     [YamlMember(Alias = "documentation")]
     [JsonProperty("documentation")]
+    [JsonPropertyName("documentation")]
     public SourceDetail Documentation { get; set; }
 
     [YamlMember(Alias = "assemblies")]
     [JsonProperty("assemblies")]
+    [JsonPropertyName("assemblies")]
     public List<string> AssemblyNameList { get; set; }
 
     [YamlMember(Alias = "namespace")]
     [JsonProperty("namespace")]
+    [JsonPropertyName("namespace")]
     public string NamespaceName { get; set; }
 
     [YamlMember(Alias = "remarks")]
     [JsonProperty("remarks")]
+    [JsonPropertyName("remarks")]
     public string Remarks { get; set; }
 
     [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
     [JsonProperty(Constants.PropertyName.AdditionalNotes)]
+    [JsonPropertyName(Constants.PropertyName.AdditionalNotes)]
     public AdditionalNotes AdditionalNotes { get; set; }
 
     [YamlMember(Alias = "example")]
     [JsonProperty("example")]
+    [JsonPropertyName("example")]
     public List<string> Examples { get; set; }
 
     [YamlMember(Alias = "overridden")]
     [JsonProperty("overridden")]
+    [JsonPropertyName("overridden")]
     public ApiNames Overridden { get; set; }
 
     [YamlMember(Alias = "overload")]
     [JsonProperty("overload")]
+    [JsonPropertyName("overload")]
     public ApiNames Overload { get; set; }
 
     [YamlMember(Alias = "exceptions")]
     [JsonProperty("exceptions")]
+    [JsonPropertyName("exceptions")]
     public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
 
     [YamlMember(Alias = "seealso")]
     [JsonProperty("seealso")]
+    [JsonPropertyName("seealso")]
     public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
     [YamlMember(Alias = "inheritance")]
     [JsonProperty("inheritance")]
+    [JsonPropertyName("inheritance")]
     public List<ApiReferenceBuildOutput> Inheritance { get; set; }
 
     [YamlMember(Alias = "level")]
     [JsonProperty("level")]
+    [JsonPropertyName("level")]
     public int Level => Inheritance != null ? Inheritance.Count : 0;
 
     [YamlMember(Alias = "implements")]
     [JsonProperty("implements")]
+    [JsonPropertyName("implements")]
     public List<ApiNames> Implements { get; set; }
 
     [YamlMember(Alias = "inheritedMembers")]
     [JsonProperty("inheritedMembers")]
+    [JsonPropertyName("inheritedMembers")]
     public List<string> InheritedMembers { get; set; }
 
     [YamlMember(Alias = "extensionMethods")]
     [JsonProperty("extensionMethods")]
+    [JsonPropertyName("extensionMethods")]
     public List<string> ExtensionMethods { get; set; }
 
     [YamlMember(Alias = "conceptual")]
     [JsonProperty("conceptual")]
+    [JsonPropertyName("conceptual")]
     public string Conceptual { get; set; }
 
     [YamlMember(Alias = "attributes")]
     [JsonProperty("attributes")]
+    [JsonPropertyName("attributes")]
     public List<AttributeInfo> Attributes { get; set; }
 
     [YamlMember(Alias = "index")]
     [JsonProperty("index")]
+    [JsonPropertyName("index")]
     public int? Index { get; set; }
 
     [ExtensibleMember]

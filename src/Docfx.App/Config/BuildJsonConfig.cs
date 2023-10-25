@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Text.Json.Serialization;
 using Docfx.Common;
 using Docfx.Plugins;
 
@@ -18,24 +19,28 @@ internal class BuildJsonConfig
     /// Contains all the files to generate documentation, including metadata yml files and conceptual md files.
     /// </summary>
     [JsonProperty("content")]
+    [JsonPropertyName("content")]
     public FileMapping Content { get; set; }
 
     /// <summary>
     /// Contains all the resource files that conceptual and metadata files dependent on, e.g. image files.
     /// </summary>
     [JsonProperty("resource")]
+    [JsonPropertyName("resource")]
     public FileMapping Resource { get; set; }
 
     /// <summary>
     /// Contains all the conceptual files which contains yaml header with uid and is intended to override the existing metadata yml files.
     /// </summary>
     [JsonProperty("overwrite")]
+    [JsonPropertyName("overwrite")]
     public FileMapping Overwrite { get; set; }
 
     /// <summary>
     /// Specifies the urls of xrefmap used by content files. Supports local file path and HTTP/HTTPS urls.
     /// </summary>
     [JsonProperty("xref")]
+    [JsonPropertyName("xref")]
     public ListWithStringFallback Xref { get; set; }
 
     /// <summary>
@@ -44,6 +49,7 @@ internal class BuildJsonConfig
     /// </summary>
     [Obsolete("Use output instead.")]
     [JsonProperty("dest")]
+    [JsonPropertyName("dest")]
     public string Dest { get; set; }
 
     /// <summary>
@@ -51,12 +57,14 @@ internal class BuildJsonConfig
     /// Command line --output argument override this value.
     /// </summary>
     [JsonProperty("output")]
+    [JsonPropertyName("output")]
     public string Output { get; set; }
 
     /// <summary>
     /// Contains metadata that will be applied to every file, in key-value pair format.
     /// </summary>
     [JsonProperty("globalMetadata")]
+    [JsonPropertyName("globalMetadata")]
     [Newtonsoft.Json.JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
     public Dictionary<string, object> GlobalMetadata { get; set; }
 
@@ -64,6 +72,7 @@ internal class BuildJsonConfig
     /// Specify a list of JSON file path containing globalMetadata settings.
     /// </summary>
     [JsonProperty("globalMetadataFiles")]
+    [JsonPropertyName("globalMetadataFiles")]
     public ListWithStringFallback GlobalMetadataFiles { get; set; } = new ListWithStringFallback();
 
     /// <summary>
@@ -74,12 +83,14 @@ internal class BuildJsonConfig
     ///     The value is the value of the metadata.
     /// </summary>
     [JsonProperty("fileMetadata")]
+    [JsonPropertyName("fileMetadata")]
     public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
 
     /// <summary>
     /// Specify a list of JSON file path containing fileMetadata settings.
     /// </summary>
     [JsonProperty("fileMetadataFiles")]
+    [JsonPropertyName("fileMetadataFiles")]
     public ListWithStringFallback FileMetadataFiles { get; set; } = new ListWithStringFallback();
 
     /// <summary>
@@ -88,6 +99,7 @@ internal class BuildJsonConfig
     /// If omitted, embedded default template will be used.
     /// </summary>
     [JsonProperty("template")]
+    [JsonPropertyName("template")]
     public ListWithStringFallback Template { get; set; } = new ListWithStringFallback();
 
     /// <summary>
@@ -98,6 +110,7 @@ internal class BuildJsonConfig
     /// If omitted, no theme will be applied, the default theme inside the template will be used.
     /// </summary>
     [JsonProperty("theme")]
+    [JsonPropertyName("theme")]
     public ListWithStringFallback Theme { get; set; }
 
     /// <summary>
@@ -110,6 +123,7 @@ internal class BuildJsonConfig
     ///  </code>
     ///  </example>
     [JsonProperty("postProcessors")]
+    [JsonPropertyName("postProcessors")]
     public ListWithStringFallback PostProcessors { get; set; } = new ListWithStringFallback();
 
     /// <summary>
@@ -118,6 +132,7 @@ internal class BuildJsonConfig
     /// If not specified, it is false
     /// </summary>
     [JsonProperty("debug")]
+    [JsonPropertyName("debug")]
     public bool? Debug { get; set; }
 
     /// <summary>
@@ -125,12 +140,14 @@ internal class BuildJsonConfig
     /// If not specified, it is ${TempPath}/docfx
     /// </summary>
     [JsonProperty("debugOutput")]
+    [JsonPropertyName("debugOutput")]
     public string DebugOutput { get; set; }
 
     /// <summary>
     /// If set to true, data model to run template script will be extracted in .raw.model.json extension.
     /// </summary>
     [JsonProperty("exportRawModel")]
+    [JsonPropertyName("exportRawModel")]
     public bool? ExportRawModel { get; set; }
 
     /// <summary>
@@ -138,12 +155,14 @@ internal class BuildJsonConfig
     /// If not set, the raw model will be generated to the same folder as the output documentation.
     /// </summary>
     [JsonProperty("rawModelOutputFolder")]
+    [JsonPropertyName("rawModelOutputFolder")]
     public string RawModelOutputFolder { get; set; }
 
     /// <summary>
     /// If set to true, data model to apply template will be extracted in .view.model.json extension.
     /// </summary>
     [JsonProperty("exportViewModel")]
+    [JsonPropertyName("exportViewModel")]
     public bool? ExportViewModel { get; set; }
 
     /// <summary>
@@ -151,6 +170,7 @@ internal class BuildJsonConfig
     /// If not set, the view model will be generated to the same folder as the output documentation.
     /// </summary>
     [JsonProperty("viewModelOutputFolder")]
+    [JsonPropertyName("viewModelOutputFolder")]
     public string ViewModelOutputFolder { get; set; }
 
     /// <summary>
@@ -158,24 +178,28 @@ internal class BuildJsonConfig
     /// This option is always used with --exportRawModel or --exportViewModel is set so that only raw model files or view model files are generated.
     /// </summary>
     [JsonProperty("dryRun")]
+    [JsonPropertyName("dryRun")]
     public bool? DryRun { get; set; }
 
     /// <summary>
     /// Set the max parallelism, 0 is auto.
     /// </summary>
     [JsonProperty("maxParallelism")]
+    [JsonPropertyName("maxParallelism")]
     public int? MaxParallelism { get; set; }
 
     /// <summary>
     /// Set the parameters for markdown engine, value should be a JSON string.
     /// </summary>
     [JsonProperty("markdownEngineProperties")]
+    [JsonPropertyName("markdownEngineProperties")]
     public MarkdownServiceProperties MarkdownEngineProperties { get; set; }
 
     /// <summary>
     /// Set the name of ICustomHrefGenerator derived class.
     /// </summary>
     [JsonProperty("customLinkResolver")]
+    [JsonPropertyName("customLinkResolver")]
     public string CustomLinkResolver { get; set; }
 
     /// <summary>
@@ -192,6 +216,7 @@ internal class BuildJsonConfig
     /// </code>
     /// </example>
     [JsonProperty("groups")]
+    [JsonPropertyName("groups")]
     public Dictionary<string, GroupConfig> Groups { get; set; }
 
     /// <summary>
@@ -199,12 +224,14 @@ internal class BuildJsonConfig
     /// Instead, it saves a link_to_path property inside manifest.json to indicate the physical location of that file.
     /// </summary>
     [JsonProperty("keepFileLink")]
+    [JsonPropertyName("keepFileLink")]
     public bool KeepFileLink { get; set; }
 
     /// <summary>
     /// Specifies the options for the sitemap.xml file.
     /// </summary>
     [JsonProperty("sitemap")]
+    [JsonPropertyName("sitemap")]
     public SitemapOptions Sitemap { get; set; }
 
     /// <summary>
@@ -212,5 +239,6 @@ internal class BuildJsonConfig
     /// By default it is enabled and may have side effect on performance when the repo is large.
     /// </summary>
     [JsonProperty("disableGitFeatures")]
+    [JsonPropertyName("disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
 }
