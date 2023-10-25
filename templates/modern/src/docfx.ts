@@ -26,9 +26,9 @@ async function init() {
   window.docfx = window.docfx || {}
 
   initTheme()
-  enableSearch()
 
   await Promise.all([
+    enableSearch(),
     renderInThisArticle(),
     renderMarkdown(),
     renderNav(),

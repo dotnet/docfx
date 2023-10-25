@@ -14,63 +14,59 @@ type SearchHit = {
 
 let search: (q: string) => SearchHit[]
 
-async function loadIndex() {
+async function loadIndex({ lunrLanguages }: { lunrLanguages?: string[] }) {
   const { index, data } = await loadIndexCore()
   search = q => index.search(q).map(({ ref }) => data[ref])
   postMessage({ e: 'index-ready' })
-}
 
-async function loadIndexCore() {
-  const res = await fetch('../index.json')
-  const etag = res.headers.get('etag')
-  const data = await res.json() as { [key: string]: SearchHit }
-  const cache = createStore('docfx', 'lunr')
-
-  const { lunrLanguages, configureLunr } = await import('./main.js').then(m => m.default) as DocfxOptions
-
-  if (lunrLanguages && lunrLanguages.length > 0) {
-    multi(lunr)
-    stemmer(lunr)
-    await Promise.all(lunrLanguages.map(initLanguage))
-  }
-
-  if (etag) {
-    const value = JSON.parse(await get('index', cache) || '{}')
-    if (value && value.etag === etag) {
-      return { index: lunr.Index.load(value), data }
-    }
-  }
-
-  const index = lunr(function() {
-    lunr.tokenizer.separator = /[\s\-.()]+/
-
-    this.ref('href')
-    this.field('title', { boost: 50 })
-    this.field('keywords', { boost: 20 })
+  async function loadIndexCore() {
+    const res = await fetch('../index.json')
+    const etag = res.headers.get('etag')
+    const data = await res.json() as { [key: string]: SearchHit }
+    const cache = createStore('docfx', 'lunr')
 
     if (lunrLanguages && lunrLanguages.length > 0) {
-      this.use(lunr.multiLanguage(...lunrLanguages))
+      multi(lunr)
+      stemmer(lunr)
+      await Promise.all(lunrLanguages.map(initLanguage))
     }
 
-    configureLunr?.(this)
-
-    for (const key in data) {
-      this.add(data[key])
+    if (etag) {
+      const value = JSON.parse(await get('index', cache) || '{}')
+      if (value && value.etag === etag) {
+        return { index: lunr.Index.load(value), data }
+      }
     }
-  })
 
-  if (etag) {
-    await set('index', JSON.stringify(Object.assign(index.toJSON(), { etag })), cache)
+    const index = lunr(function() {
+      lunr.tokenizer.separator = /[\s\-.()]+/
+
+      this.ref('href')
+      this.field('title', { boost: 50 })
+      this.field('keywords', { boost: 20 })
+
+      if (lunrLanguages && lunrLanguages.length > 0) {
+        this.use(lunr.multiLanguage(...lunrLanguages))
+      }
+
+      for (const key in data) {
+        this.add(data[key])
+      }
+    })
+
+    if (etag) {
+      await set('index', JSON.stringify(Object.assign(index.toJSON(), { etag })), cache)
+    }
+
+    return { index, data }
   }
-
-  return { index, data }
 }
 
-loadIndex().catch(console.error)
-
 onmessage = function(e) {
-  if (search) {
+  if (e.data.q && search) {
     postMessage({ e: 'query-ready', d: search(e.data.q) })
+  } else if (e.data.init) {
+    loadIndex(e.data.init).catch(console.error)
   }
 }
 
