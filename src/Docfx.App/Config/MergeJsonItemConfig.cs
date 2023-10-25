@@ -28,7 +28,7 @@ internal class MergeJsonItemConfig
     /// Contains metadata that will be applied to every file, in key-value pair format.
     /// </summary>
     [JsonProperty("globalMetadata")]
-    [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
     public Dictionary<string, object> GlobalMetadata { get; set; }
 
     /// <summary>

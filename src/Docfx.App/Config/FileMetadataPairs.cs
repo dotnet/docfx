@@ -10,7 +10,7 @@ namespace Docfx;
 /// </summary>
 /// <see cref="BuildJsonConfig.FileMetadata"/>
 /// <see cref="MergeJsonItemConfig.FileMetadata"/>
-[JsonConverter(typeof(FileMetadataPairsConverter))]
+[Newtonsoft.Json.JsonConverter(typeof(FileMetadataPairsConverter))]
 internal class FileMetadataPairs
 {
     // Order matters, the latter one overrides the former one
