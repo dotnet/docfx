@@ -8,7 +8,8 @@ namespace Docfx.Plugins;
 public sealed class FileAndType
     : IEquatable<FileAndType>
 {
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     public FileAndType(string baseDir, string file, DocumentType type, string sourceDir = null, string destinationDir = null)
     {
         ArgumentNullException.ThrowIfNull(baseDir);

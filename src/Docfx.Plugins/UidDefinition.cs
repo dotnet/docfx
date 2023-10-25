@@ -18,7 +18,8 @@ public class UidDefinition
     [JsonProperty("path")]
     public string Path { get; }
 
-    [JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
     public UidDefinition(string name, string file, int? line = null, int? column = null, string path = null)
     {
         if (string.IsNullOrEmpty(name))
