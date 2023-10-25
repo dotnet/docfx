@@ -32,7 +32,8 @@ public class XRefMap : IXRefContainer
     public List<XRefSpec> References { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Others { get; set; } = new Dictionary<string, object>();
 
     public void Sort()

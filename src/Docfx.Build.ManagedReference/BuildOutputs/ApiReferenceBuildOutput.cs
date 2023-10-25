@@ -144,7 +144,8 @@ public class ApiReferenceBuildOutput
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public CompositeDictionary MetadataJson =>
         CompositeDictionary
             .CreateBuilder()

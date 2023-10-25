@@ -16,7 +16,8 @@ public class YamlDocumentModel
     public string DocumentType { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
 
     [YamlMember(Alias = "metadata")]

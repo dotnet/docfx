@@ -16,7 +16,8 @@ public class ManifestGroupInfo
     [JsonProperty("xrefmap")]
     public string XRefmap { get; set; }
 
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
     public ManifestGroupInfo(GroupInfo groupInfo)

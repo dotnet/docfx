@@ -140,6 +140,7 @@ public class ApiBuildOutput
     public List<ApiLanguageValuePair<List<string>>> Platform { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

@@ -20,7 +20,8 @@ public class FileOutput
     [JsonProperty(ManifestConstants.BuildManifestItem.SkipPublish, DefaultValueHandling = DefaultValueHandling.Ignore)]
     public bool SkipPublish { get; set; }
 
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; }
 
     public override string ToString()

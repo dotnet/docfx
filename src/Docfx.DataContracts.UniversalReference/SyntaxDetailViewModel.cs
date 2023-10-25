@@ -49,7 +49,8 @@ public class SyntaxDetailViewModel
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [YamlIgnore]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     [UniqueIdentityReferenceIgnore]
     [MarkdownContentIgnore]
     public CompositeDictionary ExtensionData =>

@@ -29,6 +29,7 @@ public class PageViewModel
     public MemberLayout MemberLayout { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 }

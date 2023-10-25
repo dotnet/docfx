@@ -22,6 +22,7 @@ public class FileOutputs
     [JsonProperty(ManifestConstants.BuildManifestItem.OutputJson)]
     public FileOutput TocJson { get; set; }
 
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> OtherOutputs { get; set; }
 }

@@ -27,6 +27,7 @@ public class InfoObject
     public string Version { get; set; }
 
     [ExtensibleMember]
-    [JsonExtensionData]
+    [Newtonsoft.Json.JsonExtensionData]
+    [System.Text.Json.Serialization.JsonExtensionData]
     public Dictionary<string, object> PatternedObjects { get; set; } = new Dictionary<string, object>();
 }
