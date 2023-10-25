@@ -10,7 +10,8 @@
           "src": "../"
         }
       ],
-      "dest": "api"
+      "dest": "api",
+      "outputFormat": "apiPage"
     }
   ],
   "build": {
