@@ -80,7 +80,8 @@
     "globalMetadata": {
       "_appTitle": "docfx seed website",
       "_appName": "Seed",
-      "_enableSearch": true
+      "_enableSearch": true,
+      "pdf": true
     },
     "output": "_site",
     "exportViewModel": true,

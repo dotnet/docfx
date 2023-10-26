@@ -1,7 +1,4 @@
-﻿metadata:
-  pdf.enabled: true
-  pdf.title: Seed PDF
-  pdf.filename: seed.pdf
+﻿pdf: true
 items:
 - name: Getting Started
   href: docfx_getting_started.md

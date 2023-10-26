@@ -7,9 +7,10 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Spectre.Console;
 
@@ -23,30 +24,15 @@ namespace Docfx.Pdf;
 
 static class PdfBuilder
 {
-    class PdfMetadata
-    {
-        [JsonPropertyName("pdf.enabled")]
-        public bool enabled { get; init; }
-
-        [JsonPropertyName("pdf.title")]
-        public string? title { get; init; }
-
-        [JsonPropertyName("pdf.filename")]
-        public string? filename { get; init; }
-
-        [JsonPropertyName("pdf.margin")]
-        public string? margin { get; init; }
-    }
-
     class Outline
     {
-        public PdfMetadata? metadata { get; init; }
-
         public string name { get; init; } = "";
-
         public string? href { get; init; }
-
         public Outline[]? items { get; init; }
+
+        public bool pdf { get; init; }
+        public string? pdfFileName { get; init; }
+        public string? pdfMargin { get; init; }
     }
 
     public static async Task CreatePdf(string folder)
@@ -55,11 +41,14 @@ static class PdfBuilder
         if (pdfTocs.Length == 0)
             return;
 
-        AnsiConsole.Status().Start(
-            "Installing Chromium...",
-            c => Program.Main(new[] { "install", "chromium" }));
+        AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
+        AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
 
-        using var app = WebApplication.CreateBuilder().Build();
+        var builder = WebApplication.CreateBuilder();
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+
+        using var app = builder.Build();
         app.UseServe(folder);
         await app.StartAsync();
         var baseUrl = new Uri(app.Urls.First());
@@ -69,7 +58,9 @@ static class PdfBuilder
 
         foreach (var (url, toc) in GetPdfTocs())
         {
-            await CreatePdf(browser, new(baseUrl, url), toc);
+            var outputPath = Path.Combine(folder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
+
+            await CreatePdf(browser, new(baseUrl, url), toc, outputPath);
         }
 
         IEnumerable<(string, Outline)> GetPdfTocs()
@@ -88,15 +79,13 @@ static class PdfBuilder
                     continue;
 
                 var outline = JsonSerializer.Deserialize<Outline>(File.ReadAllBytes(tocFile));
-                if (outline?.metadata?.enabled != true)
-                    continue;
-
-                yield return (jsonOutput.RelativePath, outline);
+                if (outline?.pdf is true)
+                    yield return (jsonOutput.RelativePath, outline);
             }
         }
     }
 
-    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, CancellationToken cancellationToken = default)
+    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -113,13 +102,13 @@ static class PdfBuilder
         var pageNumbers = new Dictionary<Outline, int>();
         var nextPageNumbers = new Dictionary<Outline, int>();
         var nextPageNumber = 1;
-        var margin = "0.4in";
+        var margin = outline.pdfMargin ?? "0.4in";
 
         await AnsiConsole.Progress().Columns(new SpinnerColumn(), new TaskDescriptionColumn { Alignment = Justify.Left }).StartAsync(async c =>
         {
             await Parallel.ForEachAsync(pages, async (item, CancellationToken) =>
             {
-                var task = c.AddTask(item.url.ToString());
+                var task = c.AddTask(item.url.PathAndQuery);
                 var page = await browser.NewPageAsync();
                 await page.GotoAsync(item.url.ToString());
                 var bytes = await page.PdfAsync(new() { Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin } });
@@ -129,6 +118,7 @@ static class PdfBuilder
         });
 
         AnsiConsole.Status().Start("Creating PDF...", _ => MergePdf());
+        AnsiConsole.MarkupLine($"[green]PDF saved to {outputPath}[/]");
 
         IEnumerable<(string path, Uri url, Outline node)> GetPages(Outline outline)
         {
@@ -150,12 +140,11 @@ static class PdfBuilder
 
         void MergePdf()
         {
-            using var output = File.Create("output.pdf");
+            using var output = File.Create(outputPath);
             using var builder = new PdfDocumentBuilder(output);
 
             builder.DocumentInformation = new()
             {
-                Title = "",
                 Producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})",
             };
 
@@ -207,7 +196,6 @@ static class PdfBuilder
                     {
                         if (namedDests.TryGet(name, out var dest))
                         {
-                            AnsiConsole.MarkupLine($"[green]Resolve succeed: {name}[/]");
                             return new GoToAction(new(1, dest.Type, dest.Coordinates));
                         }
                     }
