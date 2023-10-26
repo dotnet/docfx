@@ -3,10 +3,13 @@
 
 #nullable enable
 
-using System.Net.Http.Json;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Docfx.Plugins;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Playwright;
 using Spectre.Console;
 
@@ -20,8 +23,25 @@ namespace Docfx.Pdf;
 
 static class PdfBuilder
 {
+    class PdfMetadata
+    {
+        [JsonPropertyName("pdf.enabled")]
+        public bool enabled { get; init; }
+
+        [JsonPropertyName("pdf.title")]
+        public string? title { get; init; }
+
+        [JsonPropertyName("pdf.filename")]
+        public string? filename { get; init; }
+
+        [JsonPropertyName("pdf.margin")]
+        public string? margin { get; init; }
+    }
+
     class Outline
     {
+        public PdfMetadata? metadata { get; init; }
+
         public string name { get; init; } = "";
 
         public string? href { get; init; }
@@ -29,24 +49,55 @@ static class PdfBuilder
         public Outline[]? items { get; init; }
     }
 
-    public static async Task CreatePdf(Uri outlineUrl, CancellationToken cancellationToken = default)
+    public static async Task CreatePdf(string folder)
     {
-        using var http = new HttpClient();
-
-        var outline = await AnsiConsole.Status().StartAsync(
-            $"Downloading {outlineUrl}...",
-            c => http.GetFromJsonAsync<Outline>(outlineUrl, cancellationToken));
-
-        if (outline is null)
+        var pdfTocs = GetPdfTocs().ToArray();
+        if (pdfTocs.Length == 0)
             return;
 
         AnsiConsole.Status().Start(
             "Installing Chromium...",
             c => Program.Main(new[] { "install", "chromium" }));
 
+        using var app = WebApplication.CreateBuilder().Build();
+        app.UseServe(folder);
+        await app.StartAsync();
+        var baseUrl = new Uri(app.Urls.First());
+
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
 
+        foreach (var (url, toc) in GetPdfTocs())
+        {
+            await CreatePdf(browser, new(baseUrl, url), toc);
+        }
+
+        IEnumerable<(string, Outline)> GetPdfTocs()
+        {
+            var manifest = Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(Path.Combine(folder, "manifest.json")));
+            if (manifest is null)
+                yield break;
+
+            foreach (var file in manifest.Files)
+            {
+                if (file.Type != "Toc" || !file.Output.TryGetValue(".json", out var jsonOutput))
+                    continue;
+
+                var tocFile = Path.Combine(folder, jsonOutput.RelativePath);
+                if (!File.Exists(tocFile))
+                    continue;
+
+                var outline = JsonSerializer.Deserialize<Outline>(File.ReadAllBytes(tocFile));
+                if (outline?.metadata?.enabled != true)
+                    continue;
+
+                yield return (jsonOutput.RelativePath, outline);
+            }
+        }
+    }
+
+    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, CancellationToken cancellationToken = default)
+    {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
 

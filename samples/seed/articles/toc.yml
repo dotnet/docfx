@@ -1,4 +1,9 @@
-﻿- name: Getting Started
+﻿metadata:
+  pdf.enabled: true
+  pdf.title: Seed PDF
+  pdf.filename: seed.pdf
+items:
+- name: Getting Started
   href: docfx_getting_started.md
 - name: Engineering Docs
   expanded: true

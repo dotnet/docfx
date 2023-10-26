@@ -3,6 +3,7 @@
 
 using System.Text.Json.Serialization;
 using Docfx.Common;
+using Docfx.Pdf;
 using Docfx.Plugins;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
@@ -21,6 +22,9 @@ internal class BuildCommand : Command<BuildCommandOptions>
 
             if (settings.Serve)
                 RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
+
+            if (!settings.NoPdf)
+                PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
         });
     }
 

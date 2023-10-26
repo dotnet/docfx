@@ -65,6 +65,7 @@ internal static class RunBuild
         // TODO: SEARCH DATA
 
         EnvironmentContext.Clean();
+
         return outputFolder;
     }
 }
