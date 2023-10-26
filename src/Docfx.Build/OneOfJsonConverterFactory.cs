@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -26,6 +27,7 @@ class OneOfJsonConverterFactory : JsonConverterFactory
     {
         private static readonly (Type type, MethodInfo cast)[] s_types = GetOneOfTypes();
 
+        [DebuggerNonUserCode]
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType is JsonTokenType.Null)
