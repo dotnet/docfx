@@ -22,11 +22,13 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.7.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.7.0" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="OneOf" Version="3.0.263" />
     <PackageVersion Include="OneOf.SourceGenerator" Version="3.0.263" />
     <PackageVersion Include="PdfPig" Version="0.1.8" />
+    <PackageVersion Include="Spectre.Console" Version="0.47.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.47.0" />
     <PackageVersion Include="Stubble.Core" Version="1.10.8" />
     <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
@@ -38,7 +40,6 @@
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Magick.NET-Q16-AnyCPU" Version="13.4.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.37.1" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' != 'net8.0'" />
     <PackageVersion Include="NuGet.Frameworks" Version="6.8.0-rc.122" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageVersion Include="Verify.DiffPlex" Version="2.2.1" />

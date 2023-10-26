@@ -13,6 +13,17 @@
     <InternalsVisibleTo Include="docfx" />
     <InternalsVisibleTo Include="docfx.Tests" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsAssemblyName Include="UglyToad.PdfPig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IgnoresAccessChecksToGenerator" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="PdfPig" />
+    <PackageReference Include="Spectre.Console" />
+  </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />

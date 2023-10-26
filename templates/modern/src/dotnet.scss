@@ -104,6 +104,12 @@ body[data-yaml-mime="ManagedReference"] article, body[data-yaml-mime="ApiPage"] 
     font-size: 1.2rem;
   }
 
+  @media print {
+    .header-action {
+      display: none;
+    }
+  }
+
   td.term {
     font-weight: 600;
   }

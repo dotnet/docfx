@@ -26,6 +26,14 @@
       "environmentVariables": {
       }
     },
+    // Run `docfx pdf` command and launch browser.
+    "docfx pdf": {
+      "commandName": "Project",
+      "commandLineArgs": "pdf ../../samples/seed/docfx.json",
+      "workingDirectory": ".",
+      "environmentVariables": {
+      }
+    },
     // Run `docfx` command.
     "docfx": {
       "commandName": "Project",
