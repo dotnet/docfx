@@ -52,7 +52,7 @@ public class SamplesTest
 
     static SamplesTest()
     {
-        Microsoft.Playwright.Program.Main(new[] { "install" });
+        Microsoft.Playwright.Program.Main(new[] { "install", "chromium" });
         Process.Start("dotnet", $"build \"{s_samplesDir}/seed/dotnet/assembly/BuildFromAssembly.csproj\"").WaitForExit();
     }
 

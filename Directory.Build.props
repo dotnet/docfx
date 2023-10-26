@@ -13,8 +13,9 @@
     <!--
       Suppress warnings similar to the following:
           warning NU1507: There are 2 package sources defined in your configuration.
+          warning CS0436: IgnoresAccessChecksTo redefinition due to InternalsVisibleTo
      -->
-    <NoWarn>$(NoWarn);NU1507</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;CS0436</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
