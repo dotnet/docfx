@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using Spectre.Console.Cli;
 
 namespace Docfx;
@@ -21,16 +19,16 @@ internal class MergeCommand : Command<MergeCommandOptions>
 
     private static MergeJsonConfig ParseOptions(MergeCommandOptions options, out string baseDirectory, out string outputFolder)
     {
-        (var config, baseDirectory) = CommandHelper.GetConfig<MergeConfig>(options.Config);
+        (var config, baseDirectory) = Docset.GetConfig(options.Config);
 
-        for (int i = 0; i < config.Item.Count; i++)
+        for (int i = 0; i < config.merge.Count; i++)
         {
-            var round = config.Item[i];
+            var round = config.merge[i];
             MergeOptionsToConfig(options, ref round);
         }
 
         outputFolder = options.OutputFolder;
-        return config.Item;
+        return config.merge;
     }
 
     private static void MergeOptionsToConfig(MergeCommandOptions options, ref MergeJsonItemConfig config)
@@ -41,12 +39,5 @@ internal class MergeCommand : Command<MergeCommandOptions>
         string optionsBaseDirectory = Directory.GetCurrentDirectory();
 
         if (!string.IsNullOrEmpty(options.OutputFolder)) config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
-    }
-
-    private sealed class MergeConfig
-    {
-        [JsonProperty("merge")]
-        [JsonPropertyName("merge")]
-        public MergeJsonConfig Item { get; set; }
     }
 }

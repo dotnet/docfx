@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Docfx.Build.Engine;
-using Docfx.Common.Git;
 using Docfx.Exceptions;
 using Docfx.Plugins;
 

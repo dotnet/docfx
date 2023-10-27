@@ -1,9 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Text.Json.Serialization;
 using Docfx.Common;
-using Docfx.Pdf;
 using Docfx.Plugins;
 using Newtonsoft.Json;
 using Spectre.Console.Cli;
@@ -16,15 +14,12 @@ internal class BuildCommand : Command<BuildCommandOptions>
     {
         return CommandHelper.Run(settings, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<BuildConfig>(settings.ConfigFile);
-            MergeOptionsToConfig(settings, config.Item, baseDirectory);
-            var serveDirectory = RunBuild.Exec(config.Item, new(), baseDirectory, settings.OutputFolder);
+            var (config, baseDirectory) = Docset.GetConfig(settings.ConfigFile);
+            MergeOptionsToConfig(settings, config.build, baseDirectory);
+            var serveDirectory = RunBuild.Exec(config.build, new(), baseDirectory, settings.OutputFolder);
 
             if (settings.Serve)
                 RunServe.Exec(serveDirectory, settings.Host, settings.Port, settings.OpenBrowser, settings.OpenFile);
-
-            if (!settings.NoPdf)
-                PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
         });
     }
 
@@ -122,12 +117,5 @@ internal class BuildCommand : Command<BuildCommandOptions>
                 return (key, value);
             }
         }
-    }
-
-    private sealed class BuildConfig
-    {
-        [JsonProperty("build")]
-        [JsonPropertyName("build")]
-        public BuildJsonConfig Item { get; set; }
     }
 }

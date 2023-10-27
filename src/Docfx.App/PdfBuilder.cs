@@ -1,8 +1,6 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#nullable enable
-
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,6 +18,8 @@ using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
 
+#nullable enable
+
 namespace Docfx.Pdf;
 
 static class PdfBuilder
@@ -32,10 +32,18 @@ static class PdfBuilder
 
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
-        public string? pdfMargin { get; init; }
     }
 
-    public static async Task CreatePdf(string folder)
+    public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
+    {
+        var outputFolder = Path.GetFullPath(Path.Combine(
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, config.Output ?? "") : outputDirectory,
+            config.Dest ?? ""));
+
+        return CreatePdf(outputFolder);
+    }
+
+    public static async Task CreatePdf(string outputFolder)
     {
         var pdfTocs = GetPdfTocs().ToArray();
         if (pdfTocs.Length == 0)
@@ -49,23 +57,24 @@ static class PdfBuilder
         builder.WebHost.UseUrls("http://127.0.0.1:0");
 
         using var app = builder.Build();
-        app.UseServe(folder);
+        app.UseServe(outputFolder);
         await app.StartAsync();
         var baseUrl = new Uri(app.Urls.First());
 
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
 
-        foreach (var (url, toc) in GetPdfTocs())
+        foreach (var (url, toc) in pdfTocs)
         {
-            var outputPath = Path.Combine(folder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
+            var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
 
             await CreatePdf(browser, new(baseUrl, url), toc, outputPath);
         }
 
         IEnumerable<(string, Outline)> GetPdfTocs()
         {
-            var manifest = Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(Path.Combine(folder, "manifest.json")));
+            var manifestPath = Path.Combine(outputFolder, "manifest.json");
+            var manifest = Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(manifestPath));
             if (manifest is null)
                 yield break;
 
@@ -74,7 +83,7 @@ static class PdfBuilder
                 if (file.Type != "Toc" || !file.Output.TryGetValue(".json", out var jsonOutput))
                     continue;
 
-                var tocFile = Path.Combine(folder, jsonOutput.RelativePath);
+                var tocFile = Path.Combine(outputFolder, jsonOutput.RelativePath);
                 if (!File.Exists(tocFile))
                     continue;
 
@@ -92,17 +101,14 @@ static class PdfBuilder
 
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
-        {
-            // TODO: Warn
             return;
-        }
 
         var pagesByNode = pages.ToDictionary(p => p.node);
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
         var pageNumbers = new Dictionary<Outline, int>();
         var nextPageNumbers = new Dictionary<Outline, int>();
         var nextPageNumber = 1;
-        var margin = outline.pdfMargin ?? "0.4in";
+        var margin = "0.4in";
 
         await AnsiConsole.Progress().Columns(new SpinnerColumn(), new TaskDescriptionColumn { Alignment = Justify.Left }).StartAsync(async c =>
         {

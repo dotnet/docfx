@@ -3,10 +3,8 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using Docfx.Common;
 using Docfx.Plugins;
-using ICSharpCode.Decompiler.Metadata;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.FileProviders;

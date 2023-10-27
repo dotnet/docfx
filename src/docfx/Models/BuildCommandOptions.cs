@@ -104,8 +104,4 @@ internal class BuildCommandOptions : LogOptions
     [Description("Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
     [CommandOption("--disableGitFeatures")]
     public bool DisableGitFeatures { get; set; }
-
-    [Description("Disable PDF build.")]
-    [CommandOption("--noPdf")]
-    public bool NoPdf { get; set; }
 }

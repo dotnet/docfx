@@ -7,19 +7,6 @@ namespace Docfx;
 
 internal class CommandHelper
 {
-    public static (T, string baseDirectory) GetConfig<T>(string configFile)
-    {
-        if (string.IsNullOrEmpty(configFile))
-            configFile = DataContracts.Common.Constants.ConfigFileName;
-
-        configFile = Path.GetFullPath(configFile);
-
-        if (!File.Exists(configFile))
-            throw new FileNotFoundException($"Cannot find config file {configFile}");
-
-        return (JsonUtility.Deserialize<T>(configFile), Path.GetDirectoryName(configFile));
-    }
-
     public static int Run(Action run)
     {
         var consoleLogListener = new ConsoleLogListener();
