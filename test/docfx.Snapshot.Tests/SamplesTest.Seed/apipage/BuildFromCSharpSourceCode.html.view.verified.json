@@ -2,6 +2,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "title": "Namespace BuildFromCSharpSourceCode",
   "content": "<h1 class='section api' data-uid='BuildFromCSharpSourceCode' data-commentId='N:BuildFromCSharpSourceCode' id='BuildFromCSharpSourceCode'>Namespace BuildFromCSharpSourceCode  </h1> <h3 class='section'>Classes</h3><dl class='parameters'><dt> <a href='BuildFromCSharpSourceCode.CSharp.html'>CSharp</a> </dt>\r\n<dd>\r\n\r\n\r\n</dd></dl>",
   "yamlmime": "ApiPage",

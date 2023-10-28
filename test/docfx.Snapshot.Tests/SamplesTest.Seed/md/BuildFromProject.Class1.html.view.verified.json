@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Class1\" sourcefile=\"obj/md/BuildFromProject.Class1.md\" sourcestartlinenumber=\"1\"> Class Class1</h1>",
   "title": " Class Class1",
   "wordCount": 333.0,

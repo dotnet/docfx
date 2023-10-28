@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core\" sourcefile=\"obj/md/CatLibrary.Core.md\" sourcestartlinenumber=\"1\"> Namespace CatLibrary.Core</h1>",
   "title": " Namespace CatLibrary.Core",
   "wordCount": 19.0,

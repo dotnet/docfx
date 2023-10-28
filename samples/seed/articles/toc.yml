@@ -1,4 +1,4 @@
-﻿pdf: true
+﻿pdfFileName: seed.pdf
 items:
 - name: Getting Started
   href: docfx_getting_started.md

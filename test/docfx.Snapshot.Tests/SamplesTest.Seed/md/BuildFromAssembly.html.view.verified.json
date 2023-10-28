@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromAssembly\" sourcefile=\"obj/md/BuildFromAssembly.md\" sourcestartlinenumber=\"1\"> Namespace BuildFromAssembly</h1>",
   "title": " Namespace BuildFromAssembly",
   "wordCount": 7.0,

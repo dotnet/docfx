@@ -63,6 +63,7 @@
       "leaf": true
     }
   ],
+  "pdf": true,
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,

@@ -334,5 +334,6 @@
       ]
     }
   ],
-  "memberLayout": "SamePage"
+  "memberLayout": "SamePage",
+  "pdf": true
 }

@@ -2,6 +2,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "title": "Namespace MRef.Demo.Enumeration",
   "content": "<h1 class='section api' data-uid='MRef.Demo.Enumeration' data-commentId='N:MRef.Demo.Enumeration' id='MRef_Demo_Enumeration'>Namespace MRef.Demo.Enumeration  </h1> <h3 class='section'>Enums</h3><dl class='parameters'><dt> <a href='MRef.Demo.Enumeration.ColorType.html'>ColorType</a> </dt>\r\n<dd>\r\n\r\n<p sourceFile=\"obj/apipage/MRef.Demo.Enumeration.yml\" sourceStartLineNumber=\"1\">Enumeration ColorType</p>\n\r\n</dd></dl>",
   "yamlmime": "ApiPage",

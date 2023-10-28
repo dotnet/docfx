@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Inheritdoc_Issue6366_Class1_1\" sourcefile=\"obj/md/BuildFromProject.Inheritdoc.Issue6366.Class1-1.md\" sourcestartlinenumber=\"1\"> Class Inheritdoc.Issue6366.Class1&lt;T&gt;</h1>",
   "title": " Class Inheritdoc.Issue6366.Class1<T>",
   "wordCount": 56.0,

@@ -308,6 +308,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "_key": "obj/api/BuildFromProject.Class1.IIssue8948.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

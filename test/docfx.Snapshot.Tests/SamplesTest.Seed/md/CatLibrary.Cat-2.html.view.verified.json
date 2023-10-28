@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_Cat_2\" sourcefile=\"obj/md/CatLibrary.Cat-2.md\" sourcestartlinenumber=\"1\"> Class Cat&lt;T, K&gt;</h1>",
   "title": " Class Cat<T, K>",
   "wordCount": 629.0,

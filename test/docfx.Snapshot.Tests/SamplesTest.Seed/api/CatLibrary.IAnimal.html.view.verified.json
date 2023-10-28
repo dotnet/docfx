@@ -1099,6 +1099,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "_key": "obj/api/CatLibrary.IAnimal.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",

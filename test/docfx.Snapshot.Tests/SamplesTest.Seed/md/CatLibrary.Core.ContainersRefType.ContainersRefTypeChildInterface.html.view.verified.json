@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ContainersRefTypeChildInterface\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ContainersRefTypeChildInterface.md\" sourcestartlinenumber=\"1\"> Interface ContainersRefType.ContainersRefTypeChildInterface</h1>",
   "title": " Interface ContainersRefType.ContainersRefTypeChildInterface",
   "wordCount": 7.0,

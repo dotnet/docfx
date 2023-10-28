@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromProject_Class1_IIssue8948\" sourcefile=\"obj/md/BuildFromProject.Class1.IIssue8948.md\" sourcestartlinenumber=\"1\"> Interface Class1.IIssue8948</h1>",
   "title": " Interface Class1.IIssue8948",
   "wordCount": 23.0,
