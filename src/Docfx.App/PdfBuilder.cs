@@ -1,12 +1,14 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-#nullable enable
-
-using System.Net.Http.Json;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using Docfx.Plugins;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using Spectre.Console;
 
@@ -16,6 +18,8 @@ using UglyToad.PdfPig.Outline;
 using UglyToad.PdfPig.Outline.Destinations;
 using UglyToad.PdfPig.Writer;
 
+#nullable enable
+
 namespace Docfx.Pdf;
 
 static class PdfBuilder
@@ -23,39 +27,81 @@ static class PdfBuilder
     class Outline
     {
         public string name { get; init; } = "";
-
         public string? href { get; init; }
-
         public Outline[]? items { get; init; }
+
+        public bool pdf { get; init; }
+        public string? pdfFileName { get; init; }
     }
 
-    public static async Task CreatePdf(Uri outlineUrl, CancellationToken cancellationToken = default)
+    public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
     {
-        using var http = new HttpClient();
+        var outputFolder = Path.GetFullPath(Path.Combine(
+            string.IsNullOrEmpty(outputDirectory) ? Path.Combine(configDirectory, config.Output ?? "") : outputDirectory,
+            config.Dest ?? ""));
 
-        var outline = await AnsiConsole.Status().StartAsync(
-            $"Downloading {outlineUrl}...",
-            c => http.GetFromJsonAsync<Outline>(outlineUrl, cancellationToken));
+        return CreatePdf(outputFolder);
+    }
 
-        if (outline is null)
+    public static async Task CreatePdf(string outputFolder)
+    {
+        var pdfTocs = GetPdfTocs().ToArray();
+        if (pdfTocs.Length == 0)
             return;
 
-        AnsiConsole.Status().Start(
-            "Installing Chromium...",
-            c => Program.Main(new[] { "install", "chromium" }));
+        AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
+        AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
+
+        var builder = WebApplication.CreateBuilder();
+        builder.Logging.ClearProviders();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+
+        using var app = builder.Build();
+        app.UseServe(outputFolder);
+        await app.StartAsync();
+        var baseUrl = new Uri(app.Urls.First());
 
         using var playwright = await Playwright.CreateAsync();
         var browser = await playwright.Chromium.LaunchAsync();
 
+        foreach (var (url, toc) in pdfTocs)
+        {
+            var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
+
+            await CreatePdf(browser, new(baseUrl, url), toc, outputPath);
+        }
+
+        IEnumerable<(string, Outline)> GetPdfTocs()
+        {
+            var manifestPath = Path.Combine(outputFolder, "manifest.json");
+            var manifest = Newtonsoft.Json.JsonConvert.DeserializeObject<Manifest>(File.ReadAllText(manifestPath));
+            if (manifest is null)
+                yield break;
+
+            foreach (var file in manifest.Files)
+            {
+                if (file.Type != "Toc" || !file.Output.TryGetValue(".json", out var jsonOutput))
+                    continue;
+
+                var tocFile = Path.Combine(outputFolder, jsonOutput.RelativePath);
+                if (!File.Exists(tocFile))
+                    continue;
+
+                var outline = JsonSerializer.Deserialize<Outline>(File.ReadAllBytes(tocFile));
+                if (outline?.pdf is true)
+                    yield return (jsonOutput.RelativePath, outline);
+            }
+        }
+    }
+
+    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath)
+    {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
 
         var pages = GetPages(outline).ToArray();
         if (pages.Length == 0)
-        {
-            // TODO: Warn
             return;
-        }
 
         var pagesByNode = pages.ToDictionary(p => p.node);
         var pagesByUrl = new Dictionary<Uri, List<(Outline node, NamedDestinations namedDests)>>();
@@ -68,7 +114,7 @@ static class PdfBuilder
         {
             await Parallel.ForEachAsync(pages, async (item, CancellationToken) =>
             {
-                var task = c.AddTask(item.url.ToString());
+                var task = c.AddTask(item.url.PathAndQuery);
                 var page = await browser.NewPageAsync();
                 await page.GotoAsync(item.url.ToString());
                 var bytes = await page.PdfAsync(new() { Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin } });
@@ -78,6 +124,7 @@ static class PdfBuilder
         });
 
         AnsiConsole.Status().Start("Creating PDF...", _ => MergePdf());
+        AnsiConsole.MarkupLine($"[green]PDF saved to {outputPath}[/]");
 
         IEnumerable<(string path, Uri url, Outline node)> GetPages(Outline outline)
         {
@@ -99,12 +146,11 @@ static class PdfBuilder
 
         void MergePdf()
         {
-            using var output = File.Create("output.pdf");
+            using var output = File.Create(outputPath);
             using var builder = new PdfDocumentBuilder(output);
 
             builder.DocumentInformation = new()
             {
-                Title = "",
                 Producer = $"docfx ({typeof(PdfBuilder).Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version})",
             };
 
@@ -156,7 +202,6 @@ static class PdfBuilder
                     {
                         if (namedDests.TryGet(name, out var dest))
                         {
-                            AnsiConsole.MarkupLine($"[green]Resolve succeed: {name}[/]");
                             return new GoToAction(new(1, dest.Type, dest.Coordinates));
                         }
                     }

@@ -2,6 +2,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "title": "Namespace MRef.Demo",
   "content": "<h1 class='section api' data-uid='MRef.Demo' data-commentId='N:MRef.Demo' id='MRef_Demo'>Namespace MRef.Demo  </h1> <h3 class='section'>Namespaces</h3><dl class='parameters'><dt> <a href='MRef.Demo.Enumeration.html'>MRef.Demo.Enumeration</a> </dt>\r\n<dd>\r\n\r\n\r\n</dd></dl>",
   "yamlmime": "ApiPage",

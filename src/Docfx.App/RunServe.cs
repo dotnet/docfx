@@ -35,15 +35,6 @@ internal static class RunServe
             throw new ArgumentException("Site folder does not exist. You may need to build it first. Example: \"docfx docfx_project/docfx.json\"", nameof(folder));
         }
 
-        var fileServerOptions = new FileServerOptions
-        {
-            EnableDirectoryBrowsing = true,
-            FileProvider = new PhysicalFileProvider(folder),
-        };
-
-        // Fix the issue that .JSON file is 404 when running docfx serve
-        fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
-
         try
         {
             var builder = WebApplication.CreateBuilder();
@@ -52,7 +43,7 @@ internal static class RunServe
 
             Console.WriteLine($"Serving \"{folder}\" on {url}. Press Ctrl+C to shut down.");
             using var app = builder.Build();
-            app.UseFileServer(fileServerOptions);
+            app.UseServe(folder);
 
             if (openBrowser || !string.IsNullOrEmpty(openFile))
             {
@@ -80,6 +71,19 @@ internal static class RunServe
         {
             Logger.LogError($"Error serving \"{folder}\" on {url}, check if the port is already being in use.");
         }
+    }
+
+    public static IApplicationBuilder UseServe(this WebApplication app, string folder)
+    {
+        var fileServerOptions = new FileServerOptions
+        {
+            EnableDirectoryBrowsing = true,
+            FileProvider = new PhysicalFileProvider(folder),
+        };
+
+        // Fix the issue that .JSON file is 404 when running docfx serve
+        fileServerOptions.StaticFileOptions.ServeUnknownFileTypes = true;
+        return app.UseFileServer(fileServerOptions);
     }
 
     /// <summary>

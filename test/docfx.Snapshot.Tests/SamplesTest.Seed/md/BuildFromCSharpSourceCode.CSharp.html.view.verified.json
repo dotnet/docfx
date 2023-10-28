@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromCSharpSourceCode_CSharp\" sourcefile=\"obj/md/BuildFromCSharpSourceCode.CSharp.md\" sourcestartlinenumber=\"1\"> Class CSharp</h1>",
   "title": " Class CSharp",
   "wordCount": 30.0,

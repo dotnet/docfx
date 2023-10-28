@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_ICat\" sourcefile=\"obj/md/CatLibrary.ICat.md\" sourcestartlinenumber=\"1\"> Interface ICat</h1>",
   "title": " Interface ICat",
   "wordCount": 35.0,

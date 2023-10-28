@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_Complex_2\" sourcefile=\"obj/md/CatLibrary.Complex-2.md\" sourcestartlinenumber=\"1\"> Class Complex&lt;T, J&gt;</h1>",
   "title": " Class Complex<T, J>",
   "wordCount": 28.0,

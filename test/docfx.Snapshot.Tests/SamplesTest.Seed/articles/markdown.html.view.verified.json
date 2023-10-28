@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"markdown\" sourcefile=\"articles/markdown.md\" sourcestartlinenumber=\"1\">Markdown</h1>",
   "title": "Markdown",
   "wordCount": 577.0,

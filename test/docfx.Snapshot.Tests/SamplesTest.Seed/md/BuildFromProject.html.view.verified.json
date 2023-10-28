@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"BuildFromProject\" sourcefile=\"obj/md/BuildFromProject.md\" sourcestartlinenumber=\"1\"> Namespace BuildFromProject</h1>",
   "title": " Namespace BuildFromProject",
   "wordCount": 34.0,

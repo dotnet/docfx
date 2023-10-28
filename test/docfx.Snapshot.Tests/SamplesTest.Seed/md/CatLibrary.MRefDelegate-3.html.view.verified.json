@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_MRefDelegate_3\" sourcefile=\"obj/md/CatLibrary.MRefDelegate-3.md\" sourcestartlinenumber=\"1\"> Delegate MRefDelegate&lt;K, T, L&gt;</h1>",
   "title": " Delegate MRefDelegate<K, T, L>",
   "wordCount": 55.0,

@@ -23,6 +23,7 @@
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "rawTitle": "<h1 id=\"CatLibrary_Core_ContainersRefType_ColorType\" sourcefile=\"obj/md/CatLibrary.Core.ContainersRefType.ColorType.md\" sourcestartlinenumber=\"1\"> Enum ContainersRefType.ColorType</h1>",
   "title": " Enum ContainersRefType.ColorType",
   "wordCount": 22.0,

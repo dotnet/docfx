@@ -3,9 +3,8 @@
 
 using System.ComponentModel;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using Docfx.Dotnet;
-using Newtonsoft.Json;
+using Docfx.Pdf;
 using Spectre.Console.Cli;
 
 namespace Docfx;
@@ -30,25 +29,27 @@ class DefaultCommand : Command<DefaultCommand.Options>
 
         return CommandHelper.Run(options, () =>
         {
-            var (config, baseDirectory) = CommandHelper.GetConfig<Config>(options.ConfigFile);
+            var (config, configDirectory) = Docset.GetConfig(options.ConfigFile);
             var outputFolder = options.OutputFolder;
             string serveDirectory = null;
 
-            if (config.Metadata is not null)
+            if (config.metadata is not null)
             {
-                DotnetApiCatalog.Exec(config.Metadata, new(), baseDirectory).GetAwaiter().GetResult();
+                DotnetApiCatalog.Exec(config.metadata, new(), configDirectory).GetAwaiter().GetResult();
             }
 
-            if (config.Build is not null)
+            if (config.build is not null)
             {
-                BuildCommand.MergeOptionsToConfig(options, config.Build, baseDirectory);
-                serveDirectory = RunBuild.Exec(config.Build, new(), baseDirectory, outputFolder);
+                BuildCommand.MergeOptionsToConfig(options, config.build, configDirectory);
+                serveDirectory = RunBuild.Exec(config.build, new(), configDirectory, outputFolder);
+
+                PdfBuilder.CreatePdf(serveDirectory).GetAwaiter().GetResult();
             }
 
-            if (config.Pdf is not null)
+            if (config.pdf is not null)
             {
-                BuildCommand.MergeOptionsToConfig(options, config.Pdf, baseDirectory);
-                RunPdf.Exec(config.Pdf, new(), baseDirectory, outputFolder);
+                BuildCommand.MergeOptionsToConfig(options, config.pdf, configDirectory);
+                RunPdf.Exec(config.pdf, new(), configDirectory, outputFolder);
             }
 
             if (options.Serve && serveDirectory is not null)
@@ -56,20 +57,5 @@ class DefaultCommand : Command<DefaultCommand.Options>
                 RunServe.Exec(serveDirectory, options.Host, options.Port, options.OpenBrowser, options.OpenFile);
             }
         });
-    }
-
-    class Config
-    {
-        [JsonProperty("build")]
-        [JsonPropertyName("build")]
-        public BuildJsonConfig Build { get; set; }
-
-        [JsonProperty("metadata")]
-        [JsonPropertyName("metadata")]
-        public MetadataJsonConfig Metadata { get; set; }
-
-        [JsonProperty("pdf")]
-        [JsonPropertyName("pdf")]
-        public PdfJsonConfig Pdf { get; set; }
     }
 }
