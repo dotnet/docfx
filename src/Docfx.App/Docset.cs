@@ -53,12 +53,11 @@ public static class Docset
     {
         return Exec(configPath, (config, configDirectory) =>
         {
-            PdfBuilder.Run(config.build, configDirectory);
+            if (config.build is not null)
+                PdfBuilder.Run(config.build, configDirectory);
 
-            if (config.pdf is { } pdf)
-            {
+            if (config.pdf is not null)
                 RunPdf.Exec(config.pdf, options, configDirectory);
-            }
         });
     }
 

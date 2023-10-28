@@ -15,12 +15,13 @@ internal class PdfCommand : Command<PdfCommandOptions>
         {
             var (config, configDirectory) = Docset.GetConfig(options.ConfigFile);
 
-            PdfBuilder.Run(config.build, configDirectory, options.OutputFolder).GetAwaiter().GetResult();
+            if (config.build is not null)
+                PdfBuilder.Run(config.build, configDirectory, options.OutputFolder).GetAwaiter().GetResult();
 
-            if (config.pdf is { } pdf)
+            if (config.pdf is not null)
             {
-                MergeOptionsToConfig(options, pdf, configDirectory);
-                RunPdf.Exec(pdf, new(), configDirectory, options.OutputFolder);
+                MergeOptionsToConfig(options, config.pdf, configDirectory);
+                RunPdf.Exec(config.pdf, new(), configDirectory, options.OutputFolder);
             }
         });
     }
