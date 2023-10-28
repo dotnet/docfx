@@ -70,6 +70,8 @@ body[data-layout="landing"] {
     padding-bottom: $main-padding-bottom;
 
     >.content {
+      width: 100%;
+
       >:not(article) {
         display: none;
       }

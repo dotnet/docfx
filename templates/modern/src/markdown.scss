@@ -29,6 +29,10 @@ blockquote {
 }
 
 /* Alerts */
+.alert {
+  break-inside: avoid;
+}
+
 .alert h5 {
   text-transform: uppercase;
   font-weight: bold;
