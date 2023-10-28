@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Docfx.Plugins;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -117,6 +118,7 @@ static class PdfBuilder
                 var task = c.AddTask(item.url.PathAndQuery);
                 var page = await browser.NewPageAsync();
                 await page.GotoAsync(item.url.ToString());
+                await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
                 var bytes = await page.PdfAsync(new() { Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin } });
                 File.WriteAllBytes(item.path, bytes);
                 task.Value = task.MaxValue;
@@ -133,8 +135,9 @@ static class PdfBuilder
                 var url = new Uri(outlineUrl, outline.href);
                 if (url.Host == outlineUrl.Host)
                 {
-                    var id = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(url.ToString())));
-                    yield return (Path.Combine(tempDirectory, $"{id}.pdf"), url, outline);
+                    var id = Convert.ToHexString(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(url.ToString()))).Substring(0, 6).ToLower();
+                    var name = Regex.Replace(url.PathAndQuery, "\\W", "-").Trim('-');
+                    yield return (Path.Combine(tempDirectory, $"{name}-{id}.pdf"), url, outline);
                 }
             }
 
@@ -173,19 +176,20 @@ static class PdfBuilder
             // Copy pages
             foreach (var (path, url, node) in pages)
             {
+                var basePageNumber = pageNumbers[node] - 1;
                 using var document = PdfDocument.Open(path);
                 for (var i = 1; i <= document.NumberOfPages; i++)
-                    builder.AddPage(document, i, CopyLink);
+                    builder.AddPage(document, i, a => CopyLink(a, basePageNumber));
             }
 
             builder.Bookmarks = new(CreateBookmarks(outline.items).ToArray());
         }
 
-        PdfAction CopyLink(PdfAction action)
+        PdfAction CopyLink(PdfAction action, int basePageNumber)
         {
             return action switch
             {
-                GoToAction link => new GoToAction(new(link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
+                GoToAction link => new GoToAction(new(basePageNumber + link.Destination.PageNumber, link.Destination.Type, link.Destination.Coordinates)),
                 UriAction url => HandleUriAction(url),
                 _ => action,
             };
@@ -200,9 +204,9 @@ static class PdfBuilder
                     var name = uri.Fragment.Substring(1);
                     foreach (var (node, namedDests) in pages)
                     {
-                        if (namedDests.TryGet(name, out var dest))
+                        if (namedDests.TryGet(name, out var dest) && dest is not null)
                         {
-                            return new GoToAction(new(1, dest.Type, dest.Coordinates));
+                            return new GoToAction(new(pageNumbers[node] + dest.PageNumber - 1, dest.Type, dest.Coordinates));
                         }
                     }
 
@@ -251,4 +255,19 @@ static class PdfBuilder
             }
         }
     }
+
+    /// <summary>
+    /// Adds hidden links to headings to ensure Chromium saves heading anchors to named dests
+    /// for cross page bookmark reference.
+    /// </summary>
+    static string EnsureHeadingAnchorScript =>
+        """
+        document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(h => {
+          if (h.id) {
+            const a = document.createElement('a')
+            a.href = '#' + h.id
+            document.body.appendChild(a)
+          }
+        })
+        """;
 }

@@ -2,6 +2,8 @@
 
 [Markdown](https://daringfireball.net/projects/markdown/) is a lightweight markup language with plain text formatting syntax. Docfx supports [CommonMark](https://commonmark.org/) compliant Markdown parsed through the [Markdig](https://github.com/xoofx/markdig) parsing engine.
 
+Link to [Math Expressions](#math-expressions)
+
 # Block Quotes
 
 > This is a block quote.
