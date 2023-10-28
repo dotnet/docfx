@@ -6,7 +6,7 @@
 $header-height: 60px;
 $footer-height: 60px;
 $main-padding-top: 1.6rem;
-$main-padding-bottom: 4rem;
+$main-padding-bottom: 2rem;
 
 // Makes a div sticky to top
 @mixin sticky-top {
@@ -53,6 +53,7 @@ body[data-layout="landing"] {
   }
 
   >footer {
+    font-size: 14px;
     padding: 1rem 0;
     height: $footer-height;
 
@@ -121,8 +122,7 @@ body[data-layout="landing"] {
         >.toc-offcanvas {
           flex: .35;
           display: block;
-          overflow-x: hidden;
-          overflow-y: auto;
+          overflow: hidden;
           max-width: 360px;
           max-height: calc(100vh - $header-height - $main-padding-top);
 
@@ -131,9 +131,15 @@ body[data-layout="landing"] {
           @include media-breakpoint-down(md) {
             flex: 0;
           }
+
+          .offcanvas-start, .offcanvas-body {
+            height: 100%;
+          }
         }
 
         >.content {
+          display: flex;
+          flex-direction: column;
           flex: 1;
           min-width: 0;
           margin: 0 3rem;
@@ -144,6 +150,10 @@ body[data-layout="landing"] {
             align-items: flex-start;
             margin-top: .5rem;
             min-height: 40px;
+          }
+
+          article {
+            flex: 1;
           }
 
           >.contribution,

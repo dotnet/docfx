@@ -24,7 +24,7 @@ export async function renderToc(): Promise<TocNode[]> {
   const disableTocFilter = meta('docfx:disabletocfilter') === 'true'
 
   const tocUrl = new URL(tocrel.replace(/.html$/gi, '.json'), window.location.href)
-  const { items } = await (await fetch(tocUrl)).json()
+  const { items, pdf, pdfFileName } = await (await fetch(tocUrl)).json()
 
   const tocFilterUrl = disableTocFilter ? '' : (localStorage?.getItem('tocFilterUrl') || '')
   let tocFilter = disableTocFilter ? '' : (localStorage?.getItem('tocFilter') || '')
@@ -92,7 +92,10 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderToc() {
-    render(html`${renderTocFilter()} ${renderTocNodes(items) || renderNoFilterResult()}`, tocContainer)
+    render(html`
+      ${renderTocFilter()} 
+      <div class="flex-fill overflow-y-auto">${renderTocNodes(items) || renderNoFilterResult()}</div>
+      ${renderDownloadPdf()}`, tocContainer)
   }
 
   function renderTocNodes(nodes: TocNode[]): TemplateResult {
@@ -148,6 +151,10 @@ export async function renderToc(): Promise<TocNode[]> {
 
   function renderNoFilterResult(): TemplateResult {
     return tocFilter === '' ? null : html`<div class='no-result'>${loc('searchNoResults', { query: tocFilter })}</div>`
+  }
+
+  function renderDownloadPdf(): TemplateResult {
+    return pdf ? html`<div class="py-2 mb-md-4"><a class="pdf-link" href="${pdfFileName || 'toc.pdf'}">${loc('downloadPdf')}</a></div>` : null
   }
 
   function normalizeUrlPath(url: { pathname: string }): string {

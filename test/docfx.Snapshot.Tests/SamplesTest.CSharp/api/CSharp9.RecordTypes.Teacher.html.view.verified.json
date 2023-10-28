@@ -1376,6 +1376,7 @@
     "themeAuto": "Auto",
     "changeTheme": "Change theme",
     "copy": "Copy",
+    "downloadPdf": "Download PDF",
     "_shared": {}
   },
   "yamlmime": "ManagedReference",
