@@ -17,6 +17,8 @@
   href: dotnet-api-docs.md
 - name: REST API Docs
   href: rest-api-docs.md
+- name: Links and Cross References
+  href: ../tutorial/links_and_cross_references.md
 - name: PDF
   href: pdf.md
 
@@ -27,27 +29,33 @@
   href: ../reference/docfx-cli-reference.md
 - name: Environment Variables
   href: ../reference/docfx-environment-variables-reference.md
-- name: Links and Cross References
-  href: ../tutorial/links_and_cross_references.md
-- name: Overwrite Files
-  href: ../tutorial/intro_overwrite_files.md
-- name: Introduction to the DocFX Template System
-  href: ../tutorial/intro_template.md
-- name: "How-to: Create A Custom Template"
-  href: ../tutorial/howto_create_custom_template.md
-- name: Metadata YAML Format
-  href: ../spec/metadata_format_spec.md
-- name: .NET YAML Format
-  href: dotnet-yaml-format.md
-- name: Document Schema
-  href: ../spec/docfx_document_schema.md
-- name: Schema Document Processor
-  href: ../spec/sdp_design_spec.md
 
-- name: Extensibility
-- name: Create a Custom Plugin
-  href: ../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md
-- name: Add a Custom Post Processor
-  href: ../tutorial/howto_add_a_customized_post_processor.md
-- name: "Advanced: Support Hyperlink"
-  href: ../tutorial/advanced_support_hyperlink.md
+- name: Archive
+- name: Templates
+  items:
+  - name: Overview
+    href: ../tutorial/intro_template.md
+  - name: "How-to: Create A Custom Template"
+    href: ../tutorial/howto_create_custom_template.md
+- name: Managed Reference
+  items:
+  - name: Metadata YAML Format
+    href: ../spec/metadata_format_spec.md
+  - name: .NET YAML Format
+    href: dotnet-yaml-format.md
+  - name: Overwrite Files
+    href: ../tutorial/intro_overwrite_files.md
+- name: Schema Document Processor
+  items:
+  - name: Overview
+    href: ../spec/sdp_design_spec.md
+  - name: Document Schema
+    href: ../spec/docfx_document_schema.md
+- name: Plugins
+  items:
+  - name: Create a Custom Plugin
+    href: ../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md
+  - name: Add a Custom Post Processor
+    href: ../tutorial/howto_add_a_customized_post_processor.md
+  - name: "Advanced: Support Hyperlink"
+    href: ../tutorial/advanced_support_hyperlink.md

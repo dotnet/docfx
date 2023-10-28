@@ -1,9 +1,4 @@
----
-uid: docfx_environment_variables_reference
-title: docfx environment variables reference
----
-
-# Docfx environment variables
+# Environment Variables
 
 ## `DOCFX_KEEP_DEBUG_INFO`
 
@@ -14,10 +9,6 @@ If set true. Keep following debug info in output HTML.
 - `jsonPath`
 - `data-raw-source`
 - `nocheck`
-
-## `DOCFX_GIT_TIMEOUT`
-
-Used to overide git command timeout. (Default: `10,000` [ms])
 
 ## `DOCFX_SOURCE_BRANCH_NAME`
 

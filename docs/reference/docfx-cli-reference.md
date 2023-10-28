@@ -1,9 +1,4 @@
----
-uid: docfx_cli_reference
-title: docfx CLI reference
----
-`docfx` CLI Reference
-=========================
+# Commandline Reference
 
 ## Introduction
 
