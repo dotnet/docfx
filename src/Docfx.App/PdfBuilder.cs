@@ -213,7 +213,7 @@ static class PdfBuilder
                     AnsiConsole.MarkupLine($"[yellow]Failed to resolve named dest: {name}[/]");
                 }
 
-                return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty));
+                return new GoToAction(new(pageNumbers[pages[0].node], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty));
             }
         }
 
@@ -233,7 +233,7 @@ static class PdfBuilder
                 {
                     yield return new DocumentBookmarkNode(
                         item.name, level,
-                        new(nextPageNumber, ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                        new(nextPageNumber, ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
                         CreateBookmarks(item.items, level + 1).ToArray());
                     continue;
                 }
@@ -250,7 +250,7 @@ static class PdfBuilder
                 nextPageNumber = nextPageNumbers[item];
                 yield return new DocumentBookmarkNode(
                     item.name, level,
-                    new(pageNumbers[item], ExplicitDestinationType.FitHorizontally, ExplicitDestinationCoordinates.Empty),
+                    new(pageNumbers[item], ExplicitDestinationType.XyzCoordinates, ExplicitDestinationCoordinates.Empty),
                     CreateBookmarks(item.items, level + 1).ToArray());
             }
         }
