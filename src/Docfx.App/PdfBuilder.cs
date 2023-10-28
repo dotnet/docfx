@@ -33,6 +33,8 @@ static class PdfBuilder
 
         public bool pdf { get; init; }
         public string? pdfFileName { get; init; }
+        public string? pdfMargin { get; init; }
+        public bool pdfPrintBackground { get; init; }
     }
 
     public static Task Run(BuildJsonConfig config, string configDirectory, string? outputDirectory = null)
@@ -109,7 +111,7 @@ static class PdfBuilder
         var pageNumbers = new Dictionary<Outline, int>();
         var nextPageNumbers = new Dictionary<Outline, int>();
         var nextPageNumber = 1;
-        var margin = "0.4in";
+        var margin = outline.pdfMargin ?? "0.4in";
 
         await AnsiConsole.Progress().Columns(new SpinnerColumn(), new TaskDescriptionColumn { Alignment = Justify.Left }).StartAsync(async c =>
         {
@@ -119,7 +121,12 @@ static class PdfBuilder
                 var page = await browser.NewPageAsync();
                 await page.GotoAsync(item.url.ToString());
                 await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-                var bytes = await page.PdfAsync(new() { Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin } });
+                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                var bytes = await page.PdfAsync(new()
+                {
+                    PrintBackground = outline.pdfPrintBackground,
+                    Margin = new() { Bottom = margin, Top = margin, Left = margin, Right = margin },
+                });
                 File.WriteAllBytes(item.path, bytes);
                 task.Value = task.MaxValue;
             });
