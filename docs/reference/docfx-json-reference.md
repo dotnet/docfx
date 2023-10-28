@@ -1,7 +1,3 @@
----
-title: Config Reference
----
-
 # Config Reference
 
 The `docfx.json` file indicates that the directory is the root of a docfx project.
