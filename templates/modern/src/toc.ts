@@ -154,7 +154,7 @@ export async function renderToc(): Promise<TocNode[]> {
   }
 
   function renderDownloadPdf(): TemplateResult {
-    return pdf ? html`<div class="py-2 mb-md-4"><a class="pdf-link" href="${pdfFileName || 'toc.pdf'}">${loc('downloadPdf')}</a></div>` : null
+    return pdf ? html`<div class="py-2 mb-md-4"><a class="pdf-link" href="${new URL(pdfFileName || 'toc.pdf', tocUrl)}">${loc('downloadPdf')}</a></div>` : null
   }
 
   function normalizeUrlPath(url: { pathname: string }): string {
