@@ -63,10 +63,11 @@
       "leaf": true
     }
   ],
-  "pdf": true,
+  "pdfFileName": "seed.pdf",
   "_appName": "Seed",
   "_appTitle": "docfx seed website",
   "_enableSearch": true,
+  "pdf": true,
   "_key": "articles/toc.yml",
   "_navKey": "~/toc.yml",
   "_navPath": "toc.html",
