@@ -80,6 +80,20 @@ article {
   }
 }
 
-.pdftoc ul {
-  list-style: none;
+.pdftoc {
+  ul {
+    list-style: none;
+  }
+
+  a {
+    display: flex;
+    text-decoration: none;
+    color: var(--bs-body-color);
+
+    .spacer {
+      flex: 1;
+      border-bottom: 1px dashed var(--bs-body-color);
+      margin: .4em;
+    }
+  }
 }

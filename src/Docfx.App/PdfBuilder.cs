@@ -1,6 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -56,6 +57,8 @@ static class PdfBuilder
         if (pdfTocs.Count == 0)
             return;
 
+        var pdfPageNumbers = new ConcurrentDictionary<string, (int offset, Dictionary<Outline, int> pageNumbers)>();
+
         AnsiConsole.Status().Start("Installing Chromium...", _ => Program.Main(new[] { "install", "chromium" }));
         AnsiConsole.MarkupLine("[green]Chromium installed.[/]");
 
@@ -67,7 +70,7 @@ static class PdfBuilder
 
         using var app = builder.Build();
         app.UseServe(outputFolder);
-        app.MapGet("/_pdftoc/{*id}", (string id) => Results.Content(TocHtmlTemplate(new Uri(baseUrl!, id), pdfTocs[id]).ToString(), "text/html"));
+        app.MapGet("/_pdftoc/{*url}", TocPage);
         await app.StartAsync();
 
         baseUrl = new Uri(app.Urls.First());
@@ -79,7 +82,7 @@ static class PdfBuilder
         {
             var outputPath = Path.Combine(outputFolder, Path.GetDirectoryName(url) ?? "", toc.pdfFileName ?? Path.ChangeExtension(Path.GetFileName(url), ".pdf"));
 
-            await CreatePdf(browser, new(baseUrl, url), toc, outputPath);
+            await CreatePdf(browser, new(baseUrl, url), toc, outputPath, (offset, pageNumbers) => pdfPageNumbers[url] = (offset, pageNumbers));
         }
 
         IEnumerable<(string url, Outline toc)> GetPdfTocs()
@@ -103,9 +106,15 @@ static class PdfBuilder
                     yield return (jsonOutput.RelativePath, outline);
             }
         }
+
+        IResult TocPage(string url)
+        {
+            var (offset, pageNumbers) = pdfPageNumbers.TryGetValue(url, out var x) ? x : default;
+            return Results.Content(TocHtmlTemplate(new Uri(baseUrl!, url), pdfTocs[url], offset, pageNumbers).ToString(), "text/html");
+        }
     }
 
-    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath)
+    static async Task CreatePdf(IBrowser browser, Uri outlineUrl, Outline outline, string outputPath, Action<int, Dictionary<Outline, int>> updatePageNumbers)
     {
         var tempDirectory = Path.Combine(Path.GetTempPath(), ".docfx", "pdf", "pages");
         Directory.CreateDirectory(tempDirectory);
@@ -125,21 +134,26 @@ static class PdfBuilder
             await Parallel.ForEachAsync(pages, async (item, CancellationToken) =>
             {
                 var task = c.AddTask(item.url.PathAndQuery);
-                var page = await browser.NewPageAsync();
-                var response = await page.GotoAsync(item.url.ToString());
-                if (response is null || !response.Ok)
-                    throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {item.url}");
-
-                await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
-                await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-                var bytes = await page.PdfAsync();
-                File.WriteAllBytes(item.path, bytes);
+                await CapturePdf(item.path, item.url);
                 task.StopTask();
             });
         });
 
-        AnsiConsole.Status().Start("Creating PDF...", _ => MergePdf());
+        await AnsiConsole.Status().StartAsync("Creating PDF...", _ => MergePdf());
         AnsiConsole.MarkupLine($"[green]PDF saved to {outputPath}[/]");
+
+        async Task CapturePdf(string path, Uri url)
+        {
+            var page = await browser.NewPageAsync();
+            var response = await page.GotoAsync(url.ToString());
+            if (response is null || !response.Ok)
+                throw new InvalidOperationException($"Failed to build PDF page [{response?.Status}]: {url}");
+
+            await page.AddScriptTagAsync(new() { Content = EnsureHeadingAnchorScript });
+            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+            var bytes = await page.PdfAsync();
+            File.WriteAllBytes(path, bytes);
+        }
 
         IEnumerable<(string path, Uri url, Outline node)> GetPages(Outline outline)
         {
@@ -179,7 +193,7 @@ static class PdfBuilder
             return Path.Combine(tempDirectory, $"{name}-{id}.pdf");
         }
 
-        void MergePdf()
+        async Task MergePdf()
         {
             using var output = File.Create(outputPath);
             using var builder = new PdfDocumentBuilder(output);
@@ -208,6 +222,13 @@ static class PdfBuilder
             // Copy pages
             foreach (var (path, url, node) in pages)
             {
+                if (url.AbsolutePath.StartsWith("/_pdftoc/"))
+                {
+                    // Refresh TOC page numbers
+                    updatePageNumbers(nextPageNumbers[node] - 1, pageNumbers);
+                    await CapturePdf(path, url);
+                }
+
                 var basePageNumber = pageNumbers[node] - 1;
                 using var document = PdfDocument.Open(path);
                 for (var i = 1; i <= document.NumberOfPages; i++)
@@ -291,7 +312,7 @@ static class PdfBuilder
         }
     }
 
-    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node)
+    static HtmlTemplate TocHtmlTemplate(Uri baseUrl, Outline node, int offset, Dictionary<Outline, int>? pageNumbers)
     {
         return Html($"""
             <!DOCTYPE html>
@@ -307,8 +328,18 @@ static class PdfBuilder
             </html>
             """);
 
-        HtmlTemplate TocNode(Outline node) => string.IsNullOrEmpty(node.name) ? default :
-            Html($"<li><a href='{(string.IsNullOrEmpty(node.href) ? null : new Uri(baseUrl, node.href))}'>{node.name}</a>{(node.items?.Length > 0 ? Html($"<ul>{node.items.Select(TocNode)}</ul>") : null)}</li>");
+        HtmlTemplate TocNode(Outline node) => string.IsNullOrEmpty(node.name) ? default : Html(
+            $"""
+            <li>
+              {(string.IsNullOrEmpty(node.href) ? node.name : Html(
+                  $"""
+                  <a href='{(string.IsNullOrEmpty(node.href) ? null : new Uri(baseUrl, node.href))}'>{node.name}
+                  {(pageNumbers?.TryGetValue(node, out var n) is true ? Html($"<span class='spacer'></span> <span class='page-number'>{n - offset}</span>") : null)}
+                  </a>
+                  """))}
+              {(node.items?.Length > 0 ? Html($"<ul>{node.items.Select(TocNode)}</ul>") : null)}
+            </li>
+            """);
     }
 
     /// <summary>
