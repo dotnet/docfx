@@ -36,5 +36,6 @@
     }
   ],
   "pdfFileName": "seed.pdf",
+  "pdfCoverPage": "../pdf.html",
   "pdf": true
 }
